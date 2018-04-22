@@ -12,7 +12,7 @@ module.exports = [
       target: 'web',
       output: {
         path: __dirname,
-        filename: 'clustergrammer2-alpha.js',
+        filename: 'clustergrammer-gl.js',
         libraryTarget: 'var',
         library: 'Clustergrammer2'
       },
@@ -53,7 +53,7 @@ module.exports = [
       target: 'web',
       output: {
         path: __dirname,
-        filename: 'clustergrammer2-alpha.node.js',
+        filename: 'clustergrammer-gl.node.js',
         libraryTarget: 'commonjs2',
         library: 'Clustergrammer2'
       },
@@ -83,7 +83,7 @@ module.exports = [
   //     target: 'web',
   //     output: {
   //       path: __dirname,
-  //       filename: 'clustergrammer2-alpha.min.js',
+  //       filename: 'clustergrammer-gl.min.js',
   //       libraryTarget: 'var',
   //       library: 'Clustergrammer2'
   //     },
@@ -115,7 +115,7 @@ module.exports = [
   //     target: 'web',
   //     output: {
   //       path: __dirname,
-  //       filename: 'clustergrammer2-alpha.node.min.js',
+  //       filename: 'clustergrammer-gl.node.min.js',
   //       libraryTarget: 'commonjs2',
   //       library: 'Clustergrammer2'
   //     },

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>clustergrammer2-alpha</title>
+
+</head>
+
+<body>
+
+  <!-- <script src="bundle.js"></script> -->
+  <script>console.log('loading webpack built bundle')</script>
+  <script src="lib/js/d3.js"></script>
+  <script src="clustergrammer2-alpha.js"></script>
+
+  <script>
+
+
+    d3.select('body').append('div').attr('id','something');
+
+    var inst_container = document.getElementById('something')
+
+    var inst_height = 1000;
+    var inst_width = 1000;
+
+    var x_offset = 100;
+    var y_offset = 100;
+
+    d3.select('#something')
+      .style('height',inst_height + 'px')
+      .style('width',inst_width+'px')
+        .style('background','white')
+        .style('border', '2px solid #000')
+        .style('margin-left', x_offset + 'px')
+        .style('margin-top', y_offset + 'px');
+
+
+    var filename = 'data/mult_view.json';
+
+    // var filename = 'data/mnist.json';
+    // var filename = 'data/mnist_thin.json';
+
+    // var filename = 'data/cytof_10k.json';
+    // var filename = 'data/cytof_25k.json';
+    // var filename = 'data/cytof_35k.json';
+
+    // var filename = 'data/ccle_1000x100.json';
+    // var filename = 'data/ccle_2000x200.json';
+    // var filename = 'data/ccle_5000x200.json';
+    // var filename = 'data/ccle_1000x200.json';
+
+    // var filename = 'data/ccle_1000x1037.json';
+    // var filename = 'data/ccle_2000x1037.json';
+
+    console.log('passing network to Clustergrammer2')
+
+    d3.json(filename, function(network){
+
+      args = {};
+      args.network = network;
+      args.container=inst_container;
+      cgm = Clustergrammer2(args);
+      // cgm2 = Clustergrammer2(args);
+
+    });
+
+  </script>
+
+</body>
+
+</html>

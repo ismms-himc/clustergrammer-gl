@@ -54,6 +54,7 @@
     "mathjs": "~3.20.1",
     "metadataify": "^1.0.3",
     "mouse-change": "^1.4.0",
+    "mouse-event-offset": "3.0.2",
     "ndarray": "^1.0.18",
     "ndarray-linspace": "^2.0.3",
     "ndarray-vector-fill": "^1.0.0",

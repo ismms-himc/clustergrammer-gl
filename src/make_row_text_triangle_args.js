@@ -19,27 +19,21 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   //   .domain([50, 100])
   //   .range([-26.1, -53]);
 
-  // smaller scale_y -> larger text
+  // smaller scale_text -> larger text
   var tmp_reduce_text_factor = 3;
-  var scale_y = params.text_zoom.row.scaled_num * tmp_reduce_text_factor;
-
-  // console.log('scale_y', scale_y);
+  var scale_text = params.text_zoom.row.scaled_num * tmp_reduce_text_factor * 0.5;
 
   var scale_x = params.zoom_data.y.total_zoom;
 
   // var x_offset = row_x_offset(params.text_zoom.row.scaled_num);
 
   // Shift the labels to the left slightly
-  var const_x_offset = -0.2;
+  var const_x_offset = -0.0;
 
-  console.log('HERE!!!!!!')
-
-  // scale_y is applying a zoom to x and y
+  // scale_text is applying a zoom to x and y
   // so the normal offset of -0.5 to get to the left side of the matrix now
-  // needs to be scaled by scale_y
-  var x_offset = -0.5 * (params.mat_size/0.5) * scale_y + const_x_offset;
-
-  // console.log('scale_y', scale_y)
+  // needs to be scaled by scale_text
+  var x_offset = (-0.5 * (params.mat_size/0.5) + const_x_offset) * scale_text;
 
   var mat_rotate = m3.rotation(Math.PI/2);
 
@@ -52,25 +46,31 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       uniform mat4 zoom;
       uniform vec2 offset;
       uniform float x_offset;
-      uniform float scale_y;
+      uniform float scale_text;
       uniform float scale_x;
       uniform mat3 mat_rotate;
       uniform float scale_offset;
+      varying float x_position;
+      varying float y_position;
 
       // vec3 tmp = vec3(1,1,1);
 
       // last value is a sort-of zoom
       void main () {
+
         // reverse y position to get words to be upright
+
+        x_position = (position.x * scale_x) + x_offset;
+        y_position = -position.y + offset[1] * scale_text * scale_offset;
 
         gl_Position = zoom *
                       vec4(
-                            (position.x * scale_x) + x_offset,
-                           -position.y + offset[1] * scale_y * scale_offset,
+                           x_position,
+                           y_position,
                            // depth
                            0.50,
                            // zoom
-                           scale_y);
+                           scale_text);
       }`,
     frag: `
       precision mediump float;
@@ -86,7 +86,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       offset: regl.prop('offset'),
       x_offset: x_offset,
       scale_offset: params.mat_size/0.5,
-      scale_y: scale_y,
+      scale_text: scale_text,
       scale_x: scale_x,
       mat_rotate: mat_rotate
     },

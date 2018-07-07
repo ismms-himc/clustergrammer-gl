@@ -40,7 +40,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   var total_zoom = params.zoom_data.x.total_zoom;
   var mat_reduce_text_size = m3.scaling(reduce_factor, reduce_factor);
 
-  var scale_x = params.text_zoom.col.scaled_num;
+  var scale_text = params.text_zoom.col.scaled_num;
 
   var args = {
     vert: `
@@ -49,7 +49,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       uniform mat4 zoom;
       uniform vec2 offset;
       uniform float offset_y;
-      uniform float scale_x;
+      uniform float scale_text;
       uniform float width_scale;
       uniform mat3 mat_rotate;
       uniform mat3 text_y_scale;
@@ -83,7 +83,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         */
         shift_to_right = vec3( col_width * total_zoom , 0, 0);
 
-        position_cols = vec3( offset[1] * scale_x * scale_offset, offset_y * scale_offset, 0);
+        position_cols = vec3( offset[1] * scale_text * scale_offset, offset_y * scale_offset, 0);
 
         // reverse y position to get words to be upright
         gl_Position = zoom *
@@ -101,7 +101,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
                 /////////////////////
 
                 // zoom element in vec4
-                scale_x
+                scale_text
 
           );
 
@@ -118,7 +118,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
     uniforms: {
       zoom: zoom_function,
       offset: regl.prop('offset'),
-      scale_x: scale_x,
+      scale_text: scale_text,
       offset_y: offset_y,
       width_scale: params.zoom_data.x.total_zoom,
       mat_rotate: mat_rotate,

@@ -46,7 +46,10 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   Not using mat_translate since each label needs to be translated a specific
   amount that is saved in the batch data.
   */
-  var mat_rotate = m3.rotation(Math.PI/4);
+
+  var mat_rotate =  m3.rotation(Math.PI/4);
+  // var mat_rotate =  m3.rotation(0);
+
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
 
   // smaller number gives smaller text
@@ -76,6 +79,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       varying vec3 shift_to_right;
       varying vec3 position_cols;
       uniform float scale_offset;
+      varying vec3 xy_positions;
 
       // last value is a sort-of zoom
       void main () {
@@ -101,25 +105,15 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         position_cols = vec3( offset[1] * scale_text * scale_offset, y_offset * scale_offset, 0);
 
+
+        xy_positions = rotated_text + shift_to_right + position_cols;
+
         // reverse y position to get words to be upright
-        gl_Position = zoom *
+        ////////////////////////////
+        // vec4: x, y, depth, zoom
+        ////////////////////////////
 
-          vec4(
-
-                //////////////////////
-                // vec3: x, y, depth
-                //////////////////////
-
-                rotated_text + shift_to_right + position_cols,
-
-                /////////////////////
-                // vec4: zoom
-                /////////////////////
-
-                // zoom element in vec4
-                scale_text
-
-          );
+        gl_Position = zoom * vec4( xy_positions, scale_text);
 
       }`,
     frag: `

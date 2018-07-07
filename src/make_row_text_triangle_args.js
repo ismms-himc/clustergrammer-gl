@@ -25,7 +25,8 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   // scale_text is applying a zoom to x and y
   // so the normal offset of -0.5 to get to the left side of the matrix now
   // needs to be scaled by scale_text
-  var x_offset = -params.mat_size * scale_text;
+  var shift_text = -1.0;
+  var x_offset = -params.mat_size * scale_text + shift_text;
 
   var mat_rotate = m3.rotation(Math.PI/2);
 

@@ -23,8 +23,24 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
     .range([25.9, 52]);
 
   // console.log(params.text_zoom.col.scaled_num);
-  var offset_y = col_y_offset(params.text_zoom.col.scaled_num);
-  // console.log('offset_y: ', offset_y);
+  var y_offset = col_y_offset(params.text_zoom.col.scaled_num);
+  // console.log('y_offset', y_offset)
+
+  //---------------------------------
+  // Working on cleaning column positioning
+  // smaller scale_text -> larger text
+
+  var tmp_reduce_text_factor = 3;
+  var scale_text = params.text_zoom.row.scaled_num *
+                   tmp_reduce_text_factor * 0.5 ;
+
+  // var shift_text = -1.0;
+  // var y_offset = params.mat_size * scale_text + shift_text;
+  // console.log('tmp', tmp)
+
+  //---------------------------------
+
+
 
   /*
   Not using mat_translate since each label needs to be translated a specific
@@ -48,7 +64,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       attribute vec2 position;
       uniform mat4 zoom;
       uniform vec2 offset;
-      uniform float offset_y;
+      uniform float y_offset;
       uniform float scale_text;
       uniform float width_scale;
       uniform mat3 mat_rotate;
@@ -83,7 +99,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         */
         shift_to_right = vec3( col_width * total_zoom , 0, 0);
 
-        position_cols = vec3( offset[1] * scale_text * scale_offset, offset_y * scale_offset, 0);
+        position_cols = vec3( offset[1] * scale_text * scale_offset, y_offset * scale_offset, 0);
 
         // reverse y position to get words to be upright
         gl_Position = zoom *
@@ -119,7 +135,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
-      offset_y: offset_y,
+      y_offset: y_offset,
       width_scale: params.zoom_data.x.total_zoom,
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,

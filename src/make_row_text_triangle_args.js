@@ -16,7 +16,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   //                                   params.text_scale.row(params.zoom_data.y.total_zoom);
 
   // smaller scale_text -> larger text
-  var tmp_reduce_text_factor = 3;
+  var tmp_reduce_text_factor = 4;
   var scale_text = params.text_zoom.row.scaled_num *
                    tmp_reduce_text_factor * 0.5 ;
 

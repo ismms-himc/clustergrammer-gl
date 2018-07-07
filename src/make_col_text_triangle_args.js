@@ -18,12 +18,12 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   */
 
   // manually tuned numbers
-  var col_x_offset = d3.scale.linear()
+  var col_y_offset = d3.scale.linear()
     .domain([50, 100])
     .range([25.9, 52]);
 
   // console.log(params.text_zoom.col.scaled_num);
-  var offset_y = col_x_offset(params.text_zoom.col.scaled_num);
+  var offset_y = col_y_offset(params.text_zoom.col.scaled_num);
   // console.log('offset_y: ', offset_y);
 
   /*

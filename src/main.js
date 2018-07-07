@@ -12,7 +12,7 @@ var run_viz = require('./run_viz');
 // global variables
 // d3 = require('d3');
 
-function Clustergrammer2(args){
+function clustergrammer_gl(args){
 
   console.log('################################');
   console.log('version 0.2.3');
@@ -32,4 +32,4 @@ function Clustergrammer2(args){
 }
 
 // necessary for exporting function
-module.exports = Clustergrammer2;
+module.exports = clustergrammer_gl;

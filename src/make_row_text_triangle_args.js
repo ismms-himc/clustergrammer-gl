@@ -29,10 +29,15 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
   // var x_offset = row_x_offset(params.text_zoom.row.scaled_num);
 
+  // Shift the labels to the left slightly
+  var const_x_offset = -0.2;
+
+  console.log('HERE!!!!!!')
+
   // scale_y is applying a zoom to x and y
   // so the normal offset of -0.5 to get to the left side of the matrix now
   // needs to be scaled by scale_y
-  var x_offset = -0.5 * (params.mat_size/0.5) * scale_y;
+  var x_offset = -0.5 * (params.mat_size/0.5) * scale_y + const_x_offset;
 
   // console.log('scale_y', scale_y)
 

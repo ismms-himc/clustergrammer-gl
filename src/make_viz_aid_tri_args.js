@@ -1,6 +1,6 @@
 var m3 = require('./mat3_transform');
 var color_to_rgba = require('./color_to_rgba');
-var color_table = require('./color_table.js');
+// var color_table = require('./color_table.js');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
@@ -16,7 +16,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   // var inst_rgba = color_to_rgba('#ff0000', 0.5);
   var inst_rgba = color_to_rgba('purple', 0.95);
 
-  var color_names = _.keys(color_table);
+  // var color_names = _.keys(olor_table);
 
   var num_labels = params['num_'+inst_rc];
 

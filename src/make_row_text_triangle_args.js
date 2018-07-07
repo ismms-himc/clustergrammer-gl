@@ -25,8 +25,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   // scale_text is applying a zoom to x and y
   // so the normal offset of -0.5 to get to the left side of the matrix now
   // needs to be scaled by scale_text
-  var shift_text = -1.0;
-  var x_offset = -params.mat_size * scale_text + shift_text;
+  var x_offset = -params.mat_size;
 
   var mat_rotate = m3.rotation(Math.PI/2);
 
@@ -45,6 +44,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       uniform float scale_offset;
       varying float x_position;
       varying float y_position;
+      varying float shift_text;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -53,7 +53,9 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // reverse y position to get words to be upright
 
-        x_position = (position.x * y_total_zoom) + x_offset;
+        shift_text = -1.0;
+
+        x_position = (position.x * y_total_zoom) + x_offset * scale_text + shift_text;
         y_position = -position.y + offset[1] * scale_text * scale_offset;
 
         gl_Position = zoom *

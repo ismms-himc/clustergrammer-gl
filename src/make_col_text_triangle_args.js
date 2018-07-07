@@ -30,9 +30,9 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   // Working on cleaning column positioning
   // smaller scale_text -> larger text
 
-  var tmp_reduce_text_factor = 3;
+  var tmp_reduce_text_factor = 1.5;
   var scale_text = params.text_zoom.row.scaled_num *
-                   tmp_reduce_text_factor * 0.5 ;
+                   tmp_reduce_text_factor;
 
   // var shift_text = -1.0;
   // var y_offset = params.mat_size * scale_text + shift_text;
@@ -40,15 +40,13 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   //---------------------------------
 
-
-
   /*
   Not using mat_translate since each label needs to be translated a specific
   amount that is saved in the batch data.
   */
 
-  var mat_rotate =  m3.rotation(Math.PI/4);
-  // var mat_rotate =  m3.rotation(0);
+  // var mat_rotate =  m3.rotation(Math.PI/4);
+  var mat_rotate =  m3.rotation(0);
 
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
 
@@ -57,7 +55,9 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   // mnist: 1
   var reduce_factor = 0.75; // 1 / params.zoom_data.x.total_zoom;
   var total_zoom = params.zoom_data.x.total_zoom;
-  var mat_reduce_text_size = m3.scaling(reduce_factor, reduce_factor);
+
+  // var mat_reduce_text_size = m3.scaling(reduce_factor, reduce_factor);
+  var mat_reduce_text_size = m3.scaling(1, 1);
 
   var scale_text = params.text_zoom.col.scaled_num;
 
@@ -80,6 +80,8 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       varying vec3 position_cols;
       uniform float scale_offset;
       varying vec3 xy_positions;
+      varying float col_x;
+      varying float col_y;
 
       // last value is a sort-of zoom
       void main () {
@@ -101,9 +103,16 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
           factor scale with the number of columns
           so that the labels remain on top of the correct columns
         */
-        shift_to_right = vec3( col_width * total_zoom , 0, 0);
 
-        position_cols = vec3( offset[1] * scale_text * scale_offset, y_offset * scale_offset, 0);
+        // shift_to_right = vec3( col_width * total_zoom , 0, 0);
+        shift_to_right = vec3(0 , 0, 0);
+
+        col_x = offset[1] * scale_text * scale_offset;
+
+        col_y = y_offset * scale_offset;
+        // col_y = y_offset;
+
+        position_cols = vec3( col_x, col_y, 0);
 
 
         xy_positions = rotated_text + shift_to_right + position_cols;
@@ -136,7 +145,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       mat_reduce_text_size: mat_reduce_text_size,
       total_zoom: total_zoom,
       // need to pin down number
-      col_width: 4.5/params.num_col,
+      col_width: params.mat_size/params.num_col,
       scale_offset: params.mat_size/0.5,
     },
     depth: {

@@ -20,13 +20,9 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   var scale_text = params.text_zoom.row.scaled_num *
                    tmp_reduce_text_factor * 0.5 ;
 
-  var y_total_zoom = params.zoom_data.y.total_zoom;
-
   // scale_text is applying a zoom to x and y
   // so the normal offset of -0.5 to get to the left side of the matrix now
   // needs to be scaled by scale_text
-  var x_offset = -params.mat_size;
-
   var mat_rotate = m3.rotation(Math.PI/2);
 
   // console.log(regl.prop('offset'))
@@ -55,7 +51,14 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         shift_text = -1.0;
 
-        x_position = (position.x * y_total_zoom) + x_offset * scale_text + shift_text;
+        // the x position is constant for all row labels
+
+        // y_total_zoom stretches out row labels horizontally
+        // then text is offset to the left side of the heatmap
+        x_position = position.x * y_total_zoom +
+                     x_offset * scale_text + shift_text;
+
+        // the y position varies for all column labels
         y_position = -position.y + offset[1] * scale_text * scale_offset;
 
         gl_Position = zoom *
@@ -79,10 +82,10 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
     uniforms: {
       zoom: zoom_function,
       offset: regl.prop('offset'),
-      x_offset: x_offset,
+      x_offset: -params.mat_size,
       scale_offset: params.mat_size/0.5,
       scale_text: scale_text,
-      y_total_zoom: y_total_zoom,
+      y_total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate
     },
     depth: {

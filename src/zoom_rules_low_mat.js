@@ -44,6 +44,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     if (zoom_data.inst_zoom > 1){
       zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {
+
       // declare that this is zooming_below_one
       // if (zoom_data.total_zoom == 1){
         // if (axis === 'x'){

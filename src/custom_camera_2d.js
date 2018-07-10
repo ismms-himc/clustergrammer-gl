@@ -28,7 +28,7 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   return out;
 };
 
-module.exports = function makeCamera2D (regl, opts, zoom_data, viz_component) {
+module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_component) {
 
   // var zoom_data = $.extend(true, {}, zoom_data_ini);
   // var zoom_data = $.extend(true, {}, zoom_data_ini);
@@ -147,9 +147,9 @@ module.exports = function makeCamera2D (regl, opts, zoom_data, viz_component) {
 
         // try to reproduce rules from zoom_rules_low_mat for viz-aid
         // inst_y_pan_by_zoom = 0;
-        // inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1)
+        calc_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
 
-        // console.log('inst_y_pan_by_zoom', inst_y_pan_by_zoom, zoom_data.y.total_zoom)
+        console.log('compare y pan_by_zooms', inst_y_pan_by_zoom, calc_y_pan_by_zoom);
         // console.log(zoom_data)
       }
 

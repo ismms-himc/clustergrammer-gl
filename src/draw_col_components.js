@@ -12,7 +12,7 @@ module.exports = function draw_col_components(regl, params, slow_draw=false){
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
 
-    regl(params.viz_aid_tri_args.col)();
+    // regl(params.viz_aid_tri_args.col)();
     regl(params.dendro_args.col)();
 
     // make the arguments for the draw command

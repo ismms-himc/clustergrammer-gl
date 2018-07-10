@@ -142,9 +142,10 @@ module.exports = function makeCamera2D (regl, opts, zoom_data, viz_component) {
       // Experimenting with making viz-aid camera since the triangles need to.be
       // zoomed in on the y direction
       if (viz_component === 'col-viz-aid'){
-        inst_y_zoom = 1;
+        // inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;
-        inst_y_pan_by_zoom = 0;
+        // inst_y_pan_by_zoom = 0;
+        console.log('inst_y_pan_by_zoom', inst_y_pan_by_zoom)
       }
 
       if (viz_component === 'static'){

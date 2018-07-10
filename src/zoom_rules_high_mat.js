@@ -2,6 +2,7 @@ var interactionEvents = require('./interaction-events');
 var extend = require('xtend/mutable');
 var zoom_rules_low_mat = require('./zoom_rules_low_mat');
 var keep_track_of_interactions = require('./keep_track_of_interactions');
+var find_mouseover_element = require('./find_mouseover_element');
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -22,6 +23,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     element: element,
   })
   .on('interaction', function(ev){
+
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
       switch (ev.type) {
@@ -30,6 +32,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
           ev.dx = ev.dy = 0;
           break;
       }
+
 
       // transfer data from ev to zoom_data
       zoom_data.x.inst_zoom = ev.dsx;
@@ -69,7 +72,11 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       keep_track_of_interactions(params);
 
+    } else if (ev.type === 'mousemove'){
+      find_mouseover_element(params);
     }
+
+
   });
 
 };

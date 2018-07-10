@@ -152,10 +152,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
 
-        /*
-          need to stretch column viz_aid_triangles in y direction
-        */
-
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
 

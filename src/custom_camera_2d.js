@@ -149,7 +149,6 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
         // y zooming behavior for column visual aid triangles
         inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
 
-
       }
 
       if (viz_component === 'static'){

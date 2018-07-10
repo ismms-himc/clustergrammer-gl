@@ -83,8 +83,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       // last value is a sort-of zoom
       void main () {
 
-        shift_text_up = 0.5;
-        // shift_text_right = 0.0;
+        shift_text_up = 0.40;
 
         // rotate, reduce size, stretch in y, and give text triangles positions
         rotated_text = text_y_scale *
@@ -138,7 +137,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
-      shift_text_right: 0.5/params.num_row,
+      shift_text_right: 0.45/params.num_row,
 
       // y_offset: y_offset,
       y_offset: params.mat_size,

@@ -18,6 +18,8 @@ module.exports = function make_cameras(regl, params){
 
   cameras['col-labels'] = custom_camera_2d(regl, zoom_range, zoom_data, 'col-labels');
 
+  cameras['col-viz-aid'] = custom_camera_2d(regl, zoom_range, zoom_data, 'col-viz-aid');
+
   cameras.static = custom_camera_2d(regl, zoom_range, zoom_data, 'static');
 
   return cameras;

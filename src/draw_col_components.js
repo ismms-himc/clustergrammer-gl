@@ -4,6 +4,11 @@ var calc_col_text_triangles = require('./calc_col_text_triangles');
 
 module.exports = function draw_col_components(regl, params, slow_draw=false){
 
+  /* Experimenting with separate draw command for col viz aid triangles */
+  params.cameras['col-viz-aid'].draw(() => {
+    regl(params.viz_aid_tri_args.col)();
+  });
+
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
 

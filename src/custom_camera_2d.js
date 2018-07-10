@@ -137,10 +137,26 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
         inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;
         inst_y_pan_by_zoom = 0;
+
+        /*
+        Need to modify col zooming behavior slightly
+        should try to modify x pan_by_zoom to keep bottom of text placed
+        properly. Speficically, only column labels should be shifted up when
+        zooming in and shifted down when zooming out to make up for how zooming
+        is shifting the position of the bottom corner's of the letters (or the
+        zooming should be modified to not do this).
+
+        From what I remember, zooming always happens from the top left side and
+        to have things appear to zoom from the bottom left, you need to also
+        translate them.
+        */
+        // inst_y_pan_by_zoom = zoom_data.y.total_zoom * 0.1;
+
       }
 
-      // Experimenting with making viz-aid camera since the triangles need to.be
-      // zoomed in on the y direction
+      /*
+        Viz-Aid Triangle special rules
+      */
       if (viz_component === 'col-viz-aid'){
         // inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;

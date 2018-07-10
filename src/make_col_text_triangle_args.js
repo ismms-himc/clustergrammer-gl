@@ -49,11 +49,10 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   var scale_text = params.text_zoom.col.scaled_num;
 
   // var shift_text_right = 0.3/params.num_col;
-  var shift_text_out = col_width/10.0;
+  var shift_text_out = 0.1;
   var shift_text_right = col_width - rh_tri_side;
   // make up for rotating text
-  var shift_text_up = rh_tri_side;
-  console.log('shift_text_up', shift_text_up)
+  var shift_text_up = rh_tri_side * 1.5;
 
   var scale_offset = params.mat_size/0.5;
 

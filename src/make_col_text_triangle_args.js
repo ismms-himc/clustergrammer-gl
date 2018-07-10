@@ -17,9 +17,9 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   // Working on cleaning column positioning
   // smaller scale_text -> larger text
 
-  var tmp_reduce_text_factor = 1.5;
-  var scale_text = params.text_zoom.row.scaled_num *
-                   tmp_reduce_text_factor;
+  // var tmp_reduce_text_factor = 1.5;
+  // var scale_text = params.text_zoom.row.scaled_num *
+  //                  tmp_reduce_text_factor;
 
   //---------------------------------
 
@@ -36,10 +36,8 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   // smaller number gives smaller text
   // rc_two_cats: 0.75
   // mnist: 1
-  var reduce_factor = 0.75; // 1 / params.zoom_data.x.total_zoom;
   var total_zoom = params.zoom_data.x.total_zoom;
 
-  // var mat_reduce_text_size = m3.scaling(reduce_factor, reduce_factor);
   var mat_reduce_text_size = m3.scaling(1, 1);
 
   var scale_text = params.text_zoom.col.scaled_num;

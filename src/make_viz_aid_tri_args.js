@@ -21,7 +21,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var num_labels = params['num_'+inst_rc];
 
   var row_width = 0.025;
-  var row_height = (params.mat_size/0.5) * 1/num_labels;
+
+  // controls shifting of viz aid triangles to left and bottom sides of matrix
+  var row_height = (params.mat_size/0.5)/num_labels;
 
   var zoom_function = function(context){
     return context.view;
@@ -31,7 +33,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   // Label Offset Buffer
   /////////////////////////////////
 
-  var x_offset = -(0.5)*(params.mat_size/0.5) - row_width;
+  var x_offset = -params.mat_size - row_width;
 
   var inst_order = 'clust';
 
@@ -135,7 +137,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
       uniform mat4 zoom;
-      uniform float x_offset_uni;
+      uniform float x_offset;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -147,7 +149,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(x_offset_uni, y_offset_att, 0);
+        vec_translate = vec3(x_offset, y_offset_att, 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -209,7 +211,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       zoom: zoom_function,
       mat_rotate: mat_rotate,
       scale_y: scale_y,
-      x_offset_uni: x_offset,
+      x_offset: x_offset,
       triangle_color: inst_rgba
     },
 

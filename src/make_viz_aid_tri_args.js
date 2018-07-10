@@ -175,6 +175,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
       // color triangle red
       void main () {
+
         // gl_FragColor = vec4(0.6, 0.6, 0.6, opacity_vary);
 
         // defining the triangle color using a uniform

@@ -145,14 +145,11 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
         // inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;
 
-        // try to reproduce rules from zoom_rules_low_mat for viz-aid
-        // inst_y_pan_by_zoom = 0;
-        calc_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
+        // Reproducing behavior from zoom_rules_low in camera to get custom
+        // y zooming behavior for column visual aid triangles
+        inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
 
-        console.log('compare y pan_by_zooms', inst_y_pan_by_zoom, calc_y_pan_by_zoom);
 
-        inst_y_pan_by_zoom = calc_y_pan_by_zoom;
-        // console.log(zoom_data)
       }
 
       if (viz_component === 'static'){

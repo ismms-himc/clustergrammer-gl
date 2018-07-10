@@ -84,9 +84,18 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     }
   }
 
+
+  /* Working on viz aid triangles */
+  // // always set cursor position to min matrix position
+  // zoom_data.cursor_position = viz_dim_mat.min;
+
   // restrict effective position of mouse
   if (zoom_data.cursor_position < viz_dim_mat.min){
     zoom_data.cursor_position = viz_dim_mat.min;
+
+    console.log('less than min position')
+
+
   } else if (zoom_data.cursor_position > viz_dim_mat.max){
     zoom_data.cursor_position = viz_dim_mat.max;
   }

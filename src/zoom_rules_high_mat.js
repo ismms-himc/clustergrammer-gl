@@ -52,7 +52,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
       zoom_data.y.cursor_position = ev.y0;
 
       /*
-      Zoom Switch only working for tall matrices not wide matrices
+        Zoom Switch only working for tall matrices not wide matrices
       */
 
       // set up two-stage zooming

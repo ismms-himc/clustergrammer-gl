@@ -13,19 +13,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
                                      params.text_scale.col(params.zoom_data.x.total_zoom);
 
-  /*
-  works but needs to be improved
-  */
-
-  // manually tuned numbers
-  var col_y_offset = d3.scale.linear()
-    .domain([50, 100])
-    .range([25.9, 52]);
-
-  // console.log(params.text_zoom.col.scaled_num);
-  var y_offset = col_y_offset(params.text_zoom.col.scaled_num);
-  // console.log('y_offset', y_offset)
-
   //---------------------------------
   // Working on cleaning column positioning
   // smaller scale_text -> larger text
@@ -139,7 +126,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       scale_text: scale_text,
       shift_text_right: 0.45/params.num_col,
 
-      // y_offset: y_offset,
       y_offset: params.mat_size,
 
       width_scale: params.zoom_data.x.total_zoom,

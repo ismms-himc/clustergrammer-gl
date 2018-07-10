@@ -33,14 +33,10 @@ module.exports = function zoom_rules_high_mat(regl, params){
           break;
       }
 
-
       // transfer data from ev to zoom_data
       zoom_data.x.inst_zoom = ev.dsx;
       zoom_data.x.pan_by_drag = ev.dx;
       zoom_data.x.cursor_position = ev.x0;
-
-      // disable y zooming and panning
-      ///////////////////////////////////
 
       zoom_data.y.inst_zoom = ev.dsy;
       zoom_data.y.pan_by_drag = ev.dy;
@@ -73,7 +69,9 @@ module.exports = function zoom_rules_high_mat(regl, params){
       keep_track_of_interactions(params);
 
     } else if (ev.type === 'mousemove'){
+
       find_mouseover_element(params);
+
     }
 
 

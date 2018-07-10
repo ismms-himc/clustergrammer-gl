@@ -41,9 +41,10 @@ module.exports = function initialize_params(regl, network){
   params.mat_data = network.mat;
 
   /*
-  Working on resizing the matrix
+  Working on resizing the matrix, need to have separte x and y sizes
   */
-  params.mat_size = 0.7;
+  params.mat_size = {};
+  params.mat_size.x = 0.8;
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;

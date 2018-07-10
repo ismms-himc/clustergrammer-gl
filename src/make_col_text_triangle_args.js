@@ -4,7 +4,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   /* control allowable zoom for column text */
 
-  var col_width = params.mat_size/params.num_col;
+  var col_width = params.mat_size.x/params.num_col;
 
 
   params.text_scale.col = d3.scale.linear()
@@ -36,7 +36,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   // make up for rotating text
   var shift_text_up = rh_tri_side;
 
-  var scale_offset = params.mat_size/0.5;
+  var scale_offset = params.mat_size.x/0.5;
 
   var args = {
     vert: `
@@ -110,7 +110,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,
 
-      y_offset: params.mat_size,
+      y_offset: params.mat_size.x,
 
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,

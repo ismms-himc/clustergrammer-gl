@@ -25,8 +25,8 @@ module.exports = function make_matrix_args(regl, params){
   var num_row = params.mat_data.length;
   var num_col = params.mat_data[0].length;
 
-  var cell_width = (params.mat_size/0.5)/num_col;
-  var cell_height = (params.mat_size/0.5)/num_row;
+  var cell_width = (params.mat_size.x/0.5)/num_col;
+  var cell_height = (params.mat_size.x/0.5)/num_row;
 
   // bottom half
   var bottom_half_verts = [

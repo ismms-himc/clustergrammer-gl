@@ -5,7 +5,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   var num_rows = params['num_' + inst_rc];
 
   var row_width = 0.025;
-  var row_height = (1/num_rows) * (params.mat_size/0.5);
+  var row_height = (1/num_rows) * (params.mat_size.x/0.5);
 
   var zoom_function = function(context){
     return context.view;
@@ -15,11 +15,11 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   // make buffer for row offsets
   /////////////////////////////////
 
-  var x_offset = 0.5 * (params.mat_size/0.5) ; // row_width;
+  var x_offset = 0.5 * (params.mat_size.x/0.5) ; // row_width;
 
   var y_offset_array = [];
   for (var i = 0; i < num_rows; i++){
-    y_offset_array[i] = 0.5 * (params.mat_size/0.5) - row_height/2 - i * row_height;
+    y_offset_array[i] = 0.5 * (params.mat_size.x/0.5) - row_height/2 - i * row_height;
   }
 
   const y_offset_buffer = regl.buffer({

@@ -82,8 +82,8 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
     uniforms: {
       zoom: zoom_function,
       offset: regl.prop('offset'),
-      x_offset: -params.mat_size,
-      scale_offset: params.mat_size/0.5,
+      x_offset: -params.mat_size.x,
+      scale_offset: params.mat_size.x/0.5,
       scale_text: scale_text,
       y_total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate

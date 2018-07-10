@@ -23,14 +23,14 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var tile_width;
   if (inst_rc === 'col'){
     // reduce height of col viz aid triangles until zooming behavior is improved
-    tile_width = (params.mat_size/0.5)/num_labels * 0.75;
+    tile_width = (params.mat_size.x/0.5)/num_labels * 0.75;
   } else {
     // rows have fixed viz aid triangle 'heights'
     tile_width = 0.025;
   }
 
   // controls shifting of viz aid triangles to left and bottom sides of matrix
-  var row_height = (params.mat_size/0.5)/num_labels;
+  var row_height = (params.mat_size.x/0.5)/num_labels;
 
   var zoom_function = function(context){
     return context.view;
@@ -41,7 +41,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   /////////////////////////////////
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
-  var x_offset = -params.mat_size - tile_width;
+  var x_offset = -params.mat_size.x - tile_width;
 
   var inst_order = 'clust';
 
@@ -58,7 +58,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     }
 
     /* need to position based on clustering order */
-    y_offset_array[i] = (params.mat_size/0.5) * 0.5 - row_height/2 - order_id * row_height;
+    y_offset_array[i] = (params.mat_size.x/0.5) * 0.5 - row_height/2 - order_id * row_height;
   }
 
   const y_offset_buffer = regl.buffer({

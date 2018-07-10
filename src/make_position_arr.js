@@ -22,20 +22,20 @@ module.exports = function make_position_arr(params){
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.mat_size;
-  offset.y = params.mat_size;
+  offset.x = params.mat_size.x;
+  offset.y = params.mat_size.x;
 
   // generate x position array
   var x_arr = Array(num_col).fill()
     .map(function(_, i){
-      return i/num_col * (params.mat_size/0.5) - offset.x;
+      return i/num_col * (params.mat_size.x/0.5) - offset.x;
     });
 
   var y_arr = Array(num_row).fill()
     .map(function(_, i){
 
-      // updated to take into consideration params.mat_size
-      return -i/num_row * (params.mat_size/0.5) + offset.y -  1/num_row /(0.5/params.mat_size);
+      // updated to take into consideration params.mat_size.x
+      return -i/num_row * (params.mat_size.x/0.5) + offset.y -  1/num_row /(0.5/params.mat_size.x);
     });
 
   var node_canvas_pos = {};

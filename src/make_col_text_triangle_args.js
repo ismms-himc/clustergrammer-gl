@@ -42,6 +42,9 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   var scale_text = params.text_zoom.col.scaled_num;
 
+  var fraction_shift_right = 0.3;
+  var fraction_shift_up = 0.0;
+
   var args = {
     vert: `
       precision mediump float;
@@ -62,13 +65,11 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       varying vec3 xy_positions;
       varying float col_x;
       varying float col_y;
-      varying float shift_text_up;
+      uniform float shift_text_up;
       uniform float shift_text_right;
 
       // last value is a sort-of zoom
       void main () {
-
-        shift_text_up = 0.25;
 
         // rotate, reduce size, stretch in y, and give text triangles positions
         rotated_text = text_y_scale *
@@ -122,7 +123,8 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
-      shift_text_right: 0.45/params.num_col,
+      shift_text_right: fraction_shift_right/params.num_col,
+      shift_text_up: fraction_shift_up,
 
       y_offset: params.mat_size,
 

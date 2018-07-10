@@ -44,8 +44,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   // mnist: 1
   var total_zoom = params.zoom_data.x.total_zoom;
 
-  var mat_reduce_text_size = m3.scaling(1, 1);
-
   var scale_text = params.text_zoom.col.scaled_num;
 
   // var shift_text_right = 0.3/params.num_col;
@@ -67,7 +65,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       uniform float width_scale;
       uniform mat3 mat_rotate;
       uniform mat3 text_y_scale;
-      uniform mat3 mat_reduce_text_size;
       uniform float total_zoom;
       uniform float col_width;
       varying vec3 rotated_text;
@@ -86,7 +83,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         // rotate, reduce size, stretch in y, and give text triangles positions
         rotated_text = text_y_scale *
                        mat_rotate *
-                       mat_reduce_text_size *
                        vec3(position.y , position.x + shift_text_out, 0.5);
 
         /*
@@ -145,7 +141,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       width_scale: params.zoom_data.x.total_zoom,
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
-      mat_reduce_text_size: mat_reduce_text_size,
       total_zoom: total_zoom,
       // need to pin down number
       col_width: col_width,

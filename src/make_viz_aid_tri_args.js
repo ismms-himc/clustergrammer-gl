@@ -20,7 +20,13 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
   var num_labels = params['num_'+inst_rc];
 
-  var row_width = 0.025;
+  var tile_width;
+  if (inst_rc === 'col'){
+    tile_width = (params.mat_size/0.5)/num_labels; // 0.05;
+  } else {
+    // rows have fixed viz aid triangle 'heights'
+    tile_width = 0.025;
+  }
 
   // controls shifting of viz aid triangles to left and bottom sides of matrix
   var row_height = (params.mat_size/0.5)/num_labels;
@@ -32,8 +38,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   /////////////////////////////////
   // Label Offset Buffer
   /////////////////////////////////
-
-  var x_offset = -params.mat_size - row_width;
+  // row width is required to place the triangles on the 'top' of the matrix and
+  // not to overlap with the matrix
+  var x_offset = -params.mat_size - tile_width;
 
   var inst_order = 'clust';
 
@@ -188,9 +195,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [row_width,  row_height/2],
-        [row_width/2,  0.0],
-        [row_width, -row_height/2],
+        [tile_width,  row_height/2],
+        [tile_width/2,  0.0],
+        [tile_width, -row_height/2],
       ],
 
       // pass y_offset_att buffer

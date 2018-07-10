@@ -6,9 +6,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   var col_width = params.mat_size/params.num_col;
 
-  // need to shift col labels up to counteract the rotation by 45%
-  var rh_tri_hyp = col_width/2;
-  var rh_tri_side = rh_tri_hyp/Math.sqrt(2);
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
@@ -30,11 +27,16 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   var scale_text = params.text_zoom.col.scaled_num;
 
-  // var shift_text_right = 0.3/params.num_col;
+  // need to shift col labels up to counteract the rotation by 45%
+  var rh_tri_hyp = col_width/2;
+  var rh_tri_side = rh_tri_hyp/Math.sqrt(2);
+
   var shift_text_out = 0.1;
-  var shift_text_right = col_width - rh_tri_side;
+  var shift_text_right = col_width/2 ;//- rh_tri_side;
   // make up for rotating text
-  var shift_text_up = rh_tri_side * 1.5;
+  var shift_text_up = rh_tri_side;
+
+  console.log('shift_text_up and col_width', shift_text_up, col_width)
 
   var scale_offset = params.mat_size/0.5;
 
@@ -64,18 +66,22 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       void main () {
 
         // rotate, reduce size, stretch in y, and give text triangles positions
+        // shifting text up in the original text triangle units
         rotated_text = text_y_scale *
                        mat_rotate *
-                       vec3(position.y , position.x + shift_text_out, 0.5);
+                       vec3(position.y - 0.5, position.x + shift_text_out, 0.5);
 
 
         // the x position varies for all column labelss
         //-----------------------------------------------
-        col_x = (offset[1] + col_width/2.0) * scale_text * scale_offset;
+        col_x = (offset[1] + shift_text_right) * scale_text * scale_offset;
 
         // the y position is constant for all column labels
         //-----------------------------------------------
-        col_y = (y_offset + shift_text_up) * scale_text;
+
+        // working on shifting text up
+        // col_y = (y_offset + shift_text_up * total_zoom ) * scale_text ;
+        col_y = y_offset * scale_text ;
 
         position_cols = vec3( col_x, col_y, 0);
 

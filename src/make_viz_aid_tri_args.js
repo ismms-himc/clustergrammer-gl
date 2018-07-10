@@ -22,7 +22,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
   var tile_width;
   if (inst_rc === 'col'){
-    tile_width = (params.mat_size/0.5)/num_labels; // 0.05;
+    // reduce height of col viz aid triangles until zooming behavior is improved
+    tile_width = (params.mat_size/0.5)/num_labels * 0.75;
   } else {
     // rows have fixed viz aid triangle 'heights'
     tile_width = 0.025;

@@ -4,6 +4,7 @@ var color_to_rgba = require('./color_to_rgba');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
+  console.log('generalizing mat_size')
   /*
 
   Hacking Categories Plan
@@ -30,7 +31,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   }
 
   // controls shifting of viz aid triangles to left and bottom sides of matrix
-  var row_height = (params.mat_size.x/0.5)/num_labels;
+  var tile_height = (params.mat_size.y/0.5)/num_labels;
 
   var zoom_function = function(context){
     return context.view;
@@ -58,7 +59,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     }
 
     /* need to position based on clustering order */
-    y_offset_array[i] = (params.mat_size.x/0.5) * 0.5 - row_height/2 - order_id * row_height;
+    y_offset_array[i] = (params.mat_size.y/0.5) * 0.5 - tile_height/2 - order_id * tile_height;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -196,9 +197,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tile_width,  row_height/2],
+        [tile_width,  tile_height/2],
         [tile_width/2,  0.0],
-        [tile_width, -row_height/2],
+        [tile_width, -tile_height/2],
       ],
 
       // pass y_offset_att buffer

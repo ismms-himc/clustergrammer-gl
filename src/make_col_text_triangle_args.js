@@ -23,7 +23,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
     .range([25.9, 52]);
 
   // console.log(params.text_zoom.col.scaled_num);
-  // var y_offset = col_y_offset(params.text_zoom.col.scaled_num);
+  var y_offset = col_y_offset(params.text_zoom.col.scaled_num);
   // console.log('y_offset', y_offset)
 
   //---------------------------------
@@ -35,7 +35,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
                    tmp_reduce_text_factor;
 
   // var shift_text = -1.0;
-  // var y_offset = params.mat_size * scale_text + shift_text;
+  // var y_offset = params.mat_size * scale_text + shift_text
   // console.log('tmp', tmp)
 
   //---------------------------------
@@ -45,21 +45,21 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   amount that is saved in the batch data.
   */
 
-  var mat_rotate =  m3.rotation(Math.PI/4);
-  // var mat_rotate =  m3.rotation(0);
+  // var mat_rotate =  m3.rotation(Math.PI/4);
+  var mat_rotate =  m3.rotation(0);
 
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
 
   // smaller number gives smaller text
   // rc_two_cats: 0.75
   // mnist: 1
-  // var reduce_factor = 0.75; // 1 / params.zoom_data.x.total_zoom;
+  var reduce_factor = 0.75; // 1 / params.zoom_data.x.total_zoom;
   var total_zoom = params.zoom_data.x.total_zoom;
 
   // var mat_reduce_text_size = m3.scaling(reduce_factor, reduce_factor);
   var mat_reduce_text_size = m3.scaling(1, 1);
 
-  // var scale_text = params.text_zoom.col.scaled_num;
+  var scale_text = params.text_zoom.col.scaled_num;
 
   var args = {
     vert: `

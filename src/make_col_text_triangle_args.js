@@ -41,8 +41,8 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   amount that is saved in the batch data.
   */
 
-  // var mat_rotate =  m3.rotation(Math.PI/4);
-  var mat_rotate =  m3.rotation(0);
+  var mat_rotate =  m3.rotation(Math.PI/4);
+  // var mat_rotate =  m3.rotation(0);
 
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
 
@@ -78,19 +78,19 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       varying float col_x;
       varying float col_y;
       varying float shift_text_up;
-      varying float shift_text_right;
+      uniform float shift_text_right;
 
       // last value is a sort-of zoom
       void main () {
 
-        shift_text_up = 1.0;
-        shift_text_right = 0.5;
+        shift_text_up = 0.5;
+        // shift_text_right = 0.0;
 
         // rotate, reduce size, stretch in y, and give text triangles positions
         rotated_text = text_y_scale *
                        mat_rotate *
                        mat_reduce_text_size *
-                       vec3(position.y + shift_text_right, position.x + shift_text_up, 0.5);
+                       vec3(position.y , position.x + shift_text_up, 0.5);
 
         /*
           Shift text over a little by a fixed amount and then
@@ -107,14 +107,13 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         // the x position varies for all column labelss
         //-----------------------------------------------
-        col_x = offset[1] * scale_text * scale_offset;
+        col_x = (offset[1] + shift_text_right ) * scale_text * scale_offset;
 
         // the y position is constant for all column labels
         //-----------------------------------------------
         col_y = y_offset * scale_text;
 
         position_cols = vec3( col_x, col_y, 0);
-
 
         xy_positions = rotated_text + position_cols;
 
@@ -139,6 +138,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
+      shift_text_right: 0.5/params.num_row,
 
       // y_offset: y_offset,
       y_offset: params.mat_size,

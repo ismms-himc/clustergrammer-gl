@@ -144,8 +144,13 @@ module.exports = function makeCamera2D (regl, opts, zoom_data, viz_component) {
       if (viz_component === 'col-viz-aid'){
         // inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;
+
+        // try to reproduce rules from zoom_rules_low_mat for viz-aid
         // inst_y_pan_by_zoom = 0;
-        // console.log('inst_y_pan_by_zoom', inst_y_pan_by_zoom)
+        // inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1)
+
+        // console.log('inst_y_pan_by_zoom', inst_y_pan_by_zoom, zoom_data.y.total_zoom)
+        // console.log(zoom_data)
       }
 
       if (viz_component === 'static'){

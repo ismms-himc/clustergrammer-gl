@@ -4,6 +4,12 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   /* control allowable zoom for column text */
 
+  var col_width = params.mat_size/params.num_col;
+
+  // need to shift col labels up to counteract the rotation by 45%
+  var rh_tri_hyp = col_width/2;
+  var rh_tri_side = rh_tri_hyp/Math.sqrt(2);
+
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor]);
@@ -42,8 +48,11 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   var scale_text = params.text_zoom.col.scaled_num;
 
-  var fraction_shift_right = 0.3;
-  var fraction_shift_up = 0.0;
+  // var shift_text_right = 0.3/params.num_col;
+  var shift_text_right = col_width - rh_tri_side;
+  var shift_text_out = 0.0;
+
+  var scale_offset = params.mat_size/0.5;
 
   var args = {
     vert: `
@@ -65,7 +74,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       varying vec3 xy_positions;
       varying float col_x;
       varying float col_y;
-      uniform float shift_text_up;
+      uniform float shift_text_out;
       uniform float shift_text_right;
 
       // last value is a sort-of zoom
@@ -75,7 +84,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         rotated_text = text_y_scale *
                        mat_rotate *
                        mat_reduce_text_size *
-                       vec3(position.y , position.x + shift_text_up, 0.5);
+                       vec3(position.y , position.x + shift_text_out, 0.5);
 
         /*
           Shift text over a little by a fixed amount and then
@@ -92,11 +101,12 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         // the x position varies for all column labelss
         //-----------------------------------------------
-        col_x = (offset[1] + shift_text_right ) * scale_text * scale_offset;
+        // col_x = (offset[1] + shift_text_right ) * scale_text * scale_offset;
+        col_x = (offset[1] + col_width/2.0) * scale_text * scale_offset;
 
         // the y position is constant for all column labels
         //-----------------------------------------------
-        col_y = y_offset * scale_text + shift_text_right;
+        col_y = y_offset * scale_text; //  + shift_text_right;
 
         position_cols = vec3( col_x, col_y, 0);
 
@@ -123,8 +133,8 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
-      shift_text_right: fraction_shift_right/params.num_col,
-      shift_text_up: fraction_shift_up,
+      shift_text_right: shift_text_right,
+      shift_text_out: shift_text_out,
 
       y_offset: params.mat_size,
 
@@ -134,8 +144,8 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       mat_reduce_text_size: mat_reduce_text_size,
       total_zoom: total_zoom,
       // need to pin down number
-      col_width: params.mat_size/params.num_col,
-      scale_offset: params.mat_size/0.5,
+      col_width: col_width,
+      scale_offset: scale_offset,
     },
     depth: {
       enable: true,

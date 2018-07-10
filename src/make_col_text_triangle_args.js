@@ -76,7 +76,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       uniform float total_zoom;
       uniform float col_width;
       varying vec3 rotated_text;
-      varying vec3 shift_to_right;
       varying vec3 position_cols;
       uniform float scale_offset;
       varying vec3 xy_positions;
@@ -105,10 +104,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
           so that the labels remain on top of the correct columns
         */
 
-        // shift_to_right = vec3( col_width * total_zoom , 0, 0);
-        shift_to_right = vec3(0 , 0, 0);
-
-        shift_text = 0.0;
+        shift_text = 1.0;
 
         // the x position varies for all column labelss
         //-----------------------------------------------
@@ -122,7 +118,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         position_cols = vec3( col_x, col_y, 0);
 
 
-        xy_positions = rotated_text + shift_to_right + position_cols;
+        xy_positions = rotated_text + position_cols;
 
         // reverse y position to get words to be upright
         ////////////////////////////

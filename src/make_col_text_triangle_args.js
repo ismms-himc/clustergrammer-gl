@@ -14,35 +14,19 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor]);
 
+  var total_zoom = params.zoom_data.x.total_zoom;
+
   /* Col Text */
   // update text information with zooming
   params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
-                                     params.text_scale.col(params.zoom_data.x.total_zoom);
-
-  //---------------------------------
-  // Working on cleaning column positioning
-  // smaller scale_text -> larger text
-
-  // var tmp_reduce_text_factor = 1.5;
-  // var scale_text = params.text_zoom.row.scaled_num *
-  //                  tmp_reduce_text_factor;
-
-  //---------------------------------
-
-  /*
-  Not using mat_translate since each label needs to be translated a specific
-  amount that is saved in the batch data.
-  */
+                                     params.text_scale.col(total_zoom);
 
   var mat_rotate =  m3.rotation(Math.PI/4);
-  // var mat_rotate =  m3.rotation(0);
-
-  var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
+  var text_y_scale = m3.scaling(1, total_zoom);
 
   // smaller number gives smaller text
   // rc_two_cats: 0.75
   // mnist: 1
-  var total_zoom = params.zoom_data.x.total_zoom;
 
   var scale_text = params.text_zoom.col.scaled_num;
 
@@ -62,7 +46,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       uniform vec2 offset;
       uniform float y_offset;
       uniform float scale_text;
-      uniform float width_scale;
       uniform mat3 mat_rotate;
       uniform mat3 text_y_scale;
       uniform float total_zoom;
@@ -85,22 +68,9 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
                        mat_rotate *
                        vec3(position.y , position.x + shift_text_out, 0.5);
 
-        /*
-          Shift text over a little by a fixed amount and then
-          shift by a zoom-dependent amount so that the bottom
-          of the text remains at the same lower right position
-          vec3( 0.11 * total_zoom  + 0.2 , 0, 0)
-
-          need to have
-            0.11 * total_zoom
-          factor scale with the number of columns
-          so that the labels remain on top of the correct columns
-        */
-
 
         // the x position varies for all column labelss
         //-----------------------------------------------
-        // col_x = (offset[1] + shift_text_right ) * scale_text * scale_offset;
         col_x = (offset[1] + col_width/2.0) * scale_text * scale_offset;
 
         // the y position is constant for all column labels
@@ -138,7 +108,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
       y_offset: params.mat_size,
 
-      width_scale: params.zoom_data.x.total_zoom,
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
       total_zoom: total_zoom,

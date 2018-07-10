@@ -150,6 +150,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
         calc_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
 
         console.log('compare y pan_by_zooms', inst_y_pan_by_zoom, calc_y_pan_by_zoom);
+
+        inst_y_pan_by_zoom = calc_y_pan_by_zoom;
         // console.log(zoom_data)
       }
 

@@ -83,7 +83,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       // last value is a sort-of zoom
       void main () {
 
-        shift_text_up = 0.40;
+        shift_text_up = 0.25;
 
         // rotate, reduce size, stretch in y, and give text triangles positions
         rotated_text = text_y_scale *
@@ -110,7 +110,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         // the y position is constant for all column labels
         //-----------------------------------------------
-        col_y = y_offset * scale_text;
+        col_y = y_offset * scale_text + shift_text_right;
 
         position_cols = vec3( col_x, col_y, 0);
 
@@ -137,7 +137,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
-      shift_text_right: 0.45/params.num_row,
+      shift_text_right: 0.45/params.num_col,
 
       // y_offset: y_offset,
       y_offset: params.mat_size,

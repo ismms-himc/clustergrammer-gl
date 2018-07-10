@@ -49,8 +49,11 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   var scale_text = params.text_zoom.col.scaled_num;
 
   // var shift_text_right = 0.3/params.num_col;
+  var shift_text_out = col_width/10.0;
   var shift_text_right = col_width - rh_tri_side;
-  var shift_text_out = 0.0;
+  // make up for rotating text
+  var shift_text_up = rh_tri_side;
+  console.log('shift_text_up', shift_text_up)
 
   var scale_offset = params.mat_size/0.5;
 
@@ -76,6 +79,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       varying float col_y;
       uniform float shift_text_out;
       uniform float shift_text_right;
+      uniform float shift_text_up;
 
       // last value is a sort-of zoom
       void main () {
@@ -106,7 +110,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         // the y position is constant for all column labels
         //-----------------------------------------------
-        col_y = y_offset * scale_text; //  + shift_text_right;
+        col_y = (y_offset + shift_text_up) * scale_text;
 
         position_cols = vec3( col_x, col_y, 0);
 
@@ -135,6 +139,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       scale_text: scale_text,
       shift_text_right: shift_text_right,
       shift_text_out: shift_text_out,
+      shift_text_up: shift_text_up,
 
       y_offset: params.mat_size,
 

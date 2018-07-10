@@ -14,8 +14,7 @@ module.exports = function make_draw_cells_arr(regl, params){
   // arrs.opacity_arr = arrs.opacity_arr.slice(10,20);
   // arrs.position_arr = arrs.position_arr.slice(10,20);
 
-  console.log('hard filtering')
-  console.log(arrs.opacity_arr.length)
+  console.log('hard filtering', arrs.opacity_arr.length)
 
   /*
   Make initial array and then only keep elements that have opacity above some

@@ -110,7 +110,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,
 
-      y_offset: params.mat_size.x,
+      y_offset: params.mat_size.y,
 
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,

@@ -7,8 +7,8 @@ module.exports = function draw_spillover_components(regl, params){
 
     // spillover rects to hide matrix spillover
     regl(args.mat_sides)(triangles.mat);
-    regl(args.mat_corners)(triangles.corners);
-    regl(args.label_corners)(triangles.corners);
+    regl(args.mat_corners)(triangles.mat_corners);
+    regl(args.label_corners)(triangles.label_corners);
 
   });
 };

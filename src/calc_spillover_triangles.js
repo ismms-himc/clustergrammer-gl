@@ -20,31 +20,56 @@ module.exports = function calc_spillover_triangles(params){
     // {'pos': [[1, 1], [mat_size.x, -1], [1.0, -1]]},
     // {'pos': [[1, 1], [mat_size.x,  1], [mat_size.x, -1]]},
 
-    // top spillover rect
-    {'pos': [[-mat_size.x, 1], [-mat_size.x, scaled_height.y], [mat_size.x, 1]]},
-    {'pos': [[ mat_size.x, 1], [mat_size.x, scaled_height.y], [-mat_size.x, scaled_height.y]]},
+    // // top spillover rect
+    // {'pos': [[-mat_size.x, 1], [-mat_size.x, scaled_height.y], [mat_size.x, 1]]},
+    // {'pos': [[ mat_size.x, 1], [mat_size.x, scaled_height.y], [-mat_size.x, scaled_height.y]]},
 
-    // // bottom spillover rect
-    // {'pos': [[-mat_size.x, -1], [-mat_size.x, -scaled_height.x], [mat_size.x, -1]]},
-    // {'pos': [[ mat_size.x, -1], [mat_size.x, -scaled_height.x], [-mat_size.x, -scaled_height.x]]},
+    // // // bottom spillover rect
+    // {'pos': [[-mat_size.x, -1], [-mat_size.x, -scaled_height.y], [mat_size.x, -1]]},
+    // {'pos': [[ mat_size.x, -1], [mat_size.x, -scaled_height.y], [-mat_size.x, -scaled_height.y]]},
   ];
 
-  spillover_triangles.corners = [
-    // // top-left spillover rect
-    // {'pos': [[-1, 1], [-mat_size.x, scaled_height.x], [-1.0, scaled_height.x]]},
-    // {'pos': [[-1, 1], [-mat_size.x,  1], [-mat_size.x, scaled_height.x]]},
+  spillover_triangles.mat_corners = [
+    // top-left spillover rect
+    {'pos': [[-1, 1], [-mat_size.x, scaled_height.y], [-1.0, scaled_height.y]]},
+    {'pos': [[-1, 1], [-mat_size.x,  1], [-mat_size.x, scaled_height.y]]},
 
-    // // bottom-left spillover rect
-    // {'pos': [[-1, -1], [-mat_size.x, -scaled_height.x], [-1.0, -scaled_height.x]]},
-    // {'pos': [[-1, -1], [-mat_size.x,  -1], [-mat_size.x, -scaled_height.x]]},
+    // bottom-left spillover rect
+    {'pos': [[-1, -1], [-mat_size.x, -scaled_height.y], [-1.0, -scaled_height.y]]},
+    {'pos': [[-1, -1], [-mat_size.x,  -1], [-mat_size.x, -scaled_height.y]]},
 
-    // // top-right spillover rect
-    // {'pos': [[1, 1], [mat_size.x, scaled_height.x], [1.0, scaled_height.x]]},
-    // {'pos': [[1, 1], [mat_size.x,  1], [mat_size.x, scaled_height.x]]},
+    // top-right spillover rect
+    // mat corners
+    {'pos': [[1, 1], [mat_size.x, scaled_height.y], [1.0, scaled_height.y]]},
+    // // // label corners
+    // {'pos': [[1, scaled_height.y + (1-mat_size.x)], [mat_size.x, scaled_height.y], [1.0, scaled_height.y]]},
+    {'pos': [[1, 1], [mat_size.x,  1], [mat_size.x, scaled_height.y]]},
 
-    // // bottom-right spillover rect
-    // {'pos': [[1, -1], [mat_size.x, -scaled_height.x], [1.0, -scaled_height.x]]},
-    // {'pos': [[1, -1], [mat_size.x,  -1], [mat_size.x, -scaled_height.x]]},
+    // bottom-right spillover rect
+    {'pos': [[1, -1], [mat_size.x, -scaled_height.y], [1.0, -scaled_height.y]]},
+    {'pos': [[1, -1], [mat_size.x,  -1], [mat_size.x, -scaled_height.y]]},
+
+  ];
+
+  spillover_triangles.label_corners = [
+    // top-left spillover rect
+    {'pos': [[-1, 1], [-mat_size.x, scaled_height.y], [-1.0, scaled_height.y]]},
+    {'pos': [[-1, 1], [-mat_size.x,  1], [-mat_size.x, scaled_height.y]]},
+
+    // bottom-left spillover rect
+    {'pos': [[-1, -1], [-mat_size.x, -scaled_height.y], [-1.0, -scaled_height.y]]},
+    {'pos': [[-1, -1], [-mat_size.x,  -1], [-mat_size.x, -scaled_height.y]]},
+
+    // top-right spillover rect
+    // // mat corners
+    // {'pos': [[1, 1], [mat_size.x, scaled_height.y], [1.0, scaled_height.y]]},
+    // // label corners
+    {'pos': [[1, scaled_height.y + (1-mat_size.x)], [mat_size.x, scaled_height.y], [1.0, scaled_height.y]]},
+    {'pos': [[1, 1], [mat_size.x,  1], [mat_size.x, scaled_height.y]]},
+
+    // bottom-right spillover rect
+    {'pos': [[1, -1], [mat_size.x, -scaled_height.y], [1.0, -scaled_height.y]]},
+    {'pos': [[1, -1], [mat_size.x,  -1], [mat_size.x, -scaled_height.y]]},
 
   ];
 

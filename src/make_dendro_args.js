@@ -4,6 +4,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
   var rotation_radians;
   var mat_size;
+  var mat_size_offset;
   if (inst_rc === 'row'){
     rotation_radians = 0;
     mat_size = params.mat_size.y;

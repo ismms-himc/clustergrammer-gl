@@ -28,14 +28,14 @@ module.exports = function make_position_arr(params){
   // generate x position array
   var x_arr = Array(num_col).fill()
     .map(function(_, i){
-      return i/num_col * (params.mat_size.x/0.5) - offset.x;
+      return i/num_col * (params.heat_size.x/0.5) -  (offset.x - 2*(offset.x - params.heat_size.x) );
     });
 
   var y_arr = Array(num_row).fill()
     .map(function(_, i){
 
-      // updated to take into consideration params.mat_size.x
-      return -i/num_row * (params.mat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.mat_size.y);
+      // updated to take into consideration params.heat_size.x
+      return -i/num_row * (params.heat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.heat_size.y) - 2*(offset.y - params.heat_size.y) ;
     });
 
   var node_canvas_pos = {};

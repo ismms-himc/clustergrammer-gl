@@ -25,14 +25,19 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   // controls shifting of viz aid triangles to left and bottom sides of matrix
   var tile_height;
   var mat_size;
+  var shift_triangles;
   if (inst_rc === 'col'){
     mat_size = params.mat_size.x;
+    shift_triangles = params.mat_size.y;
     // reduce height of col viz aid triangles until zooming behavior is improved
     tile_width = (mat_size/0.5)/num_labels * 0.75;
     tile_height = (mat_size/0.5)/num_labels;
+
+
   } else {
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.mat_size.y;
+    shift_triangles = params.mat_size.x;
     tile_width = 0.025;
     tile_height = (mat_size/0.5)/num_labels;
   }
@@ -47,7 +52,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   /////////////////////////////////
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
-  var x_offset = -mat_size - tile_width;
+  var x_offset = -shift_triangles - tile_width;
 
   var inst_order = 'clust';
 

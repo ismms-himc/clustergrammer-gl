@@ -27,7 +27,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var mat_size;
   var shift_triangles;
   if (inst_rc === 'col'){
-    mat_size = params.mat_size.x;
+    mat_size = params.heat_size.x;
+    // keep positioned at matrix not heatmap (make room for categories)
     shift_triangles = params.mat_size.y;
     // reduce height of col viz aid triangles until zooming behavior is improved
     tile_width = (mat_size/0.5)/num_labels * 0.75;
@@ -36,7 +37,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
   } else {
     // rows have fixed viz aid triangle 'heights'
-    mat_size = params.mat_size.y;
+    mat_size = params.heat_size.y;
     shift_triangles = params.mat_size.x;
     tile_width = 0.025;
     tile_height = (mat_size/0.5)/num_labels;
@@ -62,14 +63,17 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
     // emperically found rules
     var order_id;
+    var shift_mat_heat;
     if (inst_rc == 'row'){
       order_id = num_labels - params.network[inst_rc + '_nodes'][i][inst_order] - 1;
+      shift_mat_heat = - (params.mat_size.x - params.heat_size.x)
     } else {
       order_id = params.network[inst_rc + '_nodes'][i][inst_order] ;
+      shift_mat_heat = (params.mat_size.y - params.heat_size.y)
     }
 
     /* need to position based on clustering order */
-    y_offset_array[i] = (mat_size/0.5) * 0.5 - tile_height/2 - order_id * tile_height;
+    y_offset_array[i] = (mat_size/0.5) * 0.5 - tile_height/2 - order_id * tile_height + shift_mat_heat;
   }
 
   const y_offset_buffer = regl.buffer({

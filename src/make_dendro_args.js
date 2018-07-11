@@ -6,16 +6,18 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   var mat_size;
   if (inst_rc === 'row'){
     rotation_radians = 0;
-    mat_size = params.mat_size.x;
+    mat_size = params.mat_size.y;
+    mat_size_offset = params.mat_size.x;
   } else if (inst_rc === 'col'){
     rotation_radians = Math.PI/2;
-    mat_size = params.mat_size.y;
+    mat_size = params.mat_size.x;
+    mat_size_offset = params.mat_size.y;
   }
 
-  var num_rows = params['num_' + inst_rc];
+  var num_labels = params['num_' + inst_rc];
 
   var row_width = 0.025;
-  var row_height = (1/num_rows) * (mat_size/0.5);
+  var row_height = (1/num_labels) * (mat_size/0.5);
 
   var zoom_function = function(context){
     return context.view;
@@ -25,15 +27,15 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   // make buffer for row offsets
   /////////////////////////////////
 
-  var x_offset = 0.5 * (mat_size/0.5) ; // row_width;
+  var x_offset = 0.5 * (mat_size_offset/0.5) ; // row_width;
 
   var y_offset_array = [];
-  for (var i = 0; i < num_rows; i++){
+  for (var i = 0; i < num_labels; i++){
     y_offset_array[i] = 0.5 * (mat_size/0.5) - row_height/2 - i * row_height;
   }
 
   const y_offset_buffer = regl.buffer({
-    length: num_rows,
+    length: num_labels,
     type: 'float',
     usage: 'dynamic'
   });
@@ -104,7 +106,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
     },
 
     count: 3,
-    instances: num_rows,
+    instances: num_labels,
     depth: {
       enable: true,
       mask: true,

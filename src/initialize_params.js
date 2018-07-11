@@ -71,7 +71,7 @@ module.exports = function initialize_params(regl, network){
   var spillover_args = {};
 
   // inst_depth is passed to spillover rects
-  var inst_color = [1, 0, 0, 0.2];
+  var inst_color = [1, 0, 0, 0.7];
   // var inst_color = [1, 1, 1, 1];
   spillover_args.mat_sides = make_spillover_args(regl, zoom_function, 0.5, inst_color);
   spillover_args.mat_corners = make_spillover_args(regl, zoom_function, 0.4, inst_color);

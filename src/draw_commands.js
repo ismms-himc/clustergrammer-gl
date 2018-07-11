@@ -19,8 +19,6 @@ module.exports = function draw_commands(regl, params, slow_draw=false){
   draw_row_components(regl, params, slow_draw);
 
   draw_col_components(regl, params, slow_draw);
-
-  // console.log('tmp not drawing draw_spillover_components')
   draw_spillover_components(regl, params);
 
 };

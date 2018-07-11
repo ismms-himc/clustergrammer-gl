@@ -12,7 +12,7 @@ module.exports = function calc_viz_area(params){
 
   pix_to_webgl.x = d3.scale.linear();
   pix_to_webgl.x
-    .domain([0, mat_height])
+    .domain([0, mat_width])
     .range([-0.5, 0.5])
     .clamp(true);
 
@@ -24,7 +24,7 @@ module.exports = function calc_viz_area(params){
 
   pix_to_webgl.y = d3.scale.linear();
   pix_to_webgl.y
-    .domain([0, mat_width])
+    .domain([0, mat_height])
     .range([0.5, -0.5])
     .clamp(true);
 
@@ -36,7 +36,7 @@ module.exports = function calc_viz_area(params){
   total_pan.x_max = mat_width * tmp_scale + zoom_data.x.total_pan_max;
 
   total_pan.y_min = -zoom_data.y.total_pan_min;
-  total_pan.y_max = mat_width * tmp_scale + zoom_data.y.total_pan_max;
+  total_pan.y_max = mat_height * tmp_scale + zoom_data.y.total_pan_max;
 
   var buffer_width = 0.0;
 

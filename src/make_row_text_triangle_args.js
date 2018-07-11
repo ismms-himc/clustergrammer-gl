@@ -21,11 +21,9 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
                    tmp_reduce_text_factor * 0.5 ;
 
   // scale_text is applying a zoom to x and y
-  // so the normal offset of -0.5 to get to the left side of the matrix now
   // needs to be scaled by scale_text
   var mat_rotate = m3.rotation(Math.PI/2);
 
-  // console.log(regl.prop('offset'))
 
   var args = {
     vert: `
@@ -41,6 +39,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       varying float x_position;
       varying float y_position;
       varying float shift_text;
+      uniform float shift_mat_heat;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -59,7 +58,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        y_position = -position.y + offset[1] * scale_text * scale_offset;
+        y_position = -position.y + (offset[1] - shift_mat_heat) * scale_text * scale_offset;
 
         gl_Position = zoom *
                       vec4(
@@ -82,10 +81,15 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
     uniforms: {
       zoom: zoom_function,
       offset: regl.prop('offset'),
-      // influences the x position
+
+      // position rows at the top of the matrix, not the hatmap
       x_offset: -params.mat_size.x,
+
+      // shfit by the difference between the matrix size and hetamap size
+      shift_mat_heat: params.mat_size.x - params.heat_size.x,
+
       // influences the y position
-      scale_offset: params.mat_size.y/0.5,
+      scale_offset: params.heat_size.y/0.5,
       scale_text: scale_text,
       y_total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate

@@ -4,7 +4,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   /* control allowable zoom for column text */
 
-  var col_width = params.mat_size.x/params.num_col;
+  var col_width = params.heat_size.x/params.num_col;
 
 
   params.text_scale.col = d3.scale.linear()
@@ -36,8 +36,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   // make up for rotating text
   var shift_text_up = rh_tri_side;
 
-  var scale_offset = params.mat_size.x/0.5;
-
   var args = {
     vert: `
       precision mediump float;
@@ -59,6 +57,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       uniform float shift_text_out;
       uniform float shift_text_right;
       uniform float shift_text_up;
+      uniform float shift_mat_heat;
 
       // last value is a sort-of zoom
       void main () {
@@ -72,7 +71,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         // the x position varies for all column labelss
         //-----------------------------------------------
-        col_x = (offset[1] + shift_text_right) * scale_text * scale_offset;
+        col_x = (offset[1] + shift_text_right + shift_mat_heat) * scale_text * scale_offset;
 
         // the y position is constant for all column labels
         //-----------------------------------------------
@@ -110,14 +109,18 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,
 
+      // position columns at the top of the matrix, not the heatmap
       y_offset: params.mat_size.y,
+
+      // shfit by the difference between the matrix size and hetamap size
+      shift_mat_heat: params.mat_size.y - params.heat_size.y,
 
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
       total_zoom: total_zoom,
       // need to pin down number
       col_width: col_width,
-      scale_offset: scale_offset,
+      scale_offset: params.heat_size.x/0.5,
     },
     depth: {
       enable: true,

@@ -18,7 +18,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   var num_labels = params['num_' + inst_rc];
 
   var row_width = 0.025;
-  var row_height = (1/num_labels) * (mat_size/0.5);
+  var tile_height = (1/num_labels) * (mat_size/0.5);
 
   var zoom_function = function(context){
     return context.view;
@@ -32,7 +32,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
   var y_offset_array = [];
   for (var i = 0; i < num_labels; i++){
-    y_offset_array[i] = 0.5 * (mat_size/0.5) - row_height/2 - i * row_height;
+    y_offset_array[i] = mat_size - tile_height/2 - i * tile_height;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -89,9 +89,9 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
     attributes: {
       position: [
-        [0.0,  row_height/2],
+        [0.0,  tile_height/2],
         [row_width/2,  0.0],
-        [0.0, -row_height/2],
+        [0.0, -tile_height/2],
       ],
       y_offset_att: {
         buffer: y_offset_buffer,

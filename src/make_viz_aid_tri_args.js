@@ -39,8 +39,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
     shift_triangles = params.mat_size.x;
+    // shift_triangles = params.heat_size.x;
     tile_width = 0.025;
-    tile_height = (mat_size/0.5)/num_labels;
+    tile_height = (params.heat_size.y/0.5)/num_labels;
   }
 
 
@@ -66,10 +67,11 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     var shift_mat_heat;
     if (inst_rc == 'row'){
       order_id = num_labels - params.network[inst_rc + '_nodes'][i][inst_order] - 1;
-      shift_mat_heat = - (params.mat_size.x - params.heat_size.x)
+      // vertical shift
+      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
     } else {
       order_id = params.network[inst_rc + '_nodes'][i][inst_order] ;
-      shift_mat_heat = (params.mat_size.y - params.heat_size.y)
+      shift_mat_heat = (params.mat_size.x - params.heat_size.x)
     }
 
     /* need to position based on clustering order */

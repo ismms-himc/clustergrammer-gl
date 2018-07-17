@@ -71,10 +71,12 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
     } else {
       order_id = params.network[inst_rc + '_nodes'][i][inst_order] ;
-      shift_mat_heat = (params.mat_size.x - params.heat_size.x)
+      shift_mat_heat = params.mat_size.x - params.heat_size.x
     }
 
     /* need to position based on clustering order */
+    // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
+    // of the heatmap vs the general matrix area
     y_offset_array[i] = mat_size - tile_height/2 - order_id * tile_height + shift_mat_heat;
   }
 

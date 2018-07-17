@@ -58,7 +58,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        y_position = -position.y + (offset[1] - shift_mat_heat) * scale_text * scale_offset;
+        y_position = -position.y + (offset[1]) * scale_text * scale_offset  - shift_mat_heat * scale_offset;
 
         gl_Position = zoom *
                       vec4(
@@ -86,7 +86,8 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       x_offset: -params.mat_size.x,
 
       // shfit by the difference between the matrix size and hetamap size
-      shift_mat_heat: params.mat_size.y - params.heat_size.y,
+      shift_mat_heat: -(params.mat_size.y - params.heat_size.y),
+      // shift_mat_heat: params.mat_size.x - params.heat_size.x,
 
       // influences the y position
       scale_offset: params.heat_size.y/0.5,

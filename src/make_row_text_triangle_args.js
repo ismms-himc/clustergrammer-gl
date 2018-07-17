@@ -57,7 +57,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        y_position = -position.y + offset[1]* 2.0 * scale_text * heat_size - shift_mat * scale_text ;
+        y_position = -position.y + offset[1] * 2.0 * scale_text * heat_size - shift_mat * scale_text ;
 
         gl_Position = zoom *
                       vec4(

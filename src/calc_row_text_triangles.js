@@ -17,6 +17,7 @@ module.exports = function calc_row_text_triangles(params){
 
   // draw matrix cells
   /////////////////////////////////////////
+  // y_arr ranges from -.05 to 0.5
   var y_arr = params.canvas_pos.y_arr;
 
   // generating array with row text triangles and y-offsets

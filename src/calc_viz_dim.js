@@ -13,12 +13,16 @@ module.exports = function calc_viz_dim(regl, params){
 
   var viz_dim = {};
   viz_dim.canvas = {};
-  viz_dim.mat = {};
 
   _.each(['width', 'height'], function(inst_dim){
     viz_dim.canvas[inst_dim] = Number.parseFloat(d3.select(element)
       .style(inst_dim).replace('px', ''));
   });
+
+
+  // Matrix Dimensions
+  /////////////////////////////
+  viz_dim.mat = {};
 
   // square matrix size set by width of canvas
   viz_dim.mat.width  = (params.mat_size.x/0.5) * viz_dim.canvas.width/2;
@@ -32,6 +36,24 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.mat.y = {};
   viz_dim.mat.y.min = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
   viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
+
+
+  // Heatmap Dimensions (not in use yet)
+  ///////////////////////////////////////
+  viz_dim.heat = {};
+
+  // square matrix size set by width of canvas
+  viz_dim.heat.width  = (params.heat_size.x/0.5) * viz_dim.canvas.width/2;
+  viz_dim.heat.height = (params.heat_size.y/0.5) * viz_dim.canvas.width/2;
+
+  // min and max position of matrix
+  viz_dim.heat.x = {};
+  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2;
+  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2;
+
+  viz_dim.heat.y = {};
+  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2;
+  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2;
 
   return viz_dim;
 

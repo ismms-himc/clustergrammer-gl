@@ -4,7 +4,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   /* control allowable zoom for column text */
 
-  var col_width = 0.25 *params.heat_size.x/params.num_col;
+  var col_width = 1.00 *params.heat_size.x/params.num_col;
 
 
   params.text_scale.col = d3.scale.linear()

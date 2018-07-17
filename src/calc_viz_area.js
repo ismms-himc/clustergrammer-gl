@@ -7,6 +7,8 @@ module.exports = function calc_viz_area(params){
   // make a d3.scale to transition from 0px - 500px to -1, 1 space
   var mat_width = params.viz_dim.mat.width;
   var mat_height = params.viz_dim.mat.height;
+  // var mat_width = params.viz_dim.heat.width;
+  // var mat_height = params.viz_dim.heat.height;
 
   var pix_to_webgl = {};
 

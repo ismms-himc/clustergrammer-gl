@@ -16,9 +16,8 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   //                                   params.text_scale.row(params.zoom_data.y.total_zoom);
 
   // smaller scale_text -> larger text
-  var tmp_reduce_text_factor = 4;
-  var scale_text = params.text_zoom.row.scaled_num *
-                   tmp_reduce_text_factor * 0.5 ;
+
+  var scale_text = params.text_zoom.row.scaled_num;
 
   // scale_text is applying a zoom to x and y
   // needs to be scaled by scale_text
@@ -35,11 +34,11 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       uniform float scale_text;
       uniform float y_total_zoom;
       uniform mat3 mat_rotate;
-      uniform float scale_offset;
+      uniform float heat_size;
       varying float x_position;
       varying float y_position;
       varying float shift_text;
-      uniform float shift_mat_heat;
+      uniform float shift_mat;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -58,7 +57,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        y_position = -position.y + (offset[1]) * scale_text * scale_offset  - shift_mat_heat * scale_offset;
+        y_position = -position.y + (offset[1] + shift_mat) * 2.0 * scale_text * heat_size;
 
         gl_Position = zoom *
                       vec4(
@@ -86,11 +85,10 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       x_offset: -params.mat_size.x,
 
       // shfit by the difference between the matrix size and hetamap size
-      shift_mat_heat: -(params.mat_size.y - params.heat_size.y),
-      // shift_mat_heat: params.mat_size.x - params.heat_size.x,
+      shift_mat: -(params.mat_size.y - params.heat_size.y),
 
       // influences the y position
-      scale_offset: params.heat_size.y/0.5,
+      heat_size: params.heat_size.y,
       scale_text: scale_text,
       y_total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate
@@ -103,6 +101,10 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       range: [0, 1]
     },
   };
+
+  // console.log('scale_text', scale_text)
+  // console.log('heat_size', params.heat_size.y)
+  // console.log('row text tri args: shift_mat', -(params.mat_size.y - params.heat_size.y))
 
   return args;
 

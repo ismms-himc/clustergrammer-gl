@@ -7,7 +7,8 @@ module.exports = function calc_col_text_triangles(params){
 
   var vect_text_attrs = {
     textAlign: 'left',
-    textBaseline: 'middle',
+    // textBaseline: 'middle',
+    textBaseline: 'bottom',
     triangles: true,
     size: params.font_detail,
     font: '"Open Sans", verdana, arial, sans-serif'
@@ -33,6 +34,7 @@ module.exports = function calc_col_text_triangles(params){
     var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
 
     if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
+
       var inst_name = inst_node.name;
 
       if (inst_name.indexOf(': ') >= 0){

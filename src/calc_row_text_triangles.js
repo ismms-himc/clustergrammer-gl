@@ -6,10 +6,6 @@ module.exports = function calc_row_text_triangles(params){
   var num_row = params.num_row;
 
   var row_height = 1/num_row;
-  var y_offset_array = [];
-  for (var i = 0; i < num_row; i++){
-    y_offset_array[i] = 0.5 - row_height/2 - i * row_height;
-  }
 
   var vect_text_attrs = {
     textAlign: 'right',

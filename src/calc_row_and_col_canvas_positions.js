@@ -7,8 +7,8 @@ module.exports = function calc_row_and_col_canvas_positions(params){
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = 0.5;
-  offset.y = 0.5;
+  offset.x = params.center.x;
+  offset.y = params.center.y;
 
   // generate x position array
   var x_arr = Array(num_col).fill()

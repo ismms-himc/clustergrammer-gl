@@ -54,6 +54,10 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
+  params.center = {};
+  params.center.x = 0.5;
+  params.center.y = 0.5;
+
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
 

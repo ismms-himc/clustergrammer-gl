@@ -34,7 +34,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   var shift_text_out = 0.0;
   var shift_text_right = rh_tri_side; // col_width ;//- rh_tri_side;
   // make up for rotating text
-  var shift_text_up = rh_tri_side;
+  var shift_text_up = 0.0 // rh_tri_side;
 
   var args = {
     vert: `

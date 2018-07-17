@@ -25,11 +25,11 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   // controls shifting of viz aid triangles to left and bottom sides of matrix
   var tile_height;
   var mat_size;
-  var shift_triangles;
+  var top_shift_triangles;
   if (inst_rc === 'col'){
     mat_size = params.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
-    shift_triangles = params.mat_size.y;
+    top_shift_triangles = params.mat_size.y;
     // reduce height of col viz aid triangles until zooming behavior is improved
     tile_width = (mat_size/0.5)/num_labels * 0.75;
     tile_height = (mat_size/0.5)/num_labels;
@@ -38,8 +38,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   } else {
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
-    shift_triangles = params.mat_size.x;
-    // shift_triangles = params.heat_size.x;
+    top_shift_triangles = params.mat_size.x;
     tile_width = 0.025;
     tile_height = (params.heat_size.y/0.5)/num_labels;
   }
@@ -54,7 +53,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   /////////////////////////////////
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
-  var x_offset = -shift_triangles - tile_width;
+  // vertical shift
+  var top_offset = -top_shift_triangles - tile_width;
 
   var inst_order = 'clust';
 
@@ -75,7 +75,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     }
 
     /* need to position based on clustering order */
-    y_offset_array[i] = (mat_size/0.5) * 0.5 - tile_height/2 - order_id * tile_height + shift_mat_heat;
+    y_offset_array[i] = mat_size - tile_height/2 - order_id * tile_height + shift_mat_heat;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -162,7 +162,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
       uniform mat4 zoom;
-      uniform float x_offset;
+      uniform float top_offset;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -174,7 +174,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(x_offset, y_offset_att, 0);
+        vec_translate = vec3(top_offset, y_offset_att, 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -236,7 +236,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       zoom: zoom_function,
       mat_rotate: mat_rotate,
       scale_y: scale_y,
-      x_offset: x_offset,
+      top_offset: top_offset,
       triangle_color: inst_rgba
     },
 

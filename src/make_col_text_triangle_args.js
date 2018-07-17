@@ -4,7 +4,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   /* control allowable zoom for column text */
 
-  var col_width = params.heat_size.x/params.num_col;
+  var col_width = 0.25 *params.heat_size.x/params.num_col;
 
 
   params.text_scale.col = d3.scale.linear()
@@ -113,7 +113,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       y_offset: params.mat_size.y,
 
       // shfit by the difference between the matrix size and hetamap size
-      shift_mat_heat: params.mat_size.y - params.heat_size.y,
+      shift_mat_heat: params.mat_size.x - params.heat_size.x,
 
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,

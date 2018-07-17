@@ -86,7 +86,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       x_offset: -params.mat_size.x,
 
       // shfit by the difference between the matrix size and hetamap size
-      shift_mat_heat: params.mat_size.x - params.heat_size.x,
+      shift_mat_heat: params.mat_size.y - params.heat_size.y,
 
       // influences the y position
       scale_offset: params.heat_size.y/0.5,

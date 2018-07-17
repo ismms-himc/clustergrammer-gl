@@ -48,8 +48,8 @@ module.exports = function initialize_params(regl, network){
   params.mat_size.y = 0.6;
 
   params.heat_size = {};
-  params.heat_size.x = 0.7;
-  params.heat_size.y = 0.6;
+  params.heat_size.x = 0.65;
+  params.heat_size.y = 0.50;
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;

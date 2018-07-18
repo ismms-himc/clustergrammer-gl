@@ -88,10 +88,10 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   // restrict effective position of mouse
   if (zoom_data.cursor_position < viz_dim_mat.min){
     zoom_data.cursor_position = viz_dim_mat.min;
-    console.log(axis, 'less than min position', viz_dim_mat.min);
+    // console.log(axis, 'less than min position', viz_dim_mat.min);
   } else if (zoom_data.cursor_position > viz_dim_mat.max){
     zoom_data.cursor_position = viz_dim_mat.max;
-    console.log(axis, 'more than max position', viz_dim_mat.max);
+    // console.log(axis, 'more than max position', viz_dim_mat.max);
   }
 
   // /*

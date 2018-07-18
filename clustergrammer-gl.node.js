@@ -224,8 +224,8 @@ module.exports =
 	  params.mat_size.y = 0.7;
 
 	  params.heat_size = {};
-	  params.heat_size.x = 0.70;
-	  params.heat_size.y = 0.70;
+	  params.heat_size.x = 0.60;
+	  params.heat_size.y = 0.60;
 
 	  params.num_row = params.mat_data.length;
 	  params.num_col = params.mat_data[0].length;
@@ -16669,13 +16669,12 @@ module.exports =
 
 	  // min and max position of matrix
 	  viz_dim.heat.x = {};
-	  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2;
-	  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2;
+	  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + (viz_dim.mat.width - viz_dim.heat.width)/2;
+	  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2 + (viz_dim.mat.width - viz_dim.heat.width)/2;
 
 	  viz_dim.heat.y = {};
-	  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2;
-	  // viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 - (params.mat_size.y - params.heat_size.y);
-	  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2;
+	  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + (viz_dim.mat.height - viz_dim.heat.height)/2;
+	  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + (viz_dim.mat.height - viz_dim.heat.height)/2;
 
 	  return viz_dim;
 
@@ -18132,10 +18131,10 @@ module.exports =
 	  // restrict effective position of mouse
 	  if (zoom_data.cursor_position < viz_dim_mat.min){
 	    zoom_data.cursor_position = viz_dim_mat.min;
-	    console.log(axis, 'less than min position', viz_dim_mat.min);
+	    // console.log(axis, 'less than min position', viz_dim_mat.min);
 	  } else if (zoom_data.cursor_position > viz_dim_mat.max){
 	    zoom_data.cursor_position = viz_dim_mat.max;
-	    console.log(axis, 'more than max position', viz_dim_mat.max);
+	    // console.log(axis, 'more than max position', viz_dim_mat.max);
 	  }
 
 	  // /*

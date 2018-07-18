@@ -16646,8 +16646,10 @@ var Clustergrammer2 =
 	  viz_dim.mat = {};
 
 	  // square matrix size set by width of canvas
-	  viz_dim.mat.width  = (params.mat_size.x/0.5) * viz_dim.canvas.width/2;
-	  viz_dim.mat.height = (params.mat_size.y/0.5) * viz_dim.canvas.width/2;
+	  // viz_dim.mat.width  = (params.mat_size.x/0.5) * viz_dim.canvas.width/2;
+	  // viz_dim.mat.height = (params.mat_size.y/0.5) * viz_dim.canvas.width/2;
+	  viz_dim.mat.width  = (params.mat_size.x) * viz_dim.canvas.width;
+	  viz_dim.mat.height = (params.mat_size.y) * viz_dim.canvas.width;
 
 	  // min and max position of matrix
 	  viz_dim.mat.x = {};
@@ -16664,8 +16666,8 @@ var Clustergrammer2 =
 	  viz_dim.heat = {};
 
 	  // square matrix size set by width of canvas
-	  viz_dim.heat.width  = (params.heat_size.x/0.5) * viz_dim.canvas.width/2;
-	  viz_dim.heat.height = (params.heat_size.y/0.5) * viz_dim.canvas.width/2;
+	  viz_dim.heat.width  = (params.heat_size.x) * viz_dim.canvas.width;
+	  viz_dim.heat.height = (params.heat_size.y) * viz_dim.canvas.width;
 
 	  // min and max position of matrix
 	  viz_dim.heat.x = {};
@@ -16674,6 +16676,7 @@ var Clustergrammer2 =
 
 	  viz_dim.heat.y = {};
 	  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2;
+	  // viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 - (params.mat_size.y - params.heat_size.y);
 	  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2;
 
 	  return viz_dim;
@@ -16855,8 +16858,8 @@ var Clustergrammer2 =
 
 	      }
 
+	      // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
 	      zoom_data.x = zoom_rules_low_mat(zoom_restrict.x, zoom_data.x, viz_dim.heat.x, 'x');
-
 	      zoom_data.y = zoom_rules_low_mat(zoom_restrict.y, zoom_data.y, viz_dim.heat.y, 'y');
 
 	      keep_track_of_interactions(params);
@@ -18131,11 +18134,10 @@ var Clustergrammer2 =
 	  // restrict effective position of mouse
 	  if (zoom_data.cursor_position < viz_dim_mat.min){
 	    zoom_data.cursor_position = viz_dim_mat.min;
-
-	    // console.log('less than min position')
-
+	    console.log(axis, 'less than min position', viz_dim_mat.min);
 	  } else if (zoom_data.cursor_position > viz_dim_mat.max){
 	    zoom_data.cursor_position = viz_dim_mat.max;
+	    console.log(axis, 'more than max position', viz_dim_mat.max);
 	  }
 
 	  // /*
@@ -18325,7 +18327,7 @@ var Clustergrammer2 =
 
 	module.exports = function find_mouseover_element(params){
 
-	  console.log('mousmove in find_mouseover_element!!! ')
+	  // console.log('mousmove in find_mouseover_element!!! ')
 
 	};
 

@@ -62,8 +62,8 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       }
 
+      // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
       zoom_data.x = zoom_rules_low_mat(zoom_restrict.x, zoom_data.x, viz_dim.heat.x, 'x');
-
       zoom_data.y = zoom_rules_low_mat(zoom_restrict.y, zoom_data.y, viz_dim.heat.y, 'y');
 
       keep_track_of_interactions(params);

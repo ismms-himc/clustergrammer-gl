@@ -25,8 +25,10 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.mat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.mat.width  = (params.mat_size.x/0.5) * viz_dim.canvas.width/2;
-  viz_dim.mat.height = (params.mat_size.y/0.5) * viz_dim.canvas.width/2;
+  // viz_dim.mat.width  = (params.mat_size.x/0.5) * viz_dim.canvas.width/2;
+  // viz_dim.mat.height = (params.mat_size.y/0.5) * viz_dim.canvas.width/2;
+  viz_dim.mat.width  = (params.mat_size.x) * viz_dim.canvas.width;
+  viz_dim.mat.height = (params.mat_size.y) * viz_dim.canvas.width;
 
   // min and max position of matrix
   viz_dim.mat.x = {};
@@ -43,8 +45,8 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.heat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.heat.width  = (params.heat_size.x/0.5) * viz_dim.canvas.width/2;
-  viz_dim.heat.height = (params.heat_size.y/0.5) * viz_dim.canvas.width/2;
+  viz_dim.heat.width  = (params.heat_size.x) * viz_dim.canvas.width;
+  viz_dim.heat.height = (params.heat_size.y) * viz_dim.canvas.width;
 
   // min and max position of matrix
   viz_dim.heat.x = {};
@@ -53,6 +55,7 @@ module.exports = function calc_viz_dim(regl, params){
 
   viz_dim.heat.y = {};
   viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2;
+  // viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 - (params.mat_size.y - params.heat_size.y);
   viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2;
 
   return viz_dim;

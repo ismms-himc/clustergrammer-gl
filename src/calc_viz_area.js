@@ -28,12 +28,6 @@ module.exports = function calc_viz_area(params){
     .range([0.5, -0.5])
     .clamp(true);
 
-  // // working on offsetting viz area calculations to reflect smaller heatmap
-  // // area vs larger matrix area
-  // var offset_heat = {}
-  // offset_heat.x = (params.viz_dim.mat.width - params.viz_dim.heat.width)/2;
-  // offset_heat.y = (params.viz_dim.mat.height - params.viz_dim.heat.height)/2;
-
   // panning is defined as negative pixel values
   var total_pan = {};
   total_pan.x_min = -zoom_data.x.total_pan_min;

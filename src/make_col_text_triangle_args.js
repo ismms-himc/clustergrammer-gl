@@ -32,7 +32,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   var rh_tri_side = rh_tri_hyp/Math.sqrt(2);
 
   var shift_text_out = 0.0;
-  var shift_text_right = rh_tri_side; // col_width ;//- rh_tri_side;
+  var shift_text_right = col_width; // rh_tri_side; // col_width ;//- rh_tri_side;
   // make up for rotating text
   var shift_text_up = 0.0 // rh_tri_side;
 
@@ -77,8 +77,9 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         // the x position varies for all column labelss
         //-----------------------------------------------
-        // x_position = (offset[1] + shift_text_right + shift_heat) 2.0 * * scale_text * heat_size;
-        x_position = (offset[1] + shift_text_right ) * 2.0 * scale_text * heat_size + shift_heat * scale_text;
+        x_position = offset[1] * 2.0 * scale_text * heat_size +
+                     shift_heat * scale_text +
+                     shift_text_right * scale_text;
 
         position_cols = vec3( x_position, y_position, 0);
 

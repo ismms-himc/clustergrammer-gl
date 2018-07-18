@@ -10,6 +10,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   var total_zoom = params.zoom_data.y.total_zoom;
 
   // smaller scale_text -> larger text
+  var limited_scaling = params.text_scale.row(total_zoom);
   var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
 
   // scale_text is applying a zoom to x and y
@@ -30,6 +31,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       varying float y_position;
       varying float shift_text;
       uniform float shift_heat;
+      uniform float limited_scaling;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -46,7 +48,8 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
         // then text is offset to the left side of the heatmap
         x_position = position.x * total_zoom +
                      x_offset * scale_text +
-                     shift_text * total_zoom;
+                     // limited_scaling used to be total_zoom
+                     shift_text * limited_scaling;
 
         // the y position varies for all row labels
         //-----------------------------------------------
@@ -79,6 +82,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
+      limited_scaling: limited_scaling,
       x_offset: -params.mat_size.x,
       heat_size: params.heat_size.y,
       shift_heat: params.mat_size.y - params.heat_size.y,

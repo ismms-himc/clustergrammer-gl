@@ -38862,6 +38862,7 @@ var Clustergrammer2 =
 	  var total_zoom = params.zoom_data.y.total_zoom;
 
 	  // smaller scale_text -> larger text
+	  var limited_scaling = params.text_scale.row(total_zoom);
 	  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
 
 	  // scale_text is applying a zoom to x and y
@@ -38882,6 +38883,7 @@ var Clustergrammer2 =
 	      varying float y_position;
 	      varying float shift_text;
 	      uniform float shift_heat;
+	      uniform float limited_scaling;
 
 	      // vec3 tmp = vec3(1,1,1);
 
@@ -38898,7 +38900,8 @@ var Clustergrammer2 =
 	        // then text is offset to the left side of the heatmap
 	        x_position = position.x * total_zoom +
 	                     x_offset * scale_text +
-	                     shift_text * total_zoom;
+	                     // limited_scaling used to be total_zoom
+	                     shift_text * limited_scaling;
 
 	        // the y position varies for all row labels
 	        //-----------------------------------------------
@@ -38931,6 +38934,7 @@ var Clustergrammer2 =
 	      zoom: zoom_function,
 	      offset: regl.prop('offset'),
 	      scale_text: scale_text,
+	      limited_scaling: limited_scaling,
 	      x_offset: -params.mat_size.x,
 	      heat_size: params.heat_size.y,
 	      shift_heat: params.mat_size.y - params.heat_size.y,
@@ -39028,7 +39032,8 @@ var Clustergrammer2 =
 
 	  /* Col Text */
 	  // update text information with zooming
-	    params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
+	  var limited_scaling = params.text_scale.col(total_zoom);
+	  params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
 	                                     params.text_scale.col(total_zoom);
 
 	  var mat_rotate =  m3.rotation(Math.PI/4);
@@ -39055,6 +39060,7 @@ var Clustergrammer2 =
 	      uniform mat3 mat_rotate;
 	      uniform mat3 text_y_scale;
 	      uniform float total_zoom;
+	      uniform float limited_scaling;
 	      uniform float col_width;
 	      varying vec3 rotated_text;
 	      varying vec3 position_cols;
@@ -39079,7 +39085,8 @@ var Clustergrammer2 =
 	        // the y position is constant for all column labels
 	        //-----------------------------------------------
 	        // working on shifting text up
-	        y_position = y_offset * scale_text + shift_text_up * scale_text;
+	        // y_position = y_offset * scale_text + shift_text_up * total_zoom;
+	        y_position = y_offset * scale_text + shift_text_up * limited_scaling;
 
 	        // the x position varies for all column labelss
 	        //-----------------------------------------------
@@ -39125,6 +39132,7 @@ var Clustergrammer2 =
 	      mat_rotate: mat_rotate,
 	      text_y_scale: text_y_scale,
 	      total_zoom: total_zoom,
+	      limited_scaling: limited_scaling,
 	      col_width: col_width,
 	    },
 	    depth: {

@@ -50,14 +50,14 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       uniform float col_width;
       varying vec3 rotated_text;
       varying vec3 position_cols;
-      uniform float scale_offset;
+      uniform float heat_size;
       varying vec3 xy_positions;
-      varying float col_x;
-      varying float col_y;
+      varying float x_position;
+      varying float y_position;
       uniform float shift_text_out;
       uniform float shift_text_right;
       uniform float shift_text_up;
-      uniform float shift_mat_heat;
+      uniform float shift_heat;
 
       // last value is a sort-of zoom
       void main () {
@@ -68,19 +68,19 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
                        mat_rotate *
                        vec3(position.y - 0.5, position.x + shift_text_out, 0.5);
 
-
-        // the x position varies for all column labelss
-        //-----------------------------------------------
-        col_x = (offset[1] + shift_text_right + shift_mat_heat) * scale_text * scale_offset;
-
         // the y position is constant for all column labels
         //-----------------------------------------------
 
         // working on shifting text up
-        // col_y = (y_offset + shift_text_up * total_zoom ) * scale_text ;
-        col_y = y_offset * scale_text ;
+        // y_position = (y_offset + shift_text_up * total_zoom ) * scale_text ;
+        y_position = y_offset * scale_text ;
 
-        position_cols = vec3( col_x, col_y, 0);
+        // the x position varies for all column labelss
+        //-----------------------------------------------
+        // x_position = (offset[1] + shift_text_right + shift_heat) 2.0 * * scale_text * heat_size;
+        x_position = (offset[1] + shift_text_right ) * 2.0 * scale_text * heat_size + shift_heat * scale_text;
+
+        position_cols = vec3( x_position, y_position, 0);
 
         xy_positions = rotated_text + position_cols;
 
@@ -88,7 +88,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         ////////////////////////////
         // vec4: x, y, depth, zoom
         ////////////////////////////
-
         gl_Position = zoom * vec4( xy_positions, scale_text);
 
       }`,
@@ -113,14 +112,14 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       y_offset: params.mat_size.y,
 
       // shfit by the difference between the matrix size and hetamap size
-      shift_mat_heat: params.mat_size.x - params.heat_size.x,
+      shift_heat: params.mat_size.x - params.heat_size.x,
 
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
       total_zoom: total_zoom,
       // need to pin down number
       col_width: col_width,
-      scale_offset: params.heat_size.x/0.5,
+      heat_size: params.heat_size.x,
     },
     depth: {
       enable: true,

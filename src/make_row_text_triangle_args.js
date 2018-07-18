@@ -38,7 +38,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       varying float x_position;
       varying float y_position;
       varying float shift_text;
-      uniform float shift_mat;
+      uniform float shift_heat;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -57,7 +57,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        y_position = -position.y + offset[1] * 2.0 * scale_text * heat_size - shift_mat * scale_text ;
+        y_position = -position.y + 2.0 * offset[1] * scale_text * heat_size - shift_heat * scale_text ;
 
         gl_Position = zoom *
                       vec4(
@@ -85,7 +85,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       x_offset: -params.mat_size.x,
 
       // shfit by the difference between the matrix size and hetamap size
-      shift_mat: params.mat_size.y - params.heat_size.y,
+      shift_heat: params.mat_size.y - params.heat_size.y,
 
       // influences the y position
       heat_size: params.heat_size.y,
@@ -101,10 +101,6 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       range: [0, 1]
     },
   };
-
-  // console.log('scale_text', scale_text)
-  // console.log('heat_size', params.heat_size.y)
-  // console.log('row text tri args: shift_mat', -(params.mat_size.y - params.heat_size.y))
 
   return args;
 

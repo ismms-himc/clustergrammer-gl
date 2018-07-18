@@ -16675,7 +16675,7 @@ var Clustergrammer2 =
 	  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
 	  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2 + offset_heat.x;
 
-	  offset_heat.y =  (viz_dim.mat.height - viz_dim.heat.height)/2
+	  offset_heat.y = (viz_dim.mat.height - viz_dim.heat.height)/2;
 	  viz_dim.heat.y = {};
 	  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
 	  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
@@ -31864,10 +31864,8 @@ var Clustergrammer2 =
 	  var zoom_data = params.zoom_data;
 
 	  // make a d3.scale to transition from 0px - 500px to -1, 1 space
-	  var mat_width = params.viz_dim.mat.width;
-	  var mat_height = params.viz_dim.mat.height;
-	  // var mat_width = params.viz_dim.heat.width;
-	  // var mat_height = params.viz_dim.heat.height;
+	  var mat_width = params.viz_dim.heat.width;
+	  var mat_height = params.viz_dim.heat.height;
 
 	  var pix_to_webgl = {};
 
@@ -31889,15 +31887,19 @@ var Clustergrammer2 =
 	    .range([0.5, -0.5])
 	    .clamp(true);
 
-	  var tmp_scale = 1.0 ;
+	  // // working on offsetting viz area calculations to reflect smaller heatmap
+	  // // area vs larger matrix area
+	  // var offset_heat = {}
+	  // offset_heat.x = (params.viz_dim.mat.width - params.viz_dim.heat.width)/2;
+	  // offset_heat.y = (params.viz_dim.mat.height - params.viz_dim.heat.height)/2;
 
 	  // panning is defined as negative pixel values
 	  var total_pan = {};
 	  total_pan.x_min = -zoom_data.x.total_pan_min;
-	  total_pan.x_max = mat_width * tmp_scale + zoom_data.x.total_pan_max;
+	  total_pan.x_max = mat_width + zoom_data.x.total_pan_max;
 
 	  total_pan.y_min = -zoom_data.y.total_pan_min;
-	  total_pan.y_max = mat_height * tmp_scale + zoom_data.y.total_pan_max;
+	  total_pan.y_max = mat_height + zoom_data.y.total_pan_max;
 
 	  var buffer_width = 0.0;
 

@@ -16646,10 +16646,8 @@ var Clustergrammer2 =
 	  viz_dim.mat = {};
 
 	  // square matrix size set by width of canvas
-	  // viz_dim.mat.width  = (params.mat_size.x/0.5) * viz_dim.canvas.width/2;
-	  // viz_dim.mat.height = (params.mat_size.y/0.5) * viz_dim.canvas.width/2;
-	  viz_dim.mat.width  = (params.mat_size.x) * viz_dim.canvas.width;
-	  viz_dim.mat.height = (params.mat_size.y) * viz_dim.canvas.width;
+	  viz_dim.mat.width  = params.mat_size.x * viz_dim.canvas.width;
+	  viz_dim.mat.height = params.mat_size.y * viz_dim.canvas.height;
 
 	  // min and max position of matrix
 	  viz_dim.mat.x = {};
@@ -16661,13 +16659,13 @@ var Clustergrammer2 =
 	  viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
 
 
-	  // Heatmap Dimensions (not in use yet)
-	  ///////////////////////////////////////
+	  // Heatmap Dimensions
+	  //////////////////////////////
 	  viz_dim.heat = {};
 
 	  // square matrix size set by width of canvas
-	  viz_dim.heat.width  = (params.heat_size.x) * viz_dim.canvas.width;
-	  viz_dim.heat.height = (params.heat_size.y) * viz_dim.canvas.width;
+	  viz_dim.heat.width  = params.heat_size.x * viz_dim.canvas.width;
+	  viz_dim.heat.height = params.heat_size.y * viz_dim.canvas.height;
 
 	  // min and max position of matrix
 	  viz_dim.heat.x = {};

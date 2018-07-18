@@ -34,7 +34,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
   var shift_text_out = 0.0;
   var shift_text_right = col_width; // rh_tri_side; // col_width ;//- rh_tri_side;
   // make up for rotating text
-  var shift_text_up = 0.0 // rh_tri_side;
+  var shift_text_up = - 0.5 * rh_tri_side;
 
   var args = {
     vert: `
@@ -70,10 +70,8 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
         // the y position is constant for all column labels
         //-----------------------------------------------
-
         // working on shifting text up
-        // y_position = (y_offset + shift_text_up * total_zoom ) * scale_text ;
-        y_position = y_offset * scale_text ;
+        y_position = (y_offset + shift_text_up ) * scale_text ;
 
         // the x position varies for all column labelss
         //-----------------------------------------------

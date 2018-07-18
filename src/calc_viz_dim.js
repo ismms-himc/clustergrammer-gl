@@ -46,14 +46,18 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.heat.width  = params.heat_size.x * viz_dim.canvas.width;
   viz_dim.heat.height = params.heat_size.y * viz_dim.canvas.height;
 
-  // min and max position of matrix
-  viz_dim.heat.x = {};
-  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + (viz_dim.mat.width - viz_dim.heat.width)/2;
-  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2 + (viz_dim.mat.width - viz_dim.heat.width)/2;
+  var offset_heat = {};
 
+  // min and max position of matrix
+  offset_heat.x = (viz_dim.mat.width - viz_dim.heat.width)/2;
+  viz_dim.heat.x = {};
+  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
+  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2 + offset_heat.x;
+
+  offset_heat.y =  (viz_dim.mat.height - viz_dim.heat.height)/2
   viz_dim.heat.y = {};
-  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + (viz_dim.mat.height - viz_dim.heat.height)/2;
-  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + (viz_dim.mat.height - viz_dim.heat.height)/2;
+  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
+  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
 
   return viz_dim;
 

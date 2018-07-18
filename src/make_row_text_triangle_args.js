@@ -7,32 +7,23 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor]);
 
-  // console.log('scaled_num', params.text_zoom.row.scaled_num);
-
-  // /* Row Text */
-  // // update text information with zooming
-  // params.text_zoom.row.scaled_num = params.text_zoom.row.reference *
-  //                                   // reduce text size when zooming
-  //                                   params.text_scale.row(params.zoom_data.y.total_zoom);
+  var total_zoom = params.zoom_data.y.total_zoom;
 
   // smaller scale_text -> larger text
-
-  var scale_text = params.text_zoom.row.scaled_num;
+  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
 
   // scale_text is applying a zoom to x and y
   // needs to be scaled by scale_text
   var mat_rotate = m3.rotation(Math.PI/2);
 
-
-  var args = {
-    vert: `
+  var vert_arg = `
       precision mediump float;
       attribute vec2 position;
       uniform mat4 zoom;
       uniform vec2 offset;
       uniform float x_offset;
       uniform float scale_text;
-      uniform float y_total_zoom;
+      uniform float total_zoom;
       uniform mat3 mat_rotate;
       uniform float heat_size;
       varying float x_position;
@@ -51,9 +42,11 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // the x position is constant for all row labels
         //-----------------------------------------------
-        // y_total_zoom stretches out row labels horizontally
+        // total_zoom stretches out row labels horizontally
         // then text is offset to the left side of the heatmap
-        x_position = position.x * y_total_zoom + x_offset * scale_text + shift_text;
+        x_position = position.x * total_zoom +
+                     x_offset * scale_text +
+                     shift_text * total_zoom;
 
         // the y position varies for all row labels
         //-----------------------------------------------
@@ -67,12 +60,17 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
                            0.50,
                            // zoom
                            scale_text);
-      }`,
-    frag: `
+      }`;
+
+  var frag_arg =  `
       precision mediump float;
       void main () {
         gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
-      }`,
+      }`;
+
+  var args = {
+    vert: vert_arg,
+    frag: frag_arg,
     attributes: {
       position: regl.prop('positions')
     },
@@ -80,17 +78,11 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
     uniforms: {
       zoom: zoom_function,
       offset: regl.prop('offset'),
-
-      // position rows at the top of the matrix, not the hatmap
-      x_offset: -params.mat_size.x,
-
-      // shfit by the difference between the matrix size and hetamap size
-      shift_heat: params.mat_size.y - params.heat_size.y,
-
-      // influences the y position
-      heat_size: params.heat_size.y,
       scale_text: scale_text,
-      y_total_zoom: params.zoom_data.y.total_zoom,
+      x_offset: -params.mat_size.x,
+      heat_size: params.heat_size.y,
+      shift_heat: params.mat_size.y - params.heat_size.y,
+      total_zoom: total_zoom,
       mat_rotate: mat_rotate
     },
     depth: {

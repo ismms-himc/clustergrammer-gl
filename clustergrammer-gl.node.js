@@ -38859,32 +38859,23 @@ module.exports =
 	      .domain([1, 10])
 	      .range([1, 10/params.allowable_zoom_factor]);
 
-	  // console.log('scaled_num', params.text_zoom.row.scaled_num);
-
-	  // /* Row Text */
-	  // // update text information with zooming
-	  // params.text_zoom.row.scaled_num = params.text_zoom.row.reference *
-	  //                                   // reduce text size when zooming
-	  //                                   params.text_scale.row(params.zoom_data.y.total_zoom);
+	  var total_zoom = params.zoom_data.y.total_zoom;
 
 	  // smaller scale_text -> larger text
-
-	  var scale_text = params.text_zoom.row.scaled_num;
+	  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
 
 	  // scale_text is applying a zoom to x and y
 	  // needs to be scaled by scale_text
 	  var mat_rotate = m3.rotation(Math.PI/2);
 
-
-	  var args = {
-	    vert: `
+	  var vert_arg = `
 	      precision mediump float;
 	      attribute vec2 position;
 	      uniform mat4 zoom;
 	      uniform vec2 offset;
 	      uniform float x_offset;
 	      uniform float scale_text;
-	      uniform float y_total_zoom;
+	      uniform float total_zoom;
 	      uniform mat3 mat_rotate;
 	      uniform float heat_size;
 	      varying float x_position;
@@ -38903,9 +38894,11 @@ module.exports =
 
 	        // the x position is constant for all row labels
 	        //-----------------------------------------------
-	        // y_total_zoom stretches out row labels horizontally
+	        // total_zoom stretches out row labels horizontally
 	        // then text is offset to the left side of the heatmap
-	        x_position = position.x * y_total_zoom + x_offset * scale_text + shift_text;
+	        x_position = position.x * total_zoom +
+	                     x_offset * scale_text +
+	                     shift_text * total_zoom;
 
 	        // the y position varies for all row labels
 	        //-----------------------------------------------
@@ -38919,12 +38912,17 @@ module.exports =
 	                           0.50,
 	                           // zoom
 	                           scale_text);
-	      }`,
-	    frag: `
+	      }`;
+
+	  var frag_arg =  `
 	      precision mediump float;
 	      void main () {
 	        gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
-	      }`,
+	      }`;
+
+	  var args = {
+	    vert: vert_arg,
+	    frag: frag_arg,
 	    attributes: {
 	      position: regl.prop('positions')
 	    },
@@ -38932,17 +38930,11 @@ module.exports =
 	    uniforms: {
 	      zoom: zoom_function,
 	      offset: regl.prop('offset'),
-
-	      // position rows at the top of the matrix, not the hatmap
-	      x_offset: -params.mat_size.x,
-
-	      // shfit by the difference between the matrix size and hetamap size
-	      shift_heat: params.mat_size.y - params.heat_size.y,
-
-	      // influences the y position
-	      heat_size: params.heat_size.y,
 	      scale_text: scale_text,
-	      y_total_zoom: params.zoom_data.y.total_zoom,
+	      x_offset: -params.mat_size.x,
+	      heat_size: params.heat_size.y,
+	      shift_heat: params.mat_size.y - params.heat_size.y,
+	      total_zoom: total_zoom,
 	      mat_rotate: mat_rotate
 	    },
 	    depth: {
@@ -39026,10 +39018,7 @@ module.exports =
 
 	module.exports = function make_col_text_triangle_args(regl, params, zoom_function){
 
-	  /* control allowable zoom for column text */
-
 	  var col_width = 1.00 *params.heat_size.x/params.num_col;
-
 
 	  params.text_scale.col = d3.scale.linear()
 	      .domain([1, 10])
@@ -39039,15 +39028,11 @@ module.exports =
 
 	  /* Col Text */
 	  // update text information with zooming
-	  params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
+	    params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
 	                                     params.text_scale.col(total_zoom);
 
 	  var mat_rotate =  m3.rotation(Math.PI/4);
 	  var text_y_scale = m3.scaling(1, total_zoom);
-
-	  // smaller number gives smaller text
-	  // rc_two_cats: 0.75
-	  // mnist: 1
 
 	  var scale_text = params.text_zoom.col.scaled_num;
 
@@ -39060,8 +39045,7 @@ module.exports =
 	  // make up for rotating text
 	  var shift_text_up = - 0.5 * rh_tri_side;
 
-	  var args = {
-	    vert: `
+	  var vert_arg = `
 	      precision mediump float;
 	      attribute vec2 position;
 	      uniform mat4 zoom;
@@ -39095,7 +39079,7 @@ module.exports =
 	        // the y position is constant for all column labels
 	        //-----------------------------------------------
 	        // working on shifting text up
-	        y_position = (y_offset + shift_text_up ) * scale_text ;
+	        y_position = y_offset * scale_text + shift_text_up * scale_text;
 
 	        // the x position varies for all column labelss
 	        //-----------------------------------------------
@@ -39113,12 +39097,17 @@ module.exports =
 	        ////////////////////////////
 	        gl_Position = zoom * vec4( xy_positions, scale_text);
 
-	      }`,
-	    frag: `
+	      }`;
+
+	  var frag_arg = `
 	      precision mediump float;
 	      void main () {
 	        gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
-	      }`,
+	      }`;
+
+	  var args = {
+	    vert: vert_arg,
+	    frag: frag_arg,
 	    attributes: {
 	      position: regl.prop('positions')
 	    },
@@ -39127,22 +39116,16 @@ module.exports =
 	      zoom: zoom_function,
 	      offset: regl.prop('offset'),
 	      scale_text: scale_text,
+	      y_offset: params.mat_size.y,
+	      heat_size: params.heat_size.x,
+	      shift_heat: params.mat_size.x - params.heat_size.x,
 	      shift_text_right: shift_text_right,
 	      shift_text_out: shift_text_out,
 	      shift_text_up: shift_text_up,
-
-	      // position columns at the top of the matrix, not the heatmap
-	      y_offset: params.mat_size.y,
-
-	      // shfit by the difference between the matrix size and hetamap size
-	      shift_heat: params.mat_size.x - params.heat_size.x,
-
 	      mat_rotate: mat_rotate,
 	      text_y_scale: text_y_scale,
 	      total_zoom: total_zoom,
-	      // need to pin down number
 	      col_width: col_width,
-	      heat_size: params.heat_size.x,
 	    },
 	    depth: {
 	      enable: true,

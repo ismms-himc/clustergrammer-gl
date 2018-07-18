@@ -255,9 +255,24 @@ module.exports =
 	  // inst_depth is passed to spillover rects
 	  var inst_color = [1, 0, 0, 0.25];
 	  // var inst_color = [1, 1, 1, 1];
-	  spillover_args.mat_sides = make_spillover_args(regl, zoom_function, 0.5, inst_color);
-	  spillover_args.mat_corners = make_spillover_args(regl, zoom_function, 0.2, inst_color);
-	  spillover_args.label_corners = make_spillover_args(regl, zoom_function, 0.0, inst_color);
+
+	  params.spill_depth = {};
+	  params.spill_depth.mat_sides = 0.5;
+	  spillover_args.mat_sides = make_spillover_args(regl,
+	                                                 zoom_function,
+	                                                 params.spill_depth.mat_sides,
+	                                                 inst_color);
+
+	  params.spill_depth.mat_corners = 0.2;
+	  spillover_args.mat_corners = make_spillover_args(regl,
+	                                                   zoom_function,
+	                                                   params.spill_depth.mat_corners,
+	                                                   inst_color);
+	  params.spill_depth.label_corners = 0.0;
+	  spillover_args.label_corners = make_spillover_args(regl,
+	                                                     zoom_function,
+	                                                     params.spill_depth.label_corners,
+	                                                     inst_color);
 
 	  params.spillover_args = spillover_args;
 
@@ -39155,10 +39170,10 @@ module.exports =
 	    var args = params.spillover_args;
 	    var triangles = params.spillover_triangles;
 
-	    // // spillover rects to hide matrix spillover
-	    // regl(args.mat_sides)(triangles.mat);
-	    // regl(args.mat_corners)(triangles.mat_corners);
-	    // regl(args.label_corners)(triangles.label_corners);
+	    // spillover rects to hide matrix spillover
+	    regl(args.mat_sides)(triangles.mat);
+	    regl(args.mat_corners)(triangles.mat_corners);
+	    regl(args.label_corners)(triangles.label_corners);
 
 	  });
 	};

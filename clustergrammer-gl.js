@@ -224,7 +224,7 @@ var Clustergrammer2 =
 	  params.mat_size.y = 0.7;
 
 	  params.heat_size = {};
-	  params.heat_size.x = 0.60;
+	  params.heat_size.x = 0.70;
 	  params.heat_size.y = 0.60;
 
 	  params.num_row = params.mat_data.length;

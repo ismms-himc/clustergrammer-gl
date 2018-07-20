@@ -9,6 +9,7 @@ var make_cameras = require('./make_cameras');
 var calc_spillover_triangles = require('./calc_spillover_triangles');
 var make_matrix_args = require('./make_matrix_args');
 var make_viz_aid_tri_args = require('./make_viz_aid_tri_args');
+var make_cat_args = require('./make_cat_args');
 var make_dendro_args = require('./make_dendro_args');
 var make_spillover_args = require('./make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');
@@ -69,6 +70,10 @@ module.exports = function initialize_params(regl, network){
   params.viz_aid_tri_args = {};
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+
+  params.cat_args = {};
+  params.cat_args.row = make_cat_args(regl, params, 'row');
+  params.cat_args.col = make_cat_args(regl, params, 'col');
 
   params.dendro_args = {};
   params.dendro_args.row = make_dendro_args(regl, params, 'row');

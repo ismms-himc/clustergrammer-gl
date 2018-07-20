@@ -6,7 +6,8 @@ module.exports = function draw_spillover_components(regl, params){
     var triangles = params.spillover_triangles;
 
     // spillover rects to hide matrix spillover
-    regl(args.mat_sides)(triangles.mat);
+    regl(args.mat_sides)(triangles.mat_sides);
+    regl(args.cats)(triangles.cats);
     regl(args.mat_corners)(triangles.mat_corners);
     regl(args.label_corners)(triangles.label_corners);
 

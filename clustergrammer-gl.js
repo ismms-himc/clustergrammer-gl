@@ -268,7 +268,7 @@ var Clustergrammer2 =
 	                                                 params.spill_depth.mat_sides,
 	                                                 inst_color);
 
-	  params.spill_depth.cats = 0.2;
+	  params.spill_depth.cats = 0.5;
 	  spillover_args.cats = make_spillover_args(regl,
 	                                                 zoom_function,
 	                                                 params.spill_depth.cats,
@@ -20423,7 +20423,6 @@ var Clustergrammer2 =
 	             [ -ini_heat.x  + inst_shift.x,  -scaled_mat.y],
 	             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
 	           },
-
 	  ];
 
 	  spillover_triangles.mat_corners = [
@@ -39041,7 +39040,7 @@ var Clustergrammer2 =
 	  /* Experimenting with separate draw command for col viz aid triangles */
 	  params.cameras['col-viz-aid'].draw(() => {
 	    regl(params.viz_aid_tri_args.col)();
-	    regl(params.cat_args.col)();
+	    // regl(params.cat_args.col)();
 	  });
 
 	  /* Column Components */
@@ -50353,7 +50352,7 @@ var Clustergrammer2 =
 	    // rows have fixed viz aid triangle 'heights'
 	    mat_size = params.heat_size.y;
 	    top_shift_triangles = params.mat_size.x;
-	    tile_width = 0.025;
+	    tile_width = 0.05;
 	    tile_height = (params.heat_size.y/0.5)/num_labels;
 	  }
 
@@ -50368,7 +50367,8 @@ var Clustergrammer2 =
 	  // row width is required to place the triangles on the 'top' of the matrix and
 	  // not to overlap with the matrix
 	  // vertical shift
-	  var top_offset = -top_shift_triangles - tile_width;
+	  var shift_cat = 0.1;
+	  var top_offset = -top_shift_triangles - tile_width + shift_cat;
 
 	  var inst_order = 'clust';
 

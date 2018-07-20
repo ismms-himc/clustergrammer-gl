@@ -41,7 +41,7 @@ module.exports = function make_cat_args(regl, params, inst_rc){
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
     top_shift_triangles = params.mat_size.x;
-    tile_width = 0.025;
+    tile_width = 0.05;
     tile_height = (params.heat_size.y/0.5)/num_labels;
   }
 
@@ -56,7 +56,8 @@ module.exports = function make_cat_args(regl, params, inst_rc){
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
   // vertical shift
-  var top_offset = -top_shift_triangles - tile_width;
+  var shift_cat = 0.1;
+  var top_offset = -top_shift_triangles - tile_width + shift_cat;
 
   var inst_order = 'clust';
 

@@ -92,7 +92,7 @@ module.exports = function initialize_params(regl, network){
                                                  params.spill_depth.mat_sides,
                                                  inst_color);
 
-  params.spill_depth.cats = 0.2;
+  params.spill_depth.cats = 0.5;
   spillover_args.cats = make_spillover_args(regl,
                                                  zoom_function,
                                                  params.spill_depth.cats,

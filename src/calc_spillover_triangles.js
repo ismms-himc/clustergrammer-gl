@@ -60,7 +60,6 @@ module.exports = function calc_spillover_triangles(params){
              [ -ini_heat.x  + inst_shift.x,  -scaled_mat.y],
              [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
            },
-
   ];
 
   spillover_triangles.mat_corners = [

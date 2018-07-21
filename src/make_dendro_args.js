@@ -5,14 +5,17 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   var rotation_radians;
   var mat_size;
   var mat_size_offset;
+  var y_shift;
   if (inst_rc === 'row'){
     rotation_radians = 0;
-    mat_size = params.mat_size.y;
+    mat_size = params.heat_size.y;
     mat_size_offset = params.mat_size.x;
+    y_shift = -(params.mat_size.y - params.heat_size.y);
   } else if (inst_rc === 'col'){
     rotation_radians = Math.PI/2;
-    mat_size = params.mat_size.x;
+    mat_size = params.heat_size.x;
     mat_size_offset = params.mat_size.y;
+    y_shift = params.mat_size.x - params.heat_size.x;
   }
 
   var num_labels = params['num_' + inst_rc];
@@ -59,6 +62,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
       uniform mat3 mat_scale;
       uniform mat4 zoom;
       uniform float x_offset;
+      uniform float y_shift;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -67,7 +71,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
         new_position = vec3(position, 0);
 
-        vec_translate = vec3(x_offset, y_offset_att, 0);
+        vec_translate = vec3(x_offset, y_offset_att + y_shift, 0);
 
         // new_position = mat_rotate * mat_scale * new_position + vec_translate;
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
@@ -103,7 +107,8 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
       zoom: zoom_function,
       mat_rotate: mat_rotate,
       mat_scale: mat_scale,
-      x_offset: x_offset
+      x_offset: x_offset,
+      y_shift: y_shift,
     },
 
     count: 3,

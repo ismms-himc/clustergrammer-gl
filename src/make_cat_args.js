@@ -27,16 +27,15 @@ module.exports = function make_cat_args(regl, params, inst_rc){
   var cat_width;
   var mat_size;
   var top_shift_triangles;
+  cat_height = 0.05;
   if (inst_rc === 'col'){
     mat_size = params.heat_size.x;
     top_shift_triangles = params.mat_size.y;
-    cat_height = 0.05;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
     mat_size = params.heat_size.y;
     top_shift_triangles = params.mat_size.x;
-    cat_height = 0.05;
     cat_width = (params.heat_size.y/0.5)/num_labels;
   }
 

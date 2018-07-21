@@ -15,7 +15,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   */
 
   // var inst_rgba = color_to_rgba('#ff0000', 0.5);
-  var inst_rgba = color_to_rgba('purple', 0.95);
+  var inst_rgba = color_to_rgba('#eee', 1.0);
 
   // var color_names = _.keys(olor_table);
 
@@ -95,50 +95,53 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   // Label Color Buffer
   /////////////////////////////////
 
-  var color_arr = [];
-  for (i = 0; i < num_labels; i++){
+  // var color_arr = [];
+  // for (i = 0; i < num_labels; i++){
 
 
-    var inst_cat = params.network[inst_rc + '_nodes'][i]['cat-0'];
-    // console.log(inst_cat)
+  //   var inst_cat = params.network[inst_rc + '_nodes'][i]['cat-0'];
+  //   // console.log(inst_cat)
 
-    /*
-      Added fallback color
-    */
-    var inst_color;
-    if ('cat_colors' in params.network){
+  //   /*
+  //     Added fallback color
+  //   */
+  //   var inst_color;
+  //   if ('cat_colors' in params.network){
 
-      if ('cat-0' in params.network.cat_colors[inst_rc]){
-        try {
-          inst_color = params.network.cat_colors[inst_rc]['cat-0'][inst_cat];
-        }
-        catch(err){
-          // get random colors from color dictionary
-          inst_color = 'white';
-        }
-      } else {
-        // get random colors from color dictionary
-        inst_color = 'white';
-      }
+  //     if ('cat-0' in params.network.cat_colors[inst_rc]){
+  //       try {
+  //         inst_color = params.network.cat_colors[inst_rc]['cat-0'][inst_cat];
+  //       }
+  //       catch(err){
+  //         // get random colors from color dictionary
+  //         inst_color = 'white';
+  //       }
+  //     } else {
+  //       // get random colors from color dictionary
+  //       inst_color = 'white';
+  //     }
 
-    } else {
+  //   } else {
 
-      // get random colors from color dictionary
-      inst_color = 'white';
-    }
+  //     // get random colors from color dictionary
+  //     inst_color = 'white';
+  //   }
 
-    color_arr[i] = color_to_rgba(inst_color, 1);
-  }
+  //   // override triangle color
+  //   inst_color = '#eee'
 
-  const color_buffer = regl.buffer({
-    length: num_labels,
-    // 'type': 'vec4',
-    'usage': 'dynamic'
-  })
+  //   color_arr[i] = color_to_rgba(inst_color, 1);
+  // }
 
-  color_buffer(color_arr);
+  // const color_buffer = regl.buffer({
+  //   length: num_labels,
+  //   // 'type': 'vec4',
+  //   'usage': 'dynamic'
+  // })
 
-  params.color_arr = color_arr;
+  // color_buffer(color_arr);
+
+  // params.color_arr = color_arr;
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -161,7 +164,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       precision highp float;
       attribute vec2 ini_position;
       attribute float y_offset_att;
-      attribute vec4 color_att;
+      // attribute vec4 color_att;
 
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
@@ -171,8 +174,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       varying vec3 new_position;
       varying vec3 vec_translate;
 
-      // pass varying variable to fragment from vector
-      varying vec4 color_vary;
+      // // pass varying variable to fragment from vector
+      // varying vec4 color_vary;
 
       void main () {
 
@@ -186,8 +189,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
 
-        // pass attribute (in vert) to varying in frag
-        color_vary = color_att;
+        // // pass attribute (in vert) to varying in frag
+        // color_vary = color_att;
 
       }
     `,
@@ -197,8 +200,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       precision mediump float;
       uniform vec4 triangle_color;
 
-      // use the varying being passed from the vertex shader
-      varying vec4 color_vary;
+      // // use the varying being passed from the vertex shader
+      // varying vec4 color_vary;
 
       // color triangle red
       void main () {
@@ -206,10 +209,10 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         // gl_FragColor = vec4(0.6, 0.6, 0.6, opacity_vary);
 
         // defining the triangle color using a uniform
-        // gl_FragColor = triangle_color;
+        gl_FragColor = triangle_color;
 
-        // define the triangle color using a varying
-        gl_FragColor = color_vary;
+        // // define the triangle color using a varying
+        // gl_FragColor = color_vary;
       }
 
     `,
@@ -228,11 +231,11 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         divisor: 1
       },
 
-      // pass color buffer
-      color_att: {
-        buffer: color_buffer,
-        divisor: 1
-      },
+      // // pass color buffer
+      // color_att: {
+      //   buffer: color_buffer,
+      //   divisor: 1
+      // },
 
     },
 

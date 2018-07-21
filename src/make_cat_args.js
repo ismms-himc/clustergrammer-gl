@@ -14,8 +14,6 @@ module.exports = function make_cat_args(regl, params, inst_rc){
 
   */
 
-  console.log('something!!!!!!!!!!!')
-
   // var inst_rgba = color_to_rgba('#ff0000', 0.5);
   var inst_rgba = color_to_rgba('purple', 0.95);
 
@@ -221,8 +219,12 @@ module.exports = function make_cat_args(regl, params, inst_rc){
     attributes: {
       ini_position: [
         [tile_width,  tile_height/2],
-        [tile_width/2,  0.0],
+        [tile_width/2,  tile_height/2],
         [tile_width, -tile_height/2],
+
+        [tile_width/2,  -tile_height/2],
+        [tile_width,  -tile_height/2],
+        [tile_width/2, tile_height/2],
       ],
 
       // pass y_offset_att buffer
@@ -247,7 +249,7 @@ module.exports = function make_cat_args(regl, params, inst_rc){
       triangle_color: inst_rgba
     },
 
-    count: 3,
+    count: 6,
     instances: num_labels,
     depth: {
       enable: true,

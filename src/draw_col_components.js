@@ -4,16 +4,18 @@ var calc_col_text_triangles = require('./calc_col_text_triangles');
 
 module.exports = function draw_col_components(regl, params, slow_draw=false){
 
-  /* Experimenting with separate draw command for col viz aid triangles */
+  // drawing the colum viz aid triangles using their own special camera since
+  // they require special behavior, e.g. zooming but constant positioning
   params.cameras['col-viz-aid'].draw(() => {
     regl(params.viz_aid_tri_args.col)();
-    // regl(params.cat_args.col)();
   });
 
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
 
-    // regl(params.viz_aid_tri_args.col)();
+    // drawing the column categories and dendrogram using the same camera as the
+    // matrix (no special zooming required)
+    regl(params.cat_args.col)();
     regl(params.dendro_args.col)();
 
     // make the arguments for the draw command

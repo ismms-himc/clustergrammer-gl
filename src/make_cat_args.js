@@ -21,26 +21,28 @@ module.exports = function make_cat_args(regl, params, inst_rc){
 
   var num_labels = params['num_'+inst_rc];
 
-  var tile_width;
+  var cat_height;
   // controls shifting of viz aid triangles to left and bottom sides of matrix
-  var tile_height;
+  var cat_width;
   var mat_size;
   var top_shift_triangles;
   if (inst_rc === 'col'){
+
     mat_size = params.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     top_shift_triangles = params.mat_size.y;
+
     // reduce height of col viz aid triangles until zooming behavior is improved
-    tile_width = (mat_size/0.5)/num_labels * 0.75;
-    tile_height = (mat_size/0.5)/num_labels;
+    cat_height = (mat_size/0.5)/num_labels;
+    cat_width = (mat_size/0.5)/num_labels;
 
 
   } else {
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
     top_shift_triangles = params.mat_size.x;
-    tile_width = 0.05;
-    tile_height = (params.heat_size.y/0.5)/num_labels;
+    cat_height = 0.05;
+    cat_width = (params.heat_size.y/0.5)/num_labels;
   }
 
 
@@ -55,7 +57,7 @@ module.exports = function make_cat_args(regl, params, inst_rc){
   // not to overlap with the matrix
   // vertical shift
   var shift_cat = 0.1;
-  var top_offset = -top_shift_triangles - tile_width + shift_cat;
+  var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
   var inst_order = 'clust';
 
@@ -80,7 +82,7 @@ module.exports = function make_cat_args(regl, params, inst_rc){
     // of the heatmap vs the general matrix area
 
     console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
-    y_offset_array[i] = mat_size - tile_height/2 - order_id * tile_height + shift_mat_heat;
+    y_offset_array[i] = mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -218,13 +220,13 @@ module.exports = function make_cat_args(regl, params, inst_rc){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tile_width,  tile_height/2],
-        [tile_width/2,  tile_height/2],
-        [tile_width, -tile_height/2],
+        [cat_height,  cat_width/2],
+        [cat_height/2,  cat_width/2],
+        [cat_height, -cat_width/2],
 
-        [tile_width/2,  -tile_height/2],
-        [tile_width,  -tile_height/2],
-        [tile_width/2, tile_height/2],
+        [cat_height/2,  -cat_width/2],
+        [cat_height,  -cat_width/2],
+        [cat_height/2, cat_width/2],
       ],
 
       // pass y_offset_att buffer

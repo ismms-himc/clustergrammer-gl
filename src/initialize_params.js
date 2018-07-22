@@ -98,7 +98,13 @@ module.exports = function initialize_params(regl, network){
   params.cat_args.row[0] = make_cat_args(regl, params, 'row', cat_index=0);
 
   params.cat_args.col = [];
-  params.cat_args.col[0] = make_cat_args(regl, params, 'col', cat_index=0);
+
+  for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+    console.log(cat_index);
+    params.cat_args.col[cat_index] = make_cat_args(regl, params, 'col', cat_index=cat_index);
+  }
+
+
 
   params.dendro_args = {};
   params.dendro_args.row = make_dendro_args(regl, params, 'row');

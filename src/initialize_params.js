@@ -48,9 +48,13 @@ module.exports = function initialize_params(regl, network){
   params.mat_size.x = 0.7;
   params.mat_size.y = 0.7;
 
+  params.cat_room = {};
+  params.cat_room.x = 0.016;
+  params.cat_room.y = 0.016;
+
   params.heat_size = {};
-  params.heat_size.x = 0.675;
-  params.heat_size.y = 0.650;
+  params.heat_size.x = params.mat_size.x - params.cat_room.x;
+  params.heat_size.y = params.mat_size.y - params.cat_room.y;
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
@@ -87,8 +91,8 @@ module.exports = function initialize_params(regl, network){
   var spillover_args = {};
 
   // inst_depth is passed to spillover rects
-  // var inst_color = [1, 0, 0, 0.25];
-  var inst_color = [1, 1, 1, 1];
+  var inst_color = [1, 0, 0, 0.25];
+  // var inst_color = [1, 1, 1, 1];
 
   params.spill_depth = {};
   params.spill_depth.mat_sides = 0.5;

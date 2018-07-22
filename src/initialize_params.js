@@ -53,13 +53,21 @@ module.exports = function initialize_params(regl, network){
   params.cat_data.row = generate_cat_data(params, 'row');
   params.cat_data.col = generate_cat_data(params, 'col');
 
+
+
+  params.cat_num = {};
+  params.cat_num.row = params.cat_data.row.length;
+  params.cat_num.col = params.cat_data.col.length;
+
+
   params.cat_room = {};
   params.cat_room.x = 0.016;
   params.cat_room.y = 0.016;
 
+
   params.heat_size = {};
-  params.heat_size.x = params.mat_size.x - params.cat_room.x;
-  params.heat_size.y = params.mat_size.y - params.cat_room.y;
+  params.heat_size.x = params.mat_size.x - params.cat_room.x * params.cat_num.row;
+  params.heat_size.y = params.mat_size.y - params.cat_room.y * params.cat_num.col;
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
@@ -89,9 +97,6 @@ module.exports = function initialize_params(regl, network){
 
   //
 
-  params.cat_num = {};
-  params.cat_num.row = params.cat_data.row.length;
-  params.cat_num.col = params.cat_data.col.length;
 
   params.cat_args = {};
   params.cat_args.row = [];

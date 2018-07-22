@@ -22,8 +22,8 @@ module.exports = function make_position_arr(params){
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.mat_size.x;
-  offset.y = params.mat_size.y;
+  offset.x = params.mat_size.x + params.offcenter.x;
+  offset.y = params.mat_size.y + params.offcenter.x;
 
   // generate x position array
   var x_arr = Array(num_col).fill()

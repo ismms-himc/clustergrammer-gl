@@ -59,9 +59,10 @@ module.exports = function initialize_params(regl, network){
   params.center.x = 0.5;
   params.center.y = 0.5;
 
+  // will set up global offset later
   params.offcenter = {};
-  params.offcenter.x = 0.1;
-  params.offcenter.y = 0.1;
+  params.offcenter.x = 0.0;
+  params.offcenter.y = 0.0;
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);

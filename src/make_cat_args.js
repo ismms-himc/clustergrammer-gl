@@ -2,7 +2,9 @@ var m3 = require('./mat3_transform');
 var color_to_rgba = require('./color_to_rgba');
 // var color_table = require('./color_table.js');
 
-module.exports = function make_cat_args(regl, params, inst_rc){
+module.exports = function make_cat_args(regl, params, inst_rc, cat_index=0){
+
+  var cat_index_name = 'cat-' + String(cat_index);
 
   console.log('generalizing mat_size')
   /*
@@ -95,8 +97,7 @@ module.exports = function make_cat_args(regl, params, inst_rc){
   var color_arr = [];
   for (i = 0; i < num_labels; i++){
 
-
-    var inst_cat = params.network[inst_rc + '_nodes'][i]['cat-0'];
+    var inst_cat = params.network[inst_rc + '_nodes'][i][cat_index_name];
     // console.log(inst_cat)
 
     /*
@@ -105,9 +106,9 @@ module.exports = function make_cat_args(regl, params, inst_rc){
     var inst_color;
     if ('cat_colors' in params.network){
 
-      if ('cat-0' in params.network.cat_colors[inst_rc]){
+      if (cat_index_name in params.network.cat_colors[inst_rc]){
         try {
-          inst_color = params.network.cat_colors[inst_rc]['cat-0'][inst_cat];
+          inst_color = params.network.cat_colors[inst_rc][cat_index_name][inst_cat];
         }
         catch(err){
           // get random colors from color dictionary

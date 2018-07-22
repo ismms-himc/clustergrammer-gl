@@ -78,7 +78,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
 
-    console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
+    // console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
     y_offset_array[i] = mat_size - tile_height/2 - order_id * tile_height + shift_mat_heat;
   }
 

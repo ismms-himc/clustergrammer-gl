@@ -90,10 +90,12 @@ module.exports = function initialize_params(regl, network){
   //
 
   params.cat_num = {};
-  params.cat_num.row = _.keys(params.network.cat_colors['row']).length;
+  params.cat_num.row = params.cat_data.row.length;
+  params.cat_num.col = params.cat_data.col.length;
 
   params.cat_args = {};
   params.cat_args.row = [];
+
   params.cat_args.row[0] = make_cat_args(regl, params, 'row', cat_index=0);
 
   params.cat_args.col = make_cat_args(regl, params, 'col', cat_index=0);

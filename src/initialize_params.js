@@ -95,10 +95,10 @@ module.exports = function initialize_params(regl, network){
 
   params.cat_args = {};
   params.cat_args.row = [];
-
   params.cat_args.row[0] = make_cat_args(regl, params, 'row', cat_index=0);
 
-  params.cat_args.col = make_cat_args(regl, params, 'col', cat_index=0);
+  params.cat_args.col = [];
+  params.cat_args.col[0] = make_cat_args(regl, params, 'col', cat_index=0);
 
   params.dendro_args = {};
   params.dendro_args.row = make_dendro_args(regl, params, 'row');

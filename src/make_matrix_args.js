@@ -60,7 +60,7 @@ module.exports = function make_matrix_args(regl, params){
       gl_Position = zoom *
                     vec4( position.x + pos_att.x,
                           position.y + pos_att.y,
-                          // positioned further down (spillover recst are
+                          // positioned further down (spillover rects are
                           // above at 0.5)
                           0.75,
                           1

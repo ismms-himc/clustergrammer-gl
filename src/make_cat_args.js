@@ -27,7 +27,7 @@ module.exports = function make_cat_args(regl, params, inst_rc){
   var cat_width;
   var mat_size;
   var top_shift_triangles;
-  cat_height = 0.03;
+  cat_height = 0.04;
   if (inst_rc === 'col'){
     mat_size = params.heat_size.x;
     top_shift_triangles = params.mat_size.y;

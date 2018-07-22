@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 module.exports = function calc_spillover_triangles(params){
 
   var viz_dim = params.viz_dim;

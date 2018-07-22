@@ -6,7 +6,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
 
   var cat_index_name = 'cat-' + String(cat_index);
 
-  console.log('generalizing mat_size')
+  // console.log('generalizing mat_size')
   /*
 
   Hacking Categories Plan
@@ -53,7 +53,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
   // not to overlap with the matrix
   // vertical shift
   var shift_cat = 0.025 * (cat_index + 1);
-  console.log('shift_cat', shift_cat)
+  // console.log('shift_cat', shift_cat)
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
   var inst_order = 'clust';
@@ -78,7 +78,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
 
-    console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
+    // console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
     y_offset_array[i] = mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat;
   }
 

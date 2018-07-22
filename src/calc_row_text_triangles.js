@@ -5,7 +5,7 @@ module.exports = function calc_row_text_triangles(params){
   var inst_nodes = params.network.row_nodes;
   var num_row = params.num_row;
 
-  var row_height = 1/num_row;
+  // var row_height = 1/num_row;
 
   var vect_text_attrs = {
     textAlign: 'right',

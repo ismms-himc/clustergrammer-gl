@@ -4,7 +4,7 @@ var color_to_rgba = require('./color_to_rgba');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
-  console.log('generalizing mat_size')
+  // console.log('generalizing mat_size')
   /*
 
   Hacking Categories Plan

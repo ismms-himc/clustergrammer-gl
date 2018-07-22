@@ -52,7 +52,8 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
   // vertical shift
-  var shift_cat = 0.025;
+  var shift_cat = 0.025 * (cat_index + 1);
+  console.log('shift_cat', shift_cat)
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
   var inst_order = 'clust';

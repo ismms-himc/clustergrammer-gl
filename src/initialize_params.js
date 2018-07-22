@@ -14,6 +14,7 @@ var make_dendro_args = require('./make_dendro_args');
 var make_spillover_args = require('./make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./calc_row_downsampled_mat');
+var generate_cat_data = require('./generate_cat_data');
 
 /*
   Working on using subset of math.js for matrix splicing
@@ -48,6 +49,8 @@ module.exports = function initialize_params(regl, network){
   params.mat_size.x = 0.7;
   params.mat_size.y = 0.7;
 
+  generate_cat_data(params);
+
   params.cat_room = {};
   params.cat_room.x = 0.016;
   params.cat_room.y = 0.016;
@@ -79,6 +82,13 @@ module.exports = function initialize_params(regl, network){
   params.viz_aid_tri_args = {};
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+
+  console.log(_.keys(params.network.cat_colors['col']).length)
+
+  //
+
+  params.cat_num = {};
+  params.cat_num.row = _.keys(params.network.cat_colors['row']).length;
 
   params.cat_args = {};
   params.cat_args.row = [];

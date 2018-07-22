@@ -49,7 +49,9 @@ module.exports = function initialize_params(regl, network){
   params.mat_size.x = 0.7;
   params.mat_size.y = 0.7;
 
-  generate_cat_data(params);
+  params.cat_data = {};
+  params.cat_data.row = generate_cat_data(params, 'row');
+  params.cat_data.col = generate_cat_data(params, 'col');
 
   params.cat_room = {};
   params.cat_room.x = 0.016;

@@ -1,11 +1,12 @@
-module.exports = function generate_cat_data(params){
+module.exports = function generate_cat_data(params, inst_axis){
 
   console.log('generate_cat_data')
 
   var title_sep = ': ';
   current_cats = {};
 
-  var check_node = params.network.row_nodes[0];
+  var cat_data = [];
+  var check_node = params.network[ inst_axis + '_nodes'][0];
   var node_keys = _.keys(check_node);
   var current_cats = {};
   var tmp_cat;
@@ -47,5 +48,6 @@ module.exports = function generate_cat_data(params){
   });
 
 
+  return cat_data;
 
 };

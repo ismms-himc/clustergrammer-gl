@@ -8,13 +8,7 @@ module.exports = function calc_viz_area(params){
   var mat_width = params.viz_dim.heat.width;
   var mat_height = params.viz_dim.heat.height;
 
-  var pix_to_webgl = {};
 
-  pix_to_webgl.x = d3.scale.linear();
-  pix_to_webgl.x
-    .domain([0, mat_width])
-    .range([-0.5, 0.5])
-    .clamp(true);
 
   /*
 
@@ -22,11 +16,7 @@ module.exports = function calc_viz_area(params){
 
   */
 
-  pix_to_webgl.y = d3.scale.linear();
-  pix_to_webgl.y
-    .domain([0, mat_height])
-    .range([0.5, -0.5])
-    .clamp(true);
+  var pix_to_webgl = params.pix_to_webgl;
 
   // panning is defined as negative pixel values
   var total_pan = {};

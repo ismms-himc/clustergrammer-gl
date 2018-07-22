@@ -55,6 +55,8 @@ module.exports = function initialize_params(regl, network){
 
 
 
+
+
   params.cat_num = {};
   params.cat_num.row = params.cat_data.row.length;
   params.cat_num.col = params.cat_data.col.length;
@@ -146,6 +148,25 @@ module.exports = function initialize_params(regl, network){
 
   params.viz_dim = calc_viz_dim(regl, params);
 
+  var pix_to_webgl = {};
+
+  var mat_width = params.viz_dim.heat.width;
+  var mat_height = params.viz_dim.heat.height;
+
+  pix_to_webgl.x = d3.scale.linear();
+  pix_to_webgl.x
+    .domain([0, mat_width])
+    .range([-0.5, 0.5])
+    .clamp(true);
+
+  pix_to_webgl.y = d3.scale.linear();
+  pix_to_webgl.y
+    .domain([0, mat_height])
+    .range([0.5, -0.5])
+    .clamp(true);
+
+  params.pix_to_webgl = pix_to_webgl;
+
   params.zoom_data = ini_zoom_data();
 
   params.text_zoom = {};
@@ -216,6 +237,8 @@ module.exports = function initialize_params(regl, network){
 
   // save category colors
   params.cat_colors = params.network.cat_colors;
+
+
 
   return params;
 

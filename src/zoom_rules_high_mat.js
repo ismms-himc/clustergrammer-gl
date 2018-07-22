@@ -70,7 +70,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else if (ev.type === 'mousemove'){
 
-      find_mouseover_element(params);
+      find_mouseover_element(params, ev);
 
     }
 

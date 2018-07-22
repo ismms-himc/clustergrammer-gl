@@ -2,7 +2,7 @@ var m3 = require('./mat3_transform');
 var color_to_rgba = require('./color_to_rgba');
 // var color_table = require('./color_table.js');
 
-module.exports = function make_cat_args(regl, params, inst_rc, cat_index=0){
+module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
 
   var cat_index_name = 'cat-' + String(cat_index);
 

@@ -1,3 +1,9 @@
+/*
+
+Unused function
+
+*/
+
 var $ = require('jquery');
 
 module.exports = function filter_visible_mat(arrs_orig, zoom_data){
@@ -26,6 +32,7 @@ module.exports = function filter_visible_mat(arrs_orig, zoom_data){
 
     var arrs = $.extend(true, {}, arrs_orig);
 
+    // pix_to_wegtl local definition
     var pix_to_webgl = {};
 
     pix_to_webgl.x = d3.scale.linear();
@@ -39,6 +46,10 @@ module.exports = function filter_visible_mat(arrs_orig, zoom_data){
       .domain([0, mat_width])
       .range([0.5, -0.5])
       .clamp(true);
+
+
+    // var pix_to_webgl =
+
 
     // panning is defined as negative pixel values
     var total_pan = {};

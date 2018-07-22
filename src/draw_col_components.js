@@ -16,9 +16,7 @@ module.exports = function draw_col_components(regl, params, slow_draw=false){
     // drawing the column categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
     _.each(params.cat_args.col, function(inst_cat_arg){
-
-      regl( inst_cat_arg )();
-
+      regl(inst_cat_arg)();
     });
 
     regl(params.dendro_args.col)();

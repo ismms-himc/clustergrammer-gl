@@ -8,7 +8,11 @@ module.exports = function draw_row_components(regl, params, slow_draw=false){
   params.cameras['row-labels'].draw(() => {
 
     regl(params.viz_aid_tri_args.row)();
-    regl(params.cat_args.row[0])();
+
+    _.each(params.cat_args.row, function(inst_cat_arg){
+      regl(inst_cat_arg)();
+    });
+
     regl(params.dendro_args.row)();
 
     // make the arguments for the draw command

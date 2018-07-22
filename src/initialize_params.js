@@ -59,11 +59,9 @@ module.exports = function initialize_params(regl, network){
   params.cat_num.row = params.cat_data.row.length;
   params.cat_num.col = params.cat_data.col.length;
 
-
   params.cat_room = {};
-  params.cat_room.x = 0.016;
-  params.cat_room.y = 0.016;
-
+  params.cat_room.x = 0.015;
+  params.cat_room.y = 0.015;
 
   params.heat_size = {};
   params.heat_size.x = params.mat_size.x - params.cat_room.x * params.cat_num.row;

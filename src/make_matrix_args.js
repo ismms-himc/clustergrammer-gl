@@ -16,17 +16,10 @@ module.exports = function make_matrix_args(regl, params){
   var opacity_buffer = buffers.opacity_buffer;
   var position_buffer = buffers.position_buffer;
 
-  // var num_row = params.num_row;
-  // var num_col = params.num_col;
-
   /*
     Temporarily use latest mat_data dimensions (working on downsampling)
   */
-  // var num_row = params.num_row;
-  // var num_col = params.num_col;
 
-  // var tile_width = (params.heat_size.x/0.5)/num_col;
-  // var tile_height = (params.heat_size.y/0.5)/num_row;
   var tile_width = params.tile_width;
   var tile_height = params.tile_height;
 

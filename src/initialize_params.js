@@ -72,7 +72,6 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
-
   params.tile_width = (params.heat_size.x/0.5)/params.num_col;
   params.tile_height = (params.heat_size.y/0.5)/params.num_row;
 
@@ -156,6 +155,9 @@ module.exports = function initialize_params(regl, network){
 
   var mat_width = params.viz_dim.heat.width;
   var mat_height = params.viz_dim.heat.height;
+
+  params.tile_pix_width = params.viz_dim.heat.width/params.num_col;
+  params.tile_pix_height = params.viz_dim.heat.height/params.num_row;
 
   pix_to_webgl.x = d3.scale.linear();
   pix_to_webgl.x

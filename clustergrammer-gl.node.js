@@ -248,7 +248,6 @@ module.exports =
 	  params.num_row = params.mat_data.length;
 	  params.num_col = params.mat_data[0].length;
 
-
 	  params.tile_width = (params.heat_size.x/0.5)/params.num_col;
 	  params.tile_height = (params.heat_size.y/0.5)/params.num_row;
 
@@ -332,6 +331,9 @@ module.exports =
 
 	  var mat_width = params.viz_dim.heat.width;
 	  var mat_height = params.viz_dim.heat.height;
+
+	  params.tile_pix_width = params.viz_dim.heat.width/params.num_col;
+	  params.tile_pix_height = params.viz_dim.heat.height/params.num_row;
 
 	  pix_to_webgl.x = d3.scale.linear();
 	  pix_to_webgl.x
@@ -18436,8 +18438,13 @@ module.exports =
 	  cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width);
 	  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height);
 
+
+
 	  if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
-	    console.log('rel min', cursor_rel_min.x, cursor_rel_min.y);
+	    console.log('rel min',
+	                 Math.floor(cursor_rel_min.y/params.tile_pix_height),
+	                 Math.floor(cursor_rel_min.x/params.tile_pix_width)
+	                 );
 	  }
 
 	  /*
@@ -20629,17 +20636,10 @@ module.exports =
 	  var opacity_buffer = buffers.opacity_buffer;
 	  var position_buffer = buffers.position_buffer;
 
-	  // var num_row = params.num_row;
-	  // var num_col = params.num_col;
-
 	  /*
 	    Temporarily use latest mat_data dimensions (working on downsampling)
 	  */
-	  // var num_row = params.num_row;
-	  // var num_col = params.num_col;
 
-	  // var tile_width = (params.heat_size.x/0.5)/num_col;
-	  // var tile_height = (params.heat_size.y/0.5)/num_row;
 	  var tile_width = params.tile_width;
 	  var tile_height = params.tile_height;
 

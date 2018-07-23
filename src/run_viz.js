@@ -38,30 +38,7 @@ module.exports = function run_viz(container, network){
 
       draw_commands(regl, params);
 
-      setTimeout(function(){
-        params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
-
-        // console.log('total_int: ', params.zoom_data.x.total_int);
-
-        if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
-
-          // preventing from running on first frame
-          if (first_frame == false){
-
-            console.log('\n------------------\nFINAL INTERACTION');
-
-            // run draw commands
-            var slow_draw = true;
-            draw_commands(regl, params, slow_draw);
-
-            // console.log(params.kept_row_y);
-
-          } else {
-            first_frame = false;
-          }
-        }
-
-      }, 100)
+      setTimeout(final_interaction_frame, 100, params)
 
       // console.log('draw');
       initialize_viz = false;
@@ -78,6 +55,34 @@ module.exports = function run_viz(container, network){
     }
 
   });
+
+
+  function final_interaction_frame(params){
+
+        params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+
+        // console.log('total_int: ', params.zoom_data.x.total_int);
+
+        if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
+
+          // preventing from running on first frame
+          if (first_frame == false){
+
+            console.log('\n------------------\nFINAL INTERACTION');
+            console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+
+            // run draw commands
+            var slow_draw = true;
+            draw_commands(regl, params, slow_draw);
+
+            // console.log(params.kept_row_y);
+
+          } else {
+            first_frame = false;
+          }
+        }
+
+      }
 
   return params;
 

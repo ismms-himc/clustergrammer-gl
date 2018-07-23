@@ -125,30 +125,7 @@ var Clustergrammer2 =
 
 	      draw_commands(regl, params);
 
-	      setTimeout(function(){
-	        params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
-
-	        // console.log('total_int: ', params.zoom_data.x.total_int);
-
-	        if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
-
-	          // preventing from running on first frame
-	          if (first_frame == false){
-
-	            console.log('\n------------------\nFINAL INTERACTION');
-
-	            // run draw commands
-	            var slow_draw = true;
-	            draw_commands(regl, params, slow_draw);
-
-	            // console.log(params.kept_row_y);
-
-	          } else {
-	            first_frame = false;
-	          }
-	        }
-
-	      }, 100)
+	      setTimeout(final_interaction_frame, 100, params)
 
 	      // console.log('draw');
 	      initialize_viz = false;
@@ -165,6 +142,34 @@ var Clustergrammer2 =
 	    }
 
 	  });
+
+
+	  function final_interaction_frame(params){
+
+	        params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+
+	        // console.log('total_int: ', params.zoom_data.x.total_int);
+
+	        if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
+
+	          // preventing from running on first frame
+	          if (first_frame == false){
+
+	            console.log('\n------------------\nFINAL INTERACTION');
+	            console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+
+	            // run draw commands
+	            var slow_draw = true;
+	            draw_commands(regl, params, slow_draw);
+
+	            // console.log(params.kept_row_y);
+
+	          } else {
+	            first_frame = false;
+	          }
+	        }
+
+	      }
 
 	  return params;
 
@@ -192,6 +197,7 @@ var Clustergrammer2 =
 	var calc_row_downsampled_mat = __webpack_require__(197);
 	var generate_cat_data = __webpack_require__(198);
 	var get_ordered_labels = __webpack_require__(243);
+	var make_tooltip_args = __webpack_require__(245);
 
 	/*
 	  Working on using subset of math.js for matrix splicing
@@ -217,6 +223,7 @@ var Clustergrammer2 =
 
 	  params.zoom_function = zoom_function;
 	  params.still_interacting = false;
+	  params.still_mouseover = false;
 	  params.mat_data = network.mat;
 
 	  /*
@@ -303,28 +310,27 @@ var Clustergrammer2 =
 	  params.spill_depth = {};
 	  params.spill_depth.mat_sides = 0.5;
 	  spillover_args.mat_sides = make_spillover_args(regl,
-	                                                 zoom_function,
 	                                                 params.spill_depth.mat_sides,
 	                                                 inst_color);
 
 	  params.spill_depth.cats = 0.5;
 	  spillover_args.cats = make_spillover_args(regl,
-	                                                 zoom_function,
 	                                                 params.spill_depth.cats,
 	                                                 inst_color);
 
 	  params.spill_depth.mat_corners = 0.2;
 	  spillover_args.mat_corners = make_spillover_args(regl,
-	                                                   zoom_function,
 	                                                   params.spill_depth.mat_corners,
 	                                                   inst_color);
 	  params.spill_depth.label_corners = 0.0;
 	  spillover_args.label_corners = make_spillover_args(regl,
-	                                                     zoom_function,
 	                                                     params.spill_depth.label_corners,
 	                                                     inst_color);
 
 	  params.spillover_args = spillover_args;
+
+	  // // make tooltip args
+	  // var tooltip_args = make_tooltip_args
 
 	  params.viz_dim = calc_viz_dim(regl, params);
 
@@ -16898,6 +16904,7 @@ var Clustergrammer2 =
 	var extend = __webpack_require__(100);
 	var zoom_rules_low_mat = __webpack_require__(126);
 	var keep_track_of_interactions = __webpack_require__(127);
+	var keep_track_of_mouseovers = __webpack_require__(247);
 	var find_mouseover_element = __webpack_require__(128);
 
 	module.exports = function zoom_rules_high_mat(regl, params){
@@ -16966,7 +16973,11 @@ var Clustergrammer2 =
 
 	    } else if (ev.type === 'mousemove'){
 
+	      // // trying to keep track of interactions for mouseovers
+	      keep_track_of_mouseovers(params);
+
 	      find_mouseover_element(params, ev);
+
 
 	    }
 
@@ -18430,11 +18441,13 @@ var Clustergrammer2 =
 
 /***/ }),
 /* 128 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-	var make_tooltip_args = __webpack_require__(245);
+	// var make_tooltip_args = require('./make_tooltip_args');
 
 	module.exports = function find_mouseover_element(params, ev){
+
+	  // console.log('still_mouseover', params.still_mouseover)
 
 	  /*
 
@@ -18470,7 +18483,8 @@ var Clustergrammer2 =
 	    params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
 	    // console.log('rel min', cursor_rel_min.x, cursor_rel_min.y, inst_row, inst_col);
-	    make_tooltip_args(params);
+	    // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+	    // make_tooltip_args(params);
 
 	  }
 
@@ -32299,7 +32313,7 @@ var Clustergrammer2 =
 /* 195 */
 /***/ (function(module, exports) {
 
-	module.exports = function make_spillover_args(regl, zoom_function, inst_depth,
+	module.exports = function make_spillover_args(regl, inst_depth,
 	                                               inst_color=[1, 1, 1, 1]){
 
 	  // Spillover Arguments
@@ -39276,6 +39290,7 @@ var Clustergrammer2 =
 	var draw_row_components = __webpack_require__(236);
 	var draw_col_components = __webpack_require__(238);
 	var draw_spillover_components = __webpack_require__(240);
+	var draw_tooltip_components = __webpack_require__(246);
 
 	module.exports = function draw_commands(regl, params, slow_draw=false){
 
@@ -39294,6 +39309,8 @@ var Clustergrammer2 =
 	  draw_col_components(regl, params, slow_draw);
 
 	  draw_spillover_components(regl, params);
+
+	  draw_tooltip_components(regl, params);
 
 	};
 
@@ -39700,6 +39717,7 @@ var Clustergrammer2 =
 /***/ (function(module, exports) {
 
 	module.exports = function draw_spillover_components(regl, params){
+
 	  // Spillover Components (may not need to redraw)
 	  params.cameras.static.draw(() => {
 
@@ -50817,7 +50835,7 @@ var Clustergrammer2 =
 
 	module.exports = function make_tooltip_args(params){
 
-	  console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+	  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
 
 	  /*
 
@@ -50828,6 +50846,90 @@ var Clustergrammer2 =
 
 	  */
 
+	  // Spillover Arguments
+	  ///////////////////////////////
+	  var args = {
+	    // In a draw call, we can pass the shader source code to regl
+	    frag: `
+	    precision mediump float;
+	    uniform vec4 color;
+	    void main () {
+	      gl_FragColor = color;
+	    }`,
+
+	    vert: `
+	    precision mediump float;
+	    attribute vec2 position;
+	    uniform float inst_depth;
+	    void main () {
+	      // positioned further up (matrix is lower at 0.)
+	      gl_Position = vec4(position, inst_depth, 1);
+	    }`,
+
+	    attributes: {
+	      position: regl.prop('pos')
+	    },
+
+	    uniforms: {
+	      color: inst_color,
+	      inst_depth: inst_depth
+	    },
+
+	    count: 3,
+	    depth: {
+	      enable: true,
+	      mask: true,
+	      func: 'less',
+	      // func: 'greater',
+	      range: [0, 1]
+	    },
+	  };
+
+	  return args;
+
+
+	};
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports) {
+
+	module.exports = function draw_tooltip_components(regl, params){
+
+	  console.log('draw tooltip components')
+
+	  // Spillover Components (may not need to redraw)
+	  params.cameras.static.draw(() => {
+
+	    // var args = params.spillover_args;
+	    // var triangles = params.spillover_triangles;
+
+	    // // spillover rects to hide matrix spillover
+	    // regl(args.mat_sides)(triangles.mat_sides);
+	    // regl(args.cats)(triangles.cats);
+	    // regl(args.mat_corners)(triangles.mat_corners);
+	    // regl(args.label_corners)(triangles.label_corners);
+
+	  });
+	};
+
+/***/ }),
+/* 247 */
+/***/ (function(module, exports) {
+
+	module.exports = function keep_track_of_mouseovers(params){
+
+	  // keep track of mouseovers
+	  if (params.still_mouseover == false){
+
+	    params.still_mouseover = true;
+
+	    // wait some time to confirm still not interacting
+	    setTimeout(function(){
+	      params.still_mouseover = false;
+	    }, 1000);
+
+	  }
 
 	};
 

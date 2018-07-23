@@ -1,4 +1,4 @@
-module.exports = function make_spillover_args(regl, zoom_function, inst_depth,
+module.exports = function make_spillover_args(regl, inst_depth,
                                                inst_color=[1, 1, 1, 1]){
 
   // Spillover Arguments

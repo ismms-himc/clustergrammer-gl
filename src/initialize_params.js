@@ -16,6 +16,7 @@ var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./calc_row_downsampled_mat');
 var generate_cat_data = require('./generate_cat_data');
 var get_ordered_labels = require('./get_ordered_labels');
+var make_tooltip_args = require('./make_tooltip_args');
 
 /*
   Working on using subset of math.js for matrix splicing
@@ -41,6 +42,7 @@ module.exports = function initialize_params(regl, network){
 
   params.zoom_function = zoom_function;
   params.still_interacting = false;
+  params.still_mouseover = false;
   params.mat_data = network.mat;
 
   /*
@@ -127,28 +129,27 @@ module.exports = function initialize_params(regl, network){
   params.spill_depth = {};
   params.spill_depth.mat_sides = 0.5;
   spillover_args.mat_sides = make_spillover_args(regl,
-                                                 zoom_function,
                                                  params.spill_depth.mat_sides,
                                                  inst_color);
 
   params.spill_depth.cats = 0.5;
   spillover_args.cats = make_spillover_args(regl,
-                                                 zoom_function,
                                                  params.spill_depth.cats,
                                                  inst_color);
 
   params.spill_depth.mat_corners = 0.2;
   spillover_args.mat_corners = make_spillover_args(regl,
-                                                   zoom_function,
                                                    params.spill_depth.mat_corners,
                                                    inst_color);
   params.spill_depth.label_corners = 0.0;
   spillover_args.label_corners = make_spillover_args(regl,
-                                                     zoom_function,
                                                      params.spill_depth.label_corners,
                                                      inst_color);
 
   params.spillover_args = spillover_args;
+
+  // // make tooltip args
+  // var tooltip_args = make_tooltip_args
 
   params.viz_dim = calc_viz_dim(regl, params);
 

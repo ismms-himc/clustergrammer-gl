@@ -352,7 +352,7 @@ var Clustergrammer2 =
 	  params.inst_order.row = 'clust';
 	  params.inst_order.col = 'clust';
 
-	  params.ordered_labels = get_ordered_labels(params);
+	  get_ordered_labels(params);
 
 	  params.pix_to_webgl = pix_to_webgl;
 
@@ -18446,12 +18446,15 @@ var Clustergrammer2 =
 	  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height);
 
 
-
 	  if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
-	    console.log('rel min',
-	                 Math.floor(cursor_rel_min.y/params.tile_pix_height),
-	                 Math.floor(cursor_rel_min.x/params.tile_pix_width)
-	                 );
+
+	    var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
+	    var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+
+	    console.log(params.orderd_labels)
+	    var inst_row = params.ordered_labels.rows[row_index];
+	    var inst_col = params.ordered_labels.cols[col_index];
+	    console.log('rel min', inst_row, inst_col);
 	  }
 
 	  /*
@@ -50774,7 +50777,9 @@ var Clustergrammer2 =
 /* 243 */
 /***/ (function(module, exports) {
 
-	module.exports = function get_ordered_labels(params  ){
+	module.exports = function get_ordered_labels(params){
+
+	  console.log('get ordered_labels')
 
 	  var ordered_labels = {};
 
@@ -50797,7 +50802,7 @@ var Clustergrammer2 =
 	    ordered_labels.cols[inst_order] = inst_name;
 	  });
 
-	  return ordered_labels;
+	  params.ordered_labels = ordered_labels;
 	};
 
 /***/ })

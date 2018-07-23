@@ -1,4 +1,6 @@
-module.exports = function get_ordered_labels(params  ){
+module.exports = function get_ordered_labels(params){
+
+  console.log('get ordered_labels')
 
   var ordered_labels = {};
 
@@ -21,5 +23,5 @@ module.exports = function get_ordered_labels(params  ){
     ordered_labels.cols[inst_order] = inst_name;
   });
 
-  return ordered_labels;
+  params.ordered_labels = ordered_labels;
 };

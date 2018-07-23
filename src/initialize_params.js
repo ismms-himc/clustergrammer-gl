@@ -176,7 +176,7 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.row = 'clust';
   params.inst_order.col = 'clust';
 
-  params.ordered_labels = get_ordered_labels(params);
+  get_ordered_labels(params);
 
   params.pix_to_webgl = pix_to_webgl;
 

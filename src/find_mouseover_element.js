@@ -16,12 +16,15 @@ module.exports = function find_mouseover_element(params, ev){
   cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height);
 
 
-
   if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
-    console.log('rel min',
-                 Math.floor(cursor_rel_min.y/params.tile_pix_height),
-                 Math.floor(cursor_rel_min.x/params.tile_pix_width)
-                 );
+
+    var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
+    var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+
+    console.log(params.orderd_labels)
+    var inst_row = params.ordered_labels.rows[row_index];
+    var inst_col = params.ordered_labels.cols[col_index];
+    console.log('rel min', inst_row, inst_col);
   }
 
   /*

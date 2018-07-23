@@ -15,6 +15,7 @@ var make_spillover_args = require('./make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./calc_row_downsampled_mat');
 var generate_cat_data = require('./generate_cat_data');
+var get_ordered_labels = require('./get_ordered_labels');
 
 /*
   Working on using subset of math.js for matrix splicing
@@ -170,6 +171,12 @@ module.exports = function initialize_params(regl, network){
     .domain([0, mat_height])
     .range([0.5, -0.5])
     .clamp(true);
+
+  params.inst_order = {};
+  params.inst_order.row = 'clust';
+  params.inst_order.col = 'clust';
+
+  params.ordered_labels = get_ordered_labels(params);
 
   params.pix_to_webgl = pix_to_webgl;
 

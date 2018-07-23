@@ -191,6 +191,7 @@ module.exports =
 	var calc_viz_area = __webpack_require__(196);
 	var calc_row_downsampled_mat = __webpack_require__(197);
 	var generate_cat_data = __webpack_require__(198);
+	var get_ordered_labels = __webpack_require__(243);
 
 	/*
 	  Working on using subset of math.js for matrix splicing
@@ -346,6 +347,12 @@ module.exports =
 	    .domain([0, mat_height])
 	    .range([0.5, -0.5])
 	    .clamp(true);
+
+	  params.inst_order = {};
+	  params.inst_order.row = 'clust';
+	  params.inst_order.col = 'clust';
+
+	  params.ordered_labels = get_ordered_labels(params);
 
 	  params.pix_to_webgl = pix_to_webgl;
 
@@ -50762,6 +50769,36 @@ module.exports =
 	})));
 	//# sourceMappingURL=regl.js.map
 
+
+/***/ }),
+/* 243 */
+/***/ (function(module, exports) {
+
+	module.exports = function get_ordered_labels(params  ){
+
+	  var ordered_labels = {};
+
+	  row_nodes = params.network.row_nodes;
+	  col_nodes = params.network.col_nodes;
+	  ordered_labels.rows = [];
+	  ordered_labels.cols = [];
+
+	  var inst_order;
+	  var inst_name;
+	  _.each(row_nodes, function(inst_node){
+	    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
+	    inst_name = inst_node.name;
+	    ordered_labels.rows[inst_order] = inst_name;
+	  });
+
+	  _.each(col_nodes, function(inst_node){
+	    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
+	    inst_name = inst_node.name;
+	    ordered_labels.cols[inst_order] = inst_name;
+	  });
+
+	  return ordered_labels;
+	};
 
 /***/ })
 /******/ ]);

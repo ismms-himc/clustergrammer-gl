@@ -103,11 +103,15 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   // tracking cursor position relative to the minimum
   var cursor_relative_min = zoom_data.cursor_position - viz_dim_mat.min;
 
+  /* Cursor restriction does not seem to be doing anything */
+
   // restrict cursor_relative_min
   if (cursor_relative_min < 0){
     cursor_relative_min = 0;
+    // console.log('LOWER than min ############################')
   } else if (cursor_relative_min > viz_dim_mat.max){
     cursor_relative_min = viz_dim_mat.max;
+    // console.log('HIGHER than min ############################')
   }
 
   // tracking cursor position relative to the maximum
@@ -116,9 +120,12 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   // restrict cursor_relative_max
   if (cursor_relative_max < 0){
     cursor_relative_max = 0;
+    // console.log('LOWER than max ############################')
   } else if (cursor_relative_max > viz_dim_mat.max){
     cursor_relative_max = viz_dim_mat.max;
+    // console.log('HIGHER than max ############################')
   }
+  console.log(cursor_relative_min, cursor_relative_max)
 
 
   // pan_by_zoom relative to matrix max and min

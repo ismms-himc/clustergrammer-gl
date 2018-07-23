@@ -269,7 +269,7 @@ module.exports =
 	  params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
 	  params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
-	  console.log(_.keys(params.network.cat_colors['col']).length)
+	  // console.log(_.keys(params.network.cat_colors['col']).length)
 
 	  //
 
@@ -16755,7 +16755,7 @@ module.exports =
 	  offset_heat.x = (viz_dim.mat.width - viz_dim.heat.width)/2;
 	  viz_dim.heat.x = {};
 	  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
-	  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2 + offset_heat.x;
+	  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2; //  + offset_heat.x;
 
 	  offset_heat.y = (viz_dim.mat.height - viz_dim.heat.height)/2;
 	  viz_dim.heat.y = {};
@@ -18232,11 +18232,15 @@ module.exports =
 	  // tracking cursor position relative to the minimum
 	  var cursor_relative_min = zoom_data.cursor_position - viz_dim_mat.min;
 
+	  /* Cursor restriction does not seem to be doing anything */
+
 	  // restrict cursor_relative_min
 	  if (cursor_relative_min < 0){
 	    cursor_relative_min = 0;
+	    // console.log('LOWER than min ############################')
 	  } else if (cursor_relative_min > viz_dim_mat.max){
 	    cursor_relative_min = viz_dim_mat.max;
+	    // console.log('HIGHER than min ############################')
 	  }
 
 	  // tracking cursor position relative to the maximum
@@ -18245,9 +18249,12 @@ module.exports =
 	  // restrict cursor_relative_max
 	  if (cursor_relative_max < 0){
 	    cursor_relative_max = 0;
+	    // console.log('LOWER than max ############################')
 	  } else if (cursor_relative_max > viz_dim_mat.max){
 	    cursor_relative_max = viz_dim_mat.max;
+	    // console.log('HIGHER than max ############################')
 	  }
+	  console.log(cursor_relative_min, cursor_relative_max)
 
 
 	  // pan_by_zoom relative to matrix max and min
@@ -18410,7 +18417,22 @@ module.exports =
 
 	module.exports = function find_mouseover_element(params, ev){
 
-	  console.log('mousmove in find_mouseover_element!!! ', ev.x0, ev.y0);
+	  // console.log('mousemove in find_mouseover_element!!! ',
+	  //   ev.x0,
+	  //   params.zoom_data.x.cursor_position,
+	  //   ev.y0,
+	  //   params.zoom_data.y.cursor_position);
+
+	  var viz_dim_heat = params.viz_dim.heat;
+
+	  var cursor_rel_min = {};
+	  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
+	  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min
+
+	  cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width);
+	  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height);
+
+	  console.log('rel min', cursor_rel_min.x, cursor_rel_min.y);
 
 	  /*
 
@@ -18426,6 +18448,19 @@ module.exports =
 
 
 	  */
+
+	function restrict_rel_min(cursor_rel_min, max_pix){
+
+	  // console.log(viz_dim_heat.max)
+	  if (cursor_rel_min < 0){
+	    cursor_rel_min = 0;
+	  // } else if (cursor_rel_min > viz_dim_heat.max){
+	  } else if (cursor_rel_min > max_pix){
+	    // cursor_rel_min = viz_dim_heat.max;
+	    cursor_rel_min = max_pix;
+	  }
+	  return cursor_rel_min;
+	}
 
 	};
 

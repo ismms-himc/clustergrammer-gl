@@ -52,7 +52,7 @@ module.exports = function calc_viz_dim(regl, params){
   offset_heat.x = (viz_dim.mat.width - viz_dim.heat.width)/2;
   viz_dim.heat.x = {};
   viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
-  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2 + offset_heat.x;
+  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2; //  + offset_heat.x;
 
   offset_heat.y = (viz_dim.mat.height - viz_dim.heat.height)/2;
   viz_dim.heat.y = {};

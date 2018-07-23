@@ -354,6 +354,10 @@ module.exports =
 
 	  get_ordered_labels(params);
 
+	  params.mouseover = {};
+	  params.mouseover.row_name = null;
+	  params.mouseover.col_name = null;
+
 	  params.pix_to_webgl = pix_to_webgl;
 
 	  params.zoom_data = ini_zoom_data();
@@ -18426,15 +18430,25 @@ module.exports =
 
 /***/ }),
 /* 128 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+	var draw_tooltip = __webpack_require__(244);
 
 	module.exports = function find_mouseover_element(params, ev){
 
-	  // console.log('mousemove in find_mouseover_element!!! ',
-	  //   ev.x0,
-	  //   params.zoom_data.x.cursor_position,
-	  //   ev.y0,
-	  //   params.zoom_data.y.cursor_position);
+	  /*
+
+	  Need to use
+
+	    cgm.params.canvas_pos.x_arr.length
+	      and
+	    cgm.params.canvas_pos.y_arr.length
+
+	  to identify where the user is mousing over
+
+	  Also need to take into consideration zooming/panning
+
+	  */
 
 	  var viz_dim_heat = params.viz_dim.heat;
 
@@ -18452,27 +18466,14 @@ module.exports =
 	    var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
 	    // console.log(params.orderd_labels)
-	    var inst_row = params.ordered_labels.rows[row_index];
-	    var inst_col = params.ordered_labels.cols[col_index];
+	    params.mouseover.row_name = params.ordered_labels.rows[row_index];
+	    params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
 	    // console.log('rel min', cursor_rel_min.x, cursor_rel_min.y, inst_row, inst_col);
-	    console.log('rel min', inst_row, inst_col);
+	    draw_tooltip(params);
+
 	  }
 
-	  /*
-
-	  Need to use
-
-	    cgm.params.canvas_pos.x_arr.length
-	      and
-	    cgm.params.canvas_pos.y_arr.length
-
-	  to identify where the user is mousing over
-
-	  Also need to take into consideration zooming/panning
-
-
-	  */
 
 	function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
 
@@ -50807,6 +50808,16 @@ module.exports =
 	  });
 
 	  params.ordered_labels = ordered_labels;
+	};
+
+/***/ }),
+/* 244 */
+/***/ (function(module, exports) {
+
+	module.exports = function draw_tooltip(params){
+
+	  console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+
 	};
 
 /***/ })

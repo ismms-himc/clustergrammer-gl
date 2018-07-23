@@ -139,7 +139,7 @@ module.exports =
 	    // mouseover interaction starting then ending will cause a draw comand
 	    if (params.still_mouseover == true){
 
-	      console.log('still_mouseover')
+	      // console.log('still_mouseover')
 	      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
 	      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params)
@@ -163,9 +163,13 @@ module.exports =
 	    // reduce the number of mouseovers
 	    params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
-	    console.log('check  ', params.zoom_data.x.total_mouseover)
+	    // console.log('check  ', params.zoom_data.x.total_mouseover)
 	    if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
 	      console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
+
+	      // run draw commands
+	      var slow_draw = true;
+	      draw_commands(regl, params, slow_draw);
 	    }
 	  }
 

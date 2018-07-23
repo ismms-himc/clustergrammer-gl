@@ -114,9 +114,13 @@ var Clustergrammer2 =
 	  var params = initialize_params(regl, network);
 
 	  var first_frame = true;
+	  var wait_time_final_interact = 100;
+	  var wait_time_final_mouseover = 100;
 
 	  regl.frame(function () {
 
+	    // interaction (zoom/drag) causes a draw command, the final draw command
+	    // is run when the interaction stops
 	    if (params.still_interacting == true || initialize_viz == true){
 
 	      // console.log('frame-animation');
@@ -125,10 +129,20 @@ var Clustergrammer2 =
 
 	      draw_commands(regl, params);
 
-	      setTimeout(final_interaction_frame, 100, params)
+	      setTimeout(final_interaction_frame, wait_time_final_interact, params)
 
 	      // console.log('draw');
 	      initialize_viz = false;
+
+	    }
+
+	    // mouseover interaction starting then ending will cause a draw comand
+	    if (params.still_mouseover == true){
+
+	      console.log('still_mouseover')
+	      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
+
+	      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params)
 
 	    } else {
 
@@ -144,32 +158,42 @@ var Clustergrammer2 =
 	  });
 
 
+	  function final_mouseover_frame(params){
+
+	    // reduce the number of mouseovers
+	    params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
+
+	    console.log('check  ', params.zoom_data.x.total_mouseover)
+	    if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
+	      console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
+	    }
+	  }
+
 	  function final_interaction_frame(params){
 
-	        params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+	    // reduce the number of interactions
+	    params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
 
-	        // console.log('total_int: ', params.zoom_data.x.total_int);
+	    if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
 
-	        if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
+	      // preventing from running on first frame
+	      if (first_frame == false){
 
-	          // preventing from running on first frame
-	          if (first_frame == false){
+	        console.log('\n------------------\nFINAL INTERACTION');
+	        console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
 
-	            console.log('\n------------------\nFINAL INTERACTION');
-	            console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+	        // run draw commands
+	        var slow_draw = true;
+	        draw_commands(regl, params, slow_draw);
 
-	            // run draw commands
-	            var slow_draw = true;
-	            draw_commands(regl, params, slow_draw);
+	        // console.log(params.kept_row_y);
 
-	            // console.log(params.kept_row_y);
-
-	          } else {
-	            first_frame = false;
-	          }
-	        }
-
+	      } else {
+	        first_frame = false;
 	      }
+	    }
+
+	  }
 
 	  return params;
 
@@ -16851,7 +16875,13 @@ var Clustergrammer2 =
 	    // keep track of when zooming stops
 	    inst_data.still_zooming = false;
 
+	    // keep a running total of the number of interactions (zoom/pan)
+	    // this is used to keep track of the final interaction
 	    inst_data.total_int = 0;
+
+	    // keep a running total of the number of mouseovers
+	    // this is used to keep track of the final mouseover
+	    inst_data.total_mouseover = 0;
 
 	    // add to zoom_data
 	    zoom_data[inst_dim] = inst_data;

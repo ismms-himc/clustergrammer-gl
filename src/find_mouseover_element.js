@@ -12,8 +12,8 @@ module.exports = function find_mouseover_element(params, ev){
   cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
   cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min
 
-  cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width);
-  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height);
+  cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
+  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
 
 
   if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
@@ -21,9 +21,11 @@ module.exports = function find_mouseover_element(params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    console.log(params.orderd_labels)
+    // console.log(params.orderd_labels)
     var inst_row = params.ordered_labels.rows[row_index];
     var inst_col = params.ordered_labels.cols[col_index];
+
+    // console.log('rel min', cursor_rel_min.x, cursor_rel_min.y, inst_row, inst_col);
     console.log('rel min', inst_row, inst_col);
   }
 
@@ -42,7 +44,9 @@ module.exports = function find_mouseover_element(params, ev){
 
   */
 
-function restrict_rel_min(cursor_rel_min, max_pix){
+function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
+
+  cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
 
   // console.log(viz_dim_heat.max)
   if (cursor_rel_min < 0){

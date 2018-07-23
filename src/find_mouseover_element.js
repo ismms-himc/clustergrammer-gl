@@ -1,4 +1,4 @@
-var draw_tooltip = require('./draw_tooltip');
+var make_tooltip_args = require('./make_tooltip_args');
 
 module.exports = function find_mouseover_element(params, ev){
 
@@ -36,7 +36,7 @@ module.exports = function find_mouseover_element(params, ev){
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
     // console.log('rel min', cursor_rel_min.x, cursor_rel_min.y, inst_row, inst_col);
-    draw_tooltip(params);
+    make_tooltip_args(params);
 
   }
 

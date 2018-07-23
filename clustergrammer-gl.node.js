@@ -18432,7 +18432,7 @@ module.exports =
 /* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var draw_tooltip = __webpack_require__(244);
+	var make_tooltip_args = __webpack_require__(245);
 
 	module.exports = function find_mouseover_element(params, ev){
 
@@ -18470,7 +18470,7 @@ module.exports =
 	    params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
 	    // console.log('rel min', cursor_rel_min.x, cursor_rel_min.y, inst_row, inst_col);
-	    draw_tooltip(params);
+	    make_tooltip_args(params);
 
 	  }
 
@@ -50811,12 +50811,23 @@ module.exports =
 	};
 
 /***/ }),
-/* 244 */
+/* 244 */,
+/* 245 */
 /***/ (function(module, exports) {
 
-	module.exports = function draw_tooltip(params){
+	module.exports = function make_tooltip_args(params){
 
 	  console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+
+	  /*
+
+	  Need to calculate the arguments and triangles for the tooltip draw command,
+	  which depending on the mouseover statis will or will not draw a tooltip in the
+	  larger draw_commands function. We do not want to run any draw commands later
+	  since they will re-draw only a subset of the visualization.
+
+	  */
+
 
 	};
 

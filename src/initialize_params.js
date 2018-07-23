@@ -72,6 +72,10 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
+
+  params.tile_width = (params.heat_size.x/0.5)/params.num_col;
+  params.tile_height = (params.heat_size.y/0.5)/params.num_row;
+
   params.center = {};
   params.center.x = 0.5;
   params.center.y = 0.5;

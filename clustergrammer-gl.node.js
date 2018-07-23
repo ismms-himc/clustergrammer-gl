@@ -248,6 +248,10 @@ module.exports =
 	  params.num_row = params.mat_data.length;
 	  params.num_col = params.mat_data[0].length;
 
+
+	  params.tile_width = (params.heat_size.x/0.5)/params.num_col;
+	  params.tile_height = (params.heat_size.y/0.5)/params.num_row;
+
 	  params.center = {};
 	  params.center.x = 0.5;
 	  params.center.y = 0.5;
@@ -18254,7 +18258,7 @@ module.exports =
 	    cursor_relative_max = viz_dim_mat.max;
 	    // console.log('HIGHER than max ############################')
 	  }
-	  console.log(cursor_relative_min, cursor_relative_max)
+	  // console.log(cursor_relative_min, cursor_relative_max)
 
 
 	  // pan_by_zoom relative to matrix max and min
@@ -20631,11 +20635,13 @@ module.exports =
 	  /*
 	    Temporarily use latest mat_data dimensions (working on downsampling)
 	  */
-	  var num_row = params.mat_data.length;
-	  var num_col = params.mat_data[0].length;
+	  // var num_row = params.num_row;
+	  // var num_col = params.num_col;
 
-	  var tile_width = (params.heat_size.x/0.5)/num_col;
-	  var tile_height = (params.heat_size.y/0.5)/num_row;
+	  // var tile_width = (params.heat_size.x/0.5)/num_col;
+	  // var tile_height = (params.heat_size.y/0.5)/num_row;
+	  var tile_width = params.tile_width;
+	  var tile_height = params.tile_height;
 
 	  // bottom half
 	  var bottom_half_verts = [

@@ -22,11 +22,13 @@ module.exports = function make_matrix_args(regl, params){
   /*
     Temporarily use latest mat_data dimensions (working on downsampling)
   */
-  var num_row = params.mat_data.length;
-  var num_col = params.mat_data[0].length;
+  // var num_row = params.num_row;
+  // var num_col = params.num_col;
 
-  var tile_width = (params.heat_size.x/0.5)/num_col;
-  var tile_height = (params.heat_size.y/0.5)/num_row;
+  // var tile_width = (params.heat_size.x/0.5)/num_col;
+  // var tile_height = (params.heat_size.y/0.5)/num_row;
+  var tile_width = params.tile_width;
+  var tile_height = params.tile_height;
 
   // bottom half
   var bottom_half_verts = [

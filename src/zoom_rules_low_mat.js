@@ -125,7 +125,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     cursor_relative_max = viz_dim_mat.max;
     // console.log('HIGHER than max ############################')
   }
-  console.log(cursor_relative_min, cursor_relative_max)
+  // console.log(cursor_relative_min, cursor_relative_max)
 
 
   // pan_by_zoom relative to matrix max and min

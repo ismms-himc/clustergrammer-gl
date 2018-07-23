@@ -18432,7 +18432,9 @@ var Clustergrammer2 =
 	  cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width);
 	  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height);
 
-	  console.log('rel min', cursor_rel_min.x, cursor_rel_min.y);
+	  if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
+	    console.log('rel min', cursor_rel_min.x, cursor_rel_min.y);
+	  }
 
 	  /*
 

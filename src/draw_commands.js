@@ -17,8 +17,8 @@ module.exports = function draw_commands(regl, params, slow_draw=false){
   draw_matrix_components(regl, params);
 
   draw_row_components(regl, params, slow_draw);
-
   draw_col_components(regl, params, slow_draw);
+
   draw_spillover_components(regl, params);
 
 };

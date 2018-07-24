@@ -39882,7 +39882,9 @@ module.exports =
 
 /***/ }),
 /* 244 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+	var calc_tooltip_triangles = __webpack_require__(247);
 
 	module.exports = function draw_tooltip_components(regl, params){
 
@@ -39891,9 +39893,12 @@ module.exports =
 	  // Spillover Components (may not need to redraw)
 	  params.cameras.static.draw(() => {
 
-	    var args = params.spillover_args.mat_corners;
+	    // var args = params.spillover_args.mat_corners;
 	    var args = params.tooltip_args;
-	    var triangles = params.spillover_triangles.mat_corners;
+
+	    // var triangles = params.spillover_triangles.mat_corners;
+
+	    var triangles = calc_tooltip_triangles(regl, params);
 
 	    // spillover rects to hide matrix spillover
 	    regl(args)(triangles);
@@ -50963,6 +50968,51 @@ module.exports =
 	})));
 	//# sourceMappingURL=regl.js.map
 
+
+/***/ }),
+/* 247 */
+/***/ (function(module, exports) {
+
+	module.exports = function calc_tooltip_triangles(regl, params){
+
+	  var viz_dim = params.viz_dim;
+
+	  var ini_mat = params.mat_size;
+	  var ini_heat = params.heat_size;
+
+	  var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
+
+	  var scaled_mat = {};
+	  scaled_mat.x = ini_mat.x / height_to_width;
+	  scaled_mat.y = ini_mat.y / height_to_width;
+
+	  var scaled_heat = {};
+	  scaled_heat.x = ini_heat.x / height_to_width;
+	  scaled_heat.y = ini_heat.y / height_to_width;
+
+	  var spillover_triangles = {};
+
+	  // trying to shift based on diff between mat and heat size
+	  var inst_shift = {}
+	  inst_shift.x = params.mat_size.x - params.heat_size.x;
+	  inst_shift.y = params.mat_size.y - params.heat_size.y;
+
+	  var background_triangles = [
+	    // top-left spillover rect
+	    {'pos': [[-1, 1],
+	             [-0.8 , 0.8],
+	             [-1.0 , 0.8]
+	             ]},
+	    {'pos': [[-1.0, 1.0],
+	             [-0.8, 1.0],
+	             [-0.8, 0.8]
+	             ]}
+
+	  ];
+
+	  return background_triangles;
+
+	};
 
 /***/ })
 /******/ ]);

@@ -86,7 +86,7 @@ module.exports = function run_viz(container, network){
       var show_tooltip = false;
 
       if (params.zoom_data.x.total_int == 0){
-        draw_commands(regl, params, slow_draw);
+        draw_commands(regl, params, slow_draw, show_tooltip=true);
       }
 
     }

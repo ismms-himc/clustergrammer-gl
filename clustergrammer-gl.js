@@ -173,7 +173,7 @@ var Clustergrammer2 =
 	      var show_tooltip = false;
 
 	      if (params.zoom_data.x.total_int == 0){
-	        draw_commands(regl, params, slow_draw);
+	        draw_commands(regl, params, slow_draw, show_tooltip=true);
 	      }
 
 	    }
@@ -39464,7 +39464,7 @@ var Clustergrammer2 =
 	var draw_spillover_components = __webpack_require__(243);
 	var draw_tooltip_components = __webpack_require__(244);
 
-	module.exports = function draw_commands(regl, params, slow_draw=false){
+	module.exports = function draw_commands(regl, params, slow_draw=false, show_tooltip=false){
 
 	  // if (slow_draw){
 	  //   console.log('\n***************');
@@ -39482,7 +39482,9 @@ var Clustergrammer2 =
 
 	  draw_spillover_components(regl, params);
 
-	  draw_tooltip_components(regl, params);
+	  if (show_tooltip){
+	    draw_tooltip_components(regl, params);
+	  }
 
 	};
 

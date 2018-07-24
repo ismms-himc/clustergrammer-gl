@@ -4,7 +4,7 @@ var draw_col_components = require('./draw_col_components');
 var draw_spillover_components = require('./draw_spillover_components');
 var draw_tooltip_components = require('./draw_tooltip_components');
 
-module.exports = function draw_commands(regl, params, slow_draw=false){
+module.exports = function draw_commands(regl, params, slow_draw=false, show_tooltip=false){
 
   // if (slow_draw){
   //   console.log('\n***************');
@@ -22,6 +22,8 @@ module.exports = function draw_commands(regl, params, slow_draw=false){
 
   draw_spillover_components(regl, params);
 
-  draw_tooltip_components(regl, params);
+  if (show_tooltip){
+    draw_tooltip_components(regl, params);
+  }
 
 };

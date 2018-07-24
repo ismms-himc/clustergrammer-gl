@@ -170,7 +170,12 @@ var Clustergrammer2 =
 
 	      // run draw commands
 	      var slow_draw = true;
-	      // draw_commands(regl, params, slow_draw);
+	      var show_tooltip = false;
+
+	      if (params.zoom_data.x.total_int == 0){
+	        draw_commands(regl, params, slow_draw);
+	      }
+
 	    }
 	  }
 
@@ -185,11 +190,15 @@ var Clustergrammer2 =
 	      if (first_frame == false){
 
 	        console.log('\n------------------\nFINAL INTERACTION');
-	        console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+	        console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
 	        // run draw commands
 	        var slow_draw = true;
-	        draw_commands(regl, params, slow_draw);
+	        var show_tooltip = false;
+
+	        if (params.zoom_data.x.total_mouseover == 0){
+	          draw_commands(regl, params, slow_draw);
+	        }
 
 	        // console.log(params.kept_row_y);
 
@@ -39893,7 +39902,7 @@ var Clustergrammer2 =
 
 	module.exports = function draw_tooltip_components(regl, params){
 
-	  console.log('draw tooltip components')
+	  // console.log('draw tooltip components');
 
 	  // Spillover Components (may not need to redraw)
 	  params.cameras.static.draw(() => {
@@ -50998,7 +51007,7 @@ var Clustergrammer2 =
 	  var shift_x = params.pix_to_webgl.x(params.zoom_data.x.cursor_position);
 	  var shift_y = params.pix_to_webgl.x(params.zoom_data.y.cursor_position);
 
-	  console.log('tooltip shift', shift_x, shift_y);
+	  // console.log('tooltip shift', shift_x, shift_y);
 
 	  // trying to shift based on diff between mat and heat size
 	  var inst_shift = {}

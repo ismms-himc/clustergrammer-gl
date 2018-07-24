@@ -83,7 +83,12 @@ module.exports = function run_viz(container, network){
 
       // run draw commands
       var slow_draw = true;
-      // draw_commands(regl, params, slow_draw);
+      var show_tooltip = false;
+
+      if (params.zoom_data.x.total_int == 0){
+        draw_commands(regl, params, slow_draw);
+      }
+
     }
   }
 
@@ -98,11 +103,15 @@ module.exports = function run_viz(container, network){
       if (first_frame == false){
 
         console.log('\n------------------\nFINAL INTERACTION');
-        console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+        console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
         // run draw commands
         var slow_draw = true;
-        draw_commands(regl, params, slow_draw);
+        var show_tooltip = false;
+
+        if (params.zoom_data.x.total_mouseover == 0){
+          draw_commands(regl, params, slow_draw);
+        }
 
         // console.log(params.kept_row_y);
 

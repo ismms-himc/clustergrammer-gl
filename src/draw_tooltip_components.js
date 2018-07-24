@@ -2,7 +2,7 @@ var calc_tooltip_triangles = require('./calc_tooltip_triangles');
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  console.log('draw tooltip components')
+  // console.log('draw tooltip components');
 
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {

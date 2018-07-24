@@ -375,7 +375,7 @@ module.exports =
 	  params.show_tooltip = false;
 	  params.in_bounds_tooltip = false;
 	  // make tooltip args
-	  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [0, 0, 0, 0.7]);
+	  params.tooltip_args = make_tooltip_args(regl, params, 0.01, [0, 0, 0, 0.7]);
 
 	  params.viz_dim = calc_viz_dim(regl, params);
 
@@ -51078,15 +51078,10 @@ module.exports =
 
 	        // the x position is constant for all row labels
 	        //-----------------------------------------------
-	        // x_position = position.x +
-	        //              x_offset * scale_text +
-	        //              shift_text * limited_scaling;
-
 	        x_position =  position.x;
 
 	        // the y position varies for all row labels
 	        //-----------------------------------------------
-	        // y_position = -position.y + 2.0 * offset[1] * scale_text * heat_size - shift_heat * scale_text ;
 	        y_position = -position.y;
 
 	        gl_Position =
@@ -51094,7 +51089,7 @@ module.exports =
 	                           x_position,
 	                           y_position,
 	                           // depth
-	                           0.50,
+	                           0.0,
 	                           scale_text);
 	      }`;
 
@@ -51140,10 +51135,8 @@ module.exports =
 	module.exports = function calc_background_tooltip_triangles(regl, params){
 
 	  // var viz_dim = params.viz_dim;
-
 	  // var ini_mat = params.mat_size;
 	  // var ini_heat = params.heat_size;
-
 	  // var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
 
 	  // var scaled_mat = {};

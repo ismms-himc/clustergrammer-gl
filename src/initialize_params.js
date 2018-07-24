@@ -151,7 +151,7 @@ module.exports = function initialize_params(regl, network){
   params.show_tooltip = false;
   params.in_bounds_tooltip = false;
   // make tooltip args
-  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [0, 0, 0, 0.7]);
+  params.tooltip_args = make_tooltip_args(regl, params, 0.01, [0, 0, 0, 0.7]);
 
   params.viz_dim = calc_viz_dim(regl, params);
 

@@ -41,15 +41,10 @@ module.exports = function make_tooltip_text_args(regl, params, zoom_function){
 
         // the x position is constant for all row labels
         //-----------------------------------------------
-        // x_position = position.x +
-        //              x_offset * scale_text +
-        //              shift_text * limited_scaling;
-
         x_position =  position.x;
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        // y_position = -position.y + 2.0 * offset[1] * scale_text * heat_size - shift_heat * scale_text ;
         y_position = -position.y;
 
         gl_Position =
@@ -57,7 +52,7 @@ module.exports = function make_tooltip_text_args(regl, params, zoom_function){
                            x_position,
                            y_position,
                            // depth
-                           0.50,
+                           0.0,
                            scale_text);
       }`;
 

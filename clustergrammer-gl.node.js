@@ -51047,7 +51047,7 @@ module.exports =
 	  var total_zoom = params.zoom_data.y.total_zoom;
 
 	  // smaller scale_text -> larger text
-	  var limited_scaling = params.text_scale.row(total_zoom);
+	  var inst_depth = 0.01;
 	  var scale_text = 40; //params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
 
 	  // scale_text is applying a zoom to x and y
@@ -51056,13 +51056,11 @@ module.exports =
 	  var vert_arg = `
 	      precision mediump float;
 	      attribute vec2 position;
-	      uniform vec2 offset;
-	      uniform float x_offset;
 	      uniform float scale_text;
 	      uniform float heat_size;
 	      varying float x_position;
 	      varying float y_position;
-	      uniform float limited_scaling;
+	      uniform float inst_depth;
 
 	      void main () {
 
@@ -51078,8 +51076,7 @@ module.exports =
 	                      vec4(
 	                           x_position,
 	                           y_position,
-	                           // depth
-	                           0.0,
+	                           inst_depth,
 	                           scale_text);
 	      }`;
 
@@ -51097,10 +51094,8 @@ module.exports =
 	    },
 	    elements: regl.prop('cells'),
 	    uniforms: {
-	      offset: regl.prop('offset'),
 	      scale_text: scale_text,
-	      limited_scaling: limited_scaling,
-	      x_offset: -params.mat_size.x,
+	      inst_depth: inst_depth,
 	      heat_size: params.heat_size.y,
 	    },
 	    depth: {

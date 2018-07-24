@@ -39503,12 +39503,10 @@ module.exports =
 	  // console.log('draw')
 	  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
-	  // draw_matrix_components(regl, params);
-
-	  // draw_row_components(regl, params, slow_draw);
-	  // draw_col_components(regl, params, slow_draw);
-
-	  // draw_spillover_components(regl, params);
+	  draw_matrix_components(regl, params);
+	  draw_row_components(regl, params, slow_draw);
+	  draw_col_components(regl, params, slow_draw);
+	  draw_spillover_components(regl, params);
 
 	  if (show_tooltip){
 	    draw_tooltip_components(regl, params);
@@ -39953,25 +39951,17 @@ module.exports =
 
 	    // var triangles = params.spillover_triangles.mat_corners;
 
-	    var triangles = calc_tooltip_background_triangles(regl, params);
-
 	    // tooltip background
 	    ////////////////////////////
-	    regl(args)(triangles);
+	    var background_triangles = calc_tooltip_background_triangles(regl, params);
+	    regl(args)(background_triangles);
 
 	    // tooltip text
 	    //////////////////
 	    // make the arguments for the draw command
 	    var text_triangle_args = params.mouseover.text_triangle_args;
-
-	    // var inst_triangles = params.row_text_triangles[0];
 	    var inst_triangles = params.mouseover.row_triangles;
-
 	    regl(text_triangle_args)(inst_triangles);
-
-	    // var text_triangle_args = params.mouseover.text_triangle_args;
-	    // regl(text_triangle_args)(params.mouseover.row_triangles);
-	    // regl(args)(text_triangle_args);
 
 
 	  });
@@ -51058,7 +51048,7 @@ module.exports =
 
 	  // smaller scale_text -> larger text
 	  var limited_scaling = params.text_scale.row(total_zoom);
-	  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
+	  var scale_text = 40; //params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
 
 	  // scale_text is applying a zoom to x and y
 	  // needs to be scaled by scale_text
@@ -51067,11 +51057,9 @@ module.exports =
 	  var vert_arg = `
 	      precision mediump float;
 	      attribute vec2 position;
-	      uniform mat4 zoom;
 	      uniform vec2 offset;
 	      uniform float x_offset;
 	      uniform float scale_text;
-	      uniform float total_zoom;
 	      uniform mat3 mat_rotate;
 	      uniform float heat_size;
 	      varying float x_position;
@@ -51082,7 +51070,6 @@ module.exports =
 
 	      // vec3 tmp = vec3(1,1,1);
 
-	      // last value is a sort-of zoom
 	      void main () {
 
 	        // reverse y position to get words to be upright
@@ -51091,24 +51078,23 @@ module.exports =
 
 	        // the x position is constant for all row labels
 	        //-----------------------------------------------
-	        // total_zoom stretches out row labels horizontally
-	        // then text is offset to the left side of the heatmap
-	        x_position = position.x * total_zoom +
-	                     x_offset * scale_text +
-	                     // limited_scaling used to be total_zoom
-	                     shift_text * limited_scaling;
+	        // x_position = position.x +
+	        //              x_offset * scale_text +
+	        //              shift_text * limited_scaling;
+
+	        x_position =  position.x;
 
 	        // the y position varies for all row labels
 	        //-----------------------------------------------
-	        y_position = -position.y + 2.0 * offset[1] * scale_text * heat_size - shift_heat * scale_text ;
+	        // y_position = -position.y + 2.0 * offset[1] * scale_text * heat_size - shift_heat * scale_text ;
+	        y_position = -position.y;
 
-	        gl_Position = zoom *
+	        gl_Position =
 	                      vec4(
 	                           x_position,
 	                           y_position,
 	                           // depth
 	                           0.50,
-	                           // zoom
 	                           scale_text);
 	      }`;
 
@@ -51126,14 +51112,12 @@ module.exports =
 	    },
 	    elements: regl.prop('cells'),
 	    uniforms: {
-	      zoom: zoom_function,
 	      offset: regl.prop('offset'),
 	      scale_text: scale_text,
 	      limited_scaling: limited_scaling,
 	      x_offset: -params.mat_size.x,
 	      heat_size: params.heat_size.y,
 	      shift_heat: params.mat_size.y - params.heat_size.y,
-	      total_zoom: total_zoom,
 	      mat_rotate: mat_rotate
 	    },
 	    depth: {

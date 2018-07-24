@@ -373,6 +373,7 @@ var Clustergrammer2 =
 	  params.spillover_args = spillover_args;
 
 	  params.show_tooltip = false;
+	  params.in_bounds_tooltip = false;
 	  // make tooltip args
 	  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [0, 0, 0, 0.7]);
 
@@ -407,6 +408,9 @@ var Clustergrammer2 =
 	  params.mouseover = {};
 	  params.mouseover.row_name = null;
 	  params.mouseover.col_name = null;
+
+	  params.mouseover.row_triangles = null;
+	  params.mouseover.col_triangles = null;
 
 	  params.pix_to_webgl = pix_to_webgl;
 
@@ -17026,7 +17030,7 @@ var Clustergrammer2 =
 	      // // trying to keep track of interactions for mouseovers
 	      keep_track_of_mouseovers(params);
 
-	      find_mouseover_element(params, ev);
+	      find_mouseover_element(regl, params, ev);
 
 
 	    }
@@ -18511,11 +18515,12 @@ var Clustergrammer2 =
 
 /***/ }),
 /* 129 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	// var make_tooltip_args = require('./make_tooltip_args');
+	const vectorizeText = __webpack_require__(5);
+	const make_tooltip_text_args = __webpack_require__(248);
 
-	module.exports = function find_mouseover_element(params, ev){
+	module.exports = function find_mouseover_element(regl, params, ev){
 
 	  // console.log('still_mouseover', params.still_mouseover)
 
@@ -18532,6 +18537,14 @@ var Clustergrammer2 =
 	  Also need to take into consideration zooming/panning
 
 	  */
+
+	  var vect_text_attrs = {
+	    textAlign: 'right',
+	    textBaseline: 'middle',
+	    triangles:true,
+	    size:params.font_detail,
+	    font:'"Open Sans", verdana, arial, sans-serif'
+	  };
 
 	  var viz_dim_heat = params.viz_dim.heat;
 
@@ -18563,6 +18576,13 @@ var Clustergrammer2 =
 	    // console.log(params.orderd_labels)
 	    params.mouseover.row_name = params.ordered_labels.rows[row_index];
 	    params.mouseover.col_name = params.ordered_labels.cols[col_index];
+
+	    // calculate text triangles
+	    params.mouseover.row_triangles = vectorizeText(params.mouseover.row_name, vect_text_attrs);
+	    params.mouseover.col_triangles = vectorizeText(params.mouseover.col_name, vect_text_attrs);
+
+	    // make the arguments for the draw command
+	    params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, params.zoom_function);
 
 	    params.in_bounds_tooltip = true;
 	  } else {
@@ -39481,12 +39501,12 @@ var Clustergrammer2 =
 	  // console.log('draw')
 	  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
-	  draw_matrix_components(regl, params);
+	  // draw_matrix_components(regl, params);
 
-	  draw_row_components(regl, params, slow_draw);
-	  draw_col_components(regl, params, slow_draw);
+	  // draw_row_components(regl, params, slow_draw);
+	  // draw_col_components(regl, params, slow_draw);
 
-	  draw_spillover_components(regl, params);
+	  // draw_spillover_components(regl, params);
 
 	  if (show_tooltip){
 	    draw_tooltip_components(regl, params);
@@ -39918,6 +39938,8 @@ var Clustergrammer2 =
 /***/ (function(module, exports, __webpack_require__) {
 
 	var calc_tooltip_triangles = __webpack_require__(247);
+	var calc_row_text_triangles = __webpack_require__(4);
+	var make_row_text_triangle_args = __webpack_require__(240);
 
 	module.exports = function draw_tooltip_components(regl, params){
 
@@ -39933,8 +39955,25 @@ var Clustergrammer2 =
 
 	    var triangles = calc_tooltip_triangles(regl, params);
 
-	    // spillover rects to hide matrix spillover
+	    // tooltip background
+	    ////////////////////////////
 	    regl(args)(triangles);
+
+
+	    // tooltip text
+	    //////////////////
+	    // make the arguments for the draw command
+	    var text_triangle_args = make_row_text_triangle_args(regl, params,
+	                                                         params.zoom_function);
+
+	    params.row_text_triangles = calc_row_text_triangles(params);
+	    regl(text_triangle_args)(params.row_text_triangles);
+
+
+	    // var text_triangle_args = params.mouseover.text_triangle_args;
+	    // regl(text_triangle_args)(params.mouseover.row_triangles);
+	    // regl(args)(text_triangle_args);
+
 
 	  });
 	};
@@ -51049,6 +51088,114 @@ var Clustergrammer2 =
 	  ];
 
 	  return background_triangles;
+
+	};
+
+/***/ }),
+/* 248 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var m3 = __webpack_require__(191);
+
+	module.exports = function make_tooltip_text_args(regl, params, zoom_function){
+
+	  // prevent text from getting too large when zooming
+	  params.text_scale.row = d3.scale.linear()
+	      .domain([1, 10])
+	      .range([1, 10/params.allowable_zoom_factor]);
+
+	  var total_zoom = params.zoom_data.y.total_zoom;
+
+	  // smaller scale_text -> larger text
+	  var limited_scaling = params.text_scale.row(total_zoom);
+	  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
+
+	  // scale_text is applying a zoom to x and y
+	  // needs to be scaled by scale_text
+	  var mat_rotate = m3.rotation(Math.PI/2);
+
+	  var vert_arg = `
+	      precision mediump float;
+	      attribute vec2 position;
+	      uniform mat4 zoom;
+	      uniform vec2 offset;
+	      uniform float x_offset;
+	      uniform float scale_text;
+	      uniform float total_zoom;
+	      uniform mat3 mat_rotate;
+	      uniform float heat_size;
+	      varying float x_position;
+	      varying float y_position;
+	      varying float shift_text;
+	      uniform float shift_heat;
+	      uniform float limited_scaling;
+
+	      // vec3 tmp = vec3(1,1,1);
+
+	      // last value is a sort-of zoom
+	      void main () {
+
+	        // reverse y position to get words to be upright
+
+	        shift_text = -1.0;
+
+	        // the x position is constant for all row labels
+	        //-----------------------------------------------
+	        // total_zoom stretches out row labels horizontally
+	        // then text is offset to the left side of the heatmap
+	        x_position = position.x * total_zoom +
+	                     x_offset * scale_text +
+	                     // limited_scaling used to be total_zoom
+	                     shift_text * limited_scaling;
+
+	        // the y position varies for all row labels
+	        //-----------------------------------------------
+	        y_position = -position.y + 2.0 * offset[1] * scale_text * heat_size - shift_heat * scale_text ;
+
+	        gl_Position = zoom *
+	                      vec4(
+	                           x_position,
+	                           y_position,
+	                           // depth
+	                           0.50,
+	                           // zoom
+	                           scale_text);
+	      }`;
+
+	  var frag_arg =  `
+	      precision mediump float;
+	      void main () {
+	        gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
+	      }`;
+
+	  var args = {
+	    vert: vert_arg,
+	    frag: frag_arg,
+	    attributes: {
+	      position: regl.prop('positions')
+	    },
+	    elements: regl.prop('cells'),
+	    uniforms: {
+	      zoom: zoom_function,
+	      offset: regl.prop('offset'),
+	      scale_text: scale_text,
+	      limited_scaling: limited_scaling,
+	      x_offset: -params.mat_size.x,
+	      heat_size: params.heat_size.y,
+	      shift_heat: params.mat_size.y - params.heat_size.y,
+	      total_zoom: total_zoom,
+	      mat_rotate: mat_rotate
+	    },
+	    depth: {
+	      enable: true,
+	      mask: true,
+	      func: 'less',
+	      // func: 'greater',
+	      range: [0, 1]
+	    },
+	  };
+
+	  return args;
 
 	};
 

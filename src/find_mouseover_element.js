@@ -1,6 +1,7 @@
-// var make_tooltip_args = require('./make_tooltip_args');
+const vectorizeText = require('vectorize-text');
+const make_tooltip_text_args = require('./make_tooltip_text_args');
 
-module.exports = function find_mouseover_element(params, ev){
+module.exports = function find_mouseover_element(regl, params, ev){
 
   // console.log('still_mouseover', params.still_mouseover)
 
@@ -17,6 +18,14 @@ module.exports = function find_mouseover_element(params, ev){
   Also need to take into consideration zooming/panning
 
   */
+
+  var vect_text_attrs = {
+    textAlign: 'right',
+    textBaseline: 'middle',
+    triangles:true,
+    size:params.font_detail,
+    font:'"Open Sans", verdana, arial, sans-serif'
+  };
 
   var viz_dim_heat = params.viz_dim.heat;
 
@@ -48,6 +57,13 @@ module.exports = function find_mouseover_element(params, ev){
     // console.log(params.orderd_labels)
     params.mouseover.row_name = params.ordered_labels.rows[row_index];
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
+
+    // calculate text triangles
+    params.mouseover.row_triangles = vectorizeText(params.mouseover.row_name, vect_text_attrs);
+    params.mouseover.col_triangles = vectorizeText(params.mouseover.col_name, vect_text_attrs);
+
+    // make the arguments for the draw command
+    params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, params.zoom_function);
 
     params.in_bounds_tooltip = true;
   } else {

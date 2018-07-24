@@ -149,6 +149,7 @@ module.exports = function initialize_params(regl, network){
   params.spillover_args = spillover_args;
 
   params.show_tooltip = false;
+  params.in_bounds_tooltip = false;
   // make tooltip args
   params.tooltip_args = make_tooltip_args(regl, params, 0.0, [0, 0, 0, 0.7]);
 
@@ -183,6 +184,9 @@ module.exports = function initialize_params(regl, network){
   params.mouseover = {};
   params.mouseover.row_name = null;
   params.mouseover.col_name = null;
+
+  params.mouseover.row_triangles = null;
+  params.mouseover.col_triangles = null;
 
   params.pix_to_webgl = pix_to_webgl;
 

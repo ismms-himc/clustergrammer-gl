@@ -15,12 +15,12 @@ module.exports = function draw_commands(regl, params, slow_draw=false, show_tool
   // console.log('draw')
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
-  draw_matrix_components(regl, params);
+  // draw_matrix_components(regl, params);
 
-  draw_row_components(regl, params, slow_draw);
-  draw_col_components(regl, params, slow_draw);
+  // draw_row_components(regl, params, slow_draw);
+  // draw_col_components(regl, params, slow_draw);
 
-  draw_spillover_components(regl, params);
+  // draw_spillover_components(regl, params);
 
   if (show_tooltip){
     draw_tooltip_components(regl, params);

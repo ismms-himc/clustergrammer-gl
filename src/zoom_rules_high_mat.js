@@ -74,7 +74,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
       // // trying to keep track of interactions for mouseovers
       keep_track_of_mouseovers(params);
 
-      find_mouseover_element(params, ev);
+      find_mouseover_element(regl, params, ev);
 
 
     }

@@ -140,6 +140,12 @@ module.exports =
 	      // console.log('still_mouseover')
 	      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
+	      // remove old tooltip
+	      if (params.show_tooltip == true){
+	        params.show_tooltip = false;
+	        draw_commands(regl, params);
+	      }
+
 	      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params);
 
 	    } else {
@@ -170,10 +176,10 @@ module.exports =
 
 	      // run draw commands
 	      var slow_draw = true;
-	      var show_tooltip = false;
+	      params.show_tooltip = true;
 
 	      if (params.zoom_data.x.total_int == 0){
-	        draw_commands(regl, params, slow_draw, show_tooltip=true);
+	        draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
 	      }
 
 	    }
@@ -194,7 +200,6 @@ module.exports =
 
 	        // run draw commands
 	        var slow_draw = true;
-	        var show_tooltip = false;
 
 	        if (params.zoom_data.x.total_mouseover == 0){
 	          draw_commands(regl, params, slow_draw);
@@ -367,6 +372,7 @@ module.exports =
 
 	  params.spillover_args = spillover_args;
 
+	  params.show_tooltip = false;
 	  // make tooltip args
 	  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [0, 0, 0, 0.7]);
 

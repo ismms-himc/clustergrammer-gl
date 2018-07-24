@@ -24,6 +24,14 @@ module.exports = function find_mouseover_element(params, ev){
   params.zoom_data.x.cursor_position = ev.x0;
   params.zoom_data.y.cursor_position = ev.y0;
 
+  var inst_x = ev.x0// - cgm.params.viz_dim.heat.x.min
+  var inst_y = ev.y0// - cgm.params.viz_dim.heat.y.min
+
+  // console.log('\n------------')
+  // console.log(inst_x, inst_y)
+  // console.log(params.pix_to_webgl.x(inst_x), params.pix_to_webgl.y(inst_x))
+  // console.log(inst_x/params.viz_dim.canvas.width, inst_y/params.viz_dim.canvas.height)
+
   var cursor_rel_min = {};
   cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
   cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min

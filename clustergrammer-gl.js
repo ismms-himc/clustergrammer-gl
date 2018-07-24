@@ -18533,6 +18533,14 @@ var Clustergrammer2 =
 	  params.zoom_data.x.cursor_position = ev.x0;
 	  params.zoom_data.y.cursor_position = ev.y0;
 
+	  var inst_x = ev.x0// - cgm.params.viz_dim.heat.x.min
+	  var inst_y = ev.y0// - cgm.params.viz_dim.heat.y.min
+
+	  // console.log('\n------------')
+	  // console.log(inst_x, inst_y)
+	  // console.log(params.pix_to_webgl.x(inst_x), params.pix_to_webgl.y(inst_x))
+	  // console.log(inst_x/params.viz_dim.canvas.width, inst_y/params.viz_dim.canvas.height)
+
 	  var cursor_rel_min = {};
 	  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
 	  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min
@@ -51004,24 +51012,24 @@ var Clustergrammer2 =
 	  // scaled_heat.x = ini_heat.x / height_to_width;
 	  // scaled_heat.y = ini_heat.y / height_to_width;
 
-	  var shift_x = params.pix_to_webgl.x(params.zoom_data.x.cursor_position);
-	  var shift_y = params.pix_to_webgl.x(params.zoom_data.y.cursor_position);
+	  var shift_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
+	  var shift_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
 
-	  // console.log('tooltip shift', shift_x, shift_y);
+	  console.log('tooltip shift', shift_x, shift_y);
 
-	  // trying to shift based on diff between mat and heat size
-	  var inst_shift = {}
-	  inst_shift.x = params.mat_size.x - params.heat_size.x;
-	  inst_shift.y = params.mat_size.y - params.heat_size.y;
+	  // // trying to shift based on diff between mat and heat size
+	  // var inst_shift = {}
+	  // inst_shift.x = params.mat_size.x - params.heat_size.x;
+	  // inst_shift.y = params.mat_size.y - params.heat_size.y;
 
 	  var background_triangles = [
-	    {'pos': [[-1.0 + shift_x, 1],
-	             [-0.8 , 0.8],
-	             [-1.0 , 0.8]
+	    {'pos': [[-1.0 + shift_x, 1.0 - shift_y],
+	             [-0.8 + shift_x, 0.8 - shift_y],
+	             [-1.0 + shift_x, 0.8 - shift_y]
 	             ]},
-	    {'pos': [[-1.0, 1.0],
-	             [-0.8, 1.0],
-	             [-0.8, 0.8]
+	    {'pos': [[-1.0 + shift_x, 1.0 - shift_y],
+	             [-0.8 + shift_x, 1.0 - shift_y],
+	             [-0.8 + shift_x, 0.8 - shift_y]
 	             ]}
 
 	  ];

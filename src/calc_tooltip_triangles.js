@@ -15,24 +15,24 @@ module.exports = function calc_tooltip_triangles(regl, params){
   // scaled_heat.x = ini_heat.x / height_to_width;
   // scaled_heat.y = ini_heat.y / height_to_width;
 
-  var shift_x = params.pix_to_webgl.x(params.zoom_data.x.cursor_position);
-  var shift_y = params.pix_to_webgl.x(params.zoom_data.y.cursor_position);
+  var shift_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
+  var shift_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
 
-  // console.log('tooltip shift', shift_x, shift_y);
+  console.log('tooltip shift', shift_x, shift_y);
 
-  // trying to shift based on diff between mat and heat size
-  var inst_shift = {}
-  inst_shift.x = params.mat_size.x - params.heat_size.x;
-  inst_shift.y = params.mat_size.y - params.heat_size.y;
+  // // trying to shift based on diff between mat and heat size
+  // var inst_shift = {}
+  // inst_shift.x = params.mat_size.x - params.heat_size.x;
+  // inst_shift.y = params.mat_size.y - params.heat_size.y;
 
   var background_triangles = [
-    {'pos': [[-1.0 + shift_x, 1],
-             [-0.8 , 0.8],
-             [-1.0 , 0.8]
+    {'pos': [[-1.0 + shift_x, 1.0 - shift_y],
+             [-0.8 + shift_x, 0.8 - shift_y],
+             [-1.0 + shift_x, 0.8 - shift_y]
              ]},
-    {'pos': [[-1.0, 1.0],
-             [-0.8, 1.0],
-             [-0.8, 0.8]
+    {'pos': [[-1.0 + shift_x, 1.0 - shift_y],
+             [-0.8 + shift_x, 1.0 - shift_y],
+             [-0.8 + shift_x, 0.8 - shift_y]
              ]}
 
   ];

@@ -58,9 +58,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
     params.mouseover.row_name = params.ordered_labels.rows[row_index];
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
-    // calculate text triangles
+    // calculate text triangles, they require an offset element
     params.mouseover.row_triangles = vectorizeText(params.mouseover.row_name, vect_text_attrs);
+    params.mouseover.row_triangles.offset = [0,0];
     params.mouseover.col_triangles = vectorizeText(params.mouseover.col_name, vect_text_attrs);
+    params.mouseover.col_triangles.offset = [0,0];
 
     // make the arguments for the draw command
     params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, params.zoom_function);

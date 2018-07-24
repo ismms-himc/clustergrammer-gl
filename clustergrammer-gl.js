@@ -18577,9 +18577,11 @@ var Clustergrammer2 =
 	    params.mouseover.row_name = params.ordered_labels.rows[row_index];
 	    params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
-	    // calculate text triangles
+	    // calculate text triangles, they require an offset element
 	    params.mouseover.row_triangles = vectorizeText(params.mouseover.row_name, vect_text_attrs);
+	    params.mouseover.row_triangles.offset = [0,0];
 	    params.mouseover.col_triangles = vectorizeText(params.mouseover.col_name, vect_text_attrs);
+	    params.mouseover.col_triangles.offset = [0,0];
 
 	    // make the arguments for the draw command
 	    params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, params.zoom_function);
@@ -39966,8 +39968,11 @@ var Clustergrammer2 =
 	    var text_triangle_args = make_row_text_triangle_args(regl, params,
 	                                                         params.zoom_function);
 
+	    // var inst_triangles = params.row_text_triangles[0];
+	    var inst_triangles = params.mouseover.row_triangles;
+
 	    params.row_text_triangles = calc_row_text_triangles(params);
-	    regl(text_triangle_args)(params.row_text_triangles);
+	    regl(text_triangle_args)(inst_triangles);
 
 
 	    // var text_triangle_args = params.mouseover.text_triangle_args;

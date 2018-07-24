@@ -27,8 +27,11 @@ module.exports = function draw_tooltip_components(regl, params){
     var text_triangle_args = make_row_text_triangle_args(regl, params,
                                                          params.zoom_function);
 
+    // var inst_triangles = params.row_text_triangles[0];
+    var inst_triangles = params.mouseover.row_triangles;
+
     params.row_text_triangles = calc_row_text_triangles(params);
-    regl(text_triangle_args)(params.row_text_triangles);
+    regl(text_triangle_args)(inst_triangles);
 
 
     // var text_triangle_args = params.mouseover.text_triangle_args;

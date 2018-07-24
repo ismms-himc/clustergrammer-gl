@@ -1,4 +1,4 @@
-module.exports = function calc_tooltip_triangles(regl, params){
+module.exports = function calc_background_tooltip_triangles(regl, params){
 
   // var viz_dim = params.viz_dim;
 

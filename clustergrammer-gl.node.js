@@ -39939,9 +39939,7 @@ module.exports =
 /* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var calc_tooltip_triangles = __webpack_require__(247);
-	var calc_row_text_triangles = __webpack_require__(4);
-	var make_row_text_triangle_args = __webpack_require__(240);
+	var calc_tooltip_background_triangles = __webpack_require__(249);
 
 	module.exports = function draw_tooltip_components(regl, params){
 
@@ -39955,25 +39953,21 @@ module.exports =
 
 	    // var triangles = params.spillover_triangles.mat_corners;
 
-	    var triangles = calc_tooltip_triangles(regl, params);
+	    var triangles = calc_tooltip_background_triangles(regl, params);
 
 	    // tooltip background
 	    ////////////////////////////
 	    regl(args)(triangles);
 
-
 	    // tooltip text
 	    //////////////////
 	    // make the arguments for the draw command
-	    var text_triangle_args = make_row_text_triangle_args(regl, params,
-	                                                         params.zoom_function);
+	    var text_triangle_args = params.mouseover.text_triangle_args;
 
 	    // var inst_triangles = params.row_text_triangles[0];
 	    var inst_triangles = params.mouseover.row_triangles;
 
-	    params.row_text_triangles = calc_row_text_triangles(params);
 	    regl(text_triangle_args)(inst_triangles);
-
 
 	    // var text_triangle_args = params.mouseover.text_triangle_args;
 	    // regl(text_triangle_args)(params.mouseover.row_triangles);
@@ -51047,56 +51041,7 @@ module.exports =
 
 
 /***/ }),
-/* 247 */
-/***/ (function(module, exports) {
-
-	module.exports = function calc_tooltip_triangles(regl, params){
-
-	  // var viz_dim = params.viz_dim;
-
-	  // var ini_mat = params.mat_size;
-	  // var ini_heat = params.heat_size;
-
-	  // var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
-
-	  // var scaled_mat = {};
-	  // scaled_mat.x = ini_mat.x / height_to_width;
-	  // scaled_mat.y = ini_mat.y / height_to_width;
-
-	  // var scaled_heat = {};
-	  // scaled_heat.x = ini_heat.x / height_to_width;
-	  // scaled_heat.y = ini_heat.y / height_to_width;
-
-	  var pos_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
-	  var pos_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
-
-	  // console.log('tooltip shift', pos_x, pos_y);
-
-	  // // trying to shift based on diff between mat and heat size
-	  // var inst_shift = {}
-	  // inst_shift.x = params.mat_size.x - params.heat_size.x;
-	  // inst_shift.y = params.mat_size.y - params.heat_size.y;
-
-	  var tooltip_width = 0.2;
-	  var tooltip_height = 0.1;
-
-	  var background_triangles = [
-	    {'pos': [[-1.0 + pos_x - tooltip_width, 1.0 - pos_y + tooltip_height],
-	             [-1.0 + pos_x,                 1.0 - pos_y],
-	             [-1.0 + pos_x - tooltip_width, 1.0 - pos_y]
-	             ]},
-	    {'pos': [[-1.0 + pos_x - tooltip_width, 1.0 - pos_y + tooltip_height],
-	             [-1.0 + pos_x,                 1.0 - pos_y + tooltip_height],
-	             [-1.0 + pos_x,                 1.0 - pos_y]
-	             ]}
-
-	  ];
-
-	  return background_triangles;
-
-	};
-
-/***/ }),
+/* 247 */,
 /* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -51201,6 +51146,56 @@ module.exports =
 	  };
 
 	  return args;
+
+	};
+
+/***/ }),
+/* 249 */
+/***/ (function(module, exports) {
+
+	module.exports = function calc_background_tooltip_triangles(regl, params){
+
+	  // var viz_dim = params.viz_dim;
+
+	  // var ini_mat = params.mat_size;
+	  // var ini_heat = params.heat_size;
+
+	  // var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
+
+	  // var scaled_mat = {};
+	  // scaled_mat.x = ini_mat.x / height_to_width;
+	  // scaled_mat.y = ini_mat.y / height_to_width;
+
+	  // var scaled_heat = {};
+	  // scaled_heat.x = ini_heat.x / height_to_width;
+	  // scaled_heat.y = ini_heat.y / height_to_width;
+
+	  var pos_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
+	  var pos_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
+
+	  // console.log('tooltip shift', pos_x, pos_y);
+
+	  // // trying to shift based on diff between mat and heat size
+	  // var inst_shift = {}
+	  // inst_shift.x = params.mat_size.x - params.heat_size.x;
+	  // inst_shift.y = params.mat_size.y - params.heat_size.y;
+
+	  var tooltip_width = 0.2;
+	  var tooltip_height = 0.1;
+
+	  var background_triangles = [
+	    {'pos': [[-1.0 + pos_x - tooltip_width, 1.0 - pos_y + tooltip_height],
+	             [-1.0 + pos_x,                 1.0 - pos_y],
+	             [-1.0 + pos_x - tooltip_width, 1.0 - pos_y]
+	             ]},
+	    {'pos': [[-1.0 + pos_x - tooltip_width, 1.0 - pos_y + tooltip_height],
+	             [-1.0 + pos_x,                 1.0 - pos_y + tooltip_height],
+	             [-1.0 + pos_x,                 1.0 - pos_y]
+	             ]}
+
+	  ];
+
+	  return background_triangles;
 
 	};
 

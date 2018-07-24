@@ -49,10 +49,10 @@ module.exports = function find_mouseover_element(params, ev){
     params.mouseover.row_name = params.ordered_labels.rows[row_index];
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
-    // console.log('rel min', cursor_rel_min.x, cursor_rel_min.y, inst_row, inst_col);
-    // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
-    // make_tooltip_args(params);
-
+    params.in_bounds_tooltip = true;
+  } else {
+    // console.log('OUTSIDE OF MATRIX')
+    params.in_bounds_tooltip = false;
   }
 
 

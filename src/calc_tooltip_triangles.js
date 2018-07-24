@@ -18,7 +18,7 @@ module.exports = function calc_tooltip_triangles(regl, params){
   var pos_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
   var pos_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
 
-  console.log('tooltip shift', pos_x, pos_y);
+  // console.log('tooltip shift', pos_x, pos_y);
 
   // // trying to shift based on diff between mat and heat size
   // var inst_shift = {}

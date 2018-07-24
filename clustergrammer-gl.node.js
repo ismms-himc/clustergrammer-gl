@@ -178,7 +178,7 @@ module.exports =
 	      var slow_draw = true;
 	      params.show_tooltip = true;
 
-	      if (params.zoom_data.x.total_int == 0){
+	      if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
 	        draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
 	      }
 
@@ -18564,10 +18564,10 @@ module.exports =
 	    params.mouseover.row_name = params.ordered_labels.rows[row_index];
 	    params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
-	    // console.log('rel min', cursor_rel_min.x, cursor_rel_min.y, inst_row, inst_col);
-	    // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
-	    // make_tooltip_args(params);
-
+	    params.in_bounds_tooltip = true;
+	  } else {
+	    // console.log('OUTSIDE OF MATRIX')
+	    params.in_bounds_tooltip = false;
 	  }
 
 
@@ -51026,7 +51026,7 @@ module.exports =
 	  var pos_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
 	  var pos_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
 
-	  console.log('tooltip shift', pos_x, pos_y);
+	  // console.log('tooltip shift', pos_x, pos_y);
 
 	  // // trying to shift based on diff between mat and heat size
 	  // var inst_shift = {}

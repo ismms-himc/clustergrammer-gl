@@ -1,4 +1,4 @@
-module.exports = function make_tooltip_args(params){
+module.exports = function make_tooltip_args(regl, params, inst_depth, inst_color){
 
   // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
 
@@ -11,7 +11,7 @@ module.exports = function make_tooltip_args(params){
 
   */
 
-  // Spillover Arguments
+    // Spillover Arguments
   ///////////////////////////////
   var args = {
     // In a draw call, we can pass the shader source code to regl

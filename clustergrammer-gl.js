@@ -86,12 +86,12 @@ var Clustergrammer2 =
 /***/ (function(module, exports, __webpack_require__) {
 
 	var initialize_params = __webpack_require__(2);
-	var draw_commands = __webpack_require__(234);
-	_ = __webpack_require__(241);
+	var draw_commands = __webpack_require__(237);
+	_ = __webpack_require__(245);
 
 	module.exports = function run_viz(container, network){
 
-	  var regl = __webpack_require__(242)({
+	  var regl = __webpack_require__(246)({
 	    extensions: ['angle_instanced_arrays'],
 	    container: container,
 	    // pixelRatio: window.devicePixelRatio/10
@@ -214,26 +214,26 @@ var Clustergrammer2 =
 	var ini_zoom_data = __webpack_require__(101);
 	var ini_zoom_restrict = __webpack_require__(102);
 	var zoom_rules_high_mat = __webpack_require__(103);
-	var make_cameras = __webpack_require__(129);
-	var calc_spillover_triangles = __webpack_require__(181);
-	var make_matrix_args = __webpack_require__(182);
-	var make_viz_aid_tri_args = __webpack_require__(189);
-	var make_cat_args = __webpack_require__(193);
-	var make_dendro_args = __webpack_require__(194);
-	var make_spillover_args = __webpack_require__(195);
-	var calc_viz_area = __webpack_require__(196);
-	var calc_row_downsampled_mat = __webpack_require__(197);
-	var generate_cat_data = __webpack_require__(198);
-	var get_ordered_labels = __webpack_require__(243);
-	var make_tooltip_args = __webpack_require__(245);
+	var make_cameras = __webpack_require__(130);
+	var calc_spillover_triangles = __webpack_require__(182);
+	var make_matrix_args = __webpack_require__(183);
+	var make_viz_aid_tri_args = __webpack_require__(190);
+	var make_cat_args = __webpack_require__(194);
+	var make_dendro_args = __webpack_require__(195);
+	var make_spillover_args = __webpack_require__(196);
+	var calc_viz_area = __webpack_require__(197);
+	var calc_row_downsampled_mat = __webpack_require__(198);
+	var generate_cat_data = __webpack_require__(199);
+	var get_ordered_labels = __webpack_require__(200);
+	var make_tooltip_args = __webpack_require__(201);
 
 	/*
 	  Working on using subset of math.js for matrix splicing
 	*/
-	var core = __webpack_require__(199);
+	var core = __webpack_require__(202);
 	var math = core.create();
 
-	math.import(__webpack_require__(212));
+	math.import(__webpack_require__(215));
 
 	// console.log(math)
 
@@ -350,15 +350,15 @@ var Clustergrammer2 =
 	  spillover_args.mat_corners = make_spillover_args(regl,
 	                                                   params.spill_depth.mat_corners,
 	                                                   inst_color);
-	  params.spill_depth.label_corners = 0.0;
+	  params.spill_depth.label_corners = 0.001;
 	  spillover_args.label_corners = make_spillover_args(regl,
 	                                                     params.spill_depth.label_corners,
 	                                                     inst_color);
 
 	  params.spillover_args = spillover_args;
 
-	  // // make tooltip args
-	  // var tooltip_args = make_tooltip_args
+	  // make tooltip args
+	  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [1, 0, 0, 1]);
 
 	  params.viz_dim = calc_viz_dim(regl, params);
 
@@ -16938,8 +16938,8 @@ var Clustergrammer2 =
 	var extend = __webpack_require__(100);
 	var zoom_rules_low_mat = __webpack_require__(126);
 	var keep_track_of_interactions = __webpack_require__(127);
-	var keep_track_of_mouseovers = __webpack_require__(247);
-	var find_mouseover_element = __webpack_require__(128);
+	var keep_track_of_mouseovers = __webpack_require__(128);
+	var find_mouseover_element = __webpack_require__(129);
 
 	module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -18477,6 +18477,26 @@ var Clustergrammer2 =
 /* 128 */
 /***/ (function(module, exports) {
 
+	module.exports = function keep_track_of_mouseovers(params){
+
+	  // keep track of mouseovers
+	  if (params.still_mouseover == false){
+
+	    params.still_mouseover = true;
+
+	    // wait some time to confirm still not interacting
+	    setTimeout(function(){
+	      params.still_mouseover = false;
+	    }, 1000);
+
+	  }
+
+	};
+
+/***/ }),
+/* 129 */
+/***/ (function(module, exports) {
+
 	// var make_tooltip_args = require('./make_tooltip_args');
 
 	module.exports = function find_mouseover_element(params, ev){
@@ -18541,10 +18561,10 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var custom_camera_2d = __webpack_require__(130);
+	var custom_camera_2d = __webpack_require__(131);
 
 	module.exports = function make_cameras(regl, params){
 
@@ -18573,7 +18593,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// © 2016 Ricky Reusser. MIT License.
@@ -18581,9 +18601,9 @@ var Clustergrammer2 =
 
 	var interactionEvents = __webpack_require__(104);
 	var extend = __webpack_require__(100);
-	var mat4 = __webpack_require__(131);
+	var mat4 = __webpack_require__(132);
 	var EventEmitter = __webpack_require__(109);
-	var vec4 = __webpack_require__(155);
+	var vec4 = __webpack_require__(156);
 	// var $ = require('jquery');
 
 	mat4.viewport = function viewport(out, x, y, w, h, n, f) {
@@ -18835,37 +18855,37 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  create: __webpack_require__(132)
-	  , clone: __webpack_require__(133)
-	  , copy: __webpack_require__(134)
-	  , identity: __webpack_require__(135)
-	  , transpose: __webpack_require__(136)
-	  , invert: __webpack_require__(137)
-	  , adjoint: __webpack_require__(138)
-	  , determinant: __webpack_require__(139)
-	  , multiply: __webpack_require__(140)
-	  , translate: __webpack_require__(141)
-	  , scale: __webpack_require__(142)
-	  , rotate: __webpack_require__(143)
-	  , rotateX: __webpack_require__(144)
-	  , rotateY: __webpack_require__(145)
-	  , rotateZ: __webpack_require__(146)
-	  , fromRotationTranslation: __webpack_require__(147)
-	  , fromQuat: __webpack_require__(148)
-	  , frustum: __webpack_require__(149)
-	  , perspective: __webpack_require__(150)
-	  , perspectiveFromFieldOfView: __webpack_require__(151)
-	  , ortho: __webpack_require__(152)
-	  , lookAt: __webpack_require__(153)
-	  , str: __webpack_require__(154)
+	  create: __webpack_require__(133)
+	  , clone: __webpack_require__(134)
+	  , copy: __webpack_require__(135)
+	  , identity: __webpack_require__(136)
+	  , transpose: __webpack_require__(137)
+	  , invert: __webpack_require__(138)
+	  , adjoint: __webpack_require__(139)
+	  , determinant: __webpack_require__(140)
+	  , multiply: __webpack_require__(141)
+	  , translate: __webpack_require__(142)
+	  , scale: __webpack_require__(143)
+	  , rotate: __webpack_require__(144)
+	  , rotateX: __webpack_require__(145)
+	  , rotateY: __webpack_require__(146)
+	  , rotateZ: __webpack_require__(147)
+	  , fromRotationTranslation: __webpack_require__(148)
+	  , fromQuat: __webpack_require__(149)
+	  , frustum: __webpack_require__(150)
+	  , perspective: __webpack_require__(151)
+	  , perspectiveFromFieldOfView: __webpack_require__(152)
+	  , ortho: __webpack_require__(153)
+	  , lookAt: __webpack_require__(154)
+	  , str: __webpack_require__(155)
 	}
 
 /***/ }),
-/* 132 */
+/* 133 */
 /***/ (function(module, exports) {
 
 	module.exports = create;
@@ -18897,7 +18917,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports) {
 
 	module.exports = clone;
@@ -18930,7 +18950,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports) {
 
 	module.exports = copy;
@@ -18963,7 +18983,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, exports) {
 
 	module.exports = identity;
@@ -18995,7 +19015,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, exports) {
 
 	module.exports = transpose;
@@ -19049,7 +19069,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, exports) {
 
 	module.exports = invert;
@@ -19109,7 +19129,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports) {
 
 	module.exports = adjoint;
@@ -19147,7 +19167,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports) {
 
 	module.exports = determinant;
@@ -19182,7 +19202,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports) {
 
 	module.exports = multiply;
@@ -19229,7 +19249,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports) {
 
 	module.exports = translate;
@@ -19272,7 +19292,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports) {
 
 	module.exports = scale;
@@ -19308,7 +19328,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports) {
 
 	module.exports = rotate;
@@ -19377,7 +19397,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports) {
 
 	module.exports = rotateX;
@@ -19426,7 +19446,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports) {
 
 	module.exports = rotateY;
@@ -19475,7 +19495,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports) {
 
 	module.exports = rotateZ;
@@ -19524,7 +19544,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports) {
 
 	module.exports = fromRotationTranslation;
@@ -19582,7 +19602,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports) {
 
 	module.exports = fromQuat;
@@ -19634,7 +19654,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports) {
 
 	module.exports = frustum;
@@ -19675,7 +19695,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports) {
 
 	module.exports = perspective;
@@ -19713,7 +19733,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports) {
 
 	module.exports = perspectiveFromFieldOfView;
@@ -19759,7 +19779,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports) {
 
 	module.exports = ortho;
@@ -19800,10 +19820,10 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(135);
+	var identity = __webpack_require__(136);
 
 	module.exports = lookAt;
 
@@ -19895,7 +19915,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports) {
 
 	module.exports = str;
@@ -19914,40 +19934,40 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  create: __webpack_require__(156),
-	  clone: __webpack_require__(157),
-	  fromValues: __webpack_require__(158),
-	  copy: __webpack_require__(159),
-	  set: __webpack_require__(160),
-	  add: __webpack_require__(161),
-	  subtract: __webpack_require__(162),
-	  multiply: __webpack_require__(163),
-	  divide: __webpack_require__(164),
-	  min: __webpack_require__(165),
-	  max: __webpack_require__(166),
-	  scale: __webpack_require__(167),
-	  scaleAndAdd: __webpack_require__(168),
-	  distance: __webpack_require__(169),
-	  squaredDistance: __webpack_require__(170),
-	  length: __webpack_require__(171),
-	  squaredLength: __webpack_require__(172),
-	  negate: __webpack_require__(173),
-	  inverse: __webpack_require__(174),
-	  normalize: __webpack_require__(175),
-	  dot: __webpack_require__(176),
-	  lerp: __webpack_require__(177),
-	  random: __webpack_require__(178),
-	  transformMat4: __webpack_require__(179),
-	  transformQuat: __webpack_require__(180)
+	  create: __webpack_require__(157),
+	  clone: __webpack_require__(158),
+	  fromValues: __webpack_require__(159),
+	  copy: __webpack_require__(160),
+	  set: __webpack_require__(161),
+	  add: __webpack_require__(162),
+	  subtract: __webpack_require__(163),
+	  multiply: __webpack_require__(164),
+	  divide: __webpack_require__(165),
+	  min: __webpack_require__(166),
+	  max: __webpack_require__(167),
+	  scale: __webpack_require__(168),
+	  scaleAndAdd: __webpack_require__(169),
+	  distance: __webpack_require__(170),
+	  squaredDistance: __webpack_require__(171),
+	  length: __webpack_require__(172),
+	  squaredLength: __webpack_require__(173),
+	  negate: __webpack_require__(174),
+	  inverse: __webpack_require__(175),
+	  normalize: __webpack_require__(176),
+	  dot: __webpack_require__(177),
+	  lerp: __webpack_require__(178),
+	  random: __webpack_require__(179),
+	  transformMat4: __webpack_require__(180),
+	  transformQuat: __webpack_require__(181)
 	}
 
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports) {
 
 	module.exports = create
@@ -19968,7 +19988,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports) {
 
 	module.exports = clone
@@ -19990,7 +20010,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports) {
 
 	module.exports = fromValues
@@ -20015,7 +20035,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports) {
 
 	module.exports = copy
@@ -20037,7 +20057,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports) {
 
 	module.exports = set
@@ -20062,7 +20082,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports) {
 
 	module.exports = add
@@ -20085,7 +20105,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports) {
 
 	module.exports = subtract
@@ -20108,7 +20128,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 163 */
+/* 164 */
 /***/ (function(module, exports) {
 
 	module.exports = multiply
@@ -20131,7 +20151,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports) {
 
 	module.exports = divide
@@ -20154,7 +20174,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports) {
 
 	module.exports = min
@@ -20177,7 +20197,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports) {
 
 	module.exports = max
@@ -20200,7 +20220,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports) {
 
 	module.exports = scale
@@ -20223,7 +20243,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports) {
 
 	module.exports = scaleAndAdd
@@ -20247,7 +20267,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 169 */
+/* 170 */
 /***/ (function(module, exports) {
 
 	module.exports = distance
@@ -20269,7 +20289,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports) {
 
 	module.exports = squaredDistance
@@ -20291,7 +20311,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports) {
 
 	module.exports = length
@@ -20312,7 +20332,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports) {
 
 	module.exports = squaredLength
@@ -20333,7 +20353,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports) {
 
 	module.exports = negate
@@ -20355,7 +20375,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports) {
 
 	module.exports = inverse
@@ -20377,7 +20397,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports) {
 
 	module.exports = normalize
@@ -20407,7 +20427,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports) {
 
 	module.exports = dot
@@ -20425,7 +20445,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports) {
 
 	module.exports = lerp
@@ -20453,11 +20473,11 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var vecNormalize = __webpack_require__(175)
-	var vecScale = __webpack_require__(167)
+	var vecNormalize = __webpack_require__(176)
+	var vecScale = __webpack_require__(168)
 
 	module.exports = random
 
@@ -20483,7 +20503,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports) {
 
 	module.exports = transformMat4
@@ -20507,7 +20527,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports) {
 
 	module.exports = transformQuat
@@ -20540,7 +20560,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports) {
 
 	/* eslint-disable */
@@ -20678,13 +20698,13 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var make_draw_cells_buffers = __webpack_require__(183);
-	var blend_info = __webpack_require__(184);
-	var $ = __webpack_require__(185);
-	var make_draw_cells_arr = __webpack_require__(186);
+	var make_draw_cells_buffers = __webpack_require__(184);
+	var blend_info = __webpack_require__(185);
+	var $ = __webpack_require__(186);
+	var make_draw_cells_arr = __webpack_require__(187);
 
 	module.exports = function make_matrix_args(regl, params){
 
@@ -20822,7 +20842,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports) {
 
 	
@@ -20848,7 +20868,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -20868,7 +20888,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -31238,11 +31258,11 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var make_position_arr = __webpack_require__(187);
-	var make_opacity_arr = __webpack_require__(188);
+	var make_position_arr = __webpack_require__(188);
+	var make_opacity_arr = __webpack_require__(189);
 
 	module.exports = function make_draw_cells_arr(regl, params){
 
@@ -31274,7 +31294,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports) {
 
 	// var calc_node_canvas_positions = require('./calc_node_canvas_positions');
@@ -31386,7 +31406,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports) {
 
 	module.exports = function make_opacity_arr(params){
@@ -31418,11 +31438,11 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(190);
-	var color_to_rgba = __webpack_require__(191);
+	var m3 = __webpack_require__(191);
+	var color_to_rgba = __webpack_require__(192);
 	// var color_table = require('./color_table.js');
 
 	module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
@@ -31687,7 +31707,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -31720,11 +31740,11 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* eslint-disable */
-	var color_table = __webpack_require__(192);
+	var color_table = __webpack_require__(193);
 
 	module.exports = function color_to_rgbs(hex, alpha=1.0){
 
@@ -31786,7 +31806,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -31942,11 +31962,11 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(190);
-	var color_to_rgba = __webpack_require__(191);
+	var m3 = __webpack_require__(191);
+	var color_to_rgba = __webpack_require__(192);
 	// var color_table = require('./color_table.js');
 
 	module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
@@ -32211,10 +32231,10 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(190);
+	var m3 = __webpack_require__(191);
 
 	module.exports = function draw_mat_labels(regl, params, inst_rc){
 
@@ -32344,7 +32364,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports) {
 
 	module.exports = function make_spillover_args(regl, inst_depth,
@@ -32394,7 +32414,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports) {
 
 	module.exports = function calc_viz_area(params){
@@ -32446,7 +32466,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports) {
 
 	module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
@@ -32506,7 +32526,7 @@ var Clustergrammer2 =
 	}
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports) {
 
 	module.exports = function generate_cat_data(params, inst_axis){
@@ -32564,21 +32584,114 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 199 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 200 */
+/***/ (function(module, exports) {
 
-	module.exports = __webpack_require__(200);
+	module.exports = function get_ordered_labels(params){
+
+	  console.log('get ordered_labels')
+
+	  var ordered_labels = {};
+
+	  row_nodes = params.network.row_nodes;
+	  col_nodes = params.network.col_nodes;
+	  ordered_labels.rows = [];
+	  ordered_labels.cols = [];
+
+	  var inst_order;
+	  var inst_name;
+	  _.each(row_nodes, function(inst_node){
+	    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
+	    inst_name = inst_node.name;
+	    ordered_labels.rows[inst_order] = inst_name;
+	  });
+
+	  _.each(col_nodes, function(inst_node){
+	    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
+	    inst_name = inst_node.name;
+	    ordered_labels.cols[inst_order] = inst_name;
+	  });
+
+	  params.ordered_labels = ordered_labels;
+	};
 
 /***/ }),
-/* 200 */
+/* 201 */
+/***/ (function(module, exports) {
+
+	module.exports = function make_tooltip_args(regl, params, inst_depth, inst_color){
+
+	  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+
+	  /*
+
+	  Need to calculate the arguments and triangles for the tooltip draw command,
+	  which depending on the mouseover statis will or will not draw a tooltip in the
+	  larger draw_commands function. We do not want to run any draw commands later
+	  since they will re-draw only a subset of the visualization.
+
+	  */
+
+	    // Spillover Arguments
+	  ///////////////////////////////
+	  var args = {
+	    // In a draw call, we can pass the shader source code to regl
+	    frag: `
+	    precision mediump float;
+	    uniform vec4 color;
+	    void main () {
+	      gl_FragColor = color;
+	    }`,
+
+	    vert: `
+	    precision mediump float;
+	    attribute vec2 position;
+	    uniform float inst_depth;
+	    void main () {
+	      // positioned further up (matrix is lower at 0.)
+	      gl_Position = vec4(position, inst_depth, 1);
+	    }`,
+
+	    attributes: {
+	      position: regl.prop('pos')
+	    },
+
+	    uniforms: {
+	      color: inst_color,
+	      inst_depth: inst_depth
+	    },
+
+	    count: 3,
+	    depth: {
+	      enable: true,
+	      mask: true,
+	      func: 'less',
+	      // func: 'greater',
+	      range: [0, 1]
+	    },
+	  };
+
+	  return args;
+
+
+	};
+
+/***/ }),
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isFactory = __webpack_require__(201).isFactory;
-	var typedFactory = __webpack_require__(203);
-	var emitter = __webpack_require__(207);
+	module.exports = __webpack_require__(203);
 
-	var importFactory = __webpack_require__(209);
-	var configFactory = __webpack_require__(211);
+/***/ }),
+/* 203 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var isFactory = __webpack_require__(204).isFactory;
+	var typedFactory = __webpack_require__(206);
+	var emitter = __webpack_require__(210);
+
+	var importFactory = __webpack_require__(212);
+	var configFactory = __webpack_require__(214);
 
 	/**
 	 * Math.js core. Creates a new, empty math.js instance
@@ -32708,12 +32821,12 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 201 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var isBigNumber = __webpack_require__(202);
+	var isBigNumber = __webpack_require__(205);
 
 	/**
 	 * Clone an object
@@ -32978,7 +33091,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 202 */
+/* 205 */
 /***/ (function(module, exports) {
 
 	/**
@@ -32992,13 +33105,13 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 203 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var typedFunction = __webpack_require__(204);
-	var digits = __webpack_require__(205).digits;
-	var isBigNumber = __webpack_require__(202);
-	var isMatrix = __webpack_require__(206);
+	var typedFunction = __webpack_require__(207);
+	var digits = __webpack_require__(208).digits;
+	var isBigNumber = __webpack_require__(205);
+	var isMatrix = __webpack_require__(209);
 
 	// returns a new instance of typed-function
 	var createTyped = function () {
@@ -33289,7 +33402,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 204 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -34685,7 +34798,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 205 */
+/* 208 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -35197,7 +35310,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 206 */
+/* 209 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -35214,10 +35327,10 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 207 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var Emitter = __webpack_require__(208);
+	var Emitter = __webpack_require__(211);
 
 	/**
 	 * Extend given object with emitter functions `on`, `off`, `once`, `emit`
@@ -35239,7 +35352,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 208 */
+/* 211 */
 /***/ (function(module, exports) {
 
 	function E () {
@@ -35311,15 +35424,15 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 209 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var lazy = __webpack_require__(201).lazy;
-	var isFactory = __webpack_require__(201).isFactory;
-	var traverse = __webpack_require__(201).traverse;
-	var ArgumentsError = __webpack_require__(210);
+	var lazy = __webpack_require__(204).lazy;
+	var isFactory = __webpack_require__(204).isFactory;
+	var traverse = __webpack_require__(204).traverse;
+	var ArgumentsError = __webpack_require__(213);
 
 	function factory (type, config, load, typed, math) {
 	  /**
@@ -35624,7 +35737,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 210 */
+/* 213 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -35664,12 +35777,12 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 211 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var object = __webpack_require__(201);
+	var object = __webpack_require__(204);
 
 	function factory (type, config, load, typed, math) {
 	  var MATRIX = ['Matrix', 'Array'];                   // valid values for option matrix
@@ -35794,16 +35907,16 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 212 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var deepMap = __webpack_require__(213);
+	var deepMap = __webpack_require__(216);
 
 	function factory (type, config, load, typed) {
-	  var gamma = load(__webpack_require__(214));
-	  var latex = __webpack_require__(222);
+	  var gamma = load(__webpack_require__(217));
+	  var latex = __webpack_require__(225);
 
 	  /**
 	   * Compute the factorial of a value
@@ -35861,7 +35974,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 213 */
+/* 216 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -35892,17 +36005,17 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 214 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var deepMap = __webpack_require__(213);
-	var isInteger = __webpack_require__(205).isInteger;
+	var deepMap = __webpack_require__(216);
+	var isInteger = __webpack_require__(208).isInteger;
 
 	function factory (type, config, load, typed) {
-	  var multiply = load(__webpack_require__(215));
-	  var pow = load(__webpack_require__(230));
+	  var multiply = load(__webpack_require__(218));
+	  var pow = load(__webpack_require__(233));
 
 	  /**
 	   * Compute the gamma function of a value using Lanczos approximation for
@@ -36100,24 +36213,24 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 215 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var extend = __webpack_require__(201).extend;
-	var array = __webpack_require__(216);
+	var extend = __webpack_require__(204).extend;
+	var array = __webpack_require__(219);
 
 	function factory (type, config, load, typed) {
-	  var latex = __webpack_require__(222);
+	  var latex = __webpack_require__(225);
 
-	  var matrix = load(__webpack_require__(223));
-	  var addScalar = load(__webpack_require__(224));
-	  var multiplyScalar = load(__webpack_require__(225));
-	  var equalScalar = load(__webpack_require__(226));
+	  var matrix = load(__webpack_require__(226));
+	  var addScalar = load(__webpack_require__(227));
+	  var multiplyScalar = load(__webpack_require__(228));
+	  var equalScalar = load(__webpack_require__(229));
 
-	  var algorithm11 = load(__webpack_require__(228));
-	  var algorithm14 = load(__webpack_require__(229));
+	  var algorithm11 = load(__webpack_require__(231));
+	  var algorithm14 = load(__webpack_require__(232));
 	  
 	  var DenseMatrix = type.DenseMatrix;
 	  var SparseMatrix = type.SparseMatrix;
@@ -37076,18 +37189,18 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 216 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var number = __webpack_require__(205);
-	var string = __webpack_require__(217);
-	var object = __webpack_require__(201);
-	var types = __webpack_require__(219);
+	var number = __webpack_require__(208);
+	var string = __webpack_require__(220);
+	var object = __webpack_require__(204);
+	var types = __webpack_require__(222);
 
-	var DimensionError = __webpack_require__(220);
-	var IndexError = __webpack_require__(221);
+	var DimensionError = __webpack_require__(223);
+	var IndexError = __webpack_require__(224);
 
 	/**
 	 * Calculate the size of a multi dimensional array.
@@ -37615,14 +37728,14 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 217 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var formatNumber = __webpack_require__(205).format;
-	var formatBigNumber = __webpack_require__(218).format;
-	var isBigNumber = __webpack_require__(202);
+	var formatNumber = __webpack_require__(208).format;
+	var formatBigNumber = __webpack_require__(221).format;
+	var isBigNumber = __webpack_require__(205);
 
 	/**
 	 * Test whether value is a string
@@ -37831,7 +37944,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 218 */
+/* 221 */
 /***/ (function(module, exports) {
 
 	/**
@@ -38020,7 +38133,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 219 */
+/* 222 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38070,7 +38183,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 220 */
+/* 223 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38111,7 +38224,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 221 */
+/* 224 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38163,7 +38276,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 222 */
+/* 225 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38273,7 +38386,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 223 */
+/* 226 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38367,7 +38480,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 224 */
+/* 227 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38424,7 +38537,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 225 */
+/* 228 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38487,13 +38600,13 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 226 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var nearlyEqual = __webpack_require__(205).nearlyEqual;
-	var bigNearlyEqual = __webpack_require__(227);
+	var nearlyEqual = __webpack_require__(208).nearlyEqual;
+	var bigNearlyEqual = __webpack_require__(230);
 
 	function factory (type, config, load, typed) {
 	  
@@ -38546,7 +38659,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 227 */
+/* 230 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -38597,14 +38710,14 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 228 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	function factory (type, config, load, typed) {
 
-	  var equalScalar = load(__webpack_require__(226));
+	  var equalScalar = load(__webpack_require__(229));
 
 	  var SparseMatrix = type.SparseMatrix;
 
@@ -38712,12 +38825,12 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 229 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var clone = __webpack_require__(201).clone;
+	var clone = __webpack_require__(204).clone;
 
 	function factory (type, config, load, typed) {
 
@@ -38800,21 +38913,21 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 230 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var isInteger = __webpack_require__(205).isInteger;
-	var size = __webpack_require__(216).size;
+	var isInteger = __webpack_require__(208).isInteger;
+	var size = __webpack_require__(219).size;
 
 	function factory (type, config, load, typed) {
-	  var latex = __webpack_require__(222);
-	  var eye = load(__webpack_require__(231));
-	  var multiply = load(__webpack_require__(215));
-	  var matrix = load(__webpack_require__(223));
-	  var fraction = load(__webpack_require__(232));
-	  var number = load(__webpack_require__(233));
+	  var latex = __webpack_require__(225);
+	  var eye = load(__webpack_require__(234));
+	  var multiply = load(__webpack_require__(218));
+	  var matrix = load(__webpack_require__(226));
+	  var fraction = load(__webpack_require__(235));
+	  var number = load(__webpack_require__(236));
 
 	  /**
 	   * Calculates the power of x to y, `x ^ y`.
@@ -39007,17 +39120,17 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 231 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var array = __webpack_require__(216);
-	var isInteger = __webpack_require__(205).isInteger;
+	var array = __webpack_require__(219);
+	var isInteger = __webpack_require__(208).isInteger;
 
 	function factory (type, config, load, typed) {
 	  
-	  var matrix = load(__webpack_require__(223));
+	  var matrix = load(__webpack_require__(226));
 	  
 	  /**
 	   * Create a 2-dimensional identity matrix with size m x n or n x n.
@@ -39157,12 +39270,12 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 232 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var deepMap = __webpack_require__(213);
+	var deepMap = __webpack_require__(216);
 
 	function factory (type, config, load, typed) {
 	  /**
@@ -39232,12 +39345,12 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var deepMap = __webpack_require__(213);
+	var deepMap = __webpack_require__(216);
 
 	function factory (type, config, load, typed) {
 	  /**
@@ -39317,14 +39430,14 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 234 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var draw_matrix_components = __webpack_require__(235);
-	var draw_row_components = __webpack_require__(236);
-	var draw_col_components = __webpack_require__(238);
-	var draw_spillover_components = __webpack_require__(240);
-	var draw_tooltip_components = __webpack_require__(246);
+	var draw_matrix_components = __webpack_require__(238);
+	var draw_row_components = __webpack_require__(239);
+	var draw_col_components = __webpack_require__(241);
+	var draw_spillover_components = __webpack_require__(243);
+	var draw_tooltip_components = __webpack_require__(244);
 
 	module.exports = function draw_commands(regl, params, slow_draw=false){
 
@@ -39349,7 +39462,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 235 */
+/* 238 */
 /***/ (function(module, exports) {
 
 	// var filter_visible_mat = require('./filter_visible_mat');
@@ -39382,11 +39495,11 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 236 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var make_row_text_triangle_args = __webpack_require__(237);
-	var calc_viz_area = __webpack_require__(196);
+	var make_row_text_triangle_args = __webpack_require__(240);
+	var calc_viz_area = __webpack_require__(197);
 	var calc_row_text_triangles = __webpack_require__(4);
 
 	module.exports = function draw_row_components(regl, params, slow_draw=false){
@@ -39439,10 +39552,10 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 237 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(190);
+	var m3 = __webpack_require__(191);
 
 	module.exports = function make_row_text_triangle_args(regl, params, zoom_function){
 
@@ -39547,11 +39660,11 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 238 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var make_col_text_triangle_args = __webpack_require__(239);
-	var calc_viz_area = __webpack_require__(196);
+	var make_col_text_triangle_args = __webpack_require__(242);
+	var calc_viz_area = __webpack_require__(197);
 	var calc_col_text_triangles = __webpack_require__(98);
 
 	module.exports = function draw_col_components(regl, params, slow_draw=false){
@@ -39613,10 +39726,10 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 239 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(190);
+	var m3 = __webpack_require__(191);
 
 	module.exports = function make_col_text_triangle_args(regl, params, zoom_function){
 
@@ -39747,7 +39860,7 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 240 */
+/* 243 */
 /***/ (function(module, exports) {
 
 	module.exports = function draw_spillover_components(regl, params){
@@ -39768,7 +39881,28 @@ var Clustergrammer2 =
 	};
 
 /***/ }),
-/* 241 */
+/* 244 */
+/***/ (function(module, exports) {
+
+	module.exports = function draw_tooltip_components(regl, params){
+
+	  console.log('draw tooltip components')
+
+	  // Spillover Components (may not need to redraw)
+	  params.cameras.static.draw(() => {
+
+	    var args = params.spillover_args.mat_corners;
+	    var args = params.tooltip_args;
+	    var triangles = params.spillover_triangles.mat_corners;
+
+	    // spillover rects to hide matrix spillover
+	    regl(args)(triangles);
+
+	  });
+	};
+
+/***/ }),
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -41322,7 +41456,7 @@ var Clustergrammer2 =
 
 
 /***/ }),
-/* 242 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -50829,143 +50963,6 @@ var Clustergrammer2 =
 	})));
 	//# sourceMappingURL=regl.js.map
 
-
-/***/ }),
-/* 243 */
-/***/ (function(module, exports) {
-
-	module.exports = function get_ordered_labels(params){
-
-	  console.log('get ordered_labels')
-
-	  var ordered_labels = {};
-
-	  row_nodes = params.network.row_nodes;
-	  col_nodes = params.network.col_nodes;
-	  ordered_labels.rows = [];
-	  ordered_labels.cols = [];
-
-	  var inst_order;
-	  var inst_name;
-	  _.each(row_nodes, function(inst_node){
-	    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
-	    inst_name = inst_node.name;
-	    ordered_labels.rows[inst_order] = inst_name;
-	  });
-
-	  _.each(col_nodes, function(inst_node){
-	    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
-	    inst_name = inst_node.name;
-	    ordered_labels.cols[inst_order] = inst_name;
-	  });
-
-	  params.ordered_labels = ordered_labels;
-	};
-
-/***/ }),
-/* 244 */,
-/* 245 */
-/***/ (function(module, exports) {
-
-	module.exports = function make_tooltip_args(params){
-
-	  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
-
-	  /*
-
-	  Need to calculate the arguments and triangles for the tooltip draw command,
-	  which depending on the mouseover statis will or will not draw a tooltip in the
-	  larger draw_commands function. We do not want to run any draw commands later
-	  since they will re-draw only a subset of the visualization.
-
-	  */
-
-	  // Spillover Arguments
-	  ///////////////////////////////
-	  var args = {
-	    // In a draw call, we can pass the shader source code to regl
-	    frag: `
-	    precision mediump float;
-	    uniform vec4 color;
-	    void main () {
-	      gl_FragColor = color;
-	    }`,
-
-	    vert: `
-	    precision mediump float;
-	    attribute vec2 position;
-	    uniform float inst_depth;
-	    void main () {
-	      // positioned further up (matrix is lower at 0.)
-	      gl_Position = vec4(position, inst_depth, 1);
-	    }`,
-
-	    attributes: {
-	      position: regl.prop('pos')
-	    },
-
-	    uniforms: {
-	      color: inst_color,
-	      inst_depth: inst_depth
-	    },
-
-	    count: 3,
-	    depth: {
-	      enable: true,
-	      mask: true,
-	      func: 'less',
-	      // func: 'greater',
-	      range: [0, 1]
-	    },
-	  };
-
-	  return args;
-
-
-	};
-
-/***/ }),
-/* 246 */
-/***/ (function(module, exports) {
-
-	module.exports = function draw_tooltip_components(regl, params){
-
-	  console.log('draw tooltip components')
-
-	  // Spillover Components (may not need to redraw)
-	  params.cameras.static.draw(() => {
-
-	    // var args = params.spillover_args;
-	    // var triangles = params.spillover_triangles;
-
-	    // // spillover rects to hide matrix spillover
-	    // regl(args.mat_sides)(triangles.mat_sides);
-	    // regl(args.cats)(triangles.cats);
-	    // regl(args.mat_corners)(triangles.mat_corners);
-	    // regl(args.label_corners)(triangles.label_corners);
-
-	  });
-	};
-
-/***/ }),
-/* 247 */
-/***/ (function(module, exports) {
-
-	module.exports = function keep_track_of_mouseovers(params){
-
-	  // keep track of mouseovers
-	  if (params.still_mouseover == false){
-
-	    params.still_mouseover = true;
-
-	    // wait some time to confirm still not interacting
-	    setTimeout(function(){
-	      params.still_mouseover = false;
-	    }, 1000);
-
-	  }
-
-	};
 
 /***/ })
 /******/ ]);

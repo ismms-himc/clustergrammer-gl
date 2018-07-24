@@ -141,15 +141,15 @@ module.exports = function initialize_params(regl, network){
   spillover_args.mat_corners = make_spillover_args(regl,
                                                    params.spill_depth.mat_corners,
                                                    inst_color);
-  params.spill_depth.label_corners = 0.0;
+  params.spill_depth.label_corners = 0.001;
   spillover_args.label_corners = make_spillover_args(regl,
                                                      params.spill_depth.label_corners,
                                                      inst_color);
 
   params.spillover_args = spillover_args;
 
-  // // make tooltip args
-  // var tooltip_args = make_tooltip_args
+  // make tooltip args
+  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [1, 0, 0, 1]);
 
   params.viz_dim = calc_viz_dim(regl, params);
 

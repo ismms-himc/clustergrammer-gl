@@ -51012,24 +51012,27 @@ var Clustergrammer2 =
 	  // scaled_heat.x = ini_heat.x / height_to_width;
 	  // scaled_heat.y = ini_heat.y / height_to_width;
 
-	  var shift_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
-	  var shift_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
+	  var pos_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
+	  var pos_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
 
-	  console.log('tooltip shift', shift_x, shift_y);
+	  console.log('tooltip shift', pos_x, pos_y);
 
 	  // // trying to shift based on diff between mat and heat size
 	  // var inst_shift = {}
 	  // inst_shift.x = params.mat_size.x - params.heat_size.x;
 	  // inst_shift.y = params.mat_size.y - params.heat_size.y;
 
+	  var tooltip_width = 0.2;
+	  var tooltip_height = 0.2;
+
 	  var background_triangles = [
-	    {'pos': [[-1.0 + shift_x, 1.0 - shift_y],
-	             [-0.8 + shift_x, 0.8 - shift_y],
-	             [-1.0 + shift_x, 0.8 - shift_y]
+	    {'pos': [[-1.0 + pos_x - tooltip_width, 1.0 - pos_y + tooltip_height],
+	             [-1.0 + pos_x,                 1.0 - pos_y],
+	             [-1.0 + pos_x - tooltip_width, 1.0 - pos_y]
 	             ]},
-	    {'pos': [[-1.0 + shift_x, 1.0 - shift_y],
-	             [-0.8 + shift_x, 1.0 - shift_y],
-	             [-0.8 + shift_x, 0.8 - shift_y]
+	    {'pos': [[-1.0 + pos_x - tooltip_width, 1.0 - pos_y + tooltip_height],
+	             [-1.0 + pos_x,                 1.0 - pos_y + tooltip_height],
+	             [-1.0 + pos_x,                 1.0 - pos_y]
 	             ]}
 
 	  ];

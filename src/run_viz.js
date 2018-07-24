@@ -36,13 +36,11 @@ module.exports = function run_viz(container, network){
     // is run when the interaction stops
     if (params.still_interacting == true || initialize_viz == true){
 
-      // console.log('frame-animation');
-
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
       draw_commands(regl, params);
 
-      setTimeout(final_interaction_frame, wait_time_final_interact, params)
+      setTimeout(final_interaction_frame, wait_time_final_interact, params);
 
       // console.log('draw');
       initialize_viz = false;
@@ -55,7 +53,7 @@ module.exports = function run_viz(container, network){
       // console.log('still_mouseover')
       params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params)
+      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params);
 
     } else {
 
@@ -67,6 +65,9 @@ module.exports = function run_viz(container, network){
       */
 
     }
+
+    // // wait to draw
+    // setTimeout(final_interaction_frame, wait_time_final_interact, params);
 
   });
 
@@ -82,7 +83,7 @@ module.exports = function run_viz(container, network){
 
       // run draw commands
       var slow_draw = true;
-      draw_commands(regl, params, slow_draw);
+      // draw_commands(regl, params, slow_draw);
     }
   }
 

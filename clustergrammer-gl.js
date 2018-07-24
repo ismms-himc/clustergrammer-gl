@@ -123,13 +123,11 @@ var Clustergrammer2 =
 	    // is run when the interaction stops
 	    if (params.still_interacting == true || initialize_viz == true){
 
-	      // console.log('frame-animation');
-
 	      params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
 	      draw_commands(regl, params);
 
-	      setTimeout(final_interaction_frame, wait_time_final_interact, params)
+	      setTimeout(final_interaction_frame, wait_time_final_interact, params);
 
 	      // console.log('draw');
 	      initialize_viz = false;
@@ -142,7 +140,7 @@ var Clustergrammer2 =
 	      // console.log('still_mouseover')
 	      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-	      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params)
+	      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params);
 
 	    } else {
 
@@ -154,6 +152,9 @@ var Clustergrammer2 =
 	      */
 
 	    }
+
+	    // // wait to draw
+	    // setTimeout(final_interaction_frame, wait_time_final_interact, params);
 
 	  });
 
@@ -169,7 +170,7 @@ var Clustergrammer2 =
 
 	      // run draw commands
 	      var slow_draw = true;
-	      draw_commands(regl, params, slow_draw);
+	      // draw_commands(regl, params, slow_draw);
 	    }
 	  }
 
@@ -18518,6 +18519,10 @@ var Clustergrammer2 =
 	  */
 
 	  var viz_dim_heat = params.viz_dim.heat;
+
+	  // try updating mouseover position
+	  params.zoom_data.x.cursor_position = ev.x0;
+	  params.zoom_data.y.cursor_position = ev.y0;
 
 	  var cursor_rel_min = {};
 	  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
@@ -50990,13 +50995,18 @@ var Clustergrammer2 =
 	  // scaled_heat.x = ini_heat.x / height_to_width;
 	  // scaled_heat.y = ini_heat.y / height_to_width;
 
+	  var shift_x = params.pix_to_webgl.x(params.zoom_data.x.cursor_position);
+	  var shift_y = params.pix_to_webgl.x(params.zoom_data.y.cursor_position);
+
+	  console.log('tooltip shift', shift_x, shift_y);
+
 	  // trying to shift based on diff between mat and heat size
 	  var inst_shift = {}
 	  inst_shift.x = params.mat_size.x - params.heat_size.x;
 	  inst_shift.y = params.mat_size.y - params.heat_size.y;
 
 	  var background_triangles = [
-	    {'pos': [[-1, 1],
+	    {'pos': [[-1.0 + shift_x, 1],
 	             [-0.8 , 0.8],
 	             [-1.0 , 0.8]
 	             ]},

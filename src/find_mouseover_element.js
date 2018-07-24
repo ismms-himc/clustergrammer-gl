@@ -20,6 +20,10 @@ module.exports = function find_mouseover_element(params, ev){
 
   var viz_dim_heat = params.viz_dim.heat;
 
+  // try updating mouseover position
+  params.zoom_data.x.cursor_position = ev.x0;
+  params.zoom_data.y.cursor_position = ev.y0;
+
   var cursor_rel_min = {};
   cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
   cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min

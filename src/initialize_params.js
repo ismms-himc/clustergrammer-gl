@@ -149,7 +149,7 @@ module.exports = function initialize_params(regl, network){
   params.spillover_args = spillover_args;
 
   // make tooltip args
-  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [1, 0, 0, 1]);
+  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [0, 0, 0, 0.7]);
 
   params.viz_dim = calc_viz_dim(regl, params);
 

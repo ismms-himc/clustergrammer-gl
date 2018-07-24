@@ -368,7 +368,7 @@ var Clustergrammer2 =
 	  params.spillover_args = spillover_args;
 
 	  // make tooltip args
-	  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [1, 0, 0, 1]);
+	  params.tooltip_args = make_tooltip_args(regl, params, 0.0, [0, 0, 0, 0.7]);
 
 	  params.viz_dim = calc_viz_dim(regl, params);
 
@@ -32639,7 +32639,9 @@ var Clustergrammer2 =
 
 /***/ }),
 /* 201 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+	var blend_info = __webpack_require__(185);
 
 	module.exports = function make_tooltip_args(regl, params, inst_depth, inst_color){
 
@@ -32683,6 +32685,7 @@ var Clustergrammer2 =
 	      inst_depth: inst_depth
 	    },
 
+	    // blend: blend_info,
 	    count: 3,
 	    depth: {
 	      enable: true,
@@ -51023,7 +51026,7 @@ var Clustergrammer2 =
 	  // inst_shift.y = params.mat_size.y - params.heat_size.y;
 
 	  var tooltip_width = 0.2;
-	  var tooltip_height = 0.2;
+	  var tooltip_height = 0.1;
 
 	  var background_triangles = [
 	    {'pos': [[-1.0 + pos_x - tooltip_width, 1.0 - pos_y + tooltip_height],

@@ -1,3 +1,5 @@
+var blend_info = require('./blend_info');
+
 module.exports = function make_tooltip_args(regl, params, inst_depth, inst_color){
 
   // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
@@ -40,6 +42,7 @@ module.exports = function make_tooltip_args(regl, params, inst_depth, inst_color
       inst_depth: inst_depth
     },
 
+    // blend: blend_info,
     count: 3,
     depth: {
       enable: true,

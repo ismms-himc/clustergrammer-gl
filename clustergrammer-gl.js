@@ -51052,7 +51052,6 @@ var Clustergrammer2 =
 
 	  // scale_text is applying a zoom to x and y
 	  // needs to be scaled by scale_text
-	  var mat_rotate = m3.rotation(Math.PI/2);
 
 	  var vert_arg = `
 	      precision mediump float;
@@ -51060,21 +51059,12 @@ var Clustergrammer2 =
 	      uniform vec2 offset;
 	      uniform float x_offset;
 	      uniform float scale_text;
-	      uniform mat3 mat_rotate;
 	      uniform float heat_size;
 	      varying float x_position;
 	      varying float y_position;
-	      varying float shift_text;
-	      uniform float shift_heat;
 	      uniform float limited_scaling;
 
-	      // vec3 tmp = vec3(1,1,1);
-
 	      void main () {
-
-	        // reverse y position to get words to be upright
-
-	        shift_text = -1.0;
 
 	        // the x position is constant for all row labels
 	        //-----------------------------------------------
@@ -51112,8 +51102,6 @@ var Clustergrammer2 =
 	      limited_scaling: limited_scaling,
 	      x_offset: -params.mat_size.x,
 	      heat_size: params.heat_size.y,
-	      shift_heat: params.mat_size.y - params.heat_size.y,
-	      mat_rotate: mat_rotate
 	    },
 	    depth: {
 	      enable: true,

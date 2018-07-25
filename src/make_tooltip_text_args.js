@@ -12,7 +12,7 @@ module.exports = function make_tooltip_text_args(regl, params){
   var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
   var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
 
-  console.log('offsets', offset_x, offset_y)
+  // console.log('offsets', offset_x, offset_y)
 
   var vert_arg = `
       precision mediump float;

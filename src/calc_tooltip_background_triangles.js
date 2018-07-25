@@ -23,7 +23,7 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
   // inst_shift.x = params.mat_size.x - params.heat_size.x;
   // inst_shift.y = params.mat_size.y - params.heat_size.y;
 
-  var tooltip_width = 0.2;
+  var tooltip_width = 0.3;
   var tooltip_height = 0.1;
 
   var background_triangles = [

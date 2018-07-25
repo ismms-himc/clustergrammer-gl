@@ -3,7 +3,7 @@ module.exports = function make_tooltip_text_args(regl, params, zoom_function){
   var total_zoom = params.zoom_data.y.total_zoom;
 
   // smaller scale_text -> larger text
-  var inst_depth = 0.0001;
+  var inst_depth = 0.00001;
 
   // this reduces the size of text, otherwise text will be on the order of the
   // entire webgl canvas
@@ -28,7 +28,7 @@ module.exports = function make_tooltip_text_args(regl, params, zoom_function){
 
         // the x position is constant for all row labels
         //-----------------------------------------------
-        x_position =  position.x/scale_text + offset_x;
+        x_position =  (position.x - 1.0)/scale_text + offset_x;
 
         // the y position varies for all row labels
         //-----------------------------------------------
@@ -45,7 +45,7 @@ module.exports = function make_tooltip_text_args(regl, params, zoom_function){
   var frag_arg =  `
       precision mediump float;
       void main () {
-        gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
       }`;
 
   var args = {

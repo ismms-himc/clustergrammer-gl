@@ -16,7 +16,7 @@ var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./calc_row_downsampled_mat');
 var generate_cat_data = require('./generate_cat_data');
 var get_ordered_labels = require('./get_ordered_labels');
-var make_tooltip_args = require('./make_tooltip_args');
+var make_tooltip_background_args = require('./make_tooltip_background_args');
 
 /*
   Working on using subset of math.js for matrix splicing
@@ -151,7 +151,7 @@ module.exports = function initialize_params(regl, network){
   params.show_tooltip = false;
   params.in_bounds_tooltip = false;
   // make tooltip args
-  params.tooltip_args = make_tooltip_args(regl, params, 0.01, [0, 0, 0, 0.7]);
+  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, 0.7]);
 
   params.viz_dim = calc_viz_dim(regl, params);
 

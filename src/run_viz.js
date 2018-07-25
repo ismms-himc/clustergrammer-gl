@@ -64,10 +64,12 @@ module.exports = function run_viz(container, network){
     } else {
 
       /*
-        Consider setting up something to run background calculations if
+
+        Set up something to run background calculations if
         necessary when the visualization is not being updated. For instance,
         we could calculate the text triangles of all rows a little at a time
         in the background.
+
       */
 
     }

@@ -13,8 +13,8 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
   // scaled_heat.x = ini_heat.x / height_to_width;
   // scaled_heat.y = ini_heat.y / height_to_width;
 
-  var offset_x = (params.zoom_data.x.cursor_position/params.viz_dim.canvas.width)*2.0;
-  var offset_y = (params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
+  var offset_x = 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
+  var offset_y = 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
 
   // console.log('tooltip shift', offset_x, offset_y);
 

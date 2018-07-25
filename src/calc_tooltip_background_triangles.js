@@ -1,5 +1,17 @@
 module.exports = function calc_background_tooltip_triangles(regl, params){
 
+  /*
+
+  Try to calculate the length of the text in the tooltip by doing something like
+
+  var arrays = params.mouseover.text_triangles.positions
+
+  var max_pos = Math.max(...merged);
+
+  var min_pos = Math.min(...merged);
+
+  */
+
   // var viz_dim = params.viz_dim;
   // var ini_mat = params.mat_size;
   // var ini_heat = params.heat_size;

@@ -9,8 +9,8 @@ module.exports = function make_tooltip_text_args(regl, params, zoom_function){
   // entire webgl canvas
   var scale_text = 40;
 
-  var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width); // -cgm.params.viz_dim.canvas.width;// ( +  params.zoom_data.x.cursor_position)// + params.zoom_data.x.cursor_position*2.0;
-  var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);//(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
+  var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
+  var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
 
   console.log('offsets', offset_x, offset_y)
 

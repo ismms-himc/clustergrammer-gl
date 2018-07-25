@@ -1,46 +1,42 @@
-var m3 = require('./mat3_transform');
-
 module.exports = function make_tooltip_text_args(regl, params, zoom_function){
-
-  // prevent text from getting too large when zooming
-  params.text_scale.row = d3.scale.linear()
-      .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor]);
 
   var total_zoom = params.zoom_data.y.total_zoom;
 
   // smaller scale_text -> larger text
   var inst_depth = 0.01;
-  var scale_text = 40; //params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
+  var scale_text = 40;
 
-  // scale_text is applying a zoom to x and y
-  // needs to be scaled by scale_text
+  var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width); // -cgm.params.viz_dim.canvas.width;// ( +  params.zoom_data.x.cursor_position)// + params.zoom_data.x.cursor_position*2.0;
+  var offset_y = -cgm.params.viz_dim.canvas.width/scale_text;//(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height)*2.0;
+
+  console.log('offsets', offset_x, offset_y)
 
   var vert_arg = `
       precision mediump float;
       attribute vec2 position;
       uniform float scale_text;
-      uniform float heat_size;
       varying float x_position;
       varying float y_position;
       uniform float inst_depth;
+      uniform float offset_x;
+      uniform float offset_y;
 
       void main () {
 
         // the x position is constant for all row labels
         //-----------------------------------------------
-        x_position =  position.x;
+        x_position =  position.x/scale_text + offset_x;
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        y_position = -position.y;
+        y_position = -position.y/scale_text;
 
         gl_Position =
                       vec4(
                            x_position,
                            y_position,
                            inst_depth,
-                           scale_text);
+                           1.0);
       }`;
 
   var frag_arg =  `
@@ -59,7 +55,8 @@ module.exports = function make_tooltip_text_args(regl, params, zoom_function){
     uniforms: {
       scale_text: scale_text,
       inst_depth: inst_depth,
-      heat_size: params.heat_size.y,
+      offset_x: offset_x,
+      offset_y: offset_y
     },
     depth: {
       enable: true,

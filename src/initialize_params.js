@@ -185,8 +185,7 @@ module.exports = function initialize_params(regl, network){
   params.mouseover.row_name = null;
   params.mouseover.col_name = null;
 
-  params.mouseover.row_triangles = null;
-  params.mouseover.col_triangles = null;
+  params.mouseover.text_triangles;
 
   params.pix_to_webgl = pix_to_webgl;
 

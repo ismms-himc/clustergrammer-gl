@@ -21,7 +21,7 @@ module.exports = function draw_tooltip_components(regl, params){
     //////////////////
     // make the arguments for the draw command
     var text_triangle_args = params.mouseover.text_triangle_args;
-    var inst_triangles = params.mouseover.row_triangles;
+    var inst_triangles = params.mouseover.text_triangles;
     regl(text_triangle_args)(inst_triangles);
 
 

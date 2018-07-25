@@ -1,4 +1,4 @@
-module.exports = function make_tooltip_text_args(regl, params, zoom_function){
+module.exports = function make_tooltip_text_args(regl, params){
 
   var total_zoom = params.zoom_data.y.total_zoom;
 

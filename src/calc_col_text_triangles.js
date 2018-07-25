@@ -2,6 +2,19 @@ const vectorizeText = require('vectorize-text');
 
 module.exports = function calc_col_text_triangles(params){
 
+  /*
+
+  // Make dictionary of text triangles
+  //////////////////////////////////////
+  Save all calculated text triangles in a dictionary for re-use. We can
+  construct the text triangle array when necessary by gathering the pre-
+  calculated text triangles and calculating any new text triangles (as well as
+  storing them back in the dictionary).
+
+  Try combining text triangles, for instance title and category.
+
+  */
+
   var inst_nodes = params.network.col_nodes;
   var num_col = params.num_col;
 

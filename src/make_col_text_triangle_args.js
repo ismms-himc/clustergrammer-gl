@@ -21,7 +21,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   var scale_text = params.text_zoom.col.scaled_num;
 
-  console.log('scale_text', scale_text)
+  // console.log('scale_text', scale_text)
 
   // need to shift col labels up to counteract the rotation by 45%
   var rh_tri_hyp = col_width;
@@ -72,14 +72,14 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         // y_position = y_offset * scale_text + shift_text_up * total_zoom;
         //---------------------------------------------------------------
         // y_position = (y_offset * scale_text + shift_text_up * limited_scaling)/cancel_out;
-        y_position = 0.0 ; //  y_offset; // * scale_text )/cancel_out;
+        y_position = y_offset; // * scale_text )/cancel_out;
 
         // the x position varies for all column labelss
         //---------------------------------------------------------------
         //---------------------------------------------------------------
         x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right) * scale_text/cancel_out;
 
-        position_cols = vec3( x_position, y_position, 0);
+        position_cols = vec3( x_position, y_position, 0.5);
 
         xy_positions = rotated_text + position_cols;
 

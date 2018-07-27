@@ -1,6 +1,6 @@
 var m3 = require('./mat3_transform');
 
-module.exports = function make_col_text_triangle_args(regl, params, zoom_function){
+module.exports = function make_col_text_args(regl, params, zoom_function){
 
   var col_width = 1.00 *params.heat_size.x/params.num_col;
 

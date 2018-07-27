@@ -57,9 +57,6 @@ module.exports = function initialize_params(regl, network){
   params.cat_data.col = generate_cat_data(params, 'col');
 
 
-
-
-
   params.cat_num = {};
   params.cat_num.row = params.cat_data.row.length;
   params.cat_num.col = params.cat_data.col.length;
@@ -89,6 +86,11 @@ module.exports = function initialize_params(regl, network){
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
+
+  // save text triangles for later use
+  params.text_triangles = {};
+  params.text_triangles.row = {};
+  params.text_triangles.col = {};
 
   // calc row-downsampled matrix
   var run_downsampling = false;

@@ -54,12 +54,12 @@ module.exports = function calc_col_text_triangles(params){
       var inst_name = inst_node.name;
 
       if (inst_name.indexOf(': ') >= 0){
-        if ('cat-0' in inst_node){
-          inst_name = inst_node.name.split(': ')[1] + '; ' +
-                      inst_node['cat-0'].split(': ')[1];
-        } else {
+        // if ('cat-0' in inst_node){
+        //   inst_name = inst_node.name.split(': ')[1] + '; ' +
+        //               inst_node['cat-0'].split(': ')[1];
+        // } else {
           inst_name = inst_node.name.split(': ')[1];
-        }
+        // }
       }
 
       var tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);

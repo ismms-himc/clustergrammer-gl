@@ -17,7 +17,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   // needs to be scaled by scale_text
   var mat_rotate = m3.rotation(Math.PI/2);
 
-  var x_offset = -params.mat_size.x - 0.02;
+  var x_offset = params.mat_size.x + 0.02;
 
   var vert_arg = `
       precision mediump float;
@@ -42,13 +42,17 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
         // reverse y position to get words to be upright
 
         // the x position is constant for all row labels
-        //-----------------------------------------------
+        //------------------------------------------------------
         // total_zoom stretches out row labels horizontally
         // then text is offset to the left side of the heatmap
-        x_position = position.x/scale_text * total_zoom + x_offset;
+        //------------------------------------------------------
+        x_position = position.x/scale_text * total_zoom - x_offset;
 
         // the y position varies for all row labels
-        //-----------------------------------------------
+        //------------------------------------------------------
+        // shift by offset and then uniformly shift down by s
+        // shift_heat
+        //------------------------------------------------------
         y_position = -position.y/scale_text + 2.0 * heat_size * offset[1] - shift_heat ;
 
         gl_Position = zoom *

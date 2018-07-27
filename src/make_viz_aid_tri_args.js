@@ -200,19 +200,12 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       precision mediump float;
       uniform vec4 triangle_color;
 
-      // // use the varying being passed from the vertex shader
-      // varying vec4 color_vary;
-
       // color triangle red
       void main () {
-
-        // gl_FragColor = vec4(0.6, 0.6, 0.6, opacity_vary);
 
         // defining the triangle color using a uniform
         gl_FragColor = triangle_color;
 
-        // // define the triangle color using a varying
-        // gl_FragColor = color_vary;
       }
 
     `,

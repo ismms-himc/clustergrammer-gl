@@ -73,7 +73,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         //---------------------------------------------------------------
         x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
 
-        position_cols = vec3( x_position, y_position, 0.5);
+        position_cols = vec3( x_position, y_position, 0.10);
 
         xy_positions = rotated_text + position_cols;
 

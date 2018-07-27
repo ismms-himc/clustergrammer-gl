@@ -1,5 +1,8 @@
 module.exports = function ini_zoom_data(){
 
+    console.log('INI Zoom Data')
+
+
   // organize zoom rules into x and y components
   var zoom_data = {};
   _.each(['x', 'y'], function(inst_dim){

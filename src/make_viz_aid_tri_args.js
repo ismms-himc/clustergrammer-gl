@@ -48,6 +48,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     return context.view;
   };
 
+  // console.log(zoom_function)
+
   /////////////////////////////////
   // Label Offset Buffer
   /////////////////////////////////
@@ -90,59 +92,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
   y_offset_buffer(y_offset_array);
 
-
-  /////////////////////////////////
-  // Label Color Buffer
-  /////////////////////////////////
-
-  // var color_arr = [];
-  // for (i = 0; i < num_labels; i++){
-
-
-  //   var inst_cat = params.network[inst_rc + '_nodes'][i]['cat-0'];
-  //   // console.log(inst_cat)
-
-  //   /*
-  //     Added fallback color
-  //   */
-  //   var inst_color;
-  //   if ('cat_colors' in params.network){
-
-  //     if ('cat-0' in params.network.cat_colors[inst_rc]){
-  //       try {
-  //         inst_color = params.network.cat_colors[inst_rc]['cat-0'][inst_cat];
-  //       }
-  //       catch(err){
-  //         // get random colors from color dictionary
-  //         inst_color = 'white';
-  //       }
-  //     } else {
-  //       // get random colors from color dictionary
-  //       inst_color = 'white';
-  //     }
-
-  //   } else {
-
-  //     // get random colors from color dictionary
-  //     inst_color = 'white';
-  //   }
-
-  //   // override triangle color
-  //   inst_color = '#eee'
-
-  //   color_arr[i] = color_to_rgba(inst_color, 1);
-  // }
-
-  // const color_buffer = regl.buffer({
-  //   length: num_labels,
-  //   // 'type': 'vec4',
-  //   'usage': 'dynamic'
-  // })
-
-  // color_buffer(color_arr);
-
-  // params.color_arr = color_arr;
-
   /////////////////////////////////
   // Rotation and Scaling
   /////////////////////////////////
@@ -158,18 +107,20 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
   var mat_rotate = m3.rotation(rotation_radians);
 
+  var total_zoom = params.zoom_data.x.total_zoom;
+
   var args = {
 
     vert: `
       precision highp float;
       attribute vec2 ini_position;
       attribute float y_offset_att;
-      // attribute vec4 color_att;
 
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
       uniform mat4 zoom;
       uniform float top_offset;
+      uniform float total_zoom;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -189,8 +140,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
 
-        // // pass attribute (in vert) to varying in frag
-        // color_vary = color_att;
 
       }
     `,
@@ -224,12 +173,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         divisor: 1
       },
 
-      // // pass color buffer
-      // color_att: {
-      //   buffer: color_buffer,
-      //   divisor: 1
-      // },
-
     },
 
     uniforms: {
@@ -237,7 +180,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       mat_rotate: mat_rotate,
       scale_y: scale_y,
       top_offset: top_offset,
-      triangle_color: inst_rgba
+      triangle_color: inst_rgba,
+      total_zoom: total_zoom
     },
 
     count: 3,

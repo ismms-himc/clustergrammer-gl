@@ -84,6 +84,9 @@ module.exports = function initialize_params(regl, network){
   params.offcenter.x = 0.0;
   params.offcenter.y = 0.0;
 
+
+  params.zoom_data = ini_zoom_data();
+
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
 
@@ -191,7 +194,6 @@ module.exports = function initialize_params(regl, network){
 
   params.pix_to_webgl = pix_to_webgl;
 
-  params.zoom_data = ini_zoom_data();
 
   params.text_zoom = {};
 

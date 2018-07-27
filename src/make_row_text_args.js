@@ -1,6 +1,6 @@
 var m3 = require('./mat3_transform');
 
-module.exports = function make_row_text_triangle_args(regl, params, zoom_function){
+module.exports = function make_row_text_args(regl, params, zoom_function){
 
   // prevent text from getting too large when zooming
   params.text_scale.row = d3.scale.linear()

@@ -41,7 +41,15 @@ module.exports = function calc_row_text_triangles(params){
         inst_name = inst_node.name.split(': ')[1];
       }
 
-      var tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
+      var tmp_text_vect;
+      if (inst_name in params.text_triangles.row){
+        console.log('found row');
+        tmp_text_vect = params.text_triangles.row[inst_name];
+      } else{
+        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
+        params.text_triangles.row[inst_name] = tmp_text_vect
+      }
+
       tmp_text_vect.offset = [0, inst_y];
       row_text_triangles.push(tmp_text_vect);
       var inst_data = {};

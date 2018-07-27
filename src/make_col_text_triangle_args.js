@@ -72,8 +72,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         // the x position varies for all column labelss
         //---------------------------------------------------------------
         //---------------------------------------------------------------
-        x_position = offset[1] * 2.0 * scale_text * heat_size +
-                     (shift_heat + shift_text_right) * scale_text;
+        x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right) * scale_text;
 
         position_cols = vec3( x_position, y_position, 0);
 

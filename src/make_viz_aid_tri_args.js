@@ -34,27 +34,21 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
     mat_size = params.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
-
-
-    // reduce height of col viz aid triangles until zooming behavior is improved
-
-    // tri_height = (mat_size/0.5)/num_labels * (params.num_col/params.num_row);
-
     // making triangle smaller
-    tri_height = (mat_size/0.5)/num_labels * (params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom);
-
-    // use this factor
-    // params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom
+    var reduce_height = params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
+    tri_height = (mat_size/0.5)/num_labels * reduce_height;
 
     tri_width = (mat_size/0.5)/num_labels;
 
-    if (params.zoom_data.x.total_zoom == 1){
-      top_shift_triangles = params.mat_size.y;
-    } else {
-      top_shift_triangles = params.mat_size.y ;
+    top_shift_triangles = params.mat_size.y;
 
-    }
-    console.log('top_shift_triangles', top_shift_triangles)
+    // if (params.zoom_data.x.total_zoom == 1){
+    //   top_shift_triangles = params.mat_size.y;
+    // } else {
+    //   top_shift_triangles = params.mat_size.y ;
+    // }
+
+    // console.log('top_shift_triangles', top_shift_triangles)
 
   } else {
     // rows have fixed viz aid triangle 'heights'

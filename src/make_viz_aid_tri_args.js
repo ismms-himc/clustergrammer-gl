@@ -18,8 +18,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   // var inst_rgba = color_to_rgba('#eee', 1.0);
   var inst_rgba = color_to_rgba('red', 1.0);
 
-  // var color_names = _.keys(olor_table);
-
   var num_labels = params['num_'+inst_rc];
 
   var tri_height;
@@ -29,33 +27,23 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var top_shift_triangles;
   if (inst_rc === 'col'){
 
-    // console.log('making col viz aid triangles')
-
-
     mat_size = params.heat_size.x;
+
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
     var reduce_height = params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
-    tri_height = (mat_size/0.5)/num_labels * reduce_height;
 
-    tri_width = (mat_size/0.5)/num_labels;
+    tri_height = 2.0 * mat_size/num_labels * reduce_height;
+    tri_width  = 2.0 * mat_size/num_labels;
 
     top_shift_triangles = params.mat_size.y;
-
-    // if (params.zoom_data.x.total_zoom == 1){
-    //   top_shift_triangles = params.mat_size.y;
-    // } else {
-    //   top_shift_triangles = params.mat_size.y ;
-    // }
-
-    // console.log('top_shift_triangles', top_shift_triangles)
 
   } else {
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
     top_shift_triangles = params.mat_size.x;
     tri_height = 0.025;
-    tri_width = (params.heat_size.y/0.5)/num_labels;
+    tri_width = 2.0 * params.heat_size.y/num_labels;
   }
 
 

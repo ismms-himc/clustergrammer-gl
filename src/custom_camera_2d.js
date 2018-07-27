@@ -161,13 +161,21 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
         // inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;
 
+        /*
+
+        Need to add some scaling factor based on the difference between x and y
+        zoom. This is why the viz aid triangles are being positioned badly in
+        the CyTOF dataset, which has many more rows than cols.
+
+        */
+
         // Reproducing behavior from zoom_rules_low in camera to get custom
         // y zooming behavior for column visual aid triangles
         inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
 
-        if (zoom_data.y.inst_zoom > 1){
-          // console.log('y inst_zoom', zoom_data.y.inst_zoom)
-        }
+        // if (zoom_data.y.inst_zoom > 1){
+        //   console.log('y inst_zoom', zoom_data.y.inst_zoom)
+        // }
 
       }
 

@@ -19,6 +19,12 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
   var x_offset = params.mat_size.x + 0.02;
 
+  /*
+  scale_text is becoming negative for large matrices which is causing weird
+  behavior
+  */
+  // console.log('scale_text', scale_text)
+
   var vert_arg = `
       precision mediump float;
       attribute vec2 position;
@@ -56,12 +62,9 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
         y_position = -position.y/scale_text + 2.0 * heat_size * offset[1] - shift_heat ;
 
         gl_Position = zoom *
-                      vec4(
-                           x_position,
+                      vec4(x_position,
                            y_position,
-                           // depth
                            0.50,
-                           // zoom
                            1.0);
       }`;
 

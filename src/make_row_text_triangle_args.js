@@ -17,6 +17,8 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
   // needs to be scaled by scale_text
   var mat_rotate = m3.rotation(Math.PI/2);
 
+  var x_offset = -params.mat_size.x - 0.02;
+
   var vert_arg = `
       precision mediump float;
       attribute vec2 position;
@@ -29,7 +31,6 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       uniform float heat_size;
       varying float x_position;
       varying float y_position;
-      varying float shift_text;
       uniform float shift_heat;
       uniform float limited_scaling;
 
@@ -40,14 +41,11 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
 
         // reverse y position to get words to be upright
 
-        shift_text = -1.0;
-
         // the x position is constant for all row labels
         //-----------------------------------------------
         // total_zoom stretches out row labels horizontally
         // then text is offset to the left side of the heatmap
-        x_position = position.x/scale_text * total_zoom +
-                     x_offset + shift_text * limited_scaling/scale_text;
+        x_position = position.x/scale_text * total_zoom + x_offset;
 
         // the y position varies for all row labels
         //-----------------------------------------------
@@ -81,7 +79,7 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
       offset: regl.prop('offset'),
       scale_text: scale_text,
       limited_scaling: limited_scaling,
-      x_offset: -params.mat_size.x,
+      x_offset: x_offset,
       heat_size: params.heat_size.y,
       shift_heat: params.mat_size.y - params.heat_size.y,
       total_zoom: total_zoom,

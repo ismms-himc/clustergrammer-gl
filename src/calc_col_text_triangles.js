@@ -60,7 +60,7 @@ module.exports = function calc_col_text_triangles(params){
 
       var tmp_text_vect;
       if (inst_name in params.text_triangles.col){
-        console.log('found col');
+        // console.log('found col');
         tmp_text_vect = params.text_triangles.col[inst_name];
       } else {
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);

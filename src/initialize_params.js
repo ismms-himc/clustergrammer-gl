@@ -209,7 +209,7 @@ module.exports = function initialize_params(regl, network){
   // font_detail range: min ~12 max ~200
   ////////////////////////////////////////
   // usable range: 14-30 (was using 25)
-  params.font_detail = 15;
+  params.font_detail = 20;
 
   calc_viz_area(params);
 

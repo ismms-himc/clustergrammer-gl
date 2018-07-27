@@ -10,8 +10,8 @@ module.exports = function calc_row_text_triangles(params){
   var vect_text_attrs = {
     textAlign: 'right',
     textBaseline: 'middle',
-    triangles:true,
-    size:params.font_detail,
+    triangles: true,
+    size: params.font_detail,
     font:'"Open Sans", verdana, arial, sans-serif'
   };
 
@@ -43,7 +43,7 @@ module.exports = function calc_row_text_triangles(params){
 
       var tmp_text_vect;
       if (inst_name in params.text_triangles.row){
-        console.log('found row');
+        // console.log('found row');
         tmp_text_vect = params.text_triangles.row[inst_name];
       } else{
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);

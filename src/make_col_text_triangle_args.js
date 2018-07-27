@@ -21,8 +21,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
 
   var scale_text = params.text_zoom.col.scaled_num;
 
-  // console.log('scale_text', scale_text)
-
   // need to shift col labels up to counteract the rotation by 45%
   var rh_tri_hyp = col_width;
   var rh_tri_side = rh_tri_hyp/Math.sqrt(2);
@@ -54,7 +52,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       uniform float shift_text_right;
       uniform float shift_text_up;
       uniform float shift_heat;
-      uniform float cancel_out;
 
       // last value is a sort-of zoom
       void main () {
@@ -63,21 +60,18 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         // shifting text up in the original text triangle units
         rotated_text = text_y_scale *
                        mat_rotate *
-                       // vec3(position.y/cancel_out - 0.5, position.x/cancel_out + shift_text_out, 0.5);
-                       vec3(position.y/cancel_out, position.x/cancel_out, 0.0);
+                       vec3(position.y/scale_text, position.x/scale_text, 0.0);
 
         // the y position is constant for all column labels
         //---------------------------------------------------------------
         // working on shifting text up
-        // y_position = y_offset * scale_text + shift_text_up * total_zoom;
         //---------------------------------------------------------------
-        // y_position = (y_offset * scale_text + shift_text_up * limited_scaling)/cancel_out;
-        y_position = y_offset; // * scale_text )/cancel_out;
+        y_position = y_offset;
 
         // the x position varies for all column labelss
         //---------------------------------------------------------------
         //---------------------------------------------------------------
-        x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right) * scale_text/cancel_out;
+        x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
 
         position_cols = vec3( x_position, y_position, 0.5);
 
@@ -87,7 +81,7 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
         ////////////////////////////
         // vec4: x, y, depth, zoom
         ////////////////////////////
-        gl_Position = zoom * vec4( xy_positions, scale_text/cancel_out);
+        gl_Position = zoom * vec4( xy_positions, 1.0);
 
       }`;
 
@@ -108,7 +102,6 @@ module.exports = function make_col_text_triangle_args(regl, params, zoom_functio
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
-      cancel_out: scale_text,
       y_offset: params.mat_size.y,
       heat_size: params.heat_size.x,
       shift_heat: params.mat_size.x - params.heat_size.x,

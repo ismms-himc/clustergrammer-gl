@@ -15,15 +15,16 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   */
 
   // var inst_rgba = color_to_rgba('#ff0000', 0.5);
-  var inst_rgba = color_to_rgba('#eee', 1.0);
+  // var inst_rgba = color_to_rgba('#eee', 1.0);
+  var inst_rgba = color_to_rgba('red', 1.0);
 
   // var color_names = _.keys(olor_table);
 
   var num_labels = params['num_'+inst_rc];
 
-  var tile_width;
+  var tri_height;
   // controls shifting of viz aid triangles to left and bottom sides of matrix
-  var tile_height;
+  var tri_width;
   var mat_size;
   var top_shift_triangles;
   if (inst_rc === 'col'){
@@ -31,16 +32,22 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // keep positioned at matrix not heatmap (make room for categories)
     top_shift_triangles = params.mat_size.y;
     // reduce height of col viz aid triangles until zooming behavior is improved
-    tile_width = (mat_size/0.5)/num_labels * 0.75;
-    tile_height = (mat_size/0.5)/num_labels;
+
+    tri_height = (mat_size/0.5)/num_labels * (params.num_col/params.num_row) ;
+
+
+    // use this factor
+    // params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom
+
+    tri_width = (mat_size/0.5)/num_labels;
 
 
   } else {
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
     top_shift_triangles = params.mat_size.x;
-    tile_width = 0.025;
-    tile_height = (params.heat_size.y/0.5)/num_labels;
+    tri_height = 0.025;
+    tri_width = (params.heat_size.y/0.5)/num_labels;
   }
 
 
@@ -56,7 +63,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
   // vertical shift
-  var top_offset = -top_shift_triangles - tile_width;
+  var top_offset = -top_shift_triangles - tri_height;
 
   var inst_order = 'clust';
 
@@ -81,7 +88,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // of the heatmap vs the general matrix area
 
     // console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
-    y_offset_array[i] = mat_size - tile_height/2 - order_id * tile_height + shift_mat_heat;
+    y_offset_array[i] = mat_size - tri_width/2 - order_id * tri_width + shift_mat_heat;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -162,9 +169,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tile_width,  tile_height/2],
-        [tile_width/2,  0.0],
-        [tile_width, -tile_height/2],
+        [tri_height,  tri_width/2],
+        [tri_height/2,  0.0],
+        [tri_height, -tri_width/2],
       ],
 
       // pass y_offset_att buffer

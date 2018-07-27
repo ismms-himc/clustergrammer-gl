@@ -1,6 +1,6 @@
 
 module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
-                                             viz_dim_mat, axis){
+                                             viz_dim_heat, viz_dim_mat, axis){
 
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);
@@ -86,22 +86,25 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   }
 
   // restrict effective position of mouse
-  if (zoom_data.cursor_position < viz_dim_mat.min){
-    zoom_data.cursor_position = viz_dim_mat.min;
-    // console.log(axis, 'less than min position', viz_dim_mat.min);
-  } else if (zoom_data.cursor_position > viz_dim_mat.max){
-    zoom_data.cursor_position = viz_dim_mat.max;
-    // console.log(axis, 'more than max position', viz_dim_mat.max);
+  if (zoom_data.cursor_position < viz_dim_heat.min){
+    zoom_data.cursor_position = viz_dim_heat.min;
+    // console.log(axis, 'less than min cursor position', viz_dim_heat.min);
+  } else if (zoom_data.cursor_position > viz_dim_heat.max){
+
+    // working on fixing zoom restrict when cursor is outside of matrix
+    var inst_offset = viz_dim_mat.max - viz_dim_heat.max
+    zoom_data.cursor_position = viz_dim_heat.max + inst_offset;
+    // console.log(axis, 'more than max cursor position', viz_dim_heat.max, viz_dim_mat.max);
   }
 
   // /*
   //   Working on viz aid triangles
   // */
   // // always set cursor position to min matrix position
-  // zoom_data.cursor_position = viz_dim_mat.min;
+  // zoom_data.cursor_position = viz_dim_heat.min;
 
   // tracking cursor position relative to the minimum
-  var cursor_relative_min = zoom_data.cursor_position - viz_dim_mat.min;
+  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min;
 
   /* Cursor restriction does not seem to be doing anything */
 
@@ -109,20 +112,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   if (cursor_relative_min < 0){
     cursor_relative_min = 0;
     // console.log('LOWER than min ############################')
-  } else if (cursor_relative_min > viz_dim_mat.max){
-    cursor_relative_min = viz_dim_mat.max;
+  } else if (cursor_relative_min > viz_dim_heat.max){
+    cursor_relative_min = viz_dim_heat.max;
     // console.log('HIGHER than min ############################')
   }
 
   // tracking cursor position relative to the maximum
-  var cursor_relative_max = viz_dim_mat.max - zoom_data.cursor_position;
+  var cursor_relative_max = viz_dim_heat.max - zoom_data.cursor_position;
 
   // restrict cursor_relative_max
   if (cursor_relative_max < 0){
     cursor_relative_max = 0;
     // console.log('LOWER than max ############################')
-  } else if (cursor_relative_max > viz_dim_mat.max){
-    cursor_relative_max = viz_dim_mat.max;
+  } else if (cursor_relative_max > viz_dim_heat.max){
+    cursor_relative_max = viz_dim_heat.max;
     // console.log('HIGHER than max ############################')
   }
   // console.log(cursor_relative_min, cursor_relative_max)
@@ -177,13 +180,13 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     // push over by total_pan (negative value) times total zoom applied
     // need to push more when matrix has been effectively increased in size
     // steps: 1) pin to min matrix, and 2) push right (positive) by total remaining pan
-    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
 
     // set total_pan_min to 0, no panning room remaining after being pushed right
     zoom_data.total_pan_min = 0;
 
     // the cursor is effectively locked on the min (left) side of the matrix
-    var new_cursor_relative_max = viz_dim_mat.max - viz_dim_mat.min;
+    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min;
     var new_pbz_relative_max = -inst_eff_zoom * new_cursor_relative_max;
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
@@ -206,16 +209,18 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   if (potential_total_pan_max > zero_threshold) {
 
+    // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
+
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
     // total_pan_max
-    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
     zoom_data.total_pan_max = 0 ;
 
     // the cursor is effectively locked on the max (right) side of the matrix
-    var new_cursor_relative_min = viz_dim_mat.max - viz_dim_mat.min;
+    var new_cursor_relative_min = viz_dim_heat.max - viz_dim_heat.min;
     var new_pbz_relative_min = -inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
@@ -248,11 +253,11 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     // no need to push it to the edge since it was previously pushed to the edge
     if (zoom_data_copy.prev_restrict === 'min') {
 
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.min;
+      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.min;
 
     } else if (zoom_data_copy.prev_restrict === 'max'){
 
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_mat.max;
+      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max;
 
     }
 

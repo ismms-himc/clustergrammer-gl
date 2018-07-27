@@ -46,12 +46,12 @@ module.exports = function make_row_text_triangle_args(regl, params, zoom_functio
         //-----------------------------------------------
         // total_zoom stretches out row labels horizontally
         // then text is offset to the left side of the heatmap
-        // x_position = position.x * total_zoom + x_offset * scale_text + shift_text * limited_scaling;
-        x_position = position.x/scale_text * total_zoom + x_offset + shift_text * limited_scaling/scale_text;
+        x_position = position.x/scale_text * total_zoom +
+                     x_offset + shift_text * limited_scaling/scale_text;
 
         // the y position varies for all row labels
         //-----------------------------------------------
-        y_position = -position.y/scale_text + (2.0 * heat_size * offset[1] - shift_heat) * scale_text/scale_text ;
+        y_position = -position.y/scale_text + 2.0 * heat_size * offset[1] - shift_heat ;
 
         gl_Position = zoom *
                       vec4(

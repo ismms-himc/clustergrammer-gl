@@ -28,6 +28,10 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var mat_size;
   var top_shift_triangles;
   if (inst_rc === 'col'){
+
+    console.log('making col viz aid triangles')
+
+
     mat_size = params.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     top_shift_triangles = params.mat_size.y;

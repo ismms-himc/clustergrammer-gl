@@ -1,12 +1,14 @@
 var make_col_text_args = require('./make_col_text_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_col_text_triangles = require('./calc_col_text_triangles');
+var make_viz_aid_tri_args = require('./make_viz_aid_tri_args');
 
 module.exports = function draw_col_components(regl, params, slow_draw=false){
 
   // drawing the colum viz aid triangles using their own special camera since
   // they require special behavior, e.g. zooming but constant positioning
   params.cameras['col-viz-aid'].draw(() => {
+    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
     regl(params.viz_aid_tri_args.col)();
   });
 

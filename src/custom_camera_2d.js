@@ -137,64 +137,14 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
         inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;
         inst_y_pan_by_zoom = 0;
-
-        /*
-        Need to modify col zooming behavior slightly
-        should try to modify x pan_by_zoom to keep bottom of text placed
-        properly. Speficically, only column labels should be shifted up when
-        zooming in and shifted down when zooming out to make up for how zooming
-        is shifting the position of the bottom corner's of the letters (or the
-        zooming should be modified to not do this).
-
-        From what I remember, zooming always happens from the top left side and
-        to have things appear to zoom from the bottom left, you need to also
-        translate them.
-        */
-        // inst_y_pan_by_zoom = zoom_data.y.total_zoom * 0.1;
-
       }
 
       /*
         Viz-Aid Triangle special rules
       */
       if (viz_component === 'col-viz-aid'){
-        // inst_y_zoom = 1;
         inst_y_pan_by_drag = 0;
-
-        /*
-
-        Need to add some scaling factor based on the difference between x and y
-        zoom. This is why the viz aid triangles are being positioned badly in
-        the CyTOF dataset, which has many more rows than cols.
-
-        */
-
-        // Reproducing behavior from zoom_rules_low in camera to get custom
-        // y zooming behavior for column visual aid triangles
-        // var extra;
-        // if (params.zoom_data.x.total_zoom > 1){
-        //   var zoom_y_over_x = params.zoom_data.y.total_zoom/params.zoom_data.x.total_zoom;
-        //   // extra = 1 + (params.mat_size.x/cgm.params.num_col);
-
-        //   // cytof
-        //   // 1.02
-        //   // 1.015
-        //   // 1.0175
-        //   // high
-
-
-        //   // low
-        //   // 1.01
-        //   extra = 1.0170;
-        // } else {
-        //   extra = 1;
-        // }
-
-
-        inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min
-
-        // console.log('inst_y_pan_by_zoom', inst_y_pan_by_zoom, extra)
-
+        inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
       }
 
       if (viz_component === 'static'){

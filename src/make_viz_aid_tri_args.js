@@ -31,9 +31,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
-    tri_height = 0.025/2;
+    tri_height = 0.0125;
     tri_width = mat_size/num_labels;
-    top_offset = -params.mat_size.x - 2 * tri_height;
+    top_offset = -params.mat_size.x - tri_height;
 
   }
 
@@ -42,7 +42,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   };
 
   var inst_order = 'clust';
-  var y_offset_array = [];
+  var tri_offset_array = [];
   var i;
   for (i = 0; i < num_labels; i++){
 
@@ -61,16 +61,16 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
 
-    y_offset_array[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
+    tri_offset_array[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
-  const y_offset_buffer = regl.buffer({
+  const tri_offset_buffer = regl.buffer({
     length: num_labels,
     type: 'float',
     usage: 'dynamic'
   });
 
-  y_offset_buffer(y_offset_array);
+  tri_offset_buffer(tri_offset_array);
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -94,7 +94,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     vert: `
       precision highp float;
       attribute vec2 ini_position;
-      attribute float y_offset_att;
+      attribute float tri_offset_att;
 
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
@@ -112,7 +112,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(top_offset, y_offset_att, 0);
+        vec_translate = vec3(top_offset, tri_offset_att, 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -147,9 +147,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         [tri_height,   -tri_width],
       ],
 
-      // pass y_offset_att buffer
-      y_offset_att: {
-        buffer: y_offset_buffer,
+      // pass tri_offset_att buffer
+      tri_offset_att: {
+        buffer: tri_offset_buffer,
         divisor: 1
       },
 

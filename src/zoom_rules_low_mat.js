@@ -59,6 +59,8 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
       zoom_data.total_zoom = min_zoom;
     }
   }
+    // working on fixing zoom restrict when cursor is outside of matrix
+    var inst_offset = viz_dim_mat.max - viz_dim_heat.max
 
   //////////////////////////////////
   // Pan Rules
@@ -89,12 +91,10 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   if (zoom_data.cursor_position < viz_dim_heat.min){
     zoom_data.cursor_position = viz_dim_heat.min;
     // console.log(axis, 'less than min cursor position', viz_dim_heat.min);
-  } else if (zoom_data.cursor_position > viz_dim_heat.max){
+  } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset){
 
-    // working on fixing zoom restrict when cursor is outside of matrix
-    var inst_offset = viz_dim_mat.max - viz_dim_heat.max
     zoom_data.cursor_position = viz_dim_heat.max + inst_offset;
-    // console.log(axis, 'more than max cursor position', viz_dim_heat.max, viz_dim_mat.max);
+
   }
 
   // /*
@@ -118,14 +118,15 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   }
 
   // tracking cursor position relative to the maximum
-  var cursor_relative_max = viz_dim_heat.max - zoom_data.cursor_position;
+  /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
+  var cursor_relative_max = viz_dim_heat.max + inst_offset - zoom_data.cursor_position;
 
   // restrict cursor_relative_max
   if (cursor_relative_max < 0){
     cursor_relative_max = 0;
     // console.log('LOWER than max ############################')
-  } else if (cursor_relative_max > viz_dim_heat.max){
-    cursor_relative_max = viz_dim_heat.max;
+  } else if (cursor_relative_max > viz_dim_heat.max + inst_offset){
+    cursor_relative_max = viz_dim_heat.max + inst_offset;
     // console.log('HIGHER than max ############################')
   }
   // console.log(cursor_relative_min, cursor_relative_max)
@@ -209,18 +210,20 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   if (potential_total_pan_max > zero_threshold) {
 
-    // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
+    console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
     // total_pan_max
-    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+    // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset) + zoom_data.total_pan_max * zoom_data.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
     zoom_data.total_pan_max = 0 ;
 
     // the cursor is effectively locked on the max (right) side of the matrix
-    var new_cursor_relative_min = viz_dim_heat.max - viz_dim_heat.min;
+    // var new_cursor_relative_min = viz_dim_heat.max - viz_dim_heat.min;
+    var new_cursor_relative_min = viz_dim_heat.max + inst_offset - viz_dim_heat.min;
     var new_pbz_relative_min = -inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 

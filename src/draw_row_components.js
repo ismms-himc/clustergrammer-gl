@@ -2,7 +2,7 @@ var make_row_text_args = require('./make_row_text_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_text_triangles = require('./calc_row_text_triangles');
 
-module.exports = function draw_row_components(regl, params, slow_draw=false){
+module.exports = function draw_row_components(regl, params, calc_text_tri=false){
 
   /* Row Components */
   params.cameras['row-labels'].draw(() => {
@@ -19,7 +19,7 @@ module.exports = function draw_row_components(regl, params, slow_draw=false){
     var text_triangle_args = make_row_text_args(regl, params,
                                                          params.zoom_function);
 
-    if (slow_draw){
+    if (calc_text_tri){
 
       var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
 
@@ -34,6 +34,7 @@ module.exports = function draw_row_components(regl, params, slow_draw=false){
 
       } else {
         // console.log('too many rows to draw');
+        regl(text_triangle_args)(params.row_text_triangles);
       }
 
     } else {

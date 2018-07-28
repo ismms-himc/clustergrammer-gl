@@ -3,7 +3,7 @@ var calc_viz_area = require('./calc_viz_area');
 var calc_col_text_triangles = require('./calc_col_text_triangles');
 var make_viz_aid_tri_args = require('./make_viz_aid_tri_args');
 
-module.exports = function draw_col_components(regl, params, slow_draw=false){
+module.exports = function draw_col_components(regl, params, calc_text_tri=false){
 
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
@@ -23,11 +23,11 @@ module.exports = function draw_col_components(regl, params, slow_draw=false){
     var text_triangle_args = make_col_text_args(regl, params,
                                                          params.zoom_function);
 
-    if (slow_draw){
+    if (calc_text_tri){
 
-      var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
+      var num_viz_cols = params.num_col/params.zoom_data.y.total_zoom;
 
-      if (num_viz_rows < params.max_num_text){
+      if (num_viz_cols < params.max_num_text){
 
         calc_viz_area(params);
 
@@ -37,7 +37,8 @@ module.exports = function draw_col_components(regl, params, slow_draw=false){
 
 
       } else {
-        // console.log('too many rows to draw');
+        // console.log('too many cols to draw');
+        regl(text_triangle_args)(params.col_text_triangles);
       }
 
     } else {

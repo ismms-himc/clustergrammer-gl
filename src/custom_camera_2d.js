@@ -30,9 +30,6 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
 
 module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_component) {
 
-  // var zoom_data = $.extend(true, {}, zoom_data_ini);
-  // var zoom_data = $.extend(true, {}, zoom_data_ini);
-
   opts = opts || {};
 
   var options = extend({
@@ -46,18 +43,11 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var getWidth = element === window ?
 
 
-    // function () { return element.innerWidth } :
-    // function () { return element.offsetWidth }
-
-
-    function () { return element.innerWidth; } : function () { return element.offsetWidth; };
+  function () { return element.innerWidth; } : function () { return element.offsetWidth; };
 
   var getHeight = element === window ?
 
-    // function () { return element.innerHeight } :
-    // function () { return element.offsetHeight }
-
-    function () { return element.innerHeight; } : function () { return element.offsetHeight; };
+  function () { return element.innerHeight; } : function () { return element.offsetHeight; };
 
   var xrange = opts.xrange === undefined ? [-1, 1] : opts.xrange;
   var yrange = opts.yrange === undefined ? [-1, 1] : opts.yrange;
@@ -100,10 +90,6 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
     ev.preventDefault();
   }).on('interaction', function (ev) {
 
-    //ev.dtheta = 0;
-    //var c = Math.cos(ev.dtheta);
-    //var s = Math.sin(ev.dtheta);
-
     switch (ev.type) {
       case 'wheel':
         ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
@@ -112,8 +98,6 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
     }
 
     if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
-
-      // console.log('viz_component: ' + viz_component);
 
       /*
       Sanitize zoom data components
@@ -216,11 +200,10 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
     resize: function () {
       computeViewport();
 
-      // console.log('resizing');
-
       // Reapply the aspect ratio:
       mView[5] = mView[0] * aspectRatio * width / height;
       dirty = true;
+
     }
   };
 

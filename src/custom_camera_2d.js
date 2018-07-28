@@ -171,22 +171,29 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
         // Reproducing behavior from zoom_rules_low in camera to get custom
         // y zooming behavior for column visual aid triangles
-        var extra;
-        if (params.zoom_data.x.total_zoom > 1){
-          // extra = params.zoom_data.y.total_zoom/params.zoom_data.x.total_zoom - 1.0;
-          // extra = 1.001; // params.zoom_data.y.total_zoom/params.zoom_data.x.total_zoom - 1.0;
+        // var extra;
+        // if (params.zoom_data.x.total_zoom > 1){
+        //   var zoom_y_over_x = params.zoom_data.y.total_zoom/params.zoom_data.x.total_zoom;
+        //   // extra = 1 + (params.mat_size.x/cgm.params.num_col);
 
-          var zoom_y_over_x = params.zoom_data.y.total_zoom/params.zoom_data.x.total_zoom;
+        //   // cytof
+        //   // 1.02
+        //   // 1.015
+        //   // 1.0175
+        //   // high
 
-          extra = 1 + (params.mat_size.x/cgm.params.num_col)/2
-          // extra = 1 + (params.mat_size.x/cgm.params.num_col) * zoom_y_over_x;
 
-        } else {
-          extra = 1;
-        }
-        inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min * extra;
+        //   // low
+        //   // 1.01
+        //   extra = 1.0170;
+        // } else {
+        //   extra = 1;
+        // }
 
-        console.log('inst_y_pan_by_zoom', inst_y_pan_by_zoom, extra)
+
+        inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min
+
+        // console.log('inst_y_pan_by_zoom', inst_y_pan_by_zoom, extra)
 
       }
 

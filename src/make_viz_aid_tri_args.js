@@ -4,24 +4,13 @@ var color_to_rgba = require('./color_to_rgba');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
-  // console.log('generalizing mat_size')
-  /*
 
-  Hacking Categories Plan
-  ------------------------
-  Make a buffer of vec4's that will pass rgba data for the different category
-  colors. Then pass this as an attribute (or varying?) to the fragment shader.
-
-  */
-
-  // var inst_rgba = color_to_rgba('#ff0000', 0.5);
   // var inst_rgba = color_to_rgba('#eee', 1.0);
   var inst_rgba = color_to_rgba('red', 1.0);
 
   var num_labels = params['num_'+inst_rc];
 
   var tri_height;
-  // controls shifting of viz aid triangles to left and bottom sides of matrix
   var tri_width;
   var mat_size;
   var top_shift_triangles;
@@ -35,7 +24,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     var reduce_height = params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
 
     tri_height = 2.0 * mat_size/num_labels * reduce_height;
-    tri_width  = 2.0 * mat_size/num_labels;
+    tri_width  = mat_size/num_labels;
     top_offset = -params.mat_size.y - tri_height;
 
   } else {
@@ -43,7 +32,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
     tri_height = 0.025;
-    tri_width = 2.0 * params.heat_size.y/num_labels;
+    tri_width = mat_size/num_labels;
     top_offset = -params.mat_size.x - tri_height;
 
   }
@@ -52,9 +41,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     return context.view;
   };
 
-
   var inst_order = 'clust';
-
   var y_offset_array = [];
   var i;
   for (i = 0; i < num_labels; i++){
@@ -74,7 +61,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
 
-    y_offset_array[i] = mat_size - tri_width/2 - order_id * tri_width + shift_mat_heat;
+    y_offset_array[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -155,9 +142,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tri_height,  tri_width/2],
+        [tri_height,    tri_width],
         [tri_height/2,  0.0],
-        [tri_height, -tri_width/2],
+        [tri_height,   -tri_width],
       ],
 
       // pass y_offset_att buffer

@@ -23,17 +23,17 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // making triangle smaller
     var reduce_height = params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
 
-    tri_height = 2.0 * mat_size/num_labels * reduce_height;
+    tri_height = mat_size/num_labels * reduce_height;
     tri_width  = mat_size/num_labels;
-    top_offset = -params.mat_size.y - tri_height;
+    top_offset = -params.mat_size.y - 2 * tri_height;
 
   } else {
 
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
-    tri_height = 0.025;
+    tri_height = 0.025/2;
     tri_width = mat_size/num_labels;
-    top_offset = -params.mat_size.x - tri_height;
+    top_offset = -params.mat_size.x - 2 * tri_height;
 
   }
 
@@ -142,9 +142,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tri_height,    tri_width],
-        [tri_height/2,  0.0],
-        [tri_height,   -tri_width],
+        [2 * tri_height,    tri_width],
+        [    tri_height,  0.0],
+        [2 * tri_height,   -tri_width],
       ],
 
       // pass y_offset_att buffer

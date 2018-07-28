@@ -25,7 +25,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
     tri_height = mat_size/num_labels * reduce_height;
     tri_width  = mat_size/num_labels;
-    top_offset = -params.mat_size.y - 2 * tri_height;
+    top_offset = -params.mat_size.y - tri_height;
 
   } else {
 
@@ -142,9 +142,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [2 * tri_height,    tri_width],
-        [    tri_height,  0.0],
-        [2 * tri_height,   -tri_width],
+        [tri_height,    tri_width],
+        [    0,  0.0],
+        [tri_height,   -tri_width],
       ],
 
       // pass y_offset_att buffer

@@ -238,7 +238,7 @@ module.exports = function initialize_params(regl, network){
   // console.log('row_text_triangles in initialize_params')
   // console.log(params.row_text_triangles)
 
-  params.max_zoom = 600;
+  params.max_zoom = 1000;
   params.zoom_restrict = ini_zoom_restrict(params);
 
   // update zoom_data

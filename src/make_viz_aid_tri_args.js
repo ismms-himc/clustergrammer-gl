@@ -21,7 +21,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
-    var reduce_height = params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
+    // var reduce_height = params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
+    var reduce_height = params.zoom_data.x.total_zoom; // params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
 
     tri_height = mat_size/num_labels * reduce_height;
     tri_width  = mat_size/num_labels;
@@ -36,7 +37,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       // top_offset = -params.mat_size.y - tri_height - tri_height * (params.zoom_data.x.total_zoom - 1)/1000;
       // top_offset = -params.mat_size.y - tri_height - tri_height * (0.0001);
     }
-    console.log(top_offset)
+    // console.log(top_offset)
 
   } else {
 

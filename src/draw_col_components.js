@@ -5,15 +5,18 @@ var make_viz_aid_tri_args = require('./make_viz_aid_tri_args');
 
 module.exports = function draw_col_components(regl, params, slow_draw=false){
 
-  // drawing the colum viz aid triangles using their own special camera since
-  // they require special behavior, e.g. zooming but constant positioning
-  params.cameras['col-viz-aid'].draw(() => {
-    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
-    regl(params.viz_aid_tri_args.col)();
-  });
+  // // drawing the colum viz aid triangles using their own special camera since
+  // // they require special behavior, e.g. zooming but constant positioning
+  // params.cameras['col-viz-aid'].draw(() => {
+  //   params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+  //   regl(params.viz_aid_tri_args.col)();
+  // });
 
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
+
+    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+    regl(params.viz_aid_tri_args.col)();
 
     // drawing the column categories and dendrogram using the same camera as the
     // matrix (no special zooming required)

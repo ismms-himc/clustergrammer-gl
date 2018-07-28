@@ -28,7 +28,7 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
         calc_viz_area(params);
 
         // draw using text_triangle_args and row_text_triangles
-        if (params.num_col > params.max_num_text){
+        if (params.num_row > params.max_num_text){
           params.row_text_triangles = calc_row_text_triangles(params);
         }
         regl(text_triangle_args)(params.row_text_triangles);

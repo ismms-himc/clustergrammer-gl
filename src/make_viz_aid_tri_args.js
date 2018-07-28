@@ -39,13 +39,14 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     top_offset = -params.mat_size.y - tri_height;
 
   } else {
+
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
     tri_height = 0.025;
     tri_width = 2.0 * params.heat_size.y/num_labels;
     top_offset = -params.mat_size.x - tri_height;
-  }
 
+  }
 
   var zoom_function = function(context){
     return context.view;
@@ -63,7 +64,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     var shift_mat_heat;
     if (inst_rc == 'row'){
       order_id = num_labels - params.network[inst_rc + '_nodes'][i][inst_order] - 1;
-      // vertical shift
       shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
     } else {
       order_id = params.network[inst_rc + '_nodes'][i][inst_order] ;
@@ -74,7 +74,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
 
-    // console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
     y_offset_array[i] = mat_size - tri_width/2 - order_id * tri_width + shift_mat_heat;
   }
 

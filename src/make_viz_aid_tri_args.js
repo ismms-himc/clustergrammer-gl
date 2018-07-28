@@ -25,7 +25,18 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
     tri_height = mat_size/num_labels * reduce_height;
     tri_width  = mat_size/num_labels;
+
+    // original top_offset calc (undercorrects)
     top_offset = -params.mat_size.y - tri_height;
+
+    if (params.zoom_data.x.total_zoom == 1){
+      top_offset = -params.mat_size.y - tri_height;
+    } else {
+      top_offset = -params.mat_size.y - tri_height;
+      // top_offset = -params.mat_size.y - tri_height - tri_height * (params.zoom_data.x.total_zoom - 1);
+      // top_offset = -params.mat_size.y - tri_height - tri_height * (1.01);
+    }
+    console.log(top_offset)
 
   } else {
 
@@ -105,9 +116,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       varying vec3 new_position;
       varying vec3 vec_translate;
 
-      // // pass varying variable to fragment from vector
-      // varying vec4 color_vary;
-
       void main () {
 
         new_position = vec3(ini_position, 0);
@@ -119,7 +127,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
-
 
       }
     `,

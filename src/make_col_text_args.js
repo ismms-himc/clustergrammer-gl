@@ -2,7 +2,7 @@ var m3 = require('./mat3_transform');
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
-  var col_width = 1.00 *params.heat_size.x/params.num_col;
+  var col_width = params.heat_size.x/params.num_col;
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
@@ -12,7 +12,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   /* Col Text */
   // update text information with zooming
-  var limited_scaling = params.text_scale.col(total_zoom);
+  // var limited_scaling = params.text_scale.col(total_zoom);
   params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
                                      params.text_scale.col(total_zoom);
 
@@ -40,7 +40,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       uniform mat3 mat_rotate;
       uniform mat3 text_y_scale;
       uniform float total_zoom;
-      uniform float limited_scaling;
       uniform float col_width;
       varying vec3 rotated_text;
       varying vec3 position_cols;
@@ -111,7 +110,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
       total_zoom: total_zoom,
-      limited_scaling: limited_scaling,
       col_width: col_width,
     },
     depth: {

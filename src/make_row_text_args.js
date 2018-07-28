@@ -2,15 +2,16 @@ var m3 = require('./mat3_transform');
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
-  // prevent text from getting too large when zooming
+  // // prevent text from getting too large when zooming
   params.text_scale.row = d3.scale.linear()
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor]);
 
+  // smaller scale_text -> larger text
+  // var limited_scaling = params.text_scale.row(total_zoom);
+
   var total_zoom = params.zoom_data.y.total_zoom;
 
-  // smaller scale_text -> larger text
-  var limited_scaling = params.text_scale.row(total_zoom);
   var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
 
   // scale_text is applying a zoom to x and y
@@ -38,7 +39,6 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       varying float x_position;
       varying float y_position;
       uniform float shift_heat;
-      uniform float limited_scaling;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -85,7 +85,6 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       zoom: zoom_function,
       offset: regl.prop('offset'),
       scale_text: scale_text,
-      limited_scaling: limited_scaling,
       x_offset: x_offset,
       heat_size: params.heat_size.y,
       shift_heat: params.mat_size.y - params.heat_size.y,

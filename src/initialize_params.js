@@ -238,7 +238,9 @@ module.exports = function initialize_params(regl, network){
   // console.log('row_text_triangles in initialize_params')
   // console.log(params.row_text_triangles)
 
-  params.max_zoom = 1000;
+  // have max zoom restricted by column number in a similar manner to
+  // how col viz aid triangle restricted zooming in previous version
+  params.max_zoom = params.num_col/2.0;
   params.zoom_restrict = ini_zoom_restrict(params);
 
   // update zoom_data

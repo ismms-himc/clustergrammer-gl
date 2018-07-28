@@ -139,14 +139,6 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
         inst_y_pan_by_zoom = 0;
       }
 
-      /*
-        Viz-Aid Triangle special rules
-      */
-      if (viz_component === 'col-viz-aid'){
-        inst_y_pan_by_drag = 0;
-        inst_y_pan_by_zoom = -(zoom_data.y.inst_zoom - 1) * params.viz_dim.mat.y.min;
-      }
-
       if (viz_component === 'static'){
         inst_x_zoom = 1;
         inst_x_pan_by_drag = 0;

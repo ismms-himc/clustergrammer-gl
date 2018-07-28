@@ -5,13 +5,6 @@ var make_viz_aid_tri_args = require('./make_viz_aid_tri_args');
 
 module.exports = function draw_col_components(regl, params, slow_draw=false){
 
-  // // drawing the colum viz aid triangles using their own special camera since
-  // // they require special behavior, e.g. zooming but constant positioning
-  // params.cameras['col-viz-aid'].draw(() => {
-  //   params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
-  //   regl(params.viz_aid_tri_args.col)();
-  // });
-
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
 
@@ -29,9 +22,6 @@ module.exports = function draw_col_components(regl, params, slow_draw=false){
     // make the arguments for the draw command
     var text_triangle_args = make_col_text_args(regl, params,
                                                          params.zoom_function);
-
-    // // draw using text_triangle_args and col_text_triangles
-    // regl(text_triangle_args)(params.col_text_triangles);
 
     if (slow_draw){
 

@@ -4,10 +4,7 @@ var color_to_rgba = require('./color_to_rgba');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
-
   var inst_rgba = color_to_rgba('#eee', 1.0);
-  // var inst_rgba = color_to_rgba('blue', 1.0);
-
   var num_labels = params['num_'+inst_rc];
 
   var tri_height;
@@ -15,29 +12,18 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var mat_size;
   var top_shift_triangles;
   var top_offset;
+
   if (inst_rc === 'col'){
 
     mat_size = params.heat_size.x;
-
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
-    // var reduce_height = params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
-    var reduce_height = params.zoom_data.x.total_zoom; // params.zoom_data.x.total_zoom/params.zoom_data.y.total_zoom;
-
+    var reduce_height = params.zoom_data.x.total_zoom;
     tri_height = mat_size/num_labels * reduce_height;
     tri_width  = mat_size/num_labels;
 
     // original top_offset calc (undercorrects)
     top_offset = -params.mat_size.y - tri_height;
-
-    if (params.zoom_data.x.total_zoom == 1){
-      top_offset = -params.mat_size.y - tri_height;
-    } else {
-      top_offset = -params.mat_size.y - tri_height;
-      // top_offset = -params.mat_size.y - tri_height - tri_height * (params.zoom_data.x.total_zoom - 1)/1000;
-      // top_offset = -params.mat_size.y - tri_height - tri_height * (0.0001);
-    }
-    // console.log(top_offset)
 
   } else {
 
@@ -70,8 +56,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     }
 
     /* need to position based on clustering order */
-    // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
-    // of the heatmap vs the general matrix area
+    // the last part is necessary to shfit the viz aid triangles down to make up
+    // for the smaller size of the heatmap vs the general matrix area
 
     tri_offset_array[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }

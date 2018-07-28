@@ -28,13 +28,15 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
         calc_viz_area(params);
 
         // draw using text_triangle_args and row_text_triangles
-        params.row_text_triangles = calc_row_text_triangles(params);
+        if (params.num_col > params.max_num_text){
+          params.row_text_triangles = calc_row_text_triangles(params);
+        }
         regl(text_triangle_args)(params.row_text_triangles);
 
 
       } else {
         // console.log('too many rows to draw');
-        regl(text_triangle_args)(params.row_text_triangles);
+        // regl(text_triangle_args)(params.row_text_triangles);
       }
 
     } else {

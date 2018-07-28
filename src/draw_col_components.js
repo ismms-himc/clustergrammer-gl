@@ -32,13 +32,15 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
         calc_viz_area(params);
 
         // draw using text_triangle_args and col_text_triangles
-        params.col_text_triangles = calc_col_text_triangles(params);
+        if (params.num_col > params.max_num_text){
+          params.col_text_triangles = calc_col_text_triangles(params);
+        }
         regl(text_triangle_args)(params.col_text_triangles);
 
 
       } else {
         // console.log('too many cols to draw');
-        regl(text_triangle_args)(params.col_text_triangles);
+        // regl(text_triangle_args)(params.col_text_triangles);
       }
 
     } else {

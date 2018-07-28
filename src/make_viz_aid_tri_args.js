@@ -36,8 +36,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
     tri_height = 2.0 * mat_size/num_labels * reduce_height;
     tri_width  = 2.0 * mat_size/num_labels;
-
-    // top_shift_triangles = params.mat_size.y;
     top_offset = -params.mat_size.y - tri_height;
 
   } else {
@@ -45,7 +43,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     mat_size = params.heat_size.y;
     tri_height = 0.025;
     tri_width = 2.0 * params.heat_size.y/num_labels;
-    top_shift_triangles = params.mat_size.x;
     top_offset = -params.mat_size.x - tri_height;
   }
 
@@ -54,15 +51,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     return context.view;
   };
 
-  // console.log(zoom_function)
-
-  /////////////////////////////////
-  // Label Offset Buffer
-  /////////////////////////////////
-  // row width is required to place the triangles on the 'top' of the matrix and
-  // not to overlap with the matrix
-  // vertical shift
-  // var top_offset = -top_shift_triangles - tri_height;
 
   var inst_order = 'clust';
 

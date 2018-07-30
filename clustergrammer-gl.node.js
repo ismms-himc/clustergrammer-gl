@@ -31361,28 +31361,9 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
 
   /*
 
-  Try to calculate the length of the text in the tooltip by doing something like
-
-  var arrays = params.mouseover.text_triangles.positions
-
-  var max_pos = Math.max(...merged);
-
-  var min_pos = Math.min(...merged);
+  Try to get background size to change with text size
 
   */
-
-  // var viz_dim = params.viz_dim;
-  // var ini_mat = params.mat_size;
-  // var ini_heat = params.heat_size;
-  // var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
-
-  // var scaled_mat = {};
-  // scaled_mat.x = ini_mat.x / height_to_width;
-  // scaled_mat.y = ini_mat.y / height_to_width;
-
-  // var scaled_heat = {};
-  // scaled_heat.x = ini_heat.x / height_to_width;
-  // scaled_heat.y = ini_heat.y / height_to_width;
 
   var offset_x = 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
   var offset_y = 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
@@ -31394,7 +31375,7 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
   // inst_shift.x = params.mat_size.x - params.heat_size.x;
   // inst_shift.y = params.mat_size.y - params.heat_size.y;
 
-  var tooltip_width = 0.3;
+  var tooltip_width = 0.5;
   var tooltip_height = 0.1;
 
   var background_triangles = [
@@ -32242,6 +32223,7 @@ module.exports = function draw_spillover_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const make_tooltip_text_args = __webpack_require__(/*! ./make_tooltip_text_args */ "./src/make_tooltip_text_args.js");
 var calc_tooltip_background_triangles = __webpack_require__(/*! ./calc_tooltip_background_triangles */ "./src/calc_tooltip_background_triangles.js");
 
 module.exports = function draw_tooltip_components(regl, params){
@@ -32264,10 +32246,21 @@ module.exports = function draw_tooltip_components(regl, params){
     // tooltip text
     //////////////////
     // make the arguments for the draw command
-    var text_triangle_args = params.mouseover.text_triangle_args;
-    var inst_triangles = params.mouseover.text_triangles;
+    var text_triangle_args;
+     // = params.mouseover.text_triangle_args;
+
+    // draw row/col names
+    var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=3.0);
+    var inst_triangles = params.mouseover.text_triangles['line-1'];
     regl(text_triangle_args)(inst_triangles);
 
+    if (params.cat_num.col > 0){
+
+      var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=1.5);
+      var inst_triangles = params.mouseover.text_triangles['line-2'];
+      regl(text_triangle_args)(inst_triangles);
+
+    }
 
   });
 };
@@ -32282,7 +32275,7 @@ module.exports = function draw_tooltip_components(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
-const make_tooltip_text_args = __webpack_require__(/*! ./make_tooltip_text_args */ "./src/make_tooltip_text_args.js");
+// const make_tooltip_text_args = require('./make_tooltip_text_args');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
@@ -32346,17 +32339,25 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     var mouseover_text;
     if (params.cat_num.col == 0){
+      // calculate text triangles, they require an offset element
       mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
+      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.mouseover.text_triangles['line-1'].offset = [0,0];
     } else {
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name + ' and ' + params.mouseover.col_cat;
+      // calculate text triangles, they require an offset element
+      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
+      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.mouseover.text_triangles['line-1'].offset = [0,0];
+
+      params.mouseover.col_cat = params.ordered_labels.col_cats[col_index];
+      mouseover_text = params.mouseover.col_cat;
+      params.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-    // calculate text triangles, they require an offset element
-    params.mouseover.text_triangles = vectorizeText(mouseover_text, vect_text_attrs);
-    params.mouseover.text_triangles.offset = [0,0];
 
-    // make the arguments for the draw command
-    params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params);
+    // // make the arguments for the draw command
+    // params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, line_offset=2.5);
 
     params.in_bounds_tooltip = true;
   } else {
@@ -32801,7 +32802,7 @@ module.exports = function initialize_params(regl, network){
   params.mouseover.row_name = null;
   params.mouseover.col_name = null;
 
-  params.mouseover.text_triangles;
+  params.mouseover.text_triangles = {};
 
   params.pix_to_webgl = pix_to_webgl;
 
@@ -34608,7 +34609,7 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function make_tooltip_text_args(regl, params){
+module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
 
   var total_zoom = params.zoom_data.y.total_zoom;
 
@@ -34622,7 +34623,6 @@ module.exports = function make_tooltip_text_args(regl, params){
   var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
   var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
 
-  // console.log('offsets', offset_x, offset_y)
 
   var vert_arg = `
       precision mediump float;
@@ -34633,16 +34633,12 @@ module.exports = function make_tooltip_text_args(regl, params){
       uniform float inst_depth;
       uniform float offset_x;
       uniform float offset_y;
+      uniform float line_offset;
 
       void main () {
 
-        // the x position is constant for all row labels
-        //-----------------------------------------------
         x_position =  (position.x - 1.0)/scale_text + offset_x;
-
-        // the y position varies for all row labels
-        //-----------------------------------------------
-        y_position = -(position.y - 1.0)/scale_text + offset_y;
+        y_position = -(position.y - line_offset)/scale_text + offset_y;
 
         gl_Position =
                       vec4(
@@ -34669,7 +34665,8 @@ module.exports = function make_tooltip_text_args(regl, params){
       scale_text: scale_text,
       inst_depth: inst_depth,
       offset_x: offset_x,
-      offset_y: offset_y
+      offset_y: offset_y,
+      line_offset: line_offset
     },
     depth: {
       enable: true,

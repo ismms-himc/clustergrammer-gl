@@ -1,4 +1,4 @@
-module.exports = function make_tooltip_text_args(regl, params){
+module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
 
   var total_zoom = params.zoom_data.y.total_zoom;
 
@@ -12,7 +12,6 @@ module.exports = function make_tooltip_text_args(regl, params){
   var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
   var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
 
-  // console.log('offsets', offset_x, offset_y)
 
   var vert_arg = `
       precision mediump float;
@@ -23,16 +22,12 @@ module.exports = function make_tooltip_text_args(regl, params){
       uniform float inst_depth;
       uniform float offset_x;
       uniform float offset_y;
+      uniform float line_offset;
 
       void main () {
 
-        // the x position is constant for all row labels
-        //-----------------------------------------------
         x_position =  (position.x - 1.0)/scale_text + offset_x;
-
-        // the y position varies for all row labels
-        //-----------------------------------------------
-        y_position = -(position.y - 1.0)/scale_text + offset_y;
+        y_position = -(position.y - line_offset)/scale_text + offset_y;
 
         gl_Position =
                       vec4(
@@ -59,7 +54,8 @@ module.exports = function make_tooltip_text_args(regl, params){
       scale_text: scale_text,
       inst_depth: inst_depth,
       offset_x: offset_x,
-      offset_y: offset_y
+      offset_y: offset_y,
+      line_offset: line_offset
     },
     depth: {
       enable: true,

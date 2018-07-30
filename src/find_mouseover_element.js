@@ -1,5 +1,5 @@
 const vectorizeText = require('vectorize-text');
-const make_tooltip_text_args = require('./make_tooltip_text_args');
+// const make_tooltip_text_args = require('./make_tooltip_text_args');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
@@ -63,17 +63,25 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     var mouseover_text;
     if (params.cat_num.col == 0){
+      // calculate text triangles, they require an offset element
       mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
+      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.mouseover.text_triangles['line-1'].offset = [0,0];
     } else {
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name + ' and ' + params.mouseover.col_cat;
+      // calculate text triangles, they require an offset element
+      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
+      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.mouseover.text_triangles['line-1'].offset = [0,0];
+
+      params.mouseover.col_cat = params.ordered_labels.col_cats[col_index];
+      mouseover_text = params.mouseover.col_cat;
+      params.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-    // calculate text triangles, they require an offset element
-    params.mouseover.text_triangles = vectorizeText(mouseover_text, vect_text_attrs);
-    params.mouseover.text_triangles.offset = [0,0];
 
-    // make the arguments for the draw command
-    params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params);
+    // // make the arguments for the draw command
+    // params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, line_offset=2.5);
 
     params.in_bounds_tooltip = true;
   } else {

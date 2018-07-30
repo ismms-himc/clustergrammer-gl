@@ -1,7 +1,0 @@
-budo matrix_example.js --open --live -- -t es2020
-
-browserify -r es2020 main.js > ../docs/bundle.js
-
-https://cornhundred.github.io/clustergrammer2_12309549587874092343/
-
-eslint src/**

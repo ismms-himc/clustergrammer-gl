@@ -93,20 +93,24 @@ module.exports = [
   //       // 'underscore': '_',
   //       'd3': 'd3'
   //     },
-  //     plugins:[
-  //       new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
-  //     ],
-  //     module: {
-  //         loaders: [
-  //             {
-  //               test: /\.js$/,
-  //               loader: 'babel',
-  //               query: {
-  //                 presets: ['es2015']
-  //               }
-  //             }
-  //         ]
+  //     optimization: {
+  //       minimize: true
   //     }
+  //     // plugins:[
+  //     //   new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
+  //     // ],
+
+  //     // module: {
+  //     //     loaders: [
+  //     //         {
+  //     //           test: /\.js$/,
+  //     //           loader: 'babel',
+  //     //           query: {
+  //     //             presets: ['es2015']
+  //     //           }
+  //     //         }
+  //     //     ]
+  //     // }
   // },
   // {
   //     entry: './src/main.js',
@@ -125,19 +129,22 @@ module.exports = [
   //       // 'underscore': '_',
   //       'd3': 'd3'
   //     },
-  //     plugins:[
-  //       new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
-  //     ],
-  //     module: {
-  //         loaders: [
-  //             {
-  //               test: /\.js$/,
-  //               loader: 'babel',
-  //               query: {
-  //                 presets: ['es2015']
-  //               }
-  //             }
-  //         ]
+  //     optimization: {
+  //       minimize: true
   //     }
+  //     // plugins:[
+  //     //   new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
+  //     // ],
+  //     // module: {
+  //     //     loaders: [
+  //     //         {
+  //     //           test: /\.js$/,
+  //     //           loader: 'babel',
+  //     //           query: {
+  //     //             presets: ['es2015']
+  //     //           }
+  //     //         }
+  //     //     ]
+  //     // }
   // }
 ];

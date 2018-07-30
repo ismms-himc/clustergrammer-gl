@@ -85,12 +85,12 @@ module.exports =
 /***/ (function(module, exports, __webpack_require__) {
 
 	var initialize_params = __webpack_require__(2);
-	var draw_commands = __webpack_require__(203);
-	_ = __webpack_require__(212);
+	var draw_commands = __webpack_require__(202);
+	_ = __webpack_require__(211);
 
 	module.exports = function run_viz(container, network){
 
-	  var regl = __webpack_require__(213)({
+	  var regl = __webpack_require__(212)({
 	    extensions: ['angle_instanced_arrays'],
 	    container: container,
 	    // pixelRatio: window.devicePixelRatio/10
@@ -233,15 +233,15 @@ module.exports =
 	var make_cameras = __webpack_require__(131);
 	var calc_spillover_triangles = __webpack_require__(183);
 	var make_matrix_args = __webpack_require__(184);
-	var make_viz_aid_tri_args = __webpack_require__(191);
-	var make_cat_args = __webpack_require__(195);
-	var make_dendro_args = __webpack_require__(196);
-	var make_spillover_args = __webpack_require__(197);
-	var calc_viz_area = __webpack_require__(198);
-	var calc_row_downsampled_mat = __webpack_require__(199);
-	var generate_cat_data = __webpack_require__(200);
-	var get_ordered_labels = __webpack_require__(201);
-	var make_tooltip_background_args = __webpack_require__(202);
+	var make_viz_aid_tri_args = __webpack_require__(190);
+	var make_cat_args = __webpack_require__(194);
+	var make_dendro_args = __webpack_require__(195);
+	var make_spillover_args = __webpack_require__(196);
+	var calc_viz_area = __webpack_require__(197);
+	var calc_row_downsampled_mat = __webpack_require__(198);
+	var generate_cat_data = __webpack_require__(199);
+	var get_ordered_labels = __webpack_require__(200);
+	var make_tooltip_background_args = __webpack_require__(201);
 
 	// /*
 	//   Working on using subset of math.js for matrix splicing
@@ -20838,7 +20838,7 @@ module.exports =
 	var make_draw_cells_buffers = __webpack_require__(185);
 	var blend_info = __webpack_require__(186);
 	// var $ = require('jquery');
-	var make_draw_cells_arr = __webpack_require__(188);
+	var make_draw_cells_arr = __webpack_require__(187);
 
 	module.exports = function make_matrix_args(regl, params){
 
@@ -21053,12 +21053,11 @@ module.exports =
 
 
 /***/ }),
-/* 187 */,
-/* 188 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var make_position_arr = __webpack_require__(189);
-	var make_opacity_arr = __webpack_require__(190);
+	var make_position_arr = __webpack_require__(188);
+	var make_opacity_arr = __webpack_require__(189);
 
 	module.exports = function make_draw_cells_arr(regl, params){
 
@@ -21090,7 +21089,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 189 */
+/* 188 */
 /***/ (function(module, exports) {
 
 	// var calc_node_canvas_positions = require('./calc_node_canvas_positions');
@@ -21202,7 +21201,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 190 */
+/* 189 */
 /***/ (function(module, exports) {
 
 	module.exports = function make_opacity_arr(params){
@@ -21234,11 +21233,11 @@ module.exports =
 	};
 
 /***/ }),
-/* 191 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(192);
-	var color_to_rgba = __webpack_require__(193);
+	var m3 = __webpack_require__(191);
+	var color_to_rgba = __webpack_require__(192);
 	// var color_table = require('./color_table.js');
 
 	module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
@@ -21414,7 +21413,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 192 */
+/* 191 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -21447,11 +21446,11 @@ module.exports =
 
 
 /***/ }),
-/* 193 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* eslint-disable */
-	var color_table = __webpack_require__(194);
+	var color_table = __webpack_require__(193);
 
 	module.exports = function color_to_rgbs(hex, alpha=1.0){
 
@@ -21513,7 +21512,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 194 */
+/* 193 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -21669,11 +21668,11 @@ module.exports =
 	};
 
 /***/ }),
-/* 195 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(192);
-	var color_to_rgba = __webpack_require__(193);
+	var m3 = __webpack_require__(191);
+	var color_to_rgba = __webpack_require__(192);
 	// var color_table = require('./color_table.js');
 
 	module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
@@ -21938,10 +21937,10 @@ module.exports =
 	};
 
 /***/ }),
-/* 196 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(192);
+	var m3 = __webpack_require__(191);
 
 	module.exports = function draw_mat_labels(regl, params, inst_rc){
 
@@ -22071,7 +22070,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 197 */
+/* 196 */
 /***/ (function(module, exports) {
 
 	module.exports = function make_spillover_args(regl, inst_depth,
@@ -22121,7 +22120,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 198 */
+/* 197 */
 /***/ (function(module, exports) {
 
 	module.exports = function calc_viz_area(params){
@@ -22173,7 +22172,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 199 */
+/* 198 */
 /***/ (function(module, exports) {
 
 	module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
@@ -22233,7 +22232,7 @@ module.exports =
 	}
 
 /***/ }),
-/* 200 */
+/* 199 */
 /***/ (function(module, exports) {
 
 	module.exports = function generate_cat_data(params, inst_axis){
@@ -22291,7 +22290,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 201 */
+/* 200 */
 /***/ (function(module, exports) {
 
 	module.exports = function get_ordered_labels(params){
@@ -22323,7 +22322,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 202 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var blend_info = __webpack_require__(186);
@@ -22387,14 +22386,14 @@ module.exports =
 	};
 
 /***/ }),
-/* 203 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var draw_matrix_components = __webpack_require__(204);
-	var draw_row_components = __webpack_require__(205);
-	var draw_col_components = __webpack_require__(207);
-	var draw_spillover_components = __webpack_require__(209);
-	var draw_tooltip_components = __webpack_require__(210);
+	var draw_matrix_components = __webpack_require__(203);
+	var draw_row_components = __webpack_require__(204);
+	var draw_col_components = __webpack_require__(206);
+	var draw_spillover_components = __webpack_require__(208);
+	var draw_tooltip_components = __webpack_require__(209);
 
 	module.exports = function draw_commands(regl, params, slow_draw=false, show_tooltip=false){
 
@@ -22419,7 +22418,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 204 */
+/* 203 */
 /***/ (function(module, exports) {
 
 	// var filter_visible_mat = require('./filter_visible_mat');
@@ -22452,11 +22451,11 @@ module.exports =
 	};
 
 /***/ }),
-/* 205 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var make_row_text_args = __webpack_require__(206);
-	var calc_viz_area = __webpack_require__(198);
+	var make_row_text_args = __webpack_require__(205);
+	var calc_viz_area = __webpack_require__(197);
 	var calc_row_text_triangles = __webpack_require__(4);
 
 	module.exports = function draw_row_components(regl, params, calc_text_tri=false){
@@ -22512,10 +22511,10 @@ module.exports =
 	};
 
 /***/ }),
-/* 206 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(192);
+	var m3 = __webpack_require__(191);
 
 	module.exports = function make_row_text_args(regl, params, zoom_function){
 
@@ -22622,13 +22621,13 @@ module.exports =
 	};
 
 /***/ }),
-/* 207 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var make_col_text_args = __webpack_require__(208);
-	var calc_viz_area = __webpack_require__(198);
+	var make_col_text_args = __webpack_require__(207);
+	var calc_viz_area = __webpack_require__(197);
 	var calc_col_text_triangles = __webpack_require__(98);
-	var make_viz_aid_tri_args = __webpack_require__(191);
+	var make_viz_aid_tri_args = __webpack_require__(190);
 
 	module.exports = function draw_col_components(regl, params, calc_text_tri=false){
 
@@ -22686,10 +22685,10 @@ module.exports =
 	};
 
 /***/ }),
-/* 208 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var m3 = __webpack_require__(192);
+	var m3 = __webpack_require__(191);
 
 	module.exports = function make_col_text_args(regl, params, zoom_function){
 
@@ -22817,7 +22816,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 209 */
+/* 208 */
 /***/ (function(module, exports) {
 
 	module.exports = function draw_spillover_components(regl, params){
@@ -22838,10 +22837,10 @@ module.exports =
 	};
 
 /***/ }),
-/* 210 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var calc_tooltip_background_triangles = __webpack_require__(211);
+	var calc_tooltip_background_triangles = __webpack_require__(210);
 
 	module.exports = function draw_tooltip_components(regl, params){
 
@@ -22872,7 +22871,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 211 */
+/* 210 */
 /***/ (function(module, exports) {
 
 	module.exports = function calc_background_tooltip_triangles(regl, params){
@@ -22932,7 +22931,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 212 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -24486,7 +24485,7 @@ module.exports =
 
 
 /***/ }),
-/* 213 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {

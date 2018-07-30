@@ -33,13 +33,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
   params.zoom_data.x.cursor_position = ev.x0;
   params.zoom_data.y.cursor_position = ev.y0;
 
-  var inst_x = ev.x0// - cgm.params.viz_dim.heat.x.min
-  var inst_y = ev.y0// - cgm.params.viz_dim.heat.y.min
-
-  // console.log('\n------------')
-  // console.log(inst_x, inst_y)
-  // console.log(params.pix_to_webgl.x(inst_x), params.pix_to_webgl.y(inst_x))
-  // console.log(inst_x/params.viz_dim.canvas.width, inst_y/params.viz_dim.canvas.height)
+  var inst_x = ev.x0;
+  var inst_y = ev.y0;
 
   var cursor_rel_min = {};
   cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
@@ -59,11 +54,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
     if (params.mouseover.row_name.includes(': ')){
-      cgm.params.mouseover.row_name = cgm.params.mouseover.row_name.split(': ')[1]
+      cgm.params.mouseover.row_name = cgm.params.mouseover.row_name.split(': ')[1];
     }
 
     if (params.mouseover.col_name.includes(': ')){
-      cgm.params.mouseover.col_name = cgm.params.mouseover.col_name.split(': ')[1]
+      cgm.params.mouseover.col_name = cgm.params.mouseover.col_name.split(': ')[1];
     }
 
     var mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;

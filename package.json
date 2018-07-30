@@ -18,37 +18,24 @@
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.14.0",
-    "babel-eslint": "^4.1.8",
     "babel-loader": "^6.2.5",
-    "babel-preset-es2015": "^6.24.1",
     "browser-sync": "^2.18.13",
     "browser-sync-webpack-plugin": "^1.2.0",
-    "css-loader": "^0.23.1",
     "eslint": "^2.13.1",
     "expose-loader": "^0.7.1",
-    "less-loader": "^2.2.3",
-    "object-assign": "^4.1.0",
-    "webpack": "^1.13.2",
+    "webpack": "^4.16.3",
     "webpack-dev-server": "^3.1.3"
   },
   "dependencies": {
     "control-panel": "^1.2.0",
-    "github-cornerify": "^1.0.7",
     "gl-mat4": "^1.1.4",
-    "gl-vec3": "^1.0.3",
     "gl-vec4": "^1.0.1",
-    "glsl-colormap": "^1.0.1",
-    "glslify": "^6.1.0",
-    "indexhtmlify": "^1.3.1",
-    "interaction-events": "git+ssh://git@github.com/rreusser/interaction-events.git",
-    "metadataify": "^1.0.3",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "3.0.2",
     "regl": "^1.3.7",
-    "standard": "^9.0.1",
-    "uglify-js": "^2.8.13",
     "underscore": "1.8.3",
     "vectorize-text": "^3.0.2",
-    "xtend": "^4.0.1"
+    "xtend": "^4.0.1",
+    "util-extend": "1.0.3"
   }
 }

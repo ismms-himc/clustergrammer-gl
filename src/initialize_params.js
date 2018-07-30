@@ -18,13 +18,13 @@ var generate_cat_data = require('./generate_cat_data');
 var get_ordered_labels = require('./get_ordered_labels');
 var make_tooltip_background_args = require('./make_tooltip_background_args');
 
-/*
-  Working on using subset of math.js for matrix splicing
-*/
-var core = require('mathjs/core');
-var math = core.create();
+// /*
+//   Working on using subset of math.js for matrix splicing
+// */
+// var core = require('mathjs/core');
+// var math = core.create();
 
-math.import(require('mathjs/lib/function/probability/factorial'));
+// math.import(require('mathjs/lib/function/probability/factorial'));
 
 // console.log(math)
 

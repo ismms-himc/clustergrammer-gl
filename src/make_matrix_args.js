@@ -1,6 +1,6 @@
 var make_draw_cells_buffers = require('./make_draw_cells_buffers');
 var blend_info = require('./blend_info');
-var $ = require('jquery');
+// var $ = require('jquery');
 var make_draw_cells_arr = require('./make_draw_cells_arr');
 
 module.exports = function make_matrix_args(regl, params){
@@ -92,7 +92,36 @@ module.exports = function make_matrix_args(regl, params){
 
   var zoom_function = params.zoom_function;
 
-  var regl_props = {
+  var top_props = {
+    vert: vert_string,
+    frag: frag_string,
+    attributes: {
+      position: '',
+      pos_att: {
+        buffer: position_buffer,
+        divisor: 1
+      },
+      opacity_att: {
+        buffer: opacity_buffer,
+        divisor: 1
+        }
+    },
+    blend: blend_info,
+    count: 3,
+    uniforms: {
+      zoom: zoom_function,
+    },
+    instances: num_instances,
+    depth: {
+      enable: true,
+      mask: true,
+      func: 'less',
+      // func: 'greater',
+      range: [0, 1]
+    },
+  };
+
+  var bot_props = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
@@ -126,11 +155,13 @@ module.exports = function make_matrix_args(regl, params){
   var draw_cells_props = {};
   draw_cells_props.regl_props = {};
 
-  var top_props = $.extend(true, {}, regl_props);
+  // var top_props = $.extend(true, {}, regl_props);
+  // var top_props = JSON.parse(JSON.stringify(regl_props))
   top_props.attributes.position = top_half_verts;
   draw_cells_props.regl_props.top = top_props;
 
-  var bot_props = $.extend(true, {}, regl_props);
+  // var bot_props = $.extend(true, {}, regl_props);
+  // var bot_props = JSON.parse(JSON.stringify(regl_props))
   bot_props.attributes.position = bottom_half_verts;
   draw_cells_props.regl_props.bot = bot_props;
 

@@ -61,7 +61,12 @@ module.exports = function find_mouseover_element(regl, params, ev){
       cgm.params.mouseover.col_name = cgm.params.mouseover.col_name.split(': ')[1];
     }
 
-    var mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
+    var mouseover_text;
+    if (params.cat_num.col == 0){
+      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
+    } else {
+      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name + ' and ' + params.mouseover.col_cat;
+    }
 
     // calculate text triangles, they require an offset element
     params.mouseover.text_triangles = vectorizeText(mouseover_text, vect_text_attrs);

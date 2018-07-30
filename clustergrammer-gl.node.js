@@ -33339,7 +33339,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 /*
 
-  Version 0.3.0
+  Version 0.3.1
 
  */
 
@@ -33353,7 +33353,7 @@ var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('version 0.3.0');
+  console.log('version 0.3.1');
   console.log('################################');
 
   var network = args.network;
@@ -34584,7 +34584,7 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
       inst_depth: inst_depth
     },
 
-    // blend: blend_info,
+    blend: blend_info,
     count: 3,
     depth: {
       enable: true,

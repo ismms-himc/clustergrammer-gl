@@ -6,7 +6,6 @@
 
 // var filename = 'data/mult_view.json';
 
-// const
 var run_viz = require('./run_viz');
 
 // global variables

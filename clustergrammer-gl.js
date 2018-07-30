@@ -33339,7 +33339,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 /*
 
-  Version 0.2.3
+  Version 0.3.0
 
  */
 
@@ -33353,7 +33353,7 @@ var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('version 0.2.3');
+  console.log('version 0.3.0');
   console.log('################################');
 
   var network = args.network;

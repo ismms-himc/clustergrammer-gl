@@ -2,6 +2,8 @@ var initialize_params = require('./initialize_params');
 var draw_commands = require('./draw_commands');
 _ = require('underscore');
 var control = require('control-panel');
+var final_mouseover_frame = require('./final_mouseover_frame');
+var final_interaction_frame = require('./final_interaction_frame');
 
 module.exports = function run_viz(container, network){
 
@@ -12,27 +14,27 @@ module.exports = function run_viz(container, network){
   });
 
   // var tick = 0;
-  var initialize_viz = true;
+  // var initialize_viz = true;
 
   // global params
   var params = initialize_params(regl, network);
 
-  var first_frame = true;
+  params.first_frame = true;
   var wait_time_final_interact = 100;
   var wait_time_final_mouseover = 100;
 
   regl.frame(function () {
 
     // interaction (zoom/drag) causes a draw command
-    if (params.still_interacting == true || initialize_viz == true){
+    if (params.still_interacting == true || params.initialize_viz == true){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
       draw_commands(regl, params);
 
-      setTimeout(final_interaction_frame, wait_time_final_interact, params);
+      setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
-      initialize_viz = false;
+      params.initialize_viz = false;
 
     }
 
@@ -47,7 +49,7 @@ module.exports = function run_viz(container, network){
         draw_commands(regl, params);
       }
 
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params);
+      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 
     } else {
 
@@ -65,53 +67,34 @@ module.exports = function run_viz(container, network){
   });
 
 
-  function final_mouseover_frame(params){
+  // function final_interaction_frame(params){
 
-    // reduce the number of mouseovers
-    params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
+  //   // reduce the number of interactions
+  //   params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
 
-    // console.log('check  ', params.zoom_data.x.total_mouseover)
-    if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
-      console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
+  //   if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
 
-      // run draw commands
-      var slow_draw = true;
-      params.show_tooltip = true;
+  //     // preventing from running on first frame
+  //     if (first_frame == false){
 
-      if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-        draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
-      }
-    }
-  }
+  //       console.log('\n------------------\nFINAL INTERACTION');
+  //       console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
-  function final_interaction_frame(params){
+  //       // run draw commands
+  //       var slow_draw = true;
 
-    // reduce the number of interactions
-    params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+  //       if (params.zoom_data.x.total_mouseover == 0){
+  //         draw_commands(regl, params, slow_draw);
+  //       }
 
-    if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
+  //       // console.log(params.kept_row_y);
 
-      // preventing from running on first frame
-      if (first_frame == false){
+  //     } else {
+  //       first_frame = false;
+  //     }
+  //   }
 
-        console.log('\n------------------\nFINAL INTERACTION');
-        console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
-
-        // run draw commands
-        var slow_draw = true;
-
-        if (params.zoom_data.x.total_mouseover == 0){
-          draw_commands(regl, params, slow_draw);
-        }
-
-        // console.log(params.kept_row_y);
-
-      } else {
-        first_frame = false;
-      }
-    }
-
-  }
+  // }
 
   return params;
 

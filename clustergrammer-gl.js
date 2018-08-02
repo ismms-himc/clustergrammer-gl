@@ -31238,485 +31238,6 @@ function nextafter(x, y) {
 
 /***/ }),
 
-/***/ "./node_modules/normalized-interaction-events/index.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/normalized-interaction-events/index.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = normalizedInteractionEvents;
-
-var mouseChange = __webpack_require__(/*! mouse-change */ "./node_modules/mouse-change/mouse-listen.js");
-var eventOffset = __webpack_require__(/*! mouse-event-offset */ "./node_modules/mouse-event-offset/index.js");
-var eventEmitter = __webpack_require__(/*! event-emitter */ "./node_modules/event-emitter/index.js");
-
-function normalizedInteractionEvents (element) {
-  element = element || window;
-
-  // debugger
-  // console.log('normalized-interaction-events', element)
-
-  // nick change
-  element = element.element
-
-  var emitter = eventEmitter();
-  var previousPosition = [null, null];
-  var previousFingerPosition = [null, null];
-  var currentPosition = [null, null];
-  var fingers = [null, null];
-  var activeTouchCount = 0;
-  var ev = {};
-
-
-  var width, height;
-
-  var getSize = element === window ? function () {
-    width = window.innerWidth;
-    height = window.innerHeight;
-  } : function () {
-    width = element.clientWidth;
-    height = element.clientHeight;
-  }
-
-  var buttons = 0;
-  var mouseX;
-  var mouseY;
-  var mods = {};
-  var changeListener = mouseChange(element, function(pbuttons, px, py, pmods) {
-    mouseX = px;
-    mouseY = py;
-    buttons = pbuttons;
-    mods = pmods;
-  });
-
-  function onWheel (event) {
-    eventOffset(event, element, currentPosition);
-    getSize();
-
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x0 = ev.x = ev.x1 = 2 * currentPosition[0] / width - 1;
-    ev.y0 = ev.y = ev.y1 = 1 - 2 * currentPosition[1] / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.dx = 2 * event.deltaX / width;
-    ev.dy = -2 * event.deltaY / height;
-    ev.dz = 2 * event.deltaZ / width;
-    ev.active = 1;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-
-    emitter.emit('wheel', ev);
-
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-
-  var x0 = null;
-  var y0 = null;
-  var active = 0;
-
-  function onMouseUp (event) {
-    eventOffset(event, element, currentPosition);
-    active = 0;
-    getSize();
-
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x = ev.x1 = 2 * currentPosition[0] / width - 1;
-    ev.y = ev.y1 = 1 - 2 * currentPosition[1] / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.active = active;
-    ev.x0 = 2 * x0 / width - 1;
-    ev.y0 = 1 - 2 * y0 / height;
-    ev.dx = 0;
-    ev.dy = 0;
-    ev.dz = 0;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-
-    emitter.emit('mouseup', ev);
-
-    x0 = y0 = null;
-
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-
-  function onMouseDown (event) {
-    eventOffset(event, element, currentPosition);
-    active = 1;
-    getSize();
-
-    x0 = mouseX;
-    y0 = mouseY;
-
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x = ev.x0 = ev.x1 = 2 * currentPosition[0] / width - 1;
-    ev.y = ev.y0 = ev.y1 = 1 - 2 * currentPosition[1] / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.active = active;
-    ev.dx = 0;
-    ev.dy = 0;
-    ev.dz = 0;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-
-    emitter.emit('mousedown', ev);
-
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-
-  function onMouseMove (event) {
-    eventOffset(event, element, currentPosition);
-    getSize();
-
-    ev.buttons = buttons;
-    ev.mods = mods;
-    ev.x0 = 2 * x0 / width - 1;
-    ev.y0 = 1 - 2 * y0 / height;
-    ev.x = ev.x1 = 2 * currentPosition[0] / width - 1;
-    ev.y = ev.y1 = 1 - 2 * currentPosition[1] / height;
-    ev.x2 = null;
-    ev.y2 = null;
-    ev.dx = 2 * (currentPosition[0] - previousPosition[0]) / width;
-    ev.dy = -2 * (currentPosition[1] - previousPosition[1]) / height;
-    ev.active = active;
-    ev.dz = 0;
-    ev.zoomx = 1;
-    ev.zoomy = 1;
-    ev.theta = 0;
-    ev.dtheta = 0;
-    ev.originalEvent = event;
-
-    emitter.emit('mousemove', ev);
-
-    previousPosition[0] = currentPosition[0];
-    previousPosition[1] = currentPosition[1];
-  }
-
-  function indexOfTouch (touch) {
-    var id = touch.identifier
-    for (var i = 0; i < fingers.length; i++) {
-      if (fingers[i] &&
-        fingers[i].touch &&
-        fingers[i].touch.identifier === id) {
-        return i
-      }
-    }
-    return -1
-  }
-
-  function onTouchStart (event) {
-    previousFingerPosition[0] = null;
-    previousFingerPosition[1] = null;
-
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var newTouch = event.changedTouches[i]
-      var id = newTouch.identifier
-      var idx = indexOfTouch(id)
-
-      if (idx === -1 && activeTouchCount < 2) {
-        var first = activeTouchCount === 0
-
-        // newest and previous finger (previous may be undefined)
-        var newIndex = fingers[0] ? 1 : 0
-        var oldIndex = fingers[0] ? 0 : 1
-        var newFinger = {
-          position: [0, 0],
-          touch: null
-        };
-
-        // add to stack
-        fingers[newIndex] = newFinger
-        activeTouchCount++
-
-        // update touch event & position
-        newFinger.touch = newTouch
-        eventOffset(newTouch, element, newFinger.position)
-
-        var oldTouch = fingers[oldIndex] ? fingers[oldIndex].touch : undefined
-      }
-    }
-
-    var xavg = 0;
-    var yavg = 0;
-    var fingerCount = 0;
-    for (var i = 0; i < fingers.length; i++) {
-      if (!fingers[i]) continue;
-      xavg += fingers[i].position[0];
-      yavg += fingers[i].position[1];
-      fingerCount++;
-    }
-    xavg /= fingerCount;
-    yavg /= fingerCount;
-
-
-    if (activeTouchCount > 0) {
-      ev.theta = 0;
-
-      if (fingerCount > 1) {
-        var dx = fingers[1].position[0] - fingers[0].position[0];
-        var dy = (fingers[0].position[1] - fingers[1].position[1]) * width / height;
-        ev.theta = Math.atan2(dy, dx);
-      }
-
-      getSize();
-      ev.buttons = 0;
-      ev.mods = {};
-      ev.active = activeTouchCount;
-      x0 = xavg;
-      y0 = yavg;
-      ev.x0 = 2 * x0 / width - 1;
-      ev.y0 = 1 - 2 * y0 / height;
-      ev.x = 2 * xavg / width - 1;
-      ev.y = 1 - 2 * yavg / height;
-      ev.x1 = 2 * fingers[0].position[0] / width - 1;
-      ev.y1 = 1 - 2 * fingers[0].position[1] / height;
-      if (activeTouchCount > 1) {
-        ev.x2 = 2 * fingers[1].position[0] / width - 1;
-        ev.y2 = 1 - 2 * fingers[1].position[1] / height;
-      }
-      ev.active = activeTouchCount;
-      ev.dx = 0;
-      ev.dy = 0;
-      ev.dz = 0;
-      ev.zoomx = 1;
-      ev.zoomy = 1;
-      ev.dtheta = 0;
-      ev.originalEvent = event;
-      emitter.emit(activeTouchCount === 1 ? 'touchstart' : 'pinchstart', ev);
-    }
-  }
-
-  function onTouchMove (event) {
-    var idx;
-    var changed = false
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var movedTouch = event.changedTouches[i]
-      idx = indexOfTouch(movedTouch)
-
-      if (idx !== -1) {
-        changed = true
-        fingers[idx].touch = movedTouch // avoid caching touches
-        eventOffset(movedTouch, element, fingers[idx].position)
-      }
-    }
-
-    if (changed) {
-      if (activeTouchCount === 1) {
-        for (idx = 0; idx < fingers.length; idx++) {
-          if (fingers[idx]) break;
-        }
-
-        if (fingers[idx] && previousFingerPosition[idx]) {
-          var x = fingers[idx].position[0];
-          var y = fingers[idx].position[1];
-
-          var dx = x - previousFingerPosition[idx][0];
-          var dy = y - previousFingerPosition[idx][1];
-
-          ev.buttons = 0;
-          ev.mods = {};
-          ev.active = activeTouchCount;
-          ev.x = ev.x1 = 2 * x / width - 1;
-          ev.y = ev.y1 = 1 - 2 * y / height;
-          ev.x2 = null;
-          ev.y2 = null;
-          ev.x0 = 2 * x0 / width - 1;
-          ev.y0 = 1 - 2 * y0 / height;
-          ev.dx = 2 * dx / width;
-          ev.dy = -2 * dy / height;
-          ev.dz = 0;
-          ev.zoomx = 1;
-          ev.zoomy = 1;
-          ev.theta = 0;
-          ev.dtheta = 0;
-          ev.originalEvent = event;
-
-          emitter.emit('touchmove', ev);
-        }
-      } else if (activeTouchCount === 2) {
-        if (previousFingerPosition[0] && previousFingerPosition[1]) {
-          // Previous two-finger vector:
-          var pos0A = previousFingerPosition[0];
-          var pos0B = previousFingerPosition[1];
-          var dx0 = pos0B[0] - pos0A[0];
-          var dy0 = (pos0B[1] - pos0A[1]) * width / height;
-
-          // Current two-finger vector:
-          var pos1A = fingers[0].position;
-          var pos1B = fingers[1].position;
-          var dx1 = pos1B[0] - pos1A[0];
-          var dy1 = (pos1A[1] - pos1B[1]) * width / height;
-
-          // r, theta for the previous two-finger touch:
-          var r0 = Math.sqrt(dx0 * dx0 + dy0 * dy0) * 0.5;
-          var theta0 = Math.atan2(dy0, dx0);
-
-          // r, theta for the current two-finger touch:
-          var r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) * 0.5;
-          var theta1 = Math.atan2(dy1, dx1);
-
-          var xavg = (pos0B[0] + pos0A[0]) * 0.5;
-          var yavg = (pos0B[1] + pos0A[1]) * 0.5;
-          var dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0]);
-          var dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1]);
-
-          var dr = r1 / r0;
-          var dtheta = theta1 - theta0;
-
-          ev.buttons = 0;
-          ev.mods = mods;
-          ev.active = activeTouchCount;
-          ev.x = 2 * xavg / width - 1;
-          ev.y = 1 - 2 * yavg / height;
-          ev.x0 = 2 * x0 / width - 1;
-          ev.y0 = 1 - 2 * y0 / height;
-          ev.x1 = 2 * pos1A[0] / width - 1;
-          ev.y1 = 1 - 2 * pos1A[1] / height;
-          ev.x2 = 2 * pos1B[0] / width - 1;
-          ev.y2 = 1 - 2 * pos1B[1] / height;
-          ev.dx = 2 * dx / width;
-          ev.dy = -2 * dy / height;
-          ev.dz = 0;
-          ev.zoomx = dr;
-          ev.zoomy = dr;
-          ev.theta = theta1;
-          ev.dtheta = dtheta;
-          ev.originalEvent = event;
-
-          emitter.emit('pinchmove', ev);
-        }
-      }
-    }
-
-    if (fingers[0]) {
-      previousFingerPosition[0] = fingers[0].position.slice();
-    }
-
-    if (fingers[1]) {
-      previousFingerPosition[1] = fingers[1].position.slice();
-    }
-  }
-
-  function onTouchRemoved (event) {
-    var lastFinger;
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var removed = event.changedTouches[i]
-      var idx = indexOfTouch(removed)
-
-      if (idx !== -1) {
-        lastFinger = fingers[idx];
-        fingers[idx] = null
-        activeTouchCount--
-        var otherIdx = idx === 0 ? 1 : 0
-        var otherTouch = fingers[otherIdx] ? fingers[otherIdx].touch : undefined
-      }
-    }
-
-    var xavg = 0;
-    var yavg = 0;
-    if (activeTouchCount === 0) {
-      if (lastFinger) {
-        xavg = lastFinger.position[0];
-        yavg = lastFinger.position[1];
-      }
-    } else {
-      var fingerCount = 0;
-      for (var i = 0; i < fingers.length; i++) {
-        if (!fingers[i]) continue;
-        xavg += fingers[i].position[0];
-        yavg += fingers[i].position[1];
-        fingerCount++;
-      }
-      xavg /= fingerCount;
-      yavg /= fingerCount;
-    }
-
-    if (activeTouchCount < 2) {
-      ev.buttons = 0;
-      ev.mods = mods;
-      ev.active = activeTouchCount;
-      ev.x = 2 * xavg / width - 1;
-      ev.y = 1 - 2 * yavg / height;
-      ev.x0 = 2 * x0 / width - 1;
-      ev.y0 = 1 - 2 * y0 / height;
-      ev.dx = 0;
-      ev.dy = 0;
-      ev.dz = 0;
-      ev.zoomx = 1;
-      ev.zoomy = 1;
-      ev.theta = 0;
-      ev.dtheta = 0;
-      ev.originalEvent = event;
-      emitter.emit(activeTouchCount === 0 ? 'touchend' : 'pinchend', ev);
-    }
-    if (activeTouchCount === 0) {
-      x0 = y0 = null;
-    }
-  }
-
-
-  var enabled = false;
-  function enable () {
-    if (enabled) return;
-    enabled = true;
-    changeListener.enabled = true;
-    element.addEventListener('wheel', onWheel, false);
-    element.addEventListener('mousedown', onMouseDown, false);
-    window.addEventListener('mousemove', onMouseMove, false);
-    window.addEventListener('mouseup', onMouseUp, false);
-
-    element.addEventListener('touchstart', onTouchStart, false);
-    window.addEventListener('touchmove', onTouchMove, false);
-    window.addEventListener('touchend', onTouchRemoved, false)
-    window.addEventListener('touchcancel', onTouchRemoved, false)
-  }
-
-  function disable () {
-    if (!enabled) return;
-    enabled = false;
-    changeListener.enabled = false;
-    element.removeEventListener('wheel', onWheel, false);
-    element.removeEventListener('mousedown', onMouseDown, false);
-    window.removeEventListener('mousemove', onMouseMove, false);
-    window.removeEventListener('mouseup', onMouseUp, false);
-
-    element.removeEventListener('touchstart', onTouchStart, false);
-    window.removeEventListener('touchmove', onTouchMove, false);
-    window.removeEventListener('touchend', onTouchRemoved, false)
-    window.removeEventListener('touchcancel', onTouchRemoved, false)
-  }
-
-  enable();
-
-  emitter.enable = enable;
-  emitter.disable = disable;
-
-  return emitter;
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/param-case/param-case.js":
 /*!***********************************************!*\
   !*** ./node_modules/param-case/param-case.js ***!
@@ -56645,6 +56166,76 @@ module.exports = function draw_tooltip_components(regl, params){
 
 /***/ }),
 
+/***/ "./src/final_interaction_frame.js":
+/*!****************************************!*\
+  !*** ./src/final_interaction_frame.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
+module.exports = function final_interaction_frame(regl, params){
+
+  // reduce the number of interactions
+  params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+
+  if (params.zoom_data.x.total_int == 0 && params.initialize_viz == false){
+
+    // preventing from running on first frame
+    if (params.first_frame == false){
+
+      console.log('\n------------------\nFINAL INTERACTION');
+      console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
+
+      // run draw commands
+      var slow_draw = true;
+
+      if (params.zoom_data.x.total_mouseover == 0){
+        draw_commands(regl, params, slow_draw);
+      }
+
+      // console.log(params.kept_row_y);
+
+    } else {
+      params.first_frame = false;
+    }
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/final_mouseover_frame.js":
+/*!**************************************!*\
+  !*** ./src/final_mouseover_frame.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
+
+module.exports = function final_mouseover_frame(regl, params){
+
+  // reduce the number of mouseovers
+  params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
+
+  // console.log('check  ', params.zoom_data.x.total_mouseover)
+  if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
+    console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
+
+    // run draw commands
+    var slow_draw = true;
+    params.show_tooltip = true;
+
+    if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
+      draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
+    }
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/find_mouseover_element.js":
 /*!***************************************!*\
   !*** ./src/find_mouseover_element.js ***!
@@ -57019,6 +56610,8 @@ module.exports = function initialize_params(regl, network){
 
   var params = {};
 
+  params.initialize_viz = true;
+
   // use data from network
   //////////////////////////
   params.network = network;
@@ -57256,6 +56849,9 @@ module.exports = function initialize_params(regl, network){
   // save category colors
   params.cat_colors = params.network.cat_colors;
 
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
 
 
   return params;
@@ -59310,6 +58906,8 @@ var initialize_params = __webpack_require__(/*! ./initialize_params */ "./src/in
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+var final_mouseover_frame = __webpack_require__(/*! ./final_mouseover_frame */ "./src/final_mouseover_frame.js");
+var final_interaction_frame = __webpack_require__(/*! ./final_interaction_frame */ "./src/final_interaction_frame.js");
 
 module.exports = function run_viz(container, network){
 
@@ -59320,27 +58918,27 @@ module.exports = function run_viz(container, network){
   });
 
   // var tick = 0;
-  var initialize_viz = true;
+  // var initialize_viz = true;
 
   // global params
   var params = initialize_params(regl, network);
 
-  var first_frame = true;
+  params.first_frame = true;
   var wait_time_final_interact = 100;
   var wait_time_final_mouseover = 100;
 
   regl.frame(function () {
 
     // interaction (zoom/drag) causes a draw command
-    if (params.still_interacting == true || initialize_viz == true){
+    if (params.still_interacting == true || params.initialize_viz == true){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
       draw_commands(regl, params);
 
-      setTimeout(final_interaction_frame, wait_time_final_interact, params);
+      setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
-      initialize_viz = false;
+      params.initialize_viz = false;
 
     }
 
@@ -59355,7 +58953,7 @@ module.exports = function run_viz(container, network){
         draw_commands(regl, params);
       }
 
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params);
+      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 
     } else {
 
@@ -59373,53 +58971,34 @@ module.exports = function run_viz(container, network){
   });
 
 
-  function final_mouseover_frame(params){
+  // function final_interaction_frame(params){
 
-    // reduce the number of mouseovers
-    params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
+  //   // reduce the number of interactions
+  //   params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
 
-    // console.log('check  ', params.zoom_data.x.total_mouseover)
-    if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
-      console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
+  //   if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
 
-      // run draw commands
-      var slow_draw = true;
-      params.show_tooltip = true;
+  //     // preventing from running on first frame
+  //     if (first_frame == false){
 
-      if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-        draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
-      }
-    }
-  }
+  //       console.log('\n------------------\nFINAL INTERACTION');
+  //       console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
-  function final_interaction_frame(params){
+  //       // run draw commands
+  //       var slow_draw = true;
 
-    // reduce the number of interactions
-    params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+  //       if (params.zoom_data.x.total_mouseover == 0){
+  //         draw_commands(regl, params, slow_draw);
+  //       }
 
-    if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
+  //       // console.log(params.kept_row_y);
 
-      // preventing from running on first frame
-      if (first_frame == false){
+  //     } else {
+  //       first_frame = false;
+  //     }
+  //   }
 
-        console.log('\n------------------\nFINAL INTERACTION');
-        console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
-
-        // run draw commands
-        var slow_draw = true;
-
-        if (params.zoom_data.x.total_mouseover == 0){
-          draw_commands(regl, params, slow_draw);
-        }
-
-        // console.log(params.kept_row_y);
-
-      } else {
-        first_frame = false;
-      }
-    }
-
-  }
+  // }
 
   return params;
 
@@ -59435,7 +59014,7 @@ module.exports = function run_viz(container, network){
 /***/ (function(module, exports, __webpack_require__) {
 
 var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/interaction-events.js");
-var normalizedInteractionEvents = __webpack_require__(/*! normalized-interaction-events */ "./node_modules/normalized-interaction-events/index.js");
+// var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var zoom_rules_low_mat = __webpack_require__(/*! ./zoom_rules_low_mat */ "./src/zoom_rules_low_mat.js");
 var keep_track_of_interactions = __webpack_require__(/*! ./keep_track_of_interactions */ "./src/keep_track_of_interactions.js");
@@ -59770,7 +59349,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   if (potential_total_pan_max > zero_threshold) {
 
-    console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
+    // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan

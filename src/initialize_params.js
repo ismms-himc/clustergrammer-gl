@@ -32,6 +32,8 @@ module.exports = function initialize_params(regl, network){
 
   var params = {};
 
+  params.initialize_viz = true;
+
   // use data from network
   //////////////////////////
   params.network = network;
@@ -269,6 +271,9 @@ module.exports = function initialize_params(regl, network){
   // save category colors
   params.cat_colors = params.network.cat_colors;
 
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
 
 
   return params;

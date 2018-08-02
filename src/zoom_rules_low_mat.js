@@ -210,7 +210,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   if (potential_total_pan_max > zero_threshold) {
 
-    console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
+    // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan

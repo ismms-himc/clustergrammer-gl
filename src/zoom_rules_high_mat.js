@@ -1,5 +1,5 @@
 var interactionEvents = require('./interaction-events');
-var normalizedInteractionEvents = require('normalized-interaction-events');
+// var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = require('xtend/mutable');
 var zoom_rules_low_mat = require('./zoom_rules_low_mat');
 var keep_track_of_interactions = require('./keep_track_of_interactions');

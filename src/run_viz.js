@@ -11,17 +11,7 @@ module.exports = function run_viz(container, network){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  // console.log('run_viz loading regl')
-  // console.log(network)
-
-  // console.log('****************');
-  // console.log('** initialize **');
-  // console.log('****************');
-
-  // var network = JSON.parse(assets.viz);
-
   // var tick = 0;
-  // var has_been_both = false;
   var initialize_viz = true;
 
   // global params
@@ -33,8 +23,7 @@ module.exports = function run_viz(container, network){
 
   regl.frame(function () {
 
-    // interaction (zoom/drag) causes a draw command, the final draw command
-    // is run when the interaction stops
+    // interaction (zoom/drag) causes a draw command
     if (params.still_interacting == true || initialize_viz == true){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
@@ -43,7 +32,6 @@ module.exports = function run_viz(container, network){
 
       setTimeout(final_interaction_frame, wait_time_final_interact, params);
 
-      // console.log('draw');
       initialize_viz = false;
 
     }
@@ -51,7 +39,6 @@ module.exports = function run_viz(container, network){
     // mouseover interaction starting then ending will cause a draw comand
     if (params.still_mouseover == true){
 
-      // console.log('still_mouseover')
       params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
       // remove old tooltip
@@ -75,9 +62,6 @@ module.exports = function run_viz(container, network){
 
     }
 
-    // // wait to draw
-    // setTimeout(final_interaction_frame, wait_time_final_interact, params);
-
   });
 
 
@@ -97,7 +81,6 @@ module.exports = function run_viz(container, network){
       if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
         draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
       }
-
     }
   }
 

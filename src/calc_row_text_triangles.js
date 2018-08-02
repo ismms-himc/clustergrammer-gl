@@ -23,7 +23,7 @@ module.exports = function calc_row_text_triangles(params){
   // generating array with row text triangles and y-offsets
   var row_text_triangles = [];
 
-  var inst_order = 'clust';
+  var inst_order = params.inst_order.row;
 
   var viz_area = params.viz_area;
   var kept_row_y = [];

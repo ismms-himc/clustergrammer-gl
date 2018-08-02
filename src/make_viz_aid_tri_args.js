@@ -39,7 +39,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     return context.view;
   };
 
-  var inst_order = 'clust';
+  var inst_order = params.inst_order[inst_rc];
   var tri_offset_array = [];
   var i;
   for (i = 0; i < num_labels; i++){

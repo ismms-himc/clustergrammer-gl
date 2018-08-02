@@ -1,8 +1,23 @@
 var initialize_params = require('./initialize_params');
 var draw_commands = require('./draw_commands');
 _ = require('underscore');
+var control = require('control-panel');
 
 module.exports = function run_viz(container, network){
+
+
+  // var panel = control([
+  //   // {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
+  //   // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
+  //   // {type: 'text', label: 'my text', initial: 'my cool setting'},
+  //   // {type: 'checkbox', label: 'my checkbox', initial: true},
+  //   // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
+  //   // {type: 'button', label: 'gimme an alert', action: function () {alert('hello!');}},
+  //   // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
+  //   // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
+  // ],
+  //   // {theme: 'light', position: 'top-right'}
+  // )
 
   var regl = require('regl')({
     extensions: ['angle_instanced_arrays'],

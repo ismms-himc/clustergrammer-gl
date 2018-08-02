@@ -45,7 +45,10 @@ module.exports = [
         }
       })
     ],
-    "mode": "development"
+    "mode": "development",
+    node: {
+       fs: "empty"
+    }
   },
   {
       entry: './src/main.js',
@@ -76,7 +79,10 @@ module.exports = [
           //     }
           // ]
       },
-      "mode": "development"
+      "mode": "development",
+      node: {
+         fs: "empty"
+      }
   },
   {
       entry: './src/main.js',
@@ -98,7 +104,10 @@ module.exports = [
       optimization: {
         minimize: true
       },
-      "mode": "production"
+      "mode": "production",
+      node: {
+         fs: "empty"
+      }
       // plugins:[
       //   new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
       // ],
@@ -135,7 +144,10 @@ module.exports = [
       optimization: {
         minimize: true
       },
-      "mode": "production"
+      "mode": "production",
+      node: {
+         fs: "empty"
+      }
       // plugins:[
       //   new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
       // ],

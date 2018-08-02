@@ -48,8 +48,8 @@ module.exports = function make_position_arr(params){
   var row_nodes = network.row_nodes;
   var col_nodes = network.col_nodes;
 
-  // inst_order = 'rank';
-  var inst_order = 'clust';
+  var inst_row_order = params.inst_order.row;
+  var inst_col_order = params.inst_order.col;
 
   /*
     working on saving actual row positions (downsampling)
@@ -82,8 +82,8 @@ module.exports = function make_position_arr(params){
         arguments in row_nodes/col_nodes
       */
 
-      row_order_id = num_row - 1 - row_nodes[row_id][inst_order];
-      col_order_id = num_col - 1 - col_nodes[col_id][inst_order];
+      row_order_id = num_row - 1 - row_nodes[row_id][inst_row_order];
+      col_order_id = num_col - 1 - col_nodes[col_id][inst_col_order];
 
     }
 

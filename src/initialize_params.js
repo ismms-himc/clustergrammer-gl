@@ -100,6 +100,11 @@ module.exports = function initialize_params(regl, network){
   params.is_downsampled = false;
   calc_row_downsampled_mat(params, run_downsampling);
 
+  params.inst_order = {};
+  params.inst_order.row = 'clust';
+  params.inst_order.col = 'clust';
+
+
   params.viz_aid_tri_args = {};
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   // params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
@@ -109,9 +114,9 @@ module.exports = function initialize_params(regl, network){
   //
 
 
+
   params.cat_args = {};
   params.cat_args.row = [];
-  // params.cat_args.row[0] = make_cat_args(regl, params, 'row', cat_index=0);
   for (var cat_index = 0; cat_index < params.cat_num.row; cat_index++) {
     params.cat_args.row[cat_index] = make_cat_args(regl, params, 'row', cat_index=cat_index);
   }
@@ -182,10 +187,6 @@ module.exports = function initialize_params(regl, network){
     .domain([0, mat_height])
     .range([0.5, -0.5])
     .clamp(true);
-
-  params.inst_order = {};
-  params.inst_order.row = 'clust';
-  params.inst_order.col = 'clust';
 
   get_ordered_labels(params);
 

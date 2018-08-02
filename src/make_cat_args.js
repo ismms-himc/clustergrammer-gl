@@ -56,7 +56,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
   // console.log('shift_cat', shift_cat)
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  var inst_order = 'clust';
+  var inst_order = params.inst_order[inst_rc];
 
   var y_offset_array = [];
   var i;

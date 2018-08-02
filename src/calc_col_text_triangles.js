@@ -38,7 +38,7 @@ module.exports = function calc_col_text_triangles(params){
   // generating array with col text triangles and y-offsets
   var col_text_triangles = [];
 
-  var inst_order = 'clust';
+  var inst_order = params.inst_order.col;
 
   var viz_area = params.viz_area;
   var kept_col_x = [];

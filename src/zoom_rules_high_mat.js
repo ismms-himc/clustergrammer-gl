@@ -1,4 +1,5 @@
 var interactionEvents = require('./interaction-events');
+var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = require('xtend/mutable');
 var zoom_rules_low_mat = require('./zoom_rules_low_mat');
 var keep_track_of_interactions = require('./keep_track_of_interactions');
@@ -20,12 +21,23 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
+// console.log(element)
+// normalizedInteractionEvents({
+//   element: element
+// });
+
+normalizedInteractionEvents({
+  element: element
+})
+.on('wheel', function (event) {
+  console.log(event);
+});
+
+
   interactionEvents({
     element: element,
   })
   .on('interaction', function(ev){
-
-    // console.log(ev.type)
 
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
@@ -78,7 +90,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       find_mouseover_element(regl, params, ev);
 
-      console.log('dragging', ev.type)
+      // console.log('dragging', ev.type)
 
     }
 

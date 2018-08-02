@@ -42,6 +42,7 @@ function interactionEvents (opts) {
   var emitter = eventEmitter({});
 
   var element = options.element;
+
   var enabled = false;
   // var mouseDown = false;
   // var wheelSpeed = 0.01;

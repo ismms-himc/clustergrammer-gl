@@ -56147,6 +56147,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 // 'use strict';
 
 var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/interaction-events.js");
+// var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var mat4 = __webpack_require__(/*! gl-mat4 */ "./node_modules/gl-mat4/index.js");
 var EventEmitter = __webpack_require__(/*! event-emitter */ "./node_modules/event-emitter/index.js");
@@ -59456,17 +59457,29 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
-// console.log(element)
 // normalizedInteractionEvents({
 //   element: element
-// });
+// })
+// .on('wheel', function (ev) {
+//   // console.log(event);
 
-normalizedInteractionEvents({
-  element: element
-})
-.on('wheel', function (event) {
-  console.log(event);
-});
+//       switch (ev.type) {
+//         case 'wheel':
+//           ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+//           ev.dx = ev.dy = 0;
+//           break;
+//       }
+
+//       // transfer data from ev to zoom_data
+//       zoom_data.x.inst_zoom = ev.dsx;
+//       zoom_data.x.pan_by_drag = ev.dx;
+//       zoom_data.x.cursor_position = ev.x0;
+
+//       zoom_data.y.inst_zoom = ev.dsy;
+//       zoom_data.y.pan_by_drag = ev.dy;
+//       zoom_data.y.cursor_position = ev.y0;
+
+// });
 
 
   interactionEvents({

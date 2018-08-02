@@ -21,17 +21,29 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var interaction_types = ['wheel', 'touch', 'pinch'];
 
-// console.log(element)
 // normalizedInteractionEvents({
 //   element: element
-// });
+// })
+// .on('wheel', function (ev) {
+//   // console.log(event);
 
-normalizedInteractionEvents({
-  element: element
-})
-.on('wheel', function (event) {
-  console.log(event);
-});
+//       switch (ev.type) {
+//         case 'wheel':
+//           ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+//           ev.dx = ev.dy = 0;
+//           break;
+//       }
+
+//       // transfer data from ev to zoom_data
+//       zoom_data.x.inst_zoom = ev.dsx;
+//       zoom_data.x.pan_by_drag = ev.dx;
+//       zoom_data.x.cursor_position = ev.x0;
+
+//       zoom_data.y.inst_zoom = ev.dsy;
+//       zoom_data.y.pan_by_drag = ev.dy;
+//       zoom_data.y.cursor_position = ev.y0;
+
+// });
 
 
   interactionEvents({

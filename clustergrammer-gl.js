@@ -56620,8 +56620,6 @@ module.exports = function initialize_params(regl, network){
 
   //
 
-
-
   params.cat_args = {};
   params.cat_args.row = [];
   for (var cat_index = 0; cat_index < params.cat_num.row; cat_index++) {
@@ -56853,15 +56851,11 @@ function interactionEvents (opts) {
 
     // var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
 
-    // console.log(event)
-    // console.log(event.target.offsetLeft, event.target.offsetTop)
-    // console.log('scrollTop', scrollTop)
-
     // try to better define canvas position
     // inst_canvas = document.querySelector('#something canvas')
     // console.log('THIS', this)
     var canvas_rect = this.getBoundingClientRect();
-    // console.log('canvas_rect', canvas_rect)
+
 
     ev.type = 'wheel';
     ev.buttons = buttons;
@@ -58819,20 +58813,6 @@ var control = __webpack_require__(/*! control-panel */ "./node_modules/control-p
 
 module.exports = function run_viz(container, network){
 
-
-  // var panel = control([
-  //   // {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
-  //   // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-  //   // {type: 'text', label: 'my text', initial: 'my cool setting'},
-  //   // {type: 'checkbox', label: 'my checkbox', initial: true},
-  //   // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-  //   // {type: 'button', label: 'gimme an alert', action: function () {alert('hello!');}},
-  //   // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
-  //   // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
-  // ],
-  //   // {theme: 'light', position: 'top-right'}
-  // )
-
   var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
     extensions: ['angle_instanced_arrays'],
     container: container,
@@ -58998,6 +58978,8 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interaction', function(ev){
 
+    // console.log(ev.type)
+
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
       switch (ev.type) {
@@ -59049,10 +59031,11 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       find_mouseover_element(regl, params, ev);
 
-
     }
 
-
+  })
+  .on('interactionend', function(ev){
+    console.log(ev.type)
   });
 
 };

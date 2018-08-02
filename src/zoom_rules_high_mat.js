@@ -25,6 +25,8 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interaction', function(ev){
 
+    // console.log(ev.type)
+
     if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
 
       switch (ev.type) {
@@ -76,10 +78,11 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       find_mouseover_element(regl, params, ev);
 
-
     }
 
-
+  })
+  .on('interactionend', function(ev){
+    console.log(ev.type)
   });
 
 };

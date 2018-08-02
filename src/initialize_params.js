@@ -113,8 +113,6 @@ module.exports = function initialize_params(regl, network){
 
   //
 
-
-
   params.cat_args = {};
   params.cat_args.row = [];
   for (var cat_index = 0; cat_index < params.cat_num.row; cat_index++) {

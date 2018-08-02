@@ -33,6 +33,7 @@ module.exports = function initialize_params(regl, network){
   var params = {};
 
   params.initialize_viz = true;
+  params.first_frame = true;
 
   // use data from network
   //////////////////////////
@@ -274,7 +275,6 @@ module.exports = function initialize_params(regl, network){
   // animation params
   params.animation = {};
   params.animation.time_remain = 0;
-
 
   return params;
 

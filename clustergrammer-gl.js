@@ -56611,6 +56611,7 @@ module.exports = function initialize_params(regl, network){
   var params = {};
 
   params.initialize_viz = true;
+  params.first_frame = true;
 
   // use data from network
   //////////////////////////
@@ -56852,7 +56853,6 @@ module.exports = function initialize_params(regl, network){
   // animation params
   params.animation = {};
   params.animation.time_remain = 0;
-
 
   return params;
 
@@ -58929,8 +58929,9 @@ module.exports = function run_viz(container, network){
 
   regl.frame(function () {
 
-    // interaction (zoom/drag) causes a draw command
-    if (params.still_interacting == true || params.initialize_viz == true){
+    // run draw command
+    if (params.still_interacting == true || params.initialize_viz == true ||
+        params.animation.time_remain > 0){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -58940,9 +58941,14 @@ module.exports = function run_viz(container, network){
 
       params.initialize_viz = false;
 
+      if (params.animation.time_remain > 0){
+        params.animation.time_remain = params.animation.time_remain - 1;
+        console.log('animation: ', params.animation.time_remain);
+      }
+
     }
 
-    // mouseover interaction starting then ending will cause a draw comand
+    // mouseover may result in draw command
     if (params.still_mouseover == true){
 
       params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
@@ -58969,36 +58975,6 @@ module.exports = function run_viz(container, network){
     }
 
   });
-
-
-  // function final_interaction_frame(params){
-
-  //   // reduce the number of interactions
-  //   params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
-
-  //   if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
-
-  //     // preventing from running on first frame
-  //     if (first_frame == false){
-
-  //       console.log('\n------------------\nFINAL INTERACTION');
-  //       console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
-
-  //       // run draw commands
-  //       var slow_draw = true;
-
-  //       if (params.zoom_data.x.total_mouseover == 0){
-  //         draw_commands(regl, params, slow_draw);
-  //       }
-
-  //       // console.log(params.kept_row_y);
-
-  //     } else {
-  //       first_frame = false;
-  //     }
-  //   }
-
-  // }
 
   return params;
 
@@ -59123,7 +59099,11 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   })
   .on('interactionend', function(ev){
+
+    // clicking
     console.log(ev.type)
+
+    params.animation.time_remain = params.animation.time_remain + 20;
   });
 
 };

@@ -13786,16 +13786,17 @@ module.exports = function (root, text, theme) {
 var EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js").EventEmitter
 var inherits = __webpack_require__(/*! inherits */ "./node_modules/inherits/inherits_browser.js")
 var css = __webpack_require__(/*! dom-css */ "./node_modules/dom-css/index.js")
-var uuid = __webpack_require__(/*! node-uuid */ "./node_modules/node-uuid/uuid.js")
 var insertcss = __webpack_require__(/*! insert-css */ "./node_modules/insert-css/index.js")
 
 module.exports = Multibox
 inherits(Multibox, EventEmitter)
 
-function Multibox (root, opts, theme, id) {
-  if (!(this instanceof Multibox)) return new Multibox(root, opts, theme, id)
+function Multibox (root, opts, theme, uuid) {
+  if (!(this instanceof Multibox)) return new Multibox(root, opts, theme, uuid)
   opts = opts || {}
   var self = this
+
+  console.log(opts)
 
   var container = __webpack_require__(/*! ./container */ "./node_modules/control-panel/components/container.js")(root, opts.label)
   __webpack_require__(/*! ./label */ "./node_modules/control-panel/components/label.js")(container, opts.label, theme)
@@ -13818,18 +13819,18 @@ function Multibox (root, opts, theme, id) {
       display: 'inline-block'
     })
 
-    var classname = 'control-panel-multibox-' + id + uuid.v4() + i
+    var classname = 'control-panel-multibox-' + uuid + i
 
     var input = box.appendChild(document.createElement('input'))
-    input.id = 'multibox-' + opts.label + id + i
+    input.id = 'multibox-' + opts.label + uuid + i
     input.type = 'checkbox'
-    input.checked = opts.initial ? opts.initial[i] : true
-    input.classList.add('control-panel-multibox-' + id)
+    input.checked = opts.initial
+    input.classList.add('control-panel-multibox-' + uuid)
     input.classList.add(classname)
 
     var label = box.appendChild(document.createElement('label'))
-    label.htmlFor = 'multibox-' + opts.label + id + i
-    label.className = 'control-panel-multibox-' + id
+    label.htmlFor = 'multibox-' + opts.label + uuid + i
+    label.className = 'control-panel-multibox-' + uuid
 
     var color = opts.colors ? opts.colors[i] : theme.foreground1
     var tmpcss = `input[type=checkbox]:checked.${classname}  + label:before {
@@ -28971,114 +28972,38 @@ module.exports = isArray;
   !*** ./node_modules/lodash.isfunction/index.js ***!
   \*************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-/* WEBPACK VAR INJECTION */(function(global) {/**
- * Lodash (Custom Build) <https://lodash.com/>
+/**
+ * lodash 3.0.8 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
- * Copyright JS Foundation and other contributors <https://js.foundation/>
- * Released under MIT license <https://lodash.com/license>
+ * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
  */
 
 /** `Object#toString` result references. */
-var asyncTag = '[object AsyncFunction]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    nullTag = '[object Null]',
-    proxyTag = '[object Proxy]',
-    undefinedTag = '[object Undefined]';
-
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
+var funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]';
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
 /**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
  * of values.
  */
-var nativeObjectToString = objectProto.toString;
-
-/** Built-in value references. */
-var Symbol = root.Symbol,
-    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
+var objectToString = objectProto.toString;
 
 /**
  * Checks if `value` is classified as a `Function` object.
  *
  * @static
  * @memberOf _
- * @since 0.1.0
  * @category Lang
  * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
  * @example
  *
  * _.isFunction(_);
@@ -29088,23 +29013,19 @@ function objectToString(value) {
  * // => false
  */
 function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
   // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+  // in Safari 8 which returns 'object' for typed array constructors, and
+  // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
 }
 
 /**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
  *
  * @static
  * @memberOf _
- * @since 0.1.0
  * @category Lang
  * @param {*} value The value to check.
  * @returns {boolean} Returns `true` if `value` is an object, else `false`.
@@ -29124,12 +29045,11 @@ function isFunction(value) {
  */
 function isObject(value) {
   var type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
+  return !!value && (type == 'object' || type == 'function');
 }
 
 module.exports = isFunction;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
 /***/ }),
 
@@ -56791,6 +56711,25 @@ module.exports = function initialize_params(regl, network){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+// The MIT License (MIT) Copyright (c) 2018 Ricky Reusser
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// Original license:
+// Touch handling in this module is heavily based on code from the MIT-licensed touch-pinch module.
+
+// The MIT License (MIT) Copyright (c) 2015 Jam3
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 // 'use strict';
 
 module.exports = interactionEvents;
@@ -59009,10 +58948,12 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else if (ev.type === 'mousemove'){
 
-      // // trying to keep track of interactions for mouseovers
+      // trying to keep track of interactions for mouseovers
       keep_track_of_mouseovers(params);
 
       find_mouseover_element(regl, params, ev);
+
+      console.log('dragging', ev.type)
 
     }
 

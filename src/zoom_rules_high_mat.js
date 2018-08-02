@@ -73,10 +73,12 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else if (ev.type === 'mousemove'){
 
-      // // trying to keep track of interactions for mouseovers
+      // trying to keep track of interactions for mouseovers
       keep_track_of_mouseovers(params);
 
       find_mouseover_element(regl, params, ev);
+
+      console.log('dragging', ev.type)
 
     }
 

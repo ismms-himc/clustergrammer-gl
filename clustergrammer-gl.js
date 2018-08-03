@@ -55854,8 +55854,13 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-    camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
-                       emitter, dViewport, mViewport);
+
+
+    if (params.viz_interact){
+      camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
+                         emitter, dViewport, mViewport);
+    }
+
   });
 
   var setProps = regl({

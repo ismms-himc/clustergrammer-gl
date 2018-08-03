@@ -8,8 +8,6 @@ module.exports = function calc_viz_area(params){
   var mat_width = params.viz_dim.heat.width;
   var mat_height = params.viz_dim.heat.height;
 
-
-
   /*
 
     Experimenting with scales to improve viz area calculation

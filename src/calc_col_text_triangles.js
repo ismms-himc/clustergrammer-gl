@@ -45,6 +45,8 @@ module.exports = function calc_col_text_triangles(params){
 
   _.each(inst_nodes, function(inst_node, col_id){
 
+    // console.log(inst_node)
+
     var col_order_id = params.network.col_nodes[col_id][inst_order];
 
     var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;

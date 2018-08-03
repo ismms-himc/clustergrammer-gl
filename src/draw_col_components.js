@@ -25,7 +25,9 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
     if (calc_text_tri){
 
-      var num_viz_cols = params.num_col/params.zoom_data.y.total_zoom;
+      var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
+
+      console.log('num_viz_cols', num_viz_cols)
 
       if (num_viz_cols < params.max_num_text){
 

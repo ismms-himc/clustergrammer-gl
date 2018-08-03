@@ -54876,6 +54876,8 @@ module.exports = function calc_col_text_triangles(params){
 
   _.each(inst_nodes, function(inst_node, col_id){
 
+    // console.log(inst_node)
+
     var col_order_id = params.network.col_nodes[col_id][inst_order];
 
     var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
@@ -55310,8 +55312,6 @@ module.exports = function calc_viz_area(params){
   // make a d3.scale to transition from 0px - 500px to -1, 1 space
   var mat_width = params.viz_dim.heat.width;
   var mat_height = params.viz_dim.heat.height;
-
-
 
   /*
 
@@ -55914,7 +55914,9 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
     if (calc_text_tri){
 
-      var num_viz_cols = params.num_col/params.zoom_data.y.total_zoom;
+      var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
+
+      console.log('num_viz_cols', num_viz_cols)
 
       if (num_viz_cols < params.max_num_text){
 

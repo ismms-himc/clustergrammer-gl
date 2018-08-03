@@ -89,6 +89,22 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       }
 
+      if (zoom_data.x.total_zoom < zoom_restrict.x.ratio){
+
+        zoom_data.y.inst_zoom = 1;
+
+        var potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
+
+        // check potential_zoom
+        if (potential_zoom > zoom_restrict.x.ratio){
+
+          // bump x inst_zoom
+          zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
+
+        }
+
+      }
+
       // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
       zoom_data.x = zoom_rules_low_mat(zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
       zoom_data.y = zoom_rules_low_mat(zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
@@ -112,7 +128,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // clicking
     console.log(ev.type)
 
-    params.animation.time_remain = params.animation.time_remain + 20;
+    // params.animation.time_remain = params.animation.time_remain + 20;
   });
 
 };

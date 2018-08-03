@@ -56547,18 +56547,18 @@ module.exports = function ini_zoom_restrict(params){
   zoom_restrict.x = {};
   zoom_restrict.x.max = max_zoom;
   zoom_restrict.x.min = 1.0;
-  zoom_restrict.x.ratio = 1;
+  zoom_restrict.x.ratio = 1.0;
 
   zoom_restrict.y = {};
   zoom_restrict.y.max = max_zoom;
   zoom_restrict.y.min = 1.0;
-  zoom_restrict.y.ratio = 1;
+  zoom_restrict.y.ratio = 1.0;
 
   // increase max zoom in y or x direction
   if (num_row > num_col){
     zoom_restrict.y.max = zoom_restrict.y.max * ( num_row/num_col );
     zoom_restrict.y.ratio = num_row/num_col;
-  } else if (num_col < num_row) {
+  } else if (num_col > num_row) {
     zoom_restrict.x.max = zoom_restrict.x.max * ( num_col/num_row );
     zoom_restrict.x.ratio = num_col/num_row;
   }
@@ -59080,6 +59080,22 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       }
 
+      if (zoom_data.x.total_zoom < zoom_restrict.x.ratio){
+
+        zoom_data.y.inst_zoom = 1;
+
+        var potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
+
+        // check potential_zoom
+        if (potential_zoom > zoom_restrict.x.ratio){
+
+          // bump x inst_zoom
+          zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
+
+        }
+
+      }
+
       // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
       zoom_data.x = zoom_rules_low_mat(zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
       zoom_data.y = zoom_rules_low_mat(zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
@@ -59103,7 +59119,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // clicking
     console.log(ev.type)
 
-    params.animation.time_remain = params.animation.time_remain + 20;
+    // params.animation.time_remain = params.animation.time_remain + 20;
   });
 
 };

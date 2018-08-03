@@ -17,7 +17,7 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
     Sanitize zoom data components
     */
 
-    console.log('camera interaction')
+    // console.log('camera interaction')
 
     var inst_x_zoom = zoom_data.x.inst_zoom;
     var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;

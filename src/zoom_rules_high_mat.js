@@ -26,7 +26,14 @@ module.exports = function zoom_rules_high_mat(regl, params){
     if (params.viz_interact){
       track_interaction_zoom_data(regl, params, ev);
     } else {
-      console.log('not tracking ', ev.dx, ev.dy);
+
+      // example of tracking dragging while clicking (buttons)
+      // will set up someting to not track interactions when mousing over
+      // buttons and sliders
+      if (ev.buttons){
+        console.log('not tracking ', ev.dx, ev.dy);
+      }
+
     }
 
   })

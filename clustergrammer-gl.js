@@ -55451,7 +55451,7 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
     Sanitize zoom data components
     */
 
-    console.log('camera interaction')
+    // console.log('camera interaction')
 
     var inst_x_zoom = zoom_data.x.inst_zoom;
     var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
@@ -59158,7 +59158,14 @@ module.exports = function zoom_rules_high_mat(regl, params){
     if (params.viz_interact){
       track_interaction_zoom_data(regl, params, ev);
     } else {
-      console.log('not tracking ', ev.dx, ev.dy);
+
+      // example of tracking dragging while clicking (buttons)
+      // will set up someting to not track interactions when mousing over
+      // buttons and sliders
+      if (ev.buttons){
+        console.log('not tracking ', ev.dx, ev.dy);
+      }
+
     }
 
   })

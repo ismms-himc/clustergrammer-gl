@@ -55425,6 +55425,102 @@ module.exports = function calc_viz_dim(regl, params){
 
 /***/ }),
 
+/***/ "./src/camera_interaction.js":
+/*!***********************************!*\
+  !*** ./src/camera_interaction.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var vec4 = __webpack_require__(/*! gl-vec4 */ "./node_modules/gl-vec4/index.js");
+
+module.exports = function camera_interaction(zoom_data, ev, viz_component,
+                                             mInvViewport, mat4, mView, emitter,
+                                             dViewport, mViewport){
+
+  switch (ev.type) {
+    case 'wheel':
+      ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+      ev.dx = ev.dy = 0;
+      break;
+  }
+
+  if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
+
+    /*
+    Sanitize zoom data components
+    */
+
+    console.log('camera interaction')
+
+    var inst_x_zoom = zoom_data.x.inst_zoom;
+    var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
+    var inst_x_pan_by_drag = zoom_data.x.pan_by_drag;
+
+    var inst_y_zoom = zoom_data.y.inst_zoom;
+    var inst_y_pan_by_zoom = zoom_data.y.pan_by_zoom;
+    var inst_y_pan_by_drag = zoom_data.y.pan_by_drag;
+
+    if (viz_component === 'row-labels'){
+      inst_x_zoom = 1;
+      inst_x_pan_by_drag = 0;
+      inst_x_pan_by_zoom = 0;
+    }
+
+    if (viz_component === 'col-labels'){
+      inst_y_zoom = 1;
+      inst_y_pan_by_drag = 0;
+      inst_y_pan_by_zoom = 0;
+    }
+
+    if (viz_component === 'static'){
+      inst_x_zoom = 1;
+      inst_x_pan_by_drag = 0;
+      inst_x_pan_by_zoom = 0;
+      inst_y_zoom = 1;
+      inst_y_pan_by_drag = 0;
+      inst_y_pan_by_zoom = 0;
+    }
+
+    ev.preventDefault();
+
+    dViewport[0] = inst_x_zoom;
+    dViewport[1] = 0;
+    dViewport[2] = 0;
+    dViewport[3] = 0;
+    dViewport[4] = 0;
+    dViewport[5] = inst_y_zoom;
+    dViewport[6] = 0;
+    dViewport[7] = 0;
+    dViewport[8] = 0;
+    dViewport[9] = 0;
+    dViewport[10] = 1;
+    dViewport[11] = 0;
+    dViewport[12] = inst_x_pan_by_zoom + inst_x_pan_by_drag;
+    dViewport[13] = inst_y_pan_by_zoom + inst_y_pan_by_drag;
+    dViewport[14] = 0;
+    dViewport[15] = 1;
+
+    mat4.multiply(dViewport, dViewport, mViewport);
+    mat4.multiply(dViewport, mInvViewport, dViewport);
+    mat4.multiply(mView, dViewport, mView);
+    dirty = true;
+
+  }
+
+  var xy = vec4.transformMat4([],
+    vec4.transformMat4([], [ev.x0, ev.y0, 0, 1], mInvViewport),
+    mat4.invert([], mView)
+  );
+
+  ev.x = xy[0];
+  ev.y = xy[1];
+
+  emitter.emit('move', ev);
+}
+
+/***/ }),
+
 /***/ "./src/color_table.js":
 /*!****************************!*\
   !*** ./src/color_table.js ***!
@@ -55672,8 +55768,8 @@ var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/i
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var mat4 = __webpack_require__(/*! gl-mat4 */ "./node_modules/gl-mat4/index.js");
 var EventEmitter = __webpack_require__(/*! event-emitter */ "./node_modules/event-emitter/index.js");
-var vec4 = __webpack_require__(/*! gl-vec4 */ "./node_modules/gl-vec4/index.js");
 // var $ = require('jquery');
+var camera_interaction = __webpack_require__(/*! ./camera_interaction */ "./src/camera_interaction.js");
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;
@@ -55749,6 +55845,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
   var dViewport = [];
 
+  var emitter = new EventEmitter();
+
   interactionEvents({
     element: element,
   }).on('interactionstart', function (ev) {
@@ -55756,84 +55854,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-
-    switch (ev.type) {
-      case 'wheel':
-        ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-        ev.dx = ev.dy = 0;
-        break;
-    }
-
-    if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
-
-      /*
-      Sanitize zoom data components
-      */
-
-      var inst_x_zoom = zoom_data.x.inst_zoom;
-      var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
-      var inst_x_pan_by_drag = zoom_data.x.pan_by_drag;
-
-      var inst_y_zoom = zoom_data.y.inst_zoom;
-      var inst_y_pan_by_zoom = zoom_data.y.pan_by_zoom;
-      var inst_y_pan_by_drag = zoom_data.y.pan_by_drag;
-
-      if (viz_component === 'row-labels'){
-        inst_x_zoom = 1;
-        inst_x_pan_by_drag = 0;
-        inst_x_pan_by_zoom = 0;
-      }
-
-      if (viz_component === 'col-labels'){
-        inst_y_zoom = 1;
-        inst_y_pan_by_drag = 0;
-        inst_y_pan_by_zoom = 0;
-      }
-
-      if (viz_component === 'static'){
-        inst_x_zoom = 1;
-        inst_x_pan_by_drag = 0;
-        inst_x_pan_by_zoom = 0;
-        inst_y_zoom = 1;
-        inst_y_pan_by_drag = 0;
-        inst_y_pan_by_zoom = 0;
-      }
-
-      ev.preventDefault();
-
-      dViewport[0] = inst_x_zoom;
-      dViewport[1] = 0;
-      dViewport[2] = 0;
-      dViewport[3] = 0;
-      dViewport[4] = 0;
-      dViewport[5] = inst_y_zoom;
-      dViewport[6] = 0;
-      dViewport[7] = 0;
-      dViewport[8] = 0;
-      dViewport[9] = 0;
-      dViewport[10] = 1;
-      dViewport[11] = 0;
-      dViewport[12] = inst_x_pan_by_zoom + inst_x_pan_by_drag;
-      dViewport[13] = inst_y_pan_by_zoom + inst_y_pan_by_drag;
-      dViewport[14] = 0;
-      dViewport[15] = 1;
-
-      mat4.multiply(dViewport, dViewport, mViewport);
-      mat4.multiply(dViewport, mInvViewport, dViewport);
-      mat4.multiply(mView, dViewport, mView);
-      dirty = true;
-
-    }
-
-    var xy = vec4.transformMat4([],
-      vec4.transformMat4([], [ev.x0, ev.y0, 0, 1], mInvViewport),
-      mat4.invert([], mView)
-    );
-
-    ev.x = xy[0];
-    ev.y = xy[1];
-
-    emitter.emit('move', ev);
+    camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
+                       emitter, dViewport, mViewport);
   });
 
   var setProps = regl({
@@ -55842,7 +55864,6 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
     }
   });
 
-  var emitter = new EventEmitter();
 
   var inst_camera = {
     draw: function (cb) {
@@ -56611,6 +56632,8 @@ var make_tooltip_background_args = __webpack_require__(/*! ./make_tooltip_backgr
 module.exports = function initialize_params(regl, network){
 
   var params = {};
+
+  params.viz_interact = true;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -59100,12 +59123,18 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var element = options.element;
 
+  console.log('something')
+
   interactionEvents({
     element: element,
   })
   .on('interaction', function(ev){
 
-    track_interaction_zoom_data(regl, params, ev);
+    // working on toggling tracking for cases when we need to ignore
+    // (e.g. moving a slider)
+    if (params.viz_interact){
+      track_interaction_zoom_data(regl, params, ev);
+    }
 
   })
   .on('interactionend', function(ev){

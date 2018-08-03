@@ -12,12 +12,18 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var element = options.element;
 
+  console.log('something')
+
   interactionEvents({
     element: element,
   })
   .on('interaction', function(ev){
 
-    track_interaction_zoom_data(regl, params, ev);
+    // working on toggling tracking for cases when we need to ignore
+    // (e.g. moving a slider)
+    if (params.viz_interact){
+      track_interaction_zoom_data(regl, params, ev);
+    }
 
   })
   .on('interactionend', function(ev){

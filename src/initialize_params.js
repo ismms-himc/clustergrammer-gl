@@ -32,6 +32,8 @@ module.exports = function initialize_params(regl, network){
 
   var params = {};
 
+  params.viz_interact = true;
+
   params.initialize_viz = true;
   params.first_frame = true;
 

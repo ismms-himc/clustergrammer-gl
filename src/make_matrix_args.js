@@ -1,9 +1,10 @@
 var make_draw_cells_buffers = require('./make_draw_cells_buffers');
 var blend_info = require('./blend_info');
-// var $ = require('jquery');
 var make_draw_cells_arr = require('./make_draw_cells_arr');
 
-module.exports = function make_matrix_args(regl, params){
+module.exports = function make_matrix_args(regl, params, tmp=0){
+
+  console.log('make_matrix_args')
 
   // generate position and opacity arrays from params.mat_data
   params.arrs = make_draw_cells_arr(regl, params);
@@ -20,8 +21,11 @@ module.exports = function make_matrix_args(regl, params){
     Temporarily use latest mat_data dimensions (working on downsampling)
   */
 
-  var tile_width = params.tile_width;
-  var tile_height = params.tile_height;
+  // var tile_width = params.tile_width;
+  // var tile_height = params.tile_height;
+
+  var tile_width = params.tile_width + params.animation.time_remain * 0.001;
+  var tile_height = params.tile_height + params.animation.time_remain * 0.001;
 
   // bottom half
   var bottom_half_verts = [

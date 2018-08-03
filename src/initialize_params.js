@@ -34,6 +34,10 @@ module.exports = function initialize_params(regl, network){
 
   params.viz_interact = true;
 
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
+
   params.initialize_viz = true;
   params.first_frame = true;
 
@@ -273,10 +277,6 @@ module.exports = function initialize_params(regl, network){
 
   // save category colors
   params.cat_colors = params.network.cat_colors;
-
-  // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
 
   return params;
 

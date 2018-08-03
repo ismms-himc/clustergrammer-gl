@@ -56031,10 +56031,10 @@ module.exports = function draw_commands(regl, params, slow_draw=false, show_tool
   !*** ./src/draw_matrix_components.js ***!
   \***************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 // var filter_visible_mat = require('./filter_visible_mat');
-// var make_matrix_args = require('./make_matrix_args');
+var make_matrix_args = __webpack_require__(/*! ./make_matrix_args */ "./src/make_matrix_args.js");
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -56052,8 +56052,22 @@ module.exports = function draw_matrix_components(regl, params){
     */
     // // Filter
     // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
+
+
+    /*
+    Reordering Matrix Plan
+    ------------------------
+    I will only re-calculate the matrix_args once for the final position.
+    Since matrix reordering happens to entire rows/cols at once, I will calculate
+    an offset to shift rows/columns to transition from the initial to the final
+    state, then I will replace the current position array with the final
+    position array
+    */
+
     // // Regenerate args
-    // params.matrix_args = make_matrix_args(regl, params);
+    // if (params.animation.time_remain > 0){
+    //   params.matrix_args = make_matrix_args(regl, params);
+    // }
 
     regl(params.matrix_args.regl_props.top)();
     regl(params.matrix_args.regl_props.bot)();
@@ -56652,6 +56666,10 @@ module.exports = function initialize_params(regl, network){
 
   params.viz_interact = true;
 
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
+
   params.initialize_viz = true;
   params.first_frame = true;
 
@@ -56891,10 +56909,6 @@ module.exports = function initialize_params(regl, network){
 
   // save category colors
   params.cat_colors = params.network.cat_colors;
-
-  // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
 
   return params;
 
@@ -58008,21 +58022,6 @@ module.exports = function make_draw_cells_arr(regl, params){
   arrs.opacity_arr = opacity_arr;
   arrs.position_arr = position_arr;
 
-  // arrs.opacity_arr = arrs.opacity_arr.slice(10,20);
-  // arrs.position_arr = arrs.position_arr.slice(10,20);
-
-  // console.log('hard filtering', arrs.opacity_arr.length)
-
-  /*
-  Make initial array and then only keep elements that have opacity above some
-  value as a test. We might try to only render the top opacity elements while
-  zooming to speed up interaction.
-  */
-
-  // _.each(arrs.opacity_arr, function(d){
-    // console.log(d)
-  // })
-
   return arrs;
 
 };
@@ -58069,10 +58068,11 @@ module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_ar
 
 var make_draw_cells_buffers = __webpack_require__(/*! ./make_draw_cells_buffers */ "./src/make_draw_cells_buffers.js");
 var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
-// var $ = require('jquery');
 var make_draw_cells_arr = __webpack_require__(/*! ./make_draw_cells_arr */ "./src/make_draw_cells_arr.js");
 
-module.exports = function make_matrix_args(regl, params){
+module.exports = function make_matrix_args(regl, params, tmp=0){
+
+  console.log('make_matrix_args')
 
   // generate position and opacity arrays from params.mat_data
   params.arrs = make_draw_cells_arr(regl, params);
@@ -58089,8 +58089,11 @@ module.exports = function make_matrix_args(regl, params){
     Temporarily use latest mat_data dimensions (working on downsampling)
   */
 
-  var tile_width = params.tile_width;
-  var tile_height = params.tile_height;
+  // var tile_width = params.tile_width;
+  // var tile_height = params.tile_height;
+
+  var tile_width = params.tile_width + params.animation.time_remain * 0.001;
+  var tile_height = params.tile_height + params.animation.time_remain * 0.001;
 
   // bottom half
   var bottom_half_verts = [
@@ -58985,7 +58988,7 @@ module.exports = function run_viz(container, network){
 
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;
-        console.log('animation: ', params.animation.time_remain);
+        // console.log('animation: ', params.animation.time_remain);
       }
 
     }

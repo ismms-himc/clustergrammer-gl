@@ -39,7 +39,7 @@ module.exports = function run_viz(container, network){
 
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;
-        console.log('animation: ', params.animation.time_remain);
+        // console.log('animation: ', params.animation.time_remain);
       }
 
     }

@@ -1,5 +1,5 @@
 // var filter_visible_mat = require('./filter_visible_mat');
-// var make_matrix_args = require('./make_matrix_args');
+var make_matrix_args = require('./make_matrix_args');
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -17,8 +17,22 @@ module.exports = function draw_matrix_components(regl, params){
     */
     // // Filter
     // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
+
+
+    /*
+    Reordering Matrix Plan
+    ------------------------
+    I will only re-calculate the matrix_args once for the final position.
+    Since matrix reordering happens to entire rows/cols at once, I will calculate
+    an offset to shift rows/columns to transition from the initial to the final
+    state, then I will replace the current position array with the final
+    position array
+    */
+
     // // Regenerate args
-    // params.matrix_args = make_matrix_args(regl, params);
+    // if (params.animation.time_remain > 0){
+    //   params.matrix_args = make_matrix_args(regl, params);
+    // }
 
     regl(params.matrix_args.regl_props.top)();
     regl(params.matrix_args.regl_props.bot)();

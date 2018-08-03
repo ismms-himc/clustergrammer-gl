@@ -55768,7 +55768,6 @@ var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/i
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var mat4 = __webpack_require__(/*! gl-mat4 */ "./node_modules/gl-mat4/index.js");
 var EventEmitter = __webpack_require__(/*! event-emitter */ "./node_modules/event-emitter/index.js");
-// var $ = require('jquery');
 var camera_interaction = __webpack_require__(/*! ./camera_interaction */ "./src/camera_interaction.js");
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
@@ -55847,6 +55846,9 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
   var emitter = new EventEmitter();
 
+  /////////////////////////////////////////
+  // Original interaction tracking
+  /////////////////////////////////////////
   interactionEvents({
     element: element,
   }).on('interactionstart', function (ev) {
@@ -55854,21 +55856,31 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-
-
     if (params.viz_interact){
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
-
   });
+
+  // /////////////////////////////////////////
+  // // Alternate interaction tracking
+  // /////////////////////////////////////////
+  // normalizedInteractionEvents({
+  //   element: element
+  // })
+  // .on('wheel', function (ev) {
+  //   console.log('norm interact: camera');
+  //   if (params.viz_interact){
+  //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
+  //                        emitter, dViewport, mViewport);
+  //   }
+  // });
 
   var setProps = regl({
     context: {
       view: regl.prop('view'),
     }
   });
-
 
   var inst_camera = {
     draw: function (cb) {
@@ -59026,6 +59038,8 @@ var keep_track_of_mouseovers = __webpack_require__(/*! ./keep_track_of_mouseover
 
 module.exports = function track_interaction_zoom_data(regl, params, ev){
 
+  // console.log('track interaction zoom data')
+
   var zoom_data = params.zoom_data;
   var zoom_restrict = params.zoom_restrict;
   var viz_dim = params.viz_dim;
@@ -59101,6 +59115,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
     // console.log('dragging', ev.type)
 
+  } else {
+    console.log('not tracking anything')
   }
 
 }
@@ -59128,7 +59144,9 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var element = options.element;
 
-  console.log('something')
+  /////////////////////////////////////////
+  // Original interaction tracking
+  /////////////////////////////////////////
 
   interactionEvents({
     element: element,
@@ -59139,44 +59157,30 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // (e.g. moving a slider)
     if (params.viz_interact){
       track_interaction_zoom_data(regl, params, ev);
+    } else {
+      console.log('not tracking ', ev.dx, ev.dy);
     }
 
   })
   .on('interactionend', function(ev){
 
     // clicking
+    // params.animation.time_remain = params.animation.time_remain + 20;
     console.log(ev.type)
 
-    // params.animation.time_remain = params.animation.time_remain + 20;
   });
 
-/////////////////////////////////////////
-// Alternate interaction tracking
-/////////////////////////////////////////
+  // /////////////////////////////////////////
+  // // Alternate interaction tracking
+  // /////////////////////////////////////////
 
-// normalizedInteractionEvents({
-//   element: element
-// })
-// .on('wheel', function (ev) {
-//   // console.log(event);
-
-//       switch (ev.type) {
-//         case 'wheel':
-//           ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-//           ev.dx = ev.dy = 0;
-//           break;
-//       }
-
-//       // transfer data from ev to zoom_data
-//       zoom_data.x.inst_zoom = ev.dsx;
-//       zoom_data.x.pan_by_drag = ev.dx;
-//       zoom_data.x.cursor_position = ev.x0;
-
-//       zoom_data.y.inst_zoom = ev.dsy;
-//       zoom_data.y.pan_by_drag = ev.dy;
-//       zoom_data.y.cursor_position = ev.y0;
-
-// });
+  // normalizedInteractionEvents({
+  //   element: element
+  // })
+  // .on('wheel', function (ev) {
+  //   // console.log('norm interact: zoom rules');
+  //   track_interaction_zoom_data(regl, params, ev);
+  // });
 
 
 };

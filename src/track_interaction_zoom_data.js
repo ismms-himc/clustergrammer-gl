@@ -5,6 +5,8 @@ var keep_track_of_mouseovers = require('./keep_track_of_mouseovers');
 
 module.exports = function track_interaction_zoom_data(regl, params, ev){
 
+  // console.log('track interaction zoom data')
+
   var zoom_data = params.zoom_data;
   var zoom_restrict = params.zoom_restrict;
   var viz_dim = params.viz_dim;
@@ -80,6 +82,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
     // console.log('dragging', ev.type)
 
+  } else {
+    console.log('not tracking anything')
   }
 
 }

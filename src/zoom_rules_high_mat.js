@@ -12,7 +12,9 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var element = options.element;
 
-  console.log('something')
+  /////////////////////////////////////////
+  // Original interaction tracking
+  /////////////////////////////////////////
 
   interactionEvents({
     element: element,
@@ -23,44 +25,30 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // (e.g. moving a slider)
     if (params.viz_interact){
       track_interaction_zoom_data(regl, params, ev);
+    } else {
+      console.log('not tracking ', ev.dx, ev.dy);
     }
 
   })
   .on('interactionend', function(ev){
 
     // clicking
+    // params.animation.time_remain = params.animation.time_remain + 20;
     console.log(ev.type)
 
-    // params.animation.time_remain = params.animation.time_remain + 20;
   });
 
-/////////////////////////////////////////
-// Alternate interaction tracking
-/////////////////////////////////////////
+  // /////////////////////////////////////////
+  // // Alternate interaction tracking
+  // /////////////////////////////////////////
 
-// normalizedInteractionEvents({
-//   element: element
-// })
-// .on('wheel', function (ev) {
-//   // console.log(event);
-
-//       switch (ev.type) {
-//         case 'wheel':
-//           ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-//           ev.dx = ev.dy = 0;
-//           break;
-//       }
-
-//       // transfer data from ev to zoom_data
-//       zoom_data.x.inst_zoom = ev.dsx;
-//       zoom_data.x.pan_by_drag = ev.dx;
-//       zoom_data.x.cursor_position = ev.x0;
-
-//       zoom_data.y.inst_zoom = ev.dsy;
-//       zoom_data.y.pan_by_drag = ev.dy;
-//       zoom_data.y.cursor_position = ev.y0;
-
-// });
+  // normalizedInteractionEvents({
+  //   element: element
+  // })
+  // .on('wheel', function (ev) {
+  //   // console.log('norm interact: zoom rules');
+  //   track_interaction_zoom_data(regl, params, ev);
+  // });
 
 
 };

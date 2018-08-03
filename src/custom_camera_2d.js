@@ -6,7 +6,6 @@ var interactionEvents = require('./interaction-events');
 var extend = require('xtend/mutable');
 var mat4 = require('gl-mat4');
 var EventEmitter = require('event-emitter');
-// var $ = require('jquery');
 var camera_interaction = require('./camera_interaction');
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
@@ -85,6 +84,9 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
   var emitter = new EventEmitter();
 
+  /////////////////////////////////////////
+  // Original interaction tracking
+  /////////////////////////////////////////
   interactionEvents({
     element: element,
   }).on('interactionstart', function (ev) {
@@ -92,21 +94,31 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-
-
     if (params.viz_interact){
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
-
   });
+
+  // /////////////////////////////////////////
+  // // Alternate interaction tracking
+  // /////////////////////////////////////////
+  // normalizedInteractionEvents({
+  //   element: element
+  // })
+  // .on('wheel', function (ev) {
+  //   console.log('norm interact: camera');
+  //   if (params.viz_interact){
+  //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
+  //                        emitter, dViewport, mViewport);
+  //   }
+  // });
 
   var setProps = regl({
     context: {
       view: regl.prop('view'),
     }
   });
-
 
   var inst_camera = {
     draw: function (cb) {

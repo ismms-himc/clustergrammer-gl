@@ -269,9 +269,11 @@ module.exports = function initialize_params(regl, network){
   // mnist: 7
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
-    .range([2, 10]);
+    .range([2, 30]);
 
-  params.allowable_zoom_factor = allow_factor(params.num_col);
+  params.allowable_zoom_factor = {};
+  params.allowable_zoom_factor.col = allow_factor(params.num_col);
+  params.allowable_zoom_factor.row = allow_factor(params.num_col);
 
   params.text_scale = {};
 

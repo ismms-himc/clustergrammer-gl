@@ -56901,9 +56901,11 @@ module.exports = function initialize_params(regl, network){
   // mnist: 7
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
-    .range([2, 10]);
+    .range([2, 30]);
 
-  params.allowable_zoom_factor = allow_factor(params.num_col);
+  params.allowable_zoom_factor = {};
+  params.allowable_zoom_factor.col = allow_factor(params.num_col);
+  params.allowable_zoom_factor.row = allow_factor(params.num_col);
 
   params.text_scale = {};
 
@@ -57743,7 +57745,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor]);
+      .range([1, 10/params.allowable_zoom_factor.col]);
 
   var total_zoom = params.zoom_data.x.total_zoom;
 
@@ -58411,7 +58413,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   // // prevent text from getting too large when zooming
   params.text_scale.row = d3.scale.linear()
       .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor]);
+      .range([1, 10/params.allowable_zoom_factor.row]);
 
   // smaller scale_text -> larger text
   // var limited_scaling = params.text_scale.row(total_zoom);

@@ -6,7 +6,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor]);
+      .range([1, 10/params.allowable_zoom_factor.col]);
 
   var total_zoom = params.zoom_data.x.total_zoom;
 

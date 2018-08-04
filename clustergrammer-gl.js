@@ -58974,7 +58974,13 @@ module.exports = function run_viz(container, network){
   var wait_time_final_interact = 100;
   var wait_time_final_mouseover = 100;
 
-  regl.frame(function () {
+  regl.frame(function ({time}) {
+
+    // if (Math.round(time) % 3 == 0){
+    //   console.log('time', time)
+    // }
+
+    // console.log(Math.round(time))
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||

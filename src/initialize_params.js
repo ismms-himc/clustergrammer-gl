@@ -32,6 +32,7 @@ module.exports = function initialize_params(regl, network){
 
   var params = {};
 
+  params.time = 0;
   params.viz_interact = true;
 
   // animation params

@@ -25,6 +25,10 @@ module.exports = function run_viz(container, network){
 
   regl.frame(function ({time}) {
 
+    params.time = time;
+
+    params.animation.loop = 0 ; // params.time % 5 /50;
+
     // if (Math.round(time) % 3 == 0){
     //   console.log('time', time)
     // }

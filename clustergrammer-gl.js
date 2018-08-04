@@ -56069,8 +56069,12 @@ module.exports = function draw_matrix_components(regl, params){
     //   params.matrix_args = make_matrix_args(regl, params);
     // }
 
-    regl(params.matrix_args.regl_props.top)();
-    regl(params.matrix_args.regl_props.bot)();
+    regl(params.matrix_args.regl_props.top)({
+      ani_x: params.animation.loop
+    });
+    regl(params.matrix_args.regl_props.bot)({
+      ani_x: params.animation.loop
+    });
 
   });
 
@@ -56664,6 +56668,7 @@ module.exports = function initialize_params(regl, network){
 
   var params = {};
 
+  params.time = 0;
   params.viz_interact = true;
 
   // animation params
@@ -58120,6 +58125,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     attribute vec2 pos_att;
     attribute float opacity_att;
     uniform mat4 zoom;
+    uniform float ani_x;
 
     // pass varying variables to fragment from vector
     varying float opacity_vary;
@@ -58127,7 +58133,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     void main() {
 
       gl_Position = zoom *
-                    vec4( position.x + pos_att.x,
+                    vec4( position.x + pos_att.x + ani_x,
                           position.y + pos_att.y,
                           // positioned further down (spillover rects are
                           // above at 0.5)
@@ -58166,6 +58172,10 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
 
   var zoom_function = params.zoom_function;
 
+  var ani_x = params.time;
+
+  console.log(params.time % 3)
+
   var top_props = {
     vert: vert_string,
     frag: frag_string,
@@ -58184,6 +58194,8 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     count: 3,
     uniforms: {
       zoom: zoom_function,
+      ani_x: regl.prop('ani_x')
+      // ani_x: ani_x
     },
     instances: num_instances,
     depth: {
@@ -58213,6 +58225,8 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     count: 3,
     uniforms: {
       zoom: zoom_function,
+      ani_x: regl.prop('ani_x')
+      // ani_x: ani_x
     },
     instances: num_instances,
     depth: {
@@ -58226,20 +58240,20 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
 
   // draw top and bottom of matrix cells
   //////////////////////////////////////
-  var draw_cells_props = {};
-  draw_cells_props.regl_props = {};
+  var matrix_args = {};
+  matrix_args.regl_props = {};
 
   // var top_props = $.extend(true, {}, regl_props);
   // var top_props = JSON.parse(JSON.stringify(regl_props))
   top_props.attributes.position = top_half_verts;
-  draw_cells_props.regl_props.top = top_props;
+  matrix_args.regl_props.top = top_props;
 
   // var bot_props = $.extend(true, {}, regl_props);
   // var bot_props = JSON.parse(JSON.stringify(regl_props))
   bot_props.attributes.position = bottom_half_verts;
-  draw_cells_props.regl_props.bot = bot_props;
+  matrix_args.regl_props.bot = bot_props;
 
-  return draw_cells_props;
+  return matrix_args;
 
 };
 
@@ -58975,6 +58989,10 @@ module.exports = function run_viz(container, network){
   var wait_time_final_mouseover = 100;
 
   regl.frame(function ({time}) {
+
+    params.time = time;
+
+    params.animation.loop = 0 ; // params.time % 5 /50;
 
     // if (Math.round(time) % 3 == 0){
     //   console.log('time', time)

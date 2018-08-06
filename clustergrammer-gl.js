@@ -56698,6 +56698,7 @@ module.exports = function initialize_params(regl, network){
 
   params.run_switch = false;
   params.last_switch_time = 0;
+  params.switch_duration = 10;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -57370,7 +57371,9 @@ function interactionEvents (opts) {
 const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
 
 module.exports = function interp_fun(params){
-  inst_ease = ease((params.time - params.last_switch_time) / params.switchDuration);
+  inst_ease = ease((params.time - params.last_switch_time) / params.switch_duration);
+
+  // console.log(inst_ease)
   return inst_ease;
 }
 
@@ -58185,13 +58188,11 @@ module.exports = function make_matrix_args(regl, params){
     void main() {
 
       // Interpolate between the two positions using the interpolate uniform
-      vec2 pos = mix(pos_att_ini, pos_att_ini, interp_uni);
+      vec2 pos = mix(pos_att_ini, pos_att_new, interp_uni);
 
       gl_Position = zoom *
                     vec4( position.x + pos.x + ani_x,
                           position.y + pos.y,
-                          // positioned further down (spillover rects are
-                          // above at 0.5)
                           0.75,
                           1
                         );
@@ -59073,9 +59074,9 @@ module.exports = function run_viz(container, network){
       console.log(params.time, params.last_switch_time)
     };
 
-    // run draw command
-    if (params.still_interacting == true || params.initialize_viz == true ||
-        params.animation.time_remain > 0){
+    // // run draw command
+    // if (params.still_interacting == true || params.initialize_viz == true ||
+    //     params.animation.time_remain > 0){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -59090,7 +59091,7 @@ module.exports = function run_viz(container, network){
         // console.log('animation: ', params.animation.time_remain);
       }
 
-    }
+    // }
 
     // mouseover may result in draw command
     if (params.still_mouseover == true){

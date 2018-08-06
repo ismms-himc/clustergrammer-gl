@@ -43,9 +43,9 @@ module.exports = function run_viz(container, network){
       console.log(params.time, params.last_switch_time)
     };
 
-    // run draw command
-    if (params.still_interacting == true || params.initialize_viz == true ||
-        params.animation.time_remain > 0){
+    // // run draw command
+    // if (params.still_interacting == true || params.initialize_viz == true ||
+    //     params.animation.time_remain > 0){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -60,7 +60,7 @@ module.exports = function run_viz(container, network){
         // console.log('animation: ', params.animation.time_remain);
       }
 
-    }
+    // }
 
     // mouseover may result in draw command
     if (params.still_mouseover == true){

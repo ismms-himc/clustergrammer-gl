@@ -64,13 +64,11 @@ module.exports = function make_matrix_args(regl, params){
     void main() {
 
       // Interpolate between the two positions using the interpolate uniform
-      vec2 pos = mix(pos_att_ini, pos_att_ini, interp_uni);
+      vec2 pos = mix(pos_att_ini, pos_att_new, interp_uni);
 
       gl_Position = zoom *
                     vec4( position.x + pos.x + ani_x,
                           position.y + pos.y,
-                          // positioned further down (spillover rects are
-                          // above at 0.5)
                           0.75,
                           1
                         );

@@ -42,6 +42,7 @@ module.exports = function initialize_params(regl, network){
 
   params.run_switch = false;
   params.last_switch_time = 0;
+  params.switch_duration = 10;
 
   params.initialize_viz = true;
   params.first_frame = true;

@@ -56698,7 +56698,7 @@ module.exports = function initialize_params(regl, network){
 
   params.run_switch = false;
   params.last_switch_time = 0;
-  params.switch_duration = 5;
+  params.switch_duration = 10;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -58216,9 +58216,11 @@ module.exports = function make_matrix_args(regl, params){
       // manually tweaking opacity range, will improve to match old version
 
       if (opacity_vary > 0.0){
-        gl_FragColor = vec4(1, 0, 0, abs(opacity_vary) + 0.15);
+        // gl_FragColor = vec4(1, 0, 0, abs(opacity_vary) + 0.15);
+        gl_FragColor = vec4(1, 0, 0, abs(opacity_vary));
       } else {
-        gl_FragColor = vec4(0, 0, 1, abs(opacity_vary) + 0.15);
+        // gl_FragColor = vec4(0, 0, 1, abs(opacity_vary) + 0.15);
+        gl_FragColor = vec4(0, 0, 1, abs(opacity_vary));
       }
 
     }`;
@@ -58253,7 +58255,24 @@ module.exports = function make_matrix_args(regl, params){
         divisor: 1
         }
     },
-    blend: blend_info,
+    // blend: blend_info,
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          // srcAlpha: 'src color',
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+          // dstAlpha: 'dst color'
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
+
     count: 6,
     uniforms: {
       zoom: zoom_function,
@@ -58263,11 +58282,11 @@ module.exports = function make_matrix_args(regl, params){
     },
     instances: num_instances,
     depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
+      enable: false,
+      // mask: false,
+      // func: 'less',
+      // // func: 'greater',
+      // range: [0, 1]
     },
   };
 

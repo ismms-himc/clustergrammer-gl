@@ -65,15 +65,22 @@ module.exports = function run_viz(container, network){
     // mouseover may result in draw command
     if (params.still_mouseover == true){
 
-      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-      // remove old tooltip
-      if (params.show_tooltip == true){
-        params.show_tooltip = false;
-        draw_commands(regl, params);
-      }
+      /////////////////////////////////////
+      /////////////////////////////////////
+      // mouseover draw is causing some flashing after animation, clean up later
+      ////////////////////////////////////
+      /////////////////////////////////////
 
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+      // params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
+
+      // // remove old tooltip
+      // if (params.show_tooltip == true){
+      //   params.show_tooltip = false;
+      //   draw_commands(regl, params);
+      // }
+
+      // setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 
     } else {
 

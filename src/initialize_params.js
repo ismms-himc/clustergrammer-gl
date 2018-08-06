@@ -38,6 +38,10 @@ module.exports = function initialize_params(regl, network){
   // animation params
   params.animation = {};
   params.animation.time_remain = 0;
+  params.animation.loop = params.time % 5
+
+  params.run_switch = false;
+  params.last_switch_time = 0;
 
   params.initialize_viz = true;
   params.first_frame = true;

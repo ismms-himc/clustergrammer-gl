@@ -35,6 +35,14 @@ module.exports = function run_viz(container, network){
 
     // console.log(Math.round(time))
 
+    // manually triggering switch
+    if (params.run_switch){
+      params.run_switch = false;
+      params.last_switch_time = time
+      // inst_state++
+      console.log(params.time, params.last_switch_time)
+    };
+
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.time_remain > 0){

@@ -56674,6 +56674,10 @@ module.exports = function initialize_params(regl, network){
   // animation params
   params.animation = {};
   params.animation.time_remain = 0;
+  params.animation.loop = params.time % 5
+
+  params.run_switch = false;
+  params.last_switch_time = 0;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -58999,6 +59003,14 @@ module.exports = function run_viz(container, network){
     // }
 
     // console.log(Math.round(time))
+
+    // manually triggering switch
+    if (params.run_switch){
+      params.run_switch = false;
+      params.last_switch_time = time
+      // inst_state++
+      console.log(params.time, params.last_switch_time)
+    };
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||

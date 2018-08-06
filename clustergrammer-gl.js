@@ -56091,10 +56091,10 @@ module.exports = function draw_matrix_components(regl, params){
       interp_prop: interp_fun(params),
       ani_x: params.animation.loop
     });
-    regl(params.matrix_args.regl_props.bot)({
-      interp_prop: interp_fun(params),
-      ani_x: params.animation.loop
-    });
+    // regl(params.matrix_args.regl_props.bot)({
+    //   interp_prop: interp_fun(params),
+    //   ani_x: params.animation.loop
+    // });
 
   });
 
@@ -56698,7 +56698,7 @@ module.exports = function initialize_params(regl, network){
 
   params.run_switch = false;
   params.last_switch_time = 0;
-  params.switch_duration = 10;
+  params.switch_duration = 5;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -58167,6 +58167,9 @@ module.exports = function make_matrix_args(regl, params){
   var top_half_verts = [
     [tile_width, 0.0 ],
     [tile_width, tile_height],
+    [0.0,       tile_height],
+    [tile_width, 0.0],
+    [0.0,       0.0],
     [0.0,       tile_height]
     ];
 
@@ -58251,7 +58254,7 @@ module.exports = function make_matrix_args(regl, params){
         }
     },
     blend: blend_info,
-    count: 3,
+    count: 6,
     uniforms: {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
@@ -58268,41 +58271,41 @@ module.exports = function make_matrix_args(regl, params){
     },
   };
 
-  var bot_props = {
-    vert: vert_string,
-    frag: frag_string,
-    attributes: {
-      position: '',
-      pos_att_ini : {
-        buffer: position_buffer_ini,
-        divisor: 1
-      },
-      pos_att_new: {
-        buffer: position_buffer_new,
-        divisor: 1
-      },
-      opacity_att: {
-        buffer: opacity_buffer,
-        divisor: 1
-        }
-    },
-    blend: blend_info,
-    count: 3,
-    uniforms: {
-      zoom: zoom_function,
-      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      ani_x: regl.prop('ani_x')
-      // ani_x: ani_x
-    },
-    instances: num_instances,
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
-  };
+  // var bot_props = {
+  //   vert: vert_string,
+  //   frag: frag_string,
+  //   attributes: {
+  //     position: '',
+  //     pos_att_ini : {
+  //       buffer: position_buffer_ini,
+  //       divisor: 1
+  //     },
+  //     pos_att_new: {
+  //       buffer: position_buffer_new,
+  //       divisor: 1
+  //     },
+  //     opacity_att: {
+  //       buffer: opacity_buffer,
+  //       divisor: 1
+  //       }
+  //   },
+  //   blend: blend_info,
+  //   count: 3,
+  //   uniforms: {
+  //     zoom: zoom_function,
+  //     interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
+  //     ani_x: regl.prop('ani_x')
+  //     // ani_x: ani_x
+  //   },
+  //   instances: num_instances,
+  //   depth: {
+  //     enable: true,
+  //     mask: true,
+  //     func: 'less',
+  //     // func: 'greater',
+  //     range: [0, 1]
+  //   },
+  // };
 
   // draw top and bottom of matrix cells
   //////////////////////////////////////
@@ -58316,8 +58319,8 @@ module.exports = function make_matrix_args(regl, params){
 
   // var bot_props = $.extend(true, {}, regl_props);
   // var bot_props = JSON.parse(JSON.stringify(regl_props))
-  bot_props.attributes.position = bottom_half_verts;
-  matrix_args.regl_props.bot = bot_props;
+  // bot_props.attributes.position = bottom_half_verts;
+  // matrix_args.regl_props.bot = bot_props;
 
   return matrix_args;
 

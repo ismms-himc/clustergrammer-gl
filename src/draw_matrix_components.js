@@ -39,10 +39,10 @@ module.exports = function draw_matrix_components(regl, params){
       interp_prop: interp_fun(params),
       ani_x: params.animation.loop
     });
-    regl(params.matrix_args.regl_props.bot)({
-      interp_prop: interp_fun(params),
-      ani_x: params.animation.loop
-    });
+    // regl(params.matrix_args.regl_props.bot)({
+    //   interp_prop: interp_fun(params),
+    //   ani_x: params.animation.loop
+    // });
 
   });
 

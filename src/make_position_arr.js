@@ -1,6 +1,6 @@
 // var calc_node_canvas_positions = require('./calc_node_canvas_positions');
 
-module.exports = function make_position_arr(params){
+module.exports = function make_position_arr(params, inst_order){
 
   var network = params.network;
 
@@ -48,8 +48,8 @@ module.exports = function make_position_arr(params){
   var row_nodes = network.row_nodes;
   var col_nodes = network.col_nodes;
 
-  var inst_row_order = params.inst_order.row;
-  var inst_col_order = params.inst_order.col;
+  var inst_row_order = params[inst_order].row;
+  var inst_col_order = params[inst_order].col;
 
   /*
     working on saving actual row positions (downsampling)

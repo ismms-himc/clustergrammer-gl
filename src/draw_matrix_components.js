@@ -1,5 +1,6 @@
 // var filter_visible_mat = require('./filter_visible_mat');
 var make_matrix_args = require('./make_matrix_args');
+var interp_fun = require('./interp_fun');
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -35,9 +36,11 @@ module.exports = function draw_matrix_components(regl, params){
     // }
 
     regl(params.matrix_args.regl_props.top)({
+      interp_prop: interp_fun(params),
       ani_x: params.animation.loop
     });
     regl(params.matrix_args.regl_props.bot)({
+      interp_prop: interp_fun(params),
       ani_x: params.animation.loop
     });
 

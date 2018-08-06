@@ -17189,6 +17189,23 @@ module.exports = dupe
 
 /***/ }),
 
+/***/ "./node_modules/eases/cubic-in-out.js":
+/*!********************************************!*\
+  !*** ./node_modules/eases/cubic-in-out.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function cubicInOut(t) {
+  return t < 0.5
+    ? 4.0 * t * t * t
+    : 0.5 * Math.pow(2.0 * t - 2.0, 3.0) + 1.0
+}
+
+module.exports = cubicInOut
+
+/***/ }),
+
 /***/ "./node_modules/edges-to-adjacency-list/e2a.js":
 /*!*****************************************************!*\
   !*** ./node_modules/edges-to-adjacency-list/e2a.js ***!
@@ -56035,6 +56052,7 @@ module.exports = function draw_commands(regl, params, slow_draw=false, show_tool
 
 // var filter_visible_mat = require('./filter_visible_mat');
 var make_matrix_args = __webpack_require__(/*! ./make_matrix_args */ "./src/make_matrix_args.js");
+var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -56070,9 +56088,11 @@ module.exports = function draw_matrix_components(regl, params){
     // }
 
     regl(params.matrix_args.regl_props.top)({
+      interp_prop: interp_fun(params),
       ani_x: params.animation.loop
     });
     regl(params.matrix_args.regl_props.bot)({
+      interp_prop: interp_fun(params),
       ani_x: params.animation.loop
     });
 
@@ -56754,6 +56774,10 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.row = 'clust';
   params.inst_order.col = 'clust';
 
+  params.new_order = {};
+  params.new_order.row = 'rank';
+  params.new_order.col = 'rank';
+
 
   params.viz_aid_tri_args = {};
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
@@ -57333,6 +57357,22 @@ function interactionEvents (opts) {
   return emitter;
 }
 
+
+/***/ }),
+
+/***/ "./src/interp_fun.js":
+/*!***************************!*\
+  !*** ./src/interp_fun.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
+
+module.exports = function interp_fun(params){
+  inst_ease = ease((params.time - params.last_switch_time) / params.switchDuration);
+  return inst_ease;
+}
 
 /***/ }),
 
@@ -58027,11 +58067,13 @@ module.exports = function make_draw_cells_arr(regl, params){
 
   // Make Arrays
   var opacity_arr = make_opacity_arr(params);
-  var position_arr = make_position_arr(params);
+  var position_ini_arr = make_position_arr(params, 'inst_order');
+  var position_new_arr = make_position_arr(params, 'new_order');
 
   var arrs = {};
   arrs.opacity_arr = opacity_arr;
-  arrs.position_arr = position_arr;
+  arrs.position_ini_arr = position_ini_arr;
+  arrs.position_new_arr = position_new_arr;
 
   return arrs;
 
@@ -58081,7 +58123,7 @@ var make_draw_cells_buffers = __webpack_require__(/*! ./make_draw_cells_buffers 
 var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
 var make_draw_cells_arr = __webpack_require__(/*! ./make_draw_cells_arr */ "./src/make_draw_cells_arr.js");
 
-module.exports = function make_matrix_args(regl, params, tmp=0){
+module.exports = function make_matrix_args(regl, params){
 
   console.log('make_matrix_args')
 
@@ -58090,11 +58132,16 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
 
   // transfer to buffers is slow
   //////////////////////////////////////////
-  var buffers = make_draw_cells_buffers(regl, params.arrs.position_arr,
+  var buffers_ini = make_draw_cells_buffers(regl, params.arrs.position_ini_arr,
                                         params.arrs.opacity_arr);
 
-  var opacity_buffer = buffers.opacity_buffer;
-  var position_buffer = buffers.position_buffer;
+  var buffers_new = make_draw_cells_buffers(regl, params.arrs.position_new_arr,
+                                        params.arrs.opacity_arr);
+
+  var opacity_buffer = buffers_ini.opacity_buffer;
+  var position_buffer_ini = buffers_ini.position_buffer;
+
+  var position_buffer_new = buffers_new.position_buffer;
 
   /*
     Temporarily use latest mat_data dimensions (working on downsampling)
@@ -58126,19 +58173,23 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     attribute vec2 position;
 
     // These three are instanced attributes.
-    attribute vec2 pos_att;
+    attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
     uniform float ani_x;
+    uniform float interp_uni;
 
     // pass varying variables to fragment from vector
     varying float opacity_vary;
 
     void main() {
 
+      // Interpolate between the two positions using the interpolate uniform
+      vec2 pos = mix(pos_att_ini, pos_att_ini, interp_uni);
+
       gl_Position = zoom *
-                    vec4( position.x + pos_att.x + ani_x,
-                          position.y + pos_att.y,
+                    vec4( position.x + pos.x + ani_x,
+                          position.y + pos.y,
                           // positioned further down (spillover rects are
                           // above at 0.5)
                           0.75,
@@ -58168,7 +58219,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
 
     }`;
 
-  var num_instances = params.arrs.position_arr.length;
+  var num_instances = params.arrs.position_ini_arr.length;
 
   // var zoom_function = function(context){
   //   return context.view;
@@ -58185,8 +58236,12 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     frag: frag_string,
     attributes: {
       position: '',
-      pos_att: {
-        buffer: position_buffer,
+      pos_att_ini: {
+        buffer: position_buffer_ini,
+        divisor: 1
+      },
+      pos_att_new: {
+        buffer: position_buffer_new,
         divisor: 1
       },
       opacity_att: {
@@ -58198,6 +58253,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     count: 3,
     uniforms: {
       zoom: zoom_function,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       ani_x: regl.prop('ani_x')
       // ani_x: ani_x
     },
@@ -58216,8 +58272,12 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     frag: frag_string,
     attributes: {
       position: '',
-      pos_att: {
-        buffer: position_buffer,
+      pos_att_ini : {
+        buffer: position_buffer_ini,
+        divisor: 1
+      },
+      pos_att_new: {
+        buffer: position_buffer_new,
         divisor: 1
       },
       opacity_att: {
@@ -58229,6 +58289,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     count: 3,
     uniforms: {
       zoom: zoom_function,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       ani_x: regl.prop('ani_x')
       // ani_x: ani_x
     },
@@ -58309,7 +58370,7 @@ module.exports = function make_opacity_arr(params){
 
 // var calc_node_canvas_positions = require('./calc_node_canvas_positions');
 
-module.exports = function make_position_arr(params){
+module.exports = function make_position_arr(params, inst_order){
 
   var network = params.network;
 
@@ -58357,8 +58418,8 @@ module.exports = function make_position_arr(params){
   var row_nodes = network.row_nodes;
   var col_nodes = network.col_nodes;
 
-  var inst_row_order = params.inst_order.row;
-  var inst_col_order = params.inst_order.col;
+  var inst_row_order = params[inst_order].row;
+  var inst_col_order = params[inst_order].col;
 
   /*
     working on saving actual row positions (downsampling)

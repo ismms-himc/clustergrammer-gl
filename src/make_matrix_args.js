@@ -2,7 +2,7 @@ var make_draw_cells_buffers = require('./make_draw_cells_buffers');
 var blend_info = require('./blend_info');
 var make_draw_cells_arr = require('./make_draw_cells_arr');
 
-module.exports = function make_matrix_args(regl, params, tmp=0){
+module.exports = function make_matrix_args(regl, params){
 
   console.log('make_matrix_args')
 
@@ -11,11 +11,16 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
 
   // transfer to buffers is slow
   //////////////////////////////////////////
-  var buffers = make_draw_cells_buffers(regl, params.arrs.position_arr,
+  var buffers_ini = make_draw_cells_buffers(regl, params.arrs.position_ini_arr,
                                         params.arrs.opacity_arr);
 
-  var opacity_buffer = buffers.opacity_buffer;
-  var position_buffer = buffers.position_buffer;
+  var buffers_new = make_draw_cells_buffers(regl, params.arrs.position_new_arr,
+                                        params.arrs.opacity_arr);
+
+  var opacity_buffer = buffers_ini.opacity_buffer;
+  var position_buffer_ini = buffers_ini.position_buffer;
+
+  var position_buffer_new = buffers_new.position_buffer;
 
   /*
     Temporarily use latest mat_data dimensions (working on downsampling)
@@ -47,19 +52,23 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     attribute vec2 position;
 
     // These three are instanced attributes.
-    attribute vec2 pos_att;
+    attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
     uniform float ani_x;
+    uniform float interp_uni;
 
     // pass varying variables to fragment from vector
     varying float opacity_vary;
 
     void main() {
 
+      // Interpolate between the two positions using the interpolate uniform
+      vec2 pos = mix(pos_att_ini, pos_att_ini, interp_uni);
+
       gl_Position = zoom *
-                    vec4( position.x + pos_att.x + ani_x,
-                          position.y + pos_att.y,
+                    vec4( position.x + pos.x + ani_x,
+                          position.y + pos.y,
                           // positioned further down (spillover rects are
                           // above at 0.5)
                           0.75,
@@ -89,7 +98,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
 
     }`;
 
-  var num_instances = params.arrs.position_arr.length;
+  var num_instances = params.arrs.position_ini_arr.length;
 
   // var zoom_function = function(context){
   //   return context.view;
@@ -106,8 +115,12 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     frag: frag_string,
     attributes: {
       position: '',
-      pos_att: {
-        buffer: position_buffer,
+      pos_att_ini: {
+        buffer: position_buffer_ini,
+        divisor: 1
+      },
+      pos_att_new: {
+        buffer: position_buffer_new,
         divisor: 1
       },
       opacity_att: {
@@ -119,6 +132,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     count: 3,
     uniforms: {
       zoom: zoom_function,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       ani_x: regl.prop('ani_x')
       // ani_x: ani_x
     },
@@ -137,8 +151,12 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     frag: frag_string,
     attributes: {
       position: '',
-      pos_att: {
-        buffer: position_buffer,
+      pos_att_ini : {
+        buffer: position_buffer_ini,
+        divisor: 1
+      },
+      pos_att_new: {
+        buffer: position_buffer_new,
         divisor: 1
       },
       opacity_att: {
@@ -150,6 +168,7 @@ module.exports = function make_matrix_args(regl, params, tmp=0){
     count: 3,
     uniforms: {
       zoom: zoom_function,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       ani_x: regl.prop('ani_x')
       // ani_x: ani_x
     },

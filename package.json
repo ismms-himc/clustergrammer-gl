@@ -37,6 +37,7 @@
     "vectorize-text": "^3.0.2",
     "xtend": "^4.0.1",
     "util-extend": "1.0.3",
-    "normalized-interaction-events": "2.0.1"
+    "normalized-interaction-events": "2.0.1",
+    "eases": "^1.0.8"
   }
 }

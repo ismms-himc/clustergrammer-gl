@@ -118,6 +118,10 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.row = 'clust';
   params.inst_order.col = 'clust';
 
+  params.new_order = {};
+  params.new_order.row = 'rank';
+  params.new_order.col = 'rank';
+
 
   params.viz_aid_tri_args = {};
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');

@@ -56089,7 +56089,8 @@ module.exports = function draw_matrix_components(regl, params){
 
     regl(params.matrix_args.regl_props.top)({
       interp_prop: interp_fun(params),
-      ani_x: params.animation.loop
+      ani_x: params.animation.loop,
+      run_animation: params.animation.running
     });
     // regl(params.matrix_args.regl_props.bot)({
     //   interp_prop: interp_fun(params),
@@ -56306,6 +56307,7 @@ module.exports = function final_mouseover_frame(regl, params){
     params.show_tooltip = true;
 
     if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
+      console.log('final_mouseover_frame')
       draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
     }
   }
@@ -56695,10 +56697,11 @@ module.exports = function initialize_params(regl, network){
   params.animation = {};
   params.animation.time_remain = 0;
   params.animation.loop = params.time % 5
+  params.animation.running = false;
 
   params.run_switch = false;
   params.last_switch_time = 0;
-  params.switch_duration = 10;
+  params.switch_duration = 5;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -56776,8 +56779,8 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.col = 'clust';
 
   params.new_order = {};
-  params.new_order.row = 'rank';
-  params.new_order.col = 'rank';
+  params.new_order.row = 'clust';
+  params.new_order.col = 'clust';
 
 
   params.viz_aid_tri_args = {};
@@ -58183,7 +58186,9 @@ module.exports = function make_matrix_args(regl, params){
     attribute float opacity_att;
     uniform mat4 zoom;
     uniform float ani_x;
+    uniform bool run_animation;
     uniform float interp_uni;
+    varying vec2 pos;
 
     // pass varying variables to fragment from vector
     varying float opacity_vary;
@@ -58191,7 +58196,11 @@ module.exports = function make_matrix_args(regl, params){
     void main() {
 
       // Interpolate between the two positions using the interpolate uniform
-      vec2 pos = mix(pos_att_ini, pos_att_new, interp_uni);
+      if (run_animation == true){
+        pos = mix(pos_att_ini, pos_att_new, interp_uni);
+      } else {
+        pos = pos_att_ini;
+      }
 
       gl_Position = zoom *
                     vec4( position.x + pos.x + ani_x,
@@ -58233,7 +58242,6 @@ module.exports = function make_matrix_args(regl, params){
 
   var zoom_function = params.zoom_function;
 
-  var ani_x = params.time;
 
   console.log(params.time % 3)
 
@@ -58277,8 +58285,8 @@ module.exports = function make_matrix_args(regl, params){
     uniforms: {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      ani_x: regl.prop('ani_x')
-      // ani_x: ani_x
+      ani_x: regl.prop('ani_x'),
+      run_animation: regl.prop('run_animation')
     },
     instances: num_instances,
     depth: {
@@ -59096,9 +59104,9 @@ module.exports = function run_viz(container, network){
       console.log(params.time, params.last_switch_time)
     };
 
-    // // run draw command
-    // if (params.still_interacting == true || params.initialize_viz == true ||
-    //     params.animation.time_remain > 0){
+    // run draw command
+    if (params.still_interacting == true || params.initialize_viz == true ||
+        params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -59108,15 +59116,17 @@ module.exports = function run_viz(container, network){
 
       params.initialize_viz = false;
 
+      console.log('draw')
+
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;
         // console.log('animation: ', params.animation.time_remain);
       }
 
-    // }
+    }
 
     // mouseover may result in draw command
-    if (params.still_mouseover == true){
+    else if (params.still_mouseover == true){
 
 
       /////////////////////////////////////
@@ -59125,15 +59135,16 @@ module.exports = function run_viz(container, network){
       ////////////////////////////////////
       /////////////////////////////////////
 
-      // params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
+      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-      // // remove old tooltip
-      // if (params.show_tooltip == true){
-      //   params.show_tooltip = false;
-      //   draw_commands(regl, params);
-      // }
+      // remove old tooltip
+      if (params.show_tooltip == true){
+        params.show_tooltip = false;
+        draw_commands(regl, params);
+      }
 
-      // setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+      // wait_time_final_mouseover = 0;
+      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 
     } else {
 

@@ -43,9 +43,9 @@ module.exports = function run_viz(container, network){
       console.log(params.time, params.last_switch_time)
     };
 
-    // // run draw command
-    // if (params.still_interacting == true || params.initialize_viz == true ||
-    //     params.animation.time_remain > 0){
+    // run draw command
+    if (params.still_interacting == true || params.initialize_viz == true ||
+        params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -55,15 +55,17 @@ module.exports = function run_viz(container, network){
 
       params.initialize_viz = false;
 
+      console.log('draw')
+
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;
         // console.log('animation: ', params.animation.time_remain);
       }
 
-    // }
+    }
 
     // mouseover may result in draw command
-    if (params.still_mouseover == true){
+    else if (params.still_mouseover == true){
 
 
       /////////////////////////////////////
@@ -72,15 +74,16 @@ module.exports = function run_viz(container, network){
       ////////////////////////////////////
       /////////////////////////////////////
 
-      // params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
+      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-      // // remove old tooltip
-      // if (params.show_tooltip == true){
-      //   params.show_tooltip = false;
-      //   draw_commands(regl, params);
-      // }
+      // remove old tooltip
+      if (params.show_tooltip == true){
+        params.show_tooltip = false;
+        draw_commands(regl, params);
+      }
 
-      // setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+      // wait_time_final_mouseover = 0;
+      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 
     } else {
 

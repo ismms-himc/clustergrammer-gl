@@ -59,7 +59,9 @@ module.exports = function make_matrix_args(regl, params){
     attribute float opacity_att;
     uniform mat4 zoom;
     uniform float ani_x;
+    uniform bool run_animation;
     uniform float interp_uni;
+    varying vec2 pos;
 
     // pass varying variables to fragment from vector
     varying float opacity_vary;
@@ -67,7 +69,11 @@ module.exports = function make_matrix_args(regl, params){
     void main() {
 
       // Interpolate between the two positions using the interpolate uniform
-      vec2 pos = mix(pos_att_ini, pos_att_new, interp_uni);
+      if (run_animation == true){
+        pos = mix(pos_att_ini, pos_att_new, interp_uni);
+      } else {
+        pos = pos_att_ini;
+      }
 
       gl_Position = zoom *
                     vec4( position.x + pos.x + ani_x,
@@ -109,7 +115,6 @@ module.exports = function make_matrix_args(regl, params){
 
   var zoom_function = params.zoom_function;
 
-  var ani_x = params.time;
 
   console.log(params.time % 3)
 
@@ -153,8 +158,8 @@ module.exports = function make_matrix_args(regl, params){
     uniforms: {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      ani_x: regl.prop('ani_x')
-      // ani_x: ani_x
+      ani_x: regl.prop('ani_x'),
+      run_animation: regl.prop('run_animation')
     },
     instances: num_instances,
     depth: {

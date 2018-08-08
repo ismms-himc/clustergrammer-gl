@@ -42,7 +42,21 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
       inst_depth: inst_depth
     },
 
-    blend: blend_info,
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
+
     count: 3,
     depth: {
       enable: true,

@@ -37,6 +37,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
     // set up two-stage zooming
     if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
 
+      // console.log('restrict X zoom')
       zoom_data.x.inst_zoom = 1;
 
       var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
@@ -51,7 +52,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
     }
 
-    if (zoom_data.x.total_zoom < zoom_restrict.x.ratio){
+    else if (zoom_data.x.total_zoom < zoom_restrict.x.ratio){
+      // console.log('restrict Y zoom')
 
       zoom_data.y.inst_zoom = 1;
 

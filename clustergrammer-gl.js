@@ -59101,7 +59101,7 @@ module.exports = function run_viz(container, network){
       params.run_switch = false;
       params.last_switch_time = time
       // inst_state++
-      console.log(params.time, params.last_switch_time)
+      // console.log(params.time, params.last_switch_time)
     };
 
     // run draw command
@@ -59115,8 +59115,6 @@ module.exports = function run_viz(container, network){
       setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
       params.initialize_viz = false;
-
-      console.log('draw')
 
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;

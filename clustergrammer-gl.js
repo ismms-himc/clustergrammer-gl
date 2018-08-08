@@ -47976,7 +47976,10 @@ function clustergrammer_gl(args){
     {type: 'text', label: 'my text', initial: 'my cool setting'},
     // {type: 'checkbox', label: 'my checkbox', initial: true},
     // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    // {type: 'button', label: 'gimme an alert', action: function () {alert('hello!');}},
+    {type: 'button', label: 'reorder', action: function () {
+      // alert('hello!');
+      cgm.params.animation.run_switch = true;
+    }},
     // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
     // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
   ],
@@ -49861,8 +49864,8 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // params.animation.time_remain = params.animation.time_remain + 20;
     console.log('CLICKING', ev.type)
 
-    // hacky way of starting animation
-    params.animation.run_switch = true;
+    // // hacky way of starting animation
+    // params.animation.run_switch = true;
 
   });
 

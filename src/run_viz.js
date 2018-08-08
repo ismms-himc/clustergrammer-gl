@@ -57,7 +57,7 @@ module.exports = function run_viz(container, network){
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.running){
 
-      console.log('here')
+      // console.log('here')
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 

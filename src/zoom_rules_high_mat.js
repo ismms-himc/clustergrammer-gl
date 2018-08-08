@@ -43,6 +43,9 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // params.animation.time_remain = params.animation.time_remain + 20;
     console.log('CLICKING', ev.type)
 
+    // hacky way of starting animation
+    params.animation.run_switch = true;
+
   });
 
   // /////////////////////////////////////////

@@ -59139,7 +59139,7 @@ module.exports = function run_viz(container, network){
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.running){
 
-      console.log('here')
+      // console.log('here')
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -59350,6 +59350,9 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // clicking
     // params.animation.time_remain = params.animation.time_remain + 20;
     console.log('CLICKING', ev.type)
+
+    // hacky way of starting animation
+    params.animation.run_switch = true;
 
   });
 

@@ -23,6 +23,15 @@ module.exports = [
       // 'd3': 'd3'
     },
     module: {
+        rules: [
+          // This applies the loader to all of your dependencies,
+          // and not any of the source files in your project:
+          {
+            test: /node_modules/,
+            loader: 'ify-loader'
+          }
+        ]
+
         // loaders: [
         //     {
         //       test: /\.js$/,

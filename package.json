@@ -27,12 +27,9 @@
     "webpack": "^4.16.3",
     "webpack-cli": "^3.1.0"
   },
-  "rules": [
-    {
-      "test": "/node_modules/control-panel/",
-      "loader": "transform-loader?brfs"
-    }
-  ],
+  "browserify": {
+    "transform": "brfs"
+  },
   "dependencies": {
     "brfs": "^1.4.3",
     "control-panel": "^1.3.4",

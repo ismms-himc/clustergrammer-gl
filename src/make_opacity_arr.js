@@ -10,8 +10,8 @@ module.exports = function make_opacity_arr(params){
 
   var opacity_scale = d3.scale.linear();
 
-  var opacity_domain = abs_max_val /1.5;
-  var opacity_range = 0.80;
+  var opacity_domain = abs_max_val;
+  var opacity_range = 1.0;
 
   opacity_scale
     .domain([-opacity_domain, opacity_domain])

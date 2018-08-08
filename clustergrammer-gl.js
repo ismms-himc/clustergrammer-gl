@@ -56700,11 +56700,12 @@ module.exports = function initialize_params(regl, network){
   params.animation = {};
   params.animation.time_remain = 0;
   params.animation.loop = params.time % 5
-  params.animation.running = false;
 
-  params.run_switch = false;
-  params.last_switch_time = 0;
-  params.switch_duration = 5;
+  params.animation.running = false;
+  params.animation.run_switch = false;
+
+  params.animation.last_switch_time = 0;
+  params.animation.switch_duration = 3;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -56782,8 +56783,8 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.col = 'clust';
 
   params.new_order = {};
-  params.new_order.row = 'clust';
-  params.new_order.col = 'clust';
+  params.new_order.row = 'rank';
+  params.new_order.col = 'rank';
 
 
   params.viz_aid_tri_args = {};
@@ -57379,7 +57380,8 @@ function interactionEvents (opts) {
 const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
 
 module.exports = function interp_fun(params){
-  inst_ease = ease((params.time - params.last_switch_time) / params.switch_duration);
+  inst_ease = ease((params.time - params.animation.last_switch_time) /
+              params.animation.switch_duration);
 
   // console.log(inst_ease)
   return inst_ease;
@@ -59116,16 +59118,28 @@ module.exports = function run_viz(container, network){
     // console.log(Math.round(time))
 
     // manually triggering switch
-    if (params.run_switch){
-      params.run_switch = false;
-      params.last_switch_time = time
+    if (params.animation.run_switch){
+
+      console.log('***')
+      params.animation.run_switch = false;
+      params.animation.last_switch_time = time
+      params.animation.running = true;
       // inst_state++
       // console.log(params.time, params.last_switch_time)
+
     };
+
+    if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
+      cgm.params.animation.running = false;
+      params.animation.run_switch = false;
+      console.log('finish switch!!!!!!!!!!!1')
+    }
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.running){
+
+      console.log('here')
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -59335,7 +59349,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     // clicking
     // params.animation.time_remain = params.animation.time_remain + 20;
-    console.log(ev.type)
+    console.log('CLICKING', ev.type)
 
   });
 

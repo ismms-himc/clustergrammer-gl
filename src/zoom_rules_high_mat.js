@@ -41,7 +41,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     // clicking
     // params.animation.time_remain = params.animation.time_remain + 20;
-    console.log(ev.type)
+    console.log('CLICKING', ev.type)
 
   });
 

@@ -36,16 +36,28 @@ module.exports = function run_viz(container, network){
     // console.log(Math.round(time))
 
     // manually triggering switch
-    if (params.run_switch){
-      params.run_switch = false;
-      params.last_switch_time = time
+    if (params.animation.run_switch){
+
+      console.log('***')
+      params.animation.run_switch = false;
+      params.animation.last_switch_time = time
+      params.animation.running = true;
       // inst_state++
       // console.log(params.time, params.last_switch_time)
+
     };
+
+    if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
+      cgm.params.animation.running = false;
+      params.animation.run_switch = false;
+      console.log('finish switch!!!!!!!!!!!1')
+    }
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.running){
+
+      console.log('here')
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 

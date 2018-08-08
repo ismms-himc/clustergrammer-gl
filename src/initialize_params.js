@@ -39,11 +39,12 @@ module.exports = function initialize_params(regl, network){
   params.animation = {};
   params.animation.time_remain = 0;
   params.animation.loop = params.time % 5
-  params.animation.running = false;
 
-  params.run_switch = false;
-  params.last_switch_time = 0;
-  params.switch_duration = 5;
+  params.animation.running = false;
+  params.animation.run_switch = false;
+
+  params.animation.last_switch_time = 0;
+  params.animation.switch_duration = 3;
 
   params.initialize_viz = true;
   params.first_frame = true;
@@ -121,8 +122,8 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.col = 'clust';
 
   params.new_order = {};
-  params.new_order.row = 'clust';
-  params.new_order.col = 'clust';
+  params.new_order.row = 'rank';
+  params.new_order.col = 'rank';
 
 
   params.viz_aid_tri_args = {};

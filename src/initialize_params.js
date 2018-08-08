@@ -181,8 +181,10 @@ module.exports = function initialize_params(regl, network){
 
   params.show_tooltip = false;
   params.in_bounds_tooltip = false;
+  params.tooltip = {};
+  params.tooltip.background_opacity = 0.75;
   // make tooltip args
-  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, 0.7]);
+  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
 
   params.viz_dim = calc_viz_dim(regl, params);
 

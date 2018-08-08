@@ -56842,8 +56842,10 @@ module.exports = function initialize_params(regl, network){
 
   params.show_tooltip = false;
   params.in_bounds_tooltip = false;
+  params.tooltip = {};
+  params.tooltip.background_opacity = 0.75;
   // make tooltip args
-  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, 0.7]);
+  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
 
   params.viz_dim = calc_viz_dim(regl, params);
 
@@ -58749,13 +58751,13 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
       },
 
     count: 3,
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
+    // depth: {
+    //   enable: true,
+    //   mask: true,
+    //   func: 'less',
+    //   // func: 'greater',
+    //   range: [0, 1]
+    // },
   };
 
   return args;

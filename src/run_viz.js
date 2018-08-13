@@ -1,7 +1,7 @@
 var initialize_params = require('./initialize_params');
 var draw_commands = require('./draw_commands');
 _ = require('underscore');
-var control = require('control-panel');
+// var control = require('control-panel');
 var final_mouseover_frame = require('./final_mouseover_frame');
 var final_interaction_frame = require('./final_interaction_frame');
 
@@ -26,38 +26,25 @@ module.exports = function run_viz(container, network){
   regl.frame(function ({time}) {
 
     params.time = time;
-
-    params.animation.loop = 0 ; // params.time % 5 /50;
-
-    // if (Math.round(time) % 3 == 0){
-    //   console.log('time', time)
-    // }
-
-    // console.log(Math.round(time))
+    params.animation.loop = 0 ;
 
     // manually triggering switch
     if (params.animation.run_switch){
-
-      console.log('***')
+      console.log('***');
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
-      // inst_state++
-      // console.log(params.time, params.last_switch_time)
-
     };
 
     if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
       cgm.params.animation.running = false;
       params.animation.run_switch = false;
-      console.log('finish switch!!!!!!!!!!!1')
+      console.log('finish switch!!!!!!!!!!!');
     }
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.running){
-
-      // console.log('here')
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 

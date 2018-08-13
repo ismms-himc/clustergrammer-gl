@@ -33,10 +33,10 @@ function clustergrammer_gl(args){
   var panel = control([
     {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
     // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-    {type: 'text', label: 'my text', initial: 'my cool setting'},
+    {type: 'text', label: 'my text', initial: 'something'},
     // {type: 'checkbox', label: 'my checkbox', initial: true},
     // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    {type: 'button', label: 'reorder', action: function () {
+    {type: 'button', label: 'reordering', action: function () {
       // alert('hello!');
       cgm.params.animation.run_switch = true;
     }},

@@ -47973,10 +47973,10 @@ function clustergrammer_gl(args){
   var panel = control([
     {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
     // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-    {type: 'text', label: 'my text', initial: 'my cool setting'},
+    {type: 'text', label: 'my text', initial: 'something'},
     // {type: 'checkbox', label: 'my checkbox', initial: true},
     // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    {type: 'button', label: 'reorder', action: function () {
+    {type: 'button', label: 'reordering', action: function () {
       // alert('hello!');
       cgm.params.animation.run_switch = true;
     }},
@@ -49596,7 +49596,7 @@ module.exports = {
 var initialize_params = __webpack_require__(/*! ./initialize_params */ "./src/initialize_params.js");
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
-var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+// var control = require('control-panel');
 var final_mouseover_frame = __webpack_require__(/*! ./final_mouseover_frame */ "./src/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./final_interaction_frame */ "./src/final_interaction_frame.js");
 
@@ -49621,38 +49621,25 @@ module.exports = function run_viz(container, network){
   regl.frame(function ({time}) {
 
     params.time = time;
-
-    params.animation.loop = 0 ; // params.time % 5 /50;
-
-    // if (Math.round(time) % 3 == 0){
-    //   console.log('time', time)
-    // }
-
-    // console.log(Math.round(time))
+    params.animation.loop = 0 ;
 
     // manually triggering switch
     if (params.animation.run_switch){
-
-      console.log('***')
+      console.log('***');
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
-      // inst_state++
-      // console.log(params.time, params.last_switch_time)
-
     };
 
     if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
       cgm.params.animation.running = false;
       params.animation.run_switch = false;
-      console.log('finish switch!!!!!!!!!!!1')
+      console.log('finish switch!!!!!!!!!!!');
     }
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.running){
-
-      // console.log('here')
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 

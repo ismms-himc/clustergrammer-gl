@@ -47948,9 +47948,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js")
-
-// global variables
-// d3 = require('d3');
+// var
 
 function clustergrammer_gl(args){
 
@@ -47962,15 +47960,32 @@ function clustergrammer_gl(args){
   var network = args.network;
   var container = args.container;
 
-  var params = run_viz(container, network);
+  d3.select(container).append('div').attr('id', 'control-container')
+  d3.select(container).append('div').attr('id', 'canvas-container')
+
+  var control_container = d3.select(container).select('#control-container')[0][0];
+  var canvas_container = d3.select(container).select('#canvas-container')[0][0];
+
+  var inst_height = 1000;
+  var inst_width = 1000;
+
+  d3.select(control_container)
+    // .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+    .style('display', 'flex')
+
+  d3.select(canvas_container)
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+
+  var params = run_viz(canvas_container, network);
 
   var cgm = {};
 
   cgm.params = params;
 
-  var canvas_element = d3.select('#something').select('canvas')[0];
-
-  var panel = control([
+  var panel_width = 250;
+  var panel_1 = control([
     {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
     // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
     {type: 'text', label: 'my text', initial: 'something'},
@@ -47983,9 +47998,26 @@ function clustergrammer_gl(args){
     // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
     // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
   ],
-    {theme: 'light', position: 'top-left', root:args.container}
+    {theme: 'light', root:control_container, title: 'Row Reordering', width:panel_width}
     // {theme: 'light', position: 'top-left'}
-  )
+  );
+
+  var panel_1 = control([
+    {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
+    // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
+    {type: 'text', label: 'my text', initial: 'something'},
+    // {type: 'checkbox', label: 'my checkbox', initial: true},
+    // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
+    {type: 'button', label: 'reordering', action: function () {
+      // alert('hello!');
+      cgm.params.animation.run_switch = true;
+    }},
+    // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
+    // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
+  ],
+    {theme: 'light', root:control_container, title: 'Row Reordering', width:panel_width}
+    // {theme: 'light', position: 'top-left'}
+  );
 
   return cgm;
 

@@ -23,11 +23,20 @@ module.exports = function reorder_panel(params, control_container, inst_axis){
     // {type: 'button', label: 'Rank by Variance', action: function () {
     //   // params.animation.run_switch = true;
     // }},
-    {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
+    {type: 'select', label: inst_axis + ' Order', options: {'clust':'Cluster', 'rank':'Rank'}, initial: 'option 1', action: function(){
+      console.log('something')
+      params.animation.run_switch = true;
+    }},
+    {type: 'text', label: inst_axis + ' Search', initial: 'my cool setting'},
     // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
   ],
-    {theme: 'light', root:control_container, title: inst_axis + ' Reordering', width:panel_width}
+    {theme: 'light', root:control_container, title: inst_axis + ' Options', width:panel_width}
     // {theme: 'light', position: 'top-left'}
   );
+
+  panel_1.on('input', function(data){
+    console.log('something happening', data)
+      params.animation.run_switch = true;
+  })
 
 };

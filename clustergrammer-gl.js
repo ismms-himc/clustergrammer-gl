@@ -47948,7 +47948,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js")
-// var
+var reorder_panel = __webpack_require__(/*! ./reorder_panel */ "./src/reorder_panel.js")
 
 function clustergrammer_gl(args){
 
@@ -47984,40 +47984,8 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  var panel_width = 250;
-  var panel_1 = control([
-    {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
-    // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-    {type: 'text', label: 'my text', initial: 'something'},
-    // {type: 'checkbox', label: 'my checkbox', initial: true},
-    // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    {type: 'button', label: 'reordering', action: function () {
-      // alert('hello!');
-      cgm.params.animation.run_switch = true;
-    }},
-    // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
-    // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
-  ],
-    {theme: 'light', root:control_container, title: 'Row Reordering', width:panel_width}
-    // {theme: 'light', position: 'top-left'}
-  );
-
-  var panel_1 = control([
-    {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
-    // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-    {type: 'text', label: 'my text', initial: 'something'},
-    // {type: 'checkbox', label: 'my checkbox', initial: true},
-    // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    {type: 'button', label: 'reordering', action: function () {
-      // alert('hello!');
-      cgm.params.animation.run_switch = true;
-    }},
-    // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
-    // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
-  ],
-    {theme: 'light', root:control_container, title: 'Row Reordering', width:panel_width}
-    // {theme: 'light', position: 'top-left'}
-  );
+  reorder_panel(cgm.params, control_container, 'row');
+  reorder_panel(cgm.params, control_container, 'col');
 
   return cgm;
 
@@ -49615,6 +49583,49 @@ module.exports = {
   },
 };
 
+
+/***/ }),
+
+/***/ "./src/reorder_panel.js":
+/*!******************************!*\
+  !*** ./src/reorder_panel.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+
+module.exports = function reorder_panel(params, control_container, inst_axis){
+
+  var panel_width = 250;
+
+
+
+  var panel_1 = control([
+    // {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
+    // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
+    // {type: 'checkbox', label: 'my checkbox', initial: true},
+    // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
+    // {type: 'button', label: 'Alphabetically', action: function () {
+    //   params.animation.run_switch = true;
+    // }},
+    // {type: 'button', label: 'Cluster', action: function () {
+    //   params.animation.run_switch = true;
+    // }},
+    // {type: 'button', label: 'Rank by Sum', action: function () {
+    //   // params.animation.run_switch = true;
+    // }},
+    // {type: 'button', label: 'Rank by Variance', action: function () {
+    //   // params.animation.run_switch = true;
+    // }},
+    {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
+    // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
+  ],
+    {theme: 'light', root:control_container, title: inst_axis + ' Reordering', width:panel_width}
+    // {theme: 'light', position: 'top-left'}
+  );
+
+};
 
 /***/ }),
 

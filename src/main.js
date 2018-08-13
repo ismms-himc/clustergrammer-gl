@@ -8,7 +8,7 @@
 
 var run_viz = require('./run_viz');
 var control = require('control-panel')
-// var
+var reorder_panel = require('./reorder_panel')
 
 function clustergrammer_gl(args){
 
@@ -44,40 +44,8 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  var panel_width = 250;
-  var panel_1 = control([
-    {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
-    // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-    {type: 'text', label: 'my text', initial: 'something'},
-    // {type: 'checkbox', label: 'my checkbox', initial: true},
-    // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    {type: 'button', label: 'reordering', action: function () {
-      // alert('hello!');
-      cgm.params.animation.run_switch = true;
-    }},
-    // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
-    // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
-  ],
-    {theme: 'light', root:control_container, title: 'Row Reordering', width:panel_width}
-    // {theme: 'light', position: 'top-left'}
-  );
-
-  var panel_1 = control([
-    {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
-    // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-    {type: 'text', label: 'my text', initial: 'something'},
-    // {type: 'checkbox', label: 'my checkbox', initial: true},
-    // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    {type: 'button', label: 'reordering', action: function () {
-      // alert('hello!');
-      cgm.params.animation.run_switch = true;
-    }},
-    // {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
-    // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
-  ],
-    {theme: 'light', root:control_container, title: 'Row Reordering', width:panel_width}
-    // {theme: 'light', position: 'top-left'}
-  );
+  reorder_panel(cgm.params, control_container, 'row');
+  reorder_panel(cgm.params, control_container, 'col');
 
   return cgm;
 

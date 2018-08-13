@@ -35,8 +35,15 @@ module.exports = function reorder_panel(params, control_container, inst_axis){
   );
 
   panel_1.on('input', function(data){
-    console.log('something happening', data)
+      console.log('something happening', data)
       params.animation.run_switch = true;
+      params.new_order.col = data['row Order'];
+      console.log(params.new_order.col)
+
+      /*
+      Need to calcualte new position array when choosing new order
+      */
+
   })
 
 };

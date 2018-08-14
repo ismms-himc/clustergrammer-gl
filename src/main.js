@@ -38,14 +38,20 @@ function clustergrammer_gl(args){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
 
-  var params = run_viz(canvas_container, network);
+  var regl = require('regl')({
+    extensions: ['angle_instanced_arrays'],
+    container: canvas_container,
+    // pixelRatio: window.devicePixelRatio/10
+  });
+
+  var params = run_viz(regl, network);
 
   var cgm = {};
 
   cgm.params = params;
 
-  reorder_panel(cgm.params, control_container, 'row');
-  reorder_panel(cgm.params, control_container, 'col');
+  reorder_panel(regl, cgm.params, control_container, 'row');
+  reorder_panel(regl, cgm.params, control_container, 'col');
 
   return cgm;
 

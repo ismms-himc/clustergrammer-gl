@@ -46579,15 +46579,11 @@ module.exports = function draw_matrix_components(regl, params){
     //   params.matrix_args = make_matrix_args(regl, params);
     // }
 
-    regl(params.matrix_args.regl_props.top)({
+    regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
       ani_x: params.animation.loop,
       run_animation: params.animation.running
     });
-    // regl(params.matrix_args.regl_props.bot)({
-    //   interp_prop: interp_fun(params),
-    //   ani_x: params.animation.loop
-    // });
 
   });
 
@@ -47275,8 +47271,8 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.col = 'clust';
 
   params.new_order = {};
-  params.new_order.row = 'rank';
-  params.new_order.col = 'rank';
+  params.new_order.row = 'clust';
+  params.new_order.col = 'clust';
 
 
   params.viz_aid_tri_args = {};
@@ -47978,14 +47974,20 @@ function clustergrammer_gl(args){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
 
-  var params = run_viz(canvas_container, network);
+  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
+    extensions: ['angle_instanced_arrays'],
+    container: canvas_container,
+    // pixelRatio: window.devicePixelRatio/10
+  });
+
+  var params = run_viz(regl, network);
 
   var cgm = {};
 
   cgm.params = params;
 
-  reorder_panel(cgm.params, control_container, 'row');
-  reorder_panel(cgm.params, control_container, 'col');
+  reorder_panel(regl, cgm.params, control_container, 'row');
+  reorder_panel(regl, cgm.params, control_container, 'col');
 
   return cgm;
 
@@ -48579,65 +48581,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 /***/ }),
 
-/***/ "./src/make_draw_cells_arr.js":
-/*!************************************!*\
-  !*** ./src/make_draw_cells_arr.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
-var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
-
-module.exports = function make_draw_cells_arr(regl, params){
-
-  // Make Arrays
-  var opacity_arr = make_opacity_arr(params);
-  var position_ini_arr = make_position_arr(params, 'inst_order');
-  var position_new_arr = make_position_arr(params, 'new_order');
-
-  var arrs = {};
-  arrs.opacity_arr = opacity_arr;
-  arrs.position_ini_arr = position_ini_arr;
-  arrs.position_new_arr = position_new_arr;
-
-  return arrs;
-
-};
-
-/***/ }),
-
-/***/ "./src/make_draw_cells_buffers.js":
-/*!****************************************!*\
-  !*** ./src/make_draw_cells_buffers.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_arr){
-
-  // Make Buffers
-  ///////////////////////////
-  var position_buffer = regl.buffer(position_arr);
-
-  const opacity_buffer = regl.buffer({
-    // length: opacity_arr.length,
-    type: 'float',
-    usage: 'dynamic'
-  });
-
-  opacity_buffer(opacity_arr);
-
-  var buffers = {};
-  buffers.opacity_buffer = opacity_buffer;
-  buffers.position_buffer = position_buffer;
-
-  return buffers;
-};
-
-/***/ }),
-
 /***/ "./src/make_matrix_args.js":
 /*!*********************************!*\
   !*** ./src/make_matrix_args.js ***!
@@ -48645,49 +48588,37 @@ module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_ar
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_draw_cells_buffers = __webpack_require__(/*! ./make_draw_cells_buffers */ "./src/make_draw_cells_buffers.js");
 var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
-var make_draw_cells_arr = __webpack_require__(/*! ./make_draw_cells_arr */ "./src/make_draw_cells_arr.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
 
 module.exports = function make_matrix_args(regl, params){
 
   console.log('make_matrix_args')
 
-  // generate position and opacity arrays from params.mat_data
-  params.arrs = make_draw_cells_arr(regl, params);
+  // make arrays
+  params.arrs = {};
+  params.arrs.opacity_arr = make_opacity_arr(params);
 
-  // transfer to buffers is slow
-  //////////////////////////////////////////
-  var buffers_ini = make_draw_cells_buffers(regl, params.arrs.position_ini_arr,
-                                        params.arrs.opacity_arr);
+  params.arrs.position_arr = {};
 
-  var buffers_new = make_draw_cells_buffers(regl, params.arrs.position_new_arr,
-                                        params.arrs.opacity_arr);
+  params.arrs.position_arr['ini'] = make_position_arr(params,
+                                               params.inst_order.row,
+                                               params.inst_order.col);
 
-  var opacity_buffer = buffers_ini.opacity_buffer;
-  var position_buffer_ini = buffers_ini.position_buffer;
+  // params.arrs.position_arr['new'] = make_position_arr(params,
+  //                                              params.new_order.row,
+  //                                              params.new_order.col);
 
-  var position_buffer_new = buffers_new.position_buffer;
+  var opacity_buffer = regl.buffer({
+    type: 'float',
+    usage: 'dynamic'
+  })(params.arrs.opacity_arr);
 
-  /*
-    Temporarily use latest mat_data dimensions (working on downsampling)
-  */
+  var tile_width = params.tile_width;
+  var tile_height = params.tile_height;
 
-  // var tile_width = params.tile_width;
-  // var tile_height = params.tile_height;
-
-  var tile_width = params.tile_width + params.animation.time_remain * 0.001;
-  var tile_height = params.tile_height + params.animation.time_remain * 0.001;
-
-  // bottom half
-  var bottom_half_verts = [
-    [tile_width, 0.0],
-    [0.0,       0.0],
-    [0.0,       tile_height]
-  ];
-
-  // top half
-  var top_half_verts = [
+  var triangle_verts = [
     [tile_width, 0.0 ],
     [tile_width, tile_height],
     [0.0,       tile_height],
@@ -48698,10 +48629,7 @@ module.exports = function make_matrix_args(regl, params){
 
   var vert_string = `
     precision highp float;
-
     attribute vec2 position;
-
-    // These three are instanced attributes.
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
@@ -48754,28 +48682,16 @@ module.exports = function make_matrix_args(regl, params){
 
     }`;
 
-  var num_instances = params.arrs.position_ini_arr.length;
-
-  // var zoom_function = function(context){
-  //   return context.view;
-  // };
-
+  var num_instances = params.arrs.position_arr['ini'].length;
   var zoom_function = params.zoom_function;
 
-
-  console.log(params.time % 3)
-
-  var top_props = {
+  var inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
-      position: '',
+      position: triangle_verts,
       pos_att_ini: {
-        buffer: position_buffer_ini,
-        divisor: 1
-      },
-      pos_att_new: {
-        buffer: position_buffer_new,
+        buffer: regl.buffer(params.arrs.position_arr['ini']),
         divisor: 1
       },
       opacity_att: {
@@ -48783,16 +48699,13 @@ module.exports = function make_matrix_args(regl, params){
         divisor: 1
         }
     },
-    // blend: blend_info,
     blend: {
         enable: true,
         func: {
           srcRGB: 'src alpha',
           srcAlpha: 1,
-          // srcAlpha: 'src color',
           dstRGB: 'one minus src alpha',
           dstAlpha: 1
-          // dstAlpha: 'dst color'
         },
         equation: {
           rgb: 'add',
@@ -48800,7 +48713,6 @@ module.exports = function make_matrix_args(regl, params){
         },
         color: [0, 0, 0, 0]
       },
-
     count: 6,
     uniforms: {
       zoom: zoom_function,
@@ -48810,64 +48722,15 @@ module.exports = function make_matrix_args(regl, params){
     },
     instances: num_instances,
     depth: {
-      enable: false,
-      // mask: false,
-      // func: 'less',
-      // // func: 'greater',
-      // range: [0, 1]
+      enable: false
     },
   };
-
-  // var bot_props = {
-  //   vert: vert_string,
-  //   frag: frag_string,
-  //   attributes: {
-  //     position: '',
-  //     pos_att_ini : {
-  //       buffer: position_buffer_ini,
-  //       divisor: 1
-  //     },
-  //     pos_att_new: {
-  //       buffer: position_buffer_new,
-  //       divisor: 1
-  //     },
-  //     opacity_att: {
-  //       buffer: opacity_buffer,
-  //       divisor: 1
-  //       }
-  //   },
-  //   blend: blend_info,
-  //   count: 3,
-  //   uniforms: {
-  //     zoom: zoom_function,
-  //     interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-  //     ani_x: regl.prop('ani_x')
-  //     // ani_x: ani_x
-  //   },
-  //   instances: num_instances,
-  //   depth: {
-  //     enable: true,
-  //     mask: true,
-  //     func: 'less',
-  //     // func: 'greater',
-  //     range: [0, 1]
-  //   },
-  // };
 
   // draw top and bottom of matrix cells
   //////////////////////////////////////
   var matrix_args = {};
   matrix_args.regl_props = {};
-
-  // var top_props = $.extend(true, {}, regl_props);
-  // var top_props = JSON.parse(JSON.stringify(regl_props))
-  top_props.attributes.position = top_half_verts;
-  matrix_args.regl_props.top = top_props;
-
-  // var bot_props = $.extend(true, {}, regl_props);
-  // var bot_props = JSON.parse(JSON.stringify(regl_props))
-  // bot_props.attributes.position = bottom_half_verts;
-  // matrix_args.regl_props.bot = bot_props;
+  matrix_args.regl_props.rects = inst_properties;
 
   return matrix_args;
 
@@ -48921,23 +48784,11 @@ module.exports = function make_opacity_arr(params){
 
 // var calc_node_canvas_positions = require('./calc_node_canvas_positions');
 
-module.exports = function make_position_arr(params, inst_order){
+module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
   var network = params.network;
-
-  // var num_row = params.num_row;
-  // var num_col = params.num_col;
-
   var num_row = params.mat_data.length;
   var num_col = params.mat_data[0].length;
-
-  // calc_node_canvas_positions();
-
-  /*
-
-  reverting to how positions were previously calculated
-
-  */
 
   // draw matrix cells
   /////////////////////////////////////////
@@ -48968,9 +48819,6 @@ module.exports = function make_position_arr(params, inst_order){
   // pass along row and col node information
   var row_nodes = network.row_nodes;
   var col_nodes = network.col_nodes;
-
-  var inst_row_order = params[inst_order].row;
-  var inst_col_order = params[inst_order].col;
 
   /*
     working on saving actual row positions (downsampling)
@@ -49594,12 +49442,11 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
 
-module.exports = function reorder_panel(params, control_container, inst_axis){
+module.exports = function reorder_panel(regl, params, control_container, inst_axis){
 
   var panel_width = 250;
-
-
 
   var panel_1 = control([
     // {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
@@ -49618,12 +49465,43 @@ module.exports = function reorder_panel(params, control_container, inst_axis){
     // {type: 'button', label: 'Rank by Variance', action: function () {
     //   // params.animation.run_switch = true;
     // }},
-    {type: 'select', label: 'select one', options: ['option 1', 'option 2'], initial: 'option 1'},
+    {type: 'select', label: inst_axis + ' Order', options: {'clust':'Cluster', 'rank':'Rank'}, initial: 'option 1', action: function(){
+      console.log('something')
+      params.animation.run_switch = true;
+    }},
+    {type: 'text', label: inst_axis + ' Search', initial: 'my cool setting'},
     // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
   ],
-    {theme: 'light', root:control_container, title: inst_axis + ' Reordering', width:panel_width}
+    {theme: 'light', root:control_container, title: inst_axis + ' Options', width:panel_width}
     // {theme: 'light', position: 'top-left'}
   );
+
+  panel_1.on('input', function(data){
+
+      console.log('something happening', data)
+      params.animation.run_switch = true;
+      // params.new_order.row = data['row Order'];
+      params.new_order.col = data['col Order'];
+
+
+      // console.log(params.new_order.row, params.new_order.col)
+
+      params.arrs.position_arr['new'] = make_position_arr(params,
+                                      params.new_order.row,
+                                      params.new_order.col);
+
+      // var new_pos_arr = params.arrs.position_arr['new']
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
+      /*
+      Need to calcualte new position array when choosing new order
+      */
+
+  })
 
 };
 
@@ -49643,16 +49521,7 @@ _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.
 var final_mouseover_frame = __webpack_require__(/*! ./final_mouseover_frame */ "./src/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./final_interaction_frame */ "./src/final_interaction_frame.js");
 
-module.exports = function run_viz(container, network){
-
-  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
-    extensions: ['angle_instanced_arrays'],
-    container: container,
-    // pixelRatio: window.devicePixelRatio/10
-  });
-
-  // var tick = 0;
-  // var initialize_viz = true;
+module.exports = function run_viz(regl, network){
 
   // global params
   var params = initialize_params(regl, network);
@@ -49666,18 +49535,22 @@ module.exports = function run_viz(container, network){
     params.time = time;
     params.animation.loop = 0 ;
 
-    // manually triggering switch
     if (params.animation.run_switch){
-      console.log('***');
+      console.log('turn switch off')
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
-    };
+    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
 
-    if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
       cgm.params.animation.running = false;
       params.animation.run_switch = false;
       console.log('finish switch!!!!!!!!!!!');
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
     }
 
     // run draw command
@@ -49701,7 +49574,6 @@ module.exports = function run_viz(container, network){
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
-
 
       /////////////////////////////////////
       /////////////////////////////////////

@@ -1,46 +1,34 @@
-var make_draw_cells_buffers = require('./make_draw_cells_buffers');
 var blend_info = require('./blend_info');
-var make_draw_cells_arr = require('./make_draw_cells_arr');
+var make_position_arr = require('./make_position_arr');
+var make_opacity_arr = require('./make_opacity_arr');
 
 module.exports = function make_matrix_args(regl, params){
 
   console.log('make_matrix_args')
 
-  // generate position and opacity arrays from params.mat_data
-  params.arrs = make_draw_cells_arr(regl, params);
+  // make arrays
+  params.arrs = {};
+  params.arrs.opacity_arr = make_opacity_arr(params);
 
-  // transfer to buffers is slow
-  //////////////////////////////////////////
-  var buffers_ini = make_draw_cells_buffers(regl, params.arrs.position_ini_arr,
-                                        params.arrs.opacity_arr);
+  params.arrs.position_arr = {};
 
-  var buffers_new = make_draw_cells_buffers(regl, params.arrs.position_new_arr,
-                                        params.arrs.opacity_arr);
+  params.arrs.position_arr['ini'] = make_position_arr(params,
+                                               params.inst_order.row,
+                                               params.inst_order.col);
 
-  var opacity_buffer = buffers_ini.opacity_buffer;
-  var position_buffer_ini = buffers_ini.position_buffer;
+  // params.arrs.position_arr['new'] = make_position_arr(params,
+  //                                              params.new_order.row,
+  //                                              params.new_order.col);
 
-  var position_buffer_new = buffers_new.position_buffer;
+  var opacity_buffer = regl.buffer({
+    type: 'float',
+    usage: 'dynamic'
+  })(params.arrs.opacity_arr);
 
-  /*
-    Temporarily use latest mat_data dimensions (working on downsampling)
-  */
+  var tile_width = params.tile_width;
+  var tile_height = params.tile_height;
 
-  // var tile_width = params.tile_width;
-  // var tile_height = params.tile_height;
-
-  var tile_width = params.tile_width + params.animation.time_remain * 0.001;
-  var tile_height = params.tile_height + params.animation.time_remain * 0.001;
-
-  // bottom half
-  var bottom_half_verts = [
-    [tile_width, 0.0],
-    [0.0,       0.0],
-    [0.0,       tile_height]
-  ];
-
-  // top half
-  var top_half_verts = [
+  var triangle_verts = [
     [tile_width, 0.0 ],
     [tile_width, tile_height],
     [0.0,       tile_height],
@@ -51,10 +39,7 @@ module.exports = function make_matrix_args(regl, params){
 
   var vert_string = `
     precision highp float;
-
     attribute vec2 position;
-
-    // These three are instanced attributes.
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
@@ -107,28 +92,16 @@ module.exports = function make_matrix_args(regl, params){
 
     }`;
 
-  var num_instances = params.arrs.position_ini_arr.length;
-
-  // var zoom_function = function(context){
-  //   return context.view;
-  // };
-
+  var num_instances = params.arrs.position_arr['ini'].length;
   var zoom_function = params.zoom_function;
 
-
-  console.log(params.time % 3)
-
-  var top_props = {
+  var inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
-      position: '',
+      position: triangle_verts,
       pos_att_ini: {
-        buffer: position_buffer_ini,
-        divisor: 1
-      },
-      pos_att_new: {
-        buffer: position_buffer_new,
+        buffer: regl.buffer(params.arrs.position_arr['ini']),
         divisor: 1
       },
       opacity_att: {
@@ -136,16 +109,13 @@ module.exports = function make_matrix_args(regl, params){
         divisor: 1
         }
     },
-    // blend: blend_info,
     blend: {
         enable: true,
         func: {
           srcRGB: 'src alpha',
           srcAlpha: 1,
-          // srcAlpha: 'src color',
           dstRGB: 'one minus src alpha',
           dstAlpha: 1
-          // dstAlpha: 'dst color'
         },
         equation: {
           rgb: 'add',
@@ -153,7 +123,6 @@ module.exports = function make_matrix_args(regl, params){
         },
         color: [0, 0, 0, 0]
       },
-
     count: 6,
     uniforms: {
       zoom: zoom_function,
@@ -163,64 +132,15 @@ module.exports = function make_matrix_args(regl, params){
     },
     instances: num_instances,
     depth: {
-      enable: false,
-      // mask: false,
-      // func: 'less',
-      // // func: 'greater',
-      // range: [0, 1]
+      enable: false
     },
   };
-
-  // var bot_props = {
-  //   vert: vert_string,
-  //   frag: frag_string,
-  //   attributes: {
-  //     position: '',
-  //     pos_att_ini : {
-  //       buffer: position_buffer_ini,
-  //       divisor: 1
-  //     },
-  //     pos_att_new: {
-  //       buffer: position_buffer_new,
-  //       divisor: 1
-  //     },
-  //     opacity_att: {
-  //       buffer: opacity_buffer,
-  //       divisor: 1
-  //       }
-  //   },
-  //   blend: blend_info,
-  //   count: 3,
-  //   uniforms: {
-  //     zoom: zoom_function,
-  //     interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-  //     ani_x: regl.prop('ani_x')
-  //     // ani_x: ani_x
-  //   },
-  //   instances: num_instances,
-  //   depth: {
-  //     enable: true,
-  //     mask: true,
-  //     func: 'less',
-  //     // func: 'greater',
-  //     range: [0, 1]
-  //   },
-  // };
 
   // draw top and bottom of matrix cells
   //////////////////////////////////////
   var matrix_args = {};
   matrix_args.regl_props = {};
-
-  // var top_props = $.extend(true, {}, regl_props);
-  // var top_props = JSON.parse(JSON.stringify(regl_props))
-  top_props.attributes.position = top_half_verts;
-  matrix_args.regl_props.top = top_props;
-
-  // var bot_props = $.extend(true, {}, regl_props);
-  // var bot_props = JSON.parse(JSON.stringify(regl_props))
-  // bot_props.attributes.position = bottom_half_verts;
-  // matrix_args.regl_props.bot = bot_props;
+  matrix_args.regl_props.rects = inst_properties;
 
   return matrix_args;
 

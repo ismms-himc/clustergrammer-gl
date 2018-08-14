@@ -1,14 +1,12 @@
 <!-- # clustergrammer -->
 <!-- # ![clustergrammer_logo](img/clustergrammer_logo.png | width=100) -->
 
-# Clustergrammer-GL
-The Clustergrammer2-alpha repo contains the in development WebGL/regl version of Clustergrammer; see demo [here](https://cornhundred.github.io/clustergrammer2-alpha/).
-
-* use webpack or browersify to build npm version of clustergrammer2-alpha
-
-The readme below refers to the original SVG version of Clustergrammer.
 
 <img src='img/clustergrammer-gl_logo.png' alt="Clustergramer" width="300px" >
+
+The Clustergrammer-gl repo contains the in development WebGL/regl version of Clustergrammer.
+
+The readme below refers to the original SVG version of Clustergrammer.
 
 [![NPM](https://img.shields.io/npm/v/clustergrammer.svg)](https://www.npmjs.com/package/clustergrammer)
 [![NPM](https://img.shields.io/npm/l/clustergrammer.svg)](https://github.com/MaayanLab/clustergrammer/blob/master/LICENSES/LICENSE)

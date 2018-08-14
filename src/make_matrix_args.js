@@ -1,4 +1,3 @@
-var make_draw_cells_buffers = require('./make_draw_cells_buffers');
 var blend_info = require('./blend_info');
 var make_draw_cells_arr = require('./make_draw_cells_arr');
 
@@ -29,7 +28,6 @@ module.exports = function make_matrix_args(regl, params){
   var vert_string = `
     precision highp float;
     attribute vec2 position;
-    // instanced attributes.
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
@@ -92,10 +90,6 @@ module.exports = function make_matrix_args(regl, params){
       position: triangle_verts,
       pos_att_ini: {
         buffer: regl.buffer(params.arrs.position_arr['ini']),
-        divisor: 1
-      },
-      pos_att_new: {
-        buffer: regl.buffer(params.arrs.position_arr['new']),
         divisor: 1
       },
       opacity_att: {

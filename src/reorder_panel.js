@@ -1,6 +1,6 @@
 var control = require('control-panel');
 
-module.exports = function reorder_panel(params, control_container, inst_axis){
+module.exports = function reorder_panel(regl, params, control_container, inst_axis){
 
   var panel_width = 250;
 
@@ -40,6 +40,11 @@ module.exports = function reorder_panel(params, control_container, inst_axis){
       params.animation.run_switch = true;
       params.new_order.col = data['row Order'];
       console.log(params.new_order.col)
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          }
 
       /*
       Need to calcualte new position array when choosing new order

@@ -5,16 +5,7 @@ _ = require('underscore');
 var final_mouseover_frame = require('./final_mouseover_frame');
 var final_interaction_frame = require('./final_interaction_frame');
 
-module.exports = function run_viz(container, network){
-
-  var regl = require('regl')({
-    extensions: ['angle_instanced_arrays'],
-    container: container,
-    // pixelRatio: window.devicePixelRatio/10
-  });
-
-  // var tick = 0;
-  // var initialize_viz = true;
+module.exports = function run_viz(regl, network){
 
   // global params
   var params = initialize_params(regl, network);
@@ -63,7 +54,6 @@ module.exports = function run_viz(container, network){
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
-
 
       /////////////////////////////////////
       /////////////////////////////////////

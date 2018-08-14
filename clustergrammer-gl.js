@@ -47974,14 +47974,20 @@ function clustergrammer_gl(args){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
 
-  var params = run_viz(canvas_container, network);
+  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
+    extensions: ['angle_instanced_arrays'],
+    container: canvas_container,
+    // pixelRatio: window.devicePixelRatio/10
+  });
+
+  var params = run_viz(regl, network);
 
   var cgm = {};
 
   cgm.params = params;
 
-  reorder_panel(cgm.params, control_container, 'row');
-  reorder_panel(cgm.params, control_container, 'col');
+  reorder_panel(regl, cgm.params, control_container, 'row');
+  reorder_panel(regl, cgm.params, control_container, 'col');
 
   return cgm;
 
@@ -48600,37 +48606,6 @@ module.exports = function make_draw_cells_arr(regl, params){
 
 /***/ }),
 
-/***/ "./src/make_draw_cells_buffers.js":
-/*!****************************************!*\
-  !*** ./src/make_draw_cells_buffers.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_arr){
-
-  // // Make Buffers
-  // ///////////////////////////
-
-  // const opacity_buffer = regl.buffer({
-  //   type: 'float',
-  //   usage: 'dynamic'
-  // });
-
-  // opacity_buffer(opacity_arr);
-
-  var buffers = {};
-  // buffers.opacity_buffer = opacity_buffer;
-
-  var position_buffer = regl.buffer(position_arr);
-  buffers.position_buffer = position_buffer;
-
-  return buffers;
-};
-
-/***/ }),
-
 /***/ "./src/make_matrix_args.js":
 /*!*********************************!*\
   !*** ./src/make_matrix_args.js ***!
@@ -48638,7 +48613,6 @@ module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_ar
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_draw_cells_buffers = __webpack_require__(/*! ./make_draw_cells_buffers */ "./src/make_draw_cells_buffers.js");
 var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
 var make_draw_cells_arr = __webpack_require__(/*! ./make_draw_cells_arr */ "./src/make_draw_cells_arr.js");
 
@@ -48669,7 +48643,6 @@ module.exports = function make_matrix_args(regl, params){
   var vert_string = `
     precision highp float;
     attribute vec2 position;
-    // instanced attributes.
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
@@ -48732,10 +48705,6 @@ module.exports = function make_matrix_args(regl, params){
       position: triangle_verts,
       pos_att_ini: {
         buffer: regl.buffer(params.arrs.position_arr['ini']),
-        divisor: 1
-      },
-      pos_att_new: {
-        buffer: regl.buffer(params.arrs.position_arr['new']),
         divisor: 1
       },
       opacity_att: {
@@ -49502,7 +49471,7 @@ module.exports = {
 
 var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
 
-module.exports = function reorder_panel(params, control_container, inst_axis){
+module.exports = function reorder_panel(regl, params, control_container, inst_axis){
 
   var panel_width = 250;
 
@@ -49543,6 +49512,11 @@ module.exports = function reorder_panel(params, control_container, inst_axis){
       params.new_order.col = data['row Order'];
       console.log(params.new_order.col)
 
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          }
+
       /*
       Need to calcualte new position array when choosing new order
       */
@@ -49567,16 +49541,7 @@ _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.
 var final_mouseover_frame = __webpack_require__(/*! ./final_mouseover_frame */ "./src/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./final_interaction_frame */ "./src/final_interaction_frame.js");
 
-module.exports = function run_viz(container, network){
-
-  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
-    extensions: ['angle_instanced_arrays'],
-    container: container,
-    // pixelRatio: window.devicePixelRatio/10
-  });
-
-  // var tick = 0;
-  // var initialize_viz = true;
+module.exports = function run_viz(regl, network){
 
   // global params
   var params = initialize_params(regl, network);
@@ -49625,7 +49590,6 @@ module.exports = function run_viz(container, network){
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
-
 
       /////////////////////////////////////
       /////////////////////////////////////

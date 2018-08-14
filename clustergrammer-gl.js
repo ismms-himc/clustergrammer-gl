@@ -49515,7 +49515,7 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
       params.matrix_args.regl_props.rects.attributes.pos_att_new = {
             buffer: regl.buffer(params.arrs.position_arr['new']),
             divisor: 1
-          }
+          };
 
       /*
       Need to calcualte new position array when choosing new order
@@ -49555,18 +49555,22 @@ module.exports = function run_viz(regl, network){
     params.time = time;
     params.animation.loop = 0 ;
 
-    // manually triggering switch
     if (params.animation.run_switch){
-      console.log('***');
+      console.log('turn switch off')
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
-    };
+    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
 
-    if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
       cgm.params.animation.running = false;
       params.animation.run_switch = false;
       console.log('finish switch!!!!!!!!!!!');
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
     }
 
     // run draw command

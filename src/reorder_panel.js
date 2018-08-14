@@ -44,7 +44,7 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
       params.matrix_args.regl_props.rects.attributes.pos_att_new = {
             buffer: regl.buffer(params.arrs.position_arr['new']),
             divisor: 1
-          }
+          };
 
       /*
       Need to calcualte new position array when choosing new order

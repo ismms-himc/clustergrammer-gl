@@ -48610,20 +48610,20 @@ module.exports = function make_draw_cells_arr(regl, params){
 
 module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_arr){
 
-  // Make Buffers
-  ///////////////////////////
-  var position_buffer = regl.buffer(position_arr);
+  // // Make Buffers
+  // ///////////////////////////
 
-  const opacity_buffer = regl.buffer({
-    // length: opacity_arr.length,
-    type: 'float',
-    usage: 'dynamic'
-  });
+  // const opacity_buffer = regl.buffer({
+  //   type: 'float',
+  //   usage: 'dynamic'
+  // });
 
-  opacity_buffer(opacity_arr);
+  // opacity_buffer(opacity_arr);
 
   var buffers = {};
-  buffers.opacity_buffer = opacity_buffer;
+  // buffers.opacity_buffer = opacity_buffer;
+
+  var position_buffer = regl.buffer(position_arr);
   buffers.position_buffer = position_buffer;
 
   return buffers;
@@ -48649,22 +48649,21 @@ module.exports = function make_matrix_args(regl, params){
   // generate position and opacity arrays from params.mat_data
   params.arrs = make_draw_cells_arr(regl, params);
 
-  // transfer to buffers is slow
-  //////////////////////////////////////////
-  var buffers_ini = make_draw_cells_buffers(regl, params.arrs.position_arr['ini'],
-                                        params.arrs.opacity_arr);
+  var opacity_buffer = regl.buffer({
+    type: 'float',
+    usage: 'dynamic'
+  });
 
-  var buffers_new = make_draw_cells_buffers(regl, params.arrs.position_arr['new'],
-                                        params.arrs.opacity_arr);
+  opacity_buffer = opacity_buffer(params.arrs.opacity_arr);
 
-  var opacity_buffer = buffers_ini.opacity_buffer;
+  var buffers_ini = {};
+  buffers_ini.position_buffer = regl.buffer(params.arrs.position_arr['ini']);
 
-  /*
-    Temporarily use latest mat_data dimensions (working on downsampling)
-  */
+  var buffers_new = {};
+  buffers_new.position_buffer = regl.buffer(params.arrs.position_arr['new']);
 
-  var tile_width = params.tile_width + params.animation.time_remain * 0.001;
-  var tile_height = params.tile_height + params.animation.time_remain * 0.001;
+  var tile_width = params.tile_width;
+  var tile_height = params.tile_height;
 
   // top half
   var triangle_verts = [
@@ -48733,17 +48732,9 @@ module.exports = function make_matrix_args(regl, params){
     }`;
 
   var num_instances = params.arrs.position_arr['ini'].length;
-
-  // var zoom_function = function(context){
-  //   return context.view;
-  // };
-
   var zoom_function = params.zoom_function;
 
-
-  console.log(params.time % 3)
-
-  var top_props = {
+  var inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
@@ -48796,7 +48787,7 @@ module.exports = function make_matrix_args(regl, params){
   //////////////////////////////////////
   var matrix_args = {};
   matrix_args.regl_props = {};
-  matrix_args.regl_props.rects = top_props;
+  matrix_args.regl_props.rects = inst_properties;
 
   return matrix_args;
 

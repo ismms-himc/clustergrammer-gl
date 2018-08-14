@@ -49512,8 +49512,10 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
       params.new_order.col = data['row Order'];
       console.log(params.new_order.col)
 
+      var new_pos_arr = params.arrs.position_arr['new']
+
       params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-            buffer: regl.buffer(params.arrs.position_arr['new']),
+            buffer: regl.buffer(new_pos_arr),
             divisor: 1
           };
 

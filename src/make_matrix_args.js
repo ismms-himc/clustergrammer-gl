@@ -11,36 +11,23 @@ module.exports = function make_matrix_args(regl, params){
 
   // transfer to buffers is slow
   //////////////////////////////////////////
-  var buffers_ini = make_draw_cells_buffers(regl, params.arrs.position_ini_arr,
+  var buffers_ini = make_draw_cells_buffers(regl, params.arrs.position_arr['ini'],
                                         params.arrs.opacity_arr);
 
-  var buffers_new = make_draw_cells_buffers(regl, params.arrs.position_new_arr,
+  var buffers_new = make_draw_cells_buffers(regl, params.arrs.position_arr['new'],
                                         params.arrs.opacity_arr);
 
   var opacity_buffer = buffers_ini.opacity_buffer;
-  var position_buffer_ini = buffers_ini.position_buffer;
-
-  var position_buffer_new = buffers_new.position_buffer;
 
   /*
     Temporarily use latest mat_data dimensions (working on downsampling)
   */
 
-  // var tile_width = params.tile_width;
-  // var tile_height = params.tile_height;
-
   var tile_width = params.tile_width + params.animation.time_remain * 0.001;
   var tile_height = params.tile_height + params.animation.time_remain * 0.001;
 
-  // bottom half
-  var bottom_half_verts = [
-    [tile_width, 0.0],
-    [0.0,       0.0],
-    [0.0,       tile_height]
-  ];
-
   // top half
-  var top_half_verts = [
+  var triangle_verts = [
     [tile_width, 0.0 ],
     [tile_width, tile_height],
     [0.0,       tile_height],
@@ -51,10 +38,8 @@ module.exports = function make_matrix_args(regl, params){
 
   var vert_string = `
     precision highp float;
-
     attribute vec2 position;
-
-    // These three are instanced attributes.
+    // instanced attributes.
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
@@ -107,7 +92,7 @@ module.exports = function make_matrix_args(regl, params){
 
     }`;
 
-  var num_instances = params.arrs.position_ini_arr.length;
+  var num_instances = params.arrs.position_arr['ini'].length;
 
   // var zoom_function = function(context){
   //   return context.view;
@@ -122,13 +107,13 @@ module.exports = function make_matrix_args(regl, params){
     vert: vert_string,
     frag: frag_string,
     attributes: {
-      position: '',
+      position: triangle_verts,
       pos_att_ini: {
-        buffer: position_buffer_ini,
+        buffer: buffers_ini.position_buffer,
         divisor: 1
       },
       pos_att_new: {
-        buffer: position_buffer_new,
+        buffer: buffers_new.position_buffer,
         divisor: 1
       },
       opacity_att: {
@@ -163,64 +148,15 @@ module.exports = function make_matrix_args(regl, params){
     },
     instances: num_instances,
     depth: {
-      enable: false,
-      // mask: false,
-      // func: 'less',
-      // // func: 'greater',
-      // range: [0, 1]
+      enable: false
     },
   };
-
-  // var bot_props = {
-  //   vert: vert_string,
-  //   frag: frag_string,
-  //   attributes: {
-  //     position: '',
-  //     pos_att_ini : {
-  //       buffer: position_buffer_ini,
-  //       divisor: 1
-  //     },
-  //     pos_att_new: {
-  //       buffer: position_buffer_new,
-  //       divisor: 1
-  //     },
-  //     opacity_att: {
-  //       buffer: opacity_buffer,
-  //       divisor: 1
-  //       }
-  //   },
-  //   blend: blend_info,
-  //   count: 3,
-  //   uniforms: {
-  //     zoom: zoom_function,
-  //     interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-  //     ani_x: regl.prop('ani_x')
-  //     // ani_x: ani_x
-  //   },
-  //   instances: num_instances,
-  //   depth: {
-  //     enable: true,
-  //     mask: true,
-  //     func: 'less',
-  //     // func: 'greater',
-  //     range: [0, 1]
-  //   },
-  // };
 
   // draw top and bottom of matrix cells
   //////////////////////////////////////
   var matrix_args = {};
   matrix_args.regl_props = {};
-
-  // var top_props = $.extend(true, {}, regl_props);
-  // var top_props = JSON.parse(JSON.stringify(regl_props))
-  top_props.attributes.position = top_half_verts;
-  matrix_args.regl_props.top = top_props;
-
-  // var bot_props = $.extend(true, {}, regl_props);
-  // var bot_props = JSON.parse(JSON.stringify(regl_props))
-  // bot_props.attributes.position = bottom_half_verts;
-  // matrix_args.regl_props.bot = bot_props;
+  matrix_args.regl_props.rects = top_props;
 
   return matrix_args;
 

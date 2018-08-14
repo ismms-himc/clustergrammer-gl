@@ -2,7 +2,7 @@
 <!-- # ![clustergrammer_logo](img/clustergrammer_logo.png | width=100) -->
 
 
-<img src='img/clustergrammer-gl_logo.png' alt="Clustergramer" width="300px" >
+<img src='img/clustergrammer-gl_logo.png' alt="Clustergramer" width="350px" >
 
 The Clustergrammer-gl repo contains the *in development* WebGL/regl version of Clustergrammer.
 

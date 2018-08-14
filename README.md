@@ -4,8 +4,8 @@
 
 <img src='img/clustergrammer-gl_logo.png' alt="Clustergramer" width="350px" >
 
-[![NPM](https://img.shields.io/npm/v/clustergrammer.svg)](https://www.npmjs.com/package/clustergrammer-gl)
-[![NPM](https://img.shields.io/npm/l/clustergrammer.svg)](https://github.com/ismms-himc/clustergrammer-gl/blob/master/LICENSE)
+[![NPM](https://img.shields.io/npm/v/clustergrammer-gl.svg)](https://www.npmjs.com/package/clustergrammer-gl)
+[![NPM](https://img.shields.io/npm/l/clustergrammer-gl.svg)](https://github.com/ismms-himc/clustergrammer-gl/blob/master/LICENSE)
 
 The Clustergrammer-gl repo contains the *in-development* WebGL/[regl](http://regl.party/) version of Clustergrammer. See [live example](https://ismms-himc.github.io/clustergrammer-gl/).
 

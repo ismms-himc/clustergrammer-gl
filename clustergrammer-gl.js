@@ -47271,8 +47271,8 @@ module.exports = function initialize_params(regl, network){
   params.inst_order.col = 'clust';
 
   params.new_order = {};
-  params.new_order.row = 'rank';
-  params.new_order.col = 'rank';
+  params.new_order.row = 'clust';
+  params.new_order.col = 'clust';
 
 
   params.viz_aid_tri_args = {};
@@ -48581,37 +48581,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 /***/ }),
 
-/***/ "./src/make_draw_cells_arr.js":
-/*!************************************!*\
-  !*** ./src/make_draw_cells_arr.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
-var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
-
-module.exports = function make_draw_cells_arr(regl, params){
-
-  // make arrays
-  var arrs = {};
-  arrs.opacity_arr = make_opacity_arr(params);
-  arrs.position_arr = {};
-
-  var inst_row_order = params['inst_order'].row;
-  var inst_col_order = params['inst_order'].col;
-  arrs.position_arr['ini'] = make_position_arr(params, inst_row_order, inst_col_order);
-
-  var inst_row_order = params['new_order'].row;
-  var inst_col_order = params['new_order'].col;
-  arrs.position_arr['new'] = make_position_arr(params, inst_row_order, inst_col_order);
-
-  return arrs;
-
-};
-
-/***/ }),
-
 /***/ "./src/make_matrix_args.js":
 /*!*********************************!*\
   !*** ./src/make_matrix_args.js ***!
@@ -48620,14 +48589,26 @@ module.exports = function make_draw_cells_arr(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
-var make_draw_cells_arr = __webpack_require__(/*! ./make_draw_cells_arr */ "./src/make_draw_cells_arr.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
 
 module.exports = function make_matrix_args(regl, params){
 
   console.log('make_matrix_args')
 
-  // generate position and opacity arrays from params.mat_data
-  params.arrs = make_draw_cells_arr(regl, params);
+  // make arrays
+  params.arrs = {};
+  params.arrs.opacity_arr = make_opacity_arr(params);
+
+  params.arrs.position_arr = {};
+
+  params.arrs.position_arr['ini'] = make_position_arr(params,
+                                               params.inst_order.row,
+                                               params.inst_order.col);
+
+  // params.arrs.position_arr['new'] = make_position_arr(params,
+  //                                              params.new_order.row,
+  //                                              params.new_order.col);
 
   var opacity_buffer = regl.buffer({
     type: 'float',
@@ -49461,12 +49442,11 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
 
 module.exports = function reorder_panel(regl, params, control_container, inst_axis){
 
   var panel_width = 250;
-
-
 
   var panel_1 = control([
     // {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
@@ -49500,13 +49480,20 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
 
       console.log('something happening', data)
       params.animation.run_switch = true;
-      params.new_order.col = data['row Order'];
-      console.log(params.new_order.col)
+      // params.new_order.row = data['row Order'];
+      params.new_order.col = data['col Order'];
 
-      var new_pos_arr = params.arrs.position_arr['new']
+
+      // console.log(params.new_order.row, params.new_order.col)
+
+      params.arrs.position_arr['new'] = make_position_arr(params,
+                                      params.new_order.row,
+                                      params.new_order.col);
+
+      // var new_pos_arr = params.arrs.position_arr['new']
 
       params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-            buffer: regl.buffer(new_pos_arr),
+            buffer: regl.buffer(params.arrs.position_arr['new']),
             divisor: 1
           };
 

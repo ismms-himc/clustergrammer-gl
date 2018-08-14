@@ -1,12 +1,24 @@
 var blend_info = require('./blend_info');
-var make_draw_cells_arr = require('./make_draw_cells_arr');
+var make_position_arr = require('./make_position_arr');
+var make_opacity_arr = require('./make_opacity_arr');
 
 module.exports = function make_matrix_args(regl, params){
 
   console.log('make_matrix_args')
 
-  // generate position and opacity arrays from params.mat_data
-  params.arrs = make_draw_cells_arr(regl, params);
+  // make arrays
+  params.arrs = {};
+  params.arrs.opacity_arr = make_opacity_arr(params);
+
+  params.arrs.position_arr = {};
+
+  params.arrs.position_arr['ini'] = make_position_arr(params,
+                                               params.inst_order.row,
+                                               params.inst_order.col);
+
+  // params.arrs.position_arr['new'] = make_position_arr(params,
+  //                                              params.new_order.row,
+  //                                              params.new_order.col);
 
   var opacity_buffer = regl.buffer({
     type: 'float',

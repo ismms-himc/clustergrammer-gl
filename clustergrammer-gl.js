@@ -48652,20 +48652,11 @@ module.exports = function make_matrix_args(regl, params){
   var opacity_buffer = regl.buffer({
     type: 'float',
     usage: 'dynamic'
-  });
-
-  opacity_buffer = opacity_buffer(params.arrs.opacity_arr);
-
-  var buffers_ini = {};
-  buffers_ini.position_buffer = regl.buffer(params.arrs.position_arr['ini']);
-
-  var buffers_new = {};
-  buffers_new.position_buffer = regl.buffer(params.arrs.position_arr['new']);
+  })(params.arrs.opacity_arr);
 
   var tile_width = params.tile_width;
   var tile_height = params.tile_height;
 
-  // top half
   var triangle_verts = [
     [tile_width, 0.0 ],
     [tile_width, tile_height],
@@ -48740,11 +48731,11 @@ module.exports = function make_matrix_args(regl, params){
     attributes: {
       position: triangle_verts,
       pos_att_ini: {
-        buffer: buffers_ini.position_buffer,
+        buffer: regl.buffer(params.arrs.position_arr['ini']),
         divisor: 1
       },
       pos_att_new: {
-        buffer: buffers_new.position_buffer,
+        buffer: regl.buffer(params.arrs.position_arr['new']),
         divisor: 1
       },
       opacity_att: {
@@ -48752,16 +48743,13 @@ module.exports = function make_matrix_args(regl, params){
         divisor: 1
         }
     },
-    // blend: blend_info,
     blend: {
         enable: true,
         func: {
           srcRGB: 'src alpha',
           srcAlpha: 1,
-          // srcAlpha: 'src color',
           dstRGB: 'one minus src alpha',
           dstAlpha: 1
-          // dstAlpha: 'dst color'
         },
         equation: {
           rgb: 'add',
@@ -48769,7 +48757,6 @@ module.exports = function make_matrix_args(regl, params){
         },
         color: [0, 0, 0, 0]
       },
-
     count: 6,
     uniforms: {
       zoom: zoom_function,

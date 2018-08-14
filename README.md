@@ -4,7 +4,7 @@
 
 <img src='img/clustergrammer-gl_logo.png' alt="Clustergramer" width="300px" >
 
-The Clustergrammer-gl repo contains the in development WebGL/regl version of Clustergrammer.
+The Clustergrammer-gl repo contains the *in development* WebGL/regl version of Clustergrammer.
 
 The readme below refers to the original SVG version of Clustergrammer.
 

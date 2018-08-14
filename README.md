@@ -8,7 +8,7 @@ The Clustergrammer2-alpha repo contains the in development WebGL/regl version of
 
 The readme below refers to the original SVG version of Clustergrammer.
 
-<img src='img/clustergrammer_logo.png' alt="Clustergramer" width="300px" >
+<img src='img/clustergrammer-gl_logo.png' alt="Clustergramer" width="300px" >
 
 [![NPM](https://img.shields.io/npm/v/clustergrammer.svg)](https://www.npmjs.com/package/clustergrammer)
 [![NPM](https://img.shields.io/npm/l/clustergrammer.svg)](https://github.com/MaayanLab/clustergrammer/blob/master/LICENSES/LICENSE)

@@ -7,7 +7,7 @@
 [![NPM](https://img.shields.io/npm/v/clustergrammer-gl.svg)](https://www.npmjs.com/package/clustergrammer-gl)
 [![NPM](https://img.shields.io/npm/l/clustergrammer-gl.svg)](https://github.com/ismms-himc/clustergrammer-gl/blob/master/LICENSE)
 
-The Clustergrammer-GL repo contains the *in-development* WebGL/[regl](http://regl.party/) version of Clustergrammer. See [live example](https://ismms-himc.github.io/clustergrammer-gl/).
+The Clustergrammer-GL repo contains the *in-development* WebGL/[regl](http://regl.party/) version of [Clustergrammer](https://github.com/MaayanLab/clustergrammer). See [live example](https://ismms-himc.github.io/clustergrammer-gl/).
 
 
 ## Citing Clustergrammer

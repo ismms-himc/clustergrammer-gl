@@ -15,7 +15,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   // var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom;
 
   // prevent text from getting too large when zooming
-  var final_increase_font_size = params.num_row/20;
+  var final_increase_font_size = params.num_row/17.5;
   params.text_scale.row = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);

@@ -14,12 +14,13 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   // params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
   //                                    params.text_scale.col(params.zoom_data.x.total_zoom);
 
-  var final_increase_font_size = params.num_col/25;
+  // 17.5, lowering makes larger text
+  var final_increase_font_size = params.num_col/17.5;
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
   var inst_increase_font_size = params.text_scale.col(params.zoom_data.x.total_zoom);
-  var scale_text = params.text_zoom.col.scaled_num * params.zoom_data.x.total_zoom/ inst_increase_font_size;
+  var scale_text = params.text_zoom.col.scaled_num * params.zoom_data.x.total_zoom / inst_increase_font_size;
 
   var mat_rotate =  m3.rotation(Math.PI/4);
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
@@ -103,7 +104,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
     uniforms: {
       zoom: zoom_function,
       offset: regl.prop('offset'),
-      scale_text: params.text_zoom.col.scaled_num,
+      scale_text: scale_text,
       y_offset: params.mat_size.y,
       heat_size: params.heat_size.x,
       shift_heat: params.mat_size.x - params.heat_size.x,

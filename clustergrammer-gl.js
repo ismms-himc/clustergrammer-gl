@@ -48324,11 +48324,18 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor.col]);
 
-  /* Col Text */
-  // update text information with zooming
-  // var limited_scaling = params.text_scale.col(total_zoom);
-  params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
-                                     params.text_scale.col(params.zoom_data.x.total_zoom);
+  // /* Col Text */
+  // // update text information with zooming
+  // // var limited_scaling = params.text_scale.col(total_zoom);
+  // params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
+  //                                    params.text_scale.col(params.zoom_data.x.total_zoom);
+
+  var final_increase_font_size = params.num_col/25;
+  params.text_scale.col = d3.scale.linear()
+      .domain([1, params.max_zoom])
+      .range( [1, final_increase_font_size]);
+  var inst_increase_font_size = params.text_scale.col(params.zoom_data.x.total_zoom);
+  var scale_text = params.text_zoom.col.scaled_num * params.zoom_data.x.total_zoom/ inst_increase_font_size;
 
   var mat_rotate =  m3.rotation(Math.PI/4);
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
@@ -48885,28 +48892,30 @@ var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
   // // prevent text from getting too large when zooming
-  params.text_scale.row = d3.scale.linear()
-      .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor.row]);
+  // params.text_scale.row = d3.scale.linear()
+  //     .domain([1, 20])
+  //     .range( [1, 20/params.allowable_zoom_factor.row]);
+
 
   // smaller scale_text -> larger text
   // var limited_scaling = params.text_scale.row(total_zoom);
 
-  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(params.zoom_data.y.total_zoom);
+  // var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(params.zoom_data.y.total_zoom);
+  // var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom;
 
-  console.log(params.zoom_data.y.total_zoom, scale_text)
+  // prevent text from getting too large when zooming
+  var final_increase_font_size = params.num_row/20;
+  params.text_scale.row = d3.scale.linear()
+      .domain([1, params.max_zoom])
+      .range( [1, final_increase_font_size]);
+  var inst_increase_font_size = params.text_scale.row(params.zoom_data.y.total_zoom);
+  var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom/ inst_increase_font_size;
 
-  // scale_text is applying a zoom to x and y
-  // needs to be scaled by scale_text
+  console.log(params.zoom_data.y.total_zoom, scale_text);
+
   var mat_rotate = m3.rotation(Math.PI/2);
 
   var x_offset = params.mat_size.x + 0.02;
-
-  /*
-  scale_text is becoming negative for large matrices which is causing weird
-  behavior
-  */
-  // console.log('scale_text', scale_text)
 
   var vert_arg = `
       precision mediump float;

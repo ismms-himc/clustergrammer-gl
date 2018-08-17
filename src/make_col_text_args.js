@@ -8,18 +8,14 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor.col]);
 
-  var total_zoom = params.zoom_data.x.total_zoom;
-
   /* Col Text */
   // update text information with zooming
   // var limited_scaling = params.text_scale.col(total_zoom);
   params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
-                                     params.text_scale.col(total_zoom);
+                                     params.text_scale.col(params.zoom_data.x.total_zoom);
 
   var mat_rotate =  m3.rotation(Math.PI/4);
-  var text_y_scale = m3.scaling(1, total_zoom);
-
-  var scale_text = params.text_zoom.col.scaled_num;
+  var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
 
   // need to shift col labels up to counteract the rotation by 45%
   var rh_tri_hyp = col_width;
@@ -100,7 +96,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
     uniforms: {
       zoom: zoom_function,
       offset: regl.prop('offset'),
-      scale_text: scale_text,
+      scale_text: params.text_zoom.col.scaled_num,
       y_offset: params.mat_size.y,
       heat_size: params.heat_size.x,
       shift_heat: params.mat_size.x - params.heat_size.x,
@@ -109,7 +105,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       shift_text_up: shift_text_up,
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
-      total_zoom: total_zoom,
+      total_zoom: params.zoom_data.x.total_zoom,
       col_width: col_width,
     },
     depth: {

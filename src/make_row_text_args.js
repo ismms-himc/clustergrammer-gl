@@ -10,9 +10,9 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   // smaller scale_text -> larger text
   // var limited_scaling = params.text_scale.row(total_zoom);
 
-  var total_zoom = params.zoom_data.y.total_zoom;
+  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(params.zoom_data.y.total_zoom);
 
-  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
+  console.log(params.zoom_data.y.total_zoom, scale_text)
 
   // scale_text is applying a zoom to x and y
   // needs to be scaled by scale_text
@@ -88,7 +88,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       x_offset: x_offset,
       heat_size: params.heat_size.y,
       shift_heat: params.mat_size.y - params.heat_size.y,
-      total_zoom: total_zoom,
+      total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate
     },
     depth: {

@@ -37,7 +37,6 @@ module.exports = function draw_matrix_components(regl, params){
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
-      ani_x: params.animation.loop,
       run_animation: params.animation.running
     });
 

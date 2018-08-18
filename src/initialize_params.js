@@ -98,9 +98,13 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  params.offcenter.x = 0.0;
-  params.offcenter.y = 0.0;
+  shift_magnitude = 0.1;
+  params.offcenter.x = shift_magnitude;
+  params.offcenter.y = shift_magnitude;
 
+  params.shift_camera = {};
+  params.shift_camera.x = -shift_magnitude;
+  params.shift_camera.y = shift_magnitude;
 
   params.zoom_data = ini_zoom_data();
 

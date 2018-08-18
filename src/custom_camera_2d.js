@@ -56,8 +56,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var width = getWidth();
   var height = getHeight();
 
-  var xcen = 0.5 * (xrange[1] + xrange[0]);
-  var ycen = 0.5 * (yrange[1] + yrange[0]);
+  var xcen = 0.5 * (xrange[1] + xrange[0]) + params.shift_camera.x;
+  var ycen = 0.5 * (yrange[1] + yrange[0]) + params.shift_camera.y;
   var xrng = 0.5 * (xrange[1] - xrange[0]);
   var yrng = xrng / aspectRatio / width * height;
 

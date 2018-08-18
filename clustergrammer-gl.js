@@ -45650,106 +45650,109 @@ module.exports = function calc_spillover_triangles(params){
   inst_shift.y = params.mat_size.y - params.heat_size.y;
 
   spillover_triangles.mat_sides = [
+
     // left spillover rect
-    {'pos': [[-1, 1], [-ini_mat.x, -1], [-1.0, -1]]},
-    {'pos': [[-1, 1], [-ini_mat.x,  1], [-ini_mat.x, -1]]},
+    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x, -1], [-1.0, -1]]},
+    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x,  1], [-ini_mat.x + params.offcenter.x, -1]]},
 
     // right spillover rect
-    {'pos': [[1, 1], [ini_mat.x, -1], [1.0, -1]]},
-    {'pos': [[1, 1], [ini_mat.x,  1], [ini_mat.x, -1]]},
+    {'pos': [[1 + params.offcenter.x, 1], [ini_mat.x, -1], [1.0, -1]]},
+    // {'pos': [[1, 1], [ini_mat.x,  1], [ini_mat.x, -1]]},
 
-    // top spillover rect
-    {'pos': [[-ini_mat.x, 1], [-ini_mat.x, scaled_mat.y], [ini_mat.x, 1]]},
-    {'pos': [[ ini_mat.x, 1], [ini_mat.x, scaled_mat.y], [-ini_mat.x, scaled_mat.y]]},
+    // // top spillover rect
+    // {'pos': [[-ini_mat.x, 1], [-ini_mat.x, scaled_mat.y], [ini_mat.x, 1]]},
+    // {'pos': [[ ini_mat.x, 1], [ini_mat.x, scaled_mat.y], [-ini_mat.x, scaled_mat.y]]},
 
-    // // bottom spillover rect
-    {'pos': [[-ini_mat.x, -1], [-ini_mat.x, -scaled_mat.y], [ini_mat.x, -1]]},
-    {'pos': [[ ini_mat.x, -1], [ini_mat.x, -scaled_mat.y], [-ini_mat.x, -scaled_mat.y]]},
+    // // // bottom spillover rect
+    // {'pos': [[-ini_mat.x, -1], [-ini_mat.x, -scaled_mat.y], [ini_mat.x, -1]]},
+    // {'pos': [[ ini_mat.x, -1], [ini_mat.x, -scaled_mat.y], [-ini_mat.x, -scaled_mat.y]]},
+
   ];
 
   spillover_triangles.cats = [
-    // col spillover rect
-    {'pos': [[ini_heat.x  + inst_shift.x, scaled_mat.y],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
-             [ini_heat.x  + inst_shift.x, scaled_heat.y - inst_shift.y]]
-           },
-    {'pos': [[-ini_heat.x + inst_shift.x, scaled_mat.y],
-             [ ini_mat.x,  scaled_mat.y],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
-           },
+    // // col spillover rect
+    // {'pos': [[ini_heat.x  + inst_shift.x, scaled_mat.y],
+    //          [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
+    //          [ini_heat.x  + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    //        },
+    // {'pos': [[-ini_heat.x + inst_shift.x, scaled_mat.y],
+    //          [ ini_mat.x,  scaled_mat.y],
+    //          [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    //        },
 
-    // col spillover rect
-    {'pos': [[-ini_mat.x, -scaled_mat.y],
-             [-ini_mat.x, scaled_heat.y - inst_shift.y],
-             [-ini_heat.x  + inst_shift.x, scaled_heat.y - inst_shift.y]]
-           },
-    {'pos': [[-ini_mat.x,  -scaled_mat.y],
-             [ -ini_heat.x  + inst_shift.x,  -scaled_mat.y],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
-           },
+    // // col spillover rect
+    // {'pos': [[-ini_mat.x, -scaled_mat.y],
+    //          [-ini_mat.x, scaled_heat.y - inst_shift.y],
+    //          [-ini_heat.x  + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    //        },
+    // {'pos': [[-ini_mat.x,  -scaled_mat.y],
+    //          [ -ini_heat.x  + inst_shift.x,  -scaled_mat.y],
+    //          [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    //        },
   ];
 
   spillover_triangles.mat_corners = [
-    // top-left spillover rect
-    {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
-             [-1.0 , scaled_heat.y - inst_shift.y]
-             ]},
-    {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x,  1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]
-             ]},
+    // // top-left spillover rect
+    // {'pos': [[-1, 1],
+    //          [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
+    //          [-1.0 , scaled_heat.y - inst_shift.y]
+    //          ]},
+    // {'pos': [[-1, 1],
+    //          [-ini_heat.x + inst_shift.x,  1],
+    //          [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]
+    //          ]},
 
-    // bottom-left spillover rect
-    {'pos': [[-1, -1], [-ini_mat.x, -scaled_mat.y], [-1.0, -scaled_mat.y]]},
-    {'pos': [[-1, -1], [-ini_mat.x,  -1], [-ini_mat.x, -scaled_mat.y]]},
+    // // bottom-left spillover rect
+    // {'pos': [[-1, -1], [-ini_mat.x, -scaled_mat.y], [-1.0, -scaled_mat.y]]},
+    // {'pos': [[-1, -1], [-ini_mat.x,  -1], [-ini_mat.x, -scaled_mat.y]]},
 
-    // top-right spillover rect
-    // mat corners
-    {'pos': [[1, 1], [ini_mat.x, scaled_mat.y], [1.0, scaled_mat.y]]},
-    {'pos': [[1, 1], [ini_mat.x,  1], [ini_mat.x, scaled_mat.y]]},
+    // // top-right spillover rect
+    // // mat corners
+    // {'pos': [[1, 1], [ini_mat.x, scaled_mat.y], [1.0, scaled_mat.y]]},
+    // {'pos': [[1, 1], [ini_mat.x,  1], [ini_mat.x, scaled_mat.y]]},
 
-    // bottom-right spillover rect
-    {'pos': [[1, -1], [ini_mat.x, -scaled_mat.y], [1.0, -scaled_mat.y]]},
-    {'pos': [[1, -1], [ini_mat.x,  -1], [ini_mat.x, -scaled_mat.y]]},
+    // // bottom-right spillover rect
+    // {'pos': [[1, -1], [ini_mat.x, -scaled_mat.y], [1.0, -scaled_mat.y]]},
+    // {'pos': [[1, -1], [ini_mat.x,  -1], [ini_mat.x, -scaled_mat.y]]},
 
   ];
 
   spillover_triangles.label_corners = [
-    // top-left spillover rect
-    {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
-             [-1.0, scaled_heat.y - inst_shift.y]]
-           },
-    {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x,  1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]
-             ]},
 
-    // bottom-left spillover rect
-    {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x, -scaled_mat.y],
-             [-1.0, -scaled_mat.y]
-             ]},
-    {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x,  -1],
-             [-ini_heat.x + inst_shift.x, -scaled_mat.y]
-             ]},
+    // // top-left spillover rect
+    // {'pos': [[-1, 1],
+    //          [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
+    //          [-1.0, scaled_heat.y - inst_shift.y]]
+    //        },
+    // {'pos': [[-1, 1],
+    //          [-ini_heat.x + inst_shift.x,  1],
+    //          [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]
+    //          ]},
 
-    // top-right spillover rect (right angle triangle for slanted text only)
-    {'pos': [[1, scaled_mat.y + (1-ini_mat.x)], [ini_mat.x, scaled_mat.y], [1.0, scaled_mat.y]]},
-    {'pos': [[1.0, scaled_mat.y],
-             [ini_mat.x, scaled_heat.y - inst_shift.y],
-             [1.0, scaled_heat.y - inst_shift.y]
-             ]},
-    {'pos': [[ini_mat.x, scaled_mat.y],
-             [1.0,  scaled_mat.y],
-             [ini_mat.x, scaled_heat.y - inst_shift.y]
-             ]},
+    // // bottom-left spillover rect
+    // {'pos': [[-1, -1],
+    //          [-ini_heat.x + inst_shift.x, -scaled_mat.y],
+    //          [-1.0, -scaled_mat.y]
+    //          ]},
+    // {'pos': [[-1, -1],
+    //          [-ini_heat.x + inst_shift.x,  -1],
+    //          [-ini_heat.x + inst_shift.x, -scaled_mat.y]
+    //          ]},
 
-    // bottom-right spillover rect
-    {'pos': [[1, -1], [ini_mat.x, -scaled_mat.y], [1.0, -scaled_mat.y]]},
-    {'pos': [[1, -1], [ini_mat.x,  -1], [ini_mat.x, -scaled_mat.y]]},
+    // // top-right spillover rect (right angle triangle for slanted text only)
+    // {'pos': [[1, scaled_mat.y + (1-ini_mat.x)], [ini_mat.x, scaled_mat.y], [1.0, scaled_mat.y]]},
+    // {'pos': [[1.0, scaled_mat.y],
+    //          [ini_mat.x, scaled_heat.y - inst_shift.y],
+    //          [1.0, scaled_heat.y - inst_shift.y]
+    //          ]},
+    // {'pos': [[ini_mat.x, scaled_mat.y],
+    //          [1.0,  scaled_mat.y],
+    //          [ini_mat.x, scaled_heat.y - inst_shift.y]
+    //          ]},
+
+    // // bottom-right spillover rect
+    // {'pos': [[1, -1], [ini_mat.x, -scaled_mat.y], [1.0, -scaled_mat.y]]},
+    // {'pos': [[1, -1], [ini_mat.x,  -1], [ini_mat.x, -scaled_mat.y]]},
 
   ];
 
@@ -46327,8 +46330,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var width = getWidth();
   var height = getHeight();
 
-  var xcen = 0.5 * (xrange[1] + xrange[0]);
-  var ycen = 0.5 * (yrange[1] + yrange[0]);
+  var xcen = 0.5 * (xrange[1] + xrange[0]) + params.shift_camera.x;
+  var ycen = 0.5 * (yrange[1] + yrange[0]) + params.shift_camera.y;
   var xrng = 0.5 * (xrange[1] - xrange[0]);
   var yrng = xrng / aspectRatio / width * height;
 
@@ -46581,7 +46584,6 @@ module.exports = function draw_matrix_components(regl, params){
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
-      ani_x: params.animation.loop,
       run_animation: params.animation.running
     });
 
@@ -47247,9 +47249,13 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  params.offcenter.x = 0.0;
-  params.offcenter.y = 0.0;
+  shift_magnitude = 0.1;
+  params.offcenter.x = shift_magnitude;
+  params.offcenter.y = shift_magnitude;
 
+  params.shift_camera = {};
+  params.shift_camera.x = -shift_magnitude;
+  params.shift_camera.y = shift_magnitude;
 
   params.zoom_data = ini_zoom_data();
 
@@ -48331,7 +48337,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   //                                    params.text_scale.col(params.zoom_data.x.total_zoom);
 
   // 17.5, lowering makes larger text
-  var final_increase_font_size = params.num_col/17.5;
+  var final_increase_font_size = params.num_col/5.0;
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
@@ -48637,7 +48643,6 @@ module.exports = function make_matrix_args(regl, params){
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
-    uniform float ani_x;
     uniform bool run_animation;
     uniform float interp_uni;
     varying vec2 pos;
@@ -48655,7 +48660,7 @@ module.exports = function make_matrix_args(regl, params){
       }
 
       gl_Position = zoom *
-                    vec4( position.x + pos.x + ani_x,
+                    vec4( position.x + pos.x,
                           position.y + pos.y,
                           0.75,
                           1
@@ -48721,7 +48726,6 @@ module.exports = function make_matrix_args(regl, params){
     uniforms: {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      ani_x: regl.prop('ani_x'),
       run_animation: regl.prop('run_animation')
     },
     instances: num_instances,
@@ -48798,8 +48802,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.mat_size.x + params.offcenter.x;
-  offset.y = params.mat_size.y + params.offcenter.x;
+  offset.x = params.mat_size.x ;//+ params.offcenter.x;
+  offset.y = params.mat_size.y ;//+ params.offcenter.y;
 
   // generate x position array
   var x_arr = Array(num_col).fill()
@@ -48905,14 +48909,15 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   // var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom;
 
   // prevent text from getting too large when zooming
-  var final_increase_font_size = params.num_row/17.5;
+  // 17.5, lowering makes larger text
+  var final_increase_font_size = params.num_row/10.0;
   params.text_scale.row = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
   var inst_increase_font_size = params.text_scale.row(params.zoom_data.y.total_zoom);
   var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom/ inst_increase_font_size;
 
-  console.log(params.zoom_data.y.total_zoom, scale_text);
+  // console.log(params.zoom_data.y.total_zoom, scale_text);
 
   var mat_rotate = m3.rotation(Math.PI/2);
 

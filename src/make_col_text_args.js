@@ -15,7 +15,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   //                                    params.text_scale.col(params.zoom_data.x.total_zoom);
 
   // 17.5, lowering makes larger text
-  var final_increase_font_size = params.num_col/17.5;
+  var final_increase_font_size = params.num_col/5.0;
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);

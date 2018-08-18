@@ -43,7 +43,6 @@ module.exports = function make_matrix_args(regl, params){
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
-    uniform float ani_x;
     uniform bool run_animation;
     uniform float interp_uni;
     varying vec2 pos;
@@ -61,7 +60,7 @@ module.exports = function make_matrix_args(regl, params){
       }
 
       gl_Position = zoom *
-                    vec4( position.x + pos.x + ani_x,
+                    vec4( position.x + pos.x,
                           position.y + pos.y,
                           0.75,
                           1
@@ -127,7 +126,6 @@ module.exports = function make_matrix_args(regl, params){
     uniforms: {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      ani_x: regl.prop('ani_x'),
       run_animation: regl.prop('run_animation')
     },
     instances: num_instances,

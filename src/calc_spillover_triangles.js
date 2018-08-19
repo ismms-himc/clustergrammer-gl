@@ -31,8 +31,8 @@ module.exports = function calc_spillover_triangles(params){
     {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x,  1], [-ini_mat.x + params.offcenter.x, -1]]},
 
     // right spillover rect
-    {'pos': [[1 + params.offcenter.x, 1], [ini_mat.x, -1], [1.0, -1]]},
-    // {'pos': [[1, 1], [ini_mat.x,  1], [ini_mat.x, -1]]},
+    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x, -1], [1.0, -1]]},
+    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x,  1], [ini_mat.x + params.offcenter.x, -1]]},
 
     // // top spillover rect
     // {'pos': [[-ini_mat.x, 1], [-ini_mat.x, scaled_mat.y], [ini_mat.x, 1]]},

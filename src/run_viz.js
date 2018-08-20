@@ -39,7 +39,8 @@ module.exports = function run_viz(regl, network){
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
-        params.animation.running){
+        params.animation.running || params.show_tooltip){
+        // params.animation.running ){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -59,6 +60,8 @@ module.exports = function run_viz(regl, network){
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
 
+      console.log('still_mouseover')
+
       /////////////////////////////////////
       /////////////////////////////////////
       // mouseover draw is causing some flashing after animation, clean up later
@@ -69,6 +72,7 @@ module.exports = function run_viz(regl, network){
 
       // remove old tooltip
       if (params.show_tooltip == true){
+        console.log('remove old tooltip ***********')
         params.show_tooltip = false;
         draw_commands(regl, params);
       }

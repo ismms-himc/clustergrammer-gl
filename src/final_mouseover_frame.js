@@ -14,8 +14,8 @@ module.exports = function final_mouseover_frame(regl, params){
     params.show_tooltip = true;
 
     if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-      console.log('final_mouseover_frame')
-      draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
+      console.log('final_mouseover_frame', params.show_tooltip)
+      // draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
     }
   }
 

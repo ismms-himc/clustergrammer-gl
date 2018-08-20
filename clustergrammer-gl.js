@@ -46532,9 +46532,9 @@ var draw_col_components = __webpack_require__(/*! ./draw_col_components */ "./sr
 var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draw_spillover_components.js");
 var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draw_tooltip_components.js");
 
-module.exports = function draw_commands(regl, params, slow_draw=false, show_tooltip=false){
+module.exports = function draw_commands(regl, params){
 
-  // if (slow_draw){
+  // if (params.slow_draw){
   //   console.log('\n***************');
   //   console.log('** slow draw **');
   //   console.log('***************');
@@ -46544,13 +46544,24 @@ module.exports = function draw_commands(regl, params, slow_draw=false, show_tool
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_row_components(regl, params, slow_draw);
-  draw_col_components(regl, params, slow_draw);
+  draw_row_components(regl, params, params.slow_draw);
+  draw_col_components(regl, params, params.slow_draw);
   draw_spillover_components(regl, params);
 
-  if (show_tooltip){
+  if (params.show_tooltip){
+    console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }
+
+  if (params.slow_draw){
+    console.log('----- turn off slow draw -----')
+    params.slow_draw = false;
+  }
+
+  // if (params.show_tooltip){
+  //   console.log('----- turn off show tooltip ------')
+  //   params.show_tooltip = false;
+  // }
 
 };
 
@@ -46775,10 +46786,11 @@ module.exports = function final_interaction_frame(regl, params){
       console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
       // run draw commands
-      var slow_draw = true;
+      params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
-        draw_commands(regl, params, slow_draw);
+        console.log('SLOW_DRAW')
+        // draw_commands(regl, params, slow_draw);
       }
 
       // console.log(params.kept_row_y);
@@ -46815,8 +46827,8 @@ module.exports = function final_mouseover_frame(regl, params){
     params.show_tooltip = true;
 
     if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-      console.log('final_mouseover_frame')
-      draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
+      console.log('final_mouseover_frame', params.show_tooltip)
+      // draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
     }
   }
 
@@ -49597,7 +49609,8 @@ module.exports = function run_viz(regl, network){
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
-        params.animation.running){
+        params.animation.running || params.show_tooltip){
+        // params.animation.running ){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
@@ -49617,6 +49630,8 @@ module.exports = function run_viz(regl, network){
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
 
+      console.log('still_mouseover')
+
       /////////////////////////////////////
       /////////////////////////////////////
       // mouseover draw is causing some flashing after animation, clean up later
@@ -49627,6 +49642,7 @@ module.exports = function run_viz(regl, network){
 
       // remove old tooltip
       if (params.show_tooltip == true){
+        console.log('remove old tooltip ***********')
         params.show_tooltip = false;
         draw_commands(regl, params);
       }

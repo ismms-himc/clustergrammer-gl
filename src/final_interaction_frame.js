@@ -13,10 +13,11 @@ module.exports = function final_interaction_frame(regl, params){
       console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
       // run draw commands
-      var slow_draw = true;
+      params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
-        draw_commands(regl, params, slow_draw);
+        console.log('SLOW_DRAW')
+        // draw_commands(regl, params, slow_draw);
       }
 
       // console.log(params.kept_row_y);

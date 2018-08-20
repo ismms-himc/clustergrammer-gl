@@ -47265,7 +47265,7 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  offcenter_magnitude_x = 0.05;
+  offcenter_magnitude_x = 0.1;
   offcenter_magnitude_y = 0.0;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
@@ -49827,6 +49827,14 @@ module.exports = function zoom_rules_high_mat(regl, params){
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
 
+  // convert offcenter WebGl units to pixel units
+  var offcenter;
+  if (axis === 'x'){
+    offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
+  } else {
+    offcenter = 0 // (params.viz_dim.mat.height * params.offcenter[axis]);
+  }
+
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);
 
@@ -49876,8 +49884,9 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
       zoom_data.total_zoom = min_zoom;
     }
   }
-    // working on fixing zoom restrict when cursor is outside of matrix
-    var inst_offset = viz_dim_mat.max - viz_dim_heat.max
+
+  // working on fixing zoom restrict when cursor is outside of matrix
+  var inst_offset = viz_dim_mat.max - viz_dim_heat.max;
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
@@ -49890,9 +49899,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 
   // restrict min pan_by_drag if necessary
   if (zoom_data.pan_by_drag > 0){
-  // if (zoom_data.pan_by_drag > -params.offcenter[axis]){
     if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
-    // if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= params.offcenter[axis]){
       // push to edge
       zoom_data.pan_by_drag = -zoom_data.total_pan_min;
     }
@@ -49906,10 +49913,17 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     }
   }
 
+
+  // if (axis === 'x'){
+  //   console.log(zoom_data.cursor_position, viz_dim_heat.min, offcenter, viz_dim_heat.min + offcenter)
+  // }
+
   // restrict effective position of mouse
-  if (zoom_data.cursor_position < viz_dim_heat.min){
-    zoom_data.cursor_position = viz_dim_heat.min;
-    // console.log(axis, 'less than min cursor position', viz_dim_heat.min);
+  if (zoom_data.cursor_position < viz_dim_heat.min + offcenter){
+    zoom_data.cursor_position = viz_dim_heat.min + offcenter;
+    if (axis === 'x'){
+      console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
+    }
   } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset){
 
     zoom_data.cursor_position = viz_dim_heat.max + inst_offset;
@@ -49917,7 +49931,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   }
 
   // tracking cursor position relative to the minimum
-  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min;
+  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min + offcenter;
 
   /* Cursor restriction does not seem to be doing anything */
 
@@ -49942,7 +49956,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     cursor_relative_max = viz_dim_heat.max + inst_offset;
     // console.log('HIGHER than max ############################')
   }
-  // console.log(cursor_relative_min, cursor_relative_max)
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -49998,13 +50011,13 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     // push over by total_pan (negative value) times total zoom applied
     // need to push more when matrix has been effectively increased in size
     // steps: 1) pin to min matrix, and 2) push right (positive) by total remaining pan
-    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.min + offcenter) - zoom_data.total_pan_min * zoom_data.total_zoom;
 
     // set total_pan_min to 0, no panning room remaining after being pushed right
     zoom_data.total_pan_min = 0;
 
     // the cursor is effectively locked on the min (left) side of the matrix
-    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min;
+    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + offcenter;
     var new_pbz_relative_max = -inst_eff_zoom * new_cursor_relative_max;
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
@@ -50040,7 +50053,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 
     // the cursor is effectively locked on the max (right) side of the matrix
     // var new_cursor_relative_min = viz_dim_heat.max - viz_dim_heat.min;
-    var new_cursor_relative_min = viz_dim_heat.max + inst_offset - viz_dim_heat.min;
+    var new_cursor_relative_min = viz_dim_heat.max + inst_offset - viz_dim_heat.min + offcenter;
     var new_pbz_relative_min = -inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
@@ -50071,7 +50084,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     // no need to push it to the edge since it was previously pushed to the edge
     if (zoom_data_copy.prev_restrict === 'min') {
 
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.min;
+      zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.min + offcenter);
 
     } else if (zoom_data_copy.prev_restrict === 'max'){
 

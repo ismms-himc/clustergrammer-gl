@@ -47247,8 +47247,8 @@ module.exports = function initialize_params(regl, network){
   Working on resizing the matrix, need to have separte x and y sizes
   */
   params.mat_size = {};
-  params.mat_size.x = 0.7;
-  params.mat_size.y = 0.7;
+  params.mat_size.x = 0.8;
+  params.mat_size.y = 0.8;
 
   params.cat_data = {};
   params.cat_data.row = generate_cat_data(params, 'row');
@@ -47279,8 +47279,8 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  offcenter_magnitude_x = 0.15;
-  offcenter_magnitude_y = 0.15;
+  offcenter_magnitude_x = 0.1;
+  offcenter_magnitude_y = 0.1;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
@@ -49935,9 +49935,9 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // restrict effective position of mouse
   if (zoom_data.cursor_position < viz_dim_heat.min + offcenter){
     zoom_data.cursor_position = viz_dim_heat.min + offcenter;
-    if (axis === 'x'){
-      console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
-    }
+    // if (axis === 'x'){
+    //   console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
+    // }
   } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset  + offcenter){
 
     zoom_data.cursor_position = viz_dim_heat.max + inst_offset + offcenter;
@@ -50097,7 +50097,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // if double restrict, pin to side that was previously pinned
   if (double_restrict){
 
-    // console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
+    console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
     // console.log('prev_restrict', zoom_data_copy.prev_restrict);
 
     // pin the matrix to either side
@@ -50109,6 +50109,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     } else if (zoom_data_copy.prev_restrict === 'max'){
 
       // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max;
+      // zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
       zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
 
     }

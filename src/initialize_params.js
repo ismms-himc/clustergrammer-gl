@@ -186,6 +186,7 @@ module.exports = function initialize_params(regl, network){
   params.spillover_args = spillover_args;
 
   params.show_tooltip = false;
+  params.remove_tooltip_frame = false;
   params.in_bounds_tooltip = false;
   params.tooltip = {};
   params.tooltip.background_opacity = 0.75;

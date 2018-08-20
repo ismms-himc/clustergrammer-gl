@@ -47379,6 +47379,7 @@ module.exports = function initialize_params(regl, network){
   params.spillover_args = spillover_args;
 
   params.show_tooltip = false;
+  params.remove_tooltip_frame = false;
   params.in_bounds_tooltip = false;
   params.tooltip = {};
   params.tooltip.background_opacity = 0.75;
@@ -49610,11 +49611,12 @@ module.exports = function run_viz(regl, network){
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
         params.animation.running || params.show_tooltip){
-        // params.animation.running ){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
       draw_commands(regl, params);
+
+
 
       setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
@@ -49623,6 +49625,14 @@ module.exports = function run_viz(regl, network){
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;
         // console.log('animation: ', params.animation.time_remain);
+      }
+
+
+      // set up extra frame specifically to remove old tooltip
+      if (params.show_tooltip){
+        params.show_tooltip = false;
+        console.log('initialize remove_tooltip_frame')
+        params.remove_tooltip_frame = true;
       }
 
     }
@@ -49641,10 +49651,15 @@ module.exports = function run_viz(regl, network){
       params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
       // remove old tooltip
-      if (params.show_tooltip == true){
+      if (params.remove_tooltip_frame){
         console.log('remove old tooltip ***********')
         params.show_tooltip = false;
         draw_commands(regl, params);
+      }
+
+      if (params.remove_tooltip_frame){
+        console.log('--- shut down remove_tooltip_frame')
+        params.remove_tooltip_frame = false;
       }
 
       // wait_time_final_mouseover = 0;

@@ -47268,7 +47268,7 @@ module.exports = function initialize_params(regl, network){
   // will set up global offset later
   params.offcenter = {};
   offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.0;
+  offcenter_magnitude_y = 0.1;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
@@ -49948,7 +49948,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 
   // tracking cursor position relative to the maximum
   /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
-  var cursor_relative_max = viz_dim_heat.max + inst_offset - zoom_data.cursor_position;
+  var cursor_relative_max = viz_dim_heat.max + inst_offset - zoom_data.cursor_position +  offcenter;
 
   // restrict cursor_relative_max
   if (cursor_relative_max < 0){
@@ -49959,9 +49959,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     // console.log('HIGHER than max ############################')
   }
 
-  // if (axis === 'x'){
-  //   console.log(cursor_relative_min, cursor_relative_max);
-  // }
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -49974,6 +49971,10 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   var inst_eff_zoom = zoom_data.inst_zoom - 1;
   zoom_data.pbz_relative_min = -inst_eff_zoom * cursor_relative_min;
   zoom_data.pbz_relative_max = -inst_eff_zoom * cursor_relative_max;
+
+  if (axis === 'x'){
+    console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
+  }
 
   // calculate unsanitized versions of total pan values
   var potential_total_pan_min = zoom_data.total_pan_min +
@@ -50052,7 +50053,8 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
     // total_pan_max
     // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
-    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset) + zoom_data.total_pan_max * zoom_data.total_zoom;
+    // zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset) + zoom_data.total_pan_max * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
     zoom_data.total_pan_max = 0 ;
@@ -50094,7 +50096,8 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 
     } else if (zoom_data_copy.prev_restrict === 'max'){
 
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max;
+      // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max;
+      zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
 
     }
 

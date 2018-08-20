@@ -49924,14 +49924,14 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     if (axis === 'x'){
       console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
     }
-  } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset){
+  } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset  + offcenter){
 
-    zoom_data.cursor_position = viz_dim_heat.max + inst_offset;
+    zoom_data.cursor_position = viz_dim_heat.max + inst_offset + offcenter;
 
   }
 
   // tracking cursor position relative to the minimum
-  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min + offcenter;
+  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min - offcenter;
 
   /* Cursor restriction does not seem to be doing anything */
 
@@ -49956,6 +49956,10 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     cursor_relative_max = viz_dim_heat.max + inst_offset;
     // console.log('HIGHER than max ############################')
   }
+
+  // if (axis === 'x'){
+  //   console.log(cursor_relative_min, cursor_relative_max);
+  // }
 
 
   //////////////////////////////////////////////////////////////////////////////

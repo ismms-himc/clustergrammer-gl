@@ -45745,7 +45745,7 @@ module.exports = function calc_spillover_triangles(params){
     // top-right spillover rect (right angle triangle for slanted text only)
     {'pos': [
              // [1, scaled_mat.y + 1 - ini_mat.x - params.offcenter.y],
-             [1, scaled_mat.y + 1 - ini_mat.x - params.offcenter.x],
+             [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * params.offcenter.x],
              [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
              [1.0, scaled_mat.y - params.offcenter.y]
              ]},
@@ -45860,17 +45860,17 @@ module.exports = function calc_viz_area(params){
   var buffer_width = 0.0;
 
   var viz_area = {};
-  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width - params.offcenter.x;
+  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width - params.offcenter.x/2;
   // addition not necessary
-  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width + params.offcenter.x ;
+  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width + params.offcenter.x/2 ;
 
   /*
   experimenting with viz_area calc
   */
 
-  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width + params.offcenter.y;
+  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width + params.offcenter.y/2;
   // minus offset not necessary
-  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width - params.offcenter.y;
+  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width - params.offcenter.y/2;
 
   // console.log('y_min', viz_area.y_min);
   // console.log('y_max', viz_area.y_max);
@@ -46869,9 +46869,23 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var inst_x = ev.x0;
   var inst_y = ev.y0;
 
+  // var offcenter;
+  // if (axis === 'x'){
+  //   offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
+  // } else {
+  //   offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
+  // }
+
+  // convert offcenter WebGl units to pixel units
+  var offcenter = {};
+  offcenter.x = (params.viz_dim.canvas.width * params.offcenter.x)/2;
+  offcenter.y = (params.viz_dim.canvas.height * params.offcenter.y)/2;
+
   var cursor_rel_min = {};
-  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
-  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min
+  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
+  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min - offcenter.y;
+
+  // console.log(cursor_rel_min.x, cursor_rel_min.y)
 
   cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
   cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
@@ -46930,9 +46944,7 @@ function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
   // console.log(viz_dim_heat.max)
   if (cursor_rel_min < 0){
     cursor_rel_min = 0;
-  // } else if (cursor_rel_min > viz_dim_heat.max){
   } else if (cursor_rel_min > max_pix){
-    // cursor_rel_min = viz_dim_heat.max;
     cursor_rel_min = max_pix;
   }
   return cursor_rel_min;
@@ -47267,8 +47279,8 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.1;
+  offcenter_magnitude_x = 0.15;
+  offcenter_magnitude_y = 0.15;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
@@ -49972,9 +49984,9 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   zoom_data.pbz_relative_min = -inst_eff_zoom * cursor_relative_min;
   zoom_data.pbz_relative_max = -inst_eff_zoom * cursor_relative_max;
 
-  if (axis === 'x'){
-    console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
-  }
+  // if (axis === 'x'){
+  //   console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
+  // }
 
   // calculate unsanitized versions of total pan values
   var potential_total_pan_min = zoom_data.total_pan_min +

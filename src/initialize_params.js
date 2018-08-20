@@ -98,8 +98,8 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.1;
+  offcenter_magnitude_x = 0.15;
+  offcenter_magnitude_y = 0.15;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 

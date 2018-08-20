@@ -36,9 +36,23 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var inst_x = ev.x0;
   var inst_y = ev.y0;
 
+  // var offcenter;
+  // if (axis === 'x'){
+  //   offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
+  // } else {
+  //   offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
+  // }
+
+  // convert offcenter WebGl units to pixel units
+  var offcenter = {};
+  offcenter.x = (params.viz_dim.canvas.width * params.offcenter.x)/2;
+  offcenter.y = (params.viz_dim.canvas.height * params.offcenter.y)/2;
+
   var cursor_rel_min = {};
-  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
-  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min
+  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
+  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min - offcenter.y;
+
+  // console.log(cursor_rel_min.x, cursor_rel_min.y)
 
   cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
   cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
@@ -97,9 +111,7 @@ function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
   // console.log(viz_dim_heat.max)
   if (cursor_rel_min < 0){
     cursor_rel_min = 0;
-  // } else if (cursor_rel_min > viz_dim_heat.max){
   } else if (cursor_rel_min > max_pix){
-    // cursor_rel_min = viz_dim_heat.max;
     cursor_rel_min = max_pix;
   }
   return cursor_rel_min;

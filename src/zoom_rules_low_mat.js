@@ -145,9 +145,9 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   zoom_data.pbz_relative_min = -inst_eff_zoom * cursor_relative_min;
   zoom_data.pbz_relative_max = -inst_eff_zoom * cursor_relative_max;
 
-  if (axis === 'x'){
-    console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
-  }
+  // if (axis === 'x'){
+  //   console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
+  // }
 
   // calculate unsanitized versions of total pan values
   var potential_total_pan_min = zoom_data.total_pan_min +

@@ -45735,7 +45735,7 @@ module.exports = function calc_spillover_triangles(params){
     // bottom-left spillover rect
     {'pos': [[-1, -1],
              [-ini_heat.x + inst_shift.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
-             [-1.0, -scaled_mat.y - params.offcenter.x]
+             [-1.0, -scaled_mat.y - params.offcenter.y]
              ]},
     {'pos': [[-1, -1],
              [-ini_heat.x + inst_shift.x + params.offcenter.x,  -1],
@@ -45743,7 +45743,9 @@ module.exports = function calc_spillover_triangles(params){
              ]},
 
     // top-right spillover rect (right angle triangle for slanted text only)
-    {'pos': [[1, scaled_mat.y + (1-ini_mat.x) - params.offcenter.y],
+    {'pos': [
+             // [1, scaled_mat.y + 1 - ini_mat.x - params.offcenter.y],
+             [1, scaled_mat.y ],
              [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
              [1.0, scaled_mat.y - params.offcenter.y]
              ]},
@@ -47266,7 +47268,7 @@ module.exports = function initialize_params(regl, network){
   // will set up global offset later
   params.offcenter = {};
   offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.2;
+  offcenter_magnitude_y = 0.0;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 

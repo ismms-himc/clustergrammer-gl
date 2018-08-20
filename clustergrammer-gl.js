@@ -45665,11 +45665,12 @@ module.exports = function calc_spillover_triangles(params){
 
     // // bottom spillover rect
     {'pos': [[-ini_mat.x + params.offcenter.x, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, -1]]},
-    {'pos': [[ ini_mat.x + params.offcenter.x, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.x], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[ ini_mat.x + params.offcenter.x, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
 
   ];
 
   spillover_triangles.cats = [
+
     // col spillover rect
     {'pos': [[ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
              [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
@@ -45689,6 +45690,7 @@ module.exports = function calc_spillover_triangles(params){
              [ -ini_heat.x + inst_shift.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
              [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
            },
+
   ];
 
   spillover_triangles.mat_corners = [
@@ -47263,13 +47265,14 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  shift_magnitude = 0.1;
-  params.offcenter.x = shift_magnitude;
-  params.offcenter.y = shift_magnitude;
+  offcenter_magnitude_x = 0.0;
+  offcenter_magnitude_y = 0.0;
+  params.offcenter.x = offcenter_magnitude_x;
+  params.offcenter.y = offcenter_magnitude_y;
 
   params.shift_camera = {};
-  params.shift_camera.x = -shift_magnitude;
-  params.shift_camera.y = shift_magnitude;
+  params.shift_camera.x = -offcenter_magnitude_x;
+  params.shift_camera.y = offcenter_magnitude_y;
 
   params.zoom_data = ini_zoom_data();
 
@@ -49717,8 +49720,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
     }
 
     // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
-    zoom_data.x = zoom_rules_low_mat(zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
-    zoom_data.y = zoom_rules_low_mat(zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
+    zoom_data.x = zoom_rules_low_mat(params, zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
+    zoom_data.y = zoom_rules_low_mat(params, zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
 
     keep_track_of_interactions(params);
 
@@ -49821,7 +49824,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 /***/ (function(module, exports) {
 
 
-module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
+module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
 
   // make a copy of zoom_data for later use (not a reference)
@@ -49895,7 +49898,9 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   // restrict min pan_by_drag if necessary
   if (zoom_data.pan_by_drag > 0){
+  // if (zoom_data.pan_by_drag > -params.offcenter[axis]){
     if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
+    // if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= params.offcenter[axis]){
       // push to edge
       zoom_data.pan_by_drag = -zoom_data.total_pan_min;
     }

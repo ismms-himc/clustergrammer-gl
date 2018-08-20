@@ -1,5 +1,5 @@
 
-module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
+module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
 
   // make a copy of zoom_data for later use (not a reference)
@@ -73,7 +73,9 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   // restrict min pan_by_drag if necessary
   if (zoom_data.pan_by_drag > 0){
+  // if (zoom_data.pan_by_drag > -params.offcenter[axis]){
     if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
+    // if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= params.offcenter[axis]){
       // push to edge
       zoom_data.pan_by_drag = -zoom_data.total_pan_min;
     }

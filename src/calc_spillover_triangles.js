@@ -40,11 +40,12 @@ module.exports = function calc_spillover_triangles(params){
 
     // // bottom spillover rect
     {'pos': [[-ini_mat.x + params.offcenter.x, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, -1]]},
-    {'pos': [[ ini_mat.x + params.offcenter.x, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.x], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[ ini_mat.x + params.offcenter.x, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
 
   ];
 
   spillover_triangles.cats = [
+
     // col spillover rect
     {'pos': [[ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
              [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
@@ -64,6 +65,7 @@ module.exports = function calc_spillover_triangles(params){
              [ -ini_heat.x + inst_shift.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
              [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
            },
+
   ];
 
   spillover_triangles.mat_corners = [

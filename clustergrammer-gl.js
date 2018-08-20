@@ -46551,17 +46551,17 @@ module.exports = function draw_commands(regl, params){
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip){
-    console.log('draw tooltip component')
+    // console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }
 
   if (params.slow_draw){
-    console.log('----- turn off slow draw -----')
+    // console.log('----- turn off slow draw -----')
     params.slow_draw = false;
   }
 
   if (params.show_tooltip){
-    console.log('----- turn off show tooltip ------')
+    // console.log('----- turn off show tooltip ------')
     params.show_tooltip = false;
   }
 
@@ -46654,7 +46654,7 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     if (calc_text_tri){
 
-      console.log('calc row text triangles')
+      // console.log('calc row text triangles')
 
       var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
 
@@ -46786,14 +46786,14 @@ module.exports = function final_interaction_frame(regl, params){
     // preventing from running on first frame
     if (params.first_frame == false){
 
-      console.log('\n------------------\nFINAL INTERACTION');
-      console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
+      // console.log('\n------------------\nFINAL INTERACTION');
+      // console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
       // run draw commands
       params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
-        console.log('SLOW_DRAW')
+        // console.log('SLOW_DRAW')
         // draw_commands(regl, params, slow_draw);
       }
 
@@ -46824,16 +46824,16 @@ module.exports = function final_mouseover_frame(regl, params){
 
   // console.log('check  ', params.zoom_data.x.total_mouseover)
   if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
-    console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
+    // console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
 
     // run draw commands
     var slow_draw = true;
     params.show_tooltip = true;
 
-    if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-      console.log('final_mouseover_frame', params.show_tooltip)
-      // draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
-    }
+    // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
+    //   // console.log('final_mouseover_frame', params.show_tooltip)
+    //   // draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
+    // }
   }
 
 };
@@ -47296,7 +47296,7 @@ module.exports = function initialize_params(regl, network){
   // will set up global offset later
   params.offcenter = {};
   offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.0;
+  offcenter_magnitude_y = 0.1;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
@@ -49650,7 +49650,7 @@ module.exports = function run_viz(regl, network){
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
 
-      console.log('still_mouseover', params.remove_tooltip_frame)
+      // console.log('still_mouseover', params.remove_tooltip_frame)
 
       /////////////////////////////////////
       /////////////////////////////////////
@@ -49662,13 +49662,13 @@ module.exports = function run_viz(regl, network){
 
       // remove old tooltip
       if (params.remove_tooltip_frame){
-        console.log('remove old tooltip ***********')
+        // console.log('remove old tooltip ***********')
         params.show_tooltip = false;
         draw_commands(regl, params);
       }
 
       if (params.remove_tooltip_frame){
-          console.log('--- shut down remove_tooltip_frame')
+          // console.log('--- shut down remove_tooltip_frame')
         params.remove_tooltip_frame = false;
       }
 
@@ -49677,14 +49677,14 @@ module.exports = function run_viz(regl, network){
 
     } else if (params.slow_draw || params.show_tooltip){
 
-      console.log('SLOW DRAW!!!!!!!!!!!!!!')
+      // console.log('SLOW DRAW!!!!!!!!!!!!!!')
       draw_commands(regl, params);
       params.remove_tooltip_frame = true;
 
       // set up extra frame specifically to remove old tooltip
       if (params.show_tooltip){
         params.show_tooltip = false;
-        console.log('initialize remove_tooltip_frame')
+        // console.log('initialize remove_tooltip_frame')
       }
 
     } else {
@@ -50151,7 +50151,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // if double restrict, pin to side that was previously pinned
   if (double_restrict){
 
-    console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
+    // console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
     // console.log('prev_restrict', zoom_data_copy.prev_restrict);
 
     // pin the matrix to either side

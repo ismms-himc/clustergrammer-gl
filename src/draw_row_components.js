@@ -21,7 +21,7 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     if (calc_text_tri){
 
-      console.log('calc row text triangles')
+      // console.log('calc row text triangles')
 
       var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
 

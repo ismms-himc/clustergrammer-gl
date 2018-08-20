@@ -9,14 +9,14 @@ module.exports = function final_interaction_frame(regl, params){
     // preventing from running on first frame
     if (params.first_frame == false){
 
-      console.log('\n------------------\nFINAL INTERACTION');
-      console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
+      // console.log('\n------------------\nFINAL INTERACTION');
+      // console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
 
       // run draw commands
       params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
-        console.log('SLOW_DRAW')
+        // console.log('SLOW_DRAW')
         // draw_commands(regl, params, slow_draw);
       }
 

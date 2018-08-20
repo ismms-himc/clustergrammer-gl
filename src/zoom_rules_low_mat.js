@@ -258,7 +258,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // if double restrict, pin to side that was previously pinned
   if (double_restrict){
 
-    console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
+    // console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
     // console.log('prev_restrict', zoom_data_copy.prev_restrict);
 
     // pin the matrix to either side

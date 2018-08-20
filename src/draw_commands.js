@@ -21,17 +21,17 @@ module.exports = function draw_commands(regl, params){
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip){
-    console.log('draw tooltip component')
+    // console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }
 
   if (params.slow_draw){
-    console.log('----- turn off slow draw -----')
+    // console.log('----- turn off slow draw -----')
     params.slow_draw = false;
   }
 
   if (params.show_tooltip){
-    console.log('----- turn off show tooltip ------')
+    // console.log('----- turn off show tooltip ------')
     params.show_tooltip = false;
   }
 

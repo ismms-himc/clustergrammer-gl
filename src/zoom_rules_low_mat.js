@@ -5,9 +5,9 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);
 
-  /////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   // Zooming Rules
-  /////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   var max_zoom = zoom_restrict.max;
   var min_zoom = zoom_restrict.min;
@@ -45,14 +45,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
       zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {
 
-      // declare that this is zooming_below_one
-      // if (zoom_data.total_zoom == 1){
-        // if (axis === 'x'){
-        //   console.log('zooming_below_one')
-        // }
-        // zooming_below_one = false;
-      // }
-
       // bump zoom down to min
       zoom_data.inst_zoom =  min_zoom/zoom_data.total_zoom;
       // set zoom to min
@@ -62,9 +54,9 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     // working on fixing zoom restrict when cursor is outside of matrix
     var inst_offset = viz_dim_mat.max - viz_dim_heat.max
 
-  //////////////////////////////////
-  // Pan Rules
-  //////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // Pan by Drag Rules
+  //////////////////////////////////////////////////////////////////////////////
 
   // do not allow simultaneous panning and zooming
   if (zoom_data.inst_zoom > 1){
@@ -99,12 +91,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 
   }
 
-  // /*
-  //   Working on viz aid triangles
-  // */
-  // // always set cursor position to min matrix position
-  // zoom_data.cursor_position = viz_dim_heat.min;
-
   // tracking cursor position relative to the minimum
   var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min;
 
@@ -133,6 +119,10 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   }
   // console.log(cursor_relative_min, cursor_relative_max)
 
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Pan by Zoom Rules
+  //////////////////////////////////////////////////////////////////////////////
 
   // pan_by_zoom relative to matrix max and min
   // zooming in causes negative panning
@@ -238,15 +228,13 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
       zoom_data.total_pan_min = 0;
     }
 
-
-    // if (axis === 'x' && has_been_both === true){
-    //   // debugger
-    // }
-
     zoom_data.prev_restrict = 'max';
 
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Double Restriction
+  //////////////////////////////////////////////////////////////////////////////
 
   // if double restrict, pin to side that was previously pinned
   if (double_restrict){

@@ -45860,17 +45860,19 @@ module.exports = function calc_viz_area(params){
   var buffer_width = 0.0;
 
   var viz_area = {};
-  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width - params.offcenter.x/2;
+  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width;
   // addition not necessary
-  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width + params.offcenter.x/2 ;
+  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width;
 
   /*
   experimenting with viz_area calc
   */
 
-  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width + params.offcenter.y/2;
+   // - params.offcenter.y/2
+
+  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
   // minus offset not necessary
-  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width - params.offcenter.y/2;
+  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width;
 
   // console.log('y_min', viz_area.y_min);
   // console.log('y_max', viz_area.y_max);
@@ -46558,10 +46560,10 @@ module.exports = function draw_commands(regl, params){
     params.slow_draw = false;
   }
 
-  // if (params.show_tooltip){
-  //   console.log('----- turn off show tooltip ------')
-  //   params.show_tooltip = false;
-  // }
+  if (params.show_tooltip){
+    console.log('----- turn off show tooltip ------')
+    params.show_tooltip = false;
+  }
 
 };
 
@@ -46651,6 +46653,8 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
                                                          params.zoom_function);
 
     if (calc_text_tri){
+
+      console.log('calc row text triangles')
 
       var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
 
@@ -47292,13 +47296,15 @@ module.exports = function initialize_params(regl, network){
   // will set up global offset later
   params.offcenter = {};
   offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.1;
+  offcenter_magnitude_y = 0.0;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
   params.shift_camera = {};
   params.shift_camera.x = -offcenter_magnitude_x;
   params.shift_camera.y = offcenter_magnitude_y;
+
+  params.slow_draw = false;
 
   params.zoom_data = ini_zoom_data();
 
@@ -47379,7 +47385,10 @@ module.exports = function initialize_params(regl, network){
   params.spillover_args = spillover_args;
 
   params.show_tooltip = false;
-  params.remove_tooltip_frame = false;
+
+  // the default is to remove the tooltip
+  params.remove_tooltip_frame = true;
+
   params.in_bounds_tooltip = false;
   params.tooltip = {};
   params.tooltip.background_opacity = 0.75;
@@ -49585,7 +49594,10 @@ module.exports = function run_viz(regl, network){
   var wait_time_final_interact = 100;
   var wait_time_final_mouseover = 100;
 
+
   regl.frame(function ({time}) {
+
+    // console.log(params.slow_draw)
 
     params.time = time;
     params.animation.loop = 0 ;
@@ -49610,13 +49622,12 @@ module.exports = function run_viz(regl, network){
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
-        params.animation.running || params.show_tooltip){
+        // params.animation.running || params.show_tooltip){
+        params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
       draw_commands(regl, params);
-
-
 
       setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
@@ -49627,20 +49638,19 @@ module.exports = function run_viz(regl, network){
         // console.log('animation: ', params.animation.time_remain);
       }
 
-
-      // set up extra frame specifically to remove old tooltip
-      if (params.show_tooltip){
-        params.show_tooltip = false;
-        console.log('initialize remove_tooltip_frame')
-        params.remove_tooltip_frame = true;
-      }
+      // // set up extra frame specifically to remove old tooltip
+      // if (params.show_tooltip){
+      //   params.show_tooltip = false;
+      //   console.log('initialize remove_tooltip_frame')
+      //   params.remove_tooltip_frame = true;
+      // }
 
     }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
 
-      console.log('still_mouseover')
+      console.log('still_mouseover', params.remove_tooltip_frame)
 
       /////////////////////////////////////
       /////////////////////////////////////
@@ -49658,12 +49668,24 @@ module.exports = function run_viz(regl, network){
       }
 
       if (params.remove_tooltip_frame){
-        console.log('--- shut down remove_tooltip_frame')
+          console.log('--- shut down remove_tooltip_frame')
         params.remove_tooltip_frame = false;
       }
 
       // wait_time_final_mouseover = 0;
       setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+
+    } else if (params.slow_draw || params.show_tooltip){
+
+      console.log('SLOW DRAW!!!!!!!!!!!!!!')
+      draw_commands(regl, params);
+      params.remove_tooltip_frame = true;
+
+      // set up extra frame specifically to remove old tooltip
+      if (params.show_tooltip){
+        params.show_tooltip = false;
+        console.log('initialize remove_tooltip_frame')
+      }
 
     } else {
 
@@ -49677,6 +49699,7 @@ module.exports = function run_viz(regl, network){
       */
 
     }
+
 
   });
 

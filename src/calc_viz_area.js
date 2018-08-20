@@ -27,17 +27,19 @@ module.exports = function calc_viz_area(params){
   var buffer_width = 0.0;
 
   var viz_area = {};
-  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width - params.offcenter.x/2;
+  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width;
   // addition not necessary
-  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width + params.offcenter.x/2 ;
+  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width;
 
   /*
   experimenting with viz_area calc
   */
 
-  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width + params.offcenter.y/2;
+   // - params.offcenter.y/2
+
+  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
   // minus offset not necessary
-  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width - params.offcenter.y/2;
+  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width;
 
   // console.log('y_min', viz_area.y_min);
   // console.log('y_max', viz_area.y_max);

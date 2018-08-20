@@ -99,13 +99,15 @@ module.exports = function initialize_params(regl, network){
   // will set up global offset later
   params.offcenter = {};
   offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.1;
+  offcenter_magnitude_y = 0.0;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
   params.shift_camera = {};
   params.shift_camera.x = -offcenter_magnitude_x;
   params.shift_camera.y = offcenter_magnitude_y;
+
+  params.slow_draw = false;
 
   params.zoom_data = ini_zoom_data();
 
@@ -186,7 +188,10 @@ module.exports = function initialize_params(regl, network){
   params.spillover_args = spillover_args;
 
   params.show_tooltip = false;
-  params.remove_tooltip_frame = false;
+
+  // the default is to remove the tooltip
+  params.remove_tooltip_frame = true;
+
   params.in_bounds_tooltip = false;
   params.tooltip = {};
   params.tooltip.background_opacity = 0.75;

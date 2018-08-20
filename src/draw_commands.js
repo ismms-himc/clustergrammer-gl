@@ -30,9 +30,9 @@ module.exports = function draw_commands(regl, params){
     params.slow_draw = false;
   }
 
-  // if (params.show_tooltip){
-  //   console.log('----- turn off show tooltip ------')
-  //   params.show_tooltip = false;
-  // }
+  if (params.show_tooltip){
+    console.log('----- turn off show tooltip ------')
+    params.show_tooltip = false;
+  }
 
 };

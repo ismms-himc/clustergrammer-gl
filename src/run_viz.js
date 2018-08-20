@@ -14,7 +14,10 @@ module.exports = function run_viz(regl, network){
   var wait_time_final_interact = 100;
   var wait_time_final_mouseover = 100;
 
+
   regl.frame(function ({time}) {
+
+    // console.log(params.slow_draw)
 
     params.time = time;
     params.animation.loop = 0 ;
@@ -39,13 +42,12 @@ module.exports = function run_viz(regl, network){
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true ||
-        params.animation.running || params.show_tooltip){
+        // params.animation.running || params.show_tooltip){
+        params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
       draw_commands(regl, params);
-
-
 
       setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
@@ -56,20 +58,19 @@ module.exports = function run_viz(regl, network){
         // console.log('animation: ', params.animation.time_remain);
       }
 
-
-      // set up extra frame specifically to remove old tooltip
-      if (params.show_tooltip){
-        params.show_tooltip = false;
-        console.log('initialize remove_tooltip_frame')
-        params.remove_tooltip_frame = true;
-      }
+      // // set up extra frame specifically to remove old tooltip
+      // if (params.show_tooltip){
+      //   params.show_tooltip = false;
+      //   console.log('initialize remove_tooltip_frame')
+      //   params.remove_tooltip_frame = true;
+      // }
 
     }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
 
-      console.log('still_mouseover')
+      console.log('still_mouseover', params.remove_tooltip_frame)
 
       /////////////////////////////////////
       /////////////////////////////////////
@@ -87,12 +88,24 @@ module.exports = function run_viz(regl, network){
       }
 
       if (params.remove_tooltip_frame){
-        console.log('--- shut down remove_tooltip_frame')
+          console.log('--- shut down remove_tooltip_frame')
         params.remove_tooltip_frame = false;
       }
 
       // wait_time_final_mouseover = 0;
       setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+
+    } else if (params.slow_draw || params.show_tooltip){
+
+      console.log('SLOW DRAW!!!!!!!!!!!!!!')
+      draw_commands(regl, params);
+      params.remove_tooltip_frame = true;
+
+      // set up extra frame specifically to remove old tooltip
+      if (params.show_tooltip){
+        params.show_tooltip = false;
+        console.log('initialize remove_tooltip_frame')
+      }
 
     } else {
 
@@ -106,6 +119,7 @@ module.exports = function run_viz(regl, network){
       */
 
     }
+
 
   });
 

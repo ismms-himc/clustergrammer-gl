@@ -7,7 +7,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   if (axis === 'x'){
     offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
   } else {
-    offcenter = 0 // (params.viz_dim.mat.height * params.offcenter[axis]);
+    offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
   }
 
   // make a copy of zoom_data for later use (not a reference)

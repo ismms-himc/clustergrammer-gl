@@ -47266,7 +47266,7 @@ module.exports = function initialize_params(regl, network){
   // will set up global offset later
   params.offcenter = {};
   offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.0;
+  offcenter_magnitude_y = 0.2;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
@@ -49832,7 +49832,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   if (axis === 'x'){
     offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
   } else {
-    offcenter = 0 // (params.viz_dim.mat.height * params.offcenter[axis]);
+    offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
   }
 
   // make a copy of zoom_data for later use (not a reference)

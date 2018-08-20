@@ -66,8 +66,8 @@ module.exports = function initialize_params(regl, network){
   Working on resizing the matrix, need to have separte x and y sizes
   */
   params.mat_size = {};
-  params.mat_size.x = 0.8;
-  params.mat_size.y = 0.8;
+  params.mat_size.x = 0.825;
+  params.mat_size.y = 0.825;
 
   params.cat_data = {};
   params.cat_data.row = generate_cat_data(params, 'row');

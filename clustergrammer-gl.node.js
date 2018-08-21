@@ -17189,6 +17189,23 @@ module.exports = dupe
 
 /***/ }),
 
+/***/ "./node_modules/eases/cubic-in-out.js":
+/*!********************************************!*\
+  !*** ./node_modules/eases/cubic-in-out.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function cubicInOut(t) {
+  return t < 0.5
+    ? 4.0 * t * t * t
+    : 0.5 * Math.pow(2.0 * t - 2.0, 3.0) + 1.0
+}
+
+module.exports = cubicInOut
+
+/***/ }),
+
 /***/ "./node_modules/edges-to-adjacency-list/e2a.js":
 /*!*****************************************************!*\
   !*** ./node_modules/edges-to-adjacency-list/e2a.js ***!
@@ -54876,6 +54893,8 @@ module.exports = function calc_col_text_triangles(params){
 
   _.each(inst_nodes, function(inst_node, col_id){
 
+    // console.log(inst_node)
+
     var col_order_id = params.network.col_nodes[col_id][inst_order];
 
     var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
@@ -55139,106 +55158,125 @@ module.exports = function calc_spillover_triangles(params){
   inst_shift.y = params.mat_size.y - params.heat_size.y;
 
   spillover_triangles.mat_sides = [
+
     // left spillover rect
-    {'pos': [[-1, 1], [-ini_mat.x, -1], [-1.0, -1]]},
-    {'pos': [[-1, 1], [-ini_mat.x,  1], [-ini_mat.x, -1]]},
+    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x, -1], [-1.0, -1]]},
+    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x,  1], [-ini_mat.x + params.offcenter.x, -1]]},
 
     // right spillover rect
-    {'pos': [[1, 1], [ini_mat.x, -1], [1.0, -1]]},
-    {'pos': [[1, 1], [ini_mat.x,  1], [ini_mat.x, -1]]},
+    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x, -1], [1.0, -1]]},
+    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x,  1], [ini_mat.x + params.offcenter.x, -1]]},
 
-    // top spillover rect
-    {'pos': [[-ini_mat.x, 1], [-ini_mat.x, scaled_mat.y], [ini_mat.x, 1]]},
-    {'pos': [[ ini_mat.x, 1], [ini_mat.x, scaled_mat.y], [-ini_mat.x, scaled_mat.y]]},
+    // // top spillover rect
+    {'pos': [[-ini_mat.x + params.offcenter.x, 1], [-ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, 1]]},
+    {'pos': [[ ini_mat.x + params.offcenter.x, 1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y]]},
 
     // // bottom spillover rect
-    {'pos': [[-ini_mat.x, -1], [-ini_mat.x, -scaled_mat.y], [ini_mat.x, -1]]},
-    {'pos': [[ ini_mat.x, -1], [ini_mat.x, -scaled_mat.y], [-ini_mat.x, -scaled_mat.y]]},
+    {'pos': [[-ini_mat.x + params.offcenter.x, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, -1]]},
+    {'pos': [[ ini_mat.x + params.offcenter.x, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+
   ];
 
   spillover_triangles.cats = [
+
     // col spillover rect
-    {'pos': [[ini_heat.x  + inst_shift.x, scaled_mat.y],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
-             [ini_heat.x  + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    {'pos': [[ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
+             [ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
            },
-    {'pos': [[-ini_heat.x + inst_shift.x, scaled_mat.y],
-             [ ini_mat.x,  scaled_mat.y],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    {'pos': [[-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
+             [ ini_mat.x + params.offcenter.x,  scaled_mat.y - params.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
            },
 
     // col spillover rect
-    {'pos': [[-ini_mat.x, -scaled_mat.y],
-             [-ini_mat.x, scaled_heat.y - inst_shift.y],
-             [-ini_heat.x  + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    {'pos': [[-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
+             [-ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
            },
-    {'pos': [[-ini_mat.x,  -scaled_mat.y],
-             [ -ini_heat.x  + inst_shift.x,  -scaled_mat.y],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]]
+    {'pos': [[-ini_mat.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
+             [ -ini_heat.x + inst_shift.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
            },
+
   ];
 
   spillover_triangles.mat_corners = [
+
     // top-left spillover rect
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
-             [-1.0 , scaled_heat.y - inst_shift.y]
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
+             [-1.0 , scaled_heat.y - inst_shift.y - params.offcenter.y]
              ]},
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x,  1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]
+             [-ini_heat.x + inst_shift.x + params.offcenter.x,  1],
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
              ]},
 
     // bottom-left spillover rect
-    {'pos': [[-1, -1], [-ini_mat.x, -scaled_mat.y], [-1.0, -scaled_mat.y]]},
-    {'pos': [[-1, -1], [-ini_mat.x,  -1], [-ini_mat.x, -scaled_mat.y]]},
+    {'pos': [[-1, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-1.0, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[-1, -1], [-ini_mat.x + params.offcenter.x,  -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
 
     // top-right spillover rect
     // mat corners
-    {'pos': [[1, 1], [ini_mat.x, scaled_mat.y], [1.0, scaled_mat.y]]},
-    {'pos': [[1, 1], [ini_mat.x,  1], [ini_mat.x, scaled_mat.y]]},
+    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [1.0, scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x,  1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y]]},
 
     // bottom-right spillover rect
-    {'pos': [[1, -1], [ini_mat.x, -scaled_mat.y], [1.0, -scaled_mat.y]]},
-    {'pos': [[1, -1], [ini_mat.x,  -1], [ini_mat.x, -scaled_mat.y]]},
+    {'pos': [[1, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [1.0, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[1, -1], [ini_mat.x + params.offcenter.x,  -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
 
   ];
 
   spillover_triangles.label_corners = [
+
     // top-left spillover rect
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y],
-             [-1.0, scaled_heat.y - inst_shift.y]]
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
+             [-1.0, scaled_heat.y - inst_shift.y - params.offcenter.y]]
            },
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x,  1],
-             [-ini_heat.x + inst_shift.x, scaled_heat.y - inst_shift.y]
+             [-ini_heat.x + inst_shift.x + params.offcenter.x,  1],
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
              ]},
 
     // bottom-left spillover rect
     {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x, -scaled_mat.y],
-             [-1.0, -scaled_mat.y]
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
+             [-1.0, -scaled_mat.y - params.offcenter.y]
              ]},
     {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x,  -1],
-             [-ini_heat.x + inst_shift.x, -scaled_mat.y]
+             [-ini_heat.x + inst_shift.x + params.offcenter.x,  -1],
+             [-ini_heat.x + inst_shift.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]
              ]},
 
     // top-right spillover rect (right angle triangle for slanted text only)
-    {'pos': [[1, scaled_mat.y + (1-ini_mat.x)], [ini_mat.x, scaled_mat.y], [1.0, scaled_mat.y]]},
-    {'pos': [[1.0, scaled_mat.y],
-             [ini_mat.x, scaled_heat.y - inst_shift.y],
-             [1.0, scaled_heat.y - inst_shift.y]
+    {'pos': [
+             // [1, scaled_mat.y + 1 - ini_mat.x - params.offcenter.y],
+             [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * params.offcenter.x],
+             [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
+             [1.0, scaled_mat.y - params.offcenter.y]
              ]},
-    {'pos': [[ini_mat.x, scaled_mat.y],
-             [1.0,  scaled_mat.y],
-             [ini_mat.x, scaled_heat.y - inst_shift.y]
+
+    // area under slanted triangle
+    {'pos': [[1.0, scaled_mat.y - params.offcenter.y],
+             [ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
+             [1.0, scaled_heat.y - inst_shift.y - params.offcenter.y]
+             ]},
+    {'pos': [[ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
+             [1.0,  scaled_mat.y - params.offcenter.y],
+             [ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
              ]},
 
     // bottom-right spillover rect
-    {'pos': [[1, -1], [ini_mat.x, -scaled_mat.y], [1.0, -scaled_mat.y]]},
-    {'pos': [[1, -1], [ini_mat.x,  -1], [ini_mat.x, -scaled_mat.y]]},
+    {'pos': [[1, -1],
+             [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
+             [1.0, -scaled_mat.y - params.offcenter.y]
+             ]},
+    {'pos': [[1, -1],
+             [ini_mat.x + params.offcenter.x,  -1],
+             [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]
+             ]},
 
   ];
 
@@ -55311,8 +55349,6 @@ module.exports = function calc_viz_area(params){
   var mat_width = params.viz_dim.heat.width;
   var mat_height = params.viz_dim.heat.height;
 
-
-
   /*
 
     Experimenting with scales to improve viz area calculation
@@ -55333,13 +55369,17 @@ module.exports = function calc_viz_area(params){
 
   var viz_area = {};
   viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width;
+  // addition not necessary
   viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width;
 
   /*
   experimenting with viz_area calc
   */
 
+   // - params.offcenter.y/2
+
   viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
+  // minus offset not necessary
   viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width;
 
   // console.log('y_min', viz_area.y_min);
@@ -55422,6 +55462,102 @@ module.exports = function calc_viz_dim(regl, params){
   return viz_dim;
 
 };
+
+/***/ }),
+
+/***/ "./src/camera_interaction.js":
+/*!***********************************!*\
+  !*** ./src/camera_interaction.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var vec4 = __webpack_require__(/*! gl-vec4 */ "./node_modules/gl-vec4/index.js");
+
+module.exports = function camera_interaction(zoom_data, ev, viz_component,
+                                             mInvViewport, mat4, mView, emitter,
+                                             dViewport, mViewport){
+
+  switch (ev.type) {
+    case 'wheel':
+      ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+      ev.dx = ev.dy = 0;
+      break;
+  }
+
+  if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
+
+    /*
+    Sanitize zoom data components
+    */
+
+    // console.log('camera interaction')
+
+    var inst_x_zoom = zoom_data.x.inst_zoom;
+    var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
+    var inst_x_pan_by_drag = zoom_data.x.pan_by_drag;
+
+    var inst_y_zoom = zoom_data.y.inst_zoom;
+    var inst_y_pan_by_zoom = zoom_data.y.pan_by_zoom;
+    var inst_y_pan_by_drag = zoom_data.y.pan_by_drag;
+
+    if (viz_component === 'row-labels'){
+      inst_x_zoom = 1;
+      inst_x_pan_by_drag = 0;
+      inst_x_pan_by_zoom = 0;
+    }
+
+    if (viz_component === 'col-labels'){
+      inst_y_zoom = 1;
+      inst_y_pan_by_drag = 0;
+      inst_y_pan_by_zoom = 0;
+    }
+
+    if (viz_component === 'static'){
+      inst_x_zoom = 1;
+      inst_x_pan_by_drag = 0;
+      inst_x_pan_by_zoom = 0;
+      inst_y_zoom = 1;
+      inst_y_pan_by_drag = 0;
+      inst_y_pan_by_zoom = 0;
+    }
+
+    ev.preventDefault();
+
+    dViewport[0] = inst_x_zoom;
+    dViewport[1] = 0;
+    dViewport[2] = 0;
+    dViewport[3] = 0;
+    dViewport[4] = 0;
+    dViewport[5] = inst_y_zoom;
+    dViewport[6] = 0;
+    dViewport[7] = 0;
+    dViewport[8] = 0;
+    dViewport[9] = 0;
+    dViewport[10] = 1;
+    dViewport[11] = 0;
+    dViewport[12] = inst_x_pan_by_zoom + inst_x_pan_by_drag;
+    dViewport[13] = inst_y_pan_by_zoom + inst_y_pan_by_drag;
+    dViewport[14] = 0;
+    dViewport[15] = 1;
+
+    mat4.multiply(dViewport, dViewport, mViewport);
+    mat4.multiply(dViewport, mInvViewport, dViewport);
+    mat4.multiply(mView, dViewport, mView);
+    dirty = true;
+
+  }
+
+  var xy = vec4.transformMat4([],
+    vec4.transformMat4([], [ev.x0, ev.y0, 0, 1], mInvViewport),
+    mat4.invert([], mView)
+  );
+
+  ev.x = xy[0];
+  ev.y = xy[1];
+
+  emitter.emit('move', ev);
+}
 
 /***/ }),
 
@@ -55668,11 +55804,11 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 // 'use strict';
 
 var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/interaction-events.js");
+// var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var mat4 = __webpack_require__(/*! gl-mat4 */ "./node_modules/gl-mat4/index.js");
 var EventEmitter = __webpack_require__(/*! event-emitter */ "./node_modules/event-emitter/index.js");
-var vec4 = __webpack_require__(/*! gl-vec4 */ "./node_modules/gl-vec4/index.js");
-// var $ = require('jquery');
+var camera_interaction = __webpack_require__(/*! ./camera_interaction */ "./src/camera_interaction.js");
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;
@@ -55722,8 +55858,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var width = getWidth();
   var height = getHeight();
 
-  var xcen = 0.5 * (xrange[1] + xrange[0]);
-  var ycen = 0.5 * (yrange[1] + yrange[0]);
+  var xcen = 0.5 * (xrange[1] + xrange[0]) + params.shift_camera.x;
+  var ycen = 0.5 * (yrange[1] + yrange[0]) + params.shift_camera.y;
   var xrng = 0.5 * (xrange[1] - xrange[0]);
   var yrng = xrng / aspectRatio / width * height;
 
@@ -55748,6 +55884,11 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
   var dViewport = [];
 
+  var emitter = new EventEmitter();
+
+  /////////////////////////////////////////
+  // Original interaction tracking
+  /////////////////////////////////////////
   interactionEvents({
     element: element,
   }).on('interactionstart', function (ev) {
@@ -55755,93 +55896,31 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-
-    switch (ev.type) {
-      case 'wheel':
-        ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-        ev.dx = ev.dy = 0;
-        break;
+    if (params.viz_interact){
+      camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
+                         emitter, dViewport, mViewport);
     }
-
-    if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
-
-      /*
-      Sanitize zoom data components
-      */
-
-      var inst_x_zoom = zoom_data.x.inst_zoom;
-      var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
-      var inst_x_pan_by_drag = zoom_data.x.pan_by_drag;
-
-      var inst_y_zoom = zoom_data.y.inst_zoom;
-      var inst_y_pan_by_zoom = zoom_data.y.pan_by_zoom;
-      var inst_y_pan_by_drag = zoom_data.y.pan_by_drag;
-
-      if (viz_component === 'row-labels'){
-        inst_x_zoom = 1;
-        inst_x_pan_by_drag = 0;
-        inst_x_pan_by_zoom = 0;
-      }
-
-      if (viz_component === 'col-labels'){
-        inst_y_zoom = 1;
-        inst_y_pan_by_drag = 0;
-        inst_y_pan_by_zoom = 0;
-      }
-
-      if (viz_component === 'static'){
-        inst_x_zoom = 1;
-        inst_x_pan_by_drag = 0;
-        inst_x_pan_by_zoom = 0;
-        inst_y_zoom = 1;
-        inst_y_pan_by_drag = 0;
-        inst_y_pan_by_zoom = 0;
-      }
-
-      ev.preventDefault();
-
-      dViewport[0] = inst_x_zoom;
-      dViewport[1] = 0;
-      dViewport[2] = 0;
-      dViewport[3] = 0;
-      dViewport[4] = 0;
-      dViewport[5] = inst_y_zoom;
-      dViewport[6] = 0;
-      dViewport[7] = 0;
-      dViewport[8] = 0;
-      dViewport[9] = 0;
-      dViewport[10] = 1;
-      dViewport[11] = 0;
-      dViewport[12] = inst_x_pan_by_zoom + inst_x_pan_by_drag;
-      dViewport[13] = inst_y_pan_by_zoom + inst_y_pan_by_drag;
-      dViewport[14] = 0;
-      dViewport[15] = 1;
-
-      mat4.multiply(dViewport, dViewport, mViewport);
-      mat4.multiply(dViewport, mInvViewport, dViewport);
-      mat4.multiply(mView, dViewport, mView);
-      dirty = true;
-
-    }
-
-    var xy = vec4.transformMat4([],
-      vec4.transformMat4([], [ev.x0, ev.y0, 0, 1], mInvViewport),
-      mat4.invert([], mView)
-    );
-
-    ev.x = xy[0];
-    ev.y = xy[1];
-
-    emitter.emit('move', ev);
   });
+
+  // /////////////////////////////////////////
+  // // Alternate interaction tracking
+  // /////////////////////////////////////////
+  // normalizedInteractionEvents({
+  //   element: element
+  // })
+  // .on('wheel', function (ev) {
+  //   console.log('norm interact: camera');
+  //   if (params.viz_interact){
+  //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
+  //                        emitter, dViewport, mViewport);
+  //   }
+  // });
 
   var setProps = regl({
     context: {
       view: regl.prop('view'),
     }
   });
-
-  var emitter = new EventEmitter();
 
   var inst_camera = {
     draw: function (cb) {
@@ -55879,6 +55958,39 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
 /***/ }),
 
+/***/ "./src/dendro_panel.js":
+/*!*****************************!*\
+  !*** ./src/dendro_panel.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+
+module.exports = function dendro_panel(regl, params, control_container, inst_axis){
+
+  var axis_name;
+  if (inst_axis === 'row'){
+    axis_name = 'Row';
+  } else {
+    axis_name = 'Column'
+  }
+
+  var panel_width = 250;
+
+  var inst_panel = control([
+
+    {type: 'range', label: 'range slider', min: 0, max: 100, initial: 20},
+  ],
+    {theme: 'light', root:control_container, title: axis_name + ' Dendrogram', width:panel_width}
+
+  );
+
+  return inst_panel;
+}
+
+/***/ }),
+
 /***/ "./src/draw_col_components.js":
 /*!************************************!*\
   !*** ./src/draw_col_components.js ***!
@@ -55913,7 +56025,9 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
     if (calc_text_tri){
 
-      var num_viz_cols = params.num_col/params.zoom_data.y.total_zoom;
+      var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
+
+      // console.log('num_viz_cols', num_viz_cols)
 
       if (num_viz_cols < params.max_num_text){
 
@@ -55961,9 +56075,9 @@ var draw_col_components = __webpack_require__(/*! ./draw_col_components */ "./sr
 var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draw_spillover_components.js");
 var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draw_tooltip_components.js");
 
-module.exports = function draw_commands(regl, params, slow_draw=false, show_tooltip=false){
+module.exports = function draw_commands(regl, params){
 
-  // if (slow_draw){
+  // if (params.slow_draw){
   //   console.log('\n***************');
   //   console.log('** slow draw **');
   //   console.log('***************');
@@ -55973,12 +56087,23 @@ module.exports = function draw_commands(regl, params, slow_draw=false, show_tool
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_row_components(regl, params, slow_draw);
-  draw_col_components(regl, params, slow_draw);
+  draw_row_components(regl, params, params.slow_draw);
+  draw_col_components(regl, params, params.slow_draw);
   draw_spillover_components(regl, params);
 
-  if (show_tooltip){
+  if (params.show_tooltip){
+    // console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
+  }
+
+  if (params.slow_draw){
+    // console.log('----- turn off slow draw -----')
+    params.slow_draw = false;
+  }
+
+  if (params.show_tooltip){
+    // console.log('----- turn off show tooltip ------')
+    params.show_tooltip = false;
   }
 
 };
@@ -55990,10 +56115,11 @@ module.exports = function draw_commands(regl, params, slow_draw=false, show_tool
   !*** ./src/draw_matrix_components.js ***!
   \***************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 // var filter_visible_mat = require('./filter_visible_mat');
-// var make_matrix_args = require('./make_matrix_args');
+var make_matrix_args = __webpack_require__(/*! ./make_matrix_args */ "./src/make_matrix_args.js");
+var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -56011,11 +56137,27 @@ module.exports = function draw_matrix_components(regl, params){
     */
     // // Filter
     // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
-    // // Regenerate args
-    // params.matrix_args = make_matrix_args(regl, params);
 
-    regl(params.matrix_args.regl_props.top)();
-    regl(params.matrix_args.regl_props.bot)();
+
+    /*
+    Reordering Matrix Plan
+    ------------------------
+    I will only re-calculate the matrix_args once for the final position.
+    Since matrix reordering happens to entire rows/cols at once, I will calculate
+    an offset to shift rows/columns to transition from the initial to the final
+    state, then I will replace the current position array with the final
+    position array
+    */
+
+    // // Regenerate args
+    // if (params.animation.time_remain > 0){
+    //   params.matrix_args = make_matrix_args(regl, params);
+    // }
+
+    regl(params.matrix_args.regl_props.rects)({
+      interp_prop: interp_fun(params),
+      run_animation: params.animation.running
+    });
 
   });
 
@@ -56052,6 +56194,8 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
                                                          params.zoom_function);
 
     if (calc_text_tri){
+
+      // console.log('calc row text triangles')
 
       var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
 
@@ -56165,6 +56309,78 @@ module.exports = function draw_tooltip_components(regl, params){
 
 /***/ }),
 
+/***/ "./src/final_interaction_frame.js":
+/*!****************************************!*\
+  !*** ./src/final_interaction_frame.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// var draw_commands = require('./draw_commands');
+module.exports = function final_interaction_frame(regl, params){
+
+  // reduce the number of interactions
+  params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+
+  if (params.zoom_data.x.total_int == 0 && params.initialize_viz == false){
+
+    // preventing from running on first frame
+    if (params.first_frame == false){
+
+      // console.log('\n------------------\nFINAL INTERACTION');
+      // console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
+
+      // run draw commands
+      params.slow_draw = true;
+
+      if (params.zoom_data.x.total_mouseover == 0){
+        // console.log('SLOW_DRAW')
+        // draw_commands(regl, params, slow_draw);
+      }
+
+      // console.log(params.kept_row_y);
+
+    } else {
+      params.first_frame = false;
+    }
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/final_mouseover_frame.js":
+/*!**************************************!*\
+  !*** ./src/final_mouseover_frame.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// var draw_commands = require('./draw_commands');
+
+module.exports = function final_mouseover_frame(regl, params){
+
+  // reduce the number of mouseovers
+  params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
+
+  // console.log('check  ', params.zoom_data.x.total_mouseover)
+  if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
+    // console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
+
+    // run draw commands
+    var slow_draw = true;
+    params.show_tooltip = true;
+
+    // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
+    //   // console.log('final_mouseover_frame', params.show_tooltip)
+    //   // draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
+    // }
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/find_mouseover_element.js":
 /*!***************************************!*\
   !*** ./src/find_mouseover_element.js ***!
@@ -56210,9 +56426,23 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var inst_x = ev.x0;
   var inst_y = ev.y0;
 
+  // var offcenter;
+  // if (axis === 'x'){
+  //   offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
+  // } else {
+  //   offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
+  // }
+
+  // convert offcenter WebGl units to pixel units
+  var offcenter = {};
+  offcenter.x = (params.viz_dim.canvas.width * params.offcenter.x)/2;
+  offcenter.y = (params.viz_dim.canvas.height * params.offcenter.y)/2;
+
   var cursor_rel_min = {};
-  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min
-  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min
+  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
+  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min - offcenter.y;
+
+  // console.log(cursor_rel_min.x, cursor_rel_min.y)
 
   cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
   cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
@@ -56271,9 +56501,7 @@ function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
   // console.log(viz_dim_heat.max)
   if (cursor_rel_min < 0){
     cursor_rel_min = 0;
-  // } else if (cursor_rel_min > viz_dim_heat.max){
   } else if (cursor_rel_min > max_pix){
-    // cursor_rel_min = viz_dim_heat.max;
     cursor_rel_min = max_pix;
   }
   return cursor_rel_min;
@@ -56476,20 +56704,23 @@ module.exports = function ini_zoom_restrict(params){
   zoom_restrict.x = {};
   zoom_restrict.x.max = max_zoom;
   zoom_restrict.x.min = 1.0;
-  zoom_restrict.x.ratio = 1;
+  zoom_restrict.x.ratio = 1.0;
 
   zoom_restrict.y = {};
   zoom_restrict.y.max = max_zoom;
   zoom_restrict.y.min = 1.0;
-  zoom_restrict.y.ratio = 1;
+  zoom_restrict.y.ratio = 1.0;
+
+  var col_vs_row_space = (num_col/params.viz_dim.heat.width)/
+                         (num_row/params.viz_dim.heat.height);
 
   // increase max zoom in y or x direction
   if (num_row > num_col){
-    zoom_restrict.y.max = zoom_restrict.y.max * ( num_row/num_col );
-    zoom_restrict.y.ratio = num_row/num_col;
-  } else if (num_col < num_row) {
-    zoom_restrict.x.max = zoom_restrict.x.max * ( num_col/num_row );
-    zoom_restrict.x.ratio = num_col/num_row;
+    zoom_restrict.y.max = zoom_restrict.y.max * ( 1/col_vs_row_space );
+    zoom_restrict.y.ratio = 1/col_vs_row_space;
+  } else if (num_col > num_row) {
+    zoom_restrict.x.max = zoom_restrict.x.max * col_vs_row_space;
+    zoom_restrict.x.ratio = col_vs_row_space;
   }
 
   return zoom_restrict;
@@ -56539,6 +56770,23 @@ module.exports = function initialize_params(regl, network){
 
   var params = {};
 
+  params.time = 0;
+  params.viz_interact = true;
+
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
+  params.animation.loop = params.time % 5
+
+  params.animation.running = false;
+  params.animation.run_switch = false;
+
+  params.animation.last_switch_time = 0;
+  params.animation.switch_duration = 3;
+
+  params.initialize_viz = true;
+  params.first_frame = true;
+
   // use data from network
   //////////////////////////
   params.network = network;
@@ -56556,8 +56804,8 @@ module.exports = function initialize_params(regl, network){
   Working on resizing the matrix, need to have separte x and y sizes
   */
   params.mat_size = {};
-  params.mat_size.x = 0.7;
-  params.mat_size.y = 0.7;
+  params.mat_size.x = 0.80;
+  params.mat_size.y = 0.80;
 
   params.cat_data = {};
   params.cat_data.row = generate_cat_data(params, 'row');
@@ -56588,9 +56836,16 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  params.offcenter.x = 0.0;
-  params.offcenter.y = 0.0;
+  offcenter_magnitude_x = 0.075;
+  offcenter_magnitude_y = 0.075;
+  params.offcenter.x = offcenter_magnitude_x;
+  params.offcenter.y = offcenter_magnitude_y;
 
+  params.shift_camera = {};
+  params.shift_camera.x = -offcenter_magnitude_x;
+  params.shift_camera.y = offcenter_magnitude_y;
+
+  params.slow_draw = false;
 
   params.zoom_data = ini_zoom_data();
 
@@ -56610,6 +56865,10 @@ module.exports = function initialize_params(regl, network){
   params.inst_order = {};
   params.inst_order.row = 'clust';
   params.inst_order.col = 'clust';
+
+  params.new_order = {};
+  params.new_order.row = 'clust';
+  params.new_order.col = 'clust';
 
 
   params.viz_aid_tri_args = {};
@@ -56641,8 +56900,8 @@ module.exports = function initialize_params(regl, network){
   var spillover_args = {};
 
   // inst_depth is passed to spillover rects
-  var inst_color = [1, 0, 0, 0.25];
-  // var inst_color = [1, 1, 1, 1];
+  // var inst_color = [0, 0, 0, 0.02];
+  var inst_color = [1, 1, 1, 1];
 
   params.spill_depth = {};
   params.spill_depth.mat_sides = 0.5;
@@ -56667,9 +56926,15 @@ module.exports = function initialize_params(regl, network){
   params.spillover_args = spillover_args;
 
   params.show_tooltip = false;
+
+  // the default is to remove the tooltip
+  params.remove_tooltip_frame = true;
+
   params.in_bounds_tooltip = false;
+  params.tooltip = {};
+  params.tooltip.background_opacity = 0.75;
   // make tooltip args
-  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, 0.7]);
+  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
 
   params.viz_dim = calc_viz_dim(regl, params);
 
@@ -56711,11 +56976,13 @@ module.exports = function initialize_params(regl, network){
   params.text_zoom.row.scaled_num = params.num_row;
   params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
   params.text_zoom.row.factor = 1;
+  params.text_zoom.row.max_webgl_fs = 0.05;
 
   params.text_zoom.col = {};
   params.text_zoom.col.scaled_num = params.num_col;
   params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
   params.text_zoom.col.factor = 1;
+  params.text_zoom.col.max_webgl_fs = 0.06;
 
   // font_detail range: min ~12 max ~200
   ////////////////////////////////////////
@@ -56746,7 +57013,15 @@ module.exports = function initialize_params(regl, network){
 
   // have max zoom restricted by column number in a similar manner to
   // how col viz aid triangle restricted zooming in previous version
-  params.max_zoom = params.num_col/2.0;
+
+  var min_dim;
+  if (params.num_col < params.num_row){
+    min_dim = params.num_col;
+  } else {
+    min_dim = params.num_row;
+  }
+
+  params.max_zoom = min_dim/4.0;
   params.zoom_restrict = ini_zoom_restrict(params);
 
   // update zoom_data
@@ -56767,16 +57042,16 @@ module.exports = function initialize_params(regl, network){
   // mnist: 7
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
-    .range([2, 10]);
+    .range([2, 30]);
 
-  params.allowable_zoom_factor = allow_factor(params.num_col);
+  params.allowable_zoom_factor = {};
+  params.allowable_zoom_factor.col = allow_factor(params.num_col);
+  params.allowable_zoom_factor.row = allow_factor(params.num_col);
 
   params.text_scale = {};
 
   // save category colors
   params.cat_colors = params.network.cat_colors;
-
-
 
   return params;
 
@@ -56790,6 +57065,25 @@ module.exports = function initialize_params(regl, network){
   \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
+
+// The MIT License (MIT) Copyright (c) 2018 Ricky Reusser
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// Original license:
+// Touch handling in this module is heavily based on code from the MIT-licensed touch-pinch module.
+
+// The MIT License (MIT) Copyright (c) 2015 Jam3
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // 'use strict';
 
@@ -56816,6 +57110,7 @@ function interactionEvents (opts) {
   var emitter = eventEmitter({});
 
   var element = options.element;
+
   var enabled = false;
   // var mouseDown = false;
   // var wheelSpeed = 0.01;
@@ -57173,6 +57468,25 @@ function interactionEvents (opts) {
 
 /***/ }),
 
+/***/ "./src/interp_fun.js":
+/*!***************************!*\
+  !*** ./src/interp_fun.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
+
+module.exports = function interp_fun(params){
+  inst_ease = ease((params.time - params.animation.last_switch_time) /
+              params.animation.switch_duration);
+
+  // console.log(inst_ease)
+  return inst_ease;
+}
+
+/***/ }),
+
 /***/ "./src/keep_track_of_interactions.js":
 /*!*******************************************!*\
   !*** ./src/keep_track_of_interactions.js ***!
@@ -57232,31 +57546,99 @@ module.exports = function keep_track_of_mouseovers(params){
 
 /*
 
-  Version 0.3.1
+  clustergrammer-gl version 0.4.0
 
  */
 
 // var filename = 'data/mult_view.json';
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
-
-// global variables
-// d3 = require('d3');
+var reorder_panel = __webpack_require__(/*! ./reorder_panel */ "./src/reorder_panel.js")
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+var dendro_panel = __webpack_require__(/*! ./dendro_panel */ "./src/dendro_panel.js");
 
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('version 0.3.1');
+  console.log('clustergrammer-gl version 0.4.0');
   console.log('################################');
 
   var network = args.network;
   var container = args.container;
 
-  var params = run_viz(container, network);
+  d3.select(container).append('div').attr('id', 'control-container')
+  d3.select(container).append('div').attr('id', 'canvas-container')
+
+  var control_container = d3.select(container).select('#control-container')[0][0];
+  var canvas_container = d3.select(container).select('#canvas-container')[0][0];
+
+  var inst_height = 1000;
+  var inst_width = 1000;
+
+  d3.select(control_container)
+    // .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+    .style('display', 'flex')
+
+  d3.select(canvas_container)
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+
+  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
+    extensions: ['angle_instanced_arrays'],
+    container: canvas_container,
+    // pixelRatio: window.devicePixelRatio/10
+  });
+
+  var params = run_viz(regl, network);
 
   var cgm = {};
 
   cgm.params = params;
+
+  panels = {};
+  panels.reorder = {};
+  panels.dendro = {};
+
+  panels.reorder.row = reorder_panel(regl, cgm.params, control_container, 'row');
+  panels.reorder.col = reorder_panel(regl, cgm.params, control_container, 'col');
+  panels.dendro.row = dendro_panel(regl, cgm.params, control_container, 'row');
+  panels.dendro.col = dendro_panel(regl, cgm.params, control_container, 'col');
+
+  panels.reorder.row.on('input', function(data){
+
+      console.log('reordering rows', data)
+      params.animation.run_switch = true;
+      params.new_order.row = data['row Order'];
+
+      params.arrs.position_arr['new'] = make_position_arr(params,
+                                      params.new_order.row,
+                                      params.new_order.col);
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
+  });
+
+  panels.reorder.col.on('input', function(data){
+
+      console.log('reordering columns', data)
+      params.animation.run_switch = true;
+      params.new_order.col = data['col Order'];
+
+      params.arrs.position_arr['new'] = make_position_arr(params,
+                                      params.new_order.row,
+                                      params.new_order.col);
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
+  });
+
 
   return cgm;
 
@@ -57591,20 +57973,37 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor]);
+      .range([1, 10/params.allowable_zoom_factor.col]);
 
-  var total_zoom = params.zoom_data.x.total_zoom;
+  // /* Col Text */
+  // // update text information with zooming
+  // // var limited_scaling = params.text_scale.col(total_zoom);
+  // params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
+  //                                    params.text_scale.col(params.zoom_data.x.total_zoom);
 
-  /* Col Text */
-  // update text information with zooming
-  // var limited_scaling = params.text_scale.col(total_zoom);
-  params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
-                                     params.text_scale.col(total_zoom);
+  // 17.5, lowering makes larger text
+  var final_increase_font_size = params.num_col/5.0;
+  params.text_scale.col = d3.scale.linear()
+      .domain([1, params.max_zoom])
+      .range( [1, final_increase_font_size]);
+  var inst_increase_font_size = params.text_scale.col(params.zoom_data.x.total_zoom);
+
+  var scale_text = params.num_col ; // * params.zoom_data.x.total_zoom / inst_increase_font_size;
+
+  var webgl_fs = (1/params.num_col) * params.zoom_data.x.total_zoom;
+
+  var max_webgl_fs = params.text_zoom.col.max_webgl_fs;
+
+  var scale_down_fs;
+  if (webgl_fs > max_webgl_fs){
+    scale_down_fs = webgl_fs/max_webgl_fs;
+    // console.log('too large webgl text', scale_down_fs)
+
+    scale_text = scale_text * scale_down_fs;
+  }
 
   var mat_rotate =  m3.rotation(Math.PI/4);
-  var text_y_scale = m3.scaling(1, total_zoom);
-
-  var scale_text = params.text_zoom.col.scaled_num;
+  var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
 
   // need to shift col labels up to counteract the rotation by 45%
   var rh_tri_hyp = col_width;
@@ -57694,7 +58093,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       shift_text_up: shift_text_up,
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
-      total_zoom: total_zoom,
+      total_zoom: params.zoom_data.x.total_zoom,
       col_width: col_width,
     },
     depth: {
@@ -57850,78 +58249,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 /***/ }),
 
-/***/ "./src/make_draw_cells_arr.js":
-/*!************************************!*\
-  !*** ./src/make_draw_cells_arr.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
-var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
-
-module.exports = function make_draw_cells_arr(regl, params){
-
-  // Make Arrays
-  var opacity_arr = make_opacity_arr(params);
-  var position_arr = make_position_arr(params);
-
-  var arrs = {};
-  arrs.opacity_arr = opacity_arr;
-  arrs.position_arr = position_arr;
-
-  // arrs.opacity_arr = arrs.opacity_arr.slice(10,20);
-  // arrs.position_arr = arrs.position_arr.slice(10,20);
-
-  // console.log('hard filtering', arrs.opacity_arr.length)
-
-  /*
-  Make initial array and then only keep elements that have opacity above some
-  value as a test. We might try to only render the top opacity elements while
-  zooming to speed up interaction.
-  */
-
-  // _.each(arrs.opacity_arr, function(d){
-    // console.log(d)
-  // })
-
-  return arrs;
-
-};
-
-/***/ }),
-
-/***/ "./src/make_draw_cells_buffers.js":
-/*!****************************************!*\
-  !*** ./src/make_draw_cells_buffers.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_arr){
-
-  // Make Buffers
-  ///////////////////////////
-  var position_buffer = regl.buffer(position_arr);
-
-  const opacity_buffer = regl.buffer({
-    // length: opacity_arr.length,
-    type: 'float',
-    usage: 'dynamic'
-  });
-
-  opacity_buffer(opacity_arr);
-
-  var buffers = {};
-  buffers.opacity_buffer = opacity_buffer;
-  buffers.position_buffer = position_buffer;
-
-  return buffers;
-};
-
-/***/ }),
-
 /***/ "./src/make_matrix_args.js":
 /*!*********************************!*\
   !*** ./src/make_matrix_args.js ***!
@@ -57929,65 +58256,70 @@ module.exports = function make_draw_cells_buffers(regl, position_arr, opacity_ar
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_draw_cells_buffers = __webpack_require__(/*! ./make_draw_cells_buffers */ "./src/make_draw_cells_buffers.js");
 var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
-// var $ = require('jquery');
-var make_draw_cells_arr = __webpack_require__(/*! ./make_draw_cells_arr */ "./src/make_draw_cells_arr.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
 
 module.exports = function make_matrix_args(regl, params){
 
-  // generate position and opacity arrays from params.mat_data
-  params.arrs = make_draw_cells_arr(regl, params);
+  console.log('make_matrix_args')
 
-  // transfer to buffers is slow
-  //////////////////////////////////////////
-  var buffers = make_draw_cells_buffers(regl, params.arrs.position_arr,
-                                        params.arrs.opacity_arr);
+  // make arrays
+  params.arrs = {};
+  params.arrs.opacity_arr = make_opacity_arr(params);
 
-  var opacity_buffer = buffers.opacity_buffer;
-  var position_buffer = buffers.position_buffer;
+  params.arrs.position_arr = {};
 
-  /*
-    Temporarily use latest mat_data dimensions (working on downsampling)
-  */
+  params.arrs.position_arr['ini'] = make_position_arr(params,
+                                               params.inst_order.row,
+                                               params.inst_order.col);
+
+  // params.arrs.position_arr['new'] = make_position_arr(params,
+  //                                              params.new_order.row,
+  //                                              params.new_order.col);
+
+  var opacity_buffer = regl.buffer({
+    type: 'float',
+    usage: 'dynamic'
+  })(params.arrs.opacity_arr);
 
   var tile_width = params.tile_width;
   var tile_height = params.tile_height;
 
-  // bottom half
-  var bottom_half_verts = [
-    [tile_width, 0.0],
-    [0.0,       0.0],
-    [0.0,       tile_height]
-  ];
-
-  // top half
-  var top_half_verts = [
+  var triangle_verts = [
     [tile_width, 0.0 ],
     [tile_width, tile_height],
+    [0.0,       tile_height],
+    [tile_width, 0.0],
+    [0.0,       0.0],
     [0.0,       tile_height]
     ];
 
   var vert_string = `
     precision highp float;
-
     attribute vec2 position;
-
-    // These three are instanced attributes.
-    attribute vec2 pos_att;
+    attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
     uniform mat4 zoom;
+    uniform bool run_animation;
+    uniform float interp_uni;
+    varying vec2 pos;
 
     // pass varying variables to fragment from vector
     varying float opacity_vary;
 
     void main() {
 
+      // Interpolate between the two positions using the interpolate uniform
+      if (run_animation == true){
+        pos = mix(pos_att_ini, pos_att_new, interp_uni);
+      } else {
+        pos = pos_att_ini;
+      }
+
       gl_Position = zoom *
-                    vec4( position.x + pos_att.x,
-                          position.y + pos_att.y,
-                          // positioned further down (spillover rects are
-                          // above at 0.5)
+                    vec4( position.x + pos.x,
+                          position.y + pos.y,
                           0.75,
                           1
                         );
@@ -58008,28 +58340,25 @@ module.exports = function make_matrix_args(regl, params){
       // manually tweaking opacity range, will improve to match old version
 
       if (opacity_vary > 0.0){
-        gl_FragColor = vec4(1, 0, 0, abs(opacity_vary) + 0.15);
+        // gl_FragColor = vec4(1, 0, 0, abs(opacity_vary) + 0.15);
+        gl_FragColor = vec4(1, 0, 0, abs(opacity_vary));
       } else {
-        gl_FragColor = vec4(0, 0, 1, abs(opacity_vary) + 0.15);
+        // gl_FragColor = vec4(0, 0, 1, abs(opacity_vary) + 0.15);
+        gl_FragColor = vec4(0, 0, 1, abs(opacity_vary));
       }
 
     }`;
 
-  var num_instances = params.arrs.position_arr.length;
-
-  // var zoom_function = function(context){
-  //   return context.view;
-  // };
-
+  var num_instances = params.arrs.position_arr['ini'].length;
   var zoom_function = params.zoom_function;
 
-  var top_props = {
+  var inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
-      position: '',
-      pos_att: {
-        buffer: position_buffer,
+      position: triangle_verts,
+      pos_att_ini: {
+        buffer: regl.buffer(params.arrs.position_arr['ini']),
         divisor: 1
       },
       opacity_att: {
@@ -58037,66 +58366,39 @@ module.exports = function make_matrix_args(regl, params){
         divisor: 1
         }
     },
-    blend: blend_info,
-    count: 3,
-    uniforms: {
-      zoom: zoom_function,
-    },
-    instances: num_instances,
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
-  };
-
-  var bot_props = {
-    vert: vert_string,
-    frag: frag_string,
-    attributes: {
-      position: '',
-      pos_att: {
-        buffer: position_buffer,
-        divisor: 1
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
       },
-      opacity_att: {
-        buffer: opacity_buffer,
-        divisor: 1
-        }
-    },
-    blend: blend_info,
-    count: 3,
+    count: 6,
     uniforms: {
       zoom: zoom_function,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
+      run_animation: regl.prop('run_animation')
     },
     instances: num_instances,
     depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
+      enable: false
     },
   };
 
   // draw top and bottom of matrix cells
   //////////////////////////////////////
-  var draw_cells_props = {};
-  draw_cells_props.regl_props = {};
+  var matrix_args = {};
+  matrix_args.regl_props = {};
+  matrix_args.regl_props.rects = inst_properties;
 
-  // var top_props = $.extend(true, {}, regl_props);
-  // var top_props = JSON.parse(JSON.stringify(regl_props))
-  top_props.attributes.position = top_half_verts;
-  draw_cells_props.regl_props.top = top_props;
-
-  // var bot_props = $.extend(true, {}, regl_props);
-  // var bot_props = JSON.parse(JSON.stringify(regl_props))
-  bot_props.attributes.position = bottom_half_verts;
-  draw_cells_props.regl_props.bot = bot_props;
-
-  return draw_cells_props;
+  return matrix_args;
 
 };
 
@@ -58121,8 +58423,8 @@ module.exports = function make_opacity_arr(params){
 
   var opacity_scale = d3.scale.linear();
 
-  var opacity_domain = abs_max_val /1.5;
-  var opacity_range = 0.80;
+  var opacity_domain = abs_max_val;
+  var opacity_range = 1.0;
 
   opacity_scale
     .domain([-opacity_domain, opacity_domain])
@@ -58148,30 +58450,18 @@ module.exports = function make_opacity_arr(params){
 
 // var calc_node_canvas_positions = require('./calc_node_canvas_positions');
 
-module.exports = function make_position_arr(params){
+module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
   var network = params.network;
-
-  // var num_row = params.num_row;
-  // var num_col = params.num_col;
-
   var num_row = params.mat_data.length;
   var num_col = params.mat_data[0].length;
-
-  // calc_node_canvas_positions();
-
-  /*
-
-  reverting to how positions were previously calculated
-
-  */
 
   // draw matrix cells
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.mat_size.x + params.offcenter.x;
-  offset.y = params.mat_size.y + params.offcenter.x;
+  offset.x = params.mat_size.x ;//+ params.offcenter.x;
+  offset.y = params.mat_size.y ;//+ params.offcenter.y;
 
   // generate x position array
   var x_arr = Array(num_col).fill()
@@ -58195,9 +58485,6 @@ module.exports = function make_position_arr(params){
   // pass along row and col node information
   var row_nodes = network.row_nodes;
   var col_nodes = network.col_nodes;
-
-  var inst_row_order = params.inst_order.row;
-  var inst_col_order = params.inst_order.col;
 
   /*
     working on saving actual row positions (downsampling)
@@ -58268,28 +58555,48 @@ var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
   // // prevent text from getting too large when zooming
-  params.text_scale.row = d3.scale.linear()
-      .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor]);
+  // params.text_scale.row = d3.scale.linear()
+  //     .domain([1, 20])
+  //     .range( [1, 20/params.allowable_zoom_factor.row]);
+
 
   // smaller scale_text -> larger text
   // var limited_scaling = params.text_scale.row(total_zoom);
 
-  var total_zoom = params.zoom_data.y.total_zoom;
+  // var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(params.zoom_data.y.total_zoom);
+  // var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom;
 
-  var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(total_zoom);
+  // // prevent text from getting too large when zooming
+  // // 17.5, lowering makes larger text
+  // params.text_scale.row = d3.scale.linear()
+  //     .domain([1, params.max_zoom])
+  //     .range( [1, params.num_row]);
+  // var inst_increase_font_size = params.text_scale.row(params.zoom_data.y.total_zoom);
 
-  // scale_text is applying a zoom to x and y
-  // needs to be scaled by scale_text
+
+  var scale_text = params.num_row// * params.zoom_data.y.total_zoom ; /// inst_increase_font_size;
+
+  var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
+
+  var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
+
+  var scale_down_fs;
+  if (webgl_fs > max_webgl_fs){
+    scale_down_fs = webgl_fs/max_webgl_fs;
+    // console.log('too large webgl text', scale_down_fs)
+
+    scale_text = scale_text * scale_down_fs;
+  }
+
+  // if (scale_text < 37){
+  //   scale_text = 37;
+  // }
+
+  // console.log('scale_text', (1/params.num_row) * params.zoom_data.y.total_zoom )
+
   var mat_rotate = m3.rotation(Math.PI/2);
 
   var x_offset = params.mat_size.x + 0.02;
-
-  /*
-  scale_text is becoming negative for large matrices which is causing weird
-  behavior
-  */
-  // console.log('scale_text', scale_text)
 
   var vert_arg = `
       precision mediump float;
@@ -58353,7 +58660,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       x_offset: x_offset,
       heat_size: params.heat_size.y,
       shift_heat: params.mat_size.y - params.heat_size.y,
-      total_zoom: total_zoom,
+      total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate
     },
     depth: {
@@ -58477,15 +58784,29 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
       inst_depth: inst_depth
     },
 
-    blend: blend_info,
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
+
     count: 3,
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
+    // depth: {
+    //   enable: true,
+    //   mask: true,
+    //   func: 'less',
+    //   // func: 'greater',
+    //   range: [0, 1]
+    // },
   };
 
   return args;
@@ -58799,6 +59120,42 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./src/reorder_panel.js":
+/*!******************************!*\
+  !*** ./src/reorder_panel.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+
+module.exports = function reorder_panel(regl, params, control_container, inst_axis){
+
+  var axis_name;
+  if (inst_axis === 'row'){
+    axis_name = 'Row';
+  } else {
+    axis_name = 'Column'
+  }
+
+  var panel_width = 250;
+
+  var inst_panel = control([
+
+    {type: 'select', label: inst_axis + ' Order', options: {'clust':'Cluster', 'rank':'Rank'}, initial: 'option 1', action: function(){
+      console.log('something')
+      params.animation.run_switch = true;
+    }},
+  ],
+    {theme: 'light', root:control_container, title: axis_name + ' Options', width:panel_width}
+  );
+
+  return inst_panel;
+
+};
+
+/***/ }),
+
 /***/ "./src/run_viz.js":
 /*!************************!*\
   !*** ./src/run_viz.js ***!
@@ -58809,66 +59166,111 @@ module.exports = {
 var initialize_params = __webpack_require__(/*! ./initialize_params */ "./src/initialize_params.js");
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
-var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+var final_mouseover_frame = __webpack_require__(/*! ./final_mouseover_frame */ "./src/final_mouseover_frame.js");
+var final_interaction_frame = __webpack_require__(/*! ./final_interaction_frame */ "./src/final_interaction_frame.js");
 
-module.exports = function run_viz(container, network){
-
-  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
-    extensions: ['angle_instanced_arrays'],
-    container: container,
-    // pixelRatio: window.devicePixelRatio/10
-  });
-
-  // console.log('run_viz loading regl')
-  // console.log(network)
-
-  // console.log('****************');
-  // console.log('** initialize **');
-  // console.log('****************');
-
-  // var network = JSON.parse(assets.viz);
-
-  // var tick = 0;
-  // var has_been_both = false;
-  var initialize_viz = true;
+module.exports = function run_viz(regl, network){
 
   // global params
   var params = initialize_params(regl, network);
 
-  var first_frame = true;
+  params.first_frame = true;
   var wait_time_final_interact = 100;
   var wait_time_final_mouseover = 100;
 
-  regl.frame(function () {
 
-    // interaction (zoom/drag) causes a draw command, the final draw command
-    // is run when the interaction stops
-    if (params.still_interacting == true || initialize_viz == true){
+  regl.frame(function ({time}) {
+
+    // console.log(params.slow_draw)
+
+    params.time = time;
+    params.animation.loop = 0 ;
+
+    if (params.animation.run_switch){
+      console.log('turn switch off')
+      params.animation.run_switch = false;
+      params.animation.last_switch_time = time
+      params.animation.running = true;
+    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
+
+      cgm.params.animation.running = false;
+      params.animation.run_switch = false;
+      console.log('finish switch!!!!!!!!!!!');
+
+      // transfer the new positions to the matrix args attributes
+      params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
+    }
+
+    // run draw command
+    if (params.still_interacting == true || params.initialize_viz == true ||
+        // params.animation.running || params.show_tooltip){
+        params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
       draw_commands(regl, params);
 
-      setTimeout(final_interaction_frame, wait_time_final_interact, params);
+      setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
-      // console.log('draw');
-      initialize_viz = false;
+      params.initialize_viz = false;
+
+      if (params.animation.time_remain > 0){
+        params.animation.time_remain = params.animation.time_remain - 1;
+        // console.log('animation: ', params.animation.time_remain);
+      }
+
+      // // set up extra frame specifically to remove old tooltip
+      // if (params.show_tooltip){
+      //   params.show_tooltip = false;
+      //   console.log('initialize remove_tooltip_frame')
+      //   params.remove_tooltip_frame = true;
+      // }
 
     }
 
-    // mouseover interaction starting then ending will cause a draw comand
-    if (params.still_mouseover == true){
+    // mouseover may result in draw command
+    else if (params.still_mouseover == true){
 
-      // console.log('still_mouseover')
+      // console.log('still_mouseover', params.remove_tooltip_frame)
+
+      /////////////////////////////////////
+      /////////////////////////////////////
+      // mouseover draw is causing some flashing after animation, clean up later
+      ////////////////////////////////////
+      /////////////////////////////////////
+
       params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
       // remove old tooltip
-      if (params.show_tooltip == true){
+      if (params.remove_tooltip_frame){
+        // console.log('remove old tooltip ***********')
         params.show_tooltip = false;
         draw_commands(regl, params);
       }
 
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, params);
+      if (params.remove_tooltip_frame){
+          // console.log('--- shut down remove_tooltip_frame')
+        params.remove_tooltip_frame = false;
+      }
+
+      // wait_time_final_mouseover = 0;
+      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+
+    } else if (params.slow_draw || params.show_tooltip){
+
+      // console.log('SLOW DRAW!!!!!!!!!!!!!!')
+      draw_commands(regl, params);
+      params.remove_tooltip_frame = true;
+
+      // set up extra frame specifically to remove old tooltip
+      if (params.show_tooltip){
+        params.show_tooltip = false;
+        // console.log('initialize remove_tooltip_frame')
+      }
 
     } else {
 
@@ -58883,64 +59285,113 @@ module.exports = function run_viz(container, network){
 
     }
 
-    // // wait to draw
-    // setTimeout(final_interaction_frame, wait_time_final_interact, params);
 
   });
-
-
-  function final_mouseover_frame(params){
-
-    // reduce the number of mouseovers
-    params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
-
-    // console.log('check  ', params.zoom_data.x.total_mouseover)
-    if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
-      console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
-
-      // run draw commands
-      var slow_draw = true;
-      params.show_tooltip = true;
-
-      if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-        draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
-      }
-
-    }
-  }
-
-  function final_interaction_frame(params){
-
-    // reduce the number of interactions
-    params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
-
-    if (params.zoom_data.x.total_int == 0 && initialize_viz == false){
-
-      // preventing from running on first frame
-      if (first_frame == false){
-
-        console.log('\n------------------\nFINAL INTERACTION');
-        console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
-
-        // run draw commands
-        var slow_draw = true;
-
-        if (params.zoom_data.x.total_mouseover == 0){
-          draw_commands(regl, params, slow_draw);
-        }
-
-        // console.log(params.kept_row_y);
-
-      } else {
-        first_frame = false;
-      }
-    }
-
-  }
 
   return params;
 
 };
+
+/***/ }),
+
+/***/ "./src/track_interaction_zoom_data.js":
+/*!********************************************!*\
+  !*** ./src/track_interaction_zoom_data.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zoom_rules_low_mat = __webpack_require__(/*! ./zoom_rules_low_mat */ "./src/zoom_rules_low_mat.js");
+var find_mouseover_element = __webpack_require__(/*! ./find_mouseover_element */ "./src/find_mouseover_element.js");
+var keep_track_of_interactions = __webpack_require__(/*! ./keep_track_of_interactions */ "./src/keep_track_of_interactions.js");
+var keep_track_of_mouseovers = __webpack_require__(/*! ./keep_track_of_mouseovers */ "./src/keep_track_of_mouseovers.js");
+
+module.exports = function track_interaction_zoom_data(regl, params, ev){
+
+  // console.log('track interaction zoom data')
+
+  var zoom_data = params.zoom_data;
+  var zoom_restrict = params.zoom_restrict;
+  var viz_dim = params.viz_dim;
+
+  var interaction_types = ['wheel', 'touch', 'pinch'];
+
+  if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
+
+    switch (ev.type) {
+      case 'wheel':
+        ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+        ev.dx = ev.dy = 0;
+        break;
+    }
+
+    // transfer data from ev to zoom_data
+    zoom_data.x.inst_zoom = ev.dsx;
+    zoom_data.x.pan_by_drag = ev.dx;
+    zoom_data.x.cursor_position = ev.x0;
+
+    zoom_data.y.inst_zoom = ev.dsy;
+    zoom_data.y.pan_by_drag = ev.dy;
+    zoom_data.y.cursor_position = ev.y0;
+
+    /*
+      Zoom Switch: adjust x/y zooming based on non-square matrices
+    */
+    // set up two-stage zooming
+    if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
+
+      // console.log('restrict X zoom')
+      zoom_data.x.inst_zoom = 1;
+
+      var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
+
+      // check potential_zoom
+      if (potential_zoom > zoom_restrict.y.ratio){
+
+        // bump x inst_zoom
+        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
+
+      }
+
+    }
+
+    else if (zoom_data.x.total_zoom < zoom_restrict.x.ratio){
+      // console.log('restrict Y zoom')
+
+      zoom_data.y.inst_zoom = 1;
+
+      var potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
+
+      // check potential_zoom
+      if (potential_zoom > zoom_restrict.x.ratio){
+
+        // bump x inst_zoom
+        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
+
+      }
+
+    }
+
+    // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
+    zoom_data.x = zoom_rules_low_mat(params, zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
+    zoom_data.y = zoom_rules_low_mat(params, zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
+
+    keep_track_of_interactions(params);
+
+  } else if (ev.type === 'mousemove'){
+
+    // trying to keep track of interactions for mouseovers
+    keep_track_of_mouseovers(params);
+
+    find_mouseover_element(regl, params, ev);
+
+    // console.log('dragging', ev.type)
+
+  } else {
+    console.log('not tracking anything')
+  }
+
+}
 
 /***/ }),
 
@@ -58952,17 +59403,11 @@ module.exports = function run_viz(container, network){
 /***/ (function(module, exports, __webpack_require__) {
 
 var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/interaction-events.js");
+// var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
-var zoom_rules_low_mat = __webpack_require__(/*! ./zoom_rules_low_mat */ "./src/zoom_rules_low_mat.js");
-var keep_track_of_interactions = __webpack_require__(/*! ./keep_track_of_interactions */ "./src/keep_track_of_interactions.js");
-var keep_track_of_mouseovers = __webpack_require__(/*! ./keep_track_of_mouseovers */ "./src/keep_track_of_mouseovers.js");
-var find_mouseover_element = __webpack_require__(/*! ./find_mouseover_element */ "./src/find_mouseover_element.js");
+var track_interaction_zoom_data = __webpack_require__(/*! ./track_interaction_zoom_data */ "./src/track_interaction_zoom_data.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
-
-  var zoom_data = params.zoom_data;
-  var zoom_restrict = params.zoom_restrict;
-  var viz_dim = params.viz_dim;
 
   var opts = opts || {};
   var options = extend({
@@ -58971,72 +59416,54 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
   var element = options.element;
 
-  var interaction_types = ['wheel', 'touch', 'pinch'];
+  /////////////////////////////////////////
+  // Original interaction tracking
+  /////////////////////////////////////////
 
   interactionEvents({
     element: element,
   })
   .on('interaction', function(ev){
 
-    // console.log(ev.type)
+    // working on toggling tracking for cases when we need to ignore
+    // (e.g. moving a slider)
+    if (params.viz_interact){
+      track_interaction_zoom_data(regl, params, ev);
+    } else {
 
-    if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
-
-      switch (ev.type) {
-        case 'wheel':
-          ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-          ev.dx = ev.dy = 0;
-          break;
+      // example of tracking dragging while clicking (buttons)
+      // will set up someting to not track interactions when mousing over
+      // buttons and sliders
+      if (ev.buttons){
+        console.log('not tracking ', ev.dx, ev.dy);
       }
-
-      // transfer data from ev to zoom_data
-      zoom_data.x.inst_zoom = ev.dsx;
-      zoom_data.x.pan_by_drag = ev.dx;
-      zoom_data.x.cursor_position = ev.x0;
-
-      zoom_data.y.inst_zoom = ev.dsy;
-      zoom_data.y.pan_by_drag = ev.dy;
-      zoom_data.y.cursor_position = ev.y0;
-
-      /*
-        Zoom Switch only working for tall matrices not wide matrices
-      */
-      // set up two-stage zooming
-      if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
-
-        zoom_data.x.inst_zoom = 1;
-
-        var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
-
-        // check potential_zoom
-        if (potential_zoom > zoom_restrict.y.ratio){
-
-          // bump x inst_zoom
-          zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
-
-        }
-
-      }
-
-      // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
-      zoom_data.x = zoom_rules_low_mat(zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
-      zoom_data.y = zoom_rules_low_mat(zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
-
-      keep_track_of_interactions(params);
-
-    } else if (ev.type === 'mousemove'){
-
-      // // trying to keep track of interactions for mouseovers
-      keep_track_of_mouseovers(params);
-
-      find_mouseover_element(regl, params, ev);
 
     }
 
   })
   .on('interactionend', function(ev){
-    console.log(ev.type)
+
+    // clicking
+    // params.animation.time_remain = params.animation.time_remain + 20;
+    console.log('CLICKING', ev.type)
+
+    // // hacky way of starting animation
+    // params.animation.run_switch = true;
+
   });
+
+  // /////////////////////////////////////////
+  // // Alternate interaction tracking
+  // /////////////////////////////////////////
+
+  // normalizedInteractionEvents({
+  //   element: element
+  // })
+  // .on('wheel', function (ev) {
+  //   // console.log('norm interact: zoom rules');
+  //   track_interaction_zoom_data(regl, params, ev);
+  // });
+
 
 };
 
@@ -59050,15 +59477,23 @@ module.exports = function zoom_rules_high_mat(regl, params){
 /***/ (function(module, exports) {
 
 
-module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
+module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
+
+  // convert offcenter WebGl units to pixel units
+  var offcenter;
+  if (axis === 'x'){
+    offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
+  } else {
+    offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
+  }
 
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);
 
-  /////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   // Zooming Rules
-  /////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   var max_zoom = zoom_restrict.max;
   var min_zoom = zoom_restrict.min;
@@ -59096,26 +59531,19 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
       zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {
 
-      // declare that this is zooming_below_one
-      // if (zoom_data.total_zoom == 1){
-        // if (axis === 'x'){
-        //   console.log('zooming_below_one')
-        // }
-        // zooming_below_one = false;
-      // }
-
       // bump zoom down to min
       zoom_data.inst_zoom =  min_zoom/zoom_data.total_zoom;
       // set zoom to min
       zoom_data.total_zoom = min_zoom;
     }
   }
-    // working on fixing zoom restrict when cursor is outside of matrix
-    var inst_offset = viz_dim_mat.max - viz_dim_heat.max
 
-  //////////////////////////////////
-  // Pan Rules
-  //////////////////////////////////
+  // working on fixing zoom restrict when cursor is outside of matrix
+  var inst_offset = viz_dim_mat.max - viz_dim_heat.max;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Pan by Drag Rules
+  //////////////////////////////////////////////////////////////////////////////
 
   // do not allow simultaneous panning and zooming
   if (zoom_data.inst_zoom > 1){
@@ -59138,24 +59566,25 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     }
   }
 
-  // restrict effective position of mouse
-  if (zoom_data.cursor_position < viz_dim_heat.min){
-    zoom_data.cursor_position = viz_dim_heat.min;
-    // console.log(axis, 'less than min cursor position', viz_dim_heat.min);
-  } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset){
 
-    zoom_data.cursor_position = viz_dim_heat.max + inst_offset;
+  // if (axis === 'x'){
+  //   console.log(zoom_data.cursor_position, viz_dim_heat.min, offcenter, viz_dim_heat.min + offcenter)
+  // }
+
+  // restrict effective position of mouse
+  if (zoom_data.cursor_position < viz_dim_heat.min + offcenter){
+    zoom_data.cursor_position = viz_dim_heat.min + offcenter;
+    // if (axis === 'x'){
+    //   console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
+    // }
+  } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset  + offcenter){
+
+    zoom_data.cursor_position = viz_dim_heat.max + inst_offset + offcenter;
 
   }
 
-  // /*
-  //   Working on viz aid triangles
-  // */
-  // // always set cursor position to min matrix position
-  // zoom_data.cursor_position = viz_dim_heat.min;
-
   // tracking cursor position relative to the minimum
-  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min;
+  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min - offcenter;
 
   /* Cursor restriction does not seem to be doing anything */
 
@@ -59170,7 +59599,7 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   // tracking cursor position relative to the maximum
   /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
-  var cursor_relative_max = viz_dim_heat.max + inst_offset - zoom_data.cursor_position;
+  var cursor_relative_max = viz_dim_heat.max + inst_offset - zoom_data.cursor_position +  offcenter;
 
   // restrict cursor_relative_max
   if (cursor_relative_max < 0){
@@ -59180,8 +59609,12 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     cursor_relative_max = viz_dim_heat.max + inst_offset;
     // console.log('HIGHER than max ############################')
   }
-  // console.log(cursor_relative_min, cursor_relative_max)
 
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Pan by Zoom Rules
+  //////////////////////////////////////////////////////////////////////////////
 
   // pan_by_zoom relative to matrix max and min
   // zooming in causes negative panning
@@ -59189,6 +59622,10 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
   var inst_eff_zoom = zoom_data.inst_zoom - 1;
   zoom_data.pbz_relative_min = -inst_eff_zoom * cursor_relative_min;
   zoom_data.pbz_relative_max = -inst_eff_zoom * cursor_relative_max;
+
+  // if (axis === 'x'){
+  //   console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
+  // }
 
   // calculate unsanitized versions of total pan values
   var potential_total_pan_min = zoom_data.total_pan_min +
@@ -59232,13 +59669,13 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     // push over by total_pan (negative value) times total zoom applied
     // need to push more when matrix has been effectively increased in size
     // steps: 1) pin to min matrix, and 2) push right (positive) by total remaining pan
-    zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.min - zoom_data.total_pan_min * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.min + offcenter) - zoom_data.total_pan_min * zoom_data.total_zoom;
 
     // set total_pan_min to 0, no panning room remaining after being pushed right
     zoom_data.total_pan_min = 0;
 
     // the cursor is effectively locked on the min (left) side of the matrix
-    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min;
+    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + offcenter;
     var new_pbz_relative_max = -inst_eff_zoom * new_cursor_relative_max;
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
@@ -59261,20 +59698,21 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
 
   if (potential_total_pan_max > zero_threshold) {
 
-    console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
+    // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
 
     // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
     // total_pan_max
     // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
-    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset) + zoom_data.total_pan_max * zoom_data.total_zoom;
+    // zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset) + zoom_data.total_pan_max * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
     zoom_data.total_pan_max = 0 ;
 
     // the cursor is effectively locked on the max (right) side of the matrix
     // var new_cursor_relative_min = viz_dim_heat.max - viz_dim_heat.min;
-    var new_cursor_relative_min = viz_dim_heat.max + inst_offset - viz_dim_heat.min;
+    var new_cursor_relative_min = viz_dim_heat.max + inst_offset - viz_dim_heat.min + offcenter;
     var new_pbz_relative_min = -inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
@@ -59287,15 +59725,13 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
       zoom_data.total_pan_min = 0;
     }
 
-
-    // if (axis === 'x' && has_been_both === true){
-    //   // debugger
-    // }
-
     zoom_data.prev_restrict = 'max';
 
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Double Restriction
+  //////////////////////////////////////////////////////////////////////////////
 
   // if double restrict, pin to side that was previously pinned
   if (double_restrict){
@@ -59307,11 +59743,13 @@ module.exports = function zoom_rules_low_mat(zoom_restrict, zoom_data,
     // no need to push it to the edge since it was previously pushed to the edge
     if (zoom_data_copy.prev_restrict === 'min') {
 
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.min;
+      zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.min + offcenter);
 
     } else if (zoom_data_copy.prev_restrict === 'max'){
 
-      zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max;
+      // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max;
+      // zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
+      zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
 
     }
 

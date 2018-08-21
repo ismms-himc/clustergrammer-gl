@@ -1,6 +1,6 @@
 /*
 
-  Version 0.3.1
+  clustergrammer-gl version 0.4.0
 
  */
 
@@ -13,9 +13,8 @@ var dendro_panel = require('./dendro_panel');
 
 function clustergrammer_gl(args){
 
-
   console.log('################################');
-  console.log('version 0.3.1');
+  console.log('clustergrammer-gl version 0.4.0');
   console.log('################################');
 
   var network = args.network;

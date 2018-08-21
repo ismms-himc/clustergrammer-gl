@@ -1,20 +1,20 @@
 /*
 
-  clustergrammer-gl version 0.4.0
+  clustergrammer-gl version 0.4.1
 
  */
 
 // var filename = 'data/mult_view.json';
 
 var run_viz = require('./run_viz');
-var reorder_panel = require('./reorder_panel')
+// var reorder_panel = require('./reorder_panel')
+// var dendro_panel = require('./dendro_panel');
 var make_position_arr = require('./make_position_arr');
-var dendro_panel = require('./dendro_panel');
 
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.0');
+  console.log('clustergrammer-gl version 0.4.1');
   console.log('################################');
 
   var network = args.network;
@@ -50,48 +50,48 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  panels = {};
-  panels.reorder = {};
-  panels.dendro = {};
+  // panels = {};
+  // panels.reorder = {};
+  // panels.dendro = {};
 
-  panels.reorder.row = reorder_panel(regl, cgm.params, control_container, 'row');
-  panels.reorder.col = reorder_panel(regl, cgm.params, control_container, 'col');
-  panels.dendro.row = dendro_panel(regl, cgm.params, control_container, 'row');
-  panels.dendro.col = dendro_panel(regl, cgm.params, control_container, 'col');
+  // panels.reorder.row = reorder_panel(regl, cgm.params, control_container, 'row');
+  // panels.reorder.col = reorder_panel(regl, cgm.params, control_container, 'col');
+  // panels.dendro.row = dendro_panel(regl, cgm.params, control_container, 'row');
+  // panels.dendro.col = dendro_panel(regl, cgm.params, control_container, 'col');
 
-  panels.reorder.row.on('input', function(data){
+  // panels.reorder.row.on('input', function(data){
 
-      console.log('reordering rows', data)
-      params.animation.run_switch = true;
-      params.new_order.row = data['row Order'];
+  //     console.log('reordering rows', data)
+  //     params.animation.run_switch = true;
+  //     params.new_order.row = data['row Order'];
 
-      params.arrs.position_arr['new'] = make_position_arr(params,
-                                      params.new_order.row,
-                                      params.new_order.col);
+  //     params.arrs.position_arr['new'] = make_position_arr(params,
+  //                                     params.new_order.row,
+  //                                     params.new_order.col);
 
-      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-            buffer: regl.buffer(params.arrs.position_arr['new']),
-            divisor: 1
-          };
+  //     params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+  //           buffer: regl.buffer(params.arrs.position_arr['new']),
+  //           divisor: 1
+  //         };
 
-  });
+  // });
 
-  panels.reorder.col.on('input', function(data){
+  // panels.reorder.col.on('input', function(data){
 
-      console.log('reordering columns', data)
-      params.animation.run_switch = true;
-      params.new_order.col = data['col Order'];
+  //     console.log('reordering columns', data)
+  //     params.animation.run_switch = true;
+  //     params.new_order.col = data['col Order'];
 
-      params.arrs.position_arr['new'] = make_position_arr(params,
-                                      params.new_order.row,
-                                      params.new_order.col);
+  //     params.arrs.position_arr['new'] = make_position_arr(params,
+  //                                     params.new_order.row,
+  //                                     params.new_order.col);
 
-      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-            buffer: regl.buffer(params.arrs.position_arr['new']),
-            divisor: 1
-          };
+  //     params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+  //           buffer: regl.buffer(params.arrs.position_arr['new']),
+  //           divisor: 1
+  //         };
 
-  });
+  // });
 
 
   return cgm;

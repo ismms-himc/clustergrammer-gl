@@ -162,8 +162,8 @@ module.exports = function initialize_params(regl, network){
   var spillover_args = {};
 
   // inst_depth is passed to spillover rects
-  var inst_color = [1, 0, 0, 0.25];
-  // var inst_color = [1, 1, 1, 1];
+  // var inst_color = [0, 0, 0, 0.02];
+  var inst_color = [1, 1, 1, 1];
 
   params.spill_depth = {};
   params.spill_depth.mat_sides = 0.5;

@@ -47359,8 +47359,8 @@ module.exports = function initialize_params(regl, network){
   var spillover_args = {};
 
   // inst_depth is passed to spillover rects
-  var inst_color = [1, 0, 0, 0.25];
-  // var inst_color = [1, 1, 1, 1];
+  // var inst_color = [0, 0, 0, 0.02];
+  var inst_color = [1, 1, 1, 1];
 
   params.spill_depth = {};
   params.spill_depth.mat_sides = 0.5;
@@ -49544,27 +49544,12 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
   var panel_width = 250;
 
   var panel_1 = control([
-    // {type: 'range', label: 'my range', min: 0, max: 100, initial: 20},
-    // {type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log'},
-    // {type: 'checkbox', label: 'my checkbox', initial: true},
-    // {type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)'},
-    // {type: 'button', label: 'Alphabetically', action: function () {
-    //   params.animation.run_switch = true;
-    // }},
-    // {type: 'button', label: 'Cluster', action: function () {
-    //   params.animation.run_switch = true;
-    // }},
-    // {type: 'button', label: 'Rank by Sum', action: function () {
-    //   // params.animation.run_switch = true;
-    // }},
-    // {type: 'button', label: 'Rank by Variance', action: function () {
-    //   // params.animation.run_switch = true;
-    // }},
+
     {type: 'select', label: inst_axis + ' Order', options: {'clust':'Cluster', 'rank':'Rank'}, initial: 'option 1', action: function(){
       console.log('something')
       params.animation.run_switch = true;
     }},
-    {type: 'text', label: inst_axis + ' Search', initial: 'my cool setting'},
+    // {type: 'text', label: inst_axis + ' Search', initial: 'my cool setting'},
     // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
   ],
     {theme: 'light', root:control_container, title: inst_axis + ' Options', width:panel_width}
@@ -49577,7 +49562,6 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
       params.animation.run_switch = true;
       // params.new_order.row = data['row Order'];
       params.new_order.col = data['col Order'];
-
 
       // console.log(params.new_order.row, params.new_order.col)
 

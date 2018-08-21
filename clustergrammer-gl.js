@@ -47263,8 +47263,8 @@ module.exports = function initialize_params(regl, network){
   Working on resizing the matrix, need to have separte x and y sizes
   */
   params.mat_size = {};
-  params.mat_size.x = 0.825;
-  params.mat_size.y = 0.825;
+  params.mat_size.x = 0.80;
+  params.mat_size.y = 0.80;
 
   params.cat_data = {};
   params.cat_data.row = generate_cat_data(params, 'row');
@@ -47295,8 +47295,8 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  offcenter_magnitude_x = 0.1;
-  offcenter_magnitude_y = 0.1;
+  offcenter_magnitude_x = 0.075;
+  offcenter_magnitude_y = 0.075;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
@@ -47435,13 +47435,13 @@ module.exports = function initialize_params(regl, network){
   params.text_zoom.row.scaled_num = params.num_row;
   params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
   params.text_zoom.row.factor = 1;
-  params.text_zoom.row.max_webgl_fs = 0.04;
+  params.text_zoom.row.max_webgl_fs = 0.05;
 
   params.text_zoom.col = {};
   params.text_zoom.col.scaled_num = params.num_col;
   params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
   params.text_zoom.col.factor = 1;
-  params.text_zoom.col.max_webgl_fs = 0.05;
+  params.text_zoom.col.max_webgl_fs = 0.06;
 
   // font_detail range: min ~12 max ~200
   ////////////////////////////////////////
@@ -48406,7 +48406,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){
     scale_down_fs = webgl_fs/max_webgl_fs;
-    console.log('too large webgl text', scale_down_fs)
+    // console.log('too large webgl text', scale_down_fs)
 
     scale_text = scale_text * scale_down_fs;
   }
@@ -48992,7 +48992,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){
     scale_down_fs = webgl_fs/max_webgl_fs;
-    console.log('too large webgl text', scale_down_fs)
+    // console.log('too large webgl text', scale_down_fs)
 
     scale_text = scale_text * scale_down_fs;
   }

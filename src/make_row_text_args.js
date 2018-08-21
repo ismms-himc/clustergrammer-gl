@@ -31,7 +31,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){
     scale_down_fs = webgl_fs/max_webgl_fs;
-    console.log('too large webgl text', scale_down_fs)
+    // console.log('too large webgl text', scale_down_fs)
 
     scale_text = scale_text * scale_down_fs;
   }

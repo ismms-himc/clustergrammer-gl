@@ -46450,6 +46450,39 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
 /***/ }),
 
+/***/ "./src/dendro_panel.js":
+/*!*****************************!*\
+  !*** ./src/dendro_panel.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
+
+module.exports = function dendro_panel(regl, params, control_container, inst_axis){
+
+  var axis_name;
+  if (inst_axis === 'row'){
+    axis_name = 'Row';
+  } else {
+    axis_name = 'Column'
+  }
+
+  var panel_width = 250;
+
+  var inst_panel = control([
+
+    {type: 'range', label: 'range slider', min: 0, max: 100, initial: 20},
+  ],
+    {theme: 'light', root:control_container, title: axis_name + ' Dendrogram', width:panel_width}
+
+  );
+
+  return inst_panel;
+}
+
+/***/ }),
+
 /***/ "./src/draw_col_components.js":
 /*!************************************!*\
   !*** ./src/draw_col_components.js ***!
@@ -48014,6 +48047,7 @@ module.exports = function keep_track_of_mouseovers(params){
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 var reorder_panel = __webpack_require__(/*! ./reorder_panel */ "./src/reorder_panel.js")
 var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+var dendro_panel = __webpack_require__(/*! ./dendro_panel */ "./src/dendro_panel.js");
 
 function clustergrammer_gl(args){
 
@@ -48055,12 +48089,33 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  control_panels = {};
+  panels = {};
+  panels.reorder = {};
+  panels.dendro = {};
 
-  control_panels.row = reorder_panel(regl, cgm.params, control_container, 'row');
-  control_panels.col = reorder_panel(regl, cgm.params, control_container, 'col');
+  panels.reorder.row = reorder_panel(regl, cgm.params, control_container, 'row');
+  panels.reorder.col = reorder_panel(regl, cgm.params, control_container, 'col');
+  panels.dendro.row = dendro_panel(regl, cgm.params, control_container, 'row');
+  panels.dendro.col = dendro_panel(regl, cgm.params, control_container, 'col');
 
-  control_panels.col.on('input', function(data){
+  panels.reorder.row.on('input', function(data){
+
+      console.log('reordering rows', data)
+      params.animation.run_switch = true;
+      params.new_order.row = data['row Order'];
+
+      params.arrs.position_arr['new'] = make_position_arr(params,
+                                      params.new_order.row,
+                                      params.new_order.col);
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
+  });
+
+  panels.reorder.col.on('input', function(data){
 
       console.log('reordering columns', data)
       params.animation.run_switch = true;
@@ -48077,22 +48132,6 @@ function clustergrammer_gl(args){
 
   });
 
-  control_panels.row.on('input', function(data){
-
-      console.log('reordering rows', data)
-      params.animation.run_switch = true;
-      params.new_order.row = data['row Order'];
-
-      params.arrs.position_arr['new'] = make_position_arr(params,
-                                      params.new_order.row,
-                                      params.new_order.col);
-
-      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-            buffer: regl.buffer(params.arrs.position_arr['new']),
-            divisor: 1
-          };
-
-  });
 
   return cgm;
 
@@ -49585,6 +49624,13 @@ var control = __webpack_require__(/*! control-panel */ "./node_modules/control-p
 
 module.exports = function reorder_panel(regl, params, control_container, inst_axis){
 
+  var axis_name;
+  if (inst_axis === 'row'){
+    axis_name = 'Row';
+  } else {
+    axis_name = 'Column'
+  }
+
   var panel_width = 250;
 
   var inst_panel = control([
@@ -49593,11 +49639,8 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
       console.log('something')
       params.animation.run_switch = true;
     }},
-    // {type: 'text', label: inst_axis + ' Search', initial: 'my cool setting'},
-    // {type: 'multibox', label: 'check many', count: 3, initial: [true, false, true]}
   ],
-    {theme: 'light', root:control_container, title: inst_axis + ' Options', width:panel_width}
-    // {theme: 'light', position: 'top-left'}
+    {theme: 'light', root:control_container, title: axis_name + ' Options', width:panel_width}
   );
 
   return inst_panel;
@@ -49647,6 +49690,7 @@ module.exports = function run_viz(regl, network){
       params.animation.run_switch = false;
       console.log('finish switch!!!!!!!!!!!');
 
+      // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
             buffer: regl.buffer(params.arrs.position_arr['new']),
             divisor: 1

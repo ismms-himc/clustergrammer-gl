@@ -32,6 +32,7 @@ module.exports = function run_viz(regl, network){
       params.animation.run_switch = false;
       console.log('finish switch!!!!!!!!!!!');
 
+      // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
             buffer: regl.buffer(params.arrs.position_arr['new']),
             divisor: 1

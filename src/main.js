@@ -9,6 +9,7 @@
 var run_viz = require('./run_viz');
 var reorder_panel = require('./reorder_panel')
 var make_position_arr = require('./make_position_arr');
+var dendro_panel = require('./dendro_panel');
 
 function clustergrammer_gl(args){
 
@@ -50,12 +51,33 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  control_panels = {};
+  panels = {};
+  panels.reorder = {};
+  panels.dendro = {};
 
-  control_panels.row = reorder_panel(regl, cgm.params, control_container, 'row');
-  control_panels.col = reorder_panel(regl, cgm.params, control_container, 'col');
+  panels.reorder.row = reorder_panel(regl, cgm.params, control_container, 'row');
+  panels.reorder.col = reorder_panel(regl, cgm.params, control_container, 'col');
+  panels.dendro.row = dendro_panel(regl, cgm.params, control_container, 'row');
+  panels.dendro.col = dendro_panel(regl, cgm.params, control_container, 'col');
 
-  control_panels.col.on('input', function(data){
+  panels.reorder.row.on('input', function(data){
+
+      console.log('reordering rows', data)
+      params.animation.run_switch = true;
+      params.new_order.row = data['row Order'];
+
+      params.arrs.position_arr['new'] = make_position_arr(params,
+                                      params.new_order.row,
+                                      params.new_order.col);
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
+  });
+
+  panels.reorder.col.on('input', function(data){
 
       console.log('reordering columns', data)
       params.animation.run_switch = true;
@@ -72,22 +94,6 @@ function clustergrammer_gl(args){
 
   });
 
-  control_panels.row.on('input', function(data){
-
-      console.log('reordering rows', data)
-      params.animation.run_switch = true;
-      params.new_order.row = data['row Order'];
-
-      params.arrs.position_arr['new'] = make_position_arr(params,
-                                      params.new_order.row,
-                                      params.new_order.col);
-
-      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-            buffer: regl.buffer(params.arrs.position_arr['new']),
-            divisor: 1
-          };
-
-  });
 
   return cgm;
 

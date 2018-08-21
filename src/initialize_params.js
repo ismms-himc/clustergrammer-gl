@@ -238,11 +238,13 @@ module.exports = function initialize_params(regl, network){
   params.text_zoom.row.scaled_num = params.num_row;
   params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
   params.text_zoom.row.factor = 1;
+  params.text_zoom.row.max_webgl_fs = 0.04;
 
   params.text_zoom.col = {};
   params.text_zoom.col.scaled_num = params.num_col;
   params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
   params.text_zoom.col.factor = 1;
+  params.text_zoom.col.max_webgl_fs = 0.05;
 
   // font_detail range: min ~12 max ~200
   ////////////////////////////////////////

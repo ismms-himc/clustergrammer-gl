@@ -47435,11 +47435,13 @@ module.exports = function initialize_params(regl, network){
   params.text_zoom.row.scaled_num = params.num_row;
   params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
   params.text_zoom.row.factor = 1;
+  params.text_zoom.row.max_webgl_fs = 0.04;
 
   params.text_zoom.col = {};
   params.text_zoom.col.scaled_num = params.num_col;
   params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
   params.text_zoom.col.factor = 1;
+  params.text_zoom.col.max_webgl_fs = 0.05;
 
   // font_detail range: min ~12 max ~200
   ////////////////////////////////////////
@@ -48394,7 +48396,20 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
   var inst_increase_font_size = params.text_scale.col(params.zoom_data.x.total_zoom);
-  var scale_text = params.num_col * params.zoom_data.x.total_zoom / inst_increase_font_size;
+
+  var scale_text = params.num_col ; // * params.zoom_data.x.total_zoom / inst_increase_font_size;
+
+  var webgl_fs = (1/params.num_col) * params.zoom_data.x.total_zoom;
+
+  var max_webgl_fs = params.text_zoom.col.max_webgl_fs;
+
+  var scale_down_fs;
+  if (webgl_fs > max_webgl_fs){
+    scale_down_fs = webgl_fs/max_webgl_fs;
+    console.log('too large webgl text', scale_down_fs)
+
+    scale_text = scale_text * scale_down_fs;
+  }
 
   var mat_rotate =  m3.rotation(Math.PI/4);
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
@@ -48972,7 +48987,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
   var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
 
-  var max_webgl_fs = 0.05;
+  var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
 
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){

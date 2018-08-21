@@ -26,7 +26,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
   var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
 
-  var max_webgl_fs = 0.05;
+  var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
 
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){

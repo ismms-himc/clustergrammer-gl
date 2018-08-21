@@ -48013,6 +48013,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 var reorder_panel = __webpack_require__(/*! ./reorder_panel */ "./src/reorder_panel.js")
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
 
 function clustergrammer_gl(args){
 
@@ -48054,8 +48055,36 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  reorder_panel(regl, cgm.params, control_container, 'row');
-  reorder_panel(regl, cgm.params, control_container, 'col');
+  control_panels = {};
+
+  control_panels.row = reorder_panel(regl, cgm.params, control_container, 'row');
+  control_panels.col = reorder_panel(regl, cgm.params, control_container, 'col');
+
+  control_panels.col.on('input', function(data){
+
+      console.log('something happening', data)
+      params.animation.run_switch = true;
+      // params.new_order.row = data['row Order'];
+      params.new_order.col = data['col Order'];
+
+      // console.log(params.new_order.row, params.new_order.col)
+
+      params.arrs.position_arr['new'] = make_position_arr(params,
+                                      params.new_order.row,
+                                      params.new_order.col);
+
+      // var new_pos_arr = params.arrs.position_arr['new']
+
+      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+            buffer: regl.buffer(params.arrs.position_arr['new']),
+            divisor: 1
+          };
+
+      /*
+      Need to calcualte new position array when choosing new order
+      */
+
+  })
 
   return cgm;
 
@@ -49545,13 +49574,12 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js");
-var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
 
 module.exports = function reorder_panel(regl, params, control_container, inst_axis){
 
   var panel_width = 250;
 
-  var panel_1 = control([
+  var inst_panel = control([
 
     {type: 'select', label: inst_axis + ' Order', options: {'clust':'Cluster', 'rank':'Rank'}, initial: 'option 1', action: function(){
       console.log('something')
@@ -49564,31 +49592,7 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
     // {theme: 'light', position: 'top-left'}
   );
 
-  panel_1.on('input', function(data){
-
-      console.log('something happening', data)
-      params.animation.run_switch = true;
-      // params.new_order.row = data['row Order'];
-      params.new_order.col = data['col Order'];
-
-      // console.log(params.new_order.row, params.new_order.col)
-
-      params.arrs.position_arr['new'] = make_position_arr(params,
-                                      params.new_order.row,
-                                      params.new_order.col);
-
-      // var new_pos_arr = params.arrs.position_arr['new']
-
-      params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-            buffer: regl.buffer(params.arrs.position_arr['new']),
-            divisor: 1
-          };
-
-      /*
-      Need to calcualte new position array when choosing new order
-      */
-
-  })
+  return inst_panel;
 
 };
 

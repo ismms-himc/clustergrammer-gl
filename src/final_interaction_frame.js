@@ -1,4 +1,4 @@
-var draw_commands = require('./draw_commands');
+// var draw_commands = require('./draw_commands');
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions

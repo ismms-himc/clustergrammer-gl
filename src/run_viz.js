@@ -1,7 +1,6 @@
 var initialize_params = require('./initialize_params');
 var draw_commands = require('./draw_commands');
 _ = require('underscore');
-// var control = require('control-panel');
 var final_mouseover_frame = require('./final_mouseover_frame');
 var final_interaction_frame = require('./final_interaction_frame');
 

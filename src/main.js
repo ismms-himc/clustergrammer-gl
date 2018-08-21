@@ -7,7 +7,6 @@
 // var filename = 'data/mult_view.json';
 
 var run_viz = require('./run_viz');
-var control = require('control-panel')
 var reorder_panel = require('./reorder_panel')
 
 function clustergrammer_gl(args){

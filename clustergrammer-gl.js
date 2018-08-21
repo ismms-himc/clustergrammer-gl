@@ -46773,9 +46773,9 @@ module.exports = function draw_tooltip_components(regl, params){
   !*** ./src/final_interaction_frame.js ***!
   \****************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
+// var draw_commands = require('./draw_commands');
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
@@ -46813,9 +46813,9 @@ module.exports = function final_interaction_frame(regl, params){
   !*** ./src/final_mouseover_frame.js ***!
   \**************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
+// var draw_commands = require('./draw_commands');
 
 module.exports = function final_mouseover_frame(regl, params){
 
@@ -48002,7 +48002,6 @@ module.exports = function keep_track_of_mouseovers(params){
 // var filename = 'data/mult_view.json';
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
-var control = __webpack_require__(/*! control-panel */ "./node_modules/control-panel/index.js")
 var reorder_panel = __webpack_require__(/*! ./reorder_panel */ "./src/reorder_panel.js")
 
 function clustergrammer_gl(args){
@@ -49581,7 +49580,6 @@ module.exports = function reorder_panel(regl, params, control_container, inst_ax
 var initialize_params = __webpack_require__(/*! ./initialize_params */ "./src/initialize_params.js");
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
-// var control = require('control-panel');
 var final_mouseover_frame = __webpack_require__(/*! ./final_mouseover_frame */ "./src/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./final_interaction_frame */ "./src/final_interaction_frame.js");
 

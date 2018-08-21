@@ -275,7 +275,15 @@ module.exports = function initialize_params(regl, network){
 
   // have max zoom restricted by column number in a similar manner to
   // how col viz aid triangle restricted zooming in previous version
-  params.max_zoom = params.num_col/2.0;
+
+  var min_dim;
+  if (params.num_col < params.num_row){
+    min_dim = params.num_col;
+  } else {
+    min_dim = params.num_row;
+  }
+
+  params.max_zoom = min_dim/4.0;
   params.zoom_restrict = ini_zoom_restrict(params);
 
   // update zoom_data

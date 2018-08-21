@@ -14,16 +14,33 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   // var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(params.zoom_data.y.total_zoom);
   // var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom;
 
-  // prevent text from getting too large when zooming
-  // 17.5, lowering makes larger text
-  var final_increase_font_size = params.num_row/10.0;
-  params.text_scale.row = d3.scale.linear()
-      .domain([1, params.max_zoom])
-      .range( [1, final_increase_font_size]);
-  var inst_increase_font_size = params.text_scale.row(params.zoom_data.y.total_zoom);
-  var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom/ inst_increase_font_size;
+  // // prevent text from getting too large when zooming
+  // // 17.5, lowering makes larger text
+  // params.text_scale.row = d3.scale.linear()
+  //     .domain([1, params.max_zoom])
+  //     .range( [1, params.num_row]);
+  // var inst_increase_font_size = params.text_scale.row(params.zoom_data.y.total_zoom);
 
-  // console.log(params.zoom_data.y.total_zoom, scale_text);
+
+  var scale_text = params.num_row// * params.zoom_data.y.total_zoom ; /// inst_increase_font_size;
+
+  var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
+
+  var max_webgl_fs = 0.05;
+
+  var scale_down_fs;
+  if (webgl_fs > max_webgl_fs){
+    scale_down_fs = webgl_fs/max_webgl_fs;
+    console.log('too large webgl text', scale_down_fs)
+
+    scale_text = scale_text * scale_down_fs;
+  }
+
+  // if (scale_text < 37){
+  //   scale_text = 37;
+  // }
+
+  // console.log('scale_text', (1/params.num_row) * params.zoom_data.y.total_zoom )
 
   var mat_rotate = m3.rotation(Math.PI/2);
 

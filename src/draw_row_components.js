@@ -9,9 +9,9 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     regl(params.viz_aid_tri_args.row)();
 
-    _.each(params.cat_args.row, function(inst_cat_arg){
-      regl(inst_cat_arg)();
-    });
+    // _.each(params.cat_args.row, function(inst_cat_arg){
+    //   regl(inst_cat_arg)();
+    // });
 
     regl(params.dendro_args.row)();
 

@@ -56,7 +56,7 @@ module.exports = function make_matrix_args(regl, params){
 
     void main() {
 
-      // Interpolate between the two positions using the interpolate uniform
+      // interpolate between the two positions using the interpolate uniform
       if (run_animation == true){
         pos = mix(pos_att_ini, pos_att_new, interp_uni);
       } else {

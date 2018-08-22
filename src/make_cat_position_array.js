@@ -51,8 +51,8 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
 
-    // console.log(inst_axis, 'shift_mat_heat', shift_mat_heat)
-    y_offset_array[i] = mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat;
+    // make 2d array
+    y_offset_array[i] = [mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat, 0];
   }
 
   return y_offset_array;

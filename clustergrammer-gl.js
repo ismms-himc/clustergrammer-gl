@@ -22574,6 +22574,7 @@ var make_col_text_args = __webpack_require__(/*! ./make_col_text_args */ "./src/
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/calc_viz_area.js");
 var calc_col_text_triangles = __webpack_require__(/*! ./calc_col_text_triangles */ "./src/calc_col_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./make_viz_aid_tri_args */ "./src/make_viz_aid_tri_args.js");
+var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
 module.exports = function draw_col_components(regl, params, calc_text_tri=false){
 
@@ -22583,10 +22584,18 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
     params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
     regl(params.viz_aid_tri_args.col)();
 
+    // console.log('interp_fun', interp_fun(params))
+
     // drawing the column categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
     _.each(params.cat_args.col, function(inst_cat_arg){
-      regl(inst_cat_arg)();
+      regl(inst_cat_arg)(
+        {
+          interp_prop: interp_fun(params),
+          run_animation: params.animation.running
+        }
+      );
+
     });
 
     regl(params.dendro_args.col)();
@@ -22690,7 +22699,6 @@ module.exports = function draw_commands(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 // var filter_visible_mat = require('./filter_visible_mat');
-var make_matrix_args = __webpack_require__(/*! ./make_matrix_args */ "./src/make_matrix_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
 module.exports = function draw_matrix_components(regl, params){
@@ -22721,11 +22729,6 @@ module.exports = function draw_matrix_components(regl, params){
     position array
     */
 
-    // // Regenerate args
-    // if (params.animation.time_remain > 0){
-    //   params.matrix_args = make_matrix_args(regl, params);
-    // }
-
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
       run_animation: params.animation.running
@@ -22755,9 +22758,9 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     regl(params.viz_aid_tri_args.row)();
 
-    _.each(params.cat_args.row, function(inst_cat_arg){
-      regl(inst_cat_arg)();
-    });
+    // _.each(params.cat_args.row, function(inst_cat_arg){
+    //   regl(inst_cat_arg)();
+    // });
 
     regl(params.dendro_args.row)();
 
@@ -24294,15 +24297,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   var cat_pos_buffer = {};
   cat_pos_buffer.inst = regl.buffer({
-    length: num_labels,
-    type: 'float',
-    usage: 'dynamic'
+    // length: num_labels,
+    // type: 'float',
+    // usage: 'dynamic'
   });
 
   cat_pos_buffer.new = regl.buffer({
-    length: num_labels,
-    type: 'float',
-    usage: 'dynamic'
+    // length: num_labels,
+    // type: 'float',
+    // usage: 'dynamic'
   });
 
   cat_pos_buffer.inst(cat_pos_array.inst);
@@ -24377,8 +24380,12 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     vert: `
       precision highp float;
       attribute vec2 ini_position;
-      attribute float cat_pos_att;
+      attribute vec2 cat_pos_att_inst;
+      attribute vec2 cat_pos_att_new;
       attribute vec4 color_att;
+      uniform float interp_uni;
+      uniform bool run_animation;
+
 
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
@@ -24387,6 +24394,10 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
       varying vec3 new_position;
       varying vec3 vec_translate;
+      varying vec2 cat_pos;
+      varying vec2 cat_vec_inst;
+      varying vec2 cat_vec_new;
+      varying vec2 cat_vec_mix;
 
       // pass varying variable to fragment from vector
       varying vec4 color_vary;
@@ -24395,7 +24406,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(top_offset, cat_pos_att, 0);
+        // interpolate between the two positions using the interpolate uniform
+        if (run_animation == true){
+
+          cat_pos = mix(cat_pos_att_inst, cat_pos_att_new, interp_uni);
+        } else {
+          cat_pos = cat_pos_att_inst;
+        }
+
+        vec_translate = vec3(top_offset, cat_pos[0], 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -24443,9 +24462,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         [cat_height/2, cat_width/2],
       ],
 
-      // pass cat_pos_att buffer
-      cat_pos_att: {
+      cat_pos_att_inst: {
         buffer: cat_pos_buffer.inst,
+        divisor: 1
+      },
+
+      cat_pos_att_new: {
+        buffer: cat_pos_buffer.new,
         divisor: 1
       },
 
@@ -24462,7 +24485,9 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       mat_rotate: mat_rotate,
       scale_y: scale_y,
       top_offset: top_offset,
-      triangle_color: inst_rgba
+      triangle_color: inst_rgba,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
+      run_animation: regl.prop('run_animation')
     },
 
     count: 6,
@@ -24543,8 +24568,8 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
 
-    // console.log(inst_axis, 'shift_mat_heat', shift_mat_heat)
-    y_offset_array[i] = mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat;
+    // make 2d array
+    y_offset_array[i] = [mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat, 0];
   }
 
   return y_offset_array;
@@ -24909,7 +24934,7 @@ module.exports = function make_matrix_args(regl, params){
 
     void main() {
 
-      // Interpolate between the two positions using the interpolate uniform
+      // interpolate between the two positions using the interpolate uniform
       if (run_animation == true){
         pos = mix(pos_att_ini, pos_att_new, interp_uni);
       } else {

@@ -1,5 +1,4 @@
 // var filter_visible_mat = require('./filter_visible_mat');
-var make_matrix_args = require('./make_matrix_args');
 var interp_fun = require('./interp_fun');
 
 module.exports = function draw_matrix_components(regl, params){
@@ -29,11 +28,6 @@ module.exports = function draw_matrix_components(regl, params){
     state, then I will replace the current position array with the final
     position array
     */
-
-    // // Regenerate args
-    // if (params.animation.time_remain > 0){
-    //   params.matrix_args = make_matrix_args(regl, params);
-    // }
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),

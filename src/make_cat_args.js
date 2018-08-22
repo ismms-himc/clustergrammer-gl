@@ -57,15 +57,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   var cat_pos_buffer = {};
   cat_pos_buffer.inst = regl.buffer({
-    length: num_labels,
-    type: 'float',
-    usage: 'dynamic'
+    // length: num_labels,
+    // type: 'float',
+    // usage: 'dynamic'
   });
 
   cat_pos_buffer.new = regl.buffer({
-    length: num_labels,
-    type: 'float',
-    usage: 'dynamic'
+    // length: num_labels,
+    // type: 'float',
+    // usage: 'dynamic'
   });
 
   cat_pos_buffer.inst(cat_pos_array.inst);
@@ -140,8 +140,12 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     vert: `
       precision highp float;
       attribute vec2 ini_position;
-      attribute float cat_pos_att;
+      attribute vec2 cat_pos_att_inst;
+      attribute vec2 cat_pos_att_new;
       attribute vec4 color_att;
+      uniform float interp_uni;
+      uniform bool run_animation;
+
 
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
@@ -150,6 +154,10 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
       varying vec3 new_position;
       varying vec3 vec_translate;
+      varying vec2 cat_pos;
+      varying vec2 cat_vec_inst;
+      varying vec2 cat_vec_new;
+      varying vec2 cat_vec_mix;
 
       // pass varying variable to fragment from vector
       varying vec4 color_vary;
@@ -158,7 +166,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(top_offset, cat_pos_att, 0);
+        // interpolate between the two positions using the interpolate uniform
+        if (run_animation == true){
+
+          cat_pos = mix(cat_pos_att_inst, cat_pos_att_new, interp_uni);
+        } else {
+          cat_pos = cat_pos_att_inst;
+        }
+
+        vec_translate = vec3(top_offset, cat_pos[0], 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -206,9 +222,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         [cat_height/2, cat_width/2],
       ],
 
-      // pass cat_pos_att buffer
-      cat_pos_att: {
+      cat_pos_att_inst: {
         buffer: cat_pos_buffer.inst,
+        divisor: 1
+      },
+
+      cat_pos_att_new: {
+        buffer: cat_pos_buffer.new,
         divisor: 1
       },
 
@@ -225,7 +245,9 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       mat_rotate: mat_rotate,
       scale_y: scale_y,
       top_offset: top_offset,
-      triangle_color: inst_rgba
+      triangle_color: inst_rgba,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
+      run_animation: regl.prop('run_animation')
     },
 
     count: 6,

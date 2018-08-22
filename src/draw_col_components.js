@@ -2,6 +2,7 @@ var make_col_text_args = require('./make_col_text_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_col_text_triangles = require('./calc_col_text_triangles');
 var make_viz_aid_tri_args = require('./make_viz_aid_tri_args');
+var interp_fun = require('./interp_fun');
 
 module.exports = function draw_col_components(regl, params, calc_text_tri=false){
 
@@ -11,10 +12,18 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
     params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
     regl(params.viz_aid_tri_args.col)();
 
+    // console.log('interp_fun', interp_fun(params))
+
     // drawing the column categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
     _.each(params.cat_args.col, function(inst_cat_arg){
-      regl(inst_cat_arg)();
+      regl(inst_cat_arg)(
+        {
+          interp_prop: interp_fun(params),
+          run_animation: params.animation.running
+        }
+      );
+
     });
 
     regl(params.dendro_args.col)();

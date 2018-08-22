@@ -13,12 +13,12 @@ module.exports = function make_matrix_args(regl, params){
   params.arrs.position_arr = {};
 
   console.log('make ini position array')
-  params.arrs.position_arr['ini'] = make_position_arr(params,
+  params.arrs.position_arr.ini = make_position_arr(params,
                                                params.inst_order.row,
                                                params.inst_order.col);
 
   console.log('make new position array')
-  params.arrs.position_arr['new'] = make_position_arr(params,
+  params.arrs.position_arr.new = make_position_arr(params,
                                                params.new_order.row,
                                                params.new_order.col);
 
@@ -83,19 +83,15 @@ module.exports = function make_matrix_args(regl, params){
 
     void main() {
 
-      // manually tweaking opacity range, will improve to match old version
-
       if (opacity_vary > 0.0){
-        // gl_FragColor = vec4(1, 0, 0, abs(opacity_vary) + 0.15);
         gl_FragColor = vec4(1, 0, 0, abs(opacity_vary));
       } else {
-        // gl_FragColor = vec4(0, 0, 1, abs(opacity_vary) + 0.15);
         gl_FragColor = vec4(0, 0, 1, abs(opacity_vary));
       }
 
     }`;
 
-  var num_instances = params.arrs.position_arr['ini'].length;
+  var num_instances = params.arrs.position_arr.ini.length;
   var zoom_function = params.zoom_function;
 
   var inst_properties = {

@@ -24125,9 +24125,6 @@ module.exports = function keep_track_of_mouseovers(params){
 // var filename = 'data/mult_view.json';
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
-// var reorder_panel = require('./reorder_panel')
-// var dendro_panel = require('./dendro_panel');
-// var make_position_arr = require('./make_position_arr');
 
 function clustergrammer_gl(args){
 
@@ -24167,49 +24164,6 @@ function clustergrammer_gl(args){
   var cgm = {};
 
   cgm.params = params;
-
-  panels = {};
-  panels.reorder = {};
-  panels.dendro = {};
-
-  // panels.reorder.row = reorder_panel(regl, cgm.params, control_container, 'row');
-  // panels.reorder.col = reorder_panel(regl, cgm.params, control_container, 'col');
-  // panels.dendro.row = dendro_panel(regl, cgm.params, control_container, 'row');
-  // panels.dendro.col = dendro_panel(regl, cgm.params, control_container, 'col');
-
-  // panels.reorder.row.on('input', function(data){
-
-  //     console.log('reordering rows', data)
-  //     params.animation.run_switch = true;
-  //     params.new_order.row = data['row Order'];
-
-  //     params.arrs.position_arr['new'] = make_position_arr(params,
-  //                                     params.new_order.row,
-  //                                     params.new_order.col);
-
-  //     params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-  //           buffer: regl.buffer(params.arrs.position_arr['new']),
-  //           divisor: 1
-  //         };
-
-  // });
-
-  // panels.reorder.col.on('input', function(data){
-
-  //     console.log('reordering columns', data)
-  //     params.animation.run_switch = true;
-  //     params.new_order.col = data['col Order'];
-
-  //     params.arrs.position_arr['new'] = make_position_arr(params,
-  //                                     params.new_order.row,
-  //                                     params.new_order.col);
-
-  //     params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-  //           buffer: regl.buffer(params.arrs.position_arr['new']),
-  //           divisor: 1
-  //         };
-
-  // });
 
 
   return cgm;
@@ -24843,12 +24797,12 @@ module.exports = function make_matrix_args(regl, params){
   params.arrs.position_arr = {};
 
   console.log('make ini position array')
-  params.arrs.position_arr['ini'] = make_position_arr(params,
+  params.arrs.position_arr.ini = make_position_arr(params,
                                                params.inst_order.row,
                                                params.inst_order.col);
 
   console.log('make new position array')
-  params.arrs.position_arr['new'] = make_position_arr(params,
+  params.arrs.position_arr.new = make_position_arr(params,
                                                params.new_order.row,
                                                params.new_order.col);
 
@@ -24913,19 +24867,15 @@ module.exports = function make_matrix_args(regl, params){
 
     void main() {
 
-      // manually tweaking opacity range, will improve to match old version
-
       if (opacity_vary > 0.0){
-        // gl_FragColor = vec4(1, 0, 0, abs(opacity_vary) + 0.15);
         gl_FragColor = vec4(1, 0, 0, abs(opacity_vary));
       } else {
-        // gl_FragColor = vec4(0, 0, 1, abs(opacity_vary) + 0.15);
         gl_FragColor = vec4(0, 0, 1, abs(opacity_vary));
       }
 
     }`;
 
-  var num_instances = params.arrs.position_arr['ini'].length;
+  var num_instances = params.arrs.position_arr.ini.length;
   var zoom_function = params.zoom_function;
 
   var inst_properties = {
@@ -25745,7 +25695,7 @@ module.exports = function run_viz(regl, network){
 
       // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
-            buffer: regl.buffer(params.arrs.position_arr['new']),
+            buffer: regl.buffer(params.arrs.position_arr.new),
             divisor: 1
           };
 
@@ -26005,12 +25955,13 @@ module.exports = function zoom_rules_high_mat(regl, params){
       params.new_order.col = 'clust'
     }
 
-    params.arrs.position_arr['new'] = make_position_arr(params,
+    // calculate new ordering
+    params.arrs.position_arr.new = make_position_arr(params,
                                     params.new_order.row,
                                     params.new_order.col);
 
     params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-          buffer: regl.buffer(params.arrs.position_arr['new']),
+          buffer: regl.buffer(params.arrs.position_arr.new),
           divisor: 1
         };
 

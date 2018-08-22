@@ -38,6 +38,9 @@ module.exports = function run_viz(regl, network){
             divisor: 1
           };
 
+      // transfer new order to old order (only for column reordering)
+      params.inst_order.col = params.new_order.col
+
     }
 
     // run draw command

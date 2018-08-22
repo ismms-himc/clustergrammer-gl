@@ -33624,7 +33624,7 @@ module.exports = function keep_track_of_mouseovers(params){
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 // var reorder_panel = require('./reorder_panel')
 // var dendro_panel = require('./dendro_panel');
-var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+// var make_position_arr = require('./make_position_arr');
 
 function clustergrammer_gl(args){
 
@@ -35246,6 +35246,9 @@ module.exports = function run_viz(regl, network){
             divisor: 1
           };
 
+      // transfer new order to old order (only for column reordering)
+      params.inst_order.col = params.new_order.col
+
     }
 
     // run draw command
@@ -35449,6 +35452,7 @@ var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/i
 // var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./track_interaction_zoom_data */ "./src/track_interaction_zoom_data.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -35486,12 +35490,26 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(ev){
 
-    // clicking
-    // params.animation.time_remain = params.animation.time_remain + 20;
-    console.log('CLICKING', ev.type)
+    console.log('CLICKING', ev.type, 'reordring_columns')
 
-    // // hacky way of starting animation
-    // params.animation.run_switch = true;
+    params.animation.run_switch = true;
+
+    if (params.inst_order.col == 'clust'){
+      console.log('set new_order to clust')
+      params.new_order.col = 'rank'
+    } else {
+      console.log('set new_order to rank')
+      params.new_order.col = 'clust'
+    }
+
+    params.arrs.position_arr['new'] = make_position_arr(params,
+                                    params.new_order.row,
+                                    params.new_order.col);
+
+    params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+          buffer: regl.buffer(params.arrs.position_arr['new']),
+          divisor: 1
+        };
 
   });
 

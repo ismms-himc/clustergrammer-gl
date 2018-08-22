@@ -9,7 +9,7 @@
 var run_viz = require('./run_viz');
 // var reorder_panel = require('./reorder_panel')
 // var dendro_panel = require('./dendro_panel');
-var make_position_arr = require('./make_position_arr');
+// var make_position_arr = require('./make_position_arr');
 
 function clustergrammer_gl(args){
 

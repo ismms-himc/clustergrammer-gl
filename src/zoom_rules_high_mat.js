@@ -2,6 +2,7 @@ var interactionEvents = require('./interaction-events');
 // var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = require('xtend/mutable');
 var track_interaction_zoom_data = require('./track_interaction_zoom_data');
+var make_position_arr = require('./make_position_arr');
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -39,12 +40,26 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(ev){
 
-    // clicking
-    // params.animation.time_remain = params.animation.time_remain + 20;
-    console.log('CLICKING', ev.type)
+    console.log('CLICKING', ev.type, 'reordring_columns')
 
-    // // hacky way of starting animation
-    // params.animation.run_switch = true;
+    params.animation.run_switch = true;
+
+    if (params.inst_order.col == 'clust'){
+      console.log('set new_order to clust')
+      params.new_order.col = 'rank'
+    } else {
+      console.log('set new_order to rank')
+      params.new_order.col = 'clust'
+    }
+
+    params.arrs.position_arr['new'] = make_position_arr(params,
+                                    params.new_order.row,
+                                    params.new_order.col);
+
+    params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+          buffer: regl.buffer(params.arrs.position_arr['new']),
+          divisor: 1
+        };
 
   });
 

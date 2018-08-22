@@ -3,6 +3,7 @@ var interactionEvents = require('./interaction-events');
 var extend = require('xtend/mutable');
 var track_interaction_zoom_data = require('./track_interaction_zoom_data');
 var make_position_arr = require('./make_position_arr');
+var make_cat_position_array = require('./make_cat_position_array');
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -61,6 +62,10 @@ module.exports = function zoom_rules_high_mat(regl, params){
           buffer: regl.buffer(params.arrs.position_arr.new),
           divisor: 1
         };
+
+    for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+      params.cat_arrs.new['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+    }
 
   });
 

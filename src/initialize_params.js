@@ -160,7 +160,6 @@ module.exports = function initialize_params(regl, network){
     params.cat_arrs.inst['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.inst_order.row);
     params.cat_arrs.new['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.new_order.row);
 
-
     params.cat_args.row[cat_index] = make_cat_args(regl, params, 'row', cat_index=cat_index);
   }
 

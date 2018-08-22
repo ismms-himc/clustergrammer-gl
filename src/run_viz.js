@@ -26,7 +26,12 @@ module.exports = function run_viz(regl, network){
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
+
     } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
+
+      ///////////////////////////////////////
+      // The transition has finished
+      ///////////////////////////////////////
 
       cgm.params.animation.running = false;
       params.animation.run_switch = false;
@@ -37,6 +42,8 @@ module.exports = function run_viz(regl, network){
             buffer: regl.buffer(params.arrs.position_arr.new),
             divisor: 1
           };
+
+      // transfer the new category positions to the cat args attributes
 
       // transfer new order to old order (only for column reordering)
       params.inst_order.col = params.new_order.col

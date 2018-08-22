@@ -1,7 +1,6 @@
 var m3 = require('./mat3_transform');
 var color_to_rgba = require('./color_to_rgba');
 // var color_table = require('./color_table.js');
-var make_cat_position_array = require('./make_cat_position_array');
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
@@ -49,18 +48,28 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  // var y_offset_array = make_cat_position_array(params, inst_axis, cat_index);
-  y_offset_array = params.cat_arrs.inst[inst_axis][cat_index];
+  cat_pos_array = {};
+  cat_pos_array.inst = params.cat_arrs.inst[inst_axis][cat_index];
+  cat_pos_array.new = params.cat_arrs.new[inst_axis][cat_index];
 
   // debugger
 
-  const y_offset_buffer = regl.buffer({
+
+  var cat_pos_buffer = {};
+  cat_pos_buffer.inst = regl.buffer({
     length: num_labels,
     type: 'float',
     usage: 'dynamic'
   });
 
-  y_offset_buffer(y_offset_array);
+  cat_pos_buffer.new = regl.buffer({
+    length: num_labels,
+    type: 'float',
+    usage: 'dynamic'
+  });
+
+  cat_pos_buffer.inst(cat_pos_array.inst);
+  cat_pos_buffer.new(cat_pos_array.new);
 
 
   /////////////////////////////////
@@ -131,7 +140,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     vert: `
       precision highp float;
       attribute vec2 ini_position;
-      attribute float y_offset_att;
+      attribute float cat_pos_att;
       attribute vec4 color_att;
 
       uniform mat3 mat_rotate;
@@ -149,7 +158,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(top_offset, y_offset_att, 0);
+        vec_translate = vec3(top_offset, cat_pos_att, 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -197,9 +206,9 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         [cat_height/2, cat_width/2],
       ],
 
-      // pass y_offset_att buffer
-      y_offset_att: {
-        buffer: y_offset_buffer,
+      // pass cat_pos_att buffer
+      cat_pos_att: {
+        buffer: cat_pos_buffer.inst,
         divisor: 1
       },
 

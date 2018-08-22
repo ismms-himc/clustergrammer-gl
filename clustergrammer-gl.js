@@ -23470,7 +23470,6 @@ module.exports = function initialize_params(regl, network){
     params.cat_arrs.inst['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.inst_order.row);
     params.cat_arrs.new['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.new_order.row);
 
-
     params.cat_args.row[cat_index] = make_cat_args(regl, params, 'row', cat_index=cat_index);
   }
 
@@ -24239,7 +24238,6 @@ module.exports = function make_cameras(regl, params){
 var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./color_to_rgba */ "./src/color_to_rgba.js");
 // var color_table = require('./color_table.js');
-var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js");
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
@@ -24287,18 +24285,28 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  // var y_offset_array = make_cat_position_array(params, inst_axis, cat_index);
-  y_offset_array = params.cat_arrs.inst[inst_axis][cat_index];
+  cat_pos_array = {};
+  cat_pos_array.inst = params.cat_arrs.inst[inst_axis][cat_index];
+  cat_pos_array.new = params.cat_arrs.new[inst_axis][cat_index];
 
   // debugger
 
-  const y_offset_buffer = regl.buffer({
+
+  var cat_pos_buffer = {};
+  cat_pos_buffer.inst = regl.buffer({
     length: num_labels,
     type: 'float',
     usage: 'dynamic'
   });
 
-  y_offset_buffer(y_offset_array);
+  cat_pos_buffer.new = regl.buffer({
+    length: num_labels,
+    type: 'float',
+    usage: 'dynamic'
+  });
+
+  cat_pos_buffer.inst(cat_pos_array.inst);
+  cat_pos_buffer.new(cat_pos_array.new);
 
 
   /////////////////////////////////
@@ -24369,7 +24377,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     vert: `
       precision highp float;
       attribute vec2 ini_position;
-      attribute float y_offset_att;
+      attribute float cat_pos_att;
       attribute vec4 color_att;
 
       uniform mat3 mat_rotate;
@@ -24387,7 +24395,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(top_offset, y_offset_att, 0);
+        vec_translate = vec3(top_offset, cat_pos_att, 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -24435,9 +24443,9 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         [cat_height/2, cat_width/2],
       ],
 
-      // pass y_offset_att buffer
-      y_offset_att: {
-        buffer: y_offset_buffer,
+      // pass cat_pos_att buffer
+      cat_pos_att: {
+        buffer: cat_pos_buffer.inst,
         divisor: 1
       },
 
@@ -25748,7 +25756,12 @@ module.exports = function run_viz(regl, network){
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
+
     } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
+
+      ///////////////////////////////////////
+      // The transition has finished
+      ///////////////////////////////////////
 
       cgm.params.animation.running = false;
       params.animation.run_switch = false;
@@ -25759,6 +25772,8 @@ module.exports = function run_viz(regl, network){
             buffer: regl.buffer(params.arrs.position_arr.new),
             divisor: 1
           };
+
+      // transfer the new category positions to the cat args attributes
 
       // transfer new order to old order (only for column reordering)
       params.inst_order.col = params.new_order.col
@@ -25967,6 +25982,7 @@ var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/i
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./track_interaction_zoom_data */ "./src/track_interaction_zoom_data.js");
 var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -26025,6 +26041,10 @@ module.exports = function zoom_rules_high_mat(regl, params){
           buffer: regl.buffer(params.arrs.position_arr.new),
           divisor: 1
         };
+
+    for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+      params.cat_arrs.new['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+    }
 
   });
 

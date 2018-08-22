@@ -1,6 +1,7 @@
 var m3 = require('./mat3_transform');
 var color_to_rgba = require('./color_to_rgba');
 // var color_table = require('./color_table.js');
+var make_cat_position_array = require('./make_cat_position_array')
 
 module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
 
@@ -41,46 +42,14 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
     cat_width = (params.heat_size.y/0.5)/num_labels;
   }
 
-
   var zoom_function = function(context){
     return context.view;
   };
 
-  /////////////////////////////////
-  // Label Offset Buffer
-  /////////////////////////////////
-  // row width is required to place the triangles on the 'top' of the matrix and
-  // not to overlap with the matrix
-  // vertical shift
   var shift_cat = 0.025 * (cat_index + 1);
-  // console.log('shift_cat', shift_cat)
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  var inst_order = params.inst_order[inst_rc];
-
-  var y_offset_array = [];
-  var i;
-  for (i = 0; i < num_labels; i++){
-
-    // emperically found rules
-    var order_id;
-    var shift_mat_heat;
-    if (inst_rc == 'row'){
-      order_id = num_labels - params.network[inst_rc + '_nodes'][i][inst_order] - 1;
-      // vertical shift
-      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
-    } else {
-      order_id = params.network[inst_rc + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x
-    }
-
-    /* need to position based on clustering order */
-    // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
-    // of the heatmap vs the general matrix area
-
-    // console.log(inst_rc, 'shift_mat_heat', shift_mat_heat)
-    y_offset_array[i] = mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat;
-  }
+  var y_offset_array = make_cat_position_array(params, cat_index, inst_rc);
 
   const y_offset_buffer = regl.buffer({
     length: num_labels,

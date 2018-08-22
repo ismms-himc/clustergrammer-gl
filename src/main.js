@@ -50,9 +50,9 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  // panels = {};
-  // panels.reorder = {};
-  // panels.dendro = {};
+  panels = {};
+  panels.reorder = {};
+  panels.dendro = {};
 
   // panels.reorder.row = reorder_panel(regl, cgm.params, control_container, 'row');
   // panels.reorder.col = reorder_panel(regl, cgm.params, control_container, 'col');

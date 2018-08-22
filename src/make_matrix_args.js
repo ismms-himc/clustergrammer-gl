@@ -12,13 +12,17 @@ module.exports = function make_matrix_args(regl, params){
 
   params.arrs.position_arr = {};
 
+  console.log('make ini position array')
   params.arrs.position_arr['ini'] = make_position_arr(params,
                                                params.inst_order.row,
                                                params.inst_order.col);
 
+  console.log('make new position array')
   params.arrs.position_arr['new'] = make_position_arr(params,
                                                params.new_order.row,
                                                params.new_order.col);
+
+  console.log('later in make_matrix_args')
 
   var opacity_buffer = regl.buffer({
     type: 'float',
@@ -103,6 +107,10 @@ module.exports = function make_matrix_args(regl, params){
         buffer: regl.buffer(params.arrs.position_arr.ini),
         divisor: 1
       },
+      pos_att_new: {
+        buffer: regl.buffer(params.arrs.position_arr.new),
+        divisor: 1
+      },
       opacity_att: {
         buffer: opacity_buffer,
         divisor: 1
@@ -139,6 +147,8 @@ module.exports = function make_matrix_args(regl, params){
   var matrix_args = {};
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
+
+  console.log('returning matrix_args')
 
   return matrix_args;
 

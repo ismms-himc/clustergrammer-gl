@@ -23327,6 +23327,7 @@ var calc_row_downsampled_mat = __webpack_require__(/*! ./calc_row_downsampled_ma
 var generate_cat_data = __webpack_require__(/*! ./generate_cat_data */ "./src/generate_cat_data.js");
 var get_ordered_labels = __webpack_require__(/*! ./get_ordered_labels */ "./src/get_ordered_labels.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./make_tooltip_background_args */ "./src/make_tooltip_background_args.js");
+var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -23447,19 +23448,23 @@ module.exports = function initialize_params(regl, network){
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   // params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
-  // console.log(_.keys(params.network.cat_colors['col']).length)
 
   //
 
   params.cat_args = {};
   params.cat_args.row = [];
+  params.cat_args.col = [];
+  params.cat_arrs = {};
+  params.cat_arrs.row = {};
+  params.cat_arrs.col = {};
   for (var cat_index = 0; cat_index < params.cat_num.row; cat_index++) {
+    params.cat_arrs['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.inst_order.row);
     params.cat_args.row[cat_index] = make_cat_args(regl, params, 'row', cat_index=cat_index);
   }
 
-  params.cat_args.col = [];
 
   for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+    params.cat_arrs['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.inst_order.col);
     params.cat_args.col[cat_index] = make_cat_args(regl, params, 'col', cat_index=cat_index);
   }
 
@@ -24220,9 +24225,9 @@ module.exports = function make_cameras(regl, params){
 var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./color_to_rgba */ "./src/color_to_rgba.js");
 // var color_table = require('./color_table.js');
-var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js")
+var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js");
 
-module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
+module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   var cat_index_name = 'cat-' + String(cat_index);
 
@@ -24241,7 +24246,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
 
   // var color_names = _.keys(olor_table);
 
-  var num_labels = params['num_'+inst_rc];
+  var num_labels = params['num_'+inst_axis];
 
   // category tiles have fixed heights
   var cat_height;
@@ -24250,7 +24255,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
   var mat_size;
   var top_shift_triangles;
   cat_height = 0.04;
-  if (inst_rc === 'col'){
+  if (inst_axis === 'col'){
     mat_size = params.heat_size.x;
     top_shift_triangles = params.mat_size.y;
     cat_width = (mat_size/0.5)/num_labels;
@@ -24268,7 +24273,10 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  var y_offset_array = make_cat_position_array(params, cat_index, inst_rc);
+  // var y_offset_array = make_cat_position_array(params, inst_axis, cat_index);
+  y_offset_array = params.cat_arrs[inst_axis][cat_index];
+
+  // debugger
 
   const y_offset_buffer = regl.buffer({
     length: num_labels,
@@ -24286,7 +24294,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
   var color_arr = [];
   for (i = 0; i < num_labels; i++){
 
-    var inst_cat = params.network[inst_rc + '_nodes'][i][cat_index_name];
+    var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
     // console.log(inst_cat)
 
     /*
@@ -24295,9 +24303,9 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
     var inst_color;
     if ('cat_colors' in params.network){
 
-      if (cat_index_name in params.network.cat_colors[inst_rc]){
+      if (cat_index_name in params.network.cat_colors[inst_axis]){
         try {
-          inst_color = params.network.cat_colors[inst_rc][cat_index_name][inst_cat];
+          inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
         }
         catch(err){
           // get random colors from color dictionary
@@ -24334,9 +24342,9 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
   var scale_y = m3.scaling(2, 1);
 
   var rotation_radians;
-  if (inst_rc === 'row'){
+  if (inst_axis === 'row'){
     rotation_radians = 0;
-  } else if (inst_rc === 'col'){
+  } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
   }
 
@@ -24460,7 +24468,7 @@ module.exports = function make_cat_args(regl, params, inst_rc, cat_index){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function make_cat_position_array(params, cat_index, inst_axis){
+module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
 
   var num_labels = params['num_'+inst_axis];
   // category tiles have fixed heights
@@ -24491,7 +24499,7 @@ module.exports = function make_cat_position_array(params, cat_index, inst_axis){
   // console.log('shift_cat', shift_cat)
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  var inst_order = params.inst_order[inst_axis];
+  // var inst_order = params.inst_order[inst_axis];
 
   var y_offset_array = [];
   var i;

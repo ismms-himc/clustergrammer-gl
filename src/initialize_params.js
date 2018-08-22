@@ -17,6 +17,7 @@ var calc_row_downsampled_mat = require('./calc_row_downsampled_mat');
 var generate_cat_data = require('./generate_cat_data');
 var get_ordered_labels = require('./get_ordered_labels');
 var make_tooltip_background_args = require('./make_tooltip_background_args');
+var make_cat_position_array = require('./make_cat_position_array');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -137,19 +138,23 @@ module.exports = function initialize_params(regl, network){
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   // params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
-  // console.log(_.keys(params.network.cat_colors['col']).length)
 
   //
 
   params.cat_args = {};
   params.cat_args.row = [];
+  params.cat_args.col = [];
+  params.cat_arrs = {};
+  params.cat_arrs.row = {};
+  params.cat_arrs.col = {};
   for (var cat_index = 0; cat_index < params.cat_num.row; cat_index++) {
+    params.cat_arrs['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.inst_order.row);
     params.cat_args.row[cat_index] = make_cat_args(regl, params, 'row', cat_index=cat_index);
   }
 
-  params.cat_args.col = [];
 
   for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+    params.cat_arrs['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.inst_order.col);
     params.cat_args.col[cat_index] = make_cat_args(regl, params, 'col', cat_index=cat_index);
   }
 

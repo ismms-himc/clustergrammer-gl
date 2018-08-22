@@ -1,4 +1,4 @@
-module.exports = function make_cat_position_array(params, cat_index, inst_axis){
+module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
 
   var num_labels = params['num_'+inst_axis];
   // category tiles have fixed heights
@@ -29,7 +29,7 @@ module.exports = function make_cat_position_array(params, cat_index, inst_axis){
   // console.log('shift_cat', shift_cat)
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  var inst_order = params.inst_order[inst_axis];
+  // var inst_order = params.inst_order[inst_axis];
 
   var y_offset_array = [];
   var i;

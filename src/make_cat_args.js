@@ -50,7 +50,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
   // var y_offset_array = make_cat_position_array(params, inst_axis, cat_index);
-  y_offset_array = params.cat_arrs[inst_axis][cat_index];
+  y_offset_array = params.cat_arrs.inst[inst_axis][cat_index];
 
   // debugger
 

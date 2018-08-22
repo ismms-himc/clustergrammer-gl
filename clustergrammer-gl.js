@@ -23454,17 +23454,24 @@ module.exports = function initialize_params(regl, network){
   params.cat_args = {};
   params.cat_args.row = [];
   params.cat_args.col = [];
+
   params.cat_arrs = {};
-  params.cat_arrs.row = {};
-  params.cat_arrs.col = {};
+
+  params.cat_arrs.inst = {}
+  params.cat_arrs.inst.row = {};
+  params.cat_arrs.inst.col = {};
+
   for (var cat_index = 0; cat_index < params.cat_num.row; cat_index++) {
-    params.cat_arrs['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.inst_order.row);
+    params.cat_arrs.inst['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.inst_order.row);
+
+
     params.cat_args.row[cat_index] = make_cat_args(regl, params, 'row', cat_index=cat_index);
   }
 
 
   for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-    params.cat_arrs['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.inst_order.col);
+    params.cat_arrs.inst['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.inst_order.col);
+
     params.cat_args.col[cat_index] = make_cat_args(regl, params, 'col', cat_index=cat_index);
   }
 
@@ -24274,7 +24281,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
   // var y_offset_array = make_cat_position_array(params, inst_axis, cat_index);
-  y_offset_array = params.cat_arrs[inst_axis][cat_index];
+  y_offset_array = params.cat_arrs.inst[inst_axis][cat_index];
 
   // debugger
 

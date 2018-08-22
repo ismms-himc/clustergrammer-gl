@@ -48,28 +48,28 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  cat_pos_array = {};
-  cat_pos_array.inst = params.cat_arrs.inst[inst_axis][cat_index];
-  cat_pos_array.new = params.cat_arrs.new[inst_axis][cat_index];
+  // cat_pos_array = {};
+  // cat_pos_array.inst = params.cat_arrs.inst[inst_axis][cat_index];
+  // cat_pos_array.new = params.cat_arrs.new[inst_axis][cat_index];
 
   // debugger
 
 
   var cat_pos_buffer = {};
-  cat_pos_buffer.inst = regl.buffer({
-    // length: num_labels,
-    // type: 'float',
-    // usage: 'dynamic'
-  });
+  // cat_pos_buffer.inst = regl.buffer({
+  //   // length: num_labels,
+  //   // type: 'float',
+  //   // usage: 'dynamic'
+  // });
 
-  cat_pos_buffer.new = regl.buffer({
-    // length: num_labels,
-    // type: 'float',
-    // usage: 'dynamic'
-  });
+  // cat_pos_buffer.new = regl.buffer({
+  //   // length: num_labels,
+  //   // type: 'float',
+  //   // usage: 'dynamic'
+  // });
 
-  cat_pos_buffer.inst(cat_pos_array.inst);
-  cat_pos_buffer.new(cat_pos_array.new);
+  // cat_pos_buffer.inst(cat_pos_array.inst);
+  // cat_pos_buffer.new(cat_pos_array.new);
 
 
   /////////////////////////////////
@@ -155,9 +155,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       varying vec3 new_position;
       varying vec3 vec_translate;
       varying vec2 cat_pos;
-      varying vec2 cat_vec_inst;
-      varying vec2 cat_vec_new;
-      varying vec2 cat_vec_mix;
 
       // pass varying variable to fragment from vector
       varying vec4 color_vary;
@@ -223,12 +220,14 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       ],
 
       cat_pos_att_inst: {
-        buffer: cat_pos_buffer.inst,
+        // buffer: cat_pos_buffer.inst,
+        buffer: regl.buffer(params.cat_arrs.inst[inst_axis][cat_index]),
         divisor: 1
       },
 
       cat_pos_att_new: {
-        buffer: cat_pos_buffer.new,
+        // buffer: cat_pos_buffer.new,
+        buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
         divisor: 1
       },
 

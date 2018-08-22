@@ -1,6 +1,7 @@
 var make_row_text_args = require('./make_row_text_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_text_triangles = require('./calc_row_text_triangles');
+var interp_fun = require('./interp_fun');
 
 module.exports = function draw_row_components(regl, params, calc_text_tri=false){
 
@@ -9,9 +10,14 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     regl(params.viz_aid_tri_args.row)();
 
-    // _.each(params.cat_args.row, function(inst_cat_arg){
-    //   regl(inst_cat_arg)();
-    // });
+    _.each(params.cat_args.row, function(inst_cat_arg){
+      regl(inst_cat_arg)(
+        {
+          interp_prop: interp_fun(params),
+          run_animation: params.animation.running
+        }
+        );
+    });
 
     regl(params.dendro_args.row)();
 

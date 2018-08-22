@@ -32247,6 +32247,7 @@ module.exports = function draw_matrix_components(regl, params){
 var make_row_text_args = __webpack_require__(/*! ./make_row_text_args */ "./src/make_row_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/calc_viz_area.js");
 var calc_row_text_triangles = __webpack_require__(/*! ./calc_row_text_triangles */ "./src/calc_row_text_triangles.js");
+var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
 module.exports = function draw_row_components(regl, params, calc_text_tri=false){
 
@@ -32255,9 +32256,14 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     regl(params.viz_aid_tri_args.row)();
 
-    // _.each(params.cat_args.row, function(inst_cat_arg){
-    //   regl(inst_cat_arg)();
-    // });
+    _.each(params.cat_args.row, function(inst_cat_arg){
+      regl(inst_cat_arg)(
+        {
+          interp_prop: interp_fun(params),
+          run_animation: params.animation.running
+        }
+        );
+    });
 
     regl(params.dendro_args.row)();
 
@@ -33785,28 +33791,28 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  cat_pos_array = {};
-  cat_pos_array.inst = params.cat_arrs.inst[inst_axis][cat_index];
-  cat_pos_array.new = params.cat_arrs.new[inst_axis][cat_index];
+  // cat_pos_array = {};
+  // cat_pos_array.inst = params.cat_arrs.inst[inst_axis][cat_index];
+  // cat_pos_array.new = params.cat_arrs.new[inst_axis][cat_index];
 
   // debugger
 
 
   var cat_pos_buffer = {};
-  cat_pos_buffer.inst = regl.buffer({
-    // length: num_labels,
-    // type: 'float',
-    // usage: 'dynamic'
-  });
+  // cat_pos_buffer.inst = regl.buffer({
+  //   // length: num_labels,
+  //   // type: 'float',
+  //   // usage: 'dynamic'
+  // });
 
-  cat_pos_buffer.new = regl.buffer({
-    // length: num_labels,
-    // type: 'float',
-    // usage: 'dynamic'
-  });
+  // cat_pos_buffer.new = regl.buffer({
+  //   // length: num_labels,
+  //   // type: 'float',
+  //   // usage: 'dynamic'
+  // });
 
-  cat_pos_buffer.inst(cat_pos_array.inst);
-  cat_pos_buffer.new(cat_pos_array.new);
+  // cat_pos_buffer.inst(cat_pos_array.inst);
+  // cat_pos_buffer.new(cat_pos_array.new);
 
 
   /////////////////////////////////
@@ -33892,9 +33898,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       varying vec3 new_position;
       varying vec3 vec_translate;
       varying vec2 cat_pos;
-      varying vec2 cat_vec_inst;
-      varying vec2 cat_vec_new;
-      varying vec2 cat_vec_mix;
 
       // pass varying variable to fragment from vector
       varying vec4 color_vary;
@@ -33960,12 +33963,14 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       ],
 
       cat_pos_att_inst: {
-        buffer: cat_pos_buffer.inst,
+        // buffer: cat_pos_buffer.inst,
+        buffer: regl.buffer(params.cat_arrs.inst[inst_axis][cat_index]),
         divisor: 1
       },
 
       cat_pos_att_new: {
-        buffer: cat_pos_buffer.new,
+        // buffer: cat_pos_buffer.new,
+        buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
         divisor: 1
       },
 
@@ -35564,9 +35569,22 @@ module.exports = function zoom_rules_high_mat(regl, params){
           divisor: 1
         };
 
+
+    // update cat position arrays
+    console.log('re-calculating col cat positions', params.new_order.col)
+    console.log('---', params.cat_arrs.new.col[0][0])
     for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-      params.cat_arrs.new['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+      params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+
+      // update the attribute
+      params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
+          buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+          divisor: 1
+      }
     }
+    console.log('---', params.cat_arrs.new.col[0][0])
+
+    // update matrix args
 
   });
 

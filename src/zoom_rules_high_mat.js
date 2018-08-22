@@ -63,9 +63,22 @@ module.exports = function zoom_rules_high_mat(regl, params){
           divisor: 1
         };
 
+
+    // update cat position arrays
+    console.log('re-calculating col cat positions', params.new_order.col)
+    console.log('---', params.cat_arrs.new.col[0][0])
     for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-      params.cat_arrs.new['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+      params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+
+      // update the attribute
+      params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
+          buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+          divisor: 1
+      }
     }
+    console.log('---', params.cat_arrs.new.col[0][0])
+
+    // update matrix args
 
   });
 

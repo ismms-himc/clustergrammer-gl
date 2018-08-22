@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.4.1
+  clustergrammer-gl version 0.4.2
 
  */
 
@@ -14,7 +14,7 @@ var make_position_arr = require('./make_position_arr');
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.1');
+  console.log('clustergrammer-gl version 0.4.2');
   console.log('################################');
 
   var network = args.network;

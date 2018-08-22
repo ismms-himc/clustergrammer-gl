@@ -24118,7 +24118,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 /*
 
-  clustergrammer-gl version 0.4.2
+  clustergrammer-gl version 0.4.3
 
  */
 
@@ -24132,7 +24132,7 @@ var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/ma
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.2');
+  console.log('clustergrammer-gl version 0.4.3');
   console.log('################################');
 
   var network = args.network;

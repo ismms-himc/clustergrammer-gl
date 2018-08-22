@@ -44,6 +44,16 @@ module.exports = function run_viz(regl, network){
           };
 
       // transfer the new category positions to the cat args attributes
+      for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+        // params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+
+        // update the attribute
+        params.cat_args.col[cat_index].attributes.cat_pos_att_inst = {
+            buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+            divisor: 1
+        };
+      }
+
 
       // transfer new order to old order (only for column reordering)
       params.inst_order.col = params.new_order.col

@@ -23075,18 +23075,18 @@ module.exports = function find_mouseover_element(regl, params, ev){
   }
 
 
-function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
+  function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
 
-  cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
+    cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
 
-  // console.log(viz_dim_heat.max)
-  if (cursor_rel_min < 0){
-    cursor_rel_min = 0;
-  } else if (cursor_rel_min > max_pix){
-    cursor_rel_min = max_pix;
+    // console.log(viz_dim_heat.max)
+    if (cursor_rel_min < 0){
+      cursor_rel_min = 0;
+    } else if (cursor_rel_min > max_pix){
+      cursor_rel_min = max_pix;
+    }
+    return cursor_rel_min;
   }
-  return cursor_rel_min;
-}
 
 };
 
@@ -25804,6 +25804,16 @@ module.exports = function run_viz(regl, network){
           };
 
       // transfer the new category positions to the cat args attributes
+      for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+        // params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+
+        // update the attribute
+        params.cat_args.col[cat_index].attributes.cat_pos_att_inst = {
+            buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+            divisor: 1
+        };
+      }
+
 
       // transfer new order to old order (only for column reordering)
       params.inst_order.col = params.new_order.col
@@ -26050,44 +26060,48 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(ev){
 
-    console.log('CLICKING', ev.type, 'reordring_columns')
+    if (ev.x0 < 100 && ev.y0 < 100){
 
-    params.animation.run_switch = true;
 
-    if (params.inst_order.col == 'clust'){
-      console.log('set new_order to clust')
-      params.new_order.col = 'rank'
-    } else {
-      console.log('set new_order to rank')
-      params.new_order.col = 'clust'
+        console.log('CLICKING', ev.type, 'reordring_columns', ev.x0, ev.y0)
+
+        params.animation.run_switch = true;
+
+        if (params.inst_order.col == 'clust'){
+          console.log('set new_order to clust')
+          params.new_order.col = 'rank'
+        } else {
+          console.log('set new_order to rank')
+          params.new_order.col = 'clust'
+        }
+
+        // calculate new ordering
+        params.arrs.position_arr.new = make_position_arr(params,
+                                        params.new_order.row,
+                                        params.new_order.col);
+
+        params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+              buffer: regl.buffer(params.arrs.position_arr.new),
+              divisor: 1
+            };
+
+
+        // update cat position arrays
+        console.log('re-calculating col cat positions', params.new_order.col)
+        console.log('---', params.cat_arrs.new.col[0][0])
+        for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+          params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+
+          // update the attribute
+          params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
+              buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+              divisor: 1
+          };
+        }
+        console.log('---', params.cat_arrs.new.col[0][0])
+
+        // update matrix args
     }
-
-    // calculate new ordering
-    params.arrs.position_arr.new = make_position_arr(params,
-                                    params.new_order.row,
-                                    params.new_order.col);
-
-    params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-          buffer: regl.buffer(params.arrs.position_arr.new),
-          divisor: 1
-        };
-
-
-    // update cat position arrays
-    console.log('re-calculating col cat positions', params.new_order.col)
-    console.log('---', params.cat_arrs.new.col[0][0])
-    for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-      params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
-
-      // update the attribute
-      params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
-          buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
-          divisor: 1
-      }
-    }
-    console.log('---', params.cat_arrs.new.col[0][0])
-
-    // update matrix args
 
   });
 

@@ -104,17 +104,17 @@ module.exports = function find_mouseover_element(regl, params, ev){
   }
 
 
-function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
+  function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
 
-  cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
+    cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
 
-  // console.log(viz_dim_heat.max)
-  if (cursor_rel_min < 0){
-    cursor_rel_min = 0;
-  } else if (cursor_rel_min > max_pix){
-    cursor_rel_min = max_pix;
+    // console.log(viz_dim_heat.max)
+    if (cursor_rel_min < 0){
+      cursor_rel_min = 0;
+    } else if (cursor_rel_min > max_pix){
+      cursor_rel_min = max_pix;
+    }
+    return cursor_rel_min;
   }
-  return cursor_rel_min;
-}
 
 };

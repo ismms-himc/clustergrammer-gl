@@ -34343,9 +34343,9 @@ module.exports = function make_matrix_args(regl, params){
                                                params.inst_order.row,
                                                params.inst_order.col);
 
-  // params.arrs.position_arr['new'] = make_position_arr(params,
-  //                                              params.new_order.row,
-  //                                              params.new_order.col);
+  params.arrs.position_arr['new'] = make_position_arr(params,
+                                               params.new_order.row,
+                                               params.new_order.col);
 
   var opacity_buffer = regl.buffer({
     type: 'float',
@@ -34427,7 +34427,7 @@ module.exports = function make_matrix_args(regl, params){
     attributes: {
       position: triangle_verts,
       pos_att_ini: {
-        buffer: regl.buffer(params.arrs.position_arr['ini']),
+        buffer: regl.buffer(params.arrs.position_arr.ini),
         divisor: 1
       },
       opacity_att: {

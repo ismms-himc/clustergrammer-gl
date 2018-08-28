@@ -27,13 +27,13 @@ module.exports = function run_viz(regl, network){
       params.animation.last_switch_time = time
       params.animation.running = true;
 
-    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
+    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
 
       ///////////////////////////////////////
       // The transition has finished
       ///////////////////////////////////////
 
-      cgm.params.animation.running = false;
+      params.animation.running = false;
       params.animation.run_switch = false;
       console.log('finish switch!!!!!!!!!!!');
 

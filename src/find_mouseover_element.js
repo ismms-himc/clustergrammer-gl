@@ -9,9 +9,9 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   Need to use
 
-    cgm.params.canvas_pos.x_arr.length
+    params.canvas_pos.x_arr.length
       and
-    cgm.params.canvas_pos.y_arr.length
+    params.canvas_pos.y_arr.length
 
   to identify where the user is mousing over
 
@@ -68,11 +68,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
     if (params.mouseover.row_name.includes(': ')){
-      cgm.params.mouseover.row_name = cgm.params.mouseover.row_name.split(': ')[1];
+      params.mouseover.row_name = params.mouseover.row_name.split(': ')[1];
     }
 
     if (params.mouseover.col_name.includes(': ')){
-      cgm.params.mouseover.col_name = cgm.params.mouseover.col_name.split(': ')[1];
+      params.mouseover.col_name = params.mouseover.col_name.split(': ')[1];
     }
 
     var mouseover_text;

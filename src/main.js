@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.4.5
+  clustergrammer-gl version 0.4.6
 
  */
 
@@ -11,7 +11,7 @@ var run_viz = require('./run_viz');
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.5');
+  console.log('clustergrammer-gl version 0.4.6');
   console.log('################################');
 
   var network = args.network;

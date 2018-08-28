@@ -22980,9 +22980,9 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   Need to use
 
-    cgm.params.canvas_pos.x_arr.length
+    params.canvas_pos.x_arr.length
       and
-    cgm.params.canvas_pos.y_arr.length
+    params.canvas_pos.y_arr.length
 
   to identify where the user is mousing over
 
@@ -23039,11 +23039,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
     if (params.mouseover.row_name.includes(': ')){
-      cgm.params.mouseover.row_name = cgm.params.mouseover.row_name.split(': ')[1];
+      params.mouseover.row_name = params.mouseover.row_name.split(': ')[1];
     }
 
     if (params.mouseover.col_name.includes(': ')){
-      cgm.params.mouseover.col_name = cgm.params.mouseover.col_name.split(': ')[1];
+      params.mouseover.col_name = params.mouseover.col_name.split(': ')[1];
     }
 
     var mouseover_text;
@@ -24145,7 +24145,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 /*
 
-  clustergrammer-gl version 0.4.5
+  clustergrammer-gl version 0.4.6
 
  */
 
@@ -24156,7 +24156,7 @@ var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.5');
+  console.log('clustergrammer-gl version 0.4.6');
   console.log('################################');
 
   var network = args.network;

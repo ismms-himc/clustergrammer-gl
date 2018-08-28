@@ -33647,6 +33647,8 @@ module.exports = function keep_track_of_mouseovers(params){
  */
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
+var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js");
 
 function clustergrammer_gl(args){
 
@@ -33673,11 +33675,7 @@ function clustergrammer_gl(args){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
 
-  control_svg
-    .append('rect')
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
-    .style('fill', 'red');
+
 
   var inst_height = 1000;
   var inst_width = 1000;
@@ -33685,6 +33683,7 @@ function clustergrammer_gl(args){
   d3.select(canvas_container)
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
+
 
   var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
     extensions: ['angle_instanced_arrays'],
@@ -33697,6 +33696,77 @@ function clustergrammer_gl(args){
   var cgm = {};
 
   cgm.params = params;
+
+
+  // Add sliders on top of the canvas
+  /////////////////////////////////////
+  var col_slider_container = d3.select(canvas_container)
+    .append('svg')
+    .style('height', '100px')
+    .style('width', '40px')
+    .style('position', 'absolute')
+    .style('top', 400 + 'px')
+    .style('left', inst_width - 15 + 'px')
+    .attr('id', 'something!');
+
+  col_slider_container
+    .append('rect')
+    .style('height', '100px')
+    .style('width', '50px')
+    .style('fill', 'red')
+    .on('click', function(){
+      console.log('clicking the red slider')
+    })
+
+  // Add control panel to the top
+  ///////////////////////////////////////
+
+  control_svg
+    .append('rect')
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+    .style('fill', 'red')
+    .on('click', function(){
+      console.log('clicking control panel')
+
+        // console.log('CLICKING', ev.type, 'reordering_columns', ev.x0, ev.y0)
+
+        params.animation.run_switch = true;
+
+        if (params.inst_order.col == 'clust'){
+          console.log('set new_order to clust')
+          params.new_order.col = 'rank'
+        } else {
+          console.log('set new_order to rank')
+          params.new_order.col = 'clust'
+        }
+
+        // calculate new ordering
+        params.arrs.position_arr.new = make_position_arr(params,
+                                        params.new_order.row,
+                                        params.new_order.col);
+
+        params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+              buffer: regl.buffer(params.arrs.position_arr.new),
+              divisor: 1
+            };
+
+
+        // update cat position arrays
+        console.log('re-calculating col cat positions', params.new_order.col)
+        console.log('---', params.cat_arrs.new.col[0][0])
+        for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+          params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+
+          // update the attribute
+          params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
+              buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+              divisor: 1
+          };
+        }
+        console.log('---', params.cat_arrs.new.col[0][0])
+
+    });
 
   return cgm;
 
@@ -35567,45 +35637,46 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     if (ev.x0 < 100 && ev.y0 < 100){
 
+      console.log('clicking the canvas upper left area')
 
-        console.log('CLICKING', ev.type, 'reordering_columns', ev.x0, ev.y0)
+        // console.log('CLICKING', ev.type, 'reordering_columns', ev.x0, ev.y0)
 
-        params.animation.run_switch = true;
+        // params.animation.run_switch = true;
 
-        if (params.inst_order.col == 'clust'){
-          console.log('set new_order to clust')
-          params.new_order.col = 'rank'
-        } else {
-          console.log('set new_order to rank')
-          params.new_order.col = 'clust'
-        }
+        // if (params.inst_order.col == 'clust'){
+        //   console.log('set new_order to clust')
+        //   params.new_order.col = 'rank'
+        // } else {
+        //   console.log('set new_order to rank')
+        //   params.new_order.col = 'clust'
+        // }
 
-        // calculate new ordering
-        params.arrs.position_arr.new = make_position_arr(params,
-                                        params.new_order.row,
-                                        params.new_order.col);
+        // // calculate new ordering
+        // params.arrs.position_arr.new = make_position_arr(params,
+        //                                 params.new_order.row,
+        //                                 params.new_order.col);
 
-        params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-              buffer: regl.buffer(params.arrs.position_arr.new),
-              divisor: 1
-            };
+        // params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+        //       buffer: regl.buffer(params.arrs.position_arr.new),
+        //       divisor: 1
+        //     };
 
 
-        // update cat position arrays
-        console.log('re-calculating col cat positions', params.new_order.col)
-        console.log('---', params.cat_arrs.new.col[0][0])
-        for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-          params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+        // // update cat position arrays
+        // console.log('re-calculating col cat positions', params.new_order.col)
+        // console.log('---', params.cat_arrs.new.col[0][0])
+        // for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+        //   params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
 
-          // update the attribute
-          params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
-              buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
-              divisor: 1
-          };
-        }
-        console.log('---', params.cat_arrs.new.col[0][0])
+        //   // update the attribute
+        //   params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
+        //       buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+        //       divisor: 1
+        //   };
+        // }
+        // console.log('---', params.cat_arrs.new.col[0][0])
 
-        // update matrix args
+        // // update matrix args
     }
 
   });

@@ -4,8 +4,6 @@
 
  */
 
-// var filename = 'data/mult_view.json';
-
 var run_viz = require('./run_viz');
 
 function clustergrammer_gl(args){
@@ -23,17 +21,28 @@ function clustergrammer_gl(args){
   var control_container = d3.select(container).select('#control-container')[0][0];
   var canvas_container = d3.select(container).select('#canvas-container')[0][0];
 
+  var inst_height = 100;
+  var inst_width = 1000;
+
+  var control_svg = d3.select(control_container)
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+    .append('svg')
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px');
+
+  control_svg
+    .append('rect')
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+    .style('fill', 'red');
+
   var inst_height = 1000;
   var inst_width = 1000;
 
-  d3.select(control_container)
-    // .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
-    .style('display', 'flex')
-
   d3.select(canvas_container)
     .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
+    .style('width',inst_width+'px');
 
   var regl = require('regl')({
     extensions: ['angle_instanced_arrays'],
@@ -46,7 +55,6 @@ function clustergrammer_gl(args){
   var cgm = {};
 
   cgm.params = params;
-
 
   return cgm;
 

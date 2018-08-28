@@ -44,7 +44,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     if (ev.x0 < 100 && ev.y0 < 100){
 
 
-        console.log('CLICKING', ev.type, 'reordring_columns', ev.x0, ev.y0)
+        console.log('CLICKING', ev.type, 'reordering_columns', ev.x0, ev.y0)
 
         params.animation.run_switch = true;
 

@@ -24145,7 +24145,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 /*
 
-  clustergrammer-gl version 0.4.4
+  clustergrammer-gl version 0.4.5
 
  */
 
@@ -24156,7 +24156,7 @@ var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.4');
+  console.log('clustergrammer-gl version 0.4.5');
   console.log('################################');
 
   var network = args.network;
@@ -25787,13 +25787,13 @@ module.exports = function run_viz(regl, network){
       params.animation.last_switch_time = time
       params.animation.running = true;
 
-    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && cgm.params.animation.running === true){
+    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
 
       ///////////////////////////////////////
       // The transition has finished
       ///////////////////////////////////////
 
-      cgm.params.animation.running = false;
+      params.animation.running = false;
       params.animation.run_switch = false;
       console.log('finish switch!!!!!!!!!!!');
 

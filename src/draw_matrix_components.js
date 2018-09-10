@@ -1,5 +1,5 @@
 // var filter_visible_mat = require('./filter_visible_mat');
-var interp_fun = require('./interp_fun');
+var interp_fun = require('./draws/interp_fun');
 
 module.exports = function draw_matrix_components(regl, params){
 

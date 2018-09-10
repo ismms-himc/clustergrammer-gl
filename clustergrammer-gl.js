@@ -22751,7 +22751,7 @@ var make_col_text_args = __webpack_require__(/*! ./matrix_labels/make_col_text_a
 var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_col_text_triangles = __webpack_require__(/*! ./matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
-var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
+var interp_fun = __webpack_require__(/*! ./draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function draw_col_components(regl, params, calc_text_tri=false){
 
@@ -22876,7 +22876,7 @@ module.exports = function draw_commands(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 // var filter_visible_mat = require('./filter_visible_mat');
-var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
+var interp_fun = __webpack_require__(/*! ./draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -22927,7 +22927,7 @@ module.exports = function draw_matrix_components(regl, params){
 var make_row_text_args = __webpack_require__(/*! ./matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_text_triangles = __webpack_require__(/*! ./matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
-var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
+var interp_fun = __webpack_require__(/*! ./draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function draw_row_components(regl, params, calc_text_tri=false){
 
@@ -23038,6 +23038,25 @@ module.exports = function draw_tooltip_components(regl, params){
 
   });
 };
+
+/***/ }),
+
+/***/ "./src/draws/interp_fun.js":
+/*!*********************************!*\
+  !*** ./src/draws/interp_fun.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
+
+module.exports = function interp_fun(params){
+  inst_ease = ease((params.time - params.animation.last_switch_time) /
+              params.animation.switch_duration);
+
+  // console.log(inst_ease)
+  return inst_ease;
+}
 
 /***/ }),
 
@@ -23848,25 +23867,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
     console.log('not tracking anything')
   }
 
-}
-
-/***/ }),
-
-/***/ "./src/interp_fun.js":
-/*!***************************!*\
-  !*** ./src/interp_fun.js ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
-
-module.exports = function interp_fun(params){
-  inst_ease = ease((params.time - params.animation.last_switch_time) /
-              params.animation.switch_duration);
-
-  // console.log(inst_ease)
-  return inst_ease;
 }
 
 /***/ }),

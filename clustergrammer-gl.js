@@ -22766,10 +22766,59 @@ module.exports = function draw_tooltip_components(regl, params){
 
 /***/ }),
 
-/***/ "./src/final_interaction_frame.js":
-/*!****************************************!*\
-  !*** ./src/final_interaction_frame.js ***!
-  \****************************************/
+/***/ "./src/get_ordered_labels.js":
+/*!***********************************!*\
+  !*** ./src/get_ordered_labels.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function get_ordered_labels(params){
+
+  console.log('get ordered_labels')
+
+  var ordered_labels = {};
+
+  row_nodes = params.network.row_nodes;
+  col_nodes = params.network.col_nodes;
+  ordered_labels.rows = [];
+  ordered_labels.cols = [];
+
+  // only showing col cat in mouseover for now
+  ordered_labels.col_cats = [];
+
+  var inst_order;
+  var inst_name;
+  _.each(row_nodes, function(inst_node){
+    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
+    ordered_labels.rows[inst_order] = inst_node.name;
+  });
+
+  var found_col_cat = false;
+  if (params.cat_num.col > 0){
+    var found_col_cat = true;
+  }
+
+  _.each(col_nodes, function(inst_node){
+    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
+
+    ordered_labels.cols[inst_order] = inst_node.name;
+
+    if (found_col_cat){
+      ordered_labels.col_cats[inst_order] = inst_node['cat-0'];
+    }
+
+  });
+
+  params.ordered_labels = ordered_labels;
+};
+
+/***/ }),
+
+/***/ "./src/interactions/final_interaction_frame.js":
+/*!*****************************************************!*\
+  !*** ./src/interactions/final_interaction_frame.js ***!
+  \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -22806,10 +22855,10 @@ module.exports = function final_interaction_frame(regl, params){
 
 /***/ }),
 
-/***/ "./src/final_mouseover_frame.js":
-/*!**************************************!*\
-  !*** ./src/final_mouseover_frame.js ***!
-  \**************************************/
+/***/ "./src/interactions/final_mouseover_frame.js":
+/*!***************************************************!*\
+  !*** ./src/interactions/final_mouseover_frame.js ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -22838,10 +22887,10 @@ module.exports = function final_mouseover_frame(regl, params){
 
 /***/ }),
 
-/***/ "./src/find_mouseover_element.js":
-/*!***************************************!*\
-  !*** ./src/find_mouseover_element.js ***!
-  \***************************************/
+/***/ "./src/interactions/find_mouseover_element.js":
+/*!****************************************************!*\
+  !*** ./src/interactions/find_mouseover_element.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22965,55 +23014,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
     return cursor_rel_min;
   }
 
-};
-
-/***/ }),
-
-/***/ "./src/get_ordered_labels.js":
-/*!***********************************!*\
-  !*** ./src/get_ordered_labels.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function get_ordered_labels(params){
-
-  console.log('get ordered_labels')
-
-  var ordered_labels = {};
-
-  row_nodes = params.network.row_nodes;
-  col_nodes = params.network.col_nodes;
-  ordered_labels.rows = [];
-  ordered_labels.cols = [];
-
-  // only showing col cat in mouseover for now
-  ordered_labels.col_cats = [];
-
-  var inst_order;
-  var inst_name;
-  _.each(row_nodes, function(inst_node){
-    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
-    ordered_labels.rows[inst_order] = inst_node.name;
-  });
-
-  var found_col_cat = false;
-  if (params.cat_num.col > 0){
-    var found_col_cat = true;
-  }
-
-  _.each(col_nodes, function(inst_node){
-    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
-
-    ordered_labels.cols[inst_order] = inst_node.name;
-
-    if (found_col_cat){
-      ordered_labels.col_cats[inst_order] = inst_node['cat-0'];
-    }
-
-  });
-
-  params.ordered_labels = ordered_labels;
 };
 
 /***/ }),
@@ -25456,8 +25456,8 @@ module.exports = function initialize_params(regl, network){
 var initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
-var final_mouseover_frame = __webpack_require__(/*! ./final_mouseover_frame */ "./src/final_mouseover_frame.js");
-var final_interaction_frame = __webpack_require__(/*! ./final_interaction_frame */ "./src/final_interaction_frame.js");
+var final_mouseover_frame = __webpack_require__(/*! ./interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
+var final_interaction_frame = __webpack_require__(/*! ./interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -26065,7 +26065,7 @@ module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5
 /***/ (function(module, exports, __webpack_require__) {
 
 var zoom_rules_low_mat = __webpack_require__(/*! ./zoom/zoom_rules_low_mat */ "./src/zoom/zoom_rules_low_mat.js");
-var find_mouseover_element = __webpack_require__(/*! ./find_mouseover_element */ "./src/find_mouseover_element.js");
+var find_mouseover_element = __webpack_require__(/*! ./interactions/find_mouseover_element */ "./src/interactions/find_mouseover_element.js");
 var keep_track_of_interactions = __webpack_require__(/*! ./keep_track_of_interactions */ "./src/keep_track_of_interactions.js");
 var keep_track_of_mouseovers = __webpack_require__(/*! ./keep_track_of_mouseovers */ "./src/keep_track_of_mouseovers.js");
 

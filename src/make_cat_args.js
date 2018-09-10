@@ -1,4 +1,4 @@
-var m3 = require('./mat3_transform');
+var m3 = require('./transforms/mat3_transform');
 var color_to_rgba = require('./color_to_rgba');
 // var color_table = require('./color_table.js');
 

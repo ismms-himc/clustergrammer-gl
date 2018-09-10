@@ -23899,7 +23899,7 @@ module.exports = function make_cameras(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./color_to_rgba */ "./src/color_to_rgba.js");
 // var color_table = require('./color_table.js');
 
@@ -24245,7 +24245,7 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
@@ -24398,7 +24398,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
 
 module.exports = function draw_mat_labels(regl, params, inst_rc){
 
@@ -24836,7 +24836,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
@@ -24964,44 +24964,6 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
 /***/ }),
 
-/***/ "./src/mat3_transform.js":
-/*!*******************************!*\
-  !*** ./src/mat3_transform.js ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = {
-  translation: function(tx, ty) {
-    return [
-      1, 0, 0,
-      0, 1, 0,
-      tx, ty, 1,
-    ];
-  },
-
-  rotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
-    return [
-      c,-s, 0,
-      s, c, 0,
-      0, 0, 1,
-    ];
-  },
-
-  scaling: function(sx, sy) {
-    return [
-      sx, 0, 0,
-      0, sy, 0,
-      0, 0, 1,
-    ];
-  },
-};
-
-
-/***/ }),
-
 /***/ "./src/matrix_labels/make_viz_aid_tri_args.js":
 /*!****************************************************!*\
   !*** ./src/matrix_labels/make_viz_aid_tri_args.js ***!
@@ -25009,7 +24971,7 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./../mat3_transform */ "./src/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../color_to_rgba */ "./src/color_to_rgba.js");
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
@@ -26195,6 +26157,44 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
   }
 
 }
+
+/***/ }),
+
+/***/ "./src/transforms/mat3_transform.js":
+/*!******************************************!*\
+  !*** ./src/transforms/mat3_transform.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = {
+  translation: function(tx, ty) {
+    return [
+      1, 0, 0,
+      0, 1, 0,
+      tx, ty, 1,
+    ];
+  },
+
+  rotation: function(angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
+    return [
+      c,-s, 0,
+      s, c, 0,
+      0, 0, 1,
+    ];
+  },
+
+  scaling: function(sx, sy) {
+    return [
+      sx, 0, 0,
+      0, sy, 0,
+      0, 0, 1,
+    ];
+  },
+};
+
 
 /***/ }),
 

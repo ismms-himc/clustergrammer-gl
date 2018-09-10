@@ -21444,148 +21444,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./src/calc_col_text_triangles.js":
-/*!****************************************!*\
-  !*** ./src/calc_col_text_triangles.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
-
-module.exports = function calc_col_text_triangles(params){
-
-  /*
-
-  // Make dictionary of text triangles
-  //////////////////////////////////////
-  1. Save all calculated text triangles in a dictionary for re-use. We can
-  construct the text triangle array when necessary by gathering the pre-
-  calculated text triangles and calculating any new text triangles (as well as
-  storing them back in the dictionary).
-
-  2. Try calculating text triangles in the background, e.g. when not interacting,
-  and save these to the text triangle dictionary.
-
-  3. Try combining text triangles, for instance title and category.
-
-  */
-
-  var inst_nodes = params.network.col_nodes;
-  var num_col = params.num_col;
-
-  var vect_text_attrs = {
-    textAlign: 'left',
-    // textBaseline: 'middle',
-    textBaseline: 'bottom',
-    triangles: true,
-    size: params.font_detail,
-    font: '"Open Sans", verdana, arial, sans-serif'
-  };
-
-  // draw matrix cells
-  /////////////////////////////////////////
-
-  var x_arr = params.canvas_pos.x_arr;
-
-  // generating array with col text triangles and y-offsets
-  var col_text_triangles = [];
-
-  var inst_order = params.inst_order.col;
-
-  var viz_area = params.viz_area;
-  var kept_col_x = [];
-
-  _.each(inst_nodes, function(inst_node, col_id){
-
-    // console.log(inst_node)
-
-    var col_order_id = params.network.col_nodes[col_id][inst_order];
-
-    var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
-
-    if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
-
-      var inst_name = inst_node.name;
-
-      if (inst_name.indexOf(': ') >= 0){
-
-          inst_name = inst_node.name.split(': ')[1];
-      }
-
-      var tmp_text_vect;
-      if (inst_name in params.text_triangles.col){
-        // console.log('found col');
-        tmp_text_vect = params.text_triangles.col[inst_name];
-      } else {
-        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles.col[inst_name] = tmp_text_vect;
-      }
-
-      // // if (inst_name not in params.text_triangles.col){
-      //   console.log('did not find', inst_name, params.text_triangles.col);
-      // // }
-
-      tmp_text_vect.offset = [0, inst_x];
-      col_text_triangles.push(tmp_text_vect);
-
-      var inst_data = {};
-      inst_data.y = inst_x;
-      inst_data.name = inst_name;
-      kept_col_x.push(inst_data);
-    }
-
-  });
-
-
-  params.kept_col_x = kept_col_x;
-
-  return col_text_triangles;
-
-};
-
-/***/ }),
-
-/***/ "./src/calc_row_and_col_canvas_positions.js":
-/*!**************************************************!*\
-  !*** ./src/calc_row_and_col_canvas_positions.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_row_and_col_canvas_positions(params){
-
-  var num_col = params.num_col;
-  var num_row = params.num_row;
-
-  // draw matrix cells
-  /////////////////////////////////////////
-  // set up offset array for buffer
-  var offset = {};
-  offset.x = params.center.x;
-  offset.y = params.center.y;
-
-  // generate x position array
-  var x_arr = Array(num_col).fill()
-    .map(function(_, i){
-      return i/num_col - offset.x;
-    });
-
-  var y_arr = Array(num_row).fill()
-    .map(function(_, i){
-      return -i/num_row + offset.y - 1/num_row;
-    });
-
-  var canvas_pos = {};
-  canvas_pos.x_arr = x_arr;
-  canvas_pos.y_arr = y_arr;
-
-  return canvas_pos;
-
-};
-
-/***/ }),
-
 /***/ "./src/calc_row_downsampled_mat.js":
 /*!*****************************************!*\
   !*** ./src/calc_row_downsampled_mat.js ***!
@@ -21648,84 +21506,6 @@ module.exports = function calc_row_downsampled_mat(params, run_downsampling=fals
   // });
 
 }
-
-/***/ }),
-
-/***/ "./src/calc_row_text_triangles.js":
-/*!****************************************!*\
-  !*** ./src/calc_row_text_triangles.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
-
-module.exports = function calc_row_text_triangles(params){
-
-  var inst_nodes = params.network.row_nodes;
-  var num_row = params.num_row;
-
-  // var row_height = 1/num_row;
-
-  var vect_text_attrs = {
-    textAlign: 'right',
-    textBaseline: 'middle',
-    triangles: true,
-    size: params.font_detail,
-    font:'"Open Sans", verdana, arial, sans-serif'
-  };
-
-  // draw matrix cells
-  /////////////////////////////////////////
-  // y_arr ranges from -.05 to 0.5
-  var y_arr = params.canvas_pos.y_arr;
-
-  // generating array with row text triangles and y-offsets
-  var row_text_triangles = [];
-
-  var inst_order = params.inst_order.row;
-
-  var viz_area = params.viz_area;
-  var kept_row_y = [];
-
-  _.each(inst_nodes, function(inst_node, row_id){
-
-    var row_order_id = num_row - 1 - params.network.row_nodes[row_id][inst_order];
-    var inst_y = y_arr[ row_order_id ] + 0.5/num_row;
-
-    if (inst_y > viz_area.y_min && inst_y < viz_area.y_max){
-
-      var inst_name = inst_node.name;
-
-      if (inst_name.indexOf(': ') >= 0){
-        inst_name = inst_node.name.split(': ')[1];
-      }
-
-      var tmp_text_vect;
-      if (inst_name in params.text_triangles.row){
-        // console.log('found row');
-        tmp_text_vect = params.text_triangles.row[inst_name];
-      } else{
-        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles.row[inst_name] = tmp_text_vect
-      }
-
-      tmp_text_vect.offset = [0, inst_y];
-      row_text_triangles.push(tmp_text_vect);
-      var inst_data = {};
-      inst_data.y = inst_y;
-      inst_data.name = inst_name;
-      kept_row_y.push(inst_data);
-    }
-
-  });
-
-  // using to improve row filtering behavior
-  params.kept_row_y = kept_row_y;
-
-  return row_text_triangles;
-
-};
 
 /***/ }),
 
@@ -22622,7 +22402,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 
 var make_col_text_args = __webpack_require__(/*! ./matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_col_text_triangles = __webpack_require__(/*! ./calc_col_text_triangles */ "./src/calc_col_text_triangles.js");
+var calc_col_text_triangles = __webpack_require__(/*! ./matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
@@ -22799,7 +22579,7 @@ module.exports = function draw_matrix_components(regl, params){
 
 var make_row_text_args = __webpack_require__(/*! ./matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_row_text_triangles = __webpack_require__(/*! ./calc_row_text_triangles */ "./src/calc_row_text_triangles.js");
+var calc_row_text_triangles = __webpack_require__(/*! ./matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
 module.exports = function draw_row_components(regl, params, calc_text_tri=false){
@@ -24497,6 +24277,186 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 /***/ }),
 
+/***/ "./src/matrix_labels/calc_col_text_triangles.js":
+/*!******************************************************!*\
+  !*** ./src/matrix_labels/calc_col_text_triangles.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+
+module.exports = function calc_col_text_triangles(params){
+
+  /*
+
+  // Make dictionary of text triangles
+  //////////////////////////////////////
+  1. Save all calculated text triangles in a dictionary for re-use. We can
+  construct the text triangle array when necessary by gathering the pre-
+  calculated text triangles and calculating any new text triangles (as well as
+  storing them back in the dictionary).
+
+  2. Try calculating text triangles in the background, e.g. when not interacting,
+  and save these to the text triangle dictionary.
+
+  3. Try combining text triangles, for instance title and category.
+
+  */
+
+  var inst_nodes = params.network.col_nodes;
+  var num_col = params.num_col;
+
+  var vect_text_attrs = {
+    textAlign: 'left',
+    // textBaseline: 'middle',
+    textBaseline: 'bottom',
+    triangles: true,
+    size: params.font_detail,
+    font: '"Open Sans", verdana, arial, sans-serif'
+  };
+
+  // draw matrix cells
+  /////////////////////////////////////////
+
+  var x_arr = params.canvas_pos.x_arr;
+
+  // generating array with col text triangles and y-offsets
+  var col_text_triangles = [];
+
+  var inst_order = params.inst_order.col;
+
+  var viz_area = params.viz_area;
+  var kept_col_x = [];
+
+  _.each(inst_nodes, function(inst_node, col_id){
+
+    // console.log(inst_node)
+
+    var col_order_id = params.network.col_nodes[col_id][inst_order];
+
+    var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
+
+    if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
+
+      var inst_name = inst_node.name;
+
+      if (inst_name.indexOf(': ') >= 0){
+
+          inst_name = inst_node.name.split(': ')[1];
+      }
+
+      var tmp_text_vect;
+      if (inst_name in params.text_triangles.col){
+        // console.log('found col');
+        tmp_text_vect = params.text_triangles.col[inst_name];
+      } else {
+        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
+        params.text_triangles.col[inst_name] = tmp_text_vect;
+      }
+
+      // // if (inst_name not in params.text_triangles.col){
+      //   console.log('did not find', inst_name, params.text_triangles.col);
+      // // }
+
+      tmp_text_vect.offset = [0, inst_x];
+      col_text_triangles.push(tmp_text_vect);
+
+      var inst_data = {};
+      inst_data.y = inst_x;
+      inst_data.name = inst_name;
+      kept_col_x.push(inst_data);
+    }
+
+  });
+
+
+  params.kept_col_x = kept_col_x;
+
+  return col_text_triangles;
+
+};
+
+/***/ }),
+
+/***/ "./src/matrix_labels/calc_row_text_triangles.js":
+/*!******************************************************!*\
+  !*** ./src/matrix_labels/calc_row_text_triangles.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+
+module.exports = function calc_row_text_triangles(params){
+
+  var inst_nodes = params.network.row_nodes;
+  var num_row = params.num_row;
+
+  // var row_height = 1/num_row;
+
+  var vect_text_attrs = {
+    textAlign: 'right',
+    textBaseline: 'middle',
+    triangles: true,
+    size: params.font_detail,
+    font:'"Open Sans", verdana, arial, sans-serif'
+  };
+
+  // draw matrix cells
+  /////////////////////////////////////////
+  // y_arr ranges from -.05 to 0.5
+  var y_arr = params.canvas_pos.y_arr;
+
+  // generating array with row text triangles and y-offsets
+  var row_text_triangles = [];
+
+  var inst_order = params.inst_order.row;
+
+  var viz_area = params.viz_area;
+  var kept_row_y = [];
+
+  _.each(inst_nodes, function(inst_node, row_id){
+
+    var row_order_id = num_row - 1 - params.network.row_nodes[row_id][inst_order];
+    var inst_y = y_arr[ row_order_id ] + 0.5/num_row;
+
+    if (inst_y > viz_area.y_min && inst_y < viz_area.y_max){
+
+      var inst_name = inst_node.name;
+
+      if (inst_name.indexOf(': ') >= 0){
+        inst_name = inst_node.name.split(': ')[1];
+      }
+
+      var tmp_text_vect;
+      if (inst_name in params.text_triangles.row){
+        // console.log('found row');
+        tmp_text_vect = params.text_triangles.row[inst_name];
+      } else{
+        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
+        params.text_triangles.row[inst_name] = tmp_text_vect
+      }
+
+      tmp_text_vect.offset = [0, inst_y];
+      row_text_triangles.push(tmp_text_vect);
+      var inst_data = {};
+      inst_data.y = inst_y;
+      inst_data.name = inst_name;
+      kept_row_y.push(inst_data);
+    }
+
+  });
+
+  // using to improve row filtering behavior
+  params.kept_row_y = kept_row_y;
+
+  return row_text_triangles;
+
+};
+
+/***/ }),
+
 /***/ "./src/matrix_labels/make_col_text_args.js":
 /*!*************************************************!*\
   !*** ./src/matrix_labels/make_col_text_args.js ***!
@@ -24969,6 +24929,46 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
 /***/ }),
 
+/***/ "./src/params/calc_row_and_col_canvas_positions.js":
+/*!*********************************************************!*\
+  !*** ./src/params/calc_row_and_col_canvas_positions.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_row_and_col_canvas_positions(params){
+
+  var num_col = params.num_col;
+  var num_row = params.num_row;
+
+  // draw matrix cells
+  /////////////////////////////////////////
+  // set up offset array for buffer
+  var offset = {};
+  offset.x = params.center.x;
+  offset.y = params.center.y;
+
+  // generate x position array
+  var x_arr = Array(num_col).fill()
+    .map(function(_, i){
+      return i/num_col - offset.x;
+    });
+
+  var y_arr = Array(num_row).fill()
+    .map(function(_, i){
+      return -i/num_row + offset.y - 1/num_row;
+    });
+
+  var canvas_pos = {};
+  canvas_pos.x_arr = x_arr;
+  canvas_pos.y_arr = y_arr;
+
+  return canvas_pos;
+
+};
+
+/***/ }),
+
 /***/ "./src/params/calc_viz_area.js":
 /*!*************************************!*\
   !*** ./src/params/calc_viz_area.js ***!
@@ -25109,9 +25109,9 @@ module.exports = function calc_viz_dim(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./../calc_row_and_col_canvas_positions */ "./src/calc_row_and_col_canvas_positions.js");
-var calc_row_text_triangles = __webpack_require__(/*! ./../calc_row_text_triangles */ "./src/calc_row_text_triangles.js");
-var calc_col_text_triangles = __webpack_require__(/*! ./../calc_col_text_triangles */ "./src/calc_col_text_triangles.js");
+var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js");
+var calc_row_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
+var calc_col_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");

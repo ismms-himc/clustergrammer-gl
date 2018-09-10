@@ -8,8 +8,7 @@ var run_viz = require('./run_viz');
 var make_position_arr = require('./make_position_arr');
 var make_cat_position_array = require('./make_cat_position_array');
 var build_single_dendro_slider = require('./build_single_dendro_slider');
-// var change_groups = require('./change_groups');
-// var position_dendro_slider = require('./position_dendro_slider');
+var build_control_panel = require('./control_panel/build_control_panel');
 
 function clustergrammer_gl(args){
 
@@ -20,21 +19,13 @@ function clustergrammer_gl(args){
   var network = args.network;
   var container = args.container;
 
+  // make control panel first so it appears above canvas
   d3.select(container).append('div').attr('id', 'control-container')
   d3.select(container).append('div').attr('id', 'canvas-container')
 
-  var control_container = d3.select(container).select('#control-container')[0][0];
   var canvas_container = d3.select(container).select('#canvas-container')[0][0];
 
-  var inst_height = 100;
-  var inst_width = 1000;
 
-  var control_svg = d3.select(control_container)
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
-    .append('svg')
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px');
 
 
 
@@ -87,6 +78,17 @@ function clustergrammer_gl(args){
 
   // Add control panel to the top
   ///////////////////////////////////////
+
+  var control_container = d3.select(container).select('#control-container')[0][0];
+  var inst_height = 100;
+  var inst_width = 1000;
+
+  var control_svg = d3.select(control_container)
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px')
+    .append('svg')
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px');
 
   control_svg
     .append('rect')
@@ -142,6 +144,8 @@ function clustergrammer_gl(args){
       console.log('---', params.cat_arrs.new.col[0][0])
 
     });
+
+    build_control_panel(cgm);
 
   return cgm;
 

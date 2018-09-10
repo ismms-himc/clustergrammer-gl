@@ -37,7 +37,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var inst_y = ev.y0;
 
   // var offcenter;
-  // if (axis === 'x'){
+  // if (axis === 'x'{
   //   offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
   // } else {
   //   offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
@@ -60,7 +60,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
 
-    console.log(ev)
+    // console.log(ev)
 
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);

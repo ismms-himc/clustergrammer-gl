@@ -7,6 +7,9 @@
 var run_viz = require('./run_viz');
 var make_position_arr = require('./make_position_arr');
 var make_cat_position_array = require('./make_cat_position_array');
+var build_single_dendro_slider = require('./build_single_dendro_slider');
+// var change_groups = require('./change_groups');
+// var position_dendro_slider = require('./position_dendro_slider');
 
 function clustergrammer_gl(args){
 
@@ -55,27 +58,32 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
+  cgm.params.root = '#' + d3.select(canvas_container).attr('id');
 
   // Add sliders on top of the canvas
   /////////////////////////////////////
+  var slider_length = 130;
   var col_slider_container = d3.select(canvas_container)
     .append('svg')
-    .style('height', '100px')
+    .style('height', slider_length + 'px')
     .style('width', '40px')
     .style('position', 'absolute')
     .style('top', 400 + 'px')
     .style('left', inst_width - 15 + 'px')
-    .attr('id', 'something!')
+    .attr('id', 'dendro_slider_svg')
 
   col_slider_container
     .append('rect')
-    .style('height', '100px')
+    .style('height', slider_length + 'px')
     .style('width', '50px')
     .style('fill', 'red')
     .style('opacity', 0.5)
     .on('click', function(){
       console.log('clicking the red slider')
     })
+
+
+  build_single_dendro_slider(cgm, 'row', canvas_container);
 
   // Add control panel to the top
   ///////////////////////////////////////

@@ -22004,6 +22004,69 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
 
 /***/ }),
 
+/***/ "./src/category/generate_cat_data.js":
+/*!*******************************************!*\
+  !*** ./src/category/generate_cat_data.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_cat_data(params, inst_axis){
+
+  console.log('generate_cat_data')
+
+  var title_sep = ': ';
+  current_cats = {};
+
+  var cat_data = [];
+  var check_node = params.network[ inst_axis + '_nodes'][0];
+  var node_keys = _.keys(check_node);
+  var current_cats = {};
+  var tmp_cat;
+  var tmp_title;
+  var cat_index;
+  _.each(node_keys, function(inst_prop){
+
+    if (inst_prop.indexOf('cat-') >= 0){
+
+      // generate titles from cat info
+      tmp_cat = check_node[inst_prop];
+
+      cat_index = parseInt(inst_prop.split('cat-')[1], 10);
+
+      // use given title
+      if (tmp_cat.indexOf(title_sep) >=0){
+        tmp_title = tmp_cat.split(title_sep)[0];
+      } else {
+        tmp_title = inst_prop;
+      }
+
+      // current_cats.push(tmp_title);
+
+      current_cats[cat_index] = tmp_title;
+    }
+
+  });
+
+  var all_index = _.keys(current_cats).sort();
+
+  var inst_data;
+  _.each(all_index, function(inst_index){
+
+    inst_data = {};
+    inst_data.cat_title = current_cats[inst_index];
+    inst_data.cats = [];
+
+    cat_data.push(inst_data);
+  });
+
+
+  return cat_data;
+
+};
+
+/***/ }),
+
 /***/ "./src/color_table.js":
 /*!****************************!*\
   !*** ./src/color_table.js ***!
@@ -23199,69 +23262,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
 /***/ }),
 
-/***/ "./src/generate_cat_data.js":
-/*!**********************************!*\
-  !*** ./src/generate_cat_data.js ***!
-  \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function generate_cat_data(params, inst_axis){
-
-  console.log('generate_cat_data')
-
-  var title_sep = ': ';
-  current_cats = {};
-
-  var cat_data = [];
-  var check_node = params.network[ inst_axis + '_nodes'][0];
-  var node_keys = _.keys(check_node);
-  var current_cats = {};
-  var tmp_cat;
-  var tmp_title;
-  var cat_index;
-  _.each(node_keys, function(inst_prop){
-
-    if (inst_prop.indexOf('cat-') >= 0){
-
-      // generate titles from cat info
-      tmp_cat = check_node[inst_prop];
-
-      cat_index = parseInt(inst_prop.split('cat-')[1], 10);
-
-      // use given title
-      if (tmp_cat.indexOf(title_sep) >=0){
-        tmp_title = tmp_cat.split(title_sep)[0];
-      } else {
-        tmp_title = inst_prop;
-      }
-
-      // current_cats.push(tmp_title);
-
-      current_cats[cat_index] = tmp_title;
-    }
-
-  });
-
-  var all_index = _.keys(current_cats).sort();
-
-  var inst_data;
-  _.each(all_index, function(inst_index){
-
-    inst_data = {};
-    inst_data.cat_title = current_cats[inst_index];
-    inst_data.cats = [];
-
-    cat_data.push(inst_data);
-  });
-
-
-  return cat_data;
-
-};
-
-/***/ }),
-
 /***/ "./src/get_ordered_labels.js":
 /*!***********************************!*\
   !*** ./src/get_ordered_labels.js ***!
@@ -23311,112 +23311,6 @@ module.exports = function get_ordered_labels(params){
 
 /***/ }),
 
-/***/ "./src/ini_zoom_data.js":
-/*!******************************!*\
-  !*** ./src/ini_zoom_data.js ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function ini_zoom_data(){
-
-    console.log('INI Zoom Data')
-
-
-  // organize zoom rules into x and y components
-  var zoom_data = {};
-  _.each(['x', 'y'], function(inst_dim){
-    var inst_data = {};
-    // total zooming (formerly tsx)
-    inst_data.total_zoom = 1;
-    // position of cursor (formerly x0)
-    inst_data.cursor_position = 0;
-    // total panning relative to the min
-    inst_data.total_pan_min = 0;
-    // total panning relative to the max
-    inst_data.total_pan_max = 0;
-    // pan_room (allowed negative panning)
-    inst_data.pan_room = 0;
-    // pan_by_zoom (formerly zdx)
-    inst_data.pan_by_zoom = 0;
-    inst_data.pan_by_drag = 0;
-    inst_data.inst_zoom = 1;
-
-    // zoom at which previous filtering was done (ini at 1)
-    inst_data.filter_zoom = 1;
-
-    // keep track of previous restrictions
-    inst_data.prev_restrict = false;
-
-    // delay viz area calculations until sufficient zooming has
-    // occurred
-    inst_data.zoom_step = 10;
-    inst_data.show_text = false;
-
-    // keep track of when zooming stops
-    inst_data.still_zooming = false;
-
-    // keep a running total of the number of interactions (zoom/pan)
-    // this is used to keep track of the final interaction
-    inst_data.total_int = 0;
-
-    // keep a running total of the number of mouseovers
-    // this is used to keep track of the final mouseover
-    inst_data.total_mouseover = 0;
-
-    // add to zoom_data
-    zoom_data[inst_dim] = inst_data;
-  });
-
-  return zoom_data;
-
-};
-
-/***/ }),
-
-/***/ "./src/ini_zoom_restrict.js":
-/*!**********************************!*\
-  !*** ./src/ini_zoom_restrict.js ***!
-  \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function ini_zoom_restrict(params){
-
-  var num_row = params.num_row;
-  var num_col = params.num_col;
-
-  // working on improved matrix zooming
-  var max_zoom = params.max_zoom;
-  var zoom_restrict = {};
-  zoom_restrict.x = {};
-  zoom_restrict.x.max = max_zoom;
-  zoom_restrict.x.min = 1.0;
-  zoom_restrict.x.ratio = 1.0;
-
-  zoom_restrict.y = {};
-  zoom_restrict.y.max = max_zoom;
-  zoom_restrict.y.min = 1.0;
-  zoom_restrict.y.ratio = 1.0;
-
-  var col_vs_row_space = (num_col/params.viz_dim.heat.width)/
-                         (num_row/params.viz_dim.heat.height);
-
-  // increase max zoom in y or x direction
-  if (num_row > num_col){
-    zoom_restrict.y.max = zoom_restrict.y.max * ( 1/col_vs_row_space );
-    zoom_restrict.y.ratio = 1/col_vs_row_space;
-  } else if (num_col > num_row) {
-    zoom_restrict.x.max = zoom_restrict.x.max * col_vs_row_space;
-    zoom_restrict.x.ratio = col_vs_row_space;
-  }
-
-  return zoom_restrict;
-
-};
-
-/***/ }),
-
 /***/ "./src/initialize_params.js":
 /*!**********************************!*\
   !*** ./src/initialize_params.js ***!
@@ -23428,8 +23322,8 @@ var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_c
 var calc_row_text_triangles = __webpack_require__(/*! ./calc_row_text_triangles */ "./src/calc_row_text_triangles.js");
 var calc_col_text_triangles = __webpack_require__(/*! ./calc_col_text_triangles */ "./src/calc_col_text_triangles.js");
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/calc_viz_dim.js");
-var ini_zoom_data = __webpack_require__(/*! ./ini_zoom_data */ "./src/ini_zoom_data.js");
-var ini_zoom_restrict = __webpack_require__(/*! ./ini_zoom_restrict */ "./src/ini_zoom_restrict.js");
+var ini_zoom_data = __webpack_require__(/*! ./zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
+var ini_zoom_restrict = __webpack_require__(/*! ./zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
 var zoom_rules_high_mat = __webpack_require__(/*! ./zoom_rules_high_mat */ "./src/zoom_rules_high_mat.js");
 var make_cameras = __webpack_require__(/*! ./make_cameras */ "./src/make_cameras.js");
 var calc_spillover_triangles = __webpack_require__(/*! ./spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
@@ -23440,7 +23334,7 @@ var make_dendro_args = __webpack_require__(/*! ./make_dendro_args */ "./src/make
 var make_spillover_args = __webpack_require__(/*! ./spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./calc_row_downsampled_mat */ "./src/calc_row_downsampled_mat.js");
-var generate_cat_data = __webpack_require__(/*! ./generate_cat_data */ "./src/generate_cat_data.js");
+var generate_cat_data = __webpack_require__(/*! ./category/generate_cat_data */ "./src/category/generate_cat_data.js");
 var get_ordered_labels = __webpack_require__(/*! ./get_ordered_labels */ "./src/get_ordered_labels.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./make_tooltip_background_args */ "./src/make_tooltip_background_args.js");
 var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js");
@@ -26305,6 +26199,112 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
   }
 
 }
+
+/***/ }),
+
+/***/ "./src/zoom/ini_zoom_data.js":
+/*!***********************************!*\
+  !*** ./src/zoom/ini_zoom_data.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function ini_zoom_data(){
+
+    console.log('INI Zoom Data')
+
+
+  // organize zoom rules into x and y components
+  var zoom_data = {};
+  _.each(['x', 'y'], function(inst_dim){
+    var inst_data = {};
+    // total zooming (formerly tsx)
+    inst_data.total_zoom = 1;
+    // position of cursor (formerly x0)
+    inst_data.cursor_position = 0;
+    // total panning relative to the min
+    inst_data.total_pan_min = 0;
+    // total panning relative to the max
+    inst_data.total_pan_max = 0;
+    // pan_room (allowed negative panning)
+    inst_data.pan_room = 0;
+    // pan_by_zoom (formerly zdx)
+    inst_data.pan_by_zoom = 0;
+    inst_data.pan_by_drag = 0;
+    inst_data.inst_zoom = 1;
+
+    // zoom at which previous filtering was done (ini at 1)
+    inst_data.filter_zoom = 1;
+
+    // keep track of previous restrictions
+    inst_data.prev_restrict = false;
+
+    // delay viz area calculations until sufficient zooming has
+    // occurred
+    inst_data.zoom_step = 10;
+    inst_data.show_text = false;
+
+    // keep track of when zooming stops
+    inst_data.still_zooming = false;
+
+    // keep a running total of the number of interactions (zoom/pan)
+    // this is used to keep track of the final interaction
+    inst_data.total_int = 0;
+
+    // keep a running total of the number of mouseovers
+    // this is used to keep track of the final mouseover
+    inst_data.total_mouseover = 0;
+
+    // add to zoom_data
+    zoom_data[inst_dim] = inst_data;
+  });
+
+  return zoom_data;
+
+};
+
+/***/ }),
+
+/***/ "./src/zoom/ini_zoom_restrict.js":
+/*!***************************************!*\
+  !*** ./src/zoom/ini_zoom_restrict.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function ini_zoom_restrict(params){
+
+  var num_row = params.num_row;
+  var num_col = params.num_col;
+
+  // working on improved matrix zooming
+  var max_zoom = params.max_zoom;
+  var zoom_restrict = {};
+  zoom_restrict.x = {};
+  zoom_restrict.x.max = max_zoom;
+  zoom_restrict.x.min = 1.0;
+  zoom_restrict.x.ratio = 1.0;
+
+  zoom_restrict.y = {};
+  zoom_restrict.y.max = max_zoom;
+  zoom_restrict.y.min = 1.0;
+  zoom_restrict.y.ratio = 1.0;
+
+  var col_vs_row_space = (num_col/params.viz_dim.heat.width)/
+                         (num_row/params.viz_dim.heat.height);
+
+  // increase max zoom in y or x direction
+  if (num_row > num_col){
+    zoom_restrict.y.max = zoom_restrict.y.max * ( 1/col_vs_row_space );
+    zoom_restrict.y.ratio = 1/col_vs_row_space;
+  } else if (num_col > num_row) {
+    zoom_restrict.x.max = zoom_restrict.x.max * col_vs_row_space;
+    zoom_restrict.x.ratio = col_vs_row_space;
+  }
+
+  return zoom_restrict;
+
+};
 
 /***/ }),
 

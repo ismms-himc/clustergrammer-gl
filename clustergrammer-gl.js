@@ -21990,6 +21990,41 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
 /***/ }),
 
+/***/ "./src/cameras/make_cameras.js":
+/*!*************************************!*\
+  !*** ./src/cameras/make_cameras.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var custom_camera_2d = __webpack_require__(/*! ./custom_camera_2d */ "./src/cameras/custom_camera_2d.js");
+
+module.exports = function make_cameras(regl, params){
+
+  var zoom_data = params.zoom_data;
+
+  const cameras = {};
+  var ini_scale = 1.0 ;
+  var zoom_range = {
+      xrange: [-ini_scale, ini_scale],
+      yrange: [-ini_scale, ini_scale]
+    };
+
+  // requiring camera and
+  cameras.mat = custom_camera_2d(regl, params, zoom_range, zoom_data, 'matrix');
+
+  cameras['row-labels'] = custom_camera_2d(regl, params, zoom_range, zoom_data, 'row-labels');
+
+  cameras['col-labels'] = custom_camera_2d(regl, params, zoom_range, zoom_data, 'col-labels');
+
+  cameras.static = custom_camera_2d(regl, params, zoom_range, zoom_data, 'static');
+
+  return cameras;
+
+};
+
+/***/ }),
+
 /***/ "./src/category/generate_cat_data.js":
 /*!*******************************************!*\
   !*** ./src/category/generate_cat_data.js ***!
@@ -23678,41 +23713,6 @@ module.exports = clustergrammer_gl;
 
 /***/ }),
 
-/***/ "./src/make_cameras.js":
-/*!*****************************!*\
-  !*** ./src/make_cameras.js ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var custom_camera_2d = __webpack_require__(/*! ./cameras/custom_camera_2d */ "./src/cameras/custom_camera_2d.js");
-
-module.exports = function make_cameras(regl, params){
-
-  var zoom_data = params.zoom_data;
-
-  const cameras = {};
-  var ini_scale = 1.0 ;
-  var zoom_range = {
-      xrange: [-ini_scale, ini_scale],
-      yrange: [-ini_scale, ini_scale]
-    };
-
-  // requiring camera and
-  cameras.mat = custom_camera_2d(regl, params, zoom_range, zoom_data, 'matrix');
-
-  cameras['row-labels'] = custom_camera_2d(regl, params, zoom_range, zoom_data, 'row-labels');
-
-  cameras['col-labels'] = custom_camera_2d(regl, params, zoom_range, zoom_data, 'col-labels');
-
-  cameras.static = custom_camera_2d(regl, params, zoom_range, zoom_data, 'static');
-
-  return cameras;
-
-};
-
-/***/ }),
-
 /***/ "./src/make_cat_args.js":
 /*!******************************!*\
   !*** ./src/make_cat_args.js ***!
@@ -25116,7 +25116,7 @@ var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
 var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
-var make_cameras = __webpack_require__(/*! ./../make_cameras */ "./src/make_cameras.js");
+var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 var make_matrix_args = __webpack_require__(/*! ./../make_matrix_args */ "./src/make_matrix_args.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");

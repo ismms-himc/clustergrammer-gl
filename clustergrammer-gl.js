@@ -21444,71 +21444,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./src/calc_row_downsampled_mat.js":
-/*!*****************************************!*\
-  !*** ./src/calc_row_downsampled_mat.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
-
-  // console.log('calc_row_downsampled_mat');
-
-  var mat_data = params.mat_data;
-  // var row_pos = params.row_positions;
-  // var ds_mat = [];
-  // var inst_pos;
-
-  if (run_downsampling){
-    /*
-      Perform trivial downsampling (subsampling)
-    */
-
-    mat_data = params.mat_data;
-    mat_data = mat_data.slice(0,5);
-
-    // column downsampling
-    var new_mat_data = []
-    _.each(mat_data, function(inst_row){
-      inst_row = inst_row.slice(0,3);
-      new_mat_data.push(inst_row);
-    });
-
-    params.mat_data = new_mat_data;
-    params.is_downsampled = true;
-  }
-
-  /*
-    Working on actual downsampling
-  */
-
-  /*
-    row_pos go from -0.5 to 0.5
-  */
-
-  // make 10 positions
-  // var new_pos = _.range(-0.5, 0.5, 0.1);
-  // console.log(new_pos.length);
-
-  // mod_value = 0.1;
-
-  // _.each(mat_data, function(inst_row, inst_index){
-
-  //   inst_pos = row_pos[inst_index];
-
-  //   ds_pos = Math.round(inst_pos/mod_value);
-
-  //   console.log('inst_pos: ', inst_pos);
-  //   console.log('ds_pos', ds_pos)
-  //   console.log('\n');
-
-  // });
-
-}
-
-/***/ }),
-
 /***/ "./src/cameras/camera_interaction.js":
 /*!*******************************************!*\
   !*** ./src/cameras/camera_interaction.js ***!
@@ -21868,10 +21803,10 @@ module.exports = function generate_cat_data(params, inst_axis){
 
 /***/ }),
 
-/***/ "./src/color_table.js":
-/*!****************************!*\
-  !*** ./src/color_table.js ***!
-  \****************************/
+/***/ "./src/colors/color_table.js":
+/*!***********************************!*\
+  !*** ./src/colors/color_table.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -22029,15 +21964,15 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./src/color_to_rgba.js":
-/*!******************************!*\
-  !*** ./src/color_to_rgba.js ***!
-  \******************************/
+/***/ "./src/colors/color_to_rgba.js":
+/*!*************************************!*\
+  !*** ./src/colors/color_to_rgba.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable */
-var color_table = __webpack_require__(/*! ./color_table.js */ "./src/color_table.js");
+var color_table = __webpack_require__(/*! ./color_table.js */ "./src/colors/color_table.js");
 
 module.exports = function color_to_rgbs(hex, alpha=1.0){
 
@@ -22389,6 +22324,144 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
     // change_groups(cgm, inst_rc, slider_value);
 
   }
+};
+
+/***/ }),
+
+/***/ "./src/dendrogram/make_dendro_args.js":
+/*!********************************************!*\
+  !*** ./src/dendrogram/make_dendro_args.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
+
+module.exports = function draw_mat_labels(regl, params, inst_rc){
+
+  var rotation_radians;
+  var mat_size;
+  var mat_size_offset;
+  var y_shift;
+  if (inst_rc === 'row'){
+    rotation_radians = 0;
+    mat_size = params.heat_size.y;
+    mat_size_offset = params.mat_size.x;
+    y_shift = -(params.mat_size.y - params.heat_size.y);
+  } else if (inst_rc === 'col'){
+    rotation_radians = Math.PI/2;
+    mat_size = params.heat_size.x;
+    mat_size_offset = params.mat_size.y;
+    y_shift = params.mat_size.x - params.heat_size.x;
+  }
+
+  var num_labels = params['num_' + inst_rc];
+
+  var row_width = 0.025;
+  var tile_height = (1/num_labels) * (mat_size/0.5);
+
+  var zoom_function = function(context){
+    return context.view;
+  };
+
+  /////////////////////////////////
+  // make buffer for row offsets
+  /////////////////////////////////
+
+  var x_offset = 0.5 * (mat_size_offset/0.5) ; // row_width;
+
+  var y_offset_array = [];
+  for (var i = 0; i < num_labels; i++){
+    y_offset_array[i] = mat_size - tile_height/2 - i * tile_height;
+  }
+
+  const y_offset_buffer = regl.buffer({
+    length: num_labels,
+    type: 'float',
+    usage: 'dynamic'
+  });
+
+  y_offset_buffer(y_offset_array);
+
+  var mat_scale = m3.scaling(1, 1);
+
+
+  var mat_rotate = m3.rotation(rotation_radians);
+
+  var args = {
+
+    vert: `
+      precision highp float;
+      attribute vec2 position;
+      attribute float y_offset_att;
+
+      uniform mat3 mat_rotate;
+      uniform mat3 mat_scale;
+      uniform mat4 zoom;
+      uniform float x_offset;
+      uniform float y_shift;
+
+      varying vec3 new_position;
+      varying vec3 vec_translate;
+
+      void main () {
+
+        new_position = vec3(position, 0);
+
+        vec_translate = vec3(x_offset, y_offset_att + y_shift, 0);
+
+        // new_position = mat_rotate * mat_scale * new_position + vec_translate;
+        new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
+
+        // depth is being set to 0.45
+        gl_Position = zoom * vec4(new_position[0], new_position[1], 0.40, 1);
+
+      }
+    `,
+
+    frag: `
+
+      // color triangle red
+      void main () {
+        gl_FragColor = vec4(0.0, 1, 0.0, 1);
+      }
+
+    `,
+
+    attributes: {
+      position: [
+        [0.0,  tile_height/2],
+        [row_width/2,  0.0],
+        [0.0, -tile_height/2],
+      ],
+      y_offset_att: {
+        buffer: y_offset_buffer,
+        divisor: 1
+      }
+    },
+
+    uniforms: {
+      zoom: zoom_function,
+      mat_rotate: mat_rotate,
+      mat_scale: mat_scale,
+      x_offset: x_offset,
+      y_shift: y_shift,
+    },
+
+    count: 3,
+    instances: num_labels,
+    depth: {
+      enable: true,
+      mask: true,
+      func: 'less',
+      // func: 'greater',
+      range: [0, 1]
+    },
+
+  };
+
+  return args;
+
 };
 
 /***/ }),
@@ -23501,8 +23574,7 @@ module.exports = clustergrammer_gl;
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
-var color_to_rgba = __webpack_require__(/*! ./color_to_rgba */ "./src/color_to_rgba.js");
-// var color_table = require('./color_table.js');
+var color_to_rgba = __webpack_require__(/*! ./colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
@@ -23839,144 +23911,6 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 
 /***/ }),
 
-/***/ "./src/make_dendro_args.js":
-/*!*********************************!*\
-  !*** ./src/make_dendro_args.js ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var m3 = __webpack_require__(/*! ./transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
-
-module.exports = function draw_mat_labels(regl, params, inst_rc){
-
-  var rotation_radians;
-  var mat_size;
-  var mat_size_offset;
-  var y_shift;
-  if (inst_rc === 'row'){
-    rotation_radians = 0;
-    mat_size = params.heat_size.y;
-    mat_size_offset = params.mat_size.x;
-    y_shift = -(params.mat_size.y - params.heat_size.y);
-  } else if (inst_rc === 'col'){
-    rotation_radians = Math.PI/2;
-    mat_size = params.heat_size.x;
-    mat_size_offset = params.mat_size.y;
-    y_shift = params.mat_size.x - params.heat_size.x;
-  }
-
-  var num_labels = params['num_' + inst_rc];
-
-  var row_width = 0.025;
-  var tile_height = (1/num_labels) * (mat_size/0.5);
-
-  var zoom_function = function(context){
-    return context.view;
-  };
-
-  /////////////////////////////////
-  // make buffer for row offsets
-  /////////////////////////////////
-
-  var x_offset = 0.5 * (mat_size_offset/0.5) ; // row_width;
-
-  var y_offset_array = [];
-  for (var i = 0; i < num_labels; i++){
-    y_offset_array[i] = mat_size - tile_height/2 - i * tile_height;
-  }
-
-  const y_offset_buffer = regl.buffer({
-    length: num_labels,
-    type: 'float',
-    usage: 'dynamic'
-  });
-
-  y_offset_buffer(y_offset_array);
-
-  var mat_scale = m3.scaling(1, 1);
-
-
-  var mat_rotate = m3.rotation(rotation_radians);
-
-  var args = {
-
-    vert: `
-      precision highp float;
-      attribute vec2 position;
-      attribute float y_offset_att;
-
-      uniform mat3 mat_rotate;
-      uniform mat3 mat_scale;
-      uniform mat4 zoom;
-      uniform float x_offset;
-      uniform float y_shift;
-
-      varying vec3 new_position;
-      varying vec3 vec_translate;
-
-      void main () {
-
-        new_position = vec3(position, 0);
-
-        vec_translate = vec3(x_offset, y_offset_att + y_shift, 0);
-
-        // new_position = mat_rotate * mat_scale * new_position + vec_translate;
-        new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
-
-        // depth is being set to 0.45
-        gl_Position = zoom * vec4(new_position[0], new_position[1], 0.40, 1);
-
-      }
-    `,
-
-    frag: `
-
-      // color triangle red
-      void main () {
-        gl_FragColor = vec4(0.0, 1, 0.0, 1);
-      }
-
-    `,
-
-    attributes: {
-      position: [
-        [0.0,  tile_height/2],
-        [row_width/2,  0.0],
-        [0.0, -tile_height/2],
-      ],
-      y_offset_att: {
-        buffer: y_offset_buffer,
-        divisor: 1
-      }
-    },
-
-    uniforms: {
-      zoom: zoom_function,
-      mat_rotate: mat_rotate,
-      mat_scale: mat_scale,
-      x_offset: x_offset,
-      y_shift: y_shift,
-    },
-
-    count: 3,
-    instances: num_labels,
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
-
-  };
-
-  return args;
-
-};
-
-/***/ }),
-
 /***/ "./src/make_matrix_args.js":
 /*!*********************************!*\
   !*** ./src/make_matrix_args.js ***!
@@ -24274,6 +24208,71 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   return position_arr;
 
 };
+
+/***/ }),
+
+/***/ "./src/matrix_cells/calc_row_downsampled_mat.js":
+/*!******************************************************!*\
+  !*** ./src/matrix_cells/calc_row_downsampled_mat.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
+
+  // console.log('calc_row_downsampled_mat');
+
+  var mat_data = params.mat_data;
+  // var row_pos = params.row_positions;
+  // var ds_mat = [];
+  // var inst_pos;
+
+  if (run_downsampling){
+    /*
+      Perform trivial downsampling (subsampling)
+    */
+
+    mat_data = params.mat_data;
+    mat_data = mat_data.slice(0,5);
+
+    // column downsampling
+    var new_mat_data = []
+    _.each(mat_data, function(inst_row){
+      inst_row = inst_row.slice(0,3);
+      new_mat_data.push(inst_row);
+    });
+
+    params.mat_data = new_mat_data;
+    params.is_downsampled = true;
+  }
+
+  /*
+    Working on actual downsampling
+  */
+
+  /*
+    row_pos go from -0.5 to 0.5
+  */
+
+  // make 10 positions
+  // var new_pos = _.range(-0.5, 0.5, 0.1);
+  // console.log(new_pos.length);
+
+  // mod_value = 0.1;
+
+  // _.each(mat_data, function(inst_row, inst_index){
+
+  //   inst_pos = row_pos[inst_index];
+
+  //   ds_pos = Math.round(inst_pos/mod_value);
+
+  //   console.log('inst_pos: ', inst_pos);
+  //   console.log('ds_pos', ds_pos)
+  //   console.log('\n');
+
+  // });
+
+}
 
 /***/ }),
 
@@ -24753,7 +24752,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
-var color_to_rgba = __webpack_require__(/*! ./../color_to_rgba */ "./src/color_to_rgba.js");
+var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
@@ -25121,10 +25120,10 @@ var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spill
 var make_matrix_args = __webpack_require__(/*! ./../make_matrix_args */ "./src/make_matrix_args.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var make_cat_args = __webpack_require__(/*! ./../make_cat_args */ "./src/make_cat_args.js");
-var make_dendro_args = __webpack_require__(/*! ./../make_dendro_args */ "./src/make_dendro_args.js");
+var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
 var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_row_downsampled_mat = __webpack_require__(/*! ./../calc_row_downsampled_mat */ "./src/calc_row_downsampled_mat.js");
+var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
 var generate_cat_data = __webpack_require__(/*! ./../category/generate_cat_data */ "./src/category/generate_cat_data.js");
 var get_ordered_labels = __webpack_require__(/*! ./../get_ordered_labels */ "./src/get_ordered_labels.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");

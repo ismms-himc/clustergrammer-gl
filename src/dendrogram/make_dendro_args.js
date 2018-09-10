@@ -1,4 +1,4 @@
-var m3 = require('./transforms/mat3_transform');
+var m3 = require('./../transforms/mat3_transform');
 
 module.exports = function draw_mat_labels(regl, params, inst_rc){
 

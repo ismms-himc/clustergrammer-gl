@@ -1,7 +1,7 @@
 var calc_row_and_col_canvas_positions = require('./../calc_row_and_col_canvas_positions');
 var calc_row_text_triangles = require('./../calc_row_text_triangles');
 var calc_col_text_triangles = require('./../calc_col_text_triangles');
-var calc_viz_dim = require('./../calc_viz_dim');
+var calc_viz_dim = require('./calc_viz_dim');
 var ini_zoom_data = require('./../zoom/ini_zoom_data');
 var ini_zoom_restrict = require('./../zoom/ini_zoom_restrict');
 var zoom_rules_high_mat = require('./../zoom_rules_high_mat');
@@ -12,7 +12,7 @@ var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var make_cat_args = require('./../make_cat_args');
 var make_dendro_args = require('./../make_dendro_args');
 var make_spillover_args = require('./../spillover/make_spillover_args');
-var calc_viz_area = require('./../calc_viz_area');
+var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./../calc_row_downsampled_mat');
 var generate_cat_data = require('./../category/generate_cat_data');
 var get_ordered_labels = require('./../get_ordered_labels');

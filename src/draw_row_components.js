@@ -1,5 +1,5 @@
 var make_row_text_args = require('./make_row_text_args');
-var calc_viz_area = require('./calc_viz_area');
+var calc_viz_area = require('./params/calc_viz_area');
 var calc_row_text_triangles = require('./calc_row_text_triangles');
 var interp_fun = require('./interp_fun');
 

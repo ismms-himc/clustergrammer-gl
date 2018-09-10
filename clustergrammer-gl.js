@@ -21729,185 +21729,6 @@ module.exports = function calc_row_text_triangles(params){
 
 /***/ }),
 
-/***/ "./src/calc_tooltip_background_triangles.js":
-/*!**************************************************!*\
-  !*** ./src/calc_tooltip_background_triangles.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_background_tooltip_triangles(regl, params){
-
-  /*
-
-  Try to get background size to change with text size
-
-  */
-
-  var offset_x = 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
-  var offset_y = 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
-
-  // console.log('tooltip shift', offset_x, offset_y);
-
-  // // trying to shift based on diff between mat and heat size
-  // var inst_shift = {}
-  // inst_shift.x = params.mat_size.x - params.heat_size.x;
-  // inst_shift.y = params.mat_size.y - params.heat_size.y;
-
-  var tooltip_width = 0.5;
-  var tooltip_height = 0.1;
-
-  var background_triangles = [
-    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y],
-             [-1.0 + offset_x - tooltip_width, 1.0 - offset_y]
-             ]},
-    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y]
-             ]}
-
-  ];
-
-  return background_triangles;
-
-};
-
-/***/ }),
-
-/***/ "./src/calc_viz_area.js":
-/*!******************************!*\
-  !*** ./src/calc_viz_area.js ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_viz_area(params){
-
-  // console.log('calc_viz_area');
-
-  var zoom_data = params.zoom_data;
-
-  // make a d3.scale to transition from 0px - 500px to -1, 1 space
-  var mat_width = params.viz_dim.heat.width;
-  var mat_height = params.viz_dim.heat.height;
-
-  /*
-
-    Experimenting with scales to improve viz area calculation
-
-  */
-
-  var pix_to_webgl = params.pix_to_webgl;
-
-  // panning is defined as negative pixel values
-  var total_pan = {};
-  total_pan.x_min = -zoom_data.x.total_pan_min;
-  total_pan.x_max = mat_width + zoom_data.x.total_pan_max;
-
-  total_pan.y_min = -zoom_data.y.total_pan_min;
-  total_pan.y_max = mat_height + zoom_data.y.total_pan_max;
-
-  var buffer_width = 0.0;
-
-  var viz_area = {};
-  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width;
-  // addition not necessary
-  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width;
-
-  /*
-  experimenting with viz_area calc
-  */
-
-   // - params.offcenter.y/2
-
-  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
-  // minus offset not necessary
-  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width;
-
-  // console.log('y_min', viz_area.y_min);
-  // console.log('y_max', viz_area.y_max);
-
-  params.viz_area = viz_area;
-
-};
-
-/***/ }),
-
-/***/ "./src/calc_viz_dim.js":
-/*!*****************************!*\
-  !*** ./src/calc_viz_dim.js ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
-
-module.exports = function calc_viz_dim(regl, params){
-
-  // Set up viz_dim
-  ///////////////////////
-  var opts = opts || {};
-  var options = extend({
-      element: opts.element || regl._gl.canvas,
-    }, opts || {});
-
-  var element = options.element;
-
-  var viz_dim = {};
-  viz_dim.canvas = {};
-
-  _.each(['width', 'height'], function(inst_dim){
-    viz_dim.canvas[inst_dim] = Number.parseFloat(d3.select(element)
-      .style(inst_dim).replace('px', ''));
-  });
-
-
-  // Matrix Dimensions
-  /////////////////////////////
-  viz_dim.mat = {};
-
-  // square matrix size set by width of canvas
-  viz_dim.mat.width  = params.mat_size.x * viz_dim.canvas.width;
-  viz_dim.mat.height = params.mat_size.y * viz_dim.canvas.height;
-
-  // min and max position of matrix
-  viz_dim.mat.x = {};
-  viz_dim.mat.x.min = viz_dim.canvas.width/2 - viz_dim.mat.width/2;
-  viz_dim.mat.x.max = viz_dim.canvas.width/2 + viz_dim.mat.width/2;
-
-  viz_dim.mat.y = {};
-  viz_dim.mat.y.min = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
-  viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
-
-
-  // Heatmap Dimensions
-  //////////////////////////////
-  viz_dim.heat = {};
-
-  // square matrix size set by width of canvas
-  viz_dim.heat.width  = params.heat_size.x * viz_dim.canvas.width;
-  viz_dim.heat.height = params.heat_size.y * viz_dim.canvas.height;
-
-  var offset_heat = {};
-
-  // min and max position of matrix
-  offset_heat.x = (viz_dim.mat.width - viz_dim.heat.width)/2;
-  viz_dim.heat.x = {};
-  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
-  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2; //  + offset_heat.x;
-
-  offset_heat.y = (viz_dim.mat.height - viz_dim.heat.height)/2;
-  viz_dim.heat.y = {};
-  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
-  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
-
-  return viz_dim;
-
-};
-
-/***/ }),
-
 /***/ "./src/camera_interaction.js":
 /*!***********************************!*\
   !*** ./src/camera_interaction.js ***!
@@ -22765,7 +22586,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_col_text_args = __webpack_require__(/*! ./make_col_text_args */ "./src/make_col_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/calc_viz_area.js");
+var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_col_text_triangles = __webpack_require__(/*! ./calc_col_text_triangles */ "./src/calc_col_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
@@ -22942,7 +22763,7 @@ module.exports = function draw_matrix_components(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_row_text_args = __webpack_require__(/*! ./make_row_text_args */ "./src/make_row_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/calc_viz_area.js");
+var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_text_triangles = __webpack_require__(/*! ./calc_row_text_triangles */ "./src/calc_row_text_triangles.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
@@ -23015,7 +22836,7 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 /***/ (function(module, exports, __webpack_require__) {
 
 const make_tooltip_text_args = __webpack_require__(/*! ./tooltip/make_tooltip_text_args */ "./src/tooltip/make_tooltip_text_args.js");
-var calc_tooltip_background_triangles = __webpack_require__(/*! ./calc_tooltip_background_triangles */ "./src/calc_tooltip_background_triangles.js");
+var calc_tooltip_background_triangles = __webpack_require__(/*! ./tooltip/calc_tooltip_background_triangles */ "./src/tooltip/calc_tooltip_background_triangles.js");
 
 module.exports = function draw_tooltip_components(regl, params){
 
@@ -25148,6 +24969,139 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
 /***/ }),
 
+/***/ "./src/params/calc_viz_area.js":
+/*!*************************************!*\
+  !*** ./src/params/calc_viz_area.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_viz_area(params){
+
+  // console.log('calc_viz_area');
+
+  var zoom_data = params.zoom_data;
+
+  // make a d3.scale to transition from 0px - 500px to -1, 1 space
+  var mat_width = params.viz_dim.heat.width;
+  var mat_height = params.viz_dim.heat.height;
+
+  /*
+
+    Experimenting with scales to improve viz area calculation
+
+  */
+
+  var pix_to_webgl = params.pix_to_webgl;
+
+  // panning is defined as negative pixel values
+  var total_pan = {};
+  total_pan.x_min = -zoom_data.x.total_pan_min;
+  total_pan.x_max = mat_width + zoom_data.x.total_pan_max;
+
+  total_pan.y_min = -zoom_data.y.total_pan_min;
+  total_pan.y_max = mat_height + zoom_data.y.total_pan_max;
+
+  var buffer_width = 0.0;
+
+  var viz_area = {};
+  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width;
+  // addition not necessary
+  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width;
+
+  /*
+  experimenting with viz_area calc
+  */
+
+   // - params.offcenter.y/2
+
+  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
+  // minus offset not necessary
+  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width;
+
+  // console.log('y_min', viz_area.y_min);
+  // console.log('y_max', viz_area.y_max);
+
+  params.viz_area = viz_area;
+
+};
+
+/***/ }),
+
+/***/ "./src/params/calc_viz_dim.js":
+/*!************************************!*\
+  !*** ./src/params/calc_viz_dim.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
+
+module.exports = function calc_viz_dim(regl, params){
+
+  // Set up viz_dim
+  ///////////////////////
+  var opts = opts || {};
+  var options = extend({
+      element: opts.element || regl._gl.canvas,
+    }, opts || {});
+
+  var element = options.element;
+
+  var viz_dim = {};
+  viz_dim.canvas = {};
+
+  _.each(['width', 'height'], function(inst_dim){
+    viz_dim.canvas[inst_dim] = Number.parseFloat(d3.select(element)
+      .style(inst_dim).replace('px', ''));
+  });
+
+
+  // Matrix Dimensions
+  /////////////////////////////
+  viz_dim.mat = {};
+
+  // square matrix size set by width of canvas
+  viz_dim.mat.width  = params.mat_size.x * viz_dim.canvas.width;
+  viz_dim.mat.height = params.mat_size.y * viz_dim.canvas.height;
+
+  // min and max position of matrix
+  viz_dim.mat.x = {};
+  viz_dim.mat.x.min = viz_dim.canvas.width/2 - viz_dim.mat.width/2;
+  viz_dim.mat.x.max = viz_dim.canvas.width/2 + viz_dim.mat.width/2;
+
+  viz_dim.mat.y = {};
+  viz_dim.mat.y.min = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
+  viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
+
+
+  // Heatmap Dimensions
+  //////////////////////////////
+  viz_dim.heat = {};
+
+  // square matrix size set by width of canvas
+  viz_dim.heat.width  = params.heat_size.x * viz_dim.canvas.width;
+  viz_dim.heat.height = params.heat_size.y * viz_dim.canvas.height;
+
+  var offset_heat = {};
+
+  // min and max position of matrix
+  offset_heat.x = (viz_dim.mat.width - viz_dim.heat.width)/2;
+  viz_dim.heat.x = {};
+  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
+  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2; //  + offset_heat.x;
+
+  offset_heat.y = (viz_dim.mat.height - viz_dim.heat.height)/2;
+  viz_dim.heat.y = {};
+  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
+  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
+
+  return viz_dim;
+
+};
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25158,7 +25112,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./../calc_row_and_col_canvas_positions */ "./src/calc_row_and_col_canvas_positions.js");
 var calc_row_text_triangles = __webpack_require__(/*! ./../calc_row_text_triangles */ "./src/calc_row_text_triangles.js");
 var calc_col_text_triangles = __webpack_require__(/*! ./../calc_col_text_triangles */ "./src/calc_col_text_triangles.js");
-var calc_viz_dim = __webpack_require__(/*! ./../calc_viz_dim */ "./src/calc_viz_dim.js");
+var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
 var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom_rules_high_mat */ "./src/zoom_rules_high_mat.js");
@@ -25169,7 +25123,7 @@ var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_
 var make_cat_args = __webpack_require__(/*! ./../make_cat_args */ "./src/make_cat_args.js");
 var make_dendro_args = __webpack_require__(/*! ./../make_dendro_args */ "./src/make_dendro_args.js");
 var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
-var calc_viz_area = __webpack_require__(/*! ./../calc_viz_area */ "./src/calc_viz_area.js");
+var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../calc_row_downsampled_mat */ "./src/calc_row_downsampled_mat.js");
 var generate_cat_data = __webpack_require__(/*! ./../category/generate_cat_data */ "./src/category/generate_cat_data.js");
 var get_ordered_labels = __webpack_require__(/*! ./../get_ordered_labels */ "./src/get_ordered_labels.js");
@@ -25890,6 +25844,52 @@ module.exports = function make_spillover_args(regl, inst_depth,
   };
 
   return args;
+
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/calc_tooltip_background_triangles.js":
+/*!**********************************************************!*\
+  !*** ./src/tooltip/calc_tooltip_background_triangles.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_background_tooltip_triangles(regl, params){
+
+  /*
+
+  Try to get background size to change with text size
+
+  */
+
+  var offset_x = 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
+  var offset_y = 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
+
+  // console.log('tooltip shift', offset_x, offset_y);
+
+  // // trying to shift based on diff between mat and heat size
+  // var inst_shift = {}
+  // inst_shift.x = params.mat_size.x - params.heat_size.x;
+  // inst_shift.y = params.mat_size.y - params.heat_size.y;
+
+  var tooltip_width = 0.5;
+  var tooltip_height = 0.1;
+
+  var background_triangles = [
+    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
+             [-1.0 + offset_x,                 1.0 - offset_y],
+             [-1.0 + offset_x - tooltip_width, 1.0 - offset_y]
+             ]},
+    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
+             [-1.0 + offset_x,                 1.0 - offset_y + tooltip_height],
+             [-1.0 + offset_x,                 1.0 - offset_y]
+             ]}
+
+  ];
+
+  return background_triangles;
 
 };
 

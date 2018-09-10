@@ -1,5 +1,5 @@
 // var change_groups = require('./change_groups');
-var position_dendro_slider = require('./position_dendro_slider');
+// var position_dendro_slider = require('./position_dendro_slider');
 
 module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_container){
 
@@ -12,6 +12,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
   var drag = d3.behavior.drag()
       .on("drag", dragging)
       .on('dragend', function(){
+        console.log('stopped dragging');
         cgm.params.is_slider_drag = false;
       });
 

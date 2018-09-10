@@ -21444,167 +21444,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./src/build_single_dendro_slider.js":
-/*!*******************************************!*\
-  !*** ./src/build_single_dendro_slider.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// var change_groups = require('./change_groups');
-var position_dendro_slider = __webpack_require__(/*! ./position_dendro_slider */ "./src/position_dendro_slider.js");
-
-module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_container){
-
-  console.log('working on building slider')
-
-  var slider_length = 100;
-  var rect_height = slider_length + 20;
-  var rect_width = 30;
-
-  var drag = d3.behavior.drag()
-      .on("drag", dragging)
-      .on('dragend', function(){
-        cgm.params.is_slider_drag = false;
-      });
-
-  // debugger;
-
-  // var slider_group = d3.select(cgm.params.root +' .viz_svg')
-  // var slider_group = d3.select(canvas_container)
-  var slider_group = d3.select(cgm.params.root + ' #dendro_slider_svg')
-      .append('g')
-      .classed( inst_rc + '_slider_group', true)
-      .attr('transform', function(){
-        var inst_translation;
-
-        inst_translation = 'translate(' + rect_width/2 + ', '+ rect_height/10 +')';
-        return inst_translation;
-      })
-
-  // position_dendro_slider(cgm, inst_rc);
-
-  slider_group
-    .append('rect')
-    .classed(inst_rc+'_slider_background', true)
-    .attr('height', rect_height+'px')
-    .attr('width', rect_width+'px')
-    .attr('fill', 'red')
-    .attr('transform', function(){
-      var translate_string = 'translate(-10, -5)';
-      return translate_string;
-    })
-    .style('opacity', 0);
-
-  slider_group
-    .append("line")
-    .style('stroke-width', slider_length/7+'px')
-    .style('stroke', 'black')
-    .style('stroke-linecap', 'round')
-    .style('opacity', 0.0)
-    .attr("y1", 0)
-    .attr("y2", function(){
-      return slider_length-2;
-    })
-    .on('click', click_dendro_slider);
-
-  var offset_triangle = -slider_length/40;
-  slider_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
-
-      // up triangle
-      var start_x = 0 ;
-      var start_y = 0;
-
-      var mid_x = 0;
-      var mid_y = slider_length;
-
-      var final_x = slider_length/10;
-      var final_y = 0;
-
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y + ' L'
-      + final_x + ','+ final_y +' Z';
-
-      return output_string;
-    })
-    .style('opacity', 0.35)
-    .on('click', click_dendro_slider);
-
-
-  var default_opacity = 0.35;
-  var high_opacity = 0.6;
-  slider_group
-    .append('circle')
-    .classed(inst_rc+'_group_circle', true)
-    .attr('r', slider_length * 0.08)
-    .attr('transform', function(){
-      return 'translate(0, '+slider_length/2+')';
-    })
-    .style('fill', 'blue')
-    .style('opacity', default_opacity)
-    .on('mouseover', function(){
-      d3.select(this).style('opacity', high_opacity);
-    })
-    .on('mouseout', function(){
-      d3.select(this).style('opacity', default_opacity);
-    })
-    .call(drag);
-
-  function dragging() {
-
-    // console.log('dragging the svg slider')
-
-    cgm.params.is_slider_drag = true;
-
-    // d[0] = d3.event.x;
-    var slider_pos = d3.event.y;
-
-    if (slider_pos < 0){
-      slider_pos = 0;
-    }
-
-    if (slider_pos > slider_length){
-      slider_pos = slider_length;
-    }
-
-    if (this.nextSibling) {
-      this.parentNode.appendChild(this);
-    }
-
-    slider_pos = d3.round(slider_pos, -1);
-
-    var slider_value = 10 - slider_pos/10;
-
-    d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
-
-    // change_groups(cgm, inst_rc, slider_value);
-
-  }
-
-  function click_dendro_slider(){
-
-    // console.log('clicking the dendrogram slider')
-
-    var clicked_line_position = d3.mouse(this);
-
-    var rel_pos = d3.round(clicked_line_position[1], -1);
-
-    d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
-      .attr('transform', 'translate(0, '+ rel_pos + ')');
-
-    var slider_value = 10 - rel_pos/10;
-
-    // change_groups(cgm, inst_rc, slider_value);
-
-  }
-};
-
-/***/ }),
-
 /***/ "./src/calc_col_text_triangles.js":
 /*!****************************************!*\
   !*** ./src/calc_col_text_triangles.js ***!
@@ -22810,6 +22649,209 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
   return inst_camera;
 
+};
+
+/***/ }),
+
+/***/ "./src/dendrogram/build_dendrogram_sliders.js":
+/*!****************************************************!*\
+  !*** ./src/dendrogram/build_dendrogram_sliders.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/dendrogram/build_single_dendro_slider.js");
+
+module.exports = function build_dendrogram_sliders(cgm){
+
+  console.log('build_dendrogram_sliders')
+
+  // Add sliders on top of the canvas
+  /////////////////////////////////////
+  var slider_length = 130;
+  var col_slider_container = d3.select(cgm.params.canvas_container)
+    .append('svg')
+    .style('height', slider_length + 'px')
+    .style('width', '40px')
+    .style('position', 'absolute')
+    .style('top', 400 + 'px')
+    .style('left', inst_width - 15 + 'px')
+    .attr('id', 'dendro_slider_svg')
+
+  col_slider_container
+    .append('rect')
+    .style('height', slider_length + 'px')
+    .style('width', '50px')
+    .style('fill', 'white')
+    // .style('opacity', 0.5)
+    .on('click', function(){
+      console.log('clicking the red slider')
+    })
+
+  build_single_dendro_slider(cgm, 'row', cgm.params.canvas_container);
+
+}
+
+/***/ }),
+
+/***/ "./src/dendrogram/build_single_dendro_slider.js":
+/*!******************************************************!*\
+  !*** ./src/dendrogram/build_single_dendro_slider.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// var change_groups = require('./change_groups');
+// var position_dendro_slider = require('./position_dendro_slider');
+
+module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_container){
+
+  console.log('working on building slider')
+
+  var slider_length = 100;
+  var rect_height = slider_length + 20;
+  var rect_width = 30;
+
+  var drag = d3.behavior.drag()
+      .on("drag", dragging)
+      .on('dragend', function(){
+        console.log('stopped dragging');
+        cgm.params.is_slider_drag = false;
+      });
+
+  // debugger;
+
+  // var slider_group = d3.select(cgm.params.root +' .viz_svg')
+  // var slider_group = d3.select(canvas_container)
+  var slider_group = d3.select(cgm.params.root + ' #dendro_slider_svg')
+      .append('g')
+      .classed( inst_rc + '_slider_group', true)
+      .attr('transform', function(){
+        var inst_translation;
+
+        inst_translation = 'translate(' + rect_width/2 + ', '+ rect_height/10 +')';
+        return inst_translation;
+      })
+
+  // position_dendro_slider(cgm, inst_rc);
+
+  slider_group
+    .append('rect')
+    .classed(inst_rc+'_slider_background', true)
+    .attr('height', rect_height+'px')
+    .attr('width', rect_width+'px')
+    .attr('fill', 'red')
+    .attr('transform', function(){
+      var translate_string = 'translate(-10, -5)';
+      return translate_string;
+    })
+    .style('opacity', 0);
+
+  slider_group
+    .append("line")
+    .style('stroke-width', slider_length/7+'px')
+    .style('stroke', 'black')
+    .style('stroke-linecap', 'round')
+    .style('opacity', 0.0)
+    .attr("y1", 0)
+    .attr("y2", function(){
+      return slider_length-2;
+    })
+    .on('click', click_dendro_slider);
+
+  var offset_triangle = -slider_length/40;
+  slider_group
+    .append('path')
+    .style('fill', 'black')
+    .attr('transform', 'translate('+offset_triangle+', 0)')
+    .attr('d', function() {
+
+      // up triangle
+      var start_x = 0 ;
+      var start_y = 0;
+
+      var mid_x = 0;
+      var mid_y = slider_length;
+
+      var final_x = slider_length/10;
+      var final_y = 0;
+
+      var output_string = 'M' + start_x + ',' + start_y + ' L' +
+      mid_x + ', ' + mid_y + ' L'
+      + final_x + ','+ final_y +' Z';
+
+      return output_string;
+    })
+    .style('opacity', 0.35)
+    .on('click', click_dendro_slider);
+
+
+  var default_opacity = 0.35;
+  var high_opacity = 0.6;
+  slider_group
+    .append('circle')
+    .classed(inst_rc+'_group_circle', true)
+    .attr('r', slider_length * 0.08)
+    .attr('transform', function(){
+      return 'translate(0, '+slider_length/2+')';
+    })
+    .style('fill', 'blue')
+    .style('opacity', default_opacity)
+    .on('mouseover', function(){
+      d3.select(this).style('opacity', high_opacity);
+    })
+    .on('mouseout', function(){
+      d3.select(this).style('opacity', default_opacity);
+    })
+    .call(drag);
+
+  function dragging() {
+
+    // console.log('dragging the svg slider')
+
+    cgm.params.is_slider_drag = true;
+
+    // d[0] = d3.event.x;
+    var slider_pos = d3.event.y;
+
+    if (slider_pos < 0){
+      slider_pos = 0;
+    }
+
+    if (slider_pos > slider_length){
+      slider_pos = slider_length;
+    }
+
+    if (this.nextSibling) {
+      this.parentNode.appendChild(this);
+    }
+
+    slider_pos = d3.round(slider_pos, -1);
+
+    var slider_value = 10 - slider_pos/10;
+
+    d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
+
+    // change_groups(cgm, inst_rc, slider_value);
+
+  }
+
+  function click_dendro_slider(){
+
+    // console.log('clicking the dendrogram slider')
+
+    var clicked_line_position = d3.mouse(this);
+
+    var rel_pos = d3.round(clicked_line_position[1], -1);
+
+    d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
+      .attr('transform', 'translate(0, '+ rel_pos + ')');
+
+    var slider_value = 10 - rel_pos/10;
+
+    // change_groups(cgm, inst_rc, slider_value);
+
+  }
 };
 
 /***/ }),
@@ -24403,8 +24445,8 @@ module.exports = function keep_track_of_mouseovers(params){
  */
 
 var run_viz = __webpack_require__(/*! ./run_viz */ "./src/run_viz.js");
-var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/build_single_dendro_slider.js");
 var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
+var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
 
 function clustergrammer_gl(args){
 
@@ -24443,32 +24485,9 @@ function clustergrammer_gl(args){
 
   cgm.params.root = '#' + d3.select(canvas_container).attr('id');
   cgm.params.container = args.container;
+  cgm.params.canvas_container = canvas_container;
 
-  // Add sliders on top of the canvas
-  /////////////////////////////////////
-  var slider_length = 130;
-  var col_slider_container = d3.select(canvas_container)
-    .append('svg')
-    .style('height', slider_length + 'px')
-    .style('width', '40px')
-    .style('position', 'absolute')
-    .style('top', 400 + 'px')
-    .style('left', inst_width - 15 + 'px')
-    .attr('id', 'dendro_slider_svg')
-
-  col_slider_container
-    .append('rect')
-    .style('height', slider_length + 'px')
-    .style('width', '50px')
-    .style('fill', 'white')
-    // .style('opacity', 0.5)
-    .on('click', function(){
-      console.log('clicking the red slider')
-    })
-
-  build_single_dendro_slider(cgm, 'row', canvas_container);
-
-
+  build_dendrogram_sliders(cgm);
 
   build_control_panel(regl, cgm);
 
@@ -26027,67 +26046,6 @@ module.exports = {
   },
 };
 
-
-/***/ }),
-
-/***/ "./src/position_dendro_slider.js":
-/*!***************************************!*\
-  !*** ./src/position_dendro_slider.js ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function position_dendro_slider(cgm, inst_rc='row'){
-
-  var viz = cgm.params.viz;
-  var tmp_left;
-  var tmp_top;
-  if (inst_rc === 'row'){
-
-    // row dendrogram
-    ///////////////////////
-
-    // keep slider near clustergram
-    var max_room = viz.svg_dim.width - 3 * viz.uni_margin;
-
-    // position close to row dendrogram trapezoids
-    tmp_left = viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row + 2;
-
-    if (tmp_left > max_room){
-      tmp_left = max_room;
-    }
-
-    // tmp_top =  viz.clust.margin.top + 3 * viz.uni_margin - 50;
-    // 135 is a magic number that moves the slider down to make room for the
-    // reordering tree (use 75 when enabling reclustering icon)
-    tmp_top =  viz.clust.margin.top + 3 * viz.uni_margin + 30;
-
-  } else {
-
-    // column dendrogram
-    ///////////////////////
-    tmp_left = 2 * viz.uni_margin;
-    // tmp_top =  viz.svg_dim.height - 2.5 * viz.uni_margin;
-    tmp_top =  viz.clust.margin.top + viz.clust.dim.height + viz.dendro_room.col - 2*viz.uni_margin;
-
-  }
-
-  // reposiiton slider
-  d3.select(cgm.params.root + ' .' + inst_rc + '_slider_group')
-    .attr('transform', function() {
-      var inst_translation;
-      if (inst_rc === 'row'){
-        tmp_left = tmp_left + 0.8 * viz.dendro_room.row;
-        inst_translation = 'translate(' + tmp_left + ',' + tmp_top + ')';
-      } else {
-        inst_translation = 'translate(' + tmp_left + ',' + tmp_top +
-                           '), rotate(-90)';
-      }
-      return inst_translation;
-    })
-    .style('opacity', 1);
-
-};
 
 /***/ }),
 

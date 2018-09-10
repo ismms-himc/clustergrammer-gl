@@ -1,9 +1,8 @@
-var interactionEvents = require('./interaction-events');
-// var normalizedInteractionEvents = require('normalized-interaction-events');
+var interactionEvents = require('./../interaction-events');
 var extend = require('xtend/mutable');
-var track_interaction_zoom_data = require('./track_interaction_zoom_data');
-var make_position_arr = require('./make_position_arr');
-var make_cat_position_array = require('./make_cat_position_array');
+var track_interaction_zoom_data = require('./../track_interaction_zoom_data');
+var make_position_arr = require('./../make_position_arr');
+var make_cat_position_array = require('./../make_cat_position_array');
 
 module.exports = function zoom_rules_high_mat(regl, params){
 

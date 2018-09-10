@@ -1,4 +1,4 @@
-var zoom_rules_low_mat = require('./zoom_rules_low_mat');
+var zoom_rules_low_mat = require('./zoom/zoom_rules_low_mat');
 var find_mouseover_element = require('./find_mouseover_element');
 var keep_track_of_interactions = require('./keep_track_of_interactions');
 var keep_track_of_mouseovers = require('./keep_track_of_mouseovers');
@@ -69,7 +69,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
     }
 
-    // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
     zoom_data.x = zoom_rules_low_mat(params, zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
     zoom_data.y = zoom_rules_low_mat(params, zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
 

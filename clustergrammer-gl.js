@@ -25115,7 +25115,7 @@ var calc_col_text_triangles = __webpack_require__(/*! ./../calc_col_text_triangl
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
-var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom_rules_high_mat */ "./src/zoom_rules_high_mat.js");
+var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 var make_cameras = __webpack_require__(/*! ./../make_cameras */ "./src/make_cameras.js");
 var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 var make_matrix_args = __webpack_require__(/*! ./../make_matrix_args */ "./src/make_matrix_args.js");
@@ -26066,7 +26066,7 @@ module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var zoom_rules_low_mat = __webpack_require__(/*! ./zoom_rules_low_mat */ "./src/zoom_rules_low_mat.js");
+var zoom_rules_low_mat = __webpack_require__(/*! ./zoom/zoom_rules_low_mat */ "./src/zoom/zoom_rules_low_mat.js");
 var find_mouseover_element = __webpack_require__(/*! ./find_mouseover_element */ "./src/find_mouseover_element.js");
 var keep_track_of_interactions = __webpack_require__(/*! ./keep_track_of_interactions */ "./src/keep_track_of_interactions.js");
 var keep_track_of_mouseovers = __webpack_require__(/*! ./keep_track_of_mouseovers */ "./src/keep_track_of_mouseovers.js");
@@ -26137,7 +26137,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
     }
 
-    // console.log('zoom_rules_high_mat', viz_dim.heat.x.min, viz_dim.heat.x.max)
     zoom_data.x = zoom_rules_low_mat(params, zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
     zoom_data.y = zoom_rules_low_mat(params, zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
 
@@ -26304,19 +26303,18 @@ module.exports = function ini_zoom_restrict(params){
 
 /***/ }),
 
-/***/ "./src/zoom_rules_high_mat.js":
-/*!************************************!*\
-  !*** ./src/zoom_rules_high_mat.js ***!
-  \************************************/
+/***/ "./src/zoom/zoom_rules_high_mat.js":
+/*!*****************************************!*\
+  !*** ./src/zoom/zoom_rules_high_mat.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var interactionEvents = __webpack_require__(/*! ./interaction-events */ "./src/interaction-events.js");
-// var normalizedInteractionEvents = require('normalized-interaction-events');
+var interactionEvents = __webpack_require__(/*! ./../interaction-events */ "./src/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
-var track_interaction_zoom_data = __webpack_require__(/*! ./track_interaction_zoom_data */ "./src/track_interaction_zoom_data.js");
-var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
-var make_cat_position_array = __webpack_require__(/*! ./make_cat_position_array */ "./src/make_cat_position_array.js");
+var track_interaction_zoom_data = __webpack_require__(/*! ./../track_interaction_zoom_data */ "./src/track_interaction_zoom_data.js");
+var make_position_arr = __webpack_require__(/*! ./../make_position_arr */ "./src/make_position_arr.js");
+var make_cat_position_array = __webpack_require__(/*! ./../make_cat_position_array */ "./src/make_cat_position_array.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -26417,10 +26415,10 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
 /***/ }),
 
-/***/ "./src/zoom_rules_low_mat.js":
-/*!***********************************!*\
-  !*** ./src/zoom_rules_low_mat.js ***!
-  \***********************************/
+/***/ "./src/zoom/zoom_rules_low_mat.js":
+/*!****************************************!*\
+  !*** ./src/zoom/zoom_rules_low_mat.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 

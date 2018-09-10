@@ -16,7 +16,7 @@ var calc_viz_area = require('./../calc_viz_area');
 var calc_row_downsampled_mat = require('./../calc_row_downsampled_mat');
 var generate_cat_data = require('./../category/generate_cat_data');
 var get_ordered_labels = require('./../get_ordered_labels');
-var make_tooltip_background_args = require('./../make_tooltip_background_args');
+var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
 var make_cat_position_array = require('./../make_cat_position_array');
 
 // /*

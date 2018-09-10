@@ -1,4 +1,4 @@
-var blend_info = require('./blend_info');
+var blend_info = require('./../blend/blend_info');
 
 module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
 

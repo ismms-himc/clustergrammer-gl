@@ -21419,10 +21419,10 @@ function findZeroCrossings(array, level) {
 
 /***/ }),
 
-/***/ "./src/blend_info.js":
-/*!***************************!*\
-  !*** ./src/blend_info.js ***!
-  \***************************/
+/***/ "./src/blend/blend_info.js":
+/*!*********************************!*\
+  !*** ./src/blend/blend_info.js ***!
+  \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -24537,7 +24537,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
+var blend_info = __webpack_require__(/*! ./blend/blend_info */ "./src/blend/blend_info.js");
 var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
 var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
 
@@ -24965,89 +24965,6 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
 /***/ }),
 
-/***/ "./src/make_tooltip_background_args.js":
-/*!*********************************************!*\
-  !*** ./src/make_tooltip_background_args.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var blend_info = __webpack_require__(/*! ./blend_info */ "./src/blend_info.js");
-
-module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
-
-  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
-
-  /*
-
-  Need to calculate the arguments and triangles for the tooltip draw command,
-  which depending on the mouseover statis will or will not draw a tooltip in the
-  larger draw_commands function. We do not want to run any draw commands later
-  since they will re-draw only a subset of the visualization.
-
-  */
-
-    // Spillover Arguments
-  ///////////////////////////////
-  var args = {
-    // In a draw call, we can pass the shader source code to regl
-    frag: `
-    precision mediump float;
-    uniform vec4 color;
-    void main () {
-      gl_FragColor = color;
-    }`,
-
-    vert: `
-    precision mediump float;
-    attribute vec2 position;
-    uniform float inst_depth;
-    void main () {
-      // positioned further up (matrix is lower at 0.)
-      gl_Position = vec4(position, inst_depth, 1);
-    }`,
-
-    attributes: {
-      position: regl.prop('pos')
-    },
-
-    uniforms: {
-      color: inst_color,
-      inst_depth: inst_depth
-    },
-
-    blend: {
-        enable: true,
-        func: {
-          srcRGB: 'src alpha',
-          srcAlpha: 1,
-          dstRGB: 'one minus src alpha',
-          dstAlpha: 1
-        },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
-        color: [0, 0, 0, 0]
-      },
-
-    count: 3,
-    // depth: {
-    //   enable: true,
-    //   mask: true,
-    //   func: 'less',
-    //   // func: 'greater',
-    //   range: [0, 1]
-    // },
-  };
-
-  return args;
-
-
-};
-
-/***/ }),
-
 /***/ "./src/make_tooltip_text_args.js":
 /*!***************************************!*\
   !*** ./src/make_tooltip_text_args.js ***!
@@ -25377,7 +25294,7 @@ var calc_viz_area = __webpack_require__(/*! ./../calc_viz_area */ "./src/calc_vi
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../calc_row_downsampled_mat */ "./src/calc_row_downsampled_mat.js");
 var generate_cat_data = __webpack_require__(/*! ./../category/generate_cat_data */ "./src/category/generate_cat_data.js");
 var get_ordered_labels = __webpack_require__(/*! ./../get_ordered_labels */ "./src/get_ordered_labels.js");
-var make_tooltip_background_args = __webpack_require__(/*! ./../make_tooltip_background_args */ "./src/make_tooltip_background_args.js");
+var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
 var make_cat_position_array = __webpack_require__(/*! ./../make_cat_position_array */ "./src/make_cat_position_array.js");
 
 // /*
@@ -26096,6 +26013,89 @@ module.exports = function make_spillover_args(regl, inst_depth,
   };
 
   return args;
+
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/make_tooltip_background_args.js":
+/*!*****************************************************!*\
+  !*** ./src/tooltip/make_tooltip_background_args.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var blend_info = __webpack_require__(/*! ./../blend/blend_info */ "./src/blend/blend_info.js");
+
+module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
+
+  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+
+  /*
+
+  Need to calculate the arguments and triangles for the tooltip draw command,
+  which depending on the mouseover statis will or will not draw a tooltip in the
+  larger draw_commands function. We do not want to run any draw commands later
+  since they will re-draw only a subset of the visualization.
+
+  */
+
+    // Spillover Arguments
+  ///////////////////////////////
+  var args = {
+    // In a draw call, we can pass the shader source code to regl
+    frag: `
+    precision mediump float;
+    uniform vec4 color;
+    void main () {
+      gl_FragColor = color;
+    }`,
+
+    vert: `
+    precision mediump float;
+    attribute vec2 position;
+    uniform float inst_depth;
+    void main () {
+      // positioned further up (matrix is lower at 0.)
+      gl_Position = vec4(position, inst_depth, 1);
+    }`,
+
+    attributes: {
+      position: regl.prop('pos')
+    },
+
+    uniforms: {
+      color: inst_color,
+      inst_depth: inst_depth
+    },
+
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
+
+    count: 3,
+    // depth: {
+    //   enable: true,
+    //   mask: true,
+    //   func: 'less',
+    //   // func: 'greater',
+    //   range: [0, 1]
+    // },
+  };
+
+  return args;
+
 
 };
 

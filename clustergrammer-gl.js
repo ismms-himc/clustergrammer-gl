@@ -21550,8 +21550,7 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
 // © 2016 Ricky Reusser. MIT License.
 // 'use strict';
 
-var interactionEvents = __webpack_require__(/*! ./../interaction-events */ "./src/interaction-events.js");
-// var normalizedInteractionEvents = require('normalized-interaction-events');
+var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var mat4 = __webpack_require__(/*! gl-mat4 */ "./node_modules/gl-mat4/index.js");
 var EventEmitter = __webpack_require__(/*! event-emitter */ "./node_modules/event-emitter/index.js");
@@ -23019,10 +23018,10 @@ module.exports = function get_ordered_labels(params){
 
 /***/ }),
 
-/***/ "./src/interaction-events.js":
-/*!***********************************!*\
-  !*** ./src/interaction-events.js ***!
-  \***********************************/
+/***/ "./src/interactions/interaction-events.js":
+/*!************************************************!*\
+  !*** ./src/interactions/interaction-events.js ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -26309,7 +26308,7 @@ module.exports = function ini_zoom_restrict(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var interactionEvents = __webpack_require__(/*! ./../interaction-events */ "./src/interaction-events.js");
+var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../track_interaction_zoom_data */ "./src/track_interaction_zoom_data.js");
 var make_position_arr = __webpack_require__(/*! ./../make_position_arr */ "./src/make_position_arr.js");

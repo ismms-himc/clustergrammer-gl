@@ -1,8 +1,7 @@
 // © 2016 Ricky Reusser. MIT License.
 // 'use strict';
 
-var interactionEvents = require('./../interaction-events');
-// var normalizedInteractionEvents = require('normalized-interaction-events');
+var interactionEvents = require('./../interactions/interaction-events');
 var extend = require('xtend/mutable');
 var mat4 = require('gl-mat4');
 var EventEmitter = require('event-emitter');

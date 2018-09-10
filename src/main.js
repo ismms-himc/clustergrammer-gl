@@ -11,7 +11,7 @@ var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.6');
+  console.log('clustergrammer-gl version 0.4.6 - dev!');
   console.log('################################');
 
   var network = args.network;
@@ -25,7 +25,7 @@ function clustergrammer_gl(args){
 
 
   var inst_height = 1000;
-  var inst_width = 1000;
+  var inst_width  = 1000;
 
   d3.select(canvas_container)
     .style('height',inst_height + 'px')

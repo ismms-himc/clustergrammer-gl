@@ -23427,29 +23427,10 @@ function interactionEvents (opts) {
 
 /***/ }),
 
-/***/ "./src/interp_fun.js":
-/*!***************************!*\
-  !*** ./src/interp_fun.js ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
-
-module.exports = function interp_fun(params){
-  inst_ease = ease((params.time - params.animation.last_switch_time) /
-              params.animation.switch_duration);
-
-  // console.log(inst_ease)
-  return inst_ease;
-}
-
-/***/ }),
-
-/***/ "./src/keep_track_of_interactions.js":
-/*!*******************************************!*\
-  !*** ./src/keep_track_of_interactions.js ***!
-  \*******************************************/
+/***/ "./src/interactions/keep_track_of_interactions.js":
+/*!********************************************************!*\
+  !*** ./src/interactions/keep_track_of_interactions.js ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -23471,10 +23452,10 @@ module.exports = function keep_track_of_interactions(params){
 
 /***/ }),
 
-/***/ "./src/keep_track_of_mouseovers.js":
-/*!*****************************************!*\
-  !*** ./src/keep_track_of_mouseovers.js ***!
-  \*****************************************/
+/***/ "./src/interactions/keep_track_of_mouseovers.js":
+/*!******************************************************!*\
+  !*** ./src/interactions/keep_track_of_mouseovers.js ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -23493,6 +23474,125 @@ module.exports = function keep_track_of_mouseovers(params){
   }
 
 };
+
+/***/ }),
+
+/***/ "./src/interactions/track_interaction_zoom_data.js":
+/*!*********************************************************!*\
+  !*** ./src/interactions/track_interaction_zoom_data.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zoom_rules_low_mat = __webpack_require__(/*! ./../zoom/zoom_rules_low_mat */ "./src/zoom/zoom_rules_low_mat.js");
+var find_mouseover_element = __webpack_require__(/*! ./find_mouseover_element */ "./src/interactions/find_mouseover_element.js");
+var keep_track_of_interactions = __webpack_require__(/*! ./keep_track_of_interactions */ "./src/interactions/keep_track_of_interactions.js");
+var keep_track_of_mouseovers = __webpack_require__(/*! ./keep_track_of_mouseovers */ "./src/interactions/keep_track_of_mouseovers.js");
+
+module.exports = function track_interaction_zoom_data(regl, params, ev){
+
+  // console.log('track interaction zoom data')
+
+  var zoom_data = params.zoom_data;
+  var zoom_restrict = params.zoom_restrict;
+  var viz_dim = params.viz_dim;
+
+  var interaction_types = ['wheel', 'touch', 'pinch'];
+
+  if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
+
+    switch (ev.type) {
+      case 'wheel':
+        ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
+        ev.dx = ev.dy = 0;
+        break;
+    }
+
+    // transfer data from ev to zoom_data
+    zoom_data.x.inst_zoom = ev.dsx;
+    zoom_data.x.pan_by_drag = ev.dx;
+    zoom_data.x.cursor_position = ev.x0;
+
+    zoom_data.y.inst_zoom = ev.dsy;
+    zoom_data.y.pan_by_drag = ev.dy;
+    zoom_data.y.cursor_position = ev.y0;
+
+    /*
+      Zoom Switch: adjust x/y zooming based on non-square matrices
+    */
+    // set up two-stage zooming
+    if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
+
+      // console.log('restrict X zoom')
+      zoom_data.x.inst_zoom = 1;
+
+      var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
+
+      // check potential_zoom
+      if (potential_zoom > zoom_restrict.y.ratio){
+
+        // bump x inst_zoom
+        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
+
+      }
+
+    }
+
+    else if (zoom_data.x.total_zoom < zoom_restrict.x.ratio){
+      // console.log('restrict Y zoom')
+
+      zoom_data.y.inst_zoom = 1;
+
+      var potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
+
+      // check potential_zoom
+      if (potential_zoom > zoom_restrict.x.ratio){
+
+        // bump x inst_zoom
+        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
+
+      }
+
+    }
+
+    zoom_data.x = zoom_rules_low_mat(params, zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
+    zoom_data.y = zoom_rules_low_mat(params, zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
+
+    keep_track_of_interactions(params);
+
+  } else if (ev.type === 'mousemove'){
+
+    // trying to keep track of interactions for mouseovers
+    keep_track_of_mouseovers(params);
+
+    find_mouseover_element(regl, params, ev);
+
+    // console.log('dragging', ev.type)
+
+  } else {
+    console.log('not tracking anything')
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/interp_fun.js":
+/*!***************************!*\
+  !*** ./src/interp_fun.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
+
+module.exports = function interp_fun(params){
+  inst_ease = ease((params.time - params.animation.last_switch_time) /
+              params.animation.switch_duration);
+
+  // console.log(inst_ease)
+  return inst_ease;
+}
 
 /***/ }),
 
@@ -26057,106 +26157,6 @@ module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5
 
 /***/ }),
 
-/***/ "./src/track_interaction_zoom_data.js":
-/*!********************************************!*\
-  !*** ./src/track_interaction_zoom_data.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zoom_rules_low_mat = __webpack_require__(/*! ./zoom/zoom_rules_low_mat */ "./src/zoom/zoom_rules_low_mat.js");
-var find_mouseover_element = __webpack_require__(/*! ./interactions/find_mouseover_element */ "./src/interactions/find_mouseover_element.js");
-var keep_track_of_interactions = __webpack_require__(/*! ./keep_track_of_interactions */ "./src/keep_track_of_interactions.js");
-var keep_track_of_mouseovers = __webpack_require__(/*! ./keep_track_of_mouseovers */ "./src/keep_track_of_mouseovers.js");
-
-module.exports = function track_interaction_zoom_data(regl, params, ev){
-
-  // console.log('track interaction zoom data')
-
-  var zoom_data = params.zoom_data;
-  var zoom_restrict = params.zoom_restrict;
-  var viz_dim = params.viz_dim;
-
-  var interaction_types = ['wheel', 'touch', 'pinch'];
-
-  if (ev.buttons || interaction_types.indexOf(ev.type) !== -1)  {
-
-    switch (ev.type) {
-      case 'wheel':
-        ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
-        ev.dx = ev.dy = 0;
-        break;
-    }
-
-    // transfer data from ev to zoom_data
-    zoom_data.x.inst_zoom = ev.dsx;
-    zoom_data.x.pan_by_drag = ev.dx;
-    zoom_data.x.cursor_position = ev.x0;
-
-    zoom_data.y.inst_zoom = ev.dsy;
-    zoom_data.y.pan_by_drag = ev.dy;
-    zoom_data.y.cursor_position = ev.y0;
-
-    /*
-      Zoom Switch: adjust x/y zooming based on non-square matrices
-    */
-    // set up two-stage zooming
-    if (zoom_data.y.total_zoom < zoom_restrict.y.ratio){
-
-      // console.log('restrict X zoom')
-      zoom_data.x.inst_zoom = 1;
-
-      var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
-
-      // check potential_zoom
-      if (potential_zoom > zoom_restrict.y.ratio){
-
-        // bump x inst_zoom
-        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
-
-      }
-
-    }
-
-    else if (zoom_data.x.total_zoom < zoom_restrict.x.ratio){
-      // console.log('restrict Y zoom')
-
-      zoom_data.y.inst_zoom = 1;
-
-      var potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
-
-      // check potential_zoom
-      if (potential_zoom > zoom_restrict.x.ratio){
-
-        // bump x inst_zoom
-        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
-
-      }
-
-    }
-
-    zoom_data.x = zoom_rules_low_mat(params, zoom_restrict.x, zoom_data.x, viz_dim.heat.x, viz_dim.mat.x, 'x');
-    zoom_data.y = zoom_rules_low_mat(params, zoom_restrict.y, zoom_data.y, viz_dim.heat.y, viz_dim.mat.y, 'y');
-
-    keep_track_of_interactions(params);
-
-  } else if (ev.type === 'mousemove'){
-
-    // trying to keep track of interactions for mouseovers
-    keep_track_of_mouseovers(params);
-
-    find_mouseover_element(regl, params, ev);
-
-    // console.log('dragging', ev.type)
-
-  } else {
-    console.log('not tracking anything')
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/transforms/mat3_transform.js":
 /*!******************************************!*\
   !*** ./src/transforms/mat3_transform.js ***!
@@ -26310,7 +26310,7 @@ module.exports = function ini_zoom_restrict(params){
 
 var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
-var track_interaction_zoom_data = __webpack_require__(/*! ./../track_interaction_zoom_data */ "./src/track_interaction_zoom_data.js");
+var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
 var make_position_arr = __webpack_require__(/*! ./../make_position_arr */ "./src/make_position_arr.js");
 var make_cat_position_array = __webpack_require__(/*! ./../make_cat_position_array */ "./src/make_cat_position_array.js");
 

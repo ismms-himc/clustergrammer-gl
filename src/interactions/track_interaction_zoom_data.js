@@ -1,5 +1,5 @@
-var zoom_rules_low_mat = require('./zoom/zoom_rules_low_mat');
-var find_mouseover_element = require('./interactions/find_mouseover_element');
+var zoom_rules_low_mat = require('./../zoom/zoom_rules_low_mat');
+var find_mouseover_element = require('./find_mouseover_element');
 var keep_track_of_interactions = require('./keep_track_of_interactions');
 var keep_track_of_mouseovers = require('./keep_track_of_mouseovers');
 

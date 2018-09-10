@@ -1,5 +1,4 @@
 const vectorizeText = require('vectorize-text');
-// const make_tooltip_text_args = require('./make_tooltip_text_args');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 

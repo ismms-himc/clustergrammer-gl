@@ -22767,7 +22767,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 var make_col_text_args = __webpack_require__(/*! ./make_col_text_args */ "./src/make_col_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/calc_viz_area.js");
 var calc_col_text_triangles = __webpack_require__(/*! ./calc_col_text_triangles */ "./src/calc_col_text_triangles.js");
-var make_viz_aid_tri_args = __webpack_require__(/*! ./make_viz_aid_tri_args */ "./src/make_viz_aid_tri_args.js");
+var make_viz_aid_tri_args = __webpack_require__(/*! ./matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/interp_fun.js");
 
 module.exports = function draw_col_components(regl, params, calc_text_tri=false){
@@ -23014,7 +23014,7 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-const make_tooltip_text_args = __webpack_require__(/*! ./make_tooltip_text_args */ "./src/make_tooltip_text_args.js");
+const make_tooltip_text_args = __webpack_require__(/*! ./tooltip/make_tooltip_text_args */ "./src/tooltip/make_tooltip_text_args.js");
 var calc_tooltip_background_triangles = __webpack_require__(/*! ./calc_tooltip_background_triangles */ "./src/calc_tooltip_background_triangles.js");
 
 module.exports = function draw_tooltip_components(regl, params){
@@ -23138,7 +23138,6 @@ module.exports = function final_mouseover_frame(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
-// const make_tooltip_text_args = require('./make_tooltip_text_args');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
@@ -24965,97 +24964,53 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
 /***/ }),
 
-/***/ "./src/make_tooltip_text_args.js":
-/*!***************************************!*\
-  !*** ./src/make_tooltip_text_args.js ***!
-  \***************************************/
+/***/ "./src/mat3_transform.js":
+/*!*******************************!*\
+  !*** ./src/mat3_transform.js ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
+module.exports = {
+  translation: function(tx, ty) {
+    return [
+      1, 0, 0,
+      0, 1, 0,
+      tx, ty, 1,
+    ];
+  },
 
-  var total_zoom = params.zoom_data.y.total_zoom;
+  rotation: function(angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
+    return [
+      c,-s, 0,
+      s, c, 0,
+      0, 0, 1,
+    ];
+  },
 
-  // smaller scale_text -> larger text
-  var inst_depth = 0.00001;
-
-  // this reduces the size of text, otherwise text will be on the order of the
-  // entire webgl canvas
-  var scale_text = 40;
-
-  var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
-  var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
-
-
-  var vert_arg = `
-      precision mediump float;
-      attribute vec2 position;
-      uniform float scale_text;
-      varying float x_position;
-      varying float y_position;
-      uniform float inst_depth;
-      uniform float offset_x;
-      uniform float offset_y;
-      uniform float line_offset;
-
-      void main () {
-
-        x_position =  (position.x - 1.0)/scale_text + offset_x;
-        y_position = -(position.y - line_offset)/scale_text + offset_y;
-
-        gl_Position =
-                      vec4(
-                           x_position,
-                           y_position,
-                           inst_depth,
-                           1.0);
-      }`;
-
-  var frag_arg =  `
-      precision mediump float;
-      void main () {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-      }`;
-
-  var args = {
-    vert: vert_arg,
-    frag: frag_arg,
-    attributes: {
-      position: regl.prop('positions')
-    },
-    elements: regl.prop('cells'),
-    uniforms: {
-      scale_text: scale_text,
-      inst_depth: inst_depth,
-      offset_x: offset_x,
-      offset_y: offset_y,
-      line_offset: line_offset
-    },
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
-  };
-
-  return args;
-
+  scaling: function(sx, sy) {
+    return [
+      sx, 0, 0,
+      0, sy, 0,
+      0, 0, 1,
+    ];
+  },
 };
+
 
 /***/ }),
 
-/***/ "./src/make_viz_aid_tri_args.js":
-/*!**************************************!*\
-  !*** ./src/make_viz_aid_tri_args.js ***!
-  \**************************************/
+/***/ "./src/matrix_labels/make_viz_aid_tri_args.js":
+/*!****************************************************!*\
+  !*** ./src/matrix_labels/make_viz_aid_tri_args.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./mat3_transform */ "./src/mat3_transform.js");
-var color_to_rgba = __webpack_require__(/*! ./color_to_rgba */ "./src/color_to_rgba.js");
-// var color_table = require('./color_table.js');
+var m3 = __webpack_require__(/*! ./../mat3_transform */ "./src/mat3_transform.js");
+var color_to_rgba = __webpack_require__(/*! ./../color_to_rgba */ "./src/color_to_rgba.js");
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
@@ -25231,44 +25186,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
 /***/ }),
 
-/***/ "./src/mat3_transform.js":
-/*!*******************************!*\
-  !*** ./src/mat3_transform.js ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = {
-  translation: function(tx, ty) {
-    return [
-      1, 0, 0,
-      0, 1, 0,
-      tx, ty, 1,
-    ];
-  },
-
-  rotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
-    return [
-      c,-s, 0,
-      s, c, 0,
-      0, 0, 1,
-    ];
-  },
-
-  scaling: function(sx, sy) {
-    return [
-      sx, 0, 0,
-      0, sy, 0,
-      0, 0, 1,
-    ];
-  },
-};
-
-
-/***/ }),
-
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25286,7 +25203,7 @@ var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom_rules_high_mat */ ".
 var make_cameras = __webpack_require__(/*! ./../make_cameras */ "./src/make_cameras.js");
 var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 var make_matrix_args = __webpack_require__(/*! ./../make_matrix_args */ "./src/make_matrix_args.js");
-var make_viz_aid_tri_args = __webpack_require__(/*! ./../make_viz_aid_tri_args */ "./src/make_viz_aid_tri_args.js");
+var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var make_cat_args = __webpack_require__(/*! ./../make_cat_args */ "./src/make_cat_args.js");
 var make_dendro_args = __webpack_require__(/*! ./../make_dendro_args */ "./src/make_dendro_args.js");
 var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
@@ -25416,8 +25333,6 @@ module.exports = function initialize_params(regl, network){
   params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   // params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
-
-  //
 
   params.cat_args = {};
   params.cat_args.row = [];
@@ -26096,6 +26011,87 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
 
   return args;
 
+
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/make_tooltip_text_args.js":
+/*!***********************************************!*\
+  !*** ./src/tooltip/make_tooltip_text_args.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
+
+  var total_zoom = params.zoom_data.y.total_zoom;
+
+  // smaller scale_text -> larger text
+  var inst_depth = 0.00001;
+
+  // this reduces the size of text, otherwise text will be on the order of the
+  // entire webgl canvas
+  var scale_text = 40;
+
+  var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
+  var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
+
+
+  var vert_arg = `
+      precision mediump float;
+      attribute vec2 position;
+      uniform float scale_text;
+      varying float x_position;
+      varying float y_position;
+      uniform float inst_depth;
+      uniform float offset_x;
+      uniform float offset_y;
+      uniform float line_offset;
+
+      void main () {
+
+        x_position =  (position.x - 1.0)/scale_text + offset_x;
+        y_position = -(position.y - line_offset)/scale_text + offset_y;
+
+        gl_Position =
+                      vec4(
+                           x_position,
+                           y_position,
+                           inst_depth,
+                           1.0);
+      }`;
+
+  var frag_arg =  `
+      precision mediump float;
+      void main () {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      }`;
+
+  var args = {
+    vert: vert_arg,
+    frag: frag_arg,
+    attributes: {
+      position: regl.prop('positions')
+    },
+    elements: regl.prop('cells'),
+    uniforms: {
+      scale_text: scale_text,
+      inst_depth: inst_depth,
+      offset_x: offset_x,
+      offset_y: offset_y,
+      line_offset: line_offset
+    },
+    depth: {
+      enable: true,
+      mask: true,
+      func: 'less',
+      // func: 'greater',
+      range: [0, 1]
+    },
+  };
+
+  return args;
 
 };
 

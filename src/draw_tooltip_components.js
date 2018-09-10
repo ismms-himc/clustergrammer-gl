@@ -1,4 +1,4 @@
-const make_tooltip_text_args = require('./make_tooltip_text_args');
+const make_tooltip_text_args = require('./tooltip/make_tooltip_text_args');
 var calc_tooltip_background_triangles = require('./calc_tooltip_background_triangles');
 
 module.exports = function draw_tooltip_components(regl, params){

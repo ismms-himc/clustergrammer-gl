@@ -1,6 +1,5 @@
-var m3 = require('./mat3_transform');
-var color_to_rgba = require('./color_to_rgba');
-// var color_table = require('./color_table.js');
+var m3 = require('./../mat3_transform');
+var color_to_rgba = require('./../color_to_rgba');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 

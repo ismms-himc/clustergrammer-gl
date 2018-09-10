@@ -21547,7 +21547,6 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
     .style('fill', 'blue')
     .style('opacity', default_opacity)
     .on('mouseover', function(){
-      console.log('mouseover')
       d3.select(this).style('opacity', high_opacity);
     })
     .on('mouseout', function(){
@@ -21557,7 +21556,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 
   function dragging() {
 
-    console.log('dragging the svg slider')
+    // console.log('dragging the svg slider')
 
     cgm.params.is_slider_drag = true;
 
@@ -21588,7 +21587,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 
   function click_dendro_slider(){
 
-    console.log('clicking the dendrogram slider')
+    // console.log('clicking the dendrogram slider')
 
     var clicked_line_position = d3.mouse(this);
 
@@ -22834,7 +22833,7 @@ module.exports = function draw_commands(regl, params){
   draw_col_components(regl, params, params.slow_draw);
   draw_spillover_components(regl, params);
 
-  if (params.show_tooltip){
+  if (params.show_tooltip && params.in_bounds_tooltip){
     // console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }
@@ -23013,7 +23012,7 @@ var calc_tooltip_background_triangles = __webpack_require__(/*! ./calc_tooltip_b
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  // console.log('draw tooltip components');
+  // console.log('draw tooltip components', params.in_bounds_tooltip);
 
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {
@@ -24385,8 +24384,8 @@ function clustergrammer_gl(args){
     .append('rect')
     .style('height', slider_length + 'px')
     .style('width', '50px')
-    .style('fill', 'red')
-    .style('opacity', 0.5)
+    .style('fill', 'white')
+    // .style('opacity', 0.5)
     .on('click', function(){
       console.log('clicking the red slider')
     })

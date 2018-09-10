@@ -76,8 +76,8 @@ function clustergrammer_gl(args){
     .append('rect')
     .style('height', slider_length + 'px')
     .style('width', '50px')
-    .style('fill', 'red')
-    .style('opacity', 0.5)
+    .style('fill', 'white')
+    // .style('opacity', 0.5)
     .on('click', function(){
       console.log('clicking the red slider')
     })

@@ -20,7 +20,7 @@ module.exports = function draw_commands(regl, params){
   draw_col_components(regl, params, params.slow_draw);
   draw_spillover_components(regl, params);
 
-  if (params.show_tooltip){
+  if (params.show_tooltip && params.in_bounds_tooltip){
     // console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }

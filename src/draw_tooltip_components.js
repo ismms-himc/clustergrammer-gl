@@ -3,7 +3,7 @@ var calc_tooltip_background_triangles = require('./calc_tooltip_background_trian
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  // console.log('draw tooltip components');
+  // console.log('draw tooltip components', params.in_bounds_tooltip);
 
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {

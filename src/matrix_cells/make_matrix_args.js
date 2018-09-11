@@ -1,4 +1,4 @@
-var blend_info = require('./../blend/blend_info');
+var blend_info = require('./../colors/blend_info');
 var make_position_arr = require('./make_position_arr');
 var make_opacity_arr = require('./make_opacity_arr');
 

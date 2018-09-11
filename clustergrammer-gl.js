@@ -21419,31 +21419,6 @@ function findZeroCrossings(array, level) {
 
 /***/ }),
 
-/***/ "./src/blend/blend_info.js":
-/*!*********************************!*\
-  !*** ./src/blend/blend_info.js ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = {
-      enable: true,
-      func: {
-        srcRGB: 'src alpha',
-        srcAlpha: 'src color',
-        dstRGB: 'one',
-        dstAlpha: 'one',
-        // src: 'one',
-        // dst: 'one'
-      },
-      equation: 'add',
-      color: [0, 0, 0, 0]
-    };
-
-
-
-/***/ }),
-
 /***/ "./src/cameras/camera_interaction.js":
 /*!*******************************************!*\
   !*** ./src/cameras/camera_interaction.js ***!
@@ -22144,6 +22119,31 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
   return y_offset_array;
 
 }
+
+/***/ }),
+
+/***/ "./src/colors/blend_info.js":
+/*!**********************************!*\
+  !*** ./src/colors/blend_info.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = {
+      enable: true,
+      func: {
+        srcRGB: 'src alpha',
+        srcAlpha: 'src color',
+        dstRGB: 'one',
+        dstAlpha: 'one',
+        // src: 'one',
+        // dst: 'one'
+      },
+      equation: 'add',
+      color: [0, 0, 0, 0]
+    };
+
+
 
 /***/ }),
 
@@ -24211,7 +24211,7 @@ module.exports = function calc_row_downsampled_mat(params, run_downsampling=fals
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var blend_info = __webpack_require__(/*! ./../blend/blend_info */ "./src/blend/blend_info.js");
+var blend_info = __webpack_require__(/*! ./../colors/blend_info */ "./src/colors/blend_info.js");
 var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/matrix_cells/make_opacity_arr.js");
 
@@ -25993,7 +25993,7 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var blend_info = __webpack_require__(/*! ./../blend/blend_info */ "./src/blend/blend_info.js");
+var blend_info = __webpack_require__(/*! ./../colors/blend_info */ "./src/colors/blend_info.js");
 
 module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
 

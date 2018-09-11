@@ -22810,86 +22810,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 /***/ }),
 
-/***/ "./src/draw_col_components.js":
-/*!************************************!*\
-  !*** ./src/draw_col_components.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_col_text_args = __webpack_require__(/*! ./matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_col_text_triangles = __webpack_require__(/*! ./matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
-var make_viz_aid_tri_args = __webpack_require__(/*! ./matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
-var interp_fun = __webpack_require__(/*! ./draws/interp_fun */ "./src/draws/interp_fun.js");
-
-module.exports = function draw_col_components(regl, params, calc_text_tri=false){
-
-  /* Column Components */
-  params.cameras['col-labels'].draw(() => {
-
-    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
-    regl(params.viz_aid_tri_args.col)();
-
-    // console.log('interp_fun', interp_fun(params))
-
-    // drawing the column categories and dendrogram using the same camera as the
-    // matrix (no special zooming required)
-    _.each(params.cat_args.col, function(inst_cat_arg){
-      regl(inst_cat_arg)(
-        {
-          interp_prop: interp_fun(params),
-          run_animation: params.animation.running
-        }
-      );
-
-    });
-
-    regl(params.dendro_args.col)();
-
-    // make the arguments for the draw command
-    var text_triangle_args = make_col_text_args(regl, params,
-                                                         params.zoom_function);
-
-    if (calc_text_tri){
-
-      var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
-
-      // console.log('num_viz_cols', num_viz_cols)
-
-      if (num_viz_cols < params.max_num_text){
-
-        calc_viz_area(params);
-
-        // draw using text_triangle_args and col_text_triangles
-        if (params.num_col > params.max_num_text){
-          params.col_text_triangles = calc_col_text_triangles(params);
-        }
-        regl(text_triangle_args)(params.col_text_triangles);
-
-
-      } else {
-        // console.log('too many cols to draw');
-        // regl(text_triangle_args)(params.col_text_triangles);
-      }
-
-    } else {
-
-      /*
-        show text triangles if avaialble
-      */
-
-      if (params.col_text_triangles != false){
-        regl(text_triangle_args)(params.col_text_triangles);
-      }
-    }
-
-  });
-
-};
-
-/***/ }),
-
 /***/ "./src/draw_commands.js":
 /*!******************************!*\
   !*** ./src/draw_commands.js ***!
@@ -22897,9 +22817,9 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draw_matrix_components.js");
+var draw_matrix_components = __webpack_require__(/*! ./draws/draw_matrix_components */ "./src/draws/draw_matrix_components.js");
 var draw_row_components = __webpack_require__(/*! ./draw_row_components */ "./src/draw_row_components.js");
-var draw_col_components = __webpack_require__(/*! ./draw_col_components */ "./src/draw_col_components.js");
+var draw_col_components = __webpack_require__(/*! ./draws/draw_col_components */ "./src/draws/draw_col_components.js");
 var draw_spillover_components = __webpack_require__(/*! ./spillover/draw_spillover_components */ "./src/spillover/draw_spillover_components.js");
 var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draw_tooltip_components.js");
 
@@ -22933,55 +22853,6 @@ module.exports = function draw_commands(regl, params){
     // console.log('----- turn off show tooltip ------')
     params.show_tooltip = false;
   }
-
-};
-
-/***/ }),
-
-/***/ "./src/draw_matrix_components.js":
-/*!***************************************!*\
-  !*** ./src/draw_matrix_components.js ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// var filter_visible_mat = require('./filter_visible_mat');
-var interp_fun = __webpack_require__(/*! ./draws/interp_fun */ "./src/draws/interp_fun.js");
-
-module.exports = function draw_matrix_components(regl, params){
-
-  /* Matrix */
-  params.cameras.mat.draw(() => {
-
-    /*
-      Disabling this, prevents the screen from flashing when working with very
-      large datasets
-    */
-    // regl.clear({color: [0, 0, 0, 0]});
-
-    /*
-      Filter and regenerate args is slow
-    */
-    // // Filter
-    // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
-
-
-    /*
-    Reordering Matrix Plan
-    ------------------------
-    I will only re-calculate the matrix_args once for the final position.
-    Since matrix reordering happens to entire rows/cols at once, I will calculate
-    an offset to shift rows/columns to transition from the initial to the final
-    state, then I will replace the current position array with the final
-    position array
-    */
-
-    regl(params.matrix_args.regl_props.rects)({
-      interp_prop: interp_fun(params),
-      run_animation: params.animation.running
-    });
-
-  });
 
 };
 
@@ -23111,6 +22982,135 @@ module.exports = function draw_tooltip_components(regl, params){
 
 /***/ }),
 
+/***/ "./src/draws/draw_col_components.js":
+/*!******************************************!*\
+  !*** ./src/draws/draw_col_components.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
+var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
+var calc_col_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
+var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
+var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
+
+module.exports = function draw_col_components(regl, params, calc_text_tri=false){
+
+  /* Column Components */
+  params.cameras['col-labels'].draw(() => {
+
+    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+    regl(params.viz_aid_tri_args.col)();
+
+    // console.log('interp_fun', interp_fun(params))
+
+    // drawing the column categories and dendrogram using the same camera as the
+    // matrix (no special zooming required)
+    _.each(params.cat_args.col, function(inst_cat_arg){
+      regl(inst_cat_arg)(
+        {
+          interp_prop: interp_fun(params),
+          run_animation: params.animation.running
+        }
+      );
+
+    });
+
+    regl(params.dendro_args.col)();
+
+    // make the arguments for the draw command
+    var text_triangle_args = make_col_text_args(regl, params,
+                                                         params.zoom_function);
+
+    if (calc_text_tri){
+
+      var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
+
+      // console.log('num_viz_cols', num_viz_cols)
+
+      if (num_viz_cols < params.max_num_text){
+
+        calc_viz_area(params);
+
+        // draw using text_triangle_args and col_text_triangles
+        if (params.num_col > params.max_num_text){
+          params.col_text_triangles = calc_col_text_triangles(params);
+        }
+        regl(text_triangle_args)(params.col_text_triangles);
+
+
+      } else {
+        // console.log('too many cols to draw');
+        // regl(text_triangle_args)(params.col_text_triangles);
+      }
+
+    } else {
+
+      /*
+        show text triangles if avaialble
+      */
+
+      if (params.col_text_triangles != false){
+        regl(text_triangle_args)(params.col_text_triangles);
+      }
+    }
+
+  });
+
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_matrix_components.js":
+/*!*********************************************!*\
+  !*** ./src/draws/draw_matrix_components.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// var filter_visible_mat = require('./filter_visible_mat');
+var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
+
+module.exports = function draw_matrix_components(regl, params){
+
+  /* Matrix */
+  params.cameras.mat.draw(() => {
+
+    /*
+      Disabling this, prevents the screen from flashing when working with very
+      large datasets
+    */
+    // regl.clear({color: [0, 0, 0, 0]});
+
+    /*
+      Filter and regenerate args is slow
+    */
+    // // Filter
+    // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
+
+
+    /*
+    Reordering Matrix Plan
+    ------------------------
+    I will only re-calculate the matrix_args once for the final position.
+    Since matrix reordering happens to entire rows/cols at once, I will calculate
+    an offset to shift rows/columns to transition from the initial to the final
+    state, then I will replace the current position array with the final
+    position array
+    */
+
+    regl(params.matrix_args.regl_props.rects)({
+      interp_prop: interp_fun(params),
+      run_animation: params.animation.running
+    });
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/draws/interp_fun.js":
 /*!*********************************!*\
   !*** ./src/draws/interp_fun.js ***!
@@ -23137,7 +23137,6 @@ module.exports = function interp_fun(params){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// var draw_commands = require('./draw_commands');
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
@@ -23156,7 +23155,6 @@ module.exports = function final_interaction_frame(regl, params){
 
       if (params.zoom_data.x.total_mouseover == 0){
         // console.log('SLOW_DRAW')
-        // draw_commands(regl, params, slow_draw);
       }
 
       // console.log(params.kept_row_y);
@@ -23177,8 +23175,6 @@ module.exports = function final_interaction_frame(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// var draw_commands = require('./draw_commands');
-
 module.exports = function final_mouseover_frame(regl, params){
 
   // reduce the number of mouseovers
@@ -23194,7 +23190,6 @@ module.exports = function final_mouseover_frame(regl, params){
 
     // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
     //   // console.log('final_mouseover_frame', params.show_tooltip)
-    //   // draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
     // }
   }
 
@@ -26008,7 +26003,7 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
 
   Need to calculate the arguments and triangles for the tooltip draw command,
   which depending on the mouseover statis will or will not draw a tooltip in the
-  larger draw_commands function. We do not want to run any draw commands later
+  larger draw commands function. We do not want to run any draw commands later
   since they will re-draw only a subset of the visualization.
 
   */

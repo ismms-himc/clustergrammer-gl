@@ -1,6 +1,6 @@
-var draw_matrix_components = require('./draw_matrix_components');
+var draw_matrix_components = require('./draws/draw_matrix_components');
 var draw_row_components = require('./draw_row_components');
-var draw_col_components = require('./draw_col_components');
+var draw_col_components = require('./draws/draw_col_components');
 var draw_spillover_components = require('./spillover/draw_spillover_components');
 var draw_tooltip_components = require('./draw_tooltip_components');
 

@@ -8,7 +8,7 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
 
   Need to calculate the arguments and triangles for the tooltip draw command,
   which depending on the mouseover statis will or will not draw a tooltip in the
-  larger draw_commands function. We do not want to run any draw commands later
+  larger draw commands function. We do not want to run any draw commands later
   since they will re-draw only a subset of the visualization.
 
   */

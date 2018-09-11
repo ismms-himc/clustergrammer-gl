@@ -1,5 +1,3 @@
-// var draw_commands = require('./draw_commands');
-
 module.exports = function final_mouseover_frame(regl, params){
 
   // reduce the number of mouseovers
@@ -15,7 +13,6 @@ module.exports = function final_mouseover_frame(regl, params){
 
     // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
     //   // console.log('final_mouseover_frame', params.show_tooltip)
-    //   // draw_commands(regl, params, slow_draw, show_tooltip=params.show_tooltip);
     // }
   }
 

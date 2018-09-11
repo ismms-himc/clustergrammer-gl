@@ -1,4 +1,3 @@
-// var draw_commands = require('./draw_commands');
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
@@ -17,7 +16,6 @@ module.exports = function final_interaction_frame(regl, params){
 
       if (params.zoom_data.x.total_mouseover == 0){
         // console.log('SLOW_DRAW')
-        // draw_commands(regl, params, slow_draw);
       }
 
       // console.log(params.kept_row_y);

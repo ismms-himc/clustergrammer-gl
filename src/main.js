@@ -4,7 +4,7 @@
 
  */
 
-var run_viz = require('./run_viz');
+var run_viz = require('./draws/run_viz');
 var build_control_panel = require('./control_panel/build_control_panel');
 var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 

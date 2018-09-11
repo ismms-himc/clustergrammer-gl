@@ -22810,178 +22810,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 /***/ }),
 
-/***/ "./src/draw_commands.js":
-/*!******************************!*\
-  !*** ./src/draw_commands.js ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var draw_matrix_components = __webpack_require__(/*! ./draws/draw_matrix_components */ "./src/draws/draw_matrix_components.js");
-var draw_row_components = __webpack_require__(/*! ./draw_row_components */ "./src/draw_row_components.js");
-var draw_col_components = __webpack_require__(/*! ./draws/draw_col_components */ "./src/draws/draw_col_components.js");
-var draw_spillover_components = __webpack_require__(/*! ./spillover/draw_spillover_components */ "./src/spillover/draw_spillover_components.js");
-var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draw_tooltip_components.js");
-
-module.exports = function draw_commands(regl, params){
-
-  // if (params.slow_draw){
-  //   console.log('\n***************');
-  //   console.log('** slow draw **');
-  //   console.log('***************');
-  // }
-
-  // console.log('draw')
-  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
-
-  draw_matrix_components(regl, params);
-  draw_row_components(regl, params, params.slow_draw);
-  draw_col_components(regl, params, params.slow_draw);
-  draw_spillover_components(regl, params);
-
-  if (params.show_tooltip && params.in_bounds_tooltip){
-    // console.log('draw tooltip component')
-    draw_tooltip_components(regl, params);
-  }
-
-  if (params.slow_draw){
-    // console.log('----- turn off slow draw -----')
-    params.slow_draw = false;
-  }
-
-  if (params.show_tooltip){
-    // console.log('----- turn off show tooltip ------')
-    params.show_tooltip = false;
-  }
-
-};
-
-/***/ }),
-
-/***/ "./src/draw_row_components.js":
-/*!************************************!*\
-  !*** ./src/draw_row_components.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_row_text_args = __webpack_require__(/*! ./matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_row_text_triangles = __webpack_require__(/*! ./matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
-var interp_fun = __webpack_require__(/*! ./draws/interp_fun */ "./src/draws/interp_fun.js");
-
-module.exports = function draw_row_components(regl, params, calc_text_tri=false){
-
-  /* Row Components */
-  params.cameras['row-labels'].draw(() => {
-
-    regl(params.viz_aid_tri_args.row)();
-
-    _.each(params.cat_args.row, function(inst_cat_arg){
-      regl(inst_cat_arg)(
-        {
-          interp_prop: interp_fun(params),
-          run_animation: params.animation.running
-        }
-        );
-    });
-
-    regl(params.dendro_args.row)();
-
-    // make the arguments for the draw command
-    var text_triangle_args = make_row_text_args(regl, params,
-                                                         params.zoom_function);
-
-    if (calc_text_tri){
-
-      // console.log('calc row text triangles')
-
-      var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
-
-      if (num_viz_rows < params.max_num_text){
-
-        calc_viz_area(params);
-
-        // draw using text_triangle_args and row_text_triangles
-        if (params.num_row > params.max_num_text){
-          params.row_text_triangles = calc_row_text_triangles(params);
-        }
-        regl(text_triangle_args)(params.row_text_triangles);
-
-
-      } else {
-        // console.log('too many rows to draw');
-        // regl(text_triangle_args)(params.row_text_triangles);
-      }
-
-    } else {
-
-      /*
-        show text triangles if avaialble
-      */
-
-      if (params.row_text_triangles != false){
-        regl(text_triangle_args)(params.row_text_triangles);
-      }
-    }
-
-  });
-
-};
-
-/***/ }),
-
-/***/ "./src/draw_tooltip_components.js":
-/*!****************************************!*\
-  !*** ./src/draw_tooltip_components.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-const make_tooltip_text_args = __webpack_require__(/*! ./tooltip/make_tooltip_text_args */ "./src/tooltip/make_tooltip_text_args.js");
-var calc_tooltip_background_triangles = __webpack_require__(/*! ./tooltip/calc_tooltip_background_triangles */ "./src/tooltip/calc_tooltip_background_triangles.js");
-
-module.exports = function draw_tooltip_components(regl, params){
-
-  // console.log('draw tooltip components', params.in_bounds_tooltip);
-
-  // Spillover Components (may not need to redraw)
-  params.cameras.static.draw(() => {
-
-    // var args = params.spillover_args.mat_corners;
-    var args = params.tooltip_args;
-
-    // var triangles = params.spillover_triangles.mat_corners;
-
-    // tooltip background
-    ////////////////////////////
-    var background_triangles = calc_tooltip_background_triangles(regl, params);
-    regl(args)(background_triangles);
-
-    // tooltip text
-    //////////////////
-    // make the arguments for the draw command
-    var text_triangle_args;
-     // = params.mouseover.text_triangle_args;
-
-    // draw row/col names
-    var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=3.0);
-    var inst_triangles = params.mouseover.text_triangles['line-1'];
-    regl(text_triangle_args)(inst_triangles);
-
-    if (params.cat_num.col > 0){
-
-      var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=1.5);
-      var inst_triangles = params.mouseover.text_triangles['line-2'];
-      regl(text_triangle_args)(inst_triangles);
-
-    }
-
-  });
-};
-
-/***/ }),
-
 /***/ "./src/draws/draw_col_components.js":
 /*!******************************************!*\
   !*** ./src/draws/draw_col_components.js ***!
@@ -23062,6 +22890,54 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
 /***/ }),
 
+/***/ "./src/draws/draw_commands.js":
+/*!************************************!*\
+  !*** ./src/draws/draw_commands.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js");
+var draw_row_components = __webpack_require__(/*! ./draw_row_components */ "./src/draws/draw_row_components.js");
+var draw_col_components = __webpack_require__(/*! ./draw_col_components */ "./src/draws/draw_col_components.js");
+var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draws/draw_tooltip_components.js");
+var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draws/draw_spillover_components.js");
+
+module.exports = function draw_commands(regl, params){
+
+  // if (params.slow_draw){
+  //   console.log('\n***************');
+  //   console.log('** slow draw **');
+  //   console.log('***************');
+  // }
+
+  // console.log('draw')
+  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
+
+  draw_matrix_components(regl, params);
+  draw_row_components(regl, params, params.slow_draw);
+  draw_col_components(regl, params, params.slow_draw);
+  draw_spillover_components(regl, params);
+
+  if (params.show_tooltip && params.in_bounds_tooltip){
+    // console.log('draw tooltip component')
+    draw_tooltip_components(regl, params);
+  }
+
+  if (params.slow_draw){
+    // console.log('----- turn off slow draw -----')
+    params.slow_draw = false;
+  }
+
+  if (params.show_tooltip){
+    // console.log('----- turn off show tooltip ------')
+    params.show_tooltip = false;
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/draws/draw_matrix_components.js":
 /*!*********************************************!*\
   !*** ./src/draws/draw_matrix_components.js ***!
@@ -23107,6 +22983,156 @@ module.exports = function draw_matrix_components(regl, params){
 
   });
 
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_row_components.js":
+/*!******************************************!*\
+  !*** ./src/draws/draw_row_components.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
+var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
+var calc_row_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
+var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
+
+module.exports = function draw_row_components(regl, params, calc_text_tri=false){
+
+  /* Row Components */
+  params.cameras['row-labels'].draw(() => {
+
+    regl(params.viz_aid_tri_args.row)();
+
+    _.each(params.cat_args.row, function(inst_cat_arg){
+      regl(inst_cat_arg)(
+        {
+          interp_prop: interp_fun(params),
+          run_animation: params.animation.running
+        }
+        );
+    });
+
+    regl(params.dendro_args.row)();
+
+    // make the arguments for the draw command
+    var text_triangle_args = make_row_text_args(regl, params,
+                                                         params.zoom_function);
+
+    if (calc_text_tri){
+
+      // console.log('calc row text triangles')
+
+      var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
+
+      if (num_viz_rows < params.max_num_text){
+
+        calc_viz_area(params);
+
+        // draw using text_triangle_args and row_text_triangles
+        if (params.num_row > params.max_num_text){
+          params.row_text_triangles = calc_row_text_triangles(params);
+        }
+        regl(text_triangle_args)(params.row_text_triangles);
+
+
+      } else {
+        // console.log('too many rows to draw');
+        // regl(text_triangle_args)(params.row_text_triangles);
+      }
+
+    } else {
+
+      /*
+        show text triangles if avaialble
+      */
+
+      if (params.row_text_triangles != false){
+        regl(text_triangle_args)(params.row_text_triangles);
+      }
+    }
+
+  });
+
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_spillover_components.js":
+/*!************************************************!*\
+  !*** ./src/draws/draw_spillover_components.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function draw_spillover_components(regl, params){
+
+  // Spillover Components (may not need to redraw)
+  params.cameras.static.draw(() => {
+
+    var args = params.spillover_args;
+    var triangles = params.spillover_triangles;
+
+    // spillover rects to hide matrix spillover
+    regl(args.mat_sides)(triangles.mat_sides);
+    regl(args.cats)(triangles.cats);
+    regl(args.mat_corners)(triangles.mat_corners);
+    regl(args.label_corners)(triangles.label_corners);
+
+  });
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_tooltip_components.js":
+/*!**********************************************!*\
+  !*** ./src/draws/draw_tooltip_components.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const make_tooltip_text_args = __webpack_require__(/*! ./../tooltip/make_tooltip_text_args */ "./src/tooltip/make_tooltip_text_args.js");
+var calc_tooltip_background_triangles = __webpack_require__(/*! ./../tooltip/calc_tooltip_background_triangles */ "./src/tooltip/calc_tooltip_background_triangles.js");
+
+module.exports = function draw_tooltip_components(regl, params){
+
+  // console.log('draw tooltip components', params.in_bounds_tooltip);
+
+  // Spillover Components (may not need to redraw)
+  params.cameras.static.draw(() => {
+
+    // var args = params.spillover_args.mat_corners;
+    var args = params.tooltip_args;
+
+    // var triangles = params.spillover_triangles.mat_corners;
+
+    // tooltip background
+    ////////////////////////////
+    var background_triangles = calc_tooltip_background_triangles(regl, params);
+    regl(args)(background_triangles);
+
+    // tooltip text
+    //////////////////
+    // make the arguments for the draw command
+    var text_triangle_args;
+     // = params.mouseover.text_triangle_args;
+
+    // draw row/col names
+    var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=3.0);
+    var inst_triangles = params.mouseover.text_triangles['line-1'];
+    regl(text_triangle_args)(inst_triangles);
+
+    if (params.cat_num.col > 0){
+
+      var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=1.5);
+      var inst_triangles = params.mouseover.text_triangles['line-2'];
+      regl(text_triangle_args)(inst_triangles);
+
+    }
+
+  });
 };
 
 /***/ }),
@@ -25548,7 +25574,7 @@ module.exports = function initialize_params(regl, network){
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draw_commands.js");
+var draw_commands = __webpack_require__(/*! ./draws/draw_commands */ "./src/draws/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var final_mouseover_frame = __webpack_require__(/*! ./interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
@@ -25855,32 +25881,6 @@ module.exports = function calc_spillover_triangles(params){
 
   return spillover_triangles;
 
-};
-
-/***/ }),
-
-/***/ "./src/spillover/draw_spillover_components.js":
-/*!****************************************************!*\
-  !*** ./src/spillover/draw_spillover_components.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function draw_spillover_components(regl, params){
-
-  // Spillover Components (may not need to redraw)
-  params.cameras.static.draw(() => {
-
-    var args = params.spillover_args;
-    var triangles = params.spillover_triangles;
-
-    // spillover rects to hide matrix spillover
-    regl(args.mat_sides)(triangles.mat_sides);
-    regl(args.cats)(triangles.cats);
-    regl(args.mat_corners)(triangles.mat_corners);
-    regl(args.label_corners)(triangles.label_corners);
-
-  });
 };
 
 /***/ }),

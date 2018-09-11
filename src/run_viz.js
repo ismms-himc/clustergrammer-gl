@@ -1,5 +1,5 @@
 var initialize_params = require('./params/initialize_params');
-var draw_commands = require('./draw_commands');
+var draw_commands = require('./draws/draw_commands');
 _ = require('underscore');
 var final_mouseover_frame = require('./interactions/final_mouseover_frame');
 var final_interaction_frame = require('./interactions/final_interaction_frame');

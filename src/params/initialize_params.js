@@ -15,9 +15,9 @@ var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./../matrix_cells/calc_row_downsampled_mat');
 var make_cat_args = require('./../cats/make_cat_args');
 var generate_cat_data = require('./../cats/generate_cat_data');
-var get_ordered_labels = require('./../get_ordered_labels');
+var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
-var make_cat_position_array = require('./../make_cat_position_array');
+var make_cat_position_array = require('./../cats/make_cat_position_array');
 
 // /*
 //   Working on using subset of math.js for matrix splicing

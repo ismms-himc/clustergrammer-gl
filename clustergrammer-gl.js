@@ -22077,6 +22077,76 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
 /***/ }),
 
+/***/ "./src/cats/make_cat_position_array.js":
+/*!*********************************************!*\
+  !*** ./src/cats/make_cat_position_array.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
+
+  var num_labels = params['num_'+inst_axis];
+  // category tiles have fixed heights
+  var cat_height;
+  // category widths depend on the number of labels
+  var cat_width;
+  var mat_size;
+  var top_shift_triangles;
+  cat_height = 0.04;
+  if (inst_axis === 'col'){
+    mat_size = params.heat_size.x;
+    top_shift_triangles = params.mat_size.y;
+    cat_width = (mat_size/0.5)/num_labels;
+
+  } else {
+    mat_size = params.heat_size.y;
+    top_shift_triangles = params.mat_size.x;
+    cat_width = (params.heat_size.y/0.5)/num_labels;
+  }
+
+  /////////////////////////////////
+  // Cat Offset Buffer
+  /////////////////////////////////
+  // row width is required to place the triangles on the 'top' of the matrix and
+  // not to overlap with the matrix
+  // vertical shift
+  var shift_cat = 0.025 * (cat_index + 1);
+  // console.log('shift_cat', shift_cat)
+  var top_offset = -top_shift_triangles - cat_height + shift_cat;
+
+  // var inst_order = params.inst_order[inst_axis];
+
+  var y_offset_array = [];
+  var i;
+  for (i = 0; i < num_labels; i++){
+
+    // emperically found rules
+    var order_id;
+    var shift_mat_heat;
+    if (inst_axis == 'row'){
+      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
+      // vertical shift
+      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
+    } else {
+      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
+      shift_mat_heat = params.mat_size.x - params.heat_size.x
+    }
+
+    /* need to position based on clustering order */
+    // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
+    // of the heatmap vs the general matrix area
+
+    // make 2d array
+    y_offset_array[i] = [mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat, 0];
+  }
+
+  return y_offset_array;
+
+}
+
+/***/ }),
+
 /***/ "./src/colors/color_table.js":
 /*!***********************************!*\
   !*** ./src/colors/color_table.js ***!
@@ -22317,7 +22387,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_position_arr = __webpack_require__(/*! ./../make_position_arr */ "./src/make_position_arr.js");
-var make_cat_position_array = __webpack_require__(/*! ./../make_cat_position_array */ "./src/make_cat_position_array.js");
+var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -23057,55 +23127,6 @@ module.exports = function interp_fun(params){
   // console.log(inst_ease)
   return inst_ease;
 }
-
-/***/ }),
-
-/***/ "./src/get_ordered_labels.js":
-/*!***********************************!*\
-  !*** ./src/get_ordered_labels.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function get_ordered_labels(params){
-
-  console.log('get ordered_labels')
-
-  var ordered_labels = {};
-
-  row_nodes = params.network.row_nodes;
-  col_nodes = params.network.col_nodes;
-  ordered_labels.rows = [];
-  ordered_labels.cols = [];
-
-  // only showing col cat in mouseover for now
-  ordered_labels.col_cats = [];
-
-  var inst_order;
-  var inst_name;
-  _.each(row_nodes, function(inst_node){
-    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
-    ordered_labels.rows[inst_order] = inst_node.name;
-  });
-
-  var found_col_cat = false;
-  if (params.cat_num.col > 0){
-    var found_col_cat = true;
-  }
-
-  _.each(col_nodes, function(inst_node){
-    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
-
-    ordered_labels.cols[inst_order] = inst_node.name;
-
-    if (found_col_cat){
-      ordered_labels.col_cats[inst_order] = inst_node['cat-0'];
-    }
-
-  });
-
-  params.ordered_labels = ordered_labels;
-};
 
 /***/ }),
 
@@ -23940,76 +23961,6 @@ module.exports = clustergrammer_gl;
 
 /***/ }),
 
-/***/ "./src/make_cat_position_array.js":
-/*!****************************************!*\
-  !*** ./src/make_cat_position_array.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
-
-  var num_labels = params['num_'+inst_axis];
-  // category tiles have fixed heights
-  var cat_height;
-  // category widths depend on the number of labels
-  var cat_width;
-  var mat_size;
-  var top_shift_triangles;
-  cat_height = 0.04;
-  if (inst_axis === 'col'){
-    mat_size = params.heat_size.x;
-    top_shift_triangles = params.mat_size.y;
-    cat_width = (mat_size/0.5)/num_labels;
-
-  } else {
-    mat_size = params.heat_size.y;
-    top_shift_triangles = params.mat_size.x;
-    cat_width = (params.heat_size.y/0.5)/num_labels;
-  }
-
-  /////////////////////////////////
-  // Cat Offset Buffer
-  /////////////////////////////////
-  // row width is required to place the triangles on the 'top' of the matrix and
-  // not to overlap with the matrix
-  // vertical shift
-  var shift_cat = 0.025 * (cat_index + 1);
-  // console.log('shift_cat', shift_cat)
-  var top_offset = -top_shift_triangles - cat_height + shift_cat;
-
-  // var inst_order = params.inst_order[inst_axis];
-
-  var y_offset_array = [];
-  var i;
-  for (i = 0; i < num_labels; i++){
-
-    // emperically found rules
-    var order_id;
-    var shift_mat_heat;
-    if (inst_axis == 'row'){
-      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
-      // vertical shift
-      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
-    } else {
-      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x
-    }
-
-    /* need to position based on clustering order */
-    // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
-    // of the heatmap vs the general matrix area
-
-    // make 2d array
-    y_offset_array[i] = [mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat, 0];
-  }
-
-  return y_offset_array;
-
-}
-
-/***/ }),
-
 /***/ "./src/make_matrix_args.js":
 /*!*********************************!*\
   !*** ./src/make_matrix_args.js ***!
@@ -24551,6 +24502,55 @@ module.exports = function calc_row_text_triangles(params){
 
   return row_text_triangles;
 
+};
+
+/***/ }),
+
+/***/ "./src/matrix_labels/get_ordered_labels.js":
+/*!*************************************************!*\
+  !*** ./src/matrix_labels/get_ordered_labels.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function get_ordered_labels(params){
+
+  console.log('get ordered_labels')
+
+  var ordered_labels = {};
+
+  row_nodes = params.network.row_nodes;
+  col_nodes = params.network.col_nodes;
+  ordered_labels.rows = [];
+  ordered_labels.cols = [];
+
+  // only showing col cat in mouseover for now
+  ordered_labels.col_cats = [];
+
+  var inst_order;
+  var inst_name;
+  _.each(row_nodes, function(inst_node){
+    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
+    ordered_labels.rows[inst_order] = inst_node.name;
+  });
+
+  var found_col_cat = false;
+  if (params.cat_num.col > 0){
+    var found_col_cat = true;
+  }
+
+  _.each(col_nodes, function(inst_node){
+    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
+
+    ordered_labels.cols[inst_order] = inst_node.name;
+
+    if (found_col_cat){
+      ordered_labels.col_cats[inst_order] = inst_node['cat-0'];
+    }
+
+  });
+
+  params.ordered_labels = ordered_labels;
 };
 
 /***/ }),
@@ -25224,9 +25224,9 @@ var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/cal
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
 var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
 var generate_cat_data = __webpack_require__(/*! ./../cats/generate_cat_data */ "./src/cats/generate_cat_data.js");
-var get_ordered_labels = __webpack_require__(/*! ./../get_ordered_labels */ "./src/get_ordered_labels.js");
+var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
-var make_cat_position_array = __webpack_require__(/*! ./../make_cat_position_array */ "./src/make_cat_position_array.js");
+var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25600,7 +25600,6 @@ module.exports = function run_viz(regl, network){
 
       // transfer the new category positions to the cat args attributes
       for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-        // params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
 
         // update the attribute
         params.cat_args.col[cat_index].attributes.cat_pos_att_inst = {
@@ -26312,7 +26311,6 @@ var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-ev
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
 var make_position_arr = __webpack_require__(/*! ./../make_position_arr */ "./src/make_position_arr.js");
-var make_cat_position_array = __webpack_require__(/*! ./../make_cat_position_array */ "./src/make_cat_position_array.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 

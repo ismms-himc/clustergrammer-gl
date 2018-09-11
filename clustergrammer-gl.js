@@ -22386,7 +22386,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_position_arr = __webpack_require__(/*! ./../make_position_arr */ "./src/make_position_arr.js");
+var make_position_arr = __webpack_require__(/*! ./../matrix_cells/make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 
 module.exports = function build_control_panel(regl, cgm){
@@ -23961,16 +23961,81 @@ module.exports = clustergrammer_gl;
 
 /***/ }),
 
-/***/ "./src/make_matrix_args.js":
-/*!*********************************!*\
-  !*** ./src/make_matrix_args.js ***!
-  \*********************************/
+/***/ "./src/matrix_cells/calc_row_downsampled_mat.js":
+/*!******************************************************!*\
+  !*** ./src/matrix_cells/calc_row_downsampled_mat.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
+
+  // console.log('calc_row_downsampled_mat');
+
+  var mat_data = params.mat_data;
+  // var row_pos = params.row_positions;
+  // var ds_mat = [];
+  // var inst_pos;
+
+  if (run_downsampling){
+    /*
+      Perform trivial downsampling (subsampling)
+    */
+
+    mat_data = params.mat_data;
+    mat_data = mat_data.slice(0,5);
+
+    // column downsampling
+    var new_mat_data = []
+    _.each(mat_data, function(inst_row){
+      inst_row = inst_row.slice(0,3);
+      new_mat_data.push(inst_row);
+    });
+
+    params.mat_data = new_mat_data;
+    params.is_downsampled = true;
+  }
+
+  /*
+    Working on actual downsampling
+  */
+
+  /*
+    row_pos go from -0.5 to 0.5
+  */
+
+  // make 10 positions
+  // var new_pos = _.range(-0.5, 0.5, 0.1);
+  // console.log(new_pos.length);
+
+  // mod_value = 0.1;
+
+  // _.each(mat_data, function(inst_row, inst_index){
+
+  //   inst_pos = row_pos[inst_index];
+
+  //   ds_pos = Math.round(inst_pos/mod_value);
+
+  //   console.log('inst_pos: ', inst_pos);
+  //   console.log('ds_pos', ds_pos)
+  //   console.log('\n');
+
+  // });
+
+}
+
+/***/ }),
+
+/***/ "./src/matrix_cells/make_matrix_args.js":
+/*!**********************************************!*\
+  !*** ./src/matrix_cells/make_matrix_args.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var blend_info = __webpack_require__(/*! ./blend/blend_info */ "./src/blend/blend_info.js");
-var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/make_position_arr.js");
-var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/make_opacity_arr.js");
+var blend_info = __webpack_require__(/*! ./../blend/blend_info */ "./src/blend/blend_info.js");
+var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/matrix_cells/make_position_arr.js");
+var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/matrix_cells/make_opacity_arr.js");
 
 module.exports = function make_matrix_args(regl, params){
 
@@ -24122,10 +24187,10 @@ module.exports = function make_matrix_args(regl, params){
 
 /***/ }),
 
-/***/ "./src/make_opacity_arr.js":
-/*!*********************************!*\
-  !*** ./src/make_opacity_arr.js ***!
-  \*********************************/
+/***/ "./src/matrix_cells/make_opacity_arr.js":
+/*!**********************************************!*\
+  !*** ./src/matrix_cells/make_opacity_arr.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -24159,14 +24224,13 @@ module.exports = function make_opacity_arr(params){
 
 /***/ }),
 
-/***/ "./src/make_position_arr.js":
-/*!**********************************!*\
-  !*** ./src/make_position_arr.js ***!
-  \**********************************/
+/***/ "./src/matrix_cells/make_position_arr.js":
+/*!***********************************************!*\
+  !*** ./src/matrix_cells/make_position_arr.js ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// var calc_node_canvas_positions = require('./calc_node_canvas_positions');
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
@@ -24258,71 +24322,6 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   return position_arr;
 
 };
-
-/***/ }),
-
-/***/ "./src/matrix_cells/calc_row_downsampled_mat.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_cells/calc_row_downsampled_mat.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
-
-  // console.log('calc_row_downsampled_mat');
-
-  var mat_data = params.mat_data;
-  // var row_pos = params.row_positions;
-  // var ds_mat = [];
-  // var inst_pos;
-
-  if (run_downsampling){
-    /*
-      Perform trivial downsampling (subsampling)
-    */
-
-    mat_data = params.mat_data;
-    mat_data = mat_data.slice(0,5);
-
-    // column downsampling
-    var new_mat_data = []
-    _.each(mat_data, function(inst_row){
-      inst_row = inst_row.slice(0,3);
-      new_mat_data.push(inst_row);
-    });
-
-    params.mat_data = new_mat_data;
-    params.is_downsampled = true;
-  }
-
-  /*
-    Working on actual downsampling
-  */
-
-  /*
-    row_pos go from -0.5 to 0.5
-  */
-
-  // make 10 positions
-  // var new_pos = _.range(-0.5, 0.5, 0.1);
-  // console.log(new_pos.length);
-
-  // mod_value = 0.1;
-
-  // _.each(mat_data, function(inst_row, inst_index){
-
-  //   inst_pos = row_pos[inst_index];
-
-  //   ds_pos = Math.round(inst_pos/mod_value);
-
-  //   console.log('inst_pos: ', inst_pos);
-  //   console.log('ds_pos', ds_pos)
-  //   console.log('\n');
-
-  // });
-
-}
 
 /***/ }),
 
@@ -25216,7 +25215,7 @@ var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "
 var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
-var make_matrix_args = __webpack_require__(/*! ./../make_matrix_args */ "./src/make_matrix_args.js");
+var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
 var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
@@ -26310,7 +26309,6 @@ module.exports = function ini_zoom_restrict(params){
 var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
-var make_position_arr = __webpack_require__(/*! ./../make_position_arr */ "./src/make_position_arr.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 

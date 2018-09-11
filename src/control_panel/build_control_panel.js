@@ -1,4 +1,4 @@
-var make_position_arr = require('./../make_position_arr');
+var make_position_arr = require('./../matrix_cells/make_position_arr');
 var make_cat_position_array = require('./../cats/make_cat_position_array');
 
 module.exports = function build_control_panel(regl, cgm){

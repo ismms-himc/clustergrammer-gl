@@ -1,4 +1,3 @@
-// var calc_node_canvas_positions = require('./calc_node_canvas_positions');
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 

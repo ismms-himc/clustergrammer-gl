@@ -22448,9 +22448,9 @@ module.exports = function build_control_panel(regl, cgm){
     })
 
   var button_dim = {};
-  button_dim.height = 35;
+  button_dim.height = 33;
   button_dim.width = 70;
-  button_dim.buffer = 10;
+  button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
   button_dim.fs = 13;
 

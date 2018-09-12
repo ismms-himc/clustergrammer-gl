@@ -22401,8 +22401,22 @@ module.exports = function build_control_panel(regl, cgm){
   var inst_height = 150;
   var inst_width = cgm.params.viz_width;
 
-  var control_panel_color = '#bbc3cc';
-  var button_color = '#e3e7ea';
+  // light panel color '#bbc3cc'
+  // light button color '#e3e7ea'
+
+  var control_panel_color = '#eee';
+
+  // light button color
+  var button_color = '#2f363d';
+
+  // dark text color
+  var text_color = '#2f363d';
+
+
+  // // experimenting in different color pallets
+  // control_panel_color = '#2f363d'
+  // var button_color = '#e3e7ea';
+  // var text_color = '#e3e7ea';
 
   var control_svg = d3.select(control_container)
     .style('height',inst_height + 'px')
@@ -22426,8 +22440,8 @@ module.exports = function build_control_panel(regl, cgm){
   button_dim.fs = 13;
 
   button_groups = {};
-  button_groups.row = 50;
-  button_groups.col = 100;
+  button_groups.row = 40;
+  button_groups.col = 95;
 
   var order_options = ['clust', 'sum', 'var', 'alpha'];
 
@@ -22437,7 +22451,6 @@ module.exports = function build_control_panel(regl, cgm){
 
     var reorder_buttons = control_svg
       .append('g');
-      // .classed('something')
 
     reorder_buttons
       .classed(inst_axis + '-reorder-buttons', true);
@@ -22456,6 +22469,12 @@ module.exports = function build_control_panel(regl, cgm){
       .on('click', function(){
         run_reorder(regl, cgm);
 
+        d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
+          .selectAll('rect')
+          .style('stroke', button_color);
+
+        // debugger
+
         d3.select(this)
           .select('rect')
           .style('stroke', 'red');
@@ -22468,8 +22487,16 @@ module.exports = function build_control_panel(regl, cgm){
       .style('fill', control_panel_color)
       .style('rx', 10)
       .style('ry', 10)
-      .style('stroke', button_color)
-      .style('stroke-width', 2);
+      .style('stroke', function(d){
+        var inst_color;
+        if (cgm.params.inst_order[inst_axis] == d){
+          inst_color = 'red';
+        } else {
+          inst_color = button_color;
+        }
+        return inst_color;
+      })
+      .style('stroke-width', 2.5);
 
     button_group
       .append('text')
@@ -22478,13 +22505,14 @@ module.exports = function build_control_panel(regl, cgm){
         return d.toUpperCase();
       })
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-      .style('font-weight', 300)
+      .style('font-weight', 400)
       .style('font-size', button_dim.fs)
       .style('text-anchor', 'middle')
-      .style('stroke', '#2f363d')
+      .style('stroke', text_color)
       .style('alignment-baseline', 'middle')
       .style('letter-spacing', '2px')
       .style('cursor', 'default')
+      .style('-webkit-user-select', 'none')
       .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
   })

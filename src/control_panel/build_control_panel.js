@@ -35,46 +35,68 @@ module.exports = function build_control_panel(regl, cgm){
   button_dim.x_trans = button_dim.width + 10
   button_dim.fs = 15;
 
-  var button_offset
+  button_groups = {};
+  button_groups.row = 50;
+  button_groups.col = 100;
 
-  var button_group = control_svg
-    .selectAll('g')
-    .data(['clust', 'sum'])
-    .enter( )
-    .append('g')
-    .attr('transform', function(d, i){
-      var x_offset = button_dim.x_trans * i + 25;
-      return 'translate('+ x_offset  +', '+ 25 +')';
-    })
-    .on('click', function(){
-      run_reorder(regl, cgm);
-    })
+  _.each(['row', 'col'], function(inst_axis){
 
-  button_group
-    .append('rect')
-    .style('height', button_dim.height)
-    .style('width', button_dim.width)
-    .style('fill', '  #778899')
-    .style('rx', 10)
-    .style('ry', 10)
-    .style('stroke', 'white')
-    .style('stroke-width', 2);
+    console.log('inst_axis', inst_axis)
 
-  button_group
-    .append('text')
-    .classed('cat_graph_title', true)
-    .text(function(d){
-      return d.toUpperCase();
-    })
-    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    // .style('font-weight',  500)
-    .style('font-size', button_dim.fs)
-    .style('text-anchor', 'middle')
-    .style('alignment-baseline', 'middle')
-    .style('cursor', 'default')
-    .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
+    var reorder_buttons = control_svg
+      .append('g');
+      // .classed('something')
 
-      // <rect x="20" y="20" width="50" height="50" rx="5" ry="5" stroke='red' stroke-width="2" fill="white"/>
+    reorder_buttons
+      .classed(inst_axis + '-reorder-buttons', true);
+
+    // generate single button
+    var button_group = reorder_buttons
+      .selectAll('g')
+      .data(['clust', 'sum'])
+      .enter( )
+      .append('g')
+      .attr('transform', function(d, i){
+        var x_offset = button_dim.x_trans * i + 25;
+        // debugger;
+        return 'translate('+ x_offset  +', '+ button_groups[inst_axis] +')';
+      })
+      .on('click', function(){
+        run_reorder(regl, cgm);
+
+        d3.select(this)
+          .select('rect')
+          .style('stroke', 'red');
+      })
+
+    button_group
+      .append('rect')
+      .style('height', button_dim.height)
+      .style('width', button_dim.width)
+      .style('fill', '  #778899')
+      .style('opacity', 0.5)
+      .style('rx', 10)
+      .style('ry', 10)
+      .style('stroke', 'white')
+      .style('stroke-width', 2);
+
+    button_group
+      .append('text')
+      .classed('cat_graph_title', true)
+      .text(function(d){
+        return d.toUpperCase();
+      })
+      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      // .style('font-weight',  500)
+      .style('font-size', button_dim.fs)
+      .style('text-anchor', 'middle')
+      .style('alignment-baseline', 'middle')
+      .style('cursor', 'default')
+      .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
+
+  })
+
+
 
 
 };

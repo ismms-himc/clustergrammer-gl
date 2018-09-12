@@ -24116,7 +24116,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.4.6
+  clustergrammer-gl version 0.5.0-dev
 
  */
 
@@ -24127,7 +24127,7 @@ var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendro
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.4.6 - dev!');
+  console.log('clustergrammer-gl version 0.5.0 - dev!');
   console.log('################################');
 
   var network = args.network;

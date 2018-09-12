@@ -22417,18 +22417,20 @@ module.exports = function build_control_panel(regl, cgm){
     .attr('id', 'control-panel-background');
 
   var button_dim = {};
-  button_dim.height = 30;
-  button_dim.width = 100;
+  button_dim.height = 35;
+  button_dim.width = 70;
+  button_dim.x_trans = button_dim.width + 10
+  button_dim.fs = 15;
 
   var button_offset
 
   var button_group = control_svg
     .selectAll('g')
-    .data(['Clust', 'Sum'])
+    .data(['clust', 'sum'])
     .enter( )
     .append('g')
     .attr('transform', function(d, i){
-      var x_offset = 115 * i + 25;
+      var x_offset = button_dim.x_trans * i + 25;
       return 'translate('+ x_offset  +', '+ 25 +')';
     })
     .on('click', function(){
@@ -22441,17 +22443,19 @@ module.exports = function build_control_panel(regl, cgm){
     .style('width', button_dim.width)
     .style('fill', '  #778899')
     .style('rx', 10)
-    .style('ry', 10);
+    .style('ry', 10)
+    .style('stroke', 'white')
+    .style('stroke-width', 2);
 
   button_group
     .append('text')
     .classed('cat_graph_title', true)
     .text(function(d){
-      return d;
+      return d.toUpperCase();
     })
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     // .style('font-weight',  500)
-    .style('font-size', 15)
+    .style('font-size', button_dim.fs)
     .style('text-anchor', 'middle')
     .style('alignment-baseline', 'middle')
     .style('cursor', 'default')

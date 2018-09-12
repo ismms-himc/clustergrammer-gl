@@ -22421,6 +22421,8 @@ module.exports = function build_control_panel(regl, cgm){
 
     });
 
+      // <rect x="20" y="20" width="50" height="50" rx="5" ry="5" stroke='red' stroke-width="2" fill="white"/>
+
 
 };
 

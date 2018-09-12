@@ -22401,6 +22401,9 @@ module.exports = function build_control_panel(regl, cgm){
   var inst_height = 150;
   var inst_width = cgm.params.viz_width;
 
+  var control_panel_color = '#bbc3cc';
+  var button_color = '#e3e7ea';
+
   var control_svg = d3.select(control_container)
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
@@ -22413,19 +22416,20 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
     .style('position', 'absolute')
-    .style('fill', '  #778899')
-    .style('opacity', 0.5)
+    .style('fill', control_panel_color)
     .attr('id', 'control-panel-background');
 
   var button_dim = {};
   button_dim.height = 35;
   button_dim.width = 70;
   button_dim.x_trans = button_dim.width + 10
-  button_dim.fs = 15;
+  button_dim.fs = 13;
 
   button_groups = {};
   button_groups.row = 50;
   button_groups.col = 100;
+
+  var order_options = ['clust', 'sum', 'var', 'alpha'];
 
   _.each(['row', 'col'], function(inst_axis){
 
@@ -22441,7 +22445,7 @@ module.exports = function build_control_panel(regl, cgm){
     // generate single button
     var button_group = reorder_buttons
       .selectAll('g')
-      .data(['clust', 'sum'])
+      .data(order_options)
       .enter( )
       .append('g')
       .attr('transform', function(d, i){
@@ -22461,11 +22465,10 @@ module.exports = function build_control_panel(regl, cgm){
       .append('rect')
       .style('height', button_dim.height)
       .style('width', button_dim.width)
-      .style('fill', '  #778899')
-      .style('opacity', 0.5)
+      .style('fill', control_panel_color)
       .style('rx', 10)
       .style('ry', 10)
-      .style('stroke', 'white')
+      .style('stroke', button_color)
       .style('stroke-width', 2);
 
     button_group
@@ -22475,10 +22478,12 @@ module.exports = function build_control_panel(regl, cgm){
         return d.toUpperCase();
       })
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-      // .style('font-weight',  500)
+      .style('font-weight', 300)
       .style('font-size', button_dim.fs)
       .style('text-anchor', 'middle')
+      .style('stroke', '#2f363d')
       .style('alignment-baseline', 'middle')
+      .style('letter-spacing', '2px')
       .style('cursor', 'default')
       .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 

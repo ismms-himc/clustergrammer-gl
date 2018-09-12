@@ -29,7 +29,7 @@
     var inst_container = document.getElementById('something')
 
     var inst_height = 1150;
-    var inst_width = 1000;
+    var inst_width = 950;
 
     var x_offset = 20;
     var y_offset = 100;
@@ -60,6 +60,8 @@
       args = {};
       args.network = network;
       args.container=inst_container;
+      args.viz_width=950;
+      args.viz_height=950;
       cgm = Clustergrammer2(args);
       // cgm2 = Clustergrammer2(args);
 

@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.5.1-dev
+  clustergrammer-gl version 0.5.2-dev
 
  */
 
@@ -11,7 +11,7 @@ var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.5.1 - dev!');
+  console.log('clustergrammer-gl version 0.5.2 - dev!');
   console.log('################################');
 
   var network = args.network;
@@ -24,8 +24,8 @@ function clustergrammer_gl(args){
   var canvas_container = d3.select(container).select('#canvas-container')[0][0];
 
 
-  var inst_height = 1000;
-  var inst_width  = 1000;
+  var inst_height = args.viz_height;
+  var inst_width  = args.viz_width;
 
   d3.select(canvas_container)
     .style('height',inst_height + 'px')
@@ -42,6 +42,9 @@ function clustergrammer_gl(args){
   var cgm = {};
 
   cgm.params = params;
+
+  cgm.params.viz_height = inst_height;
+  cgm.params.viz_width = inst_width;
 
   cgm.params.root = '#' + d3.select(canvas_container).attr('id');
   cgm.params.container = args.container;

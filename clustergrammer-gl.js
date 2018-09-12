@@ -22469,6 +22469,31 @@ module.exports = function build_control_panel(regl, cgm){
 
     console.log('inst_axis', inst_axis)
 
+    // control_svg
+    //   .append('g')
+    //   .classed('text')
+
+    control_svg
+      // .append('text')
+      // .text('something')
+      .append('text')
+      .classed('cat_graph_title', true)
+      .text(inst_axis.toUpperCase())
+      .attr('transform', function(d, i){
+        var x_offset = 5;
+        return 'translate('+ x_offset  +', '+ button_groups[inst_axis].y_trans +')';
+      })
+      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .style('font-weight', 400)
+      .style('font-size', button_dim.fs)
+      .style('text-anchor', 'middle')
+      .style('stroke', text_color)
+      .style('alignment-baseline', 'middle')
+      .style('letter-spacing', '2px')
+      .style('cursor', 'default')
+      .style('-webkit-user-select', 'none')
+      // .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
+
     var reorder_buttons = control_svg
       .append('g');
 

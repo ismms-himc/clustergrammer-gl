@@ -22398,20 +22398,22 @@ module.exports = function build_control_panel(regl, cgm){
 
   // var control_container = d3.select(cgm.params.container).select(' .control-container')[0][0];
   var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
-  var inst_height = 150;
+  var inst_height = 120;
   var inst_width = cgm.params.viz_width;
 
   // light panel color '#bbc3cc'
   // light button color '#e3e7ea'
 
-  var control_panel_color = '#eee';
+  // var control_panel_color = '#eee';
+  var control_panel_color = 'white';
 
-  // light button color
-  var button_color = '#2f363d';
 
   // dark text color
   var text_color = '#2f363d';
+  var text_color = '#47515b';
 
+
+  button_color = text_color;
 
   // // experimenting in different color pallets
   // control_panel_color = '#2f363d'
@@ -22431,17 +22433,30 @@ module.exports = function build_control_panel(regl, cgm){
     .style('width',inst_width+'px')
     .style('position', 'absolute')
     .style('fill', control_panel_color)
-    .attr('id', 'control-panel-background');
+    .attr('class', 'control-panel-background');
+
+  control_svg
+    .append('rect')
+    .style('height',3 + 'px')
+    .style('width',inst_width+'px')
+    .style('position', 'absolute')
+    .style('fill', control_panel_color)
+    .style('stroke', '#eee')
+    .style('stroke-width', 3)
+    .attr('transform', function(){
+      return 'translate( 0, '+ inst_height +')';
+    })
 
   var button_dim = {};
   button_dim.height = 35;
   button_dim.width = 70;
-  button_dim.x_trans = button_dim.width + 10
+  button_dim.buffer = 10;
+  button_dim.x_trans = button_dim.width + button_dim.buffer;
   button_dim.fs = 13;
 
   button_groups = {};
-  button_groups.row = 40;
-  button_groups.col = 95;
+  button_groups.row = 20;
+  button_groups.col = button_groups.row + button_dim.height + button_dim.buffer;
 
   var order_options = ['clust', 'sum', 'var', 'alpha'];
 
@@ -22471,13 +22486,13 @@ module.exports = function build_control_panel(regl, cgm){
 
         d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
           .selectAll('rect')
-          .style('stroke', button_color);
-
-        // debugger
+          .style('stroke', button_color)
+          // .style('stroke-opacity', 0.5);
 
         d3.select(this)
           .select('rect')
-          .style('stroke', 'red');
+          .style('stroke', 'red')
+          // .style('stroke-opacity', 1.0)
       })
 
     button_group
@@ -22497,6 +22512,15 @@ module.exports = function build_control_panel(regl, cgm){
         return inst_color;
       })
       .style('stroke-width', 2.5);
+      // .style('stroke-opacity', function(d){
+      //   var inst_opacity;
+      //   if (cgm.params.inst_order[inst_axis] == d){
+      //     inst_opacity = 1;
+      //   } else {
+      //     inst_opacity = 0.5;
+      //   }
+      //   return inst_opacity;
+      // });
 
     button_group
       .append('text')

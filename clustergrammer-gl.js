@@ -21784,7 +21784,7 @@ module.exports = function generate_cat_data(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
@@ -22679,7 +22679,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 
 module.exports = function draw_mat_labels(regl, params, inst_rc){
 
@@ -23153,6 +23153,44 @@ module.exports = function interp_fun(params){
   // console.log(inst_ease)
   return inst_ease;
 }
+
+/***/ }),
+
+/***/ "./src/draws/mat3_transform.js":
+/*!*************************************!*\
+  !*** ./src/draws/mat3_transform.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = {
+  translation: function(tx, ty) {
+    return [
+      1, 0, 0,
+      0, 1, 0,
+      tx, ty, 1,
+    ];
+  },
+
+  rotation: function(angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
+    return [
+      c,-s, 0,
+      s, c, 0,
+      0, 0, 1,
+    ];
+  },
+
+  scaling: function(sx, sy) {
+    return [
+      sx, 0, 0,
+      0, sy, 0,
+      0, 0, 1,
+    ];
+  },
+};
+
 
 /***/ }),
 
@@ -24739,7 +24777,7 @@ module.exports = function get_ordered_labels(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
@@ -24892,7 +24930,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
@@ -25027,7 +25065,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var m3 = __webpack_require__(/*! ./../transforms/mat3_transform */ "./src/transforms/mat3_transform.js");
+var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
@@ -26147,44 +26185,6 @@ module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5
   return args;
 
 };
-
-/***/ }),
-
-/***/ "./src/transforms/mat3_transform.js":
-/*!******************************************!*\
-  !*** ./src/transforms/mat3_transform.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = {
-  translation: function(tx, ty) {
-    return [
-      1, 0, 0,
-      0, 1, 0,
-      tx, ty, 1,
-    ];
-  },
-
-  rotation: function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
-    return [
-      c,-s, 0,
-      s, c, 0,
-      0, 0, 1,
-    ];
-  },
-
-  scaling: function(sx, sy) {
-    return [
-      sx, 0, 0,
-      0, sy, 0,
-      0, 0, 1,
-    ];
-  },
-};
-
 
 /***/ }),
 

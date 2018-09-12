@@ -1,4 +1,4 @@
-var m3 = require('./../transforms/mat3_transform');
+var m3 = require('./../draws/mat3_transform');
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 

@@ -1,4 +1,4 @@
-var m3 = require('./../transforms/mat3_transform');
+var m3 = require('./../draws/mat3_transform');
 var color_to_rgba = require('./../colors/color_to_rgba');
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){

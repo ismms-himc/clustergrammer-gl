@@ -29,7 +29,7 @@ module.exports = function build_control_panel(regl, cgm){
     .attr('id', 'control-panel-background')
     .on('click', function(){
 
-      run_reorder(this, regl, cgm);
+      run_reorder(regl, cgm);
 
     });
 

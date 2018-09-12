@@ -1,15 +1,11 @@
 var make_position_arr = require('./../matrix_cells/make_position_arr');
 var make_cat_position_array = require('./../cats/make_cat_position_array');
 
-module.exports = function run_reorder(inst_this, regl, cgm){
+module.exports = function run_reorder(regl, cgm){
 
   var params = cgm.params;
 
   console.log('clicking control panel')
-
-  d3.select(inst_this)
-    .transition()
-    .style('fill', 'blue');
 
   params.animation.run_switch = true;
 

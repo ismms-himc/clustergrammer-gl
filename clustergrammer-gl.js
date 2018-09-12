@@ -22417,7 +22417,7 @@ module.exports = function build_control_panel(regl, cgm){
     .attr('id', 'control-panel-background')
     .on('click', function(){
 
-      run_reorder(this, regl, cgm);
+      run_reorder(regl, cgm);
 
     });
 
@@ -25728,15 +25728,11 @@ module.exports = function initialize_params(regl, network){
 var make_position_arr = __webpack_require__(/*! ./../matrix_cells/make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 
-module.exports = function run_reorder(inst_this, regl, cgm){
+module.exports = function run_reorder(regl, cgm){
 
   var params = cgm.params;
 
   console.log('clicking control panel')
-
-  d3.select(inst_this)
-    .transition()
-    .style('fill', 'blue');
 
   params.animation.run_switch = true;
 

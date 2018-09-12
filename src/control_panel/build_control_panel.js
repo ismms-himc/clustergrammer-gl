@@ -67,8 +67,13 @@ module.exports = function build_control_panel(regl, cgm){
   button_dim.fs = 13;
 
   button_groups = {};
-  button_groups.row = 20;
-  button_groups.col = button_groups.row + button_dim.height + button_dim.buffer;
+  button_groups.row = {};
+  button_groups.col = {};
+  var shift_x_order_buttons = 75;
+  button_groups.row.x_trans = shift_x_order_buttons;
+  button_groups.col.x_trans = shift_x_order_buttons;
+  button_groups.row.y_trans = 20;
+  button_groups.col.y_trans = button_groups.row.y_trans + button_dim.height + button_dim.buffer;
 
   var order_options = ['clust', 'sum', 'var', 'alpha'];
 
@@ -89,9 +94,8 @@ module.exports = function build_control_panel(regl, cgm){
       .enter( )
       .append('g')
       .attr('transform', function(d, i){
-        var x_offset = button_dim.x_trans * i + 25;
-        // debugger;
-        return 'translate('+ x_offset  +', '+ button_groups[inst_axis] +')';
+        var x_offset = button_dim.x_trans * i + button_groups[inst_axis].x_trans;
+        return 'translate('+ x_offset  +', '+ button_groups[inst_axis].y_trans +')';
       })
       .on('click', function(){
         run_reorder(regl, cgm);

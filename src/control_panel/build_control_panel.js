@@ -8,7 +8,8 @@ module.exports = function build_control_panel(regl, cgm){
 // Add control panel to the top
   ///////////////////////////////////////
 
-  var control_container = d3.select(cgm.params.container).select('#control-container')[0][0];
+  // var control_container = d3.select(cgm.params.container).select(' .control-container')[0][0];
+  var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
   var inst_height = 150;
   var inst_width = cgm.params.viz_width;
 

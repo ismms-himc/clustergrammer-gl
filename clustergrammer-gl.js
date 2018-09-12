@@ -22396,7 +22396,8 @@ module.exports = function build_control_panel(regl, cgm){
 // Add control panel to the top
   ///////////////////////////////////////
 
-  var control_container = d3.select(cgm.params.container).select('#control-container')[0][0];
+  // var control_container = d3.select(cgm.params.container).select(' .control-container')[0][0];
+  var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
   var inst_height = 150;
   var inst_width = cgm.params.viz_width;
 
@@ -22484,26 +22485,26 @@ module.exports = function build_dendrogram_sliders(cgm){
   // Add sliders on top of the canvas
   /////////////////////////////////////
   var slider_length = 130;
-  var col_slider_container = d3.select(cgm.params.canvas_container)
+  // var col_slider_container = d3.select(cgm.params.canvas_container)
+  var col_slider_container = d3.select(cgm.params.root + ' .control-container')
     .append('svg')
     .style('height', slider_length + 'px')
     .style('width', '40px')
     .style('position', 'absolute')
     .style('top', 400 + 'px')
     .style('left', cgm.params.viz_width - 15 + 'px')
-    .attr('id', 'dendro_slider_svg')
+    .attr('class', 'dendro_slider_svg')
 
   col_slider_container
     .append('rect')
     .style('height', slider_length + 'px')
     .style('width', '50px')
     .style('fill', 'white')
-    // .style('opacity', 0.5)
     .on('click', function(){
       console.log('clicking the red slider')
     })
 
-  build_single_dendro_slider(cgm, 'row', cgm.params.canvas_container);
+  build_single_dendro_slider(cgm, 'row');
 
 }
 
@@ -22519,7 +22520,7 @@ module.exports = function build_dendrogram_sliders(cgm){
 // var change_groups = require('./change_groups');
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_container){
+module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
   console.log('working on building slider')
 
@@ -22538,7 +22539,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 
   // var slider_group = d3.select(cgm.params.root +' .viz_svg')
   // var slider_group = d3.select(canvas_container)
-  var slider_group = d3.select(cgm.params.root + ' #dendro_slider_svg')
+  var slider_group = d3.select(cgm.params.root + ' .dendro_slider_svg')
       .append('g')
       .classed( inst_rc + '_slider_group', true)
       .attr('transform', function(){
@@ -24116,7 +24117,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.5.2-dev
+  clustergrammer-gl version 0.5.3-dev
 
  */
 
@@ -24127,17 +24128,17 @@ var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendro
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.5.2 - dev!');
+  console.log('clustergrammer-gl version 0.5.3 - dev!');
   console.log('################################');
 
   var network = args.network;
   var container = args.container;
 
   // make control panel first so it appears above canvas
-  d3.select(container).append('div').attr('id', 'control-container')
-  d3.select(container).append('div').attr('id', 'canvas-container')
+  d3.select(container).append('div').attr('class', 'control-container')
+  d3.select(container).append('div').attr('class', 'canvas-container')
 
-  var canvas_container = d3.select(container).select('#canvas-container')[0][0];
+  var canvas_container = d3.select(container).select('.canvas-container')[0][0];
 
 
   var inst_height = args.viz_height;
@@ -24162,7 +24163,9 @@ function clustergrammer_gl(args){
   cgm.params.viz_height = inst_height;
   cgm.params.viz_width = inst_width;
 
-  cgm.params.root = '#' + d3.select(canvas_container).attr('id');
+  // id of container
+  cgm.params.root = '#' + args.container.id;
+  cgm.params.canvas_root = cgm.params.root + ' .canvas-container';
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 

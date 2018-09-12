@@ -1,7 +1,7 @@
 // var change_groups = require('./change_groups');
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_container){
+module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
   console.log('working on building slider')
 
@@ -20,7 +20,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc, canvas_contai
 
   // var slider_group = d3.select(cgm.params.root +' .viz_svg')
   // var slider_group = d3.select(canvas_container)
-  var slider_group = d3.select(cgm.params.root + ' #dendro_slider_svg')
+  var slider_group = d3.select(cgm.params.root + ' .dendro_slider_svg')
       .append('g')
       .classed( inst_rc + '_slider_group', true)
       .attr('transform', function(){

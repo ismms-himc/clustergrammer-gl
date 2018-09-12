@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.5.2-dev
+  clustergrammer-gl version 0.5.3-dev
 
  */
 
@@ -11,17 +11,17 @@ var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.5.2 - dev!');
+  console.log('clustergrammer-gl version 0.5.3 - dev!');
   console.log('################################');
 
   var network = args.network;
   var container = args.container;
 
   // make control panel first so it appears above canvas
-  d3.select(container).append('div').attr('id', 'control-container')
-  d3.select(container).append('div').attr('id', 'canvas-container')
+  d3.select(container).append('div').attr('class', 'control-container')
+  d3.select(container).append('div').attr('class', 'canvas-container')
 
-  var canvas_container = d3.select(container).select('#canvas-container')[0][0];
+  var canvas_container = d3.select(container).select('.canvas-container')[0][0];
 
 
   var inst_height = args.viz_height;
@@ -46,7 +46,9 @@ function clustergrammer_gl(args){
   cgm.params.viz_height = inst_height;
   cgm.params.viz_width = inst_width;
 
-  cgm.params.root = '#' + d3.select(canvas_container).attr('id');
+  // id of container
+  cgm.params.root = '#' + args.container.id;
+  cgm.params.canvas_root = cgm.params.root + ' .canvas-container';
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 

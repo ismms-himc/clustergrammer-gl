@@ -88,6 +88,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     tri_offset_array_new[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
+  console.log(params.inst_order[inst_rc], ' -> ', params.new_order[inst_rc])
+
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -132,10 +134,10 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
         // interpolate between the two positions using the interpolate uniform
         if (run_animation){
-
+          viz_aid_pos = mix(vec2(tri_offset_att_inst, 0), vec2(tri_offset_att_new, 0), interp_uni);
+        } else{
+          viz_aid_pos = vec2(tri_offset_att_inst, 0);
         }
-
-        viz_aid_pos = vec2(tri_offset_att_inst, 0);
 
         vec_translate = vec3(top_offset, viz_aid_pos);
 

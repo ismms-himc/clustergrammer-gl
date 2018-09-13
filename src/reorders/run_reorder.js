@@ -14,6 +14,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   reorder_matrix_args(regl, cgm);
   reorder_cat_args(regl, cgm);
 
-  cgm.params.inst_order[inst_axis] = new_order;
+  // wait until transition has finished to update order
+  // cgm.params.inst_order[inst_axis] = new_order;
 
 };

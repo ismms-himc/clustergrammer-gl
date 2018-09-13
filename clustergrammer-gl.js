@@ -22954,6 +22954,7 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
   params.cameras['col-labels'].draw(() => {
 
     params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+
     regl(params.viz_aid_tri_args.col)(
       {
         interp_prop: interp_fun(params),
@@ -25294,6 +25295,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     tri_offset_array_new[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
+  console.log(params.inst_order[inst_rc], ' -> ', params.new_order[inst_rc])
+
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -25338,10 +25341,10 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
         // interpolate between the two positions using the interpolate uniform
         if (run_animation){
-
+          viz_aid_pos = mix(vec2(tri_offset_att_inst, 0), vec2(tri_offset_att_new, 0), interp_uni);
+        } else{
+          viz_aid_pos = vec2(tri_offset_att_inst, 0);
         }
-
-        viz_aid_pos = vec2(tri_offset_att_inst, 0);
 
         vec_translate = vec3(top_offset, viz_aid_pos);
 
@@ -26069,7 +26072,8 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   reorder_matrix_args(regl, cgm);
   reorder_cat_args(regl, cgm);
 
-  cgm.params.inst_order[inst_axis] = new_order;
+  // wait until transition has finished to update order
+  // cgm.params.inst_order[inst_axis] = new_order;
 
 };
 

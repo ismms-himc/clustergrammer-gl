@@ -9,7 +9,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
   var params = cgm.params;
 
-  console.log('clicking control panel')
+  console.log('clicking reorder: ' + ini_new_order)
 
   params.animation.run_switch = true;
 

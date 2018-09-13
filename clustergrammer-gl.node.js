@@ -34892,6 +34892,57 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
 /***/ }),
 
+/***/ "./src/params/calc_alpha_order.js":
+/*!****************************************!*\
+  !*** ./src/params/calc_alpha_order.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var utils = __webpack_require__(/*! ./../utils/utils_clust */ "./src/utils/utils_clust.js");
+module.exports = function calc_alpha_order(network){
+
+  // add alphabetical ordering to network nodes
+  console.log('Adding alphabetical ordering\n-----------------------------------')
+
+  // network_data.row_nodes_names = utils.pluck(config.network_data.row_nodes, 'name');
+
+  var node_names;
+  var tmp_names;
+  _.each(['row', 'col'], function(inst_axis){
+
+    // console.log(inst_axis)
+
+    inst_nodes = network[inst_axis + '_nodes'];
+    // console.log(inst_nodes)
+    node_names = utils.pluck(inst_nodes, 'name');
+
+    network[inst_axis + '_node_names'] = node_names;
+
+    tmp_names = node_names.sort();
+
+    // console.log(tmp_names)
+
+    var alpha_index = _.map(tmp_names, function(d, i){
+
+      var inst_alpha = node_names.indexOf(d);
+
+      network[inst_axis + '_nodes'][i].alpha = inst_alpha
+
+      // console.log(d, inst_alpha)
+      // return node_names.indexOf(d);
+    });
+
+
+    // console.log(alpha_index)
+
+  })
+
+  return network;
+}
+
+/***/ }),
+
 /***/ "./src/params/calc_row_and_col_canvas_positions.js":
 /*!*********************************************************!*\
   !*** ./src/params/calc_row_and_col_canvas_positions.js ***!
@@ -35092,7 +35143,7 @@ var generate_cat_data = __webpack_require__(/*! ./../cats/generate_cat_data */ "
 var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
-var utils = __webpack_require__(/*! ./../utils/utils_clust */ "./src/utils/utils_clust.js");
+var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -35125,41 +35176,7 @@ module.exports = function initialize_params(regl, network){
   params.initialize_viz = true;
   params.first_frame = true;
 
-  // add alphabetical ordering to network nodes
-  console.log('Adding alphabetical ordering\n-----------------------------------')
-
-  // network_data.row_nodes_names = utils.pluck(config.network_data.row_nodes, 'name');
-
-  var node_names;
-  var tmp_names;
-  _.each(['row', 'col'], function(inst_axis){
-
-    // console.log(inst_axis)
-
-    inst_nodes = network[inst_axis + '_nodes'];
-    // console.log(inst_nodes)
-    node_names = utils.pluck(inst_nodes, 'name');
-
-    network[inst_axis + '_node_names'] = node_names;
-
-    tmp_names = node_names.sort();
-
-    // console.log(tmp_names)
-
-    var alpha_index = _.map(tmp_names, function(d, i){
-
-      var inst_alpha = node_names.indexOf(d);
-
-      network[inst_axis + '_nodes'][i].alpha = inst_alpha
-
-      // console.log(d, inst_alpha)
-      // return node_names.indexOf(d);
-    });
-
-
-    // console.log(alpha_index)
-
-  })
+  network = calc_alpha_order(network)
 
   // use data from network
   //////////////////////////

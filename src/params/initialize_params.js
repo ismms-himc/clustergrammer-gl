@@ -18,7 +18,7 @@ var generate_cat_data = require('./../cats/generate_cat_data');
 var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
 var make_cat_position_array = require('./../cats/make_cat_position_array');
-var utils = require('./../utils/utils_clust');
+var calc_alpha_order = require('./calc_alpha_order');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -51,41 +51,7 @@ module.exports = function initialize_params(regl, network){
   params.initialize_viz = true;
   params.first_frame = true;
 
-  // add alphabetical ordering to network nodes
-  console.log('Adding alphabetical ordering\n-----------------------------------')
-
-  // network_data.row_nodes_names = utils.pluck(config.network_data.row_nodes, 'name');
-
-  var node_names;
-  var tmp_names;
-  _.each(['row', 'col'], function(inst_axis){
-
-    // console.log(inst_axis)
-
-    inst_nodes = network[inst_axis + '_nodes'];
-    // console.log(inst_nodes)
-    node_names = utils.pluck(inst_nodes, 'name');
-
-    network[inst_axis + '_node_names'] = node_names;
-
-    tmp_names = node_names.sort();
-
-    // console.log(tmp_names)
-
-    var alpha_index = _.map(tmp_names, function(d, i){
-
-      var inst_alpha = node_names.indexOf(d);
-
-      network[inst_axis + '_nodes'][i].alpha = inst_alpha
-
-      // console.log(d, inst_alpha)
-      // return node_names.indexOf(d);
-    });
-
-
-    // console.log(alpha_index)
-
-  })
+  network = calc_alpha_order(network)
 
   // use data from network
   //////////////////////////

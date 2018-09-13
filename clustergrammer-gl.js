@@ -23130,11 +23130,14 @@ var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_tex
 var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
 var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
+var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 
 module.exports = function draw_row_components(regl, params, calc_text_tri=false){
 
   /* Row Components */
   params.cameras['row-labels'].draw(() => {
+
+    params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
 
     regl(params.viz_aid_tri_args.row)(
       {
@@ -25300,7 +25303,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   }
 
   console.log(params.inst_order[inst_rc], ' -> ', params.new_order[inst_rc])
-
+  console.log(params.inst_order)
+  console.log(params.new_order)
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -25798,7 +25802,7 @@ module.exports = function initialize_params(regl, network){
 
 
   params.viz_aid_tri_args = {};
-  params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
+  // params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   // params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
 

@@ -89,7 +89,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   }
 
   console.log(params.inst_order[inst_rc], ' -> ', params.new_order[inst_rc])
-
+  console.log(params.inst_order)
+  console.log(params.new_order)
 
   /////////////////////////////////
   // Rotation and Scaling

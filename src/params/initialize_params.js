@@ -138,7 +138,7 @@ module.exports = function initialize_params(regl, network){
 
 
   params.viz_aid_tri_args = {};
-  params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
+  // params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
   // params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
 

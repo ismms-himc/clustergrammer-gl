@@ -2,11 +2,14 @@ var make_row_text_args = require('./../matrix_labels/make_row_text_args');
 var calc_viz_area = require('./../params/calc_viz_area');
 var calc_row_text_triangles = require('./../matrix_labels/calc_row_text_triangles');
 var interp_fun = require('./../draws/interp_fun');
+var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 
 module.exports = function draw_row_components(regl, params, calc_text_tri=false){
 
   /* Row Components */
   params.cameras['row-labels'].draw(() => {
+
+    params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
 
     regl(params.viz_aid_tri_args.row)(
       {

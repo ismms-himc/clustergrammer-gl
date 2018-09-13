@@ -25975,6 +25975,31 @@ module.exports = function reorder_cat_args(regl, cgm){
 
 /***/ }),
 
+/***/ "./src/reorders/reorder_matrix_args.js":
+/*!*********************************************!*\
+  !*** ./src/reorders/reorder_matrix_args.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_position_arr = __webpack_require__(/*! ./../matrix_cells/make_position_arr */ "./src/matrix_cells/make_position_arr.js");
+
+module.exports = function reorder_matrix_args(regl, cgm){
+  var params = cgm.params;
+
+  // calculate new ordering
+  params.arrs.position_arr.new = make_position_arr(params,
+                                  params.new_order.row,
+                                  params.new_order.col);
+
+  params.matrix_args.regl_props.rects.attributes.pos_att_new = {
+        buffer: regl.buffer(params.arrs.position_arr.new),
+        divisor: 1
+      };
+};
+
+/***/ }),
+
 /***/ "./src/reorders/run_reorder.js":
 /*!*************************************!*\
   !*** ./src/reorders/run_reorder.js ***!
@@ -25982,8 +26007,8 @@ module.exports = function reorder_cat_args(regl, cgm){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_position_arr = __webpack_require__(/*! ./../matrix_cells/make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
+var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
@@ -25997,15 +26022,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   params.animation.run_switch = true;
   params.new_order[inst_axis] = new_order;
 
-  // calculate new ordering
-  params.arrs.position_arr.new = make_position_arr(params,
-                                  params.new_order.row,
-                                  params.new_order.col);
-
-  params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-        buffer: regl.buffer(params.arrs.position_arr.new),
-        divisor: 1
-      };
+  reorder_matrix_args(regl, cgm);
 
   reorder_cat_args(regl, cgm);
 

@@ -18,6 +18,7 @@ var generate_cat_data = require('./../cats/generate_cat_data');
 var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
 var make_cat_position_array = require('./../cats/make_cat_position_array');
+var utils = require('./../utils/utils_clust');
 
 // /*
 //   Working on using subset of math.js for matrix splicing

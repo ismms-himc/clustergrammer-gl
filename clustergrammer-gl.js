@@ -23388,19 +23388,21 @@ module.exports = function run_viz(regl, network){
           };
 
       // transfer the new category positions to the cat args attributes
-      for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+      _.each(['row', 'col'], function(inst_axis){
 
-        // update the attribute
-        params.cat_args.col[cat_index].attributes.cat_pos_att_inst = {
-            buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
-            divisor: 1
-        };
-      }
+        for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+          // update the attribute
+          params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
+              buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
+              divisor: 1
+          };
+        }
+        // transfer new order to old order
+        params.inst_order[inst_axis] = params.new_order[inst_axis]
+
+      })
 
 
-      // transfer new order to old order
-      params.inst_order.row = params.new_order.row
-      params.inst_order.col = params.new_order.col
 
     }
 

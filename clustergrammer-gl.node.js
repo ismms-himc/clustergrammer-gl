@@ -31933,13 +31933,13 @@ module.exports = function build_control_panel(regl, cgm){
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background');
 
+  // control panel border
   var border_height = 1;
   control_svg
     .append('rect')
-    .style('height', border_height + 'px')
+    .style('height', '1px')
     .style('width',inst_width+'px')
     .style('position', 'absolute')
-    .style('fill', control_panel_color)
     .style('stroke', '#eee')
     .style('stroke-width', 3)
     .attr('transform', function(){
@@ -31957,6 +31957,7 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups = {};
   button_groups.row = {};
   button_groups.col = {};
+
   var shift_x_order_buttons = 75;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
@@ -31965,7 +31966,45 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups.row.y_trans = y_offset_buttons;
   button_groups.col.y_trans = button_groups.row.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'alpha'];
+  var order_options = ['clust', 'sum', 'var', 'disp', 'alpha'];
+
+  // make reorder title
+
+  control_svg
+  .append('text')
+  .classed('reorder_title', true)
+  .text('reorder'.toUpperCase())
+  .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+  .style('font-weight', 400)
+  .style('font-size', button_dim.fs)
+  .style('text-anchor', 'middle')
+  .style('stroke', text_color)
+  .style('alignment-baseline', 'middle')
+  .style('letter-spacing', '2px')
+  .style('cursor', 'default')
+  .style('-webkit-user-select', 'none')
+      .attr('transform', function(){
+      var x_offset = 275;
+      var y_trans = y_offset_buttons - 2 *button_dim.buffer - 5;
+      return 'translate( '+ x_offset +', '+ y_trans +')';
+    })
+
+  control_svg
+    .append('rect')
+    .style('height', '1px')
+    .style('width', function(){
+      var inst_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer;
+      return inst_width;
+    })
+    .style('position', 'absolute')
+    .style('stroke', '#eee')
+    .style('stroke-width', 2)
+    .attr('transform', function(){
+      var x_offset = button_dim.x_trans - button_dim.buffer;
+      var y_trans = y_offset_buttons - button_dim.buffer - 2;
+      return 'translate( '+ x_offset +', '+ y_trans +')';
+    });
+
 
   _.each(['col', 'row'], function(inst_axis){
 
@@ -31981,7 +32020,7 @@ module.exports = function build_control_panel(regl, cgm){
 
     axis_title
       .append('text')
-      .classed('cat_graph_title', true)
+      .classed('reorder_title', true)
       .text(inst_axis.toUpperCase())
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight', 400)

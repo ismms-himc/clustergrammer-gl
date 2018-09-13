@@ -1,7 +1,5 @@
 module.exports = function generate_cat_data(params, inst_axis){
 
-  console.log('generate_cat_data!')
-
   var title_sep = ': ';
   current_cats = {};
 

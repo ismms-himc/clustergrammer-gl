@@ -21723,8 +21723,6 @@ module.exports = function make_cameras(regl, params){
 
 module.exports = function generate_cat_data(params, inst_axis){
 
-  console.log('generate_cat_data!')
-
   var title_sep = ': ';
   current_cats = {};
 
@@ -25304,9 +25302,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     tri_offset_array_new[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
-  console.log(params.inst_order[inst_rc], ' -> ', params.new_order[inst_rc])
-  console.log(params.inst_order)
-  console.log(params.new_order)
+  // console.log(params.inst_order[inst_rc], ' -> ', params.new_order[inst_rc])
+  // console.log(params.inst_order)
+  // console.log(params.new_order)
 
   /////////////////////////////////
   // Rotation and Scaling

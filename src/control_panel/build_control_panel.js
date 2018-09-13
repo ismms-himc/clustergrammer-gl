@@ -78,8 +78,8 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups.col.x_trans = shift_x_order_buttons;
 
   var y_offset_buttons = 45;
-  button_groups.row.y_trans = y_offset_buttons;
-  button_groups.col.y_trans = button_groups.row.y_trans + button_dim.height + button_dim.buffer;
+  button_groups.col.y_trans = y_offset_buttons;
+  button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
   var order_options = ['clust', 'sum', 'var', 'disp', 'alpha'];
 
@@ -121,7 +121,7 @@ module.exports = function build_control_panel(regl, cgm){
     });
 
 
-  _.each(['col', 'row'], function(inst_axis){
+  _.each(['row', 'col'], function(inst_axis){
 
     console.log('inst_axis', inst_axis)
 
@@ -164,18 +164,24 @@ module.exports = function build_control_panel(regl, cgm){
         var x_offset = button_dim.x_trans * i + button_groups[inst_axis].x_trans;
         return 'translate('+ x_offset  +', '+ button_groups[inst_axis].y_trans +')';
       })
-      .on('click', function(){
-        run_reorder(regl, cgm);
+      .on('click', function(d){
 
-        d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
-          .selectAll('rect')
-          .style('stroke', button_color)
-          // .style('stroke-opacity', 0.5);
+        var clean_order = d.replace('sum', 'rank')
+                           .replace('var', 'rankvar')
 
-        d3.select(this)
-          .select('rect')
-          .style('stroke', 'red')
-          // .style('stroke-opacity', 1.0)
+        if (cgm.params.inst_order[inst_axis] != clean_order){
+
+          run_reorder(regl, cgm, inst_axis, d);
+
+          d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
+            .selectAll('rect')
+            .style('stroke', button_color);
+
+          d3.select(this)
+            .select('rect')
+            .style('stroke', 'red');
+
+        }
       })
 
     button_group

@@ -31895,7 +31895,7 @@ module.exports = function build_control_panel(regl, cgm){
 
   // var control_container = d3.select(cgm.params.container).select(' .control-container')[0][0];
   var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
-  var inst_height = 120;
+  var inst_height = 135;
   var inst_width = cgm.params.viz_width;
 
   // light panel color '#bbc3cc'
@@ -31933,16 +31933,18 @@ module.exports = function build_control_panel(regl, cgm){
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background');
 
+  var border_height = 1;
   control_svg
     .append('rect')
-    .style('height',3 + 'px')
+    .style('height', border_height + 'px')
     .style('width',inst_width+'px')
     .style('position', 'absolute')
     .style('fill', control_panel_color)
     .style('stroke', '#eee')
     .style('stroke-width', 3)
     .attr('transform', function(){
-      return 'translate( 0, '+ inst_height +')';
+      var y_trans = inst_height - border_height;
+      return 'translate( 0, '+ y_trans +')';
     })
 
   var button_dim = {};
@@ -31958,12 +31960,14 @@ module.exports = function build_control_panel(regl, cgm){
   var shift_x_order_buttons = 75;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
-  button_groups.row.y_trans = 20;
+
+  var y_offset_buttons = 45;
+  button_groups.row.y_trans = y_offset_buttons;
   button_groups.col.y_trans = button_groups.row.y_trans + button_dim.height + button_dim.buffer;
 
   var order_options = ['clust', 'sum', 'var', 'alpha'];
 
-  _.each(['row', 'col'], function(inst_axis){
+  _.each(['col', 'row'], function(inst_axis){
 
     console.log('inst_axis', inst_axis)
 

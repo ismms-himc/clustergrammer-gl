@@ -25,7 +25,8 @@ module.exports = function build_control_panel(regl, cgm){
   var text_color = '#47515b';
 
 
-  button_color = text_color;
+  // button_color = text_color;
+  button_color = '#eee';
 
   // // experimenting in different color pallets
   // control_panel_color = '#2f363d'
@@ -81,20 +82,18 @@ module.exports = function build_control_panel(regl, cgm){
 
     console.log('inst_axis', inst_axis)
 
-    // control_svg
-    //   .append('g')
-    //   .classed('text')
+    var axis_title = control_svg
+      .append('g')
+      .attr('transform', function(d, i){
+        var x_offset = 0;
+        var y_offset = button_groups[inst_axis].y_trans;
+        return 'translate('+ x_offset  +', '+ y_offset +')';
+      })
 
-    control_svg
-      // .append('text')
-      // .text('something')
+    axis_title
       .append('text')
       .classed('cat_graph_title', true)
       .text(inst_axis.toUpperCase())
-      .attr('transform', function(d, i){
-        var x_offset = 5;
-        return 'translate('+ x_offset  +', '+ button_groups[inst_axis].y_trans +')';
-      })
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight', 400)
       .style('font-size', button_dim.fs)
@@ -104,7 +103,7 @@ module.exports = function build_control_panel(regl, cgm){
       .style('letter-spacing', '2px')
       .style('cursor', 'default')
       .style('-webkit-user-select', 'none')
-      // .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
+      .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
     var reorder_buttons = control_svg
       .append('g');
@@ -153,19 +152,11 @@ module.exports = function build_control_panel(regl, cgm){
         return inst_color;
       })
       .style('stroke-width', 2.5);
-      // .style('stroke-opacity', function(d){
-      //   var inst_opacity;
-      //   if (cgm.params.inst_order[inst_axis] == d){
-      //     inst_opacity = 1;
-      //   } else {
-      //     inst_opacity = 0.5;
-      //   }
-      //   return inst_opacity;
-      // });
+
 
     button_group
       .append('text')
-      .classed('cat_graph_title', true)
+      .classed('button-name', true)
       .text(function(d){
         return d.toUpperCase();
       })

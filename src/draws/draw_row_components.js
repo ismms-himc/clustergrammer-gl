@@ -8,7 +8,12 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
   /* Row Components */
   params.cameras['row-labels'].draw(() => {
 
-    regl(params.viz_aid_tri_args.row)();
+    regl(params.viz_aid_tri_args.row)(
+      {
+        interp_prop: interp_fun(params),
+        run_animation: params.animation.running
+      }
+    );
 
     _.each(params.cat_args.row, function(inst_cat_arg){
       regl(inst_cat_arg)(

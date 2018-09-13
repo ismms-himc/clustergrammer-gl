@@ -21928,7 +21928,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         // interpolate between the two positions using the interpolate uniform
         if (run_animation == true){
-
           cat_pos = mix(cat_pos_att_inst, cat_pos_att_new, interp_uni);
         } else {
           cat_pos = cat_pos_att_inst;
@@ -22955,9 +22954,12 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
   params.cameras['col-labels'].draw(() => {
 
     params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
-    regl(params.viz_aid_tri_args.col)();
-
-    // console.log('interp_fun', interp_fun(params))
+    regl(params.viz_aid_tri_args.col)(
+      {
+        interp_prop: interp_fun(params),
+        run_animation: params.animation.running
+      }
+    );
 
     // drawing the column categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
@@ -23130,7 +23132,12 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
   /* Row Components */
   params.cameras['row-labels'].draw(() => {
 
-    regl(params.viz_aid_tri_args.row)();
+    regl(params.viz_aid_tri_args.row)(
+      {
+        interp_prop: interp_fun(params),
+        run_animation: params.animation.running
+      }
+    );
 
     _.each(params.cat_args.row, function(inst_cat_arg){
       regl(inst_cat_arg)(
@@ -25237,8 +25244,10 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     return context.view;
   };
 
+  // make viz_aid triangle array
+  /////////////////////////////////
   var inst_order = params.inst_order[inst_rc];
-  var tri_offset_array = [];
+  var tri_offset_array_inst = [];
   var i;
   for (i = 0; i < num_labels; i++){
 
@@ -25257,16 +25266,34 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // the last part is necessary to shfit the viz aid triangles down to make up
     // for the smaller size of the heatmap vs the general matrix area
 
-    tri_offset_array[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
+    tri_offset_array_inst[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
-  const tri_offset_buffer = regl.buffer({
-    length: num_labels,
-    type: 'float',
-    usage: 'dynamic'
-  });
+  // make viz_aid triangle array
+  /////////////////////////////////
+  var new_order = params.new_order[inst_rc];
+  var tri_offset_array_new = [];
+  var i;
+  for (i = 0; i < num_labels; i++){
 
-  tri_offset_buffer(tri_offset_array);
+    // emperically found rules
+    var order_id;
+    var shift_mat_heat;
+    if (inst_rc == 'row'){
+      order_id = num_labels - params.network[inst_rc + '_nodes'][i][new_order] - 1;
+      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
+    } else {
+      order_id = params.network[inst_rc + '_nodes'][i][new_order] ;
+      shift_mat_heat = params.mat_size.x - params.heat_size.x
+    }
+
+    /* need to position based on clustering order */
+    // the last part is necessary to shfit the viz aid triangles down to make up
+    // for the smaller size of the heatmap vs the general matrix area
+
+    tri_offset_array_new[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
+  }
+
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -25290,22 +25317,33 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     vert: `
       precision highp float;
       attribute vec2 ini_position;
-      attribute float tri_offset_att;
+      attribute float tri_offset_att_inst;
+      attribute float tri_offset_att_new;
 
       uniform mat3 mat_rotate;
       uniform mat3 scale_y;
       uniform mat4 zoom;
       uniform float top_offset;
       uniform float total_zoom;
+      uniform float interp_uni;
+      uniform bool run_animation;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
+      varying float viz_aid_pos;
 
       void main () {
 
         new_position = vec3(ini_position, 0);
 
-        vec_translate = vec3(top_offset, tri_offset_att, 0);
+        // interpolate between the two positions using the interpolate uniform
+        if (run_animation){
+
+        }
+
+        viz_aid_pos = tri_offset_att_inst;
+
+        vec_translate = vec3(top_offset, viz_aid_pos, 0);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;
@@ -25339,9 +25377,15 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
         [tri_height,   -tri_width],
       ],
 
-      // pass tri_offset_att buffer
-      tri_offset_att: {
-        buffer: tri_offset_buffer,
+      // pass tri_offset_att_inst buffer
+      tri_offset_att_inst: {
+        buffer: regl.buffer(tri_offset_array_inst),
+        divisor: 1
+      },
+
+      // pass tri_offset_att_inst buffer
+      tri_offset_att_new: {
+        buffer: regl.buffer(tri_offset_array_new),
         divisor: 1
       },
 
@@ -25353,7 +25397,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
       scale_y: scale_y,
       top_offset: top_offset,
       triangle_color: inst_rgba,
-      total_zoom: total_zoom
+      total_zoom: total_zoom,
+      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
+      run_animation: regl.prop('run_animation')
     },
 
     count: 3,
@@ -26012,21 +26058,17 @@ var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./sr
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
-  console.log('clicking reorder: ' + ini_new_order)
+  console.log('clicking reorder: ' + ini_new_order);
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  var params = cgm.params;
-
-  params.animation.run_switch = true;
-  params.new_order[inst_axis] = new_order;
+  cgm.params.animation.run_switch = true;
+  cgm.params.new_order[inst_axis] = new_order;
 
   reorder_matrix_args(regl, cgm);
-
   reorder_cat_args(regl, cgm);
 
-  // update inst_order
   cgm.params.inst_order[inst_axis] = new_order;
 
 };

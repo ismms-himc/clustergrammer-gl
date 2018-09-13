@@ -142,7 +142,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         // interpolate between the two positions using the interpolate uniform
         if (run_animation == true){
-
           cat_pos = mix(cat_pos_att_inst, cat_pos_att_new, interp_uni);
         } else {
           cat_pos = cat_pos_att_inst;

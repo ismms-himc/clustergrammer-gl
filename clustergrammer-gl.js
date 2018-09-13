@@ -22536,6 +22536,9 @@ module.exports = function build_control_panel(regl, cgm){
 
         if (cgm.params.inst_order[inst_axis] != clean_order){
 
+          console.log('REORDER')
+          console.log(inst_axis, cgm.params.inst_order, clean_order)
+
           run_reorder(regl, cgm, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
@@ -23392,7 +23395,8 @@ module.exports = function run_viz(regl, network){
       }
 
 
-      // transfer new order to old order (only for column reordering)
+      // transfer new order to old order
+      params.inst_order.row = params.new_order.row
       params.inst_order.col = params.new_order.col
 
     }

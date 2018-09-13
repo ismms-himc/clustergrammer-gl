@@ -55,7 +55,8 @@ module.exports = function run_viz(regl, network){
       }
 
 
-      // transfer new order to old order (only for column reordering)
+      // transfer new order to old order
+      params.inst_order.row = params.new_order.row
       params.inst_order.col = params.new_order.col
 
     }

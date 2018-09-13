@@ -35477,27 +35477,15 @@ var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_positio
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
+  console.log('clicking reorder: ' + ini_new_order)
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
   var params = cgm.params;
 
-  console.log('clicking reorder: ' + ini_new_order)
-
   params.animation.run_switch = true;
-
-  // if (params.inst_order.col == 'clust'){
-  //   console.log('set new_order to clust')
-  //   params.new_order.col = 'rank'
-  // } else {
-  //   console.log('set new_order to rank')
-  //   params.new_order.col = 'clust'
-  // }
-
   params.new_order[inst_axis] = new_order;
-
-  console.log(params.new_order)
 
   // calculate new ordering
   params.arrs.position_arr.new = make_position_arr(params,
@@ -35509,10 +35497,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
         divisor: 1
       };
 
-
   // update cat position arrays
-  console.log('re-calculating col cat positions', params.new_order.col)
-  console.log('---', params.cat_arrs.new.col[0][0])
   for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
     params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
 
@@ -35522,9 +35507,8 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
         divisor: 1
     };
   }
-  console.log('---', params.cat_arrs.new.col[0][0])
 
-  // ordering
+  // update inst_order
   cgm.params.inst_order[inst_axis] = new_order;
 
 };

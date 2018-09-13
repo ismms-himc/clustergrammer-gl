@@ -21833,29 +21833,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  // cat_pos_array = {};
-  // cat_pos_array.inst = params.cat_arrs.inst[inst_axis][cat_index];
-  // cat_pos_array.new = params.cat_arrs.new[inst_axis][cat_index];
-
-  // debugger
-
-
   var cat_pos_buffer = {};
-  // cat_pos_buffer.inst = regl.buffer({
-  //   // length: num_labels,
-  //   // type: 'float',
-  //   // usage: 'dynamic'
-  // });
-
-  // cat_pos_buffer.new = regl.buffer({
-  //   // length: num_labels,
-  //   // type: 'float',
-  //   // usage: 'dynamic'
-  // });
-
-  // cat_pos_buffer.inst(cat_pos_array.inst);
-  // cat_pos_buffer.new(cat_pos_array.new);
-
 
   /////////////////////////////////
   // Label Color Buffer
@@ -23373,6 +23351,7 @@ module.exports = function run_viz(regl, network){
     params.animation.loop = 0 ;
 
     if (params.animation.run_switch){
+
       console.log('turn switch off')
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
@@ -25968,6 +25947,34 @@ module.exports = function initialize_params(regl, network){
 
 /***/ }),
 
+/***/ "./src/reorders/reorder_cats.js":
+/*!**************************************!*\
+  !*** ./src/reorders/reorder_cats.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
+
+module.exports = function reorder_cats(regl, cgm){
+
+  var params = cgm.params;
+
+  // update cat position arrays
+  for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
+    params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
+
+    // update the attribute
+    params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
+        buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
+        divisor: 1
+    };
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/reorders/run_reorder.js":
 /*!*************************************!*\
   !*** ./src/reorders/run_reorder.js ***!
@@ -25976,31 +25983,19 @@ module.exports = function initialize_params(regl, network){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_position_arr = __webpack_require__(/*! ./../matrix_cells/make_position_arr */ "./src/matrix_cells/make_position_arr.js");
-var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
+var reorder_cats = __webpack_require__(/*! ./reorder_cats */ "./src/reorders/reorder_cats.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
+  console.log('clicking reorder: ' + ini_new_order)
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
   var params = cgm.params;
 
-  console.log('clicking reorder: ' + ini_new_order)
-
   params.animation.run_switch = true;
-
-  // if (params.inst_order.col == 'clust'){
-  //   console.log('set new_order to clust')
-  //   params.new_order.col = 'rank'
-  // } else {
-  //   console.log('set new_order to rank')
-  //   params.new_order.col = 'clust'
-  // }
-
   params.new_order[inst_axis] = new_order;
-
-  console.log(params.new_order)
 
   // calculate new ordering
   params.arrs.position_arr.new = make_position_arr(params,
@@ -26012,22 +26007,9 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
         divisor: 1
       };
 
+  reorder_cats(regl, cgm);
 
-  // update cat position arrays
-  console.log('re-calculating col cat positions', params.new_order.col)
-  console.log('---', params.cat_arrs.new.col[0][0])
-  for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-    params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
-
-    // update the attribute
-    params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
-        buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
-        divisor: 1
-    };
-  }
-  console.log('---', params.cat_arrs.new.col[0][0])
-
-  // ordering
+  // update inst_order
   cgm.params.inst_order[inst_axis] = new_order;
 
 };

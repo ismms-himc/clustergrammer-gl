@@ -22,6 +22,7 @@ module.exports = function run_viz(regl, network){
     params.animation.loop = 0 ;
 
     if (params.animation.run_switch){
+
       console.log('turn switch off')
       params.animation.run_switch = false;
       params.animation.last_switch_time = time

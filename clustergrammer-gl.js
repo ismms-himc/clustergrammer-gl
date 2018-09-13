@@ -25947,16 +25947,16 @@ module.exports = function initialize_params(regl, network){
 
 /***/ }),
 
-/***/ "./src/reorders/reorder_cats.js":
-/*!**************************************!*\
-  !*** ./src/reorders/reorder_cats.js ***!
-  \**************************************/
+/***/ "./src/reorders/reorder_cat_args.js":
+/*!******************************************!*\
+  !*** ./src/reorders/reorder_cat_args.js ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 
-module.exports = function reorder_cats(regl, cgm){
+module.exports = function reorder_cat_args(regl, cgm){
 
   var params = cgm.params;
 
@@ -25983,7 +25983,7 @@ module.exports = function reorder_cats(regl, cgm){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_position_arr = __webpack_require__(/*! ./../matrix_cells/make_position_arr */ "./src/matrix_cells/make_position_arr.js");
-var reorder_cats = __webpack_require__(/*! ./reorder_cats */ "./src/reorders/reorder_cats.js");
+var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
@@ -26007,7 +26007,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
         divisor: 1
       };
 
-  reorder_cats(regl, cgm);
+  reorder_cat_args(regl, cgm);
 
   // update inst_order
   cgm.params.inst_order[inst_axis] = new_order;

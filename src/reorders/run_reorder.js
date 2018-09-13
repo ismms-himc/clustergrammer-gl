@@ -1,5 +1,5 @@
 var make_position_arr = require('./../matrix_cells/make_position_arr');
-var reorder_cats = require('./reorder_cats');
+var reorder_cat_args = require('./reorder_cat_args');
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
@@ -23,7 +23,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
         divisor: 1
       };
 
-  reorder_cats(regl, cgm);
+  reorder_cat_args(regl, cgm);
 
   // update inst_order
   cgm.params.inst_order[inst_axis] = new_order;

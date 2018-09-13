@@ -25330,7 +25330,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
       varying vec3 new_position;
       varying vec3 vec_translate;
-      varying float viz_aid_pos;
+      varying vec2 viz_aid_pos;
 
       void main () {
 
@@ -25341,9 +25341,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
         }
 
-        viz_aid_pos = tri_offset_att_inst;
+        viz_aid_pos = vec2(tri_offset_att_inst, 0);
 
-        vec_translate = vec3(top_offset, viz_aid_pos, 0);
+        vec_translate = vec3(top_offset, viz_aid_pos);
 
         // rotate translated triangles
         new_position = mat_rotate * ( new_position + vec_translate ) ;

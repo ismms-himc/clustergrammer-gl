@@ -56,7 +56,7 @@ module.exports = function build_control_panel(regl, cgm){
     })
 
   var button_dim = {};
-  button_dim.height = 33;
+  button_dim.height = 32;
   button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
@@ -66,11 +66,11 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups.row = {};
   button_groups.col = {};
 
-  var shift_x_order_buttons = 75;
+  var shift_x_order_buttons = 65;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
 
-  var y_offset_buttons = 45;
+  var y_offset_buttons = 47;
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
@@ -92,8 +92,8 @@ module.exports = function build_control_panel(regl, cgm){
   .style('cursor', 'default')
   .style('-webkit-user-select', 'none')
       .attr('transform', function(){
-      var x_offset = 260;
-      var y_trans = y_offset_buttons - 2 * button_dim.buffer;
+      var x_offset = 247;
+      var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     })
 
@@ -108,8 +108,8 @@ module.exports = function build_control_panel(regl, cgm){
     .style('stroke', '#eee')
     .style('stroke-width', 2)
     .attr('transform', function(){
-      var x_offset = button_dim.x_trans - button_dim.buffer + 11;
-      var y_trans = y_offset_buttons - button_dim.buffer;
+      var x_offset = button_dim.x_trans - button_dim.buffer + 1;
+      var y_trans = y_offset_buttons - button_dim.buffer + 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
 
@@ -137,7 +137,7 @@ module.exports = function build_control_panel(regl, cgm){
       .style('letter-spacing', '2px')
       .style('cursor', 'default')
       .style('-webkit-user-select', 'none')
-      .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
+      .attr('transform', 'translate('+ 30 +', '+ button_dim.height/2 +')');
 
     var reorder_buttons = control_svg
       .append('g');
@@ -161,9 +161,6 @@ module.exports = function build_control_panel(regl, cgm){
                            .replace('var', 'rankvar')
 
         if (cgm.params.inst_order[inst_axis] != clean_order){
-
-          // console.log('REORDER')
-          // console.log(inst_axis, cgm.params.inst_order, clean_order)
 
           run_reorder(regl, cgm, inst_axis, d);
 
@@ -217,10 +214,10 @@ module.exports = function build_control_panel(regl, cgm){
   })
 
   control_svg.append('svg:image')
-  .attr('x', 8)
-  .attr('y', 6)
-  .attr('width', 25)
-  .attr('height', 25)
+  .attr('x', 16)
+  .attr('y', 5)
+  .attr('width', 27)
+  .attr('height', 27)
   .attr('xlink:href', img)
   .classed('clustergrammer-logo', true)
   // .on('click', function(){

@@ -21498,7 +21498,7 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
     mat4.multiply(dViewport, dViewport, mViewport);
     mat4.multiply(dViewport, mInvViewport, dViewport);
     mat4.multiply(mView, dViewport, mView);
-    dirty = true;
+    // var dirty = true;
 
   }
 
@@ -25214,12 +25214,13 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
+var make_viz_aid_tri_pos_arr = __webpack_require__(/*! ./make_viz_aid_tri_pos_arr */ "./src/matrix_labels/make_viz_aid_tri_pos_arr.js");
 
-module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
+module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   // var inst_rgba = color_to_rgba('#eee', 1.0);
   var inst_rgba = color_to_rgba('red', 1.0);
-  var num_labels = params['num_'+inst_rc];
+  var num_labels = params['num_'+inst_axis];
 
   var tri_height;
   var tri_width;
@@ -25227,7 +25228,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var top_shift_triangles;
   var top_offset;
 
-  if (inst_rc === 'col'){
+  if (inst_axis === 'col'){
 
     mat_size = params.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
@@ -25255,7 +25256,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
   // make viz_aid triangle array
   /////////////////////////////////
-  var inst_order = params.inst_order[inst_rc];
+  var inst_order = params.inst_order[inst_axis];
   var tri_offset_array_inst = [];
   var i;
   for (i = 0; i < num_labels; i++){
@@ -25263,11 +25264,11 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // emperically found rules
     var order_id;
     var shift_mat_heat;
-    if (inst_rc == 'row'){
-      order_id = num_labels - params.network[inst_rc + '_nodes'][i][inst_order] - 1;
+    if (inst_axis == 'row'){
+      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
       shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
     } else {
-      order_id = params.network[inst_rc + '_nodes'][i][inst_order] ;
+      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
       shift_mat_heat = params.mat_size.x - params.heat_size.x
     }
 
@@ -25280,7 +25281,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
   // make viz_aid triangle array
   /////////////////////////////////
-  var new_order = params.new_order[inst_rc];
+  var new_order = params.new_order[inst_axis];
   var tri_offset_array_new = [];
   var i;
   for (i = 0; i < num_labels; i++){
@@ -25288,11 +25289,11 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     // emperically found rules
     var order_id;
     var shift_mat_heat;
-    if (inst_rc == 'row'){
-      order_id = num_labels - params.network[inst_rc + '_nodes'][i][new_order] - 1;
+    if (inst_axis == 'row'){
+      order_id = num_labels - params.network[inst_axis + '_nodes'][i][new_order] - 1;
       shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
     } else {
-      order_id = params.network[inst_rc + '_nodes'][i][new_order] ;
+      order_id = params.network[inst_axis + '_nodes'][i][new_order] ;
       shift_mat_heat = params.mat_size.x - params.heat_size.x
     }
 
@@ -25303,7 +25304,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
     tri_offset_array_new[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
-  // console.log(params.inst_order[inst_rc], ' -> ', params.new_order[inst_rc])
+  // console.log(params.inst_order[inst_axis], ' -> ', params.new_order[inst_axis])
   // console.log(params.inst_order)
   // console.log(params.new_order)
 
@@ -25314,9 +25315,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   var scale_y = m3.scaling(2, 1);
 
   var rotation_radians;
-  if (inst_rc === 'row'){
+  if (inst_axis === 'row'){
     rotation_radians = 0;
-  } else if (inst_rc === 'col'){
+  } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
   }
 
@@ -25427,6 +25428,41 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
   };
 
   return args;
+
+};
+
+/***/ }),
+
+/***/ "./src/matrix_labels/make_viz_aid_tri_pos_arr.js":
+/*!*******************************************************!*\
+  !*** ./src/matrix_labels/make_viz_aid_tri_pos_arr.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order){
+
+  if (inst_axis === 'col'){
+
+    mat_size = params.heat_size.x;
+    // keep positioned at matrix not heatmap (make room for categories)
+    // making triangle smaller
+    var reduce_height = params.zoom_data.x.total_zoom;
+    tri_height = mat_size/num_labels * reduce_height;
+    tri_width  = mat_size/num_labels;
+
+    // original top_offset calc (undercorrects)
+    top_offset = -params.mat_size.y - tri_height;
+
+  } else {
+
+    // rows have fixed viz aid triangle 'heights'
+    mat_size = params.heat_size.y;
+    tri_height = 0.0125;
+    tri_width = mat_size/num_labels;
+    top_offset = -params.mat_size.x - tri_height;
+
+  }
 
 };
 

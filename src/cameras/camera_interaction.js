@@ -70,7 +70,7 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
     mat4.multiply(dViewport, dViewport, mViewport);
     mat4.multiply(dViewport, mInvViewport, dViewport);
     mat4.multiply(mView, dViewport, mView);
-    dirty = true;
+    // var dirty = true;
 
   }
 

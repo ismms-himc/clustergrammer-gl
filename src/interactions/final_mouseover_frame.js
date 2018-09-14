@@ -8,7 +8,7 @@ module.exports = function final_mouseover_frame(regl, params){
     // console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
 
     // run draw commands
-    var slow_draw = true;
+    // var slow_draw = true;
     params.show_tooltip = true;
 
     // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){

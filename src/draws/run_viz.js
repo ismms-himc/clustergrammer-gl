@@ -16,14 +16,12 @@ module.exports = function run_viz(regl, network){
 
   regl.frame(function ({time}) {
 
-    // console.log(params.slow_draw)
-
     params.time = time;
     params.animation.loop = 0 ;
 
     if (params.animation.run_switch){
 
-      console.log('turn switch off')
+      // console.log('turn switch off')
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
@@ -36,7 +34,7 @@ module.exports = function run_viz(regl, network){
 
       params.animation.running = false;
       params.animation.run_switch = false;
-      console.log('finish switch!!!!!!!!!!!');
+      // console.log('finish switch!!!!!!!!!!!');
 
       // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -59,8 +57,6 @@ module.exports = function run_viz(regl, network){
 
       })
 
-
-
     }
 
     // run draw command
@@ -78,7 +74,6 @@ module.exports = function run_viz(regl, network){
 
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;
-        // console.log('animation: ', params.animation.time_remain);
       }
 
       // // set up extra frame specifically to remove old tooltip
@@ -142,7 +137,6 @@ module.exports = function run_viz(regl, network){
       */
 
     }
-
 
   });
 

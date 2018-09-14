@@ -22686,8 +22686,8 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
       var final_y = 0;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y + ' L'
-      + final_x + ','+ final_y +' Z';
+      mid_x + ', ' + mid_y + ' L' +
+      final_x + ','+ final_y +' Z';
 
       return output_string;
     })
@@ -22735,7 +22735,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     slider_pos = d3.round(slider_pos, -1);
 
-    var slider_value = 10 - slider_pos/10;
+    // var slider_value = 10 - slider_pos/10;
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
@@ -22752,7 +22752,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
     d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
-    var slider_value = 10 - rel_pos/10;
+    // var slider_value = 10 - rel_pos/10;
 
     // change_groups(cgm, inst_rc, slider_value);
 
@@ -23199,15 +23199,11 @@ var calc_tooltip_background_triangles = __webpack_require__(/*! ./../tooltip/cal
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  // console.log('draw tooltip components', params.in_bounds_tooltip);
-
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {
 
     // var args = params.spillover_args.mat_corners;
     var args = params.tooltip_args;
-
-    // var triangles = params.spillover_triangles.mat_corners;
 
     // tooltip background
     ////////////////////////////
@@ -23218,17 +23214,20 @@ module.exports = function draw_tooltip_components(regl, params){
     //////////////////
     // make the arguments for the draw command
     var text_triangle_args;
-     // = params.mouseover.text_triangle_args;
+    var line_offset;
+    var inst_triangles
 
     // draw row/col names
-    var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=3.0);
-    var inst_triangles = params.mouseover.text_triangles['line-1'];
+    line_offset = 3.0;
+    text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
+    inst_triangles = params.mouseover.text_triangles['line-1'];
     regl(text_triangle_args)(inst_triangles);
 
     if (params.cat_num.col > 0){
 
-      var text_triangle_args = make_tooltip_text_args(regl, params, line_offset=1.5);
-      var inst_triangles = params.mouseover.text_triangles['line-2'];
+      line_offset = 1.5;
+      text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
+      inst_triangles = params.mouseover.text_triangles['line-2'];
       regl(text_triangle_args)(inst_triangles);
 
     }
@@ -23248,7 +23247,7 @@ module.exports = function draw_tooltip_components(regl, params){
 const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
 
 module.exports = function interp_fun(params){
-  inst_ease = ease((params.time - params.animation.last_switch_time) /
+  var inst_ease = ease((params.time - params.animation.last_switch_time) /
               params.animation.switch_duration);
 
   // console.log(inst_ease)
@@ -23320,14 +23319,12 @@ module.exports = function run_viz(regl, network){
 
   regl.frame(function ({time}) {
 
-    // console.log(params.slow_draw)
-
     params.time = time;
     params.animation.loop = 0 ;
 
     if (params.animation.run_switch){
 
-      console.log('turn switch off')
+      // console.log('turn switch off')
       params.animation.run_switch = false;
       params.animation.last_switch_time = time
       params.animation.running = true;
@@ -23340,7 +23337,7 @@ module.exports = function run_viz(regl, network){
 
       params.animation.running = false;
       params.animation.run_switch = false;
-      console.log('finish switch!!!!!!!!!!!');
+      // console.log('finish switch!!!!!!!!!!!');
 
       // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -23363,8 +23360,6 @@ module.exports = function run_viz(regl, network){
 
       })
 
-
-
     }
 
     // run draw command
@@ -23382,7 +23377,6 @@ module.exports = function run_viz(regl, network){
 
       if (params.animation.time_remain > 0){
         params.animation.time_remain = params.animation.time_remain - 1;
-        // console.log('animation: ', params.animation.time_remain);
       }
 
       // // set up extra frame specifically to remove old tooltip
@@ -23447,7 +23441,6 @@ module.exports = function run_viz(regl, network){
 
     }
 
-
   });
 
   return params;
@@ -23511,7 +23504,7 @@ module.exports = function final_mouseover_frame(regl, params){
     // console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
 
     // run draw commands
-    var slow_draw = true;
+    // var slow_draw = true;
     params.show_tooltip = true;
 
     // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
@@ -23531,6 +23524,7 @@ module.exports = function final_mouseover_frame(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+var restrict_rel_min = __webpack_require__(/*! ./restrict_rel_min */ "./src/interactions/restrict_rel_min.js");
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
@@ -23563,16 +23557,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
   // try updating mouseover position
   params.zoom_data.x.cursor_position = ev.x0;
   params.zoom_data.y.cursor_position = ev.y0;
-
-  var inst_x = ev.x0;
-  var inst_y = ev.y0;
-
-  // var offcenter;
-  // if (axis === 'x'{
-  //   offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
-  // } else {
-  //   offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
-  // }
 
   // convert offcenter WebGl units to pixel units
   var offcenter = {};
@@ -23626,28 +23610,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-
-    // // make the arguments for the draw command
-    // params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, line_offset=2.5);
-
     params.in_bounds_tooltip = true;
   } else {
     // console.log('OUTSIDE OF MATRIX')
     params.in_bounds_tooltip = false;
-  }
-
-
-  function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
-
-    cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
-
-    // console.log(viz_dim_heat.max)
-    if (cursor_rel_min < 0){
-      cursor_rel_min = 0;
-    } else if (cursor_rel_min > max_pix){
-      cursor_rel_min = max_pix;
-    }
-    return cursor_rel_min;
   }
 
 };
@@ -24108,6 +24074,28 @@ module.exports = function keep_track_of_mouseovers(params){
     }, 1000);
 
   }
+
+};
+
+/***/ }),
+
+/***/ "./src/interactions/restrict_rel_min.js":
+/*!**********************************************!*\
+  !*** ./src/interactions/restrict_rel_min.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
+
+  cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
+
+  if (cursor_rel_min < 0){
+    cursor_rel_min = 0;
+  } else if (cursor_rel_min > max_pix){
+    cursor_rel_min = max_pix;
+  }
+  return cursor_rel_min;
 
 };
 

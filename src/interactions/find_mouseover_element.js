@@ -1,4 +1,5 @@
 const vectorizeText = require('vectorize-text');
+var restrict_rel_min = require('./restrict_rel_min');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
@@ -31,16 +32,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
   // try updating mouseover position
   params.zoom_data.x.cursor_position = ev.x0;
   params.zoom_data.y.cursor_position = ev.y0;
-
-  var inst_x = ev.x0;
-  var inst_y = ev.y0;
-
-  // var offcenter;
-  // if (axis === 'x'{
-  //   offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
-  // } else {
-  //   offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
-  // }
 
   // convert offcenter WebGl units to pixel units
   var offcenter = {};
@@ -94,28 +85,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-
-    // // make the arguments for the draw command
-    // params.mouseover.text_triangle_args = make_tooltip_text_args(regl, params, line_offset=2.5);
-
     params.in_bounds_tooltip = true;
   } else {
     // console.log('OUTSIDE OF MATRIX')
     params.in_bounds_tooltip = false;
-  }
-
-
-  function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
-
-    cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
-
-    // console.log(viz_dim_heat.max)
-    if (cursor_rel_min < 0){
-      cursor_rel_min = 0;
-    } else if (cursor_rel_min > max_pix){
-      cursor_rel_min = max_pix;
-    }
-    return cursor_rel_min;
   }
 
 };

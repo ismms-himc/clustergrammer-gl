@@ -67,8 +67,8 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
       var final_y = 0;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y + ' L'
-      + final_x + ','+ final_y +' Z';
+      mid_x + ', ' + mid_y + ' L' +
+      final_x + ','+ final_y +' Z';
 
       return output_string;
     })
@@ -116,7 +116,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     slider_pos = d3.round(slider_pos, -1);
 
-    var slider_value = 10 - slider_pos/10;
+    // var slider_value = 10 - slider_pos/10;
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
@@ -133,7 +133,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
     d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
-    var slider_value = 10 - rel_pos/10;
+    // var slider_value = 10 - rel_pos/10;
 
     // change_groups(cgm, inst_rc, slider_value);
 

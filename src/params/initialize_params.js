@@ -8,7 +8,7 @@ var zoom_rules_high_mat = require('./../zoom/zoom_rules_high_mat');
 var make_cameras = require('./../cameras/make_cameras');
 var calc_spillover_triangles = require('./../spillover/calc_spillover_triangles');
 var make_matrix_args = require('./../matrix_cells/make_matrix_args');
-var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
+// var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
 var make_spillover_args = require('./../spillover/make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');
@@ -102,8 +102,8 @@ module.exports = function initialize_params(regl, network){
 
   // will set up global offset later
   params.offcenter = {};
-  offcenter_magnitude_x = 0.075;
-  offcenter_magnitude_y = 0.075;
+  var offcenter_magnitude_x = 0.075;
+  var offcenter_magnitude_y = 0.075;
   params.offcenter.x = offcenter_magnitude_x;
   params.offcenter.y = offcenter_magnitude_y;
 
@@ -157,22 +157,13 @@ module.exports = function initialize_params(regl, network){
   params.cat_arrs.new.row = {};
   params.cat_arrs.new.col = {};
 
-  for (var cat_index = 0; cat_index < params.cat_num.row; cat_index++) {
-    params.cat_arrs.inst['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.inst_order.row);
-    params.cat_arrs.new['row'][cat_index] = make_cat_position_array(params, 'row', cat_index, params.new_order.row);
-
-    params.cat_args.row[cat_index] = make_cat_args(regl, params, 'row', cat_index=cat_index);
-  }
-
-
-  for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-    params.cat_arrs.inst['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.inst_order.col);
-    params.cat_arrs.new['col'][cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
-
-    params.cat_args.col[cat_index] = make_cat_args(regl, params, 'col', cat_index=cat_index);
-  }
-
-
+  _.each(['row', 'col'], function(inst_axis){
+    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+      params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.inst_order[inst_axis]);
+      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
+      params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
+    }
+  });
 
   params.dendro_args = {};
   params.dendro_args.row = make_dendro_args(regl, params, 'row');

@@ -11,7 +11,7 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     mat_size = params.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
-    var reduce_height = params.zoom_data.x.total_zoom;
+    // var reduce_height = params.zoom_data.x.total_zoom;
     // tri_height = mat_size/num_labels * reduce_height;
     tri_width  = mat_size/num_labels;
 

@@ -1,11 +1,9 @@
 module.exports = function get_ordered_labels(params){
 
-  console.log('get ordered_labels')
-
   var ordered_labels = {};
 
-  row_nodes = params.network.row_nodes;
-  col_nodes = params.network.col_nodes;
+  var row_nodes = params.network.row_nodes;
+  var col_nodes = params.network.col_nodes;
   ordered_labels.rows = [];
   ordered_labels.cols = [];
 
@@ -13,7 +11,6 @@ module.exports = function get_ordered_labels(params){
   ordered_labels.col_cats = [];
 
   var inst_order;
-  var inst_name;
   _.each(row_nodes, function(inst_node){
     inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
     ordered_labels.rows[inst_order] = inst_node.name;
@@ -21,7 +18,7 @@ module.exports = function get_ordered_labels(params){
 
   var found_col_cat = false;
   if (params.cat_num.col > 0){
-    var found_col_cat = true;
+    found_col_cat = true;
   }
 
   _.each(col_nodes, function(inst_node){

@@ -10,9 +10,9 @@ var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 
 function clustergrammer_gl(args){
 
-  console.log('################################');
-  console.log('clustergrammer-gl version 0.5.3 - dev!');
-  console.log('################################');
+  // console.log('################################');
+  // console.log('clustergrammer-gl version 0.5.3 - dev!');
+  // console.log('################################');
 
   var network = args.network;
   var container = args.container;

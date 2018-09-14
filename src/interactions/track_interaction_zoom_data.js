@@ -31,6 +31,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
     zoom_data.y.pan_by_drag = ev.dy;
     zoom_data.y.cursor_position = ev.y0;
 
+    var potential_zoom;
     /*
       Zoom Switch: adjust x/y zooming based on non-square matrices
     */
@@ -40,7 +41,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       // console.log('restrict X zoom')
       zoom_data.x.inst_zoom = 1;
 
-      var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
+      potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
 
       // check potential_zoom
       if (potential_zoom > zoom_restrict.y.ratio){
@@ -57,7 +58,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
       zoom_data.y.inst_zoom = 1;
 
-      var potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
+      potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
 
       // check potential_zoom
       if (potential_zoom > zoom_restrict.x.ratio){
@@ -84,7 +85,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
     // console.log('dragging', ev.type)
 
   } else {
-    console.log('not tracking anything')
+    // console.log('not tracking anything')
   }
 
 }

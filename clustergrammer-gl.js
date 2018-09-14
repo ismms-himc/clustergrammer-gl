@@ -24141,6 +24141,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
     zoom_data.y.pan_by_drag = ev.dy;
     zoom_data.y.cursor_position = ev.y0;
 
+    var potential_zoom;
     /*
       Zoom Switch: adjust x/y zooming based on non-square matrices
     */
@@ -24150,7 +24151,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       // console.log('restrict X zoom')
       zoom_data.x.inst_zoom = 1;
 
-      var potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
+      potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
 
       // check potential_zoom
       if (potential_zoom > zoom_restrict.y.ratio){
@@ -24167,7 +24168,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
       zoom_data.y.inst_zoom = 1;
 
-      var potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
+      potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
 
       // check potential_zoom
       if (potential_zoom > zoom_restrict.x.ratio){
@@ -24194,7 +24195,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
     // console.log('dragging', ev.type)
 
   } else {
-    console.log('not tracking anything')
+    // console.log('not tracking anything')
   }
 
 }
@@ -24220,9 +24221,9 @@ var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendro
 
 function clustergrammer_gl(args){
 
-  console.log('################################');
-  console.log('clustergrammer-gl version 0.5.3 - dev!');
-  console.log('################################');
+  // console.log('################################');
+  // console.log('clustergrammer-gl version 0.5.3 - dev!');
+  // console.log('################################');
 
   var network = args.network;
   var container = args.container;
@@ -24347,13 +24348,11 @@ module.exports = function calc_row_downsampled_mat(params, run_downsampling=fals
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var blend_info = __webpack_require__(/*! ./../colors/blend_info */ "./src/colors/blend_info.js");
 var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/matrix_cells/make_opacity_arr.js");
 
 module.exports = function make_matrix_args(regl, params){
 
-  console.log('make_matrix_args')
 
   // make arrays
   params.arrs = {};
@@ -24361,17 +24360,14 @@ module.exports = function make_matrix_args(regl, params){
 
   params.arrs.position_arr = {};
 
-  console.log('make ini position array')
   params.arrs.position_arr.ini = make_position_arr(params,
                                                params.inst_order.row,
                                                params.inst_order.col);
 
-  console.log('make new position array')
   params.arrs.position_arr.new = make_position_arr(params,
                                                params.new_order.row,
                                                params.new_order.col);
 
-  console.log('later in make_matrix_args')
 
   var opacity_buffer = regl.buffer({
     type: 'float',
@@ -24493,7 +24489,6 @@ module.exports = function make_matrix_args(regl, params){
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
 
-  console.log('returning matrix_args')
 
   return matrix_args;
 
@@ -24828,12 +24823,10 @@ module.exports = function calc_row_text_triangles(params){
 
 module.exports = function get_ordered_labels(params){
 
-  console.log('get ordered_labels')
-
   var ordered_labels = {};
 
-  row_nodes = params.network.row_nodes;
-  col_nodes = params.network.col_nodes;
+  var row_nodes = params.network.row_nodes;
+  var col_nodes = params.network.col_nodes;
   ordered_labels.rows = [];
   ordered_labels.cols = [];
 
@@ -24841,7 +24834,6 @@ module.exports = function get_ordered_labels(params){
   ordered_labels.col_cats = [];
 
   var inst_order;
-  var inst_name;
   _.each(row_nodes, function(inst_node){
     inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
     ordered_labels.rows[inst_order] = inst_node.name;
@@ -24849,7 +24841,7 @@ module.exports = function get_ordered_labels(params){
 
   var found_col_cat = false;
   if (params.cat_num.col > 0){
-    var found_col_cat = true;
+    found_col_cat = true;
   }
 
   _.each(col_nodes, function(inst_node){

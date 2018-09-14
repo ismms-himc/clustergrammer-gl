@@ -2,20 +2,15 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 
   var num_labels = params['num_'+inst_axis];
   // category tiles have fixed heights
-  var cat_height;
   // category widths depend on the number of labels
   var cat_width;
   var mat_size;
-  var top_shift_triangles;
-  cat_height = 0.04;
   if (inst_axis === 'col'){
     mat_size = params.heat_size.x;
-    top_shift_triangles = params.mat_size.y;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
     mat_size = params.heat_size.y;
-    top_shift_triangles = params.mat_size.x;
     cat_width = (params.heat_size.y/0.5)/num_labels;
   }
 
@@ -25,10 +20,6 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
   // vertical shift
-  var shift_cat = 0.025 * (cat_index + 1);
-  // console.log('shift_cat', shift_cat)
-
-  // var inst_order = params.inst_order[inst_axis];
 
   var y_offset_array = [];
   var i;

@@ -21,12 +21,12 @@ module.exports = function build_control_panel(regl, cgm){
 
 
   // dark text color
-  var text_color = '#2f363d';
+  // var text_color = '#2f363d';
   var text_color = '#47515b';
 
 
   // button_color = text_color;
-  button_color = '#eee';
+  var button_color = '#eee';
 
   // // experimenting in different color pallets
   // control_panel_color = '#2f363d'
@@ -122,8 +122,6 @@ module.exports = function build_control_panel(regl, cgm){
 
 
   _.each(['row', 'col'], function(inst_axis){
-
-    console.log('inst_axis', inst_axis)
 
     var axis_title = control_svg
       .append('g')

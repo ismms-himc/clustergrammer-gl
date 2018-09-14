@@ -40,59 +40,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     return context.view;
   };
 
-  // make viz_aid triangle array
-  /////////////////////////////////
-  var inst_order = params.inst_order[inst_axis];
-  var tri_offset_array_inst = [];
-  var i;
-  for (i = 0; i < num_labels; i++){
-
-    // emperically found rules
-    var order_id;
-    var shift_mat_heat;
-    if (inst_axis == 'row'){
-      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
-      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
-    } else {
-      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x
-    }
-
-    /* need to position based on clustering order */
-    // the last part is necessary to shfit the viz aid triangles down to make up
-    // for the smaller size of the heatmap vs the general matrix area
-
-    tri_offset_array_inst[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
-  }
-
-  // make viz_aid triangle array
-  /////////////////////////////////
-  var new_order = params.new_order[inst_axis];
-  var tri_offset_array_new = [];
-  var i;
-  for (i = 0; i < num_labels; i++){
-
-    // emperically found rules
-    var order_id;
-    var shift_mat_heat;
-    if (inst_axis == 'row'){
-      order_id = num_labels - params.network[inst_axis + '_nodes'][i][new_order] - 1;
-      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
-    } else {
-      order_id = params.network[inst_axis + '_nodes'][i][new_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x
-    }
-
-    /* need to position based on clustering order */
-    // the last part is necessary to shfit the viz aid triangles down to make up
-    // for the smaller size of the heatmap vs the general matrix area
-
-    tri_offset_array_new[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
-  }
-
-  // console.log(params.inst_order[inst_axis], ' -> ', params.new_order[inst_axis])
-  // console.log(params.inst_order)
-  // console.log(params.new_order)
+  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(params, inst_axis, params.inst_order[inst_axis]);
+  var tri_offset_array_new = make_viz_aid_tri_pos_arr(params, inst_axis, params.new_order[inst_axis]);
 
   /////////////////////////////////
   // Rotation and Scaling

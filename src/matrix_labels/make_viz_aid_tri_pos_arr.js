@@ -1,5 +1,8 @@
 module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order){
 
+
+  var num_labels = params['num_'+inst_axis];
+
   if (inst_axis === 'col'){
 
     mat_size = params.heat_size.x;
@@ -21,5 +24,32 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     top_offset = -params.mat_size.x - tri_height;
 
   }
+
+  // make viz_aid triangle array
+  /////////////////////////////////
+  var inst_order = inst_order;
+  var tri_offset_array = [];
+  var i;
+  for (i = 0; i < num_labels; i++){
+
+    // emperically found rules
+    var order_id;
+    var shift_mat_heat;
+    if (inst_axis == 'row'){
+      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
+      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
+    } else {
+      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
+      shift_mat_heat = params.mat_size.x - params.heat_size.x
+    }
+
+    /* need to position based on clustering order */
+    // the last part is necessary to shfit the viz aid triangles down to make up
+    // for the smaller size of the heatmap vs the general matrix area
+
+    tri_offset_array[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
+  }
+
+  return tri_offset_array;
 
 };

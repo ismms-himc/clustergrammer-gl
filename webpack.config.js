@@ -29,18 +29,17 @@ module.exports = [
           {
             test: /node_modules/,
             loader: 'ify-loader'
+          },
+          {
+            test: /\.(png|jpg|gif)$/,
+            use: [
+              {
+                loader: 'file-loader',
+                options: {}
+              }
+            ]
           }
         ]
-
-        // loaders: [
-        //     {
-        //       test: /\.js$/,
-        //       loader: 'babel',
-        //       query: {
-        //         // presets: ['es2015']
-        //       }
-        //     }
-        // ]
     },
     plugins: [
       new BrowserSyncPlugin({
@@ -77,16 +76,23 @@ module.exports = [
   //       'd3': 'd3'
   //     },
   //     module: {
-  //         // loaders: [
-  //         //     {
-  //         //       test: /\.js$/,
-  //         //       loader: 'babel',
-  //         //       query: {
-  //         //         // disabled presets es2015
-  //         //         // presets: ['es2015']
-  //         //       }
-  //         //     }
-  //         // ]
+  //       rules: [
+  //         // This applies the loader to all of your dependencies,
+  //         // and not any of the source files in your project:
+  //         {
+  //           test: /node_modules/,
+  //           loader: 'ify-loader'
+  //         },
+  //         {
+  //           test: /\.(png|jpg|gif)$/,
+  //           use: [
+  //             {
+  //               loader: 'file-loader',
+  //               options: {}
+  //             }
+  //           ]
+  //         }
+  //       ]
   //     },
   //     "mode": "development",
   //     node: {
@@ -113,25 +119,29 @@ module.exports = [
   //     optimization: {
   //       minimize: true
   //     },
+  //     module: {
+  //       rules: [
+  //         // This applies the loader to all of your dependencies,
+  //         // and not any of the source files in your project:
+  //         {
+  //           test: /node_modules/,
+  //           loader: 'ify-loader'
+  //         },
+  //         {
+  //           test: /\.(png|jpg|gif)$/,
+  //           use: [
+  //             {
+  //               loader: 'file-loader',
+  //               options: {}
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     },
   //     "mode": "production",
   //     node: {
   //        fs: "empty"
   //     }
-  //     // plugins:[
-  //     //   new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
-  //     // ],
-
-  //     // module: {
-  //     //     loaders: [
-  //     //         {
-  //     //           test: /\.js$/,
-  //     //           loader: 'babel',
-  //     //           query: {
-  //     //             presets: ['es2015']
-  //     //           }
-  //     //         }
-  //     //     ]
-  //     // }
   // },
   // {
   //     entry: './src/main.js',
@@ -154,22 +164,27 @@ module.exports = [
   //       minimize: true
   //     },
   //     "mode": "production",
+  //     module: {
+  //       rules: [
+  //         // This applies the loader to all of your dependencies,
+  //         // and not any of the source files in your project:
+  //         {
+  //           test: /node_modules/,
+  //           loader: 'ify-loader'
+  //         },
+  //         {
+  //           test: /\.(png|jpg|gif)$/,
+  //           use: [
+  //             {
+  //               loader: 'file-loader',
+  //               options: {}
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     },
   //     node: {
   //        fs: "empty"
   //     }
-  //     // plugins:[
-  //     //   new webpack.optimize.UglifyJsPlugin({compress: { warnings: false }})
-  //     // ],
-  //     // module: {
-  //     //     loaders: [
-  //     //         {
-  //     //           test: /\.js$/,
-  //     //           loader: 'babel',
-  //     //           query: {
-  //     //             presets: ['es2015']
-  //     //           }
-  //     //         }
-  //     //     ]
-  //     // }
   // }
 ];

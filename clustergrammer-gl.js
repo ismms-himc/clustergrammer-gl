@@ -87,6 +87,17 @@ var Clustergrammer2 =
 /************************************************************************/
 /******/ ({
 
+/***/ "./img/graham_cracker_144.png":
+/*!************************************!*\
+  !*** ./img/graham_cracker_144.png ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "401229782cf70826d5f0e68711a53a51.png";
+
+/***/ }),
+
 /***/ "./node_modules/base64-js/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
@@ -22324,6 +22335,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /***/ (function(module, exports, __webpack_require__) {
 
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
+var img = __webpack_require__(/*! ./../../img/graham_cracker_144.png */ "./img/graham_cracker_144.png");
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -22381,10 +22393,10 @@ module.exports = function build_control_panel(regl, cgm){
 
   var button_dim = {};
   button_dim.height = 33;
-  button_dim.width = 70;
+  button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
-  button_dim.fs = 13;
+  button_dim.fs = 12;
 
   var button_groups = {};
   button_groups.row = {};
@@ -22416,8 +22428,8 @@ module.exports = function build_control_panel(regl, cgm){
   .style('cursor', 'default')
   .style('-webkit-user-select', 'none')
       .attr('transform', function(){
-      var x_offset = 275;
-      var y_trans = y_offset_buttons - 2 *button_dim.buffer - 5;
+      var x_offset = 260;
+      var y_trans = y_offset_buttons - 2 * button_dim.buffer - 5;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     })
 
@@ -22432,7 +22444,7 @@ module.exports = function build_control_panel(regl, cgm){
     .style('stroke', '#eee')
     .style('stroke-width', 2)
     .attr('transform', function(){
-      var x_offset = button_dim.x_trans - button_dim.buffer;
+      var x_offset = button_dim.x_trans - button_dim.buffer + 11;
       var y_trans = y_offset_buttons - button_dim.buffer - 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
@@ -22540,6 +22552,17 @@ module.exports = function build_control_panel(regl, cgm){
 
   })
 
+  control_svg.append('svg:image')
+  .attr('x', 8)
+  .attr('y', 6)
+  .attr('width', 25)
+  .attr('height', 25)
+  .attr('xlink:href', img)
+  .classed('clustergrammer-logo', true)
+  // .on('click', function(){
+  //   console.log('clicking logo')
+  // });
+
 };
 
 /***/ }),
@@ -22566,8 +22589,8 @@ module.exports = function build_dendrogram_sliders(cgm){
     .style('height', slider_length + 'px')
     .style('width', '40px')
     .style('position', 'absolute')
-    .style('top', 400 + 'px')
-    .style('left', cgm.params.viz_width - 15 + 'px')
+    .style('top', 325 + 'px')
+    .style('left', cgm.params.viz_width - 20 + 'px')
     .attr('class', 'dendro_slider_svg')
 
   col_slider_container
@@ -22895,10 +22918,10 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
     params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
     regl(params.viz_aid_tri_args.col)(
-      {
-        interp_prop: interp_fun(params),
-        run_animation: params.animation.running
-      }
+      // {
+      //   interp_prop: interp_fun(params),
+      //   run_animation: params.animation.running
+      // }
     );
 
     // drawing the column categories and dendrogram using the same camera as the
@@ -23076,10 +23099,10 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
     params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
 
     regl(params.viz_aid_tri_args.row)(
-      {
-        interp_prop: interp_fun(params),
-        run_animation: params.animation.running
-      }
+      // {
+      //   interp_prop: interp_fun(params),
+      //   run_animation: params.animation.running
+      // }
     );
 
     _.each(params.cat_args.row, function(inst_cat_arg){

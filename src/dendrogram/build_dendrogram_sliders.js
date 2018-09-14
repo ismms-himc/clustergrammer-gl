@@ -13,8 +13,8 @@ module.exports = function build_dendrogram_sliders(cgm){
     .style('height', slider_length + 'px')
     .style('width', '40px')
     .style('position', 'absolute')
-    .style('top', 400 + 'px')
-    .style('left', cgm.params.viz_width - 15 + 'px')
+    .style('top', 325 + 'px')
+    .style('left', cgm.params.viz_width - 20 + 'px')
     .attr('class', 'dendro_slider_svg')
 
   col_slider_container

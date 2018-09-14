@@ -1,4 +1,5 @@
 var run_reorder = require('./../reorders/run_reorder');
+var img = require('./../../img/graham_cracker_144.png');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -56,10 +57,10 @@ module.exports = function build_control_panel(regl, cgm){
 
   var button_dim = {};
   button_dim.height = 33;
-  button_dim.width = 70;
+  button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
-  button_dim.fs = 13;
+  button_dim.fs = 12;
 
   var button_groups = {};
   button_groups.row = {};
@@ -91,8 +92,8 @@ module.exports = function build_control_panel(regl, cgm){
   .style('cursor', 'default')
   .style('-webkit-user-select', 'none')
       .attr('transform', function(){
-      var x_offset = 275;
-      var y_trans = y_offset_buttons - 2 *button_dim.buffer - 5;
+      var x_offset = 260;
+      var y_trans = y_offset_buttons - 2 * button_dim.buffer - 5;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     })
 
@@ -107,7 +108,7 @@ module.exports = function build_control_panel(regl, cgm){
     .style('stroke', '#eee')
     .style('stroke-width', 2)
     .attr('transform', function(){
-      var x_offset = button_dim.x_trans - button_dim.buffer;
+      var x_offset = button_dim.x_trans - button_dim.buffer + 11;
       var y_trans = y_offset_buttons - button_dim.buffer - 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
@@ -214,5 +215,16 @@ module.exports = function build_control_panel(regl, cgm){
       .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
   })
+
+  control_svg.append('svg:image')
+  .attr('x', 8)
+  .attr('y', 6)
+  .attr('width', 25)
+  .attr('height', 25)
+  .attr('xlink:href', img)
+  .classed('clustergrammer-logo', true)
+  // .on('click', function(){
+  //   console.log('clicking logo')
+  // });
 
 };

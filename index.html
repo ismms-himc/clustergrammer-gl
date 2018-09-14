@@ -28,11 +28,12 @@
 
     var inst_container = document.getElementById('something')
 
-    var inst_height = 1100;
-    var inst_width = 950;
+    // the control panel is 135 pixels high
+    var inst_height = 1035;
+    var inst_width = 900;
 
-    var x_offset = 20;
-    var y_offset = 100;
+    var x_offset = 10;
+    var y_offset = 10;
 
     d3.select('#something')
       .style('height',inst_height + 'px')
@@ -60,8 +61,8 @@
       args = {};
       args.network = network;
       args.container=inst_container;
-      args.viz_width=950;
-      args.viz_height=950;
+      args.viz_width=inst_width;
+      args.viz_height=inst_width;
       cgm = Clustergrammer2(args);
       // cgm2 = Clustergrammer2(args);
 

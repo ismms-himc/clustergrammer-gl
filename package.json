@@ -23,6 +23,7 @@
     "browser-sync-webpack-plugin": "^1.2.0",
     "eslint": "^2.13.1",
     "expose-loader": "^0.7.1",
+    "file-loader": "^2.0.0",
     "transform-loader": "^0.2.4",
     "webpack": "^4.16.3",
     "webpack-cli": "^3.1.0"

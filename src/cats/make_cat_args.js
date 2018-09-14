@@ -47,14 +47,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-  var cat_pos_buffer = {};
 
   /////////////////////////////////
   // Label Color Buffer
   /////////////////////////////////
 
   var color_arr = [];
-  for (i = 0; i < num_labels; i++){
+  for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
     // console.log(inst_cat)
@@ -196,13 +195,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       ],
 
       cat_pos_att_inst: {
-        // buffer: cat_pos_buffer.inst,
         buffer: regl.buffer(params.cat_arrs.inst[inst_axis][cat_index]),
         divisor: 1
       },
 
       cat_pos_att_new: {
-        // buffer: cat_pos_buffer.new,
         buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
         divisor: 1
       },

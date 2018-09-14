@@ -27,7 +27,6 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
   // vertical shift
   var shift_cat = 0.025 * (cat_index + 1);
   // console.log('shift_cat', shift_cat)
-  var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
   // var inst_order = params.inst_order[inst_axis];
 
@@ -41,7 +40,7 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     if (inst_axis == 'row'){
       order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
       // vertical shift
-      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
+      shift_mat_heat = -(params.mat_size.y - params.heat_size.y)
     } else {
       order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
       shift_mat_heat = params.mat_size.x - params.heat_size.x

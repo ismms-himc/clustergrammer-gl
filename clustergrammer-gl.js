@@ -25217,7 +25217,8 @@ var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_rc){
 
-  var inst_rgba = color_to_rgba('#eee', 1.0);
+  // var inst_rgba = color_to_rgba('#eee', 1.0);
+  var inst_rgba = color_to_rgba('red', 1.0);
   var num_labels = params['num_'+inst_rc];
 
   var tri_height;

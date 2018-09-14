@@ -2,7 +2,7 @@ var build_single_dendro_slider = require('./build_single_dendro_slider');
 
 module.exports = function build_dendrogram_sliders(cgm){
 
-  console.log('build_dendrogram_sliders')
+  // console.log('build_dendrogram_sliders')
 
   // Add sliders on top of the canvas
   /////////////////////////////////////
@@ -23,7 +23,7 @@ module.exports = function build_dendrogram_sliders(cgm){
     .style('width', '50px')
     .style('fill', 'white')
     .on('click', function(){
-      console.log('clicking the red slider')
+      // console.log('clicking the red slider')
     })
 
   build_single_dendro_slider(cgm, 'row');

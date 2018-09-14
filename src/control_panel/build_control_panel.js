@@ -2,10 +2,7 @@ var run_reorder = require('./../reorders/run_reorder');
 
 module.exports = function build_control_panel(regl, cgm){
 
-
-  console.log('building control panel')
-
-// Add control panel to the top
+  // Add control panel to the top
   ///////////////////////////////////////
 
   // var control_container = d3.select(cgm.params.container).select(' .control-container')[0][0];
@@ -15,17 +12,12 @@ module.exports = function build_control_panel(regl, cgm){
 
   // light panel color '#bbc3cc'
   // light button color '#e3e7ea'
-
   // var control_panel_color = '#eee';
-  var control_panel_color = 'white';
-
-
   // dark text color
   // var text_color = '#2f363d';
-  var text_color = '#47515b';
-
-
   // button_color = text_color;
+  var control_panel_color = 'white';
+  var text_color = '#47515b';
   var button_color = '#eee';
 
   // // experimenting in different color pallets
@@ -69,7 +61,7 @@ module.exports = function build_control_panel(regl, cgm){
   button_dim.x_trans = button_dim.width + button_dim.buffer;
   button_dim.fs = 13;
 
-  button_groups = {};
+  var button_groups = {};
   button_groups.row = {};
   button_groups.col = {};
 
@@ -108,8 +100,8 @@ module.exports = function build_control_panel(regl, cgm){
     .append('rect')
     .style('height', '1px')
     .style('width', function(){
-      var inst_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer;
-      return inst_width;
+      var tmp_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer;
+      return tmp_width;
     })
     .style('position', 'absolute')
     .style('stroke', '#eee')
@@ -125,7 +117,7 @@ module.exports = function build_control_panel(regl, cgm){
 
     var axis_title = control_svg
       .append('g')
-      .attr('transform', function(d, i){
+      .attr('transform', function(){
         var x_offset = 0;
         var y_offset = button_groups[inst_axis].y_trans;
         return 'translate('+ x_offset  +', '+ y_offset +')';
@@ -169,8 +161,8 @@ module.exports = function build_control_panel(regl, cgm){
 
         if (cgm.params.inst_order[inst_axis] != clean_order){
 
-          console.log('REORDER')
-          console.log(inst_axis, cgm.params.inst_order, clean_order)
+          // console.log('REORDER')
+          // console.log(inst_axis, cgm.params.inst_order, clean_order)
 
           run_reorder(regl, cgm, inst_axis, d);
 
@@ -222,8 +214,5 @@ module.exports = function build_control_panel(regl, cgm){
       .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
   })
-
-
-
 
 };

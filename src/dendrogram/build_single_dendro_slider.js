@@ -3,23 +3,16 @@
 
 module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
-  console.log('working on building slider')
-
   var slider_length = 100;
   var rect_height = slider_length + 20;
   var rect_width = 30;
 
   var drag = d3.behavior.drag()
-      .on("drag", dragging)
+      .on('drag', dragging)
       .on('dragend', function(){
-        console.log('stopped dragging');
         cgm.params.is_slider_drag = false;
       });
 
-  // debugger;
-
-  // var slider_group = d3.select(cgm.params.root +' .viz_svg')
-  // var slider_group = d3.select(canvas_container)
   var slider_group = d3.select(cgm.params.root + ' .dendro_slider_svg')
       .append('g')
       .classed( inst_rc + '_slider_group', true)
@@ -45,13 +38,13 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
     .style('opacity', 0);
 
   slider_group
-    .append("line")
+    .append('line')
     .style('stroke-width', slider_length/7+'px')
     .style('stroke', 'black')
     .style('stroke-linecap', 'round')
     .style('opacity', 0.0)
-    .attr("y1", 0)
-    .attr("y2", function(){
+    .attr('y1', 0)
+    .attr('y2', function(){
       return slider_length-2;
     })
     .on('click', click_dendro_slider);
@@ -104,8 +97,6 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
   function dragging() {
 
-    // console.log('dragging the svg slider')
-
     cgm.params.is_slider_drag = true;
 
     // d[0] = d3.event.x;
@@ -127,15 +118,13 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     var slider_value = 10 - slider_pos/10;
 
-    d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
+    d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
     // change_groups(cgm, inst_rc, slider_value);
 
   }
 
   function click_dendro_slider(){
-
-    // console.log('clicking the dendrogram slider')
 
     var clicked_line_position = d3.mouse(this);
 

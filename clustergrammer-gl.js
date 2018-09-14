@@ -22885,7 +22885,7 @@ var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_tex
 var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_col_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
-var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
+var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function draw_col_components(regl, params, calc_text_tri=false){
 
@@ -24687,10 +24687,6 @@ module.exports = function calc_col_text_triangles(params){
         params.text_triangles.col[inst_name] = tmp_text_vect;
       }
 
-      // // if (inst_name not in params.text_triangles.col){
-      //   console.log('did not find', inst_name, params.text_triangles.col);
-      // // }
-
       tmp_text_vect.offset = [0, inst_x];
       col_text_triangles.push(tmp_text_vect);
 
@@ -25132,6 +25128,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 var make_viz_aid_tri_pos_arr = __webpack_require__(/*! ./make_viz_aid_tri_pos_arr */ "./src/matrix_labels/make_viz_aid_tri_pos_arr.js");
+var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
@@ -25276,8 +25273,12 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       top_offset: top_offset,
       triangle_color: inst_rgba,
       total_zoom: total_zoom,
-      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      run_animation: regl.prop('run_animation')
+      // interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
+      // run_animation: regl.prop('run_animation')
+
+      // alternate way to define interpolate uni
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
+      run_animation: params.animation.running
     },
 
     count: 3,

@@ -69,10 +69,6 @@ module.exports = function calc_col_text_triangles(params){
         params.text_triangles.col[inst_name] = tmp_text_vect;
       }
 
-      // // if (inst_name not in params.text_triangles.col){
-      //   console.log('did not find', inst_name, params.text_triangles.col);
-      // // }
-
       tmp_text_vect.offset = [0, inst_x];
       col_text_triangles.push(tmp_text_vect);
 

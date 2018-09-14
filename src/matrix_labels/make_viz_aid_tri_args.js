@@ -1,6 +1,7 @@
 var m3 = require('./../draws/mat3_transform');
 var color_to_rgba = require('./../colors/color_to_rgba');
 var make_viz_aid_tri_pos_arr = require('./make_viz_aid_tri_pos_arr');
+var interp_fun = require('./../draws/interp_fun');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
@@ -145,8 +146,12 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       top_offset: top_offset,
       triangle_color: inst_rgba,
       total_zoom: total_zoom,
-      interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      run_animation: regl.prop('run_animation')
+      // interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
+      // run_animation: regl.prop('run_animation')
+
+      // alternate way to define interpolate uni
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
+      run_animation: params.animation.running
     },
 
     count: 3,

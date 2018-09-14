@@ -1,7 +1,5 @@
 module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
 
-  var total_zoom = params.zoom_data.y.total_zoom;
-
   // smaller scale_text -> larger text
   var inst_depth = 0.00001;
 

@@ -1,5 +1,3 @@
-var blend_info = require('./../colors/blend_info');
-
 module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
 
   // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);

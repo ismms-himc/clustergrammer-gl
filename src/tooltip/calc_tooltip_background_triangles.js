@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 module.exports = function calc_background_tooltip_triangles(regl, params){
 
   /*

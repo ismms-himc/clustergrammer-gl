@@ -3,7 +3,7 @@ var reorder_matrix_args = require('./reorder_matrix_args');
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
-  console.log('clicking reorder: ' + ini_new_order);
+  // console.log('clicking reorder: ' + ini_new_order);
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');

@@ -22084,31 +22084,6 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 
 /***/ }),
 
-/***/ "./src/colors/blend_info.js":
-/*!**********************************!*\
-  !*** ./src/colors/blend_info.js ***!
-  \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = {
-      enable: true,
-      func: {
-        srcRGB: 'src alpha',
-        srcAlpha: 'src color',
-        dstRGB: 'one',
-        dstAlpha: 'one',
-        // src: 'one',
-        // dst: 'one'
-      },
-      equation: 'add',
-      color: [0, 0, 0, 0]
-    };
-
-
-
-/***/ }),
-
 /***/ "./src/colors/color_table.js":
 /*!***********************************!*\
   !*** ./src/colors/color_table.js ***!
@@ -25744,11 +25719,7 @@ module.exports = function initialize_params(regl, network){
   params.new_order.row = 'clust';
   params.new_order.col = 'clust';
 
-
   params.viz_aid_tri_args = {};
-  // params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
-  // params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
-
 
   params.cat_args = {};
   params.cat_args.row = [];
@@ -26011,7 +25982,7 @@ var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./sr
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
-  console.log('clicking reorder: ' + ini_new_order);
+  // console.log('clicking reorder: ' + ini_new_order);
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
@@ -26253,6 +26224,8 @@ module.exports = function make_spillover_args(regl, inst_depth,
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+/* eslint-disable */
+
 module.exports = function calc_background_tooltip_triangles(regl, params){
 
   /*
@@ -26297,9 +26270,7 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
   !*** ./src/tooltip/make_tooltip_background_args.js ***!
   \*****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var blend_info = __webpack_require__(/*! ./../colors/blend_info */ "./src/colors/blend_info.js");
+/***/ (function(module, exports) {
 
 module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
 
@@ -26384,8 +26355,6 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
 
 module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
 
-  var total_zoom = params.zoom_data.y.total_zoom;
-
   // smaller scale_text -> larger text
   var inst_depth = 0.00001;
 
@@ -26462,6 +26431,8 @@ module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5
   \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable */
 
 var underscore = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
@@ -26540,9 +26511,6 @@ module.exports = {
 /***/ (function(module, exports) {
 
 module.exports = function ini_zoom_data(){
-
-    console.log('INI Zoom Data')
-
 
   // organize zoom rules into x and y components
   var zoom_data = {};
@@ -26677,72 +26645,16 @@ module.exports = function zoom_rules_high_mat(regl, params){
       // will set up someting to not track interactions when mousing over
       // buttons and sliders
       if (ev.buttons){
-        console.log('not tracking ', ev.dx, ev.dy);
+        // console.log('not tracking ', ev.dx, ev.dy);
       }
 
     }
 
   })
-  .on('interactionend', function(ev){
-
-    if (ev.x0 < 100 && ev.y0 < 100){
-
-      console.log('clicking the canvas upper left area')
-
-        // console.log('CLICKING', ev.type, 'reordering_columns', ev.x0, ev.y0)
-
-        // params.animation.run_switch = true;
-
-        // if (params.inst_order.col == 'clust'){
-        //   console.log('set new_order to clust')
-        //   params.new_order.col = 'rank'
-        // } else {
-        //   console.log('set new_order to rank')
-        //   params.new_order.col = 'clust'
-        // }
-
-        // // calculate new ordering
-        // params.arrs.position_arr.new = make_position_arr(params,
-        //                                 params.new_order.row,
-        //                                 params.new_order.col);
-
-        // params.matrix_args.regl_props.rects.attributes.pos_att_new = {
-        //       buffer: regl.buffer(params.arrs.position_arr.new),
-        //       divisor: 1
-        //     };
+  // .on('interactionend', function(ev){
 
 
-        // // update cat position arrays
-        // console.log('re-calculating col cat positions', params.new_order.col)
-        // console.log('---', params.cat_arrs.new.col[0][0])
-        // for (var cat_index = 0; cat_index < params.cat_num.col; cat_index++) {
-        //   params.cat_arrs.new.col[cat_index] = make_cat_position_array(params, 'col', cat_index, params.new_order.col);
-
-        //   // update the attribute
-        //   params.cat_args.col[cat_index].attributes.cat_pos_att_new = {
-        //       buffer: regl.buffer(params.cat_arrs.new.col[cat_index]),
-        //       divisor: 1
-        //   };
-        // }
-        // console.log('---', params.cat_arrs.new.col[0][0])
-
-        // // update matrix args
-    }
-
-  });
-
-  // /////////////////////////////////////////
-  // // Alternate interaction tracking
-  // /////////////////////////////////////////
-
-  // normalizedInteractionEvents({
-  //   element: element
-  // })
-  // .on('wheel', function (ev) {
-  //   // console.log('norm interact: zoom rules');
-  //   track_interaction_zoom_data(regl, params, ev);
   // });
-
 
 };
 
@@ -26888,8 +26800,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     cursor_relative_max = viz_dim_heat.max + inst_offset;
     // console.log('HIGHER than max ############################')
   }
-
-
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Zoom Rules

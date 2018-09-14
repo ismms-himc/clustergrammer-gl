@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 var underscore = require('underscore');
 
 /* Utility functions

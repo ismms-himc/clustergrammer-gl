@@ -24888,9 +24888,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
-  var inst_increase_font_size = params.text_scale.col(params.zoom_data.x.total_zoom);
 
-  var scale_text = params.num_col ; // * params.zoom_data.x.total_zoom / inst_increase_font_size;
+  var scale_text = params.num_col ;
 
   var webgl_fs = (1/params.num_col) * params.zoom_data.x.total_zoom;
 
@@ -24914,7 +24913,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   var shift_text_out = 0.0;
   var shift_text_right = col_width; // rh_tri_side; // col_width ;//- rh_tri_side;
   // make up for rotating text
-  var shift_text_up = - 0.5 * rh_tri_side;
+  var shift_text_up = -0.5 * rh_tri_side;
 
   var vert_arg = `
       precision mediump float;
@@ -25168,7 +25167,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
   var tri_height;
   var tri_width;
   var mat_size;
-  var top_shift_triangles;
   var top_offset;
 
   if (inst_axis === 'col'){
@@ -25336,6 +25334,9 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
 
 
   var num_labels = params['num_'+inst_axis];
+  var mat_size;
+  // var tri_height;
+  var tri_width;
 
   if (inst_axis === 'col'){
 
@@ -25343,25 +25344,24 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
     var reduce_height = params.zoom_data.x.total_zoom;
-    tri_height = mat_size/num_labels * reduce_height;
+    // tri_height = mat_size/num_labels * reduce_height;
     tri_width  = mat_size/num_labels;
 
-    // original top_offset calc (undercorrects)
-    top_offset = -params.mat_size.y - tri_height;
+    // // original top_offset calc (undercorrects)
+    // top_offset = -params.mat_size.y - tri_height;
 
   } else {
 
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.heat_size.y;
-    tri_height = 0.0125;
+    // tri_height = 0.0125;
     tri_width = mat_size/num_labels;
-    top_offset = -params.mat_size.x - tri_height;
+    // top_offset = -params.mat_size.x - tri_height;
 
   }
 
   // make viz_aid triangle array
   /////////////////////////////////
-  var inst_order = inst_order;
   var tri_offset_array = [];
   var i;
   for (i = 0; i < num_labels; i++){
@@ -25371,10 +25371,10 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     var shift_mat_heat;
     if (inst_axis == 'row'){
       order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
-      shift_mat_heat = - (params.mat_size.y - params.heat_size.y)
+      shift_mat_heat = -(params.mat_size.y - params.heat_size.y);
     } else {
       order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x
+      shift_mat_heat = params.mat_size.x - params.heat_size.x;
     }
 
     /* need to position based on clustering order */

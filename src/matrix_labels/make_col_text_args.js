@@ -19,9 +19,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
-  var inst_increase_font_size = params.text_scale.col(params.zoom_data.x.total_zoom);
 
-  var scale_text = params.num_col ; // * params.zoom_data.x.total_zoom / inst_increase_font_size;
+  var scale_text = params.num_col ;
 
   var webgl_fs = (1/params.num_col) * params.zoom_data.x.total_zoom;
 
@@ -45,7 +44,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   var shift_text_out = 0.0;
   var shift_text_right = col_width; // rh_tri_side; // col_width ;//- rh_tri_side;
   // make up for rotating text
-  var shift_text_up = - 0.5 * rh_tri_side;
+  var shift_text_up = -0.5 * rh_tri_side;
 
   var vert_arg = `
       precision mediump float;

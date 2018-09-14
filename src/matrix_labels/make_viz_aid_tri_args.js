@@ -11,7 +11,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
   var tri_height;
   var tri_width;
   var mat_size;
-  var top_shift_triangles;
   var top_offset;
 
   if (inst_axis === 'col'){

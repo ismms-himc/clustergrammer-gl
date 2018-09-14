@@ -93,7 +93,7 @@ module.exports = function build_control_panel(regl, cgm){
   .style('-webkit-user-select', 'none')
       .attr('transform', function(){
       var x_offset = 260;
-      var y_trans = y_offset_buttons - 2 * button_dim.buffer - 5;
+      var y_trans = y_offset_buttons - 2 * button_dim.buffer;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     })
 
@@ -109,7 +109,7 @@ module.exports = function build_control_panel(regl, cgm){
     .style('stroke-width', 2)
     .attr('transform', function(){
       var x_offset = button_dim.x_trans - button_dim.buffer + 11;
-      var y_trans = y_offset_buttons - button_dim.buffer - 2;
+      var y_trans = y_offset_buttons - button_dim.buffer;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
 

@@ -22903,7 +22903,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_col_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
+var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
@@ -22945,7 +22945,7 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
         // draw using text_triangle_args and col_text_triangles
         if (params.num_col > params.max_num_text){
-          params.col_text_triangles = calc_col_text_triangles(params);
+          params.col_text_triangles = calc_text_triangles(params);
         }
         regl(text_triangle_args)(params.col_text_triangles);
 
@@ -24617,10 +24617,86 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 /***/ }),
 
-/***/ "./src/matrix_labels/calc_col_text_triangles.js":
+/***/ "./src/matrix_labels/calc_row_text_triangles.js":
 /*!******************************************************!*\
-  !*** ./src/matrix_labels/calc_col_text_triangles.js ***!
+  !*** ./src/matrix_labels/calc_row_text_triangles.js ***!
   \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+
+module.exports = function calc_row_text_triangles(params){
+
+  var inst_nodes = params.network.row_nodes;
+  var num_row = params.num_row;
+
+  // var row_height = 1/num_row;
+
+  var vect_text_attrs = {
+    textAlign: 'right',
+    textBaseline: 'middle',
+    triangles: true,
+    size: params.font_detail,
+    font:'"Open Sans", verdana, arial, sans-serif'
+  };
+
+  // draw matrix cells
+  /////////////////////////////////////////
+  var y_arr = params.canvas_pos.y_arr;
+
+  // generating array with row text triangles and y-offsets
+  var row_text_triangles = [];
+
+  var inst_order = params.inst_order.row;
+
+  var viz_area = params.viz_area;
+  var kept_row_y = [];
+
+  _.each(inst_nodes, function(inst_node, row_id){
+
+    var row_order_id = num_row - 1 - params.network.row_nodes[row_id][inst_order];
+    var inst_y = y_arr[ row_order_id ] + 0.5/num_row;
+
+    if (inst_y > viz_area.y_min && inst_y < viz_area.y_max){
+
+      var inst_name = inst_node.name;
+
+      if (inst_name.indexOf(': ') >= 0){
+        inst_name = inst_node.name.split(': ')[1];
+      }
+
+      var tmp_text_vect;
+      if (inst_name in params.text_triangles.row){
+        tmp_text_vect = params.text_triangles.row[inst_name];
+      } else{
+        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
+        params.text_triangles.row[inst_name] = tmp_text_vect
+      }
+
+      tmp_text_vect.offset = [0, inst_y];
+      row_text_triangles.push(tmp_text_vect);
+      var inst_data = {};
+      inst_data.y = inst_y;
+      inst_data.name = inst_name;
+      kept_row_y.push(inst_data);
+    }
+
+  });
+
+  // using to improve row filtering behavior
+  params.kept_row_y = kept_row_y;
+
+  return row_text_triangles;
+
+};
+
+/***/ }),
+
+/***/ "./src/matrix_labels/calc_text_triangles.js":
+/*!**************************************************!*\
+  !*** ./src/matrix_labels/calc_text_triangles.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -24704,82 +24780,6 @@ module.exports = function calc_text_triangles(params){
   params.kept_col_x = kept_col_x;
 
   return col_text_triangles;
-
-};
-
-/***/ }),
-
-/***/ "./src/matrix_labels/calc_row_text_triangles.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_labels/calc_row_text_triangles.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
-
-module.exports = function calc_row_text_triangles(params){
-
-  var inst_nodes = params.network.row_nodes;
-  var num_row = params.num_row;
-
-  // var row_height = 1/num_row;
-
-  var vect_text_attrs = {
-    textAlign: 'right',
-    textBaseline: 'middle',
-    triangles: true,
-    size: params.font_detail,
-    font:'"Open Sans", verdana, arial, sans-serif'
-  };
-
-  // draw matrix cells
-  /////////////////////////////////////////
-  var y_arr = params.canvas_pos.y_arr;
-
-  // generating array with row text triangles and y-offsets
-  var row_text_triangles = [];
-
-  var inst_order = params.inst_order.row;
-
-  var viz_area = params.viz_area;
-  var kept_row_y = [];
-
-  _.each(inst_nodes, function(inst_node, row_id){
-
-    var row_order_id = num_row - 1 - params.network.row_nodes[row_id][inst_order];
-    var inst_y = y_arr[ row_order_id ] + 0.5/num_row;
-
-    if (inst_y > viz_area.y_min && inst_y < viz_area.y_max){
-
-      var inst_name = inst_node.name;
-
-      if (inst_name.indexOf(': ') >= 0){
-        inst_name = inst_node.name.split(': ')[1];
-      }
-
-      var tmp_text_vect;
-      if (inst_name in params.text_triangles.row){
-        tmp_text_vect = params.text_triangles.row[inst_name];
-      } else{
-        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles.row[inst_name] = tmp_text_vect
-      }
-
-      tmp_text_vect.offset = [0, inst_y];
-      row_text_triangles.push(tmp_text_vect);
-      var inst_data = {};
-      inst_data.y = inst_y;
-      inst_data.name = inst_name;
-      kept_row_y.push(inst_data);
-    }
-
-  });
-
-  // using to improve row filtering behavior
-  params.kept_row_y = kept_row_y;
-
-  return row_text_triangles;
 
 };
 
@@ -25584,7 +25584,7 @@ module.exports = function calc_viz_dim(regl, params){
 
 var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js");
 var calc_row_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
-var calc_col_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
+var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
@@ -25856,7 +25856,7 @@ module.exports = function initialize_params(regl, network){
   if (params.num_col > params.max_num_text){
     params.col_text_triangles = false;
   } else {
-    params.col_text_triangles = calc_col_text_triangles(params);
+    params.col_text_triangles = calc_text_triangles(params);
   }
 
 

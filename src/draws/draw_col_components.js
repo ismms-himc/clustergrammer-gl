@@ -1,6 +1,6 @@
 var make_col_text_args = require('./../matrix_labels/make_col_text_args');
 var calc_viz_area = require('./../params/calc_viz_area');
-var calc_col_text_triangles = require('./../matrix_labels/calc_col_text_triangles');
+var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var interp_fun = require('./interp_fun');
 
@@ -42,7 +42,7 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
         // draw using text_triangle_args and col_text_triangles
         if (params.num_col > params.max_num_text){
-          params.col_text_triangles = calc_col_text_triangles(params);
+          params.col_text_triangles = calc_text_triangles(params);
         }
         regl(text_triangle_args)(params.col_text_triangles);
 

@@ -11,12 +11,7 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
     params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
-    regl(params.viz_aid_tri_args.col)(
-      // {
-      //   interp_prop: interp_fun(params),
-      //   run_animation: params.animation.running
-      // }
-    );
+    regl(params.viz_aid_tri_args.col)();
 
     // drawing the column categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
@@ -27,7 +22,6 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
           run_animation: params.animation.running
         }
       );
-
     });
 
     regl(params.dendro_args.col)();
@@ -51,7 +45,6 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
           params.col_text_triangles = calc_col_text_triangles(params);
         }
         regl(text_triangle_args)(params.col_text_triangles);
-
 
       } else {
         // console.log('too many cols to draw');

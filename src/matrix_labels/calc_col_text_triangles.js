@@ -1,6 +1,6 @@
 const vectorizeText = require('vectorize-text');
 
-module.exports = function calc_col_text_triangles(params){
+module.exports = function calc_text_triangles(params){
 
   /*
 
@@ -32,7 +32,6 @@ module.exports = function calc_col_text_triangles(params){
 
   // draw matrix cells
   /////////////////////////////////////////
-
   var x_arr = params.canvas_pos.x_arr;
 
   // generating array with col text triangles and y-offsets
@@ -45,10 +44,7 @@ module.exports = function calc_col_text_triangles(params){
 
   _.each(inst_nodes, function(inst_node, col_id){
 
-    // console.log(inst_node)
-
     var col_order_id = params.network.col_nodes[col_id][inst_order];
-
     var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
 
     if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
@@ -56,13 +52,11 @@ module.exports = function calc_col_text_triangles(params){
       var inst_name = inst_node.name;
 
       if (inst_name.indexOf(': ') >= 0){
-
           inst_name = inst_node.name.split(': ')[1];
       }
 
       var tmp_text_vect;
       if (inst_name in params.text_triangles.col){
-        // console.log('found col');
         tmp_text_vect = params.text_triangles.col[inst_name];
       } else {
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);

@@ -17,7 +17,6 @@ module.exports = function calc_row_text_triangles(params){
 
   // draw matrix cells
   /////////////////////////////////////////
-  // y_arr ranges from -.05 to 0.5
   var y_arr = params.canvas_pos.y_arr;
 
   // generating array with row text triangles and y-offsets
@@ -43,7 +42,6 @@ module.exports = function calc_row_text_triangles(params){
 
       var tmp_text_vect;
       if (inst_name in params.text_triangles.row){
-        // console.log('found row');
         tmp_text_vect = params.text_triangles.row[inst_name];
       } else{
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);

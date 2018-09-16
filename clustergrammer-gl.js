@@ -22914,12 +22914,7 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
     params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
 
-    regl(params.viz_aid_tri_args.col)(
-      // {
-      //   interp_prop: interp_fun(params),
-      //   run_animation: params.animation.running
-      // }
-    );
+    regl(params.viz_aid_tri_args.col)();
 
     // drawing the column categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
@@ -22930,7 +22925,6 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
           run_animation: params.animation.running
         }
       );
-
     });
 
     regl(params.dendro_args.col)();
@@ -22954,7 +22948,6 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
           params.col_text_triangles = calc_col_text_triangles(params);
         }
         regl(text_triangle_args)(params.col_text_triangles);
-
 
       } else {
         // console.log('too many cols to draw');
@@ -23095,12 +23088,7 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
 
-    regl(params.viz_aid_tri_args.row)(
-      // {
-      //   interp_prop: interp_fun(params),
-      //   run_animation: params.animation.running
-      // }
-    );
+    regl(params.viz_aid_tri_args.row)();
 
     _.each(params.cat_args.row, function(inst_cat_arg){
       regl(inst_cat_arg)(
@@ -23108,7 +23096,7 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
           interp_prop: interp_fun(params),
           run_animation: params.animation.running
         }
-        );
+      );
     });
 
     regl(params.dendro_args.row)();
@@ -24638,7 +24626,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
 
-module.exports = function calc_col_text_triangles(params){
+module.exports = function calc_text_triangles(params){
 
   /*
 
@@ -24670,7 +24658,6 @@ module.exports = function calc_col_text_triangles(params){
 
   // draw matrix cells
   /////////////////////////////////////////
-
   var x_arr = params.canvas_pos.x_arr;
 
   // generating array with col text triangles and y-offsets
@@ -24683,10 +24670,7 @@ module.exports = function calc_col_text_triangles(params){
 
   _.each(inst_nodes, function(inst_node, col_id){
 
-    // console.log(inst_node)
-
     var col_order_id = params.network.col_nodes[col_id][inst_order];
-
     var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
 
     if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
@@ -24694,13 +24678,11 @@ module.exports = function calc_col_text_triangles(params){
       var inst_name = inst_node.name;
 
       if (inst_name.indexOf(': ') >= 0){
-
           inst_name = inst_node.name.split(': ')[1];
       }
 
       var tmp_text_vect;
       if (inst_name in params.text_triangles.col){
-        // console.log('found col');
         tmp_text_vect = params.text_triangles.col[inst_name];
       } else {
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
@@ -24753,7 +24735,6 @@ module.exports = function calc_row_text_triangles(params){
 
   // draw matrix cells
   /////////////////////////////////////////
-  // y_arr ranges from -.05 to 0.5
   var y_arr = params.canvas_pos.y_arr;
 
   // generating array with row text triangles and y-offsets
@@ -24779,7 +24760,6 @@ module.exports = function calc_row_text_triangles(params){
 
       var tmp_text_vect;
       if (inst_name in params.text_triangles.row){
-        // console.log('found row');
         tmp_text_vect = params.text_triangles.row[inst_name];
       } else{
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
@@ -24859,6 +24839,7 @@ module.exports = function get_ordered_labels(params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
+var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
@@ -24945,7 +24926,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
         // the x position varies for all column labelss
         //---------------------------------------------------------------
-        //---------------------------------------------------------------
         x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
 
         position_cols = vec3( x_position, y_position, 0.10);
@@ -24987,6 +24967,9 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       text_y_scale: text_y_scale,
       total_zoom: params.zoom_data.x.total_zoom,
       col_width: col_width,
+      // alternate way to define interpolate uni
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
+      run_animation: params.animation.running
     },
     depth: {
       enable: true,
@@ -25293,9 +25276,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       top_offset: top_offset,
       triangle_color: inst_rgba,
       total_zoom: total_zoom,
-      // interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      // run_animation: regl.prop('run_animation')
-
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
       run_animation: params.animation.running
@@ -25950,6 +25930,7 @@ module.exports = function reorder_cat_args(regl, cgm){
 
     // update cat position arrays
     for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+
       params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
 
       // update the attribute

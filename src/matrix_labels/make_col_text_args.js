@@ -1,4 +1,5 @@
 var m3 = require('./../draws/mat3_transform');
+var interp_fun = require('./../draws/interp_fun');
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
@@ -85,7 +86,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
         // the x position varies for all column labelss
         //---------------------------------------------------------------
-        //---------------------------------------------------------------
         x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
 
         position_cols = vec3( x_position, y_position, 0.10);
@@ -127,6 +127,9 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       text_y_scale: text_y_scale,
       total_zoom: params.zoom_data.x.total_zoom,
       col_width: col_width,
+      // alternate way to define interpolate uni
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
+      run_animation: params.animation.running
     },
     depth: {
       enable: true,

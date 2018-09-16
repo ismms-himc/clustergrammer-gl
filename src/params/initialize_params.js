@@ -272,7 +272,7 @@ module.exports = function initialize_params(regl, network){
   if (params.num_col > params.max_num_text){
     params.col_text_triangles = false;
   } else {
-    params.col_text_triangles = calc_text_triangles(params);
+    params.col_text_triangles = calc_text_triangles(params, 'col');
   }
 
 

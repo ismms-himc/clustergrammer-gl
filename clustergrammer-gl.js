@@ -22945,7 +22945,7 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 
         // draw using text_triangle_args and col_text_triangles
         if (params.num_col > params.max_num_text){
-          params.col_text_triangles = calc_text_triangles(params);
+          params.col_text_triangles = calc_text_triangles(params, 'col');
         }
         regl(text_triangle_args)(params.col_text_triangles);
 
@@ -24702,7 +24702,7 @@ module.exports = function calc_row_text_triangles(params){
 
 const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
 
-module.exports = function calc_text_triangles(params){
+module.exports = function calc_text_triangles(params, inst_axis){
 
   /*
 
@@ -24720,8 +24720,8 @@ module.exports = function calc_text_triangles(params){
 
   */
 
-  var inst_nodes = params.network.col_nodes;
-  var num_col = params.num_col;
+  var inst_nodes = params.network[inst_axis + '_nodes'];
+  var num_labels = params['num_' + inst_axis];
 
   var vect_text_attrs = {
     textAlign: 'left',
@@ -24736,18 +24736,18 @@ module.exports = function calc_text_triangles(params){
   /////////////////////////////////////////
   var x_arr = params.canvas_pos.x_arr;
 
-  // generating array with col text triangles and y-offsets
-  var col_text_triangles = [];
+  // generating array with text triangles and y-offsets
+  var text_triangles = [];
 
-  var inst_order = params.inst_order.col;
+  var inst_order = params.inst_order[inst_axis];
 
   var viz_area = params.viz_area;
   var kept_col_x = [];
 
-  _.each(inst_nodes, function(inst_node, col_id){
+  _.each(inst_nodes, function(inst_node, inst_id){
 
-    var col_order_id = params.network.col_nodes[col_id][inst_order];
-    var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
+    var col_order_id = params.network.col_nodes[inst_id][inst_order];
+    var inst_x = x_arr[ (num_labels - 1) - col_order_id ] + 0.5/num_labels;
 
     if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
 
@@ -24766,7 +24766,7 @@ module.exports = function calc_text_triangles(params){
       }
 
       tmp_text_vect.offset = [0, inst_x];
-      col_text_triangles.push(tmp_text_vect);
+      text_triangles.push(tmp_text_vect);
 
       var inst_data = {};
       inst_data.y = inst_x;
@@ -24779,7 +24779,7 @@ module.exports = function calc_text_triangles(params){
 
   params.kept_col_x = kept_col_x;
 
-  return col_text_triangles;
+  return text_triangles;
 
 };
 
@@ -25856,7 +25856,7 @@ module.exports = function initialize_params(regl, network){
   if (params.num_col > params.max_num_text){
     params.col_text_triangles = false;
   } else {
-    params.col_text_triangles = calc_text_triangles(params);
+    params.col_text_triangles = calc_text_triangles(params, 'col');
   }
 
 

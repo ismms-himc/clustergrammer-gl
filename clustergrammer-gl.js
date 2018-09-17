@@ -22961,7 +22961,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
       } else {
         // console.log('too many labels to draw');
-        // regl(text_triangle_args)(params[inst_axis + '_text_triangles']);
+        // regl(text_triangle_args)(params.text_triangles.inst[inst_axis]);
       }
 
     } else {
@@ -25673,20 +25673,18 @@ module.exports = function initialize_params(regl, network){
   params.max_num_text = 75;
 
   params.text_triangles.inst = {};
+  params.text_triangles.new = {};
 
-  // calculate the text_triangles for all rows
-  // initialize with no row_text_triangles
-  if (params.num_row > params.max_num_text){
-    params.text_triangles.inst.row = false;
-  } else {
-    params.text_triangles.inst.row = calc_text_triangles(params, 'row', params.inst_order.row);
-  }
+  _.each(['row', 'col'], function(inst_axis){
+    if (params['num_' + inst_axis] > params.max_num_text){
+      params.text_triangles.inst[inst_axis] = false;
+      params.text_triangles.new[inst_axis] = false;
 
-  if (params.num_col > params.max_num_text){
-    params.text_triangles.inst.col = false;
-  } else {
-    params.text_triangles.inst.col = calc_text_triangles(params, 'col', params.inst_order.col);
-  }
+    } else {
+      params.text_triangles.inst[inst_axis] = calc_text_triangles(params, inst_axis, params.inst_order[inst_axis]);
+      params.text_triangles.new[inst_axis] = calc_text_triangles(params, inst_axis, params.inst_order[inst_axis]);
+    }
+  });
 
 
   // console.log('row_text_triangles in initialize_params')

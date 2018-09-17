@@ -58,7 +58,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
       } else {
         // console.log('too many labels to draw');
-        // regl(text_triangle_args)(params[inst_axis + '_text_triangles']);
+        // regl(text_triangle_args)(params.text_triangles.inst[inst_axis]);
       }
 
     } else {

@@ -1,6 +1,6 @@
 const vectorizeText = require('vectorize-text');
 
-module.exports = function calc_text_triangles(params, inst_axis){
+module.exports = function calc_text_triangles(params, inst_axis, inst_order){
 
   /*
 
@@ -47,7 +47,6 @@ module.exports = function calc_text_triangles(params, inst_axis){
   // generating array with text triangles and y-offsets
   var text_triangles = [];
 
-  var inst_order = params.inst_order[inst_axis];
 
   var viz_area = params.viz_area;
 

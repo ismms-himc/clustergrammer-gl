@@ -22955,7 +22955,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
         // draw using text_triangle_args and axis triangles
         if (params['num_' + inst_axis] > params.max_num_text){
-          params[inst_axis + '_text_triangles'] = calc_text_triangles(params, inst_axis);
+          params[inst_axis + '_text_triangles'] = calc_text_triangles(params, inst_axis, params.inst_order[inst_axis]);
         }
         regl(text_triangle_args)(params[inst_axis + '_text_triangles']);
 
@@ -24557,7 +24557,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
 
-module.exports = function calc_text_triangles(params, inst_axis){
+module.exports = function calc_text_triangles(params, inst_axis, inst_order){
 
   /*
 
@@ -24604,7 +24604,6 @@ module.exports = function calc_text_triangles(params, inst_axis){
   // generating array with text triangles and y-offsets
   var text_triangles = [];
 
-  var inst_order = params.inst_order[inst_axis];
 
   var viz_area = params.viz_area;
 
@@ -25678,13 +25677,13 @@ module.exports = function initialize_params(regl, network){
   if (params.num_row > params.max_num_text){
     params.row_text_triangles = false;
   } else {
-    params.row_text_triangles = calc_text_triangles(params, 'row');
+    params.row_text_triangles = calc_text_triangles(params, 'row', params.inst_order.row);
   }
 
   if (params.num_col > params.max_num_text){
     params.col_text_triangles = false;
   } else {
-    params.col_text_triangles = calc_text_triangles(params, 'col');
+    params.col_text_triangles = calc_text_triangles(params, 'col', params.inst_order.col);
   }
 
 

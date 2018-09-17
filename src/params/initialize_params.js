@@ -264,13 +264,13 @@ module.exports = function initialize_params(regl, network){
   if (params.num_row > params.max_num_text){
     params.row_text_triangles = false;
   } else {
-    params.row_text_triangles = calc_text_triangles(params, 'row');
+    params.row_text_triangles = calc_text_triangles(params, 'row', params.inst_order.row);
   }
 
   if (params.num_col > params.max_num_text){
     params.col_text_triangles = false;
   } else {
-    params.col_text_triangles = calc_text_triangles(params, 'col');
+    params.col_text_triangles = calc_text_triangles(params, 'col', params.inst_order.col);
   }
 
 

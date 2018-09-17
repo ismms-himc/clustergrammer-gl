@@ -55,11 +55,11 @@ module.exports = function calc_text_triangles(params, inst_axis){
       }
 
       var tmp_text_vect;
-      if (inst_name in params.text_triangles.col){
-        tmp_text_vect = params.text_triangles.col[inst_name];
+      if (inst_name in params.text_triangles[inst_axis]){
+        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
       } else {
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles.col[inst_name] = tmp_text_vect;
+        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
       tmp_text_vect.offset = [0, inst_x];

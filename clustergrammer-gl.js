@@ -24649,7 +24649,6 @@ module.exports = function calc_row_text_triangles(params){
   var inst_order = params.inst_order.row;
 
   var viz_area = params.viz_area;
-  // var kept_row_y = [];
 
   _.each(inst_nodes, function(inst_node, row_id){
 
@@ -24677,13 +24676,9 @@ module.exports = function calc_row_text_triangles(params){
       var inst_data = {};
       inst_data.y = inst_y;
       inst_data.name = inst_name;
-      // kept_row_y.push(inst_data);
     }
 
   });
-
-  // using to improve row filtering behavior
-  // params.kept_row_y = kept_row_y;
 
   return row_text_triangles;
 
@@ -24755,11 +24750,11 @@ module.exports = function calc_text_triangles(params, inst_axis){
       }
 
       var tmp_text_vect;
-      if (inst_name in params.text_triangles.col){
-        tmp_text_vect = params.text_triangles.col[inst_name];
+      if (inst_name in params.text_triangles[inst_axis]){
+        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
       } else {
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles.col[inst_name] = tmp_text_vect;
+        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
       tmp_text_vect.offset = [0, inst_x];

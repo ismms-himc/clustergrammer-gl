@@ -87,6 +87,17 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./img/graham_cracker_144.png":
+/*!************************************!*\
+  !*** ./img/graham_cracker_144.png ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "401229782cf70826d5f0e68711a53a51.png";
+
+/***/ }),
+
 /***/ "./node_modules/base64-js/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
@@ -10559,17 +10570,6 @@ module.exports = exports = function (o) {
 };
 exports.methods = methods;
 
-
-/***/ }),
-
-/***/ "./node_modules/file-loader/dist/cjs.js!./src/img/graham_cracker_144.png":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/file-loader/dist/cjs.js!./src/img/graham_cracker_144.png ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "f34b6b9869e6df400ed90e44b66a7598.png";
 
 /***/ }),
 
@@ -22335,13 +22335,9 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /***/ (function(module, exports, __webpack_require__) {
 
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
-var img = __webpack_require__(/*! ./../img/graham_cracker_144.png */ "./src/img/graham_cracker_144.png");
-var url = __webpack_require__(/*! file-loader!../img/graham_cracker_144.png */ "./node_modules/file-loader/dist/cjs.js!./src/img/graham_cracker_144.png");
+var img = __webpack_require__(/*! ./../../img/graham_cracker_144.png */ "./img/graham_cracker_144.png");
 
 module.exports = function build_control_panel(regl, cgm){
-
-  console.log(img);
-  console.log(url)
 
   // Add control panel to the top
   ///////////////////////////////////////
@@ -22373,8 +22369,6 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
 
-
-
   control_svg
     .append('rect')
     .style('height',inst_height + 'px')
@@ -22398,21 +22392,21 @@ module.exports = function build_control_panel(regl, cgm){
     })
 
   var button_dim = {};
-  button_dim.height = 33;
-  button_dim.width = 70;
+  button_dim.height = 32;
+  button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
-  button_dim.fs = 13;
+  button_dim.fs = 12;
 
   var button_groups = {};
   button_groups.row = {};
   button_groups.col = {};
 
-  var shift_x_order_buttons = 75;
+  var shift_x_order_buttons = 65;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
 
-  var y_offset_buttons = 45;
+  var y_offset_buttons = 47;
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
@@ -22434,8 +22428,8 @@ module.exports = function build_control_panel(regl, cgm){
   .style('cursor', 'default')
   .style('-webkit-user-select', 'none')
       .attr('transform', function(){
-      var x_offset = 275;
-      var y_trans = y_offset_buttons - 2 *button_dim.buffer - 5;
+      var x_offset = 247;
+      var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     })
 
@@ -22450,8 +22444,8 @@ module.exports = function build_control_panel(regl, cgm){
     .style('stroke', '#eee')
     .style('stroke-width', 2)
     .attr('transform', function(){
-      var x_offset = button_dim.x_trans - button_dim.buffer;
-      var y_trans = y_offset_buttons - button_dim.buffer - 2;
+      var x_offset = button_dim.x_trans - button_dim.buffer + 1;
+      var y_trans = y_offset_buttons - button_dim.buffer + 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
 
@@ -22479,7 +22473,7 @@ module.exports = function build_control_panel(regl, cgm){
       .style('letter-spacing', '2px')
       .style('cursor', 'default')
       .style('-webkit-user-select', 'none')
-      .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
+      .attr('transform', 'translate('+ 30 +', '+ button_dim.height/2 +')');
 
     var reorder_buttons = control_svg
       .append('g');
@@ -22502,10 +22496,8 @@ module.exports = function build_control_panel(regl, cgm){
         var clean_order = d.replace('sum', 'rank')
                            .replace('var', 'rankvar')
 
-        if (cgm.params.inst_order[inst_axis] != clean_order){
-
-          // console.log('REORDER')
-          // console.log(inst_axis, cgm.params.inst_order, clean_order)
+        // tmp preventing dispersion reordering from working
+        if (cgm.params.inst_order[inst_axis] != clean_order && clean_order != 'disp'){
 
           run_reorder(regl, cgm, inst_axis, d);
 
@@ -22558,206 +22550,17 @@ module.exports = function build_control_panel(regl, cgm){
 
   })
 
-  control_svg.append("svg:image")
-  // .attr('x', -9)
-  // .attr('y', -12)
-  .attr('width', 20)
-  .attr('height', 24)
-  .attr("xlink:href", img)
-  .classed('attached-image', true);
+  control_svg.append('svg:image')
+  .attr('x', 16)
+  .attr('y', 5)
+  .attr('width', 27)
+  .attr('height', 27)
+  .attr('xlink:href', img)
+  .classed('clustergrammer-logo', true)
+  // .on('click', function(){
+  //   console.log('clicking logo')
+  // });
 
-};
-
-/***/ }),
-
-/***/ "./src/dendrogram/build_dendrogram_sliders.js":
-/*!****************************************************!*\
-  !*** ./src/dendrogram/build_dendrogram_sliders.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/dendrogram/build_single_dendro_slider.js");
-
-module.exports = function build_dendrogram_sliders(cgm){
-
-  // console.log('build_dendrogram_sliders')
-
-  // Add sliders on top of the canvas
-  /////////////////////////////////////
-  var slider_length = 130;
-  // var col_slider_container = d3.select(cgm.params.canvas_container)
-  var col_slider_container = d3.select(cgm.params.root + ' .control-container')
-    .append('svg')
-    .style('height', slider_length + 'px')
-    .style('width', '40px')
-    .style('position', 'absolute')
-    .style('top', 400 + 'px')
-    .style('left', cgm.params.viz_width - 15 + 'px')
-    .attr('class', 'dendro_slider_svg')
-
-  col_slider_container
-    .append('rect')
-    .style('height', slider_length + 'px')
-    .style('width', '50px')
-    .style('fill', 'white')
-    .on('click', function(){
-      // console.log('clicking the red slider')
-    })
-
-  build_single_dendro_slider(cgm, 'row');
-
-}
-
-/***/ }),
-
-/***/ "./src/dendrogram/build_single_dendro_slider.js":
-/*!******************************************************!*\
-  !*** ./src/dendrogram/build_single_dendro_slider.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// var change_groups = require('./change_groups');
-// var position_dendro_slider = require('./position_dendro_slider');
-
-module.exports = function build_single_dendro_slider(cgm, inst_rc){
-
-  var slider_length = 100;
-  var rect_height = slider_length + 20;
-  var rect_width = 30;
-
-  var drag = d3.behavior.drag()
-      .on('drag', dragging)
-      .on('dragend', function(){
-        cgm.params.is_slider_drag = false;
-      });
-
-  var slider_group = d3.select(cgm.params.root + ' .dendro_slider_svg')
-      .append('g')
-      .classed( inst_rc + '_slider_group', true)
-      .attr('transform', function(){
-        var inst_translation;
-
-        inst_translation = 'translate(' + rect_width/2 + ', '+ rect_height/10 +')';
-        return inst_translation;
-      })
-
-  // position_dendro_slider(cgm, inst_rc);
-
-  slider_group
-    .append('rect')
-    .classed(inst_rc+'_slider_background', true)
-    .attr('height', rect_height+'px')
-    .attr('width', rect_width+'px')
-    .attr('fill', 'red')
-    .attr('transform', function(){
-      var translate_string = 'translate(-10, -5)';
-      return translate_string;
-    })
-    .style('opacity', 0);
-
-  slider_group
-    .append('line')
-    .style('stroke-width', slider_length/7+'px')
-    .style('stroke', 'black')
-    .style('stroke-linecap', 'round')
-    .style('opacity', 0.0)
-    .attr('y1', 0)
-    .attr('y2', function(){
-      return slider_length-2;
-    })
-    .on('click', click_dendro_slider);
-
-  var offset_triangle = -slider_length/40;
-  slider_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
-
-      // up triangle
-      var start_x = 0 ;
-      var start_y = 0;
-
-      var mid_x = 0;
-      var mid_y = slider_length;
-
-      var final_x = slider_length/10;
-      var final_y = 0;
-
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y + ' L' +
-      final_x + ','+ final_y +' Z';
-
-      return output_string;
-    })
-    .style('opacity', 0.35)
-    .on('click', click_dendro_slider);
-
-
-  var default_opacity = 0.35;
-  var high_opacity = 0.6;
-  slider_group
-    .append('circle')
-    .classed(inst_rc+'_group_circle', true)
-    .attr('r', slider_length * 0.08)
-    .attr('transform', function(){
-      return 'translate(0, '+slider_length/2+')';
-    })
-    .style('fill', 'blue')
-    .style('opacity', default_opacity)
-    .on('mouseover', function(){
-      d3.select(this).style('opacity', high_opacity);
-    })
-    .on('mouseout', function(){
-      d3.select(this).style('opacity', default_opacity);
-    })
-    .call(drag);
-
-  function dragging() {
-
-    cgm.params.is_slider_drag = true;
-
-    // d[0] = d3.event.x;
-    var slider_pos = d3.event.y;
-
-    if (slider_pos < 0){
-      slider_pos = 0;
-    }
-
-    if (slider_pos > slider_length){
-      slider_pos = slider_length;
-    }
-
-    if (this.nextSibling) {
-      this.parentNode.appendChild(this);
-    }
-
-    slider_pos = d3.round(slider_pos, -1);
-
-    // var slider_value = 10 - slider_pos/10;
-
-    d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
-
-    // change_groups(cgm, inst_rc, slider_value);
-
-  }
-
-  function click_dendro_slider(){
-
-    var clicked_line_position = d3.mouse(this);
-
-    var rel_pos = d3.round(clicked_line_position[1], -1);
-
-    d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
-      .attr('transform', 'translate(0, '+ rel_pos + ')');
-
-    // var slider_value = 10 - rel_pos/10;
-
-    // change_groups(cgm, inst_rc, slider_value);
-
-  }
 };
 
 /***/ }),
@@ -22770,9 +22573,11 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
+var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
 module.exports = function draw_mat_labels(regl, params, inst_rc){
 
+  var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
   var mat_size;
   var mat_size_offset;
@@ -22855,9 +22660,13 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
     frag: `
 
+      precision highp float;
+      uniform vec4 triangle_color;
+
       // color triangle red
       void main () {
-        gl_FragColor = vec4(0.0, 1, 0.0, 1);
+        // gl_FragColor = vec4(0.0, 1, 0.0, 1);
+        gl_FragColor = triangle_color;
       }
 
     `,
@@ -22880,6 +22689,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
       mat_scale: mat_scale,
       x_offset: x_offset,
       y_shift: y_shift,
+      triangle_color: inst_rgba
     },
 
     count: 3,
@@ -22900,71 +22710,73 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 /***/ }),
 
-/***/ "./src/draws/draw_col_components.js":
-/*!******************************************!*\
-  !*** ./src/draws/draw_col_components.js ***!
-  \******************************************/
+/***/ "./src/draws/draw_axis_components.js":
+/*!*******************************************!*\
+  !*** ./src/draws/draw_axis_components.js ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
+var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_col_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
+var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
-module.exports = function draw_col_components(regl, params, calc_text_tri=false){
+module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
+
+  var axis_dim;
+  if (inst_axis === 'col'){
+    axis_dim = 'x';
+  } else {
+    axis_dim = 'y';
+  }
 
   /* Column Components */
-  params.cameras['col-labels'].draw(() => {
+  params.cameras[inst_axis + '-labels'].draw(() => {
 
-    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+    params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
 
-    regl(params.viz_aid_tri_args.col)(
-      // {
-      //   interp_prop: interp_fun(params),
-      //   run_animation: params.animation.running
-      // }
-    );
+    regl(params.viz_aid_tri_args[inst_axis])();
 
-    // drawing the column categories and dendrogram using the same camera as the
+    // drawing the label categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
-    _.each(params.cat_args.col, function(inst_cat_arg){
+    _.each(params.cat_args[inst_axis], function(inst_cat_arg){
       regl(inst_cat_arg)(
         {
           interp_prop: interp_fun(params),
           run_animation: params.animation.running
         }
       );
-
     });
 
-    regl(params.dendro_args.col)();
+    regl(params.dendro_args[inst_axis])();
 
     // make the arguments for the draw command
-    var text_triangle_args = make_col_text_args(regl, params,
-                                                         params.zoom_function);
+    var text_triangle_args
+    if (inst_axis === 'col'){
+      text_triangle_args = make_col_text_args(regl, params, params.zoom_function);
+    } else {
+      text_triangle_args = make_row_text_args(regl, params, params.zoom_function);
+    }
 
     if (calc_text_tri){
 
-      var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
+      var num_viz_labels = params['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
-      // console.log('num_viz_cols', num_viz_cols)
-
-      if (num_viz_cols < params.max_num_text){
+      if (num_viz_labels < params.max_num_text){
 
         calc_viz_area(params);
 
-        // draw using text_triangle_args and col_text_triangles
-        if (params.num_col > params.max_num_text){
-          params.col_text_triangles = calc_col_text_triangles(params);
+        // draw using text_triangle_args and axis triangles
+        if (params['num_' + inst_axis] > params.max_num_text){
+          params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
         }
-        regl(text_triangle_args)(params.col_text_triangles);
-
+        regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
       } else {
-        // console.log('too many cols to draw');
-        // regl(text_triangle_args)(params.col_text_triangles);
+        // console.log('too many labels to draw');
       }
 
     } else {
@@ -22973,8 +22785,8 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
         show text triangles if avaialble
       */
 
-      if (params.col_text_triangles != false){
-        regl(text_triangle_args)(params.col_text_triangles);
+      if (params.text_triangles.draw[inst_axis] != false){
+        regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     }
 
@@ -22992,8 +22804,7 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
 /***/ (function(module, exports, __webpack_require__) {
 
 var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js");
-var draw_row_components = __webpack_require__(/*! ./draw_row_components */ "./src/draws/draw_row_components.js");
-var draw_col_components = __webpack_require__(/*! ./draw_col_components */ "./src/draws/draw_col_components.js");
+var draw_axis_components = __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js");
 var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draws/draw_tooltip_components.js");
 var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draws/draw_spillover_components.js");
 
@@ -23009,8 +22820,8 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_row_components(regl, params, params.slow_draw);
-  draw_col_components(regl, params, params.slow_draw);
+  draw_axis_components(regl, params, 'row', params.slow_draw);
+  draw_axis_components(regl, params, 'col', params.slow_draw);
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip && params.in_bounds_tooltip){
@@ -23074,87 +22885,6 @@ module.exports = function draw_matrix_components(regl, params){
       interp_prop: interp_fun(params),
       run_animation: params.animation.running
     });
-
-  });
-
-};
-
-/***/ }),
-
-/***/ "./src/draws/draw_row_components.js":
-/*!******************************************!*\
-  !*** ./src/draws/draw_row_components.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_row_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
-var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
-var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
-
-module.exports = function draw_row_components(regl, params, calc_text_tri=false){
-
-  /* Row Components */
-  params.cameras['row-labels'].draw(() => {
-
-    params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
-
-    regl(params.viz_aid_tri_args.row)(
-      // {
-      //   interp_prop: interp_fun(params),
-      //   run_animation: params.animation.running
-      // }
-    );
-
-    _.each(params.cat_args.row, function(inst_cat_arg){
-      regl(inst_cat_arg)(
-        {
-          interp_prop: interp_fun(params),
-          run_animation: params.animation.running
-        }
-        );
-    });
-
-    regl(params.dendro_args.row)();
-
-    // make the arguments for the draw command
-    var text_triangle_args = make_row_text_args(regl, params,
-                                                         params.zoom_function);
-
-    if (calc_text_tri){
-
-      // console.log('calc row text triangles')
-
-      var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
-
-      if (num_viz_rows < params.max_num_text){
-
-        calc_viz_area(params);
-
-        // draw using text_triangle_args and row_text_triangles
-        if (params.num_row > params.max_num_text){
-          params.row_text_triangles = calc_row_text_triangles(params);
-        }
-        regl(text_triangle_args)(params.row_text_triangles);
-
-
-      } else {
-        // console.log('too many rows to draw');
-        // regl(text_triangle_args)(params.row_text_triangles);
-      }
-
-    } else {
-
-      /*
-        show text triangles if avaialble
-      */
-
-      if (params.row_text_triangles != false){
-        regl(text_triangle_args)(params.row_text_triangles);
-      }
-    }
 
   });
 
@@ -23307,6 +23037,8 @@ var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
+var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
+var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23338,7 +23070,6 @@ module.exports = function run_viz(regl, network){
 
       params.animation.running = false;
       params.animation.run_switch = false;
-      // console.log('finish switch!!!!!!!!!!!');
 
       // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -23356,10 +23087,19 @@ module.exports = function run_viz(regl, network){
               divisor: 1
           };
         }
+
         // transfer new order to old order
         params.inst_order[inst_axis] = params.new_order[inst_axis]
 
-      })
+      });
+
+      // transfer new order to text triangles
+      _.each(['row', 'col'], function(inst_axis){
+        params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+      });
+
+      // update ordered_labels
+      get_ordered_labels(params);
 
     }
 
@@ -23450,17 +23190,6 @@ module.exports = function run_viz(regl, network){
 
 /***/ }),
 
-/***/ "./src/img/graham_cracker_144.png":
-/*!****************************************!*\
-  !*** ./src/img/graham_cracker_144.png ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "401229782cf70826d5f0e68711a53a51.png";
-
-/***/ }),
-
 /***/ "./src/interactions/final_interaction_frame.js":
 /*!*****************************************************!*\
   !*** ./src/interactions/final_interaction_frame.js ***!
@@ -23487,8 +23216,6 @@ module.exports = function final_interaction_frame(regl, params){
       if (params.zoom_data.x.total_mouseover == 0){
         // console.log('SLOW_DRAW')
       }
-
-      // console.log(params.kept_row_y);
 
     } else {
       params.first_frame = false;
@@ -23592,7 +23319,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    // console.log(params.orderd_labels)
     params.mouseover.row_name = params.ordered_labels.rows[row_index];
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 
@@ -24223,26 +23949,33 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.5.3-dev
+  clustergrammer-gl version 0.5.4
 
  */
 
 var run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
 var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
-var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
+// var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 
 function clustergrammer_gl(args){
 
   // console.log('################################');
-  // console.log('clustergrammer-gl version 0.5.3 - dev!');
+  // console.log('clustergrammer-gl version 0.5.4');
   // console.log('################################');
 
   var network = args.network;
   var container = args.container;
 
   // make control panel first so it appears above canvas
-  d3.select(container).append('div').attr('class', 'control-container')
-  d3.select(container).append('div').attr('class', 'canvas-container')
+  d3.select(container)
+    .append('div')
+    .attr('class', 'control-container')
+    .style('cursor', 'default');
+
+  d3.select(container)
+    .append('div')
+    .attr('class', 'canvas-container')
+    .style('cursor', 'default');
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];
 
@@ -24275,7 +24008,7 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  build_dendrogram_sliders(cgm);
+  // build_dendrogram_sliders(cgm);
 
   build_control_panel(regl, cgm);
 
@@ -24646,16 +24379,16 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 /***/ }),
 
-/***/ "./src/matrix_labels/calc_col_text_triangles.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_labels/calc_col_text_triangles.js ***!
-  \******************************************************/
+/***/ "./src/matrix_labels/calc_text_triangles.js":
+/*!**************************************************!*\
+  !*** ./src/matrix_labels/calc_text_triangles.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
 
-module.exports = function calc_col_text_triangles(params){
+module.exports = function calc_text_triangles(params, inst_axis){
 
   /*
 
@@ -24673,150 +24406,96 @@ module.exports = function calc_col_text_triangles(params){
 
   */
 
-  var inst_nodes = params.network.col_nodes;
-  var num_col = params.num_col;
+  var inst_order = params.inst_order[inst_axis];
+  var new_order = params.new_order[inst_axis];
+
+  var inst_labels = params.network[inst_axis + '_nodes'];
+  var num_labels = params['num_' + inst_axis];
 
   var vect_text_attrs = {
     textAlign: 'left',
-    // textBaseline: 'middle',
-    textBaseline: 'bottom',
+    // textBaseline: 'bottom',
     triangles: true,
     size: params.font_detail,
     font: '"Open Sans", verdana, arial, sans-serif'
   };
 
+  var inst_dim;
+  if (inst_axis === 'col'){
+    inst_dim = 'x';
+    vect_text_attrs.textAlign = 'left';
+    vect_text_attrs.textBaseline = 'bottom';
+  } else {
+    inst_dim = 'y';
+    vect_text_attrs.textAlign = 'right';
+    vect_text_attrs.textBaseline = 'middle';
+  }
+
   // draw matrix cells
   /////////////////////////////////////////
+  var axis_arr = params.canvas_pos[inst_dim + '_arr'];
 
-  var x_arr = params.canvas_pos.x_arr;
+  // generating array with text triangles and y-offsets
+  var text_triangles = [];
 
-  // generating array with col text triangles and y-offsets
-  var col_text_triangles = [];
-
-  var inst_order = params.inst_order.col;
 
   var viz_area = params.viz_area;
-  var kept_col_x = [];
 
-  _.each(inst_nodes, function(inst_node, col_id){
+  var order_id;
+  var order_state;
+  var offsets = {};
 
-    // console.log(inst_node)
+  // only calculating the text-triangles for labels that are within the visible
+  // area
+  _.each(inst_labels, function(inst_label, inst_id){
 
-    var col_order_id = params.network.col_nodes[col_id][inst_order];
+    // calculate inst and new offsets
+    _.each(['inst', 'new'], function(inst_state){
 
-    var inst_x = x_arr[ (num_col - 1) - col_order_id ] + 0.5/num_col;
-
-    if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
-
-      var inst_name = inst_node.name;
-
-      if (inst_name.indexOf(': ') >= 0){
-
-          inst_name = inst_node.name.split(': ')[1];
-      }
-
-      var tmp_text_vect;
-      if (inst_name in params.text_triangles.col){
-        // console.log('found col');
-        tmp_text_vect = params.text_triangles.col[inst_name];
+      if (inst_state === 'inst'){
+        order_state = inst_order
       } else {
-        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles.col[inst_name] = tmp_text_vect;
+         order_state = new_order
       }
 
-      tmp_text_vect.offset = [0, inst_x];
-      col_text_triangles.push(tmp_text_vect);
+      if (inst_axis === 'col'){
+        order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+      } else {
+        order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+      }
+    });
 
-      var inst_data = {};
-      inst_data.y = inst_x;
-      inst_data.name = inst_name;
-      kept_col_x.push(inst_data);
-    }
+    if (offsets.inst > viz_area[inst_dim + '_min'] && offsets.inst < viz_area[inst_dim + '_max']){
 
-  });
-
-
-  params.kept_col_x = kept_col_x;
-
-  return col_text_triangles;
-
-};
-
-/***/ }),
-
-/***/ "./src/matrix_labels/calc_row_text_triangles.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_labels/calc_row_text_triangles.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
-
-module.exports = function calc_row_text_triangles(params){
-
-  var inst_nodes = params.network.row_nodes;
-  var num_row = params.num_row;
-
-  // var row_height = 1/num_row;
-
-  var vect_text_attrs = {
-    textAlign: 'right',
-    textBaseline: 'middle',
-    triangles: true,
-    size: params.font_detail,
-    font:'"Open Sans", verdana, arial, sans-serif'
-  };
-
-  // draw matrix cells
-  /////////////////////////////////////////
-  // y_arr ranges from -.05 to 0.5
-  var y_arr = params.canvas_pos.y_arr;
-
-  // generating array with row text triangles and y-offsets
-  var row_text_triangles = [];
-
-  var inst_order = params.inst_order.row;
-
-  var viz_area = params.viz_area;
-  var kept_row_y = [];
-
-  _.each(inst_nodes, function(inst_node, row_id){
-
-    var row_order_id = num_row - 1 - params.network.row_nodes[row_id][inst_order];
-    var inst_y = y_arr[ row_order_id ] + 0.5/num_row;
-
-    if (inst_y > viz_area.y_min && inst_y < viz_area.y_max){
-
-      var inst_name = inst_node.name;
+      var inst_name = inst_label.name;
 
       if (inst_name.indexOf(': ') >= 0){
-        inst_name = inst_node.name.split(': ')[1];
+          inst_name = inst_label.name.split(': ')[1];
       }
 
       var tmp_text_vect;
-      if (inst_name in params.text_triangles.row){
-        // console.log('found row');
-        tmp_text_vect = params.text_triangles.row[inst_name];
-      } else{
+      if (inst_name in params.text_triangles[inst_axis]){
+        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
+      } else {
+        // console.log('vectorizeText')
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles.row[inst_name] = tmp_text_vect
+        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
-      tmp_text_vect.offset = [0, inst_y];
-      row_text_triangles.push(tmp_text_vect);
+      tmp_text_vect.inst_offset = [0, offsets.inst];
+      tmp_text_vect.new_offset = [0, offsets.new];
+      text_triangles.push(tmp_text_vect);
+
       var inst_data = {};
-      inst_data.y = inst_y;
+      inst_data.y = offsets.inst;
       inst_data.name = inst_name;
-      kept_row_y.push(inst_data);
     }
 
   });
 
-  // using to improve row filtering behavior
-  params.kept_row_y = kept_row_y;
-
-  return row_text_triangles;
+  return text_triangles;
 
 };
 
@@ -24876,6 +24555,7 @@ module.exports = function get_ordered_labels(params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
+var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
@@ -24884,12 +24564,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor.col]);
-
-  // /* Col Text */
-  // // update text information with zooming
-  // // var limited_scaling = params.text_scale.col(total_zoom);
-  // params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
-  //                                    params.text_scale.col(params.zoom_data.x.total_zoom);
 
   // 17.5, lowering makes larger text
   var final_increase_font_size = params.num_col/5.0;
@@ -24906,8 +24580,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){
     scale_down_fs = webgl_fs/max_webgl_fs;
-    // console.log('too large webgl text', scale_down_fs)
-
     scale_text = scale_text * scale_down_fs;
   }
 
@@ -24919,7 +24591,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   var rh_tri_side = rh_tri_hyp/Math.sqrt(2);
 
   var shift_text_out = 0.0;
-  var shift_text_right = col_width; // rh_tri_side; // col_width ;//- rh_tri_side;
+  var shift_text_right = col_width;
   // make up for rotating text
   var shift_text_up = -0.5 * rh_tri_side;
 
@@ -24927,7 +24599,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       precision mediump float;
       attribute vec2 position;
       uniform mat4 zoom;
-      uniform vec2 offset;
+      uniform vec2 inst_offset;
+      uniform vec2 new_offset;
       uniform float y_offset;
       uniform float scale_text;
       uniform mat3 mat_rotate;
@@ -24944,6 +24617,9 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       uniform float shift_text_right;
       uniform float shift_text_up;
       uniform float shift_heat;
+      uniform float interp_uni;
+      uniform bool run_animation;
+      varying vec2 mixed_offset;
 
       // last value is a sort-of zoom
       void main () {
@@ -24962,8 +24638,16 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
         // the x position varies for all column labelss
         //---------------------------------------------------------------
-        //---------------------------------------------------------------
-        x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
+        // interpolate between the two positions using the interpolate uniform
+        if (run_animation){
+          mixed_offset = mix(inst_offset, new_offset , interp_uni);
+        } else {
+          mixed_offset = inst_offset;
+        }
+
+        // mixed_offset = inst_offset;
+
+        x_position = (mixed_offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
 
         position_cols = vec3( x_position, y_position, 0.10);
 
@@ -24992,7 +24676,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('offset'),
+      inst_offset: regl.prop('inst_offset'),
+      new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       y_offset: params.mat_size.y,
       heat_size: params.heat_size.x,
@@ -25004,12 +24689,14 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       text_y_scale: text_y_scale,
       total_zoom: params.zoom_data.x.total_zoom,
       col_width: col_width,
+      // alternate way to define interpolate uni
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
+      run_animation: params.animation.running
     },
     depth: {
       enable: true,
       mask: true,
       func: 'less',
-      // func: 'greater',
       range: [0, 1]
     },
   };
@@ -25028,30 +24715,12 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
+var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
-  // // prevent text from getting too large when zooming
-  // params.text_scale.row = d3.scale.linear()
-  //     .domain([1, 20])
-  //     .range( [1, 20/params.allowable_zoom_factor.row]);
 
-
-  // smaller scale_text -> larger text
-  // var limited_scaling = params.text_scale.row(total_zoom);
-
-  // var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(params.zoom_data.y.total_zoom);
-  // var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom;
-
-  // // prevent text from getting too large when zooming
-  // // 17.5, lowering makes larger text
-  // params.text_scale.row = d3.scale.linear()
-  //     .domain([1, params.max_zoom])
-  //     .range( [1, params.num_row]);
-  // var inst_increase_font_size = params.text_scale.row(params.zoom_data.y.total_zoom);
-
-
-  var scale_text = params.num_row// * params.zoom_data.y.total_zoom ; /// inst_increase_font_size;
+  var scale_text = params.num_row;
 
   var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
 
@@ -25060,16 +24729,8 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){
     scale_down_fs = webgl_fs/max_webgl_fs;
-    // console.log('too large webgl text', scale_down_fs)
-
     scale_text = scale_text * scale_down_fs;
   }
-
-  // if (scale_text < 37){
-  //   scale_text = 37;
-  // }
-
-  // console.log('scale_text', (1/params.num_row) * params.zoom_data.y.total_zoom )
 
   var mat_rotate = m3.rotation(Math.PI/2);
 
@@ -25079,7 +24740,8 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       precision mediump float;
       attribute vec2 position;
       uniform mat4 zoom;
-      uniform vec2 offset;
+      uniform vec2 inst_offset;
+      uniform vec2 new_offset;
       uniform float x_offset;
       uniform float scale_text;
       uniform float total_zoom;
@@ -25088,6 +24750,9 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       varying float x_position;
       varying float y_position;
       uniform float shift_heat;
+      uniform float interp_uni;
+      uniform bool run_animation;
+      varying vec2 mixed_offset;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -25108,7 +24773,16 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
         // shift by offset and then uniformly shift down by s
         // shift_heat
         //------------------------------------------------------
-        y_position = -position.y/scale_text + 2.0 * heat_size * offset[1] - shift_heat ;
+        // interpolate between the two positions using the interpolate uniform
+        if (run_animation){
+          mixed_offset = mix(inst_offset, new_offset , interp_uni);
+        } else {
+          mixed_offset = inst_offset;
+        }
+
+        // mixed_offset = inst_offset;
+
+        y_position = -position.y/scale_text + 2.0 * heat_size * mixed_offset[1] - shift_heat ;
 
         gl_Position = zoom *
                       vec4(x_position,
@@ -25132,19 +24806,22 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('offset'),
+      inst_offset: regl.prop('inst_offset'),
+      new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       x_offset: x_offset,
       heat_size: params.heat_size.y,
       shift_heat: params.mat_size.y - params.heat_size.y,
       total_zoom: params.zoom_data.y.total_zoom,
-      mat_rotate: mat_rotate
+      mat_rotate: mat_rotate,
+      // alternate way to define interpolate uni
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
+      run_animation: params.animation.running
     },
     depth: {
       enable: true,
       mask: true,
       func: 'less',
-      // func: 'greater',
       range: [0, 1]
     },
   };
@@ -25169,9 +24846,9 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
-  // var inst_rgba = color_to_rgba('#eee', 1.0);
-  var inst_rgba = color_to_rgba('red', 1.0);
-  var num_labels = params['num_'+inst_axis];
+  var inst_rgba = color_to_rgba('#eee', 1.0);
+  // var inst_rgba = color_to_rgba('red', 1.0);
+  var num_labels = params['num_' + inst_axis];
 
   var tri_height;
   var tri_width;
@@ -25268,7 +24945,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
     frag: `
 
-      precision mediump float;
+      precision highp float;
       uniform vec4 triangle_color;
 
       // color triangle red
@@ -25310,9 +24987,6 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       top_offset: top_offset,
       triangle_color: inst_rgba,
       total_zoom: total_zoom,
-      // interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      // run_animation: regl.prop('run_animation')
-
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
       run_animation: params.animation.running
@@ -25403,6 +25077,67 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
 
 /***/ }),
 
+/***/ "./src/matrix_labels/update_text_triangle_order.js":
+/*!*********************************************************!*\
+  !*** ./src/matrix_labels/update_text_triangle_order.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function update_text_triangle_order(params, inst_axis){
+
+  var inst_order = params.inst_order[inst_axis];
+  var new_order = params.new_order[inst_axis];
+
+  var inst_labels = params.text_triangles.draw[inst_axis];
+  var num_labels = params['num_' + inst_axis];
+
+  var inst_dim;
+  if (inst_axis === 'col'){
+    inst_dim = 'x';
+  } else {
+    inst_dim = 'y';
+  }
+
+  var order_id;
+  var order_state;
+  var offsets = {};
+
+  var axis_arr = params.canvas_pos[inst_dim + '_arr'];
+
+  _.each(inst_labels, function(inst_label, inst_id){
+
+
+    // calculate inst and new offsets
+    _.each(['inst', 'new'], function(inst_state){
+
+      if (inst_state === 'inst'){
+        order_state = inst_order
+      } else {
+         order_state = new_order
+      }
+
+      if (inst_axis === 'col'){
+        order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+      } else {
+        order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+      }
+    });
+
+    inst_label.inst_offset = [0, offsets.inst];
+    inst_label.new_offset = [0, offsets.new];
+
+
+  });
+
+  return inst_labels;
+
+}
+
+/***/ }),
+
 /***/ "./src/params/calc_alpha_order.js":
 /*!****************************************!*\
   !*** ./src/params/calc_alpha_order.js ***!
@@ -25424,15 +25159,21 @@ module.exports = function calc_alpha_order(network){
 
     tmp_names = node_names.sort();
 
-    _.map(tmp_names, function(d, i){
+    // console.log(tmp_names)
+    // console.log('node names\n------------')
+    // console.log(node_names);
+    // console.log('tmp names\n------------')
+    // console.log(tmp_names);
 
-      var inst_alpha = node_names.indexOf(d);
+    _.map(inst_nodes, function(inst_node){
 
-      network[inst_axis + '_nodes'][i].alpha = inst_alpha
+      var inst_alpha = node_names.length -  tmp_names.indexOf(inst_node.name) - 1;
+
+      inst_node.alpha = inst_alpha
 
     });
 
-  })
+  });
 
   return network;
 }
@@ -25620,8 +25361,7 @@ module.exports = function calc_viz_dim(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js");
-var calc_row_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_row_text_triangles */ "./src/matrix_labels/calc_row_text_triangles.js");
-var calc_col_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_col_text_triangles */ "./src/matrix_labels/calc_col_text_triangles.js");
+var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
@@ -25629,7 +25369,6 @@ var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat 
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
-// var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
 var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
@@ -25672,7 +25411,11 @@ module.exports = function initialize_params(regl, network){
   params.initialize_viz = true;
   params.first_frame = true;
 
+  // debugger;
+
   network = calc_alpha_order(network)
+
+  // debugger;
 
   // use data from network
   //////////////////////////
@@ -25882,19 +25625,15 @@ module.exports = function initialize_params(regl, network){
 
   params.max_num_text = 75;
 
-  // calculate the text_triangles for all rows
-  // initialize with no row_text_triangles
-  if (params.num_row > params.max_num_text){
-    params.row_text_triangles = false;
-  } else {
-    params.row_text_triangles = calc_row_text_triangles(params);
-  }
+  params.text_triangles.draw = {};
 
-  if (params.num_col > params.max_num_text){
-    params.col_text_triangles = false;
-  } else {
-    params.col_text_triangles = calc_col_text_triangles(params);
-  }
+  _.each(['row', 'col'], function(inst_axis){
+    if (params['num_' + inst_axis] > params.max_num_text){
+      params.text_triangles.draw[inst_axis] = false;
+    } else {
+      params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+    }
+  });
 
 
   // console.log('row_text_triangles in initialize_params')
@@ -25967,6 +25706,7 @@ module.exports = function reorder_cat_args(regl, cgm){
 
     // update cat position arrays
     for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+
       params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
 
       // update the attribute
@@ -26017,22 +25757,30 @@ module.exports = function reorder_matrix_args(regl, cgm){
 
 var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
 var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
+// var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
+var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
-  // console.log('clicking reorder: ' + ini_new_order);
+  var params = cgm.params;
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  cgm.params.animation.run_switch = true;
-  cgm.params.new_order[inst_axis] = new_order;
+  params.animation.run_switch = true;
+  params.new_order[inst_axis] = new_order;
 
   reorder_matrix_args(regl, cgm);
   reorder_cat_args(regl, cgm);
 
-  // wait until transition has finished to update order
-  // cgm.params.inst_order[inst_axis] = new_order;
+  // preventing tmp reordering bug that happens when pre-calculated labels are
+  // incorrectly animated on reordering. The bug seems to occur only when the
+  // number of pre-calculated (drawn) rows is less than the total number of rows
+  if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] < params.max_num_text){
+    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+  } else {
+    params.text_triangles.draw[inst_axis] = false;
+  }
 
 };
 

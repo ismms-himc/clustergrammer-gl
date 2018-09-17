@@ -22907,7 +22907,7 @@ var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_t
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
-module.exports = function draw_components(regl, params, calc_text_tri=false){
+module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
 
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
@@ -22916,7 +22916,7 @@ module.exports = function draw_components(regl, params, calc_text_tri=false){
 
     regl(params.viz_aid_tri_args.col)();
 
-    // drawing the column categories and dendrogram using the same camera as the
+    // drawing the label categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
     _.each(params.cat_args.col, function(inst_cat_arg){
       regl(inst_cat_arg)(
@@ -22995,7 +22995,7 @@ module.exports = function draw_commands(regl, params){
 
   draw_matrix_components(regl, params);
   draw_row_components(regl, params, params.slow_draw);
-  draw_axis_components(regl, params, params.slow_draw);
+  draw_axis_components(regl, params, 'col', params.slow_draw);
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip && params.in_bounds_tooltip){
@@ -23088,6 +23088,8 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     regl(params.viz_aid_tri_args.row)();
 
+    // drawing the column categories and dendrogram using the same camera as the
+    // matrix (no special zooming required)
     _.each(params.cat_args.row, function(inst_cat_arg){
       regl(inst_cat_arg)(
         {
@@ -23116,7 +23118,6 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
           params.row_text_triangles = calc_text_triangles(params, 'row');
         }
         regl(text_triangle_args)(params.row_text_triangles);
-
 
       } else {
         // console.log('too many rows to draw');

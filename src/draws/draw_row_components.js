@@ -13,6 +13,8 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
 
     regl(params.viz_aid_tri_args.row)();
 
+    // drawing the column categories and dendrogram using the same camera as the
+    // matrix (no special zooming required)
     _.each(params.cat_args.row, function(inst_cat_arg){
       regl(inst_cat_arg)(
         {
@@ -41,7 +43,6 @@ module.exports = function draw_row_components(regl, params, calc_text_tri=false)
           params.row_text_triangles = calc_text_triangles(params, 'row');
         }
         regl(text_triangle_args)(params.row_text_triangles);
-
 
       } else {
         // console.log('too many rows to draw');

@@ -4,7 +4,7 @@ var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var interp_fun = require('./interp_fun');
 
-module.exports = function draw_components(regl, params, calc_text_tri=false){
+module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
 
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
@@ -13,7 +13,7 @@ module.exports = function draw_components(regl, params, calc_text_tri=false){
 
     regl(params.viz_aid_tri_args.col)();
 
-    // drawing the column categories and dendrogram using the same camera as the
+    // drawing the label categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
     _.each(params.cat_args.col, function(inst_cat_arg){
       regl(inst_cat_arg)(

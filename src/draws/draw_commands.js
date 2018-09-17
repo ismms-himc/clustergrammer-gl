@@ -17,7 +17,7 @@ module.exports = function draw_commands(regl, params){
 
   draw_matrix_components(regl, params);
   draw_row_components(regl, params, params.slow_draw);
-  draw_axis_components(regl, params, params.slow_draw);
+  draw_axis_components(regl, params, 'col', params.slow_draw);
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip && params.in_bounds_tooltip){

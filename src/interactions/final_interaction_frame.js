@@ -18,8 +18,6 @@ module.exports = function final_interaction_frame(regl, params){
         // console.log('SLOW_DRAW')
       }
 
-      // console.log(params.kept_row_y);
-
     } else {
       params.first_frame = false;
     }

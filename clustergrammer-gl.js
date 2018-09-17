@@ -23459,8 +23459,6 @@ module.exports = function final_interaction_frame(regl, params){
         // console.log('SLOW_DRAW')
       }
 
-      // console.log(params.kept_row_y);
-
     } else {
       params.first_frame = false;
     }
@@ -24651,7 +24649,7 @@ module.exports = function calc_row_text_triangles(params){
   var inst_order = params.inst_order.row;
 
   var viz_area = params.viz_area;
-  var kept_row_y = [];
+  // var kept_row_y = [];
 
   _.each(inst_nodes, function(inst_node, row_id){
 
@@ -24679,13 +24677,13 @@ module.exports = function calc_row_text_triangles(params){
       var inst_data = {};
       inst_data.y = inst_y;
       inst_data.name = inst_name;
-      kept_row_y.push(inst_data);
+      // kept_row_y.push(inst_data);
     }
 
   });
 
   // using to improve row filtering behavior
-  params.kept_row_y = kept_row_y;
+  // params.kept_row_y = kept_row_y;
 
   return row_text_triangles;
 
@@ -24742,12 +24740,11 @@ module.exports = function calc_text_triangles(params, inst_axis){
   var inst_order = params.inst_order[inst_axis];
 
   var viz_area = params.viz_area;
-  var kept_col_x = [];
 
   _.each(inst_nodes, function(inst_node, inst_id){
 
-    var col_order_id = params.network.col_nodes[inst_id][inst_order];
-    var inst_x = x_arr[ (num_labels - 1) - col_order_id ] + 0.5/num_labels;
+    var order_id = params.network[inst_axis + '_nodes'][inst_id][inst_order];
+    var inst_x = x_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
 
     if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
 
@@ -24771,13 +24768,9 @@ module.exports = function calc_text_triangles(params, inst_axis){
       var inst_data = {};
       inst_data.y = inst_x;
       inst_data.name = inst_name;
-      kept_col_x.push(inst_data);
     }
 
   });
-
-
-  params.kept_col_x = kept_col_x;
 
   return text_triangles;
 

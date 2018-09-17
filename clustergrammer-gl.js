@@ -24887,6 +24887,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
+var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
@@ -24911,7 +24912,8 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       precision mediump float;
       attribute vec2 position;
       uniform mat4 zoom;
-      uniform vec2 offset;
+      uniform vec2 inst_offset;
+      uniform vec2 new_offset;
       uniform float x_offset;
       uniform float scale_text;
       uniform float total_zoom;
@@ -24920,6 +24922,9 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       varying float x_position;
       varying float y_position;
       uniform float shift_heat;
+      uniform float interp_uni;
+      uniform bool run_animation;
+      varying vec2 mixed_offset;
 
       // vec3 tmp = vec3(1,1,1);
 
@@ -24940,7 +24945,16 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
         // shift by offset and then uniformly shift down by s
         // shift_heat
         //------------------------------------------------------
-        y_position = -position.y/scale_text + 2.0 * heat_size * offset[1] - shift_heat ;
+        // interpolate between the two positions using the interpolate uniform
+        if (run_animation){
+          mixed_offset = mix(inst_offset, new_offset , interp_uni);
+        } else {
+          mixed_offset = inst_offset;
+        }
+
+        // mixed_offset = inst_offset;
+
+        y_position = -position.y/scale_text + 2.0 * heat_size * mixed_offset[1] - shift_heat ;
 
         gl_Position = zoom *
                       vec4(x_position,
@@ -24964,13 +24978,17 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('inst_offset'),
+      inst_offset: regl.prop('inst_offset'),
+      new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       x_offset: x_offset,
       heat_size: params.heat_size.y,
       shift_heat: params.mat_size.y - params.heat_size.y,
       total_zoom: params.zoom_data.y.total_zoom,
-      mat_rotate: mat_rotate
+      mat_rotate: mat_rotate,
+      // alternate way to define interpolate uni
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
+      run_animation: params.animation.running
     },
     depth: {
       enable: true,

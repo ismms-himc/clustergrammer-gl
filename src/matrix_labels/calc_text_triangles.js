@@ -23,16 +23,26 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   var vect_text_attrs = {
     textAlign: 'left',
-    // textBaseline: 'middle',
-    textBaseline: 'bottom',
+    // textBaseline: 'bottom',
     triangles: true,
     size: params.font_detail,
     font: '"Open Sans", verdana, arial, sans-serif'
   };
 
+  var inst_dim;
+  if (inst_axis === 'col'){
+    inst_dim = 'x';
+    vect_text_attrs.textAlign = 'left';
+    vect_text_attrs.textBaseline = 'bottom';
+  } else {
+    inst_dim = 'y';
+    vect_text_attrs.textAlign = 'right';
+    vect_text_attrs.textBaseline = 'middle';
+  }
+
   // draw matrix cells
   /////////////////////////////////////////
-  var x_arr = params.canvas_pos.x_arr;
+  var axis_arr = params.canvas_pos[inst_dim + '_arr'];
 
   // generating array with text triangles and y-offsets
   var text_triangles = [];
@@ -43,10 +53,16 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   _.each(inst_nodes, function(inst_node, inst_id){
 
-    var order_id = params.network[inst_axis + '_nodes'][inst_id][inst_order];
-    var inst_x = x_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
 
-    if (inst_x > viz_area.x_min && inst_x < viz_area.x_max){
+    var order_id = params.network[inst_axis + '_nodes'][inst_id][inst_order];
+    var inst_offset;
+    if (inst_axis === 'col'){
+      inst_offset = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+    } else {
+      inst_offset = axis_arr[ order_id ] + 0.5/num_labels;
+    }
+
+    if (inst_offset > viz_area[inst_dim + '_min'] && inst_offset < viz_area[inst_dim + '_max']){
 
       var inst_name = inst_node.name;
 
@@ -62,11 +78,11 @@ module.exports = function calc_text_triangles(params, inst_axis){
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
-      tmp_text_vect.offset = [0, inst_x];
+      tmp_text_vect.offset = [0, inst_offset];
       text_triangles.push(tmp_text_vect);
 
       var inst_data = {};
-      inst_data.y = inst_x;
+      inst_data.y = inst_offset;
       inst_data.name = inst_name;
     }
 

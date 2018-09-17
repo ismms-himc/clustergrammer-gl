@@ -24609,7 +24609,8 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   var viz_area = params.viz_area;
 
-  var order_id;
+  var inst_order_id;
+  var new_order_id;
   _.each(inst_nodes, function(inst_node, inst_id){
 
     // instantaneous offset

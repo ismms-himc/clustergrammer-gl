@@ -53,12 +53,12 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   _.each(inst_nodes, function(inst_node, inst_id){
 
-
-    var order_id = params.network[inst_axis + '_nodes'][inst_id][inst_order];
     var inst_offset;
     if (inst_axis === 'col'){
+      order_id = params.network[inst_axis + '_nodes'][inst_id][inst_order];
       inst_offset = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
     } else {
+      order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][inst_order];
       inst_offset = axis_arr[ order_id ] + 0.5/num_labels;
     }
 

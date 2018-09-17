@@ -22909,6 +22909,13 @@ var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun
 
 module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
 
+  var axis_dim;
+  if (inst_axis === 'col'){
+    axis_dim = 'x';
+  } else {
+    axis_dim = 'y';
+  }
+
   /* Column Components */
   params.cameras[inst_axis + '-labels'].draw(() => {
 
@@ -22930,11 +22937,16 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     regl(params.dendro_args[inst_axis])();
 
     // make the arguments for the draw command
-    var text_triangle_args = make_col_text_args(regl, params, params.zoom_function);
+    var text_triangle_args
+    if (inst_axis === 'col'){
+      text_triangle_args = make_col_text_args(regl, params, params.zoom_function);
+    } else {
+      text_triangle_args = make_row_text_args(regl, params, params.zoom_function);
+    }
 
     if (calc_text_tri){
 
-      var num_viz_labels = params['num_' + inst_axis]/params.zoom_data.x.total_zoom;
+      var num_viz_labels = params['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
       if (num_viz_labels < params.max_num_text){
 

@@ -18,8 +18,15 @@ function clustergrammer_gl(args){
   var container = args.container;
 
   // make control panel first so it appears above canvas
-  d3.select(container).append('div').attr('class', 'control-container')
-  d3.select(container).append('div').attr('class', 'canvas-container')
+  d3.select(container)
+    .append('div')
+    .attr('class', 'control-container')
+    .style('cursor', 'default');
+
+  d3.select(container)
+    .append('div')
+    .attr('class', 'canvas-container')
+    .style('cursor', 'default');
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];
 

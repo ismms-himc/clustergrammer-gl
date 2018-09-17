@@ -7,7 +7,6 @@ var zoom_rules_high_mat = require('./../zoom/zoom_rules_high_mat');
 var make_cameras = require('./../cameras/make_cameras');
 var calc_spillover_triangles = require('./../spillover/calc_spillover_triangles');
 var make_matrix_args = require('./../matrix_cells/make_matrix_args');
-// var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
 var make_spillover_args = require('./../spillover/make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');

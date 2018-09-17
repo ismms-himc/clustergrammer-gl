@@ -4,7 +4,7 @@ var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var interp_fun = require('./interp_fun');
 
-module.exports = function draw_col_components(regl, params, calc_text_tri=false){
+module.exports = function draw_components(regl, params, calc_text_tri=false){
 
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
@@ -33,8 +33,6 @@ module.exports = function draw_col_components(regl, params, calc_text_tri=false)
     if (calc_text_tri){
 
       var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
-
-      // console.log('num_viz_cols', num_viz_cols)
 
       if (num_viz_cols < params.max_num_text){
 

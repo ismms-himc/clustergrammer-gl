@@ -24716,12 +24716,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor.col]);
 
-  // /* Col Text */
-  // // update text information with zooming
-  // // var limited_scaling = params.text_scale.col(total_zoom);
-  // params.text_zoom.col.scaled_num = params.text_zoom.col.reference *
-  //                                    params.text_scale.col(params.zoom_data.x.total_zoom);
-
   // 17.5, lowering makes larger text
   var final_increase_font_size = params.num_col/5.0;
   params.text_scale.col = d3.scale.linear()
@@ -24737,8 +24731,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){
     scale_down_fs = webgl_fs/max_webgl_fs;
-    // console.log('too large webgl text', scale_down_fs)
-
     scale_text = scale_text * scale_down_fs;
   }
 
@@ -24750,7 +24742,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   var rh_tri_side = rh_tri_hyp/Math.sqrt(2);
 
   var shift_text_out = 0.0;
-  var shift_text_right = col_width; // rh_tri_side; // col_width ;//- rh_tri_side;
+  var shift_text_right = col_width;
   // make up for rotating text
   var shift_text_up = -0.5 * rh_tri_side;
 
@@ -24842,7 +24834,6 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       enable: true,
       mask: true,
       func: 'less',
-      // func: 'greater',
       range: [0, 1]
     },
   };
@@ -24864,27 +24855,8 @@ var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
-  // // prevent text from getting too large when zooming
-  // params.text_scale.row = d3.scale.linear()
-  //     .domain([1, 20])
-  //     .range( [1, 20/params.allowable_zoom_factor.row]);
 
-
-  // smaller scale_text -> larger text
-  // var limited_scaling = params.text_scale.row(total_zoom);
-
-  // var scale_text = params.text_zoom.row.scaled_num * params.text_scale.row(params.zoom_data.y.total_zoom);
-  // var scale_text = params.text_zoom.row.scaled_num * params.zoom_data.y.total_zoom;
-
-  // // prevent text from getting too large when zooming
-  // // 17.5, lowering makes larger text
-  // params.text_scale.row = d3.scale.linear()
-  //     .domain([1, params.max_zoom])
-  //     .range( [1, params.num_row]);
-  // var inst_increase_font_size = params.text_scale.row(params.zoom_data.y.total_zoom);
-
-
-  var scale_text = params.num_row// * params.zoom_data.y.total_zoom ; /// inst_increase_font_size;
+  var scale_text = params.num_row;
 
   var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
 
@@ -24893,16 +24865,8 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs){
     scale_down_fs = webgl_fs/max_webgl_fs;
-    // console.log('too large webgl text', scale_down_fs)
-
     scale_text = scale_text * scale_down_fs;
   }
-
-  // if (scale_text < 37){
-  //   scale_text = 37;
-  // }
-
-  // console.log('scale_text', (1/params.num_row) * params.zoom_data.y.total_zoom )
 
   var mat_rotate = m3.rotation(Math.PI/2);
 
@@ -24977,7 +24941,6 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       enable: true,
       mask: true,
       func: 'less',
-      // func: 'greater',
       range: [0, 1]
     },
   };

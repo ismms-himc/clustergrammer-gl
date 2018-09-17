@@ -107,7 +107,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('offset'),
+      offset: regl.prop('inst_offset'),
       scale_text: scale_text,
       y_offset: params.mat_size.y,
       heat_size: params.heat_size.x,

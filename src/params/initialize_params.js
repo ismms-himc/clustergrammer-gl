@@ -269,7 +269,7 @@ module.exports = function initialize_params(regl, network){
 
     } else {
       params.text_triangles.inst[inst_axis] = calc_text_triangles(params, inst_axis, params.inst_order[inst_axis]);
-      params.text_triangles.new[inst_axis] = calc_text_triangles(params, inst_axis, params.inst_order[inst_axis]);
+      params.text_triangles.new[inst_axis] = calc_text_triangles(params, inst_axis, params.new_order[inst_axis]);
     }
   });
 

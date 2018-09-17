@@ -22961,7 +22961,6 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
       } else {
         // console.log('too many labels to draw');
-        // regl(text_triangle_args)(params.text_triangles.inst[inst_axis]);
       }
 
     } else {
@@ -24635,7 +24634,7 @@ module.exports = function calc_text_triangles(params, inst_axis, inst_order){
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
-      tmp_text_vect.offset = [0, inst_offset];
+      tmp_text_vect.inst_offset = [0, inst_offset];
       text_triangles.push(tmp_text_vect);
 
       var inst_data = {};
@@ -24813,7 +24812,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('offset'),
+      offset: regl.prop('inst_offset'),
       scale_text: scale_text,
       y_offset: params.mat_size.y,
       heat_size: params.heat_size.x,
@@ -24928,7 +24927,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('offset'),
+      offset: regl.prop('inst_offset'),
       scale_text: scale_text,
       x_offset: x_offset,
       heat_size: params.heat_size.y,
@@ -25682,7 +25681,7 @@ module.exports = function initialize_params(regl, network){
 
     } else {
       params.text_triangles.inst[inst_axis] = calc_text_triangles(params, inst_axis, params.inst_order[inst_axis]);
-      params.text_triangles.new[inst_axis] = calc_text_triangles(params, inst_axis, params.inst_order[inst_axis]);
+      params.text_triangles.new[inst_axis] = calc_text_triangles(params, inst_axis, params.new_order[inst_axis]);
     }
   });
 

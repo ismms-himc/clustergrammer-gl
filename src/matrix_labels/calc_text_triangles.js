@@ -78,7 +78,7 @@ module.exports = function calc_text_triangles(params, inst_axis, inst_order){
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
-      tmp_text_vect.offset = [0, inst_offset];
+      tmp_text_vect.inst_offset = [0, inst_offset];
       text_triangles.push(tmp_text_vect);
 
       var inst_data = {};

@@ -76,7 +76,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('offset'),
+      offset: regl.prop('inst_offset'),
       scale_text: scale_text,
       x_offset: x_offset,
       heat_size: params.heat_size.y,

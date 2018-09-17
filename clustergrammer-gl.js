@@ -24764,7 +24764,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       precision mediump float;
       attribute vec2 position;
       uniform mat4 zoom;
-      uniform vec2 offset;
+      uniform vec2 inst_offset;
+      uniform vec2 new_offset;
       uniform float y_offset;
       uniform float scale_text;
       uniform mat3 mat_rotate;
@@ -24781,6 +24782,9 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       uniform float shift_text_right;
       uniform float shift_text_up;
       uniform float shift_heat;
+      uniform float interp_uni;
+      uniform bool run_animation;
+      varying vec2 mixed_offset;
 
       // last value is a sort-of zoom
       void main () {
@@ -24799,7 +24803,16 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
         // the x position varies for all column labelss
         //---------------------------------------------------------------
-        x_position = (offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
+        // interpolate between the two positions using the interpolate uniform
+        if (run_animation){
+          mixed_offset = mix(inst_offset, new_offset , interp_uni);
+        } else {
+          mixed_offset = inst_offset;
+        }
+
+        // mixed_offset = inst_offset;
+
+        x_position = (mixed_offset[1] * 2.0 * heat_size + shift_heat + shift_text_right);
 
         position_cols = vec3( x_position, y_position, 0.10);
 
@@ -24828,7 +24841,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
     elements: regl.prop('cells'),
     uniforms: {
       zoom: zoom_function,
-      offset: regl.prop('inst_offset'),
+      inst_offset: regl.prop('inst_offset'),
+      new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       y_offset: params.mat_size.y,
       heat_size: params.heat_size.x,

@@ -160,7 +160,10 @@ module.exports = function build_control_panel(regl, cgm){
         var clean_order = d.replace('sum', 'rank')
                            .replace('var', 'rankvar')
 
-        if (cgm.params.inst_order[inst_axis] != clean_order){
+        // tmp preventing dispersion reordering from working
+        if (cgm.params.inst_order[inst_axis] != clean_order && clean_order != 'disp'){
+
+
 
           run_reorder(regl, cgm, inst_axis, d);
 

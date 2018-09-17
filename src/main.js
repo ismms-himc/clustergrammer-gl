@@ -6,7 +6,7 @@
 
 var run_viz = require('./draws/run_viz');
 var build_control_panel = require('./control_panel/build_control_panel');
-var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
+// var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 
 function clustergrammer_gl(args){
 
@@ -52,7 +52,7 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  build_dendrogram_sliders(cgm);
+  // build_dendrogram_sliders(cgm);
 
   build_control_panel(regl, cgm);
 

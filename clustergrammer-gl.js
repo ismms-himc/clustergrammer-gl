@@ -22910,15 +22910,15 @@ var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun
 module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
 
   /* Column Components */
-  params.cameras['col-labels'].draw(() => {
+  params.cameras[inst_axis + '-labels'].draw(() => {
 
     params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
 
-    regl(params.viz_aid_tri_args.col)();
+    regl(params.viz_aid_tri_args[inst_axis])();
 
     // drawing the label categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
-    _.each(params.cat_args.col, function(inst_cat_arg){
+    _.each(params.cat_args[inst_axis], function(inst_cat_arg){
       regl(inst_cat_arg)(
         {
           interp_prop: interp_fun(params),
@@ -22927,29 +22927,28 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       );
     });
 
-    regl(params.dendro_args.col)();
+    regl(params.dendro_args[inst_axis])();
 
     // make the arguments for the draw command
-    var text_triangle_args = make_col_text_args(regl, params,
-                                                         params.zoom_function);
+    var text_triangle_args = make_col_text_args(regl, params, params.zoom_function);
 
     if (calc_text_tri){
 
-      var num_viz_cols = params.num_col/params.zoom_data.x.total_zoom;
+      var num_viz_labels = params['num_' + inst_axis]/params.zoom_data.x.total_zoom;
 
-      if (num_viz_cols < params.max_num_text){
+      if (num_viz_labels < params.max_num_text){
 
         calc_viz_area(params);
 
-        // draw using text_triangle_args and col_text_triangles
-        if (params.num_col > params.max_num_text){
-          params.col_text_triangles = calc_text_triangles(params, 'col');
+        // draw using text_triangle_args and axis triangles
+        if (params['num_' + inst_axis] > params.max_num_text){
+          params[inst_axis + '_text_triangles'] = calc_text_triangles(params, inst_axis);
         }
-        regl(text_triangle_args)(params.col_text_triangles);
+        regl(text_triangle_args)(params[inst_axis + '_text_triangles']);
 
       } else {
-        // console.log('too many cols to draw');
-        // regl(text_triangle_args)(params.col_text_triangles);
+        // console.log('too many labels to draw');
+        // regl(text_triangle_args)(params[inst_axis + '_text_triangles']);
       }
 
     } else {
@@ -22958,8 +22957,8 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
         show text triangles if avaialble
       */
 
-      if (params.col_text_triangles != false){
-        regl(text_triangle_args)(params.col_text_triangles);
+      if (params[inst_axis + '_text_triangles'] != false){
+        regl(text_triangle_args)(params[inst_axis + '_text_triangles']);
       }
     }
 

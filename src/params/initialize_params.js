@@ -259,14 +259,14 @@ module.exports = function initialize_params(regl, network){
 
   params.max_num_text = 75;
 
-  params.text_triangles.inst = {};
+  params.text_triangles.draw = {};
 
   _.each(['row', 'col'], function(inst_axis){
     if (params['num_' + inst_axis] > params.max_num_text){
-      params.text_triangles.inst[inst_axis] = false;
+      params.text_triangles.draw[inst_axis] = false;
 
     } else {
-      params.text_triangles.inst[inst_axis] = calc_text_triangles(params, inst_axis);
+      params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
     }
   });
 

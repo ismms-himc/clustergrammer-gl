@@ -22955,9 +22955,9 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
         // draw using text_triangle_args and axis triangles
         if (params['num_' + inst_axis] > params.max_num_text){
-          params.text_triangles.inst[inst_axis] = calc_text_triangles(params, inst_axis);
+          params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
         }
-        regl(text_triangle_args)(params.text_triangles.inst[inst_axis]);
+        regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
       } else {
         // console.log('too many labels to draw');
@@ -22969,8 +22969,8 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
         show text triangles if avaialble
       */
 
-      if (params.text_triangles.inst[inst_axis] != false){
-        regl(text_triangle_args)(params.text_triangles.inst[inst_axis]);
+      if (params.text_triangles.draw[inst_axis] != false){
+        regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     }
 
@@ -25702,14 +25702,14 @@ module.exports = function initialize_params(regl, network){
 
   params.max_num_text = 75;
 
-  params.text_triangles.inst = {};
+  params.text_triangles.draw = {};
 
   _.each(['row', 'col'], function(inst_axis){
     if (params['num_' + inst_axis] > params.max_num_text){
-      params.text_triangles.inst[inst_axis] = false;
+      params.text_triangles.draw[inst_axis] = false;
 
     } else {
-      params.text_triangles.inst[inst_axis] = calc_text_triangles(params, inst_axis);
+      params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
     }
   });
 

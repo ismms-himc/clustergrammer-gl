@@ -22499,8 +22499,6 @@ module.exports = function build_control_panel(regl, cgm){
         // tmp preventing dispersion reordering from working
         if (cgm.params.inst_order[inst_axis] != clean_order && clean_order != 'disp'){
 
-
-
           run_reorder(regl, cgm, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
@@ -23039,8 +23037,8 @@ var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
-// var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
+var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23089,17 +23087,19 @@ module.exports = function run_viz(regl, network){
               divisor: 1
           };
         }
+
         // transfer new order to old order
         params.inst_order[inst_axis] = params.new_order[inst_axis]
 
       });
 
       // transfer new order to text triangles
-      // console.log('transfer order for text triangles')
       _.each(['row', 'col'], function(inst_axis){
-        // params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
         params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
       });
+
+      // update ordered_labels
+      get_ordered_labels(params);
 
     }
 
@@ -23319,7 +23319,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    // console.log(params.orderd_labels)
     params.mouseover.row_name = params.ordered_labels.rows[row_index];
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 

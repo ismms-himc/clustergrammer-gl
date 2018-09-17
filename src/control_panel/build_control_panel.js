@@ -163,8 +163,6 @@ module.exports = function build_control_panel(regl, cgm){
         // tmp preventing dispersion reordering from working
         if (cgm.params.inst_order[inst_axis] != clean_order && clean_order != 'disp'){
 
-
-
           run_reorder(regl, cgm, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')

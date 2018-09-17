@@ -55,7 +55,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    // console.log(params.orderd_labels)
     params.mouseover.row_name = params.ordered_labels.rows[row_index];
     params.mouseover.col_name = params.ordered_labels.cols[col_index];
 

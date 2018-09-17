@@ -12,15 +12,21 @@ module.exports = function calc_alpha_order(network){
 
     tmp_names = node_names.sort();
 
-    _.map(tmp_names, function(d, i){
+    // console.log(tmp_names)
+    // console.log('node names\n------------')
+    // console.log(node_names);
+    // console.log('tmp names\n------------')
+    // console.log(tmp_names);
 
-      var inst_alpha = node_names.indexOf(d);
+    _.map(inst_nodes, function(inst_node){
 
-      network[inst_axis + '_nodes'][i].alpha = inst_alpha
+      var inst_alpha = node_names.length -  tmp_names.indexOf(inst_node.name) - 1;
+
+      inst_node.alpha = inst_alpha
 
     });
 
-  })
+  });
 
   return network;
 }

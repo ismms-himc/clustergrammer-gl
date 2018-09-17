@@ -49,7 +49,11 @@ module.exports = function initialize_params(regl, network){
   params.initialize_viz = true;
   params.first_frame = true;
 
+  // debugger;
+
   network = calc_alpha_order(network)
+
+  // debugger;
 
   // use data from network
   //////////////////////////

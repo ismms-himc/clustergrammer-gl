@@ -23221,6 +23221,7 @@ var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
+var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23252,7 +23253,6 @@ module.exports = function run_viz(regl, network){
 
       params.animation.running = false;
       params.animation.run_switch = false;
-      // console.log('finish switch!!!!!!!!!!!');
 
       // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -23273,7 +23273,13 @@ module.exports = function run_viz(regl, network){
         // transfer new order to old order
         params.inst_order[inst_axis] = params.new_order[inst_axis]
 
-      })
+      });
+
+      // transfer new order to text triangles
+      console.log('transfer order for text triangles')
+      _.each(['row', 'col'], function(inst_axis){
+        params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+      });
 
     }
 
@@ -25835,19 +25841,25 @@ module.exports = function reorder_matrix_args(regl, cgm){
 
 var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
 var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
+var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
-  // console.log('clicking reorder: ' + ini_new_order);
+  var params = cgm.params;
+
+  console.log('clicking reorder: ' + ini_new_order);
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  cgm.params.animation.run_switch = true;
-  cgm.params.new_order[inst_axis] = new_order;
+  params.animation.run_switch = true;
+  params.new_order[inst_axis] = new_order;
 
   reorder_matrix_args(regl, cgm);
   reorder_cat_args(regl, cgm);
+
+  console.log('re-calculating text_triangles')
+  params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
 
   // wait until transition has finished to update order
   // cgm.params.inst_order[inst_axis] = new_order;

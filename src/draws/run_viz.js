@@ -3,6 +3,7 @@ var draw_commands = require('./draw_commands');
 _ = require('underscore');
 var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
 var final_interaction_frame = require('./../interactions/final_interaction_frame');
+var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 
 module.exports = function run_viz(regl, network){
 
@@ -34,7 +35,6 @@ module.exports = function run_viz(regl, network){
 
       params.animation.running = false;
       params.animation.run_switch = false;
-      // console.log('finish switch!!!!!!!!!!!');
 
       // transfer the new positions to the matrix args attributes
       params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -55,7 +55,13 @@ module.exports = function run_viz(regl, network){
         // transfer new order to old order
         params.inst_order[inst_axis] = params.new_order[inst_axis]
 
-      })
+      });
+
+      // transfer new order to text triangles
+      console.log('transfer order for text triangles')
+      _.each(['row', 'col'], function(inst_axis){
+        params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+      });
 
     }
 

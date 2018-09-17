@@ -259,18 +259,20 @@ module.exports = function initialize_params(regl, network){
 
   params.max_num_text = 75;
 
+  params.text_triangles.inst = {};
+
   // calculate the text_triangles for all rows
   // initialize with no row_text_triangles
   if (params.num_row > params.max_num_text){
-    params.row_text_triangles = false;
+    params.text_triangles.inst.row = false;
   } else {
-    params.row_text_triangles = calc_text_triangles(params, 'row', params.inst_order.row);
+    params.text_triangles.inst.row = calc_text_triangles(params, 'row', params.inst_order.row);
   }
 
   if (params.num_col > params.max_num_text){
-    params.col_text_triangles = false;
+    params.text_triangles.inst.col = false;
   } else {
-    params.col_text_triangles = calc_text_triangles(params, 'col', params.inst_order.col);
+    params.text_triangles.inst.col = calc_text_triangles(params, 'col', params.inst_order.col);
   }
 
 

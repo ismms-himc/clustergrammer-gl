@@ -54,16 +54,14 @@ module.exports = function calc_text_triangles(params, inst_axis){
   var viz_area = params.viz_area;
 
   var order_id;
-  var new_order_id;
   var order_state;
-
   var offsets = {};
 
   // only calculating the text-triangles for labels that are within the visible
   // area
   _.each(inst_labels, function(inst_label, inst_id){
 
-    // calculate offsets
+    // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
 
       if (inst_state === 'inst'){

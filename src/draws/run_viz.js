@@ -58,9 +58,8 @@ module.exports = function run_viz(regl, network){
       });
 
       // transfer new order to text triangles
-      console.log('transfer order for text triangles')
+      // console.log('transfer order for text triangles')
       _.each(['row', 'col'], function(inst_axis){
-        var run_vect_text = false;
         params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
       });
 

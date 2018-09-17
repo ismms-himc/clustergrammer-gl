@@ -3,7 +3,8 @@ var draw_commands = require('./draw_commands');
 _ = require('underscore');
 var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
 var final_interaction_frame = require('./../interactions/final_interaction_frame');
-var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
+// var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
+var update_text_triangle_order = require('./../matrix_labels/update_text_triangle_order');
 
 module.exports = function run_viz(regl, network){
 
@@ -60,7 +61,8 @@ module.exports = function run_viz(regl, network){
       // transfer new order to text triangles
       // console.log('transfer order for text triangles')
       _.each(['row', 'col'], function(inst_axis){
-        params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+        // params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+        params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
       });
 
     }

@@ -5,9 +5,9 @@ var interp_fun = require('./../draws/interp_fun');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
-  // var inst_rgba = color_to_rgba('#eee', 1.0);
-  var inst_rgba = color_to_rgba('red', 1.0);
-  var num_labels = params['num_'+inst_axis];
+  var inst_rgba = color_to_rgba('#eee', 1.0);
+  // var inst_rgba = color_to_rgba('red', 1.0);
+  var num_labels = params['num_' + inst_axis];
 
   var tri_height;
   var tri_width;
@@ -104,7 +104,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
     frag: `
 
-      precision mediump float;
+      precision highp float;
       uniform vec4 triangle_color;
 
       // color triangle red

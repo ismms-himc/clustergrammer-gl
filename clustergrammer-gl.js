@@ -22764,9 +22764,11 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 /***/ (function(module, exports, __webpack_require__) {
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
+var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
 module.exports = function draw_mat_labels(regl, params, inst_rc){
 
+  var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
   var mat_size;
   var mat_size_offset;
@@ -22849,9 +22851,13 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
     frag: `
 
+      precision highp float;
+      uniform vec4 triangle_color;
+
       // color triangle red
       void main () {
-        gl_FragColor = vec4(0.0, 1, 0.0, 1);
+        // gl_FragColor = vec4(0.0, 1, 0.0, 1);
+        gl_FragColor = triangle_color;
       }
 
     `,
@@ -22874,6 +22880,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
       mat_scale: mat_scale,
       x_offset: x_offset,
       y_shift: y_shift,
+      triangle_color: inst_rgba
     },
 
     count: 3,
@@ -23221,7 +23228,8 @@ var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
-var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
+// var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
+var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23278,7 +23286,8 @@ module.exports = function run_viz(regl, network){
       // transfer new order to text triangles
       // console.log('transfer order for text triangles')
       _.each(['row', 'col'], function(inst_axis){
-        params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+        // params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+        params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
       });
 
     }
@@ -24653,7 +24662,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
       if (inst_name in params.text_triangles[inst_axis]){
         tmp_text_vect = params.text_triangles[inst_axis][inst_name];
       } else {
-        console.log('vectorizeText')
+        // console.log('vectorizeText')
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
@@ -25020,9 +25029,9 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
-  // var inst_rgba = color_to_rgba('#eee', 1.0);
-  var inst_rgba = color_to_rgba('red', 1.0);
-  var num_labels = params['num_'+inst_axis];
+  var inst_rgba = color_to_rgba('#eee', 1.0);
+  // var inst_rgba = color_to_rgba('red', 1.0);
+  var num_labels = params['num_' + inst_axis];
 
   var tri_height;
   var tri_width;
@@ -25119,7 +25128,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
     frag: `
 
-      precision mediump float;
+      precision highp float;
       uniform vec4 triangle_color;
 
       // color triangle red
@@ -25794,7 +25803,6 @@ module.exports = function initialize_params(regl, network){
   _.each(['row', 'col'], function(inst_axis){
     if (params['num_' + inst_axis] > params.max_num_text){
       params.text_triangles.draw[inst_axis] = false;
-
     } else {
       params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
     }

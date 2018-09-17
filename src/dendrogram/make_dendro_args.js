@@ -1,7 +1,9 @@
 var m3 = require('./../draws/mat3_transform');
+var color_to_rgba = require('./../colors/color_to_rgba');
 
 module.exports = function draw_mat_labels(regl, params, inst_rc){
 
+  var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
   var mat_size;
   var mat_size_offset;
@@ -84,9 +86,13 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
     frag: `
 
+      precision highp float;
+      uniform vec4 triangle_color;
+
       // color triangle red
       void main () {
-        gl_FragColor = vec4(0.0, 1, 0.0, 1);
+        // gl_FragColor = vec4(0.0, 1, 0.0, 1);
+        gl_FragColor = triangle_color;
       }
 
     `,
@@ -109,6 +115,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
       mat_scale: mat_scale,
       x_offset: x_offset,
       y_shift: y_shift,
+      triangle_color: inst_rgba
     },
 
     count: 3,

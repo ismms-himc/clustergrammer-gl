@@ -91,7 +91,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
       if (inst_name in params.text_triangles[inst_axis]){
         tmp_text_vect = params.text_triangles[inst_axis][inst_name];
       } else {
-        console.log('vectorizeText')
+        // console.log('vectorizeText')
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }

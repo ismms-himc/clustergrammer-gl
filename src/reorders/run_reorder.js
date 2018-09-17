@@ -1,6 +1,7 @@
 var reorder_cat_args = require('./reorder_cat_args');
 var reorder_matrix_args = require('./reorder_matrix_args');
 var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
+var update_text_triangle_order = require('./../matrix_labels/update_text_triangle_order');
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
@@ -22,7 +23,8 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   if (cgm.params.text_triangles.draw[inst_axis] != false){
     console.log('calc_text_triangles in reorder')
     var run_vect_text = true;
-    params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis, run_vect_text);
+    // params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
   }
 
   // wait until transition has finished to update order

@@ -21,7 +21,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
   var inst_order = params.inst_order[inst_axis];
   var new_order = params.new_order[inst_axis];
 
-  var inst_nodes = params.network[inst_axis + '_nodes'];
+  var inst_labels = params.network[inst_axis + '_nodes'];
   var num_labels = params['num_' + inst_axis];
 
   var vect_text_attrs = {
@@ -59,9 +59,11 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   var offsets = {};
 
-  _.each(inst_nodes, function(inst_node, inst_id){
+  // only calculating the text-triangles for labels that are within the visible
+  // area
+  _.each(inst_labels, function(inst_label, inst_id){
 
-    // instantaneous offset
+    // calculate offsets
     _.each(['inst', 'new'], function(inst_state){
 
       if (inst_state === 'inst'){
@@ -79,22 +81,12 @@ module.exports = function calc_text_triangles(params, inst_axis){
       }
     });
 
-    // // new offset
-    // if (inst_axis === 'col'){
-    //   new_order_id = params.network[inst_axis + '_nodes'][inst_id][new_order];
-    //   offsets['new'] = axis_arr[ (num_labels - 1) - new_order_id ] + 0.5/num_labels;
-    // } else {
-    //   new_order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][new_order];
-    //   offsets['new'] = axis_arr[ new_order_id ] + 0.5/num_labels;
-    // }
-
-
     if (offsets.inst > viz_area[inst_dim + '_min'] && offsets.inst < viz_area[inst_dim + '_max']){
 
-      var inst_name = inst_node.name;
+      var inst_name = inst_label.name;
 
       if (inst_name.indexOf(': ') >= 0){
-          inst_name = inst_node.name.split(': ')[1];
+          inst_name = inst_label.name.split(': ')[1];
       }
 
       var tmp_text_vect;

@@ -23278,7 +23278,8 @@ module.exports = function run_viz(regl, network){
       // transfer new order to text triangles
       console.log('transfer order for text triangles')
       _.each(['row', 'col'], function(inst_axis){
-        params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+        var run_vect_text = false;
+        params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis, run_vect_text);
       });
 
     }
@@ -24564,9 +24565,6 @@ const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
-  var inst_order = params.inst_order[inst_axis];
-  var new_order = params.new_order[inst_axis];
-
   /*
 
   // Make dictionary of text triangles
@@ -24582,6 +24580,9 @@ module.exports = function calc_text_triangles(params, inst_axis){
   3. Try combining text triangles, for instance title and category.
 
   */
+
+  var inst_order = params.inst_order[inst_axis];
+  var new_order = params.new_order[inst_axis];
 
   var inst_nodes = params.network[inst_axis + '_nodes'];
   var num_labels = params['num_' + inst_axis];
@@ -24615,32 +24616,43 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   var viz_area = params.viz_area;
 
-  var inst_order_id;
+  var order_id;
   var new_order_id;
+  var order_state;
+
+  var offsets = {};
+
   _.each(inst_nodes, function(inst_node, inst_id){
 
     // instantaneous offset
-    var inst_offset;
-    if (inst_axis === 'col'){
-      inst_order_id = params.network[inst_axis + '_nodes'][inst_id][inst_order];
-      inst_offset = axis_arr[ (num_labels - 1) - inst_order_id ] + 0.5/num_labels;
-    } else {
-      inst_order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][inst_order];
-      inst_offset = axis_arr[ inst_order_id ] + 0.5/num_labels;
-    }
+    _.each(['inst', 'new'], function(inst_state){
 
-    // new offset
-    var new_offset;
-    if (inst_axis === 'col'){
-      new_order_id = params.network[inst_axis + '_nodes'][inst_id][new_order];
-      new_offset = axis_arr[ (num_labels - 1) - new_order_id ] + 0.5/num_labels;
-    } else {
-      new_order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][new_order];
-      new_offset = axis_arr[ new_order_id ] + 0.5/num_labels;
-    }
+      if (inst_state === 'inst'){
+        order_state = inst_order
+      } else {
+         order_state = new_order
+      }
+
+      if (inst_axis === 'col'){
+        order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+      } else {
+        order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+      }
+    });
+
+    // // new offset
+    // if (inst_axis === 'col'){
+    //   new_order_id = params.network[inst_axis + '_nodes'][inst_id][new_order];
+    //   offsets['new'] = axis_arr[ (num_labels - 1) - new_order_id ] + 0.5/num_labels;
+    // } else {
+    //   new_order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][new_order];
+    //   offsets['new'] = axis_arr[ new_order_id ] + 0.5/num_labels;
+    // }
 
 
-    if (inst_offset > viz_area[inst_dim + '_min'] && inst_offset < viz_area[inst_dim + '_max']){
+    if (offsets.inst > viz_area[inst_dim + '_min'] && offsets.inst < viz_area[inst_dim + '_max']){
 
       var inst_name = inst_node.name;
 
@@ -24652,16 +24664,17 @@ module.exports = function calc_text_triangles(params, inst_axis){
       if (inst_name in params.text_triangles[inst_axis]){
         tmp_text_vect = params.text_triangles[inst_axis][inst_name];
       } else {
+        console.log('vectorizeText')
         tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
-      tmp_text_vect.inst_offset = [0, inst_offset];
-      tmp_text_vect.new_offset = [0, new_offset];
+      tmp_text_vect.inst_offset = [0, offsets.inst];
+      tmp_text_vect.new_offset = [0, offsets.new];
       text_triangles.push(tmp_text_vect);
 
       var inst_data = {};
-      inst_data.y = inst_offset;
+      inst_data.y = offsets.inst;
       inst_data.name = inst_name;
     }
 
@@ -25877,7 +25890,12 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   reorder_cat_args(regl, cgm);
 
   console.log('re-calculating text_triangles')
-  params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+
+  if (cgm.params.text_triangles.draw[inst_axis] != false){
+    console.log('calc_text_triangles in reorder')
+    var run_vect_text = true;
+    params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis, run_vect_text);
+  }
 
   // wait until transition has finished to update order
   // cgm.params.inst_order[inst_axis] = new_order;

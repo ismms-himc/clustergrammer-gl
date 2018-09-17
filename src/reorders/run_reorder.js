@@ -18,7 +18,12 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   reorder_cat_args(regl, cgm);
 
   console.log('re-calculating text_triangles')
-  params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+
+  if (cgm.params.text_triangles.draw[inst_axis] != false){
+    console.log('calc_text_triangles in reorder')
+    var run_vect_text = true;
+    params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis, run_vect_text);
+  }
 
   // wait until transition has finished to update order
   // cgm.params.inst_order[inst_axis] = new_order;

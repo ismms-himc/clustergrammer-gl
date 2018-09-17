@@ -1,4 +1,5 @@
 var make_col_text_args = require('./../matrix_labels/make_col_text_args');
+var make_row_text_args = require('./../matrix_labels/make_row_text_args');
 var calc_viz_area = require('./../params/calc_viz_area');
 var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');

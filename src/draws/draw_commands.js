@@ -1,5 +1,4 @@
 var draw_matrix_components = require('./draw_matrix_components');
-var draw_row_components = require('./draw_row_components');
 var draw_axis_components = require('./draw_axis_components');
 var draw_tooltip_components = require('./draw_tooltip_components');
 var draw_spillover_components = require('./draw_spillover_components');
@@ -16,7 +15,7 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_row_components(regl, params, params.slow_draw);
+  draw_axis_components(regl, params, 'row', params.slow_draw);
   draw_axis_components(regl, params, 'col', params.slow_draw);
   draw_spillover_components(regl, params);
 

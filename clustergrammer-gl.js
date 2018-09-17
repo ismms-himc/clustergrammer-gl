@@ -22902,6 +22902,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
+var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
@@ -22988,7 +22989,6 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 /***/ (function(module, exports, __webpack_require__) {
 
 var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js");
-var draw_row_components = __webpack_require__(/*! ./draw_row_components */ "./src/draws/draw_row_components.js");
 var draw_axis_components = __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js");
 var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draws/draw_tooltip_components.js");
 var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draws/draw_spillover_components.js");
@@ -23005,7 +23005,7 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_row_components(regl, params, params.slow_draw);
+  draw_axis_components(regl, params, 'row', params.slow_draw);
   draw_axis_components(regl, params, 'col', params.slow_draw);
   draw_spillover_components(regl, params);
 
@@ -23070,81 +23070,6 @@ module.exports = function draw_matrix_components(regl, params){
       interp_prop: interp_fun(params),
       run_animation: params.animation.running
     });
-
-  });
-
-};
-
-/***/ }),
-
-/***/ "./src/draws/draw_row_components.js":
-/*!******************************************!*\
-  !*** ./src/draws/draw_row_components.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
-var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
-var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
-
-module.exports = function draw_row_components(regl, params, calc_text_tri=false){
-
-  /* Row Components */
-  params.cameras['row-labels'].draw(() => {
-
-    params.viz_aid_tri_args.row = make_viz_aid_tri_args(regl, params, 'row');
-
-    regl(params.viz_aid_tri_args.row)();
-
-    // drawing the column categories and dendrogram using the same camera as the
-    // matrix (no special zooming required)
-    _.each(params.cat_args.row, function(inst_cat_arg){
-      regl(inst_cat_arg)(
-        {
-          interp_prop: interp_fun(params),
-          run_animation: params.animation.running
-        }
-      );
-    });
-
-    regl(params.dendro_args.row)();
-
-    // make the arguments for the draw command
-    var text_triangle_args = make_row_text_args(regl, params,
-                                                         params.zoom_function);
-
-    if (calc_text_tri){
-
-      var num_viz_rows = params.num_row/params.zoom_data.y.total_zoom;
-
-      if (num_viz_rows < params.max_num_text){
-
-        calc_viz_area(params);
-
-        // draw using text_triangle_args and row_text_triangles
-        if (params.num_row > params.max_num_text){
-          params.row_text_triangles = calc_text_triangles(params, 'row');
-        }
-        regl(text_triangle_args)(params.row_text_triangles);
-
-      } else {
-        // console.log('too many rows to draw');
-        // regl(text_triangle_args)(params.row_text_triangles);
-      }
-
-    } else {
-
-      /*
-        show text triangles if avaialble
-      */
-
-      if (params.row_text_triangles != false){
-        regl(text_triangle_args)(params.row_text_triangles);
-      }
-    }
 
   });
 

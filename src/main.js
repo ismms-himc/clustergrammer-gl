@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.5.4
+  clustergrammer-gl version 0.5.5
 
  */
 
@@ -11,7 +11,7 @@ var build_control_panel = require('./control_panel/build_control_panel');
 function clustergrammer_gl(args){
 
   // console.log('################################');
-  // console.log('clustergrammer-gl version 0.5.4');
+  // console.log('clustergrammer-gl version 0.5.5');
   // console.log('################################');
 
   var network = args.network;

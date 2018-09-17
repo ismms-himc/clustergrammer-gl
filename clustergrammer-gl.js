@@ -22550,16 +22550,16 @@ module.exports = function build_control_panel(regl, cgm){
 
   })
 
-  control_svg.append('svg:image')
-  .attr('x', 16)
-  .attr('y', 5)
-  .attr('width', 27)
-  .attr('height', 27)
-  .attr('xlink:href', img)
-  .classed('clustergrammer-logo', true)
-  // .on('click', function(){
-  //   console.log('clicking logo')
-  // });
+  // control_svg.append('svg:image')
+  // .attr('x', 16)
+  // .attr('y', 5)
+  // .attr('width', 27)
+  // .attr('height', 27)
+  // .attr('xlink:href', img)
+  // .classed('clustergrammer-logo', true)
+  // // .on('click', function(){
+  // //   console.log('clicking logo')
+  // // });
 
 };
 
@@ -23949,7 +23949,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.5.4
+  clustergrammer-gl version 0.5.5
 
  */
 
@@ -23960,7 +23960,7 @@ var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_
 function clustergrammer_gl(args){
 
   // console.log('################################');
-  // console.log('clustergrammer-gl version 0.5.4');
+  // console.log('clustergrammer-gl version 0.5.5');
   // console.log('################################');
 
   var network = args.network;

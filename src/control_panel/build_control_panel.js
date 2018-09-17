@@ -214,15 +214,15 @@ module.exports = function build_control_panel(regl, cgm){
 
   })
 
-  control_svg.append('svg:image')
-  .attr('x', 16)
-  .attr('y', 5)
-  .attr('width', 27)
-  .attr('height', 27)
-  .attr('xlink:href', img)
-  .classed('clustergrammer-logo', true)
-  // .on('click', function(){
-  //   console.log('clicking logo')
-  // });
+  // control_svg.append('svg:image')
+  // .attr('x', 16)
+  // .attr('y', 5)
+  // .attr('width', 27)
+  // .attr('height', 27)
+  // .attr('xlink:href', img)
+  // .classed('clustergrammer-logo', true)
+  // // .on('click', function(){
+  // //   console.log('clicking logo')
+  // // });
 
 };

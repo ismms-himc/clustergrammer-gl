@@ -9,7 +9,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
 
-    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+    params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
 
     regl(params.viz_aid_tri_args.col)();
 

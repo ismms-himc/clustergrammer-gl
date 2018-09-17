@@ -22912,7 +22912,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
   /* Column Components */
   params.cameras['col-labels'].draw(() => {
 
-    params.viz_aid_tri_args.col = make_viz_aid_tri_args(regl, params, 'col');
+    params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
 
     regl(params.viz_aid_tri_args.col)();
 
@@ -24672,6 +24672,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   var viz_area = params.viz_area;
 
+  var order_id;
   _.each(inst_nodes, function(inst_node, inst_id){
 
     var inst_offset;

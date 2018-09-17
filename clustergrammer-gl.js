@@ -23949,7 +23949,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.5.3-dev
+  clustergrammer-gl version 0.5.4
 
  */
 
@@ -23960,7 +23960,7 @@ var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_
 function clustergrammer_gl(args){
 
   // console.log('################################');
-  // console.log('clustergrammer-gl version 0.5.3 - dev!');
+  // console.log('clustergrammer-gl version 0.5.4');
   // console.log('################################');
 
   var network = args.network;

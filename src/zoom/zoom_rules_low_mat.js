@@ -1,3 +1,4 @@
+var sanitize_zoom = require('./sanitize_zoom');
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
@@ -24,24 +25,19 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   var max_zoom = zoom_restrict.max;
   var min_zoom = zoom_restrict.min;
 
-  // first sanitize zooming out if already completely zoomed out
-  if (zoom_data.total_zoom == 1 && zoom_data.inst_zoom < 1){
-    zoom_data.inst_zoom = 1;
-  }
+  sanitize_zoom(zoom_data);
 
-  // calc unsanitized potential_total_zoom
+  // calc unsanitized ptz (potential-total-zoom)
   // checking this prevents the real total_zoom from going out of bounds
-  var potential_total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
-
-  // var zooming_below_one = false;
+  var ptz = zoom_data.total_zoom * zoom_data.inst_zoom;
 
   // zooming within allowed range
-  if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
-    zoom_data.total_zoom = potential_total_zoom;
+  if (ptz < max_zoom && ptz > min_zoom){
+    zoom_data.total_zoom = ptz;
   }
 
   // Zoom above max
-  else if (potential_total_zoom >= max_zoom) {
+  else if (ptz >= max_zoom) {
     if (zoom_data.inst_zoom < 1){
       zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {
@@ -52,7 +48,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     }
   }
   // Zoom below min
-  else if (potential_total_zoom <= min_zoom){
+  else if (ptz <= min_zoom){
     if (zoom_data.inst_zoom > 1){
       zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
     } else {

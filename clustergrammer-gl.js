@@ -87,17 +87,6 @@ var Clustergrammer2 =
 /************************************************************************/
 /******/ ({
 
-/***/ "./img/graham_cracker_144.png":
-/*!************************************!*\
-  !*** ./img/graham_cracker_144.png ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "401229782cf70826d5f0e68711a53a51.png";
-
-/***/ }),
-
 /***/ "./node_modules/base64-js/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
@@ -22335,7 +22324,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /***/ (function(module, exports, __webpack_require__) {
 
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
-var img = __webpack_require__(/*! ./../../img/graham_cracker_144.png */ "./img/graham_cracker_144.png");
+// var img = require('./../../img/graham_cracker_144.png');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -26457,13 +26446,17 @@ module.exports = function zoom_rules_high_mat(regl, params){
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
 
+
   // convert offcenter WebGl units to pixel units
   var offcenter;
+  var canvas_dim;
   if (axis === 'x'){
-    offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
+    // offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
+    canvas_dim = 'width';
   } else {
-    offcenter = (params.viz_dim.canvas.height * params.offcenter[axis])/2;
+    canvas_dim = 'height';
   }
+  offcenter = (params.viz_dim.canvas[canvas_dim] * params.offcenter[axis])/2;
 
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);

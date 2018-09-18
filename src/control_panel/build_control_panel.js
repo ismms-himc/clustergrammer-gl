@@ -1,5 +1,5 @@
 var run_reorder = require('./../reorders/run_reorder');
-var img = require('./../../img/graham_cracker_144.png');
+// var img = require('./../../img/graham_cracker_144.png');
 
 module.exports = function build_control_panel(regl, cgm){
 

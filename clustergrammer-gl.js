@@ -26381,6 +26381,32 @@ module.exports = function ini_zoom_restrict(params){
 
 /***/ }),
 
+/***/ "./src/zoom/pan_by_drag_rules.js":
+/*!***************************************!*\
+  !*** ./src/zoom/pan_by_drag_rules.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat){
+
+  // do not allow simultaneous panning and zooming
+  if (zoom_data.inst_zoom > 1){
+    zoom_data.pan_by_drag = 0;
+  }
+
+  // restrict min pan_by_drag if necessary
+  if (zoom_data.pan_by_drag > 0){
+    if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
+      // push to edge
+      zoom_data.pan_by_drag = -zoom_data.total_pan_min;
+    }
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/zoom/sanitize_inst_zoom.js":
 /*!****************************************!*\
   !*** ./src/zoom/sanitize_inst_zoom.js ***!
@@ -26512,6 +26538,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
 var sanitize_inst_zoom = __webpack_require__(/*! ./sanitize_inst_zoom */ "./src/zoom/sanitize_inst_zoom.js");
 var sanitize_potential_zoom = __webpack_require__(/*! ./sanitize_potential_zoom */ "./src/zoom/sanitize_potential_zoom.js");
+var pan_by_drag_rules = __webpack_require__(/*! ./pan_by_drag_rules */ "./src/zoom/pan_by_drag_rules.js");
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
@@ -26532,7 +26559,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   var zoom_data_copy = _.clone(zoom_data);
 
   //////////////////////////////////////////////////////////////////////////////
-  // Zooming Rules
+  // Sanitize Zoom
   //////////////////////////////////////////////////////////////////////////////
 
   sanitize_inst_zoom(zoom_data);
@@ -26546,18 +26573,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Pan by Drag Rules
   //////////////////////////////////////////////////////////////////////////////
 
-  // do not allow simultaneous panning and zooming
-  if (zoom_data.inst_zoom > 1){
-    zoom_data.pan_by_drag = 0;
-  }
-
-  // restrict min pan_by_drag if necessary
-  if (zoom_data.pan_by_drag > 0){
-    if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
-      // push to edge
-      zoom_data.pan_by_drag = -zoom_data.total_pan_min;
-    }
-  }
+  pan_by_drag_rules(zoom_data, viz_dim_heat);
 
   // restrict max pan_by_drag if necessary
   if (zoom_data.pan_by_drag < 0){
@@ -26566,7 +26582,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
       zoom_data.pan_by_drag = zoom_data.total_pan_max;
     }
   }
-
 
   // if (axis === 'x'){
   //   console.log(zoom_data.cursor_position, viz_dim_heat.min, offcenter, viz_dim_heat.min + offcenter)

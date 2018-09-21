@@ -1,4 +1,4 @@
-var sanitize_zoom = require('./sanitize_zoom');
+var sanitize_inst_zoom = require('./sanitize_inst_zoom');
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
@@ -22,10 +22,10 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Zooming Rules
   //////////////////////////////////////////////////////////////////////////////
 
+  sanitize_inst_zoom(zoom_data);
+
   var max_zoom = zoom_restrict.max;
   var min_zoom = zoom_restrict.min;
-
-  sanitize_zoom(zoom_data);
 
   // calc unsanitized ptz (potential-total-zoom)
   // checking this prevents the real total_zoom from going out of bounds

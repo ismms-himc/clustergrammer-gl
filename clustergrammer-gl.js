@@ -26381,14 +26381,14 @@ module.exports = function ini_zoom_restrict(params){
 
 /***/ }),
 
-/***/ "./src/zoom/sanitize_zoom.js":
-/*!***********************************!*\
-  !*** ./src/zoom/sanitize_zoom.js ***!
-  \***********************************/
+/***/ "./src/zoom/sanitize_inst_zoom.js":
+/*!****************************************!*\
+  !*** ./src/zoom/sanitize_inst_zoom.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function sanitize_zoom(zoom_data){
+module.exports = function sanitize_inst_zoom(zoom_data){
 
   // first sanitize zooming out if already completely zoomed out
   if (zoom_data.total_zoom == 1 && zoom_data.inst_zoom < 1){
@@ -26461,7 +26461,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var sanitize_zoom = __webpack_require__(/*! ./sanitize_zoom */ "./src/zoom/sanitize_zoom.js");
+var sanitize_inst_zoom = __webpack_require__(/*! ./sanitize_inst_zoom */ "./src/zoom/sanitize_inst_zoom.js");
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
@@ -26485,10 +26485,10 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Zooming Rules
   //////////////////////////////////////////////////////////////////////////////
 
+  sanitize_inst_zoom(zoom_data);
+
   var max_zoom = zoom_restrict.max;
   var min_zoom = zoom_restrict.min;
-
-  sanitize_zoom(zoom_data);
 
   // calc unsanitized ptz (potential-total-zoom)
   // checking this prevents the real total_zoom from going out of bounds

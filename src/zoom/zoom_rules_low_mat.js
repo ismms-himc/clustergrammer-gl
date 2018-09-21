@@ -1,4 +1,5 @@
 var sanitize_inst_zoom = require('./sanitize_inst_zoom');
+var sanitize_potential_zoom = require('./sanitize_potential_zoom');
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
@@ -24,41 +25,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 
   sanitize_inst_zoom(zoom_data);
 
-  var max_zoom = zoom_restrict.max;
-  var min_zoom = zoom_restrict.min;
-
-  // calc unsanitized ptz (potential-total-zoom)
-  // checking this prevents the real total_zoom from going out of bounds
-  var ptz = zoom_data.total_zoom * zoom_data.inst_zoom;
-
-  // zooming within allowed range
-  if (ptz < max_zoom && ptz > min_zoom){
-    zoom_data.total_zoom = ptz;
-  }
-
-  // Zoom above max
-  else if (ptz >= max_zoom) {
-    if (zoom_data.inst_zoom < 1){
-      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
-    } else {
-      // bump zoom up to max
-      zoom_data.inst_zoom = max_zoom/zoom_data.total_zoom;
-      // set zoom to max
-      zoom_data.total_zoom = max_zoom;
-    }
-  }
-  // Zoom below min
-  else if (ptz <= min_zoom){
-    if (zoom_data.inst_zoom > 1){
-      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
-    } else {
-
-      // bump zoom down to min
-      zoom_data.inst_zoom =  min_zoom/zoom_data.total_zoom;
-      // set zoom to min
-      zoom_data.total_zoom = min_zoom;
-    }
-  }
+  sanitize_potential_zoom(zoom_data, zoom_restrict);
 
   // working on fixing zoom restrict when cursor is outside of matrix
   var inst_offset = viz_dim_mat.max - viz_dim_heat.max;

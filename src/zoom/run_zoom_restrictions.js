@@ -1,4 +1,4 @@
-module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, offcenter, axis, zoom_data_copy){
+module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, axis, zoom_data_copy){
 
   /*
     Sequential if statements
@@ -36,13 +36,13 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
   if (ptp.min > zero_threshold) {
 
     // pin to min matrix, and 2) push right (positive) by total remaining pan
-    zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.min + offcenter) - zoom_data.total_pan_min * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.min + zoom_data.viz_offcenter) - zoom_data.total_pan_min * zoom_data.total_zoom;
 
     // set total_pan_min to 0, no panning room remaining after being pushed right
     zoom_data.total_pan_min = 0;
 
     // the cursor is effectively locked on the min (left) side of the matrix
-    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + offcenter;
+    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + zoom_data.viz_offcenter;
     var new_pbz_relative_max = -zoom_data.inst_eff_zoom * new_cursor_relative_max;
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
@@ -63,13 +63,13 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
   if (ptp.max > zero_threshold) {
 
     // pin to max matrix, and 2) push left (negative) by total remaining pan
-    zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + zoom_data.heat_offset + offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
+    zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + zoom_data.heat_offset + zoom_data.viz_offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
     zoom_data.total_pan_max = 0 ;
 
     // the cursor is effectively locked on the max (right) side of the matrix
-    var new_cursor_relative_min = viz_dim_heat.max + zoom_data.heat_offset - viz_dim_heat.min + offcenter;
+    var new_cursor_relative_min = viz_dim_heat.max + zoom_data.heat_offset - viz_dim_heat.min + zoom_data.viz_offcenter;
     var new_pbz_relative_min = -zoom_data.inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
@@ -94,11 +94,11 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
     // no need to push it to the edge since it was previously pushed to the edge
     if (zoom_data_copy.prev_restrict === 'min') {
 
-      zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.min + offcenter);
+      zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.min + zoom_data.viz_offcenter);
 
     } else if (zoom_data_copy.prev_restrict === 'max'){
 
-      zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + zoom_data.heat_offset + offcenter);
+      zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + zoom_data.heat_offset + zoom_data.viz_offcenter);
 
     }
 

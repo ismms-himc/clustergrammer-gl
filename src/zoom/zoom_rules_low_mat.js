@@ -46,7 +46,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Potential Total Pan
   //////////////////////////////////////////////////////////////////////////////
   var ptp = calc_potential_total_pan(zoom_data);
-  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, offcenter, axis, zoom_data.heat_offset, zoom_data_copy);
+  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, offcenter, axis, zoom_data_copy);
 
   return zoom_data;
 

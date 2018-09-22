@@ -3,10 +3,10 @@ var sanitize_potential_zoom = require('./sanitize_potential_zoom');
 var pan_by_drag_rules = require('./pan_by_drag_rules');
 var calc_cursor_relative = require('./calc_cursor_relative');
 var calc_pan_by_zoom = require('./calc_pan_by_zoom');
+var calc_potential_total_pan = require('./calc_potential_total_pan');
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
-
 
   // convert offcenter WebGl units to pixel units
   var offcenter;
@@ -27,7 +27,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
 
   sanitize_inst_zoom(zoom_data);
-
   sanitize_potential_zoom(zoom_data, zoom_restrict);
 
   // working on fixing zoom restrict when cursor is outside of matrix
@@ -44,28 +43,15 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Zoom Rules
   //////////////////////////////////////////////////////////////////////////////
-
   calc_pan_by_zoom(zoom_data, cursor_relative);
 
-  // if (axis === 'x'){
-  //   console.log(cursor_relative.min, cursor_relative.max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
-  // }
-
-  // calculate unsanitized versions of the ptp (potential-total-pan)
-  var ptp = {};
-  ptp.min = zoom_data.total_pan_min +
-                 zoom_data.pan_by_drag / zoom_data.total_zoom  +
-                 zoom_data.pbz_relative_min / zoom_data.total_zoom ;
-
-
-  // panning by drag has the opposite effect relative to the max/right side
-  ptp.max = zoom_data.total_pan_max +
-                 -zoom_data.pan_by_drag / zoom_data.total_zoom  +
-                 zoom_data.pbz_relative_max / zoom_data.total_zoom ;
-
+  //////////////////////////////////////////////////////////////////////////////
+  // Potential Total Pan
+  //////////////////////////////////////////////////////////////////////////////
+  var ptp = calc_potential_total_pan(zoom_data);
 
   //////////////////////////////////////////////////////////////////////////////
-  // Restrict Zooming
+  // Prepare Restrictions
   //////////////////////////////////////////////////////////////////////////////
   var zero_threshold = 0.0001;
 

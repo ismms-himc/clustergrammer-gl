@@ -23058,7 +23058,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.reset_cameras){
 
-      // console.log('reset_cameras\n-------------------')
+      console.log('reset_cameras\n-------------------')
       params.reset_cameras = false;
 
       params.zoom_data = ini_zoom_data();
@@ -23222,7 +23222,6 @@ module.exports = function final_interaction_frame(regl, params){
     if (params.first_frame == false){
 
       // run draw commands
-      // console.log('*********** final interaction frame', params.initialize_viz, params.zoom_data.x.total_int)
       params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
@@ -24399,7 +24398,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
@@ -24425,23 +24424,11 @@ module.exports = function calc_text_triangles(params, inst_axis){
   var inst_labels = params.network[inst_axis + '_nodes'];
   var num_labels = params['num_' + inst_axis];
 
-  var vect_text_attrs = {
-    textAlign: 'left',
-    // textBaseline: 'bottom',
-    triangles: true,
-    size: params.font_detail,
-    font: '"Open Sans", verdana, arial, sans-serif'
-  };
-
   var inst_dim;
   if (inst_axis === 'col'){
     inst_dim = 'x';
-    vect_text_attrs.textAlign = 'left';
-    vect_text_attrs.textBaseline = 'bottom';
   } else {
     inst_dim = 'y';
-    vect_text_attrs.textAlign = 'right';
-    vect_text_attrs.textBaseline = 'middle';
   }
 
   // draw matrix cells
@@ -24450,8 +24437,6 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   // generating array with text triangles and y-offsets
   var text_triangles = [];
-
-
   var viz_area = params.viz_area;
 
   var order_id;
@@ -24460,6 +24445,9 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   // only calculating the text-triangles for labels that are within the visible
   // area
+
+  var vect_text_attrs;
+
   _.each(inst_labels, function(inst_label, inst_id){
 
     // calculate inst and new offsets
@@ -24478,6 +24466,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
         order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
         offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
       }
+
     });
 
     if (offsets.inst > viz_area[inst_dim + '_min'] && offsets.inst < viz_area[inst_dim + '_max']){
@@ -24492,8 +24481,24 @@ module.exports = function calc_text_triangles(params, inst_axis){
       if (inst_name in params.text_triangles[inst_axis]){
         tmp_text_vect = params.text_triangles[inst_axis][inst_name];
       } else {
-        // console.log('vectorizeText')
-        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
+
+        vect_text_attrs = {
+          textAlign: 'left',
+          triangles: true,
+          size: params.font_detail,
+          font: '"Open Sans", verdana, arial, sans-serif'
+        };
+
+        if (inst_axis === 'col'){
+          vect_text_attrs.textAlign = 'left';
+          vect_text_attrs.textBaseline = 'bottom';
+        } else {
+          vect_text_attrs.textAlign = 'right';
+          vect_text_attrs.textBaseline = 'middle';
+        }
+
+        tmp_text_vect = vectorize_text(inst_name, vect_text_attrs);
+
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
       }
 
@@ -25770,7 +25775,6 @@ module.exports = function reorder_matrix_args(regl, cgm){
 
 var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
 var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
-// var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){

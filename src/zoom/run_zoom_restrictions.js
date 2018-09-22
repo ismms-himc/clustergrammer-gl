@@ -35,9 +35,7 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
 
   if (ptp.min > zero_threshold) {
 
-    // push over by total_pan (negative value) times total zoom applied
-    // need to push more when matrix has been effectively increased in size
-    // steps: 1) pin to min matrix, and 2) push right (positive) by total remaining pan
+    // pin to min matrix, and 2) push right (positive) by total remaining pan
     zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.min + offcenter) - zoom_data.total_pan_min * zoom_data.total_zoom;
 
     // set total_pan_min to 0, no panning room remaining after being pushed right
@@ -50,9 +48,6 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
 
     // prevent push if fully zoomed out (&& zoom_data.inst_eff_zoom <=0)
     if (zoom_data.fully_zoomed_out == true){
-      if (axis === 'x'){
-        // console.log('<<<<<<<<<< Min prevent push');
-      }
       zoom_data.pan_by_zoom = 0;
       zoom_data.total_pan_max = 0;
     }
@@ -65,28 +60,21 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
   // Restrict total pan max
   //////////////////////////////////////////////////////////////////////////////
 
-  else if (ptp.max > zero_threshold) {
+  if (ptp.max > zero_threshold) {
 
-    // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
-
-    // zoom_data.pan_by_zoom = - zoom_data.inst_eff_zoom * zoom_data.cursor_position;
-    // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
+    // pin to max matrix, and 2) push left (negative) by total remaining pan
     zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
     zoom_data.total_pan_max = 0 ;
 
     // the cursor is effectively locked on the max (right) side of the matrix
-    // var new_cursor_relative_min = viz_dim_heat.max - viz_dim_heat.min;
     var new_cursor_relative_min = viz_dim_heat.max + inst_offset - viz_dim_heat.min + offcenter;
     var new_pbz_relative_min = -zoom_data.inst_eff_zoom * new_cursor_relative_min;
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
     // prevent push if fully zoomed out
     if (zoom_data.fully_zoomed_out == true){
-      if (axis === 'x'){
-        // console.log('>>>>>>>>>>>>> Max prevent push');
-      }
       zoom_data.pan_by_zoom = 0;
       zoom_data.total_pan_min = 0;
     }
@@ -100,7 +88,7 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
   //////////////////////////////////////////////////////////////////////////////
 
   // if double restrict, pin to side that was previously pinned
-  else if (double_restrict){
+  if (double_restrict){
 
     // pin the matrix to either side
     // no need to push it to the edge since it was previously pushed to the edge

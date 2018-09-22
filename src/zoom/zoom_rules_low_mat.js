@@ -29,13 +29,13 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   sanitize_inst_zoom(zoom_data);
   sanitize_potential_zoom(zoom_data, zoom_restrict);
   // working on fixing zoom restrict when cursor is outside of matrix
-  var inst_offset = viz_dim_mat.max - viz_dim_heat.max;
+  zoom_data.inst_offset = viz_dim_mat.max - viz_dim_heat.max;
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
   //////////////////////////////////////////////////////////////////////////////
-  pan_by_drag_rules(zoom_data, viz_dim_heat, inst_offset, offcenter);
-  var cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat, offcenter, inst_offset);
+  pan_by_drag_rules(zoom_data, viz_dim_heat, zoom_data.inst_offset, offcenter);
+  var cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat, offcenter, zoom_data.inst_offset);
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Zoom Rules
@@ -46,7 +46,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Potential Total Pan
   //////////////////////////////////////////////////////////////////////////////
   var ptp = calc_potential_total_pan(zoom_data);
-  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, offcenter, axis, inst_offset, zoom_data_copy);
+  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, offcenter, axis, zoom_data.inst_offset, zoom_data_copy);
 
   return zoom_data;
 

@@ -1,0 +1,22 @@
+const vectorize_text = require('vectorize-text');
+
+module.exports = function vectorize_label(params, inst_axis, inst_name){
+
+  var vect_text_attrs = {
+    textAlign: 'left',
+    triangles: true,
+    size: params.font_detail,
+    font: '"Open Sans", verdana, arial, sans-serif'
+  };
+
+  if (inst_axis === 'col'){
+    vect_text_attrs.textAlign = 'left';
+    vect_text_attrs.textBaseline = 'bottom';
+  } else {
+    vect_text_attrs.textAlign = 'right';
+    vect_text_attrs.textBaseline = 'middle';
+  }
+
+  return vectorize_text(inst_name, vect_text_attrs);
+
+};

@@ -32,7 +32,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.reset_cameras){
 
-      console.log('reset_cameras\n-------------------')
+      // console.log('reset_cameras\n-------------------')
       params.reset_cameras = false;
 
       params.zoom_data = ini_zoom_data();

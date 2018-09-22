@@ -23058,7 +23058,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.reset_cameras){
 
-      console.log('reset_cameras\n-------------------')
+      // console.log('reset_cameras\n-------------------')
       params.reset_cameras = false;
 
       params.zoom_data = ini_zoom_data();
@@ -24398,13 +24398,13 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix_labels/vectorize_label.js")
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
   /*
 
-  // Make dictionary of text triangles
+  // Make dictionary of text trianglesß
   //////////////////////////////////////
   1. Save all calculated text triangles in a dictionary for re-use. We can
   construct the text triangle array when necessary by gathering the pre-
@@ -24446,8 +24446,6 @@ module.exports = function calc_text_triangles(params, inst_axis){
   // only calculating the text-triangles for labels that are within the visible
   // area
 
-  var vect_text_attrs;
-
   _.each(inst_labels, function(inst_label, inst_id){
 
     // calculate inst and new offsets
@@ -24482,24 +24480,9 @@ module.exports = function calc_text_triangles(params, inst_axis){
         tmp_text_vect = params.text_triangles[inst_axis][inst_name];
       } else {
 
-        vect_text_attrs = {
-          textAlign: 'left',
-          triangles: true,
-          size: params.font_detail,
-          font: '"Open Sans", verdana, arial, sans-serif'
-        };
-
-        if (inst_axis === 'col'){
-          vect_text_attrs.textAlign = 'left';
-          vect_text_attrs.textBaseline = 'bottom';
-        } else {
-          vect_text_attrs.textAlign = 'right';
-          vect_text_attrs.textBaseline = 'middle';
-        }
-
-        tmp_text_vect = vectorize_text(inst_name, vect_text_attrs);
-
+        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+
       }
 
       tmp_text_vect.inst_offset = [0, offsets.inst];
@@ -25153,6 +25136,38 @@ module.exports = function update_text_triangle_order(params, inst_axis){
   return inst_labels;
 
 }
+
+/***/ }),
+
+/***/ "./src/matrix_labels/vectorize_label.js":
+/*!**********************************************!*\
+  !*** ./src/matrix_labels/vectorize_label.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+
+module.exports = function vectorize_label(params, inst_axis, inst_name){
+
+  var vect_text_attrs = {
+    textAlign: 'left',
+    triangles: true,
+    size: params.font_detail,
+    font: '"Open Sans", verdana, arial, sans-serif'
+  };
+
+  if (inst_axis === 'col'){
+    vect_text_attrs.textAlign = 'left';
+    vect_text_attrs.textBaseline = 'bottom';
+  } else {
+    vect_text_attrs.textAlign = 'right';
+    vect_text_attrs.textBaseline = 'middle';
+  }
+
+  return vectorize_text(inst_name, vect_text_attrs);
+
+};
 
 /***/ }),
 

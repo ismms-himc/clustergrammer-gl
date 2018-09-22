@@ -8,10 +8,8 @@ module.exports = function final_interaction_frame(regl, params){
     // preventing from running on first frame
     if (params.first_frame == false){
 
-      // console.log('\n------------------\nFINAL INTERACTION');
-      // console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
-
       // run draw commands
+      console.log('*********** final interaction frame', params.initialize_viz, params.zoom_data.x.total_int)
       params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
@@ -19,6 +17,7 @@ module.exports = function final_interaction_frame(regl, params){
       }
 
     } else {
+
       params.first_frame = false;
     }
   }

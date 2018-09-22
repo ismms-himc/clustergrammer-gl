@@ -20,6 +20,13 @@ module.exports = function run_viz(regl, network){
 
   regl.frame(function ({time}) {
 
+    console.log(params.zoom_data.x.total_int)
+
+    // prevent this from being negative, can happen when resetting zooo
+    if (params.zoom_data.x.total_int < 0){
+      params.zoom_data.x.total_int = 0;
+    }
+
     params.time = time;
     params.animation.loop = 0 ;
 
@@ -31,8 +38,11 @@ module.exports = function run_viz(regl, network){
       params.zoom_data = ini_zoom_data();
       make_cameras(regl, params);
 
-      // params.slow_draw = false;
+      params.slow_draw = false;
+      params.first_frame = true;
+      params.initialize_viz = true;
       // params.show_tooltip = false;
+      params.zoom_data.x.total_int = 0
 
     }
 
@@ -85,11 +95,11 @@ module.exports = function run_viz(regl, network){
     }
 
     // run draw command
-    if (params.still_interacting == true || params.initialize_viz == true ||
-        // params.animation.running || params.show_tooltip){
-        params.animation.running){
+    if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
+
+      console.log('still interacting', params.still_interacting, params.initialize_viz, params.animation.running);
 
       draw_commands(regl, params);
 
@@ -101,19 +111,10 @@ module.exports = function run_viz(regl, network){
         params.animation.time_remain = params.animation.time_remain - 1;
       }
 
-      // // set up extra frame specifically to remove old tooltip
-      // if (params.show_tooltip){
-      //   params.show_tooltip = false;
-      //   console.log('initialize remove_tooltip_frame')
-      //   params.remove_tooltip_frame = true;
-      // }
-
     }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
-
-      // console.log('still_mouseover', params.remove_tooltip_frame)
 
       /////////////////////////////////////
       /////////////////////////////////////
@@ -127,6 +128,8 @@ module.exports = function run_viz(regl, network){
       if (params.remove_tooltip_frame){
         // console.log('remove old tooltip ***********')
         params.show_tooltip = false;
+
+        console.log('still mouseover')
         draw_commands(regl, params);
       }
 
@@ -140,7 +143,11 @@ module.exports = function run_viz(regl, network){
 
     } else if (params.slow_draw || params.show_tooltip){
 
-      // console.log('SLOW DRAW!!!!!!!!!!!!!!')
+      // turn back on slow draw
+      ///////////////////////////////
+
+      console.log('slow_draw or show_tooltip');
+
       draw_commands(regl, params);
       params.remove_tooltip_frame = true;
 

@@ -22760,6 +22760,9 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
         // draw using text_triangle_args and axis triangles
         if (params['num_' + inst_axis] > params.max_num_text){
+
+          console.log('calc text triangles')
+
           params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
@@ -23047,11 +23050,15 @@ module.exports = function run_viz(regl, network){
     params.animation.loop = 0 ;
 
     if (params.reset_cameras){
-      console.log('reset_cameras')
+
+      console.log('reset_cameras\n-------------------')
       params.reset_cameras = false;
 
       params.zoom_data = ini_zoom_data();
       make_cameras(regl, params);
+
+      // params.slow_draw = false;
+      // params.show_tooltip = false;
 
     }
 
@@ -26396,6 +26403,7 @@ module.exports = function ini_zoom_data(){
   // organize zoom rules into x and y components
   var zoom_data = {};
   _.each(['x', 'y'], function(inst_dim){
+
     var inst_data = {};
     // total zooming (formerly tsx)
     inst_data.total_zoom = 1;
@@ -26549,6 +26557,7 @@ module.exports = function run_zoom_restrictions(zd, ptp, viz_dim_heat, axis, zd_
   zd.fully_zoomed_out = false;
   if (zd.total_pan_min >= 0 && zd.total_pan_max >= 0){
     zd.fully_zoomed_out = true;
+
   }
 
   var double_restrict = false;
@@ -26652,11 +26661,15 @@ module.exports = function run_zoom_restrictions(zd, ptp, viz_dim_heat, axis, zd_
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function sanitize_inst_zoom(zd){
+module.exports = function sanitize_inst_zoom(params, zd){
 
   // first sanitize zooming out if already completely zoomed out
   if (zd.total_zoom == 1 && zd.inst_zoom < 1){
     zd.inst_zoom = 1;
+
+    // reset zoom
+    params.reset_cameras = true;
+
   }
 
 };
@@ -26800,7 +26813,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
   // Sanitize Zoom
   //////////////////////////////////////////////////////////////////////////////
-  sanitize_inst_zoom(zoom_data);
+  sanitize_inst_zoom(params, zoom_data);
   sanitize_potential_zoom(zoom_data, zoom_restrict);
   zoom_data.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
 

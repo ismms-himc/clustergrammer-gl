@@ -24,11 +24,15 @@ module.exports = function run_viz(regl, network){
     params.animation.loop = 0 ;
 
     if (params.reset_cameras){
-      console.log('reset_cameras')
+
+      console.log('reset_cameras\n-------------------')
       params.reset_cameras = false;
 
       params.zoom_data = ini_zoom_data();
       make_cameras(regl, params);
+
+      // params.slow_draw = false;
+      // params.show_tooltip = false;
 
     }
 

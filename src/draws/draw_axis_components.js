@@ -52,6 +52,9 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
         // draw using text_triangle_args and axis triangles
         if (params['num_' + inst_axis] > params.max_num_text){
+
+          console.log('calc text triangles')
+
           params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);

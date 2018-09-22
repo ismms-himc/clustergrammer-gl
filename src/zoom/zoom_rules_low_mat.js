@@ -24,7 +24,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
   // Sanitize Zoom
   //////////////////////////////////////////////////////////////////////////////
-  sanitize_inst_zoom(zoom_data);
+  sanitize_inst_zoom(params, zoom_data);
   sanitize_potential_zoom(zoom_data, zoom_restrict);
   zoom_data.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
 

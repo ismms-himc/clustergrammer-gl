@@ -12,6 +12,7 @@ module.exports = function run_zoom_restrictions(zd, ptp, viz_dim_heat, axis, zd_
   zd.fully_zoomed_out = false;
   if (zd.total_pan_min >= 0 && zd.total_pan_max >= 0){
     zd.fully_zoomed_out = true;
+
   }
 
   var double_restrict = false;

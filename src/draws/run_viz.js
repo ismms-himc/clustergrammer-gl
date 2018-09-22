@@ -5,6 +5,8 @@ var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
 var final_interaction_frame = require('./../interactions/final_interaction_frame');
 var update_text_triangle_order = require('./../matrix_labels/update_text_triangle_order');
 var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
+var ini_zoom_data = require('./../zoom/ini_zoom_data');
+var make_cameras = require('./../cameras/make_cameras');
 
 module.exports = function run_viz(regl, network){
 
@@ -20,6 +22,15 @@ module.exports = function run_viz(regl, network){
 
     params.time = time;
     params.animation.loop = 0 ;
+
+    if (params.reset_cameras){
+      console.log('reset_cameras')
+      params.reset_cameras = false;
+
+      params.zoom_data = ini_zoom_data();
+      make_cameras(regl, params);
+
+    }
 
     if (params.animation.run_switch){
 

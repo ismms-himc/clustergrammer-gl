@@ -23028,6 +23028,8 @@ var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mous
 var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
+var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
+var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23043,6 +23045,15 @@ module.exports = function run_viz(regl, network){
 
     params.time = time;
     params.animation.loop = 0 ;
+
+    if (params.reset_cameras){
+      console.log('reset_cameras')
+      params.reset_cameras = false;
+
+      params.zoom_data = ini_zoom_data();
+      make_cameras(regl, params);
+
+    }
 
     if (params.animation.run_switch){
 

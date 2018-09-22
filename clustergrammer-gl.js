@@ -22761,7 +22761,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
         // draw using text_triangle_args and axis triangles
         if (params['num_' + inst_axis] > params.max_num_text){
 
-          console.log('\t\tcalc text triangles', calc_text_tri)
+          // console.log('\t\tcalc text triangles', calc_text_tri)
 
           params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
         }
@@ -23046,7 +23046,7 @@ module.exports = function run_viz(regl, network){
 
   regl.frame(function ({time}) {
 
-    console.log(params.zoom_data.x.total_int)
+    // console.log(params.zoom_data.x.total_int)
 
     // prevent this from being negative, can happen when resetting zooo
     if (params.zoom_data.x.total_int < 0){
@@ -23058,7 +23058,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.reset_cameras){
 
-      console.log('reset_cameras\n-------------------')
+      // console.log('reset_cameras\n-------------------')
       params.reset_cameras = false;
 
       params.zoom_data = ini_zoom_data();
@@ -23125,7 +23125,7 @@ module.exports = function run_viz(regl, network){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
 
-      console.log('still interacting', params.still_interacting, params.initialize_viz, params.animation.running);
+      // console.log('still interacting', params.still_interacting, params.initialize_viz, params.animation.running);
 
       draw_commands(regl, params);
 
@@ -23155,7 +23155,7 @@ module.exports = function run_viz(regl, network){
         // console.log('remove old tooltip ***********')
         params.show_tooltip = false;
 
-        console.log('still mouseover')
+        // console.log('still mouseover')
         draw_commands(regl, params);
       }
 
@@ -23172,7 +23172,7 @@ module.exports = function run_viz(regl, network){
       // turn back on slow draw
       ///////////////////////////////
 
-      console.log('slow_draw or show_tooltip');
+      // console.log('slow_draw or show_tooltip');
 
       draw_commands(regl, params);
       params.remove_tooltip_frame = true;
@@ -23222,7 +23222,7 @@ module.exports = function final_interaction_frame(regl, params){
     if (params.first_frame == false){
 
       // run draw commands
-      console.log('*********** final interaction frame', params.initialize_viz, params.zoom_data.x.total_int)
+      // console.log('*********** final interaction frame', params.initialize_viz, params.zoom_data.x.total_int)
       params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){

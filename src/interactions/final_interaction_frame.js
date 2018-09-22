@@ -9,7 +9,7 @@ module.exports = function final_interaction_frame(regl, params){
     if (params.first_frame == false){
 
       // run draw commands
-      console.log('*********** final interaction frame', params.initialize_viz, params.zoom_data.x.total_int)
+      // console.log('*********** final interaction frame', params.initialize_viz, params.zoom_data.x.total_int)
       params.slow_draw = true;
 
       if (params.zoom_data.x.total_mouseover == 0){

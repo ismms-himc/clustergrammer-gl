@@ -7,4 +7,8 @@ module.exports = function calc_pan_by_zoom(zoom_data, cursor_relative){
   zoom_data.pbz_relative_min = -zoom_data.inst_eff_zoom * cursor_relative.min;
   zoom_data.pbz_relative_max = -zoom_data.inst_eff_zoom * cursor_relative.max;
 
+  // if (axis === 'x'){
+  //   console.log(cursor_relative.min, cursor_relative.max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
+  // }
+
 };

@@ -63,22 +63,25 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                  -zoom_data.pan_by_drag / zoom_data.total_zoom  +
                  zoom_data.pbz_relative_max / zoom_data.total_zoom ;
 
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Restrict Zooming
+  //////////////////////////////////////////////////////////////////////////////
   var zero_threshold = 0.0001;
 
-  var fully_zoomed_out = false;
+  zoom_data.fully_zoomed_out = false;
   if (zoom_data.total_pan_min >= 0 && zoom_data.total_pan_max >= 0){
-    fully_zoomed_out = true;
+    zoom_data.fully_zoomed_out = true;
   }
 
   var double_restrict = false;
   if (ptp.min > zero_threshold && ptp.max > zero_threshold ) {
-
     double_restrict = true;
-
-    // has_been_both = true;
   }
 
+  //////////////////////////////////////////////////////////////////////////////
   // Panning in bounds
+  //////////////////////////////////////////////////////////////////////////////
   if (ptp.min <= zero_threshold && ptp.max <= zero_threshold){
     zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * zoom_data.cursor_position;
     zoom_data.total_pan_min = ptp.min;
@@ -106,7 +109,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
 
     // prevent push if fully zoomed out (&& zoom_data.inst_eff_zoom <=0)
-    if (fully_zoomed_out == true){
+    if (zoom_data.fully_zoomed_out == true){
       if (axis === 'x'){
         // console.log('<<<<<<<<<< Min prevent push');
       }
@@ -147,7 +150,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
     zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
 
     // prevent push if fully zoomed out
-    if (fully_zoomed_out == true){
+    if (zoom_data.fully_zoomed_out == true){
       if (axis === 'x'){
         // console.log('>>>>>>>>>>>>> Max prevent push');
       }

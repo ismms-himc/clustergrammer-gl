@@ -20,6 +20,6 @@ module.exports = function make_cameras(regl, params){
 
   cameras.static = custom_camera_2d(regl, params, zoom_range, zoom_data, 'static');
 
-  return cameras;
+  params.cameras = cameras;
 
 };

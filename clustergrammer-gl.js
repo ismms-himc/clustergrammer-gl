@@ -21708,7 +21708,7 @@ module.exports = function make_cameras(regl, params){
 
   cameras.static = custom_camera_2d(regl, params, zoom_range, zoom_data, 'static');
 
-  return cameras;
+  params.cameras = cameras;
 
 };
 
@@ -25644,12 +25644,12 @@ module.exports = function initialize_params(regl, network){
   // update zoom_data
   zoom_rules_high_mat(regl, params);
 
-  params.cameras = make_cameras(regl, params);
+  make_cameras(regl, params);
 
   params.spillover_triangles = calc_spillover_triangles(params);
 
-  window.addEventListener('resize', params.cameras.mat.resize);
-  window.addEventListener('resize', params.cameras['row-labels'].resize);
+  // window.addEventListener('resize', params.cameras.mat.resize);
+  // window.addEventListener('resize', params.cameras['row-labels'].resize);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
@@ -26285,12 +26285,12 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function calc_cursor_relative(zoom_data, viz_dim_heat){
+module.exports = function calc_cursor_relative(zd, viz_dim_heat){
 
   var cursor_relative = {};
 
   // tracking cursor position relative to the minimum
-  cursor_relative.min = zoom_data.cursor_position - viz_dim_heat.min - zoom_data.viz_offcenter;
+  cursor_relative.min = zd.cursor_position - viz_dim_heat.min - zd.viz_offcenter;
 
   /* Cursor restriction does not seem to be doing anything */
 
@@ -26305,14 +26305,14 @@ module.exports = function calc_cursor_relative(zoom_data, viz_dim_heat){
 
   // tracking cursor position relative to the maximum
   /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
-  cursor_relative.max = viz_dim_heat.max + zoom_data.heat_offset - zoom_data.cursor_position +  zoom_data.viz_offcenter;
+  cursor_relative.max = viz_dim_heat.max + zd.heat_offset - zd.cursor_position +  zd.viz_offcenter;
 
   // restrict cursor_relative.max
   if (cursor_relative.max < 0){
     cursor_relative.max = 0;
     // console.log('LOWER than max ############################')
-  } else if (cursor_relative.max > viz_dim_heat.max + zoom_data.heat_offset){
-    cursor_relative.max = viz_dim_heat.max + zoom_data.heat_offset;
+  } else if (cursor_relative.max > viz_dim_heat.max + zd.heat_offset){
+    cursor_relative.max = viz_dim_heat.max + zd.heat_offset;
     // console.log('HIGHER than max ############################')
   }
 
@@ -26329,17 +26329,17 @@ module.exports = function calc_cursor_relative(zoom_data, viz_dim_heat){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function calc_pan_by_zoom(zoom_data, cursor_relative){
+module.exports = function calc_pan_by_zoom(zd, cursor_relative){
 
   // pan_by_zoom relative to matrix max and min
   // zooming in causes negative panning
   // net positive panning is not allowed
-  zoom_data.inst_eff_zoom = zoom_data.inst_zoom - 1;
-  zoom_data.pbz_relative_min = -zoom_data.inst_eff_zoom * cursor_relative.min;
-  zoom_data.pbz_relative_max = -zoom_data.inst_eff_zoom * cursor_relative.max;
+  zd.inst_eff_zoom = zd.inst_zoom - 1;
+  zd.pbz_relative_min = -zd.inst_eff_zoom * cursor_relative.min;
+  zd.pbz_relative_max = -zd.inst_eff_zoom * cursor_relative.max;
 
   // if (axis === 'x'){
-  //   console.log(cursor_relative.min, cursor_relative.max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
+  //   console.log(cursor_relative.min, cursor_relative.max, zd.pbz_relative_min, zd.pbz_relative_max);
   // }
 
 };
@@ -26524,7 +26524,7 @@ module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, axis, zoom_data_copy){
+module.exports = function run_zoom_restrictions(zd, ptp, viz_dim_heat, axis, zd_copy){
 
   /*
     Sequential if statements
@@ -26535,9 +26535,9 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, ax
   //////////////////////////////////////////////////////////////////////////////
   var zero_threshold = 0.0001;
 
-  zoom_data.fully_zoomed_out = false;
-  if (zoom_data.total_pan_min >= 0 && zoom_data.total_pan_max >= 0){
-    zoom_data.fully_zoomed_out = true;
+  zd.fully_zoomed_out = false;
+  if (zd.total_pan_min >= 0 && zd.total_pan_max >= 0){
+    zd.fully_zoomed_out = true;
   }
 
   var double_restrict = false;
@@ -26549,10 +26549,10 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, ax
   // Panning in bounds
   //////////////////////////////////////////////////////////////////////////////
   if (ptp.min <= zero_threshold && ptp.max <= zero_threshold){
-    zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * zoom_data.cursor_position;
-    zoom_data.total_pan_min = ptp.min;
-    zoom_data.total_pan_max = ptp.max;
-    zoom_data.prev_restrict = false;
+    zd.pan_by_zoom = -zd.inst_eff_zoom * zd.cursor_position;
+    zd.total_pan_min = ptp.min;
+    zd.total_pan_max = ptp.max;
+    zd.prev_restrict = false;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -26562,23 +26562,23 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, ax
   if (ptp.min > zero_threshold) {
 
     // pin to min matrix, and 2) push right (positive) by total remaining pan
-    zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.min + zoom_data.viz_offcenter) - zoom_data.total_pan_min * zoom_data.total_zoom;
+    zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.min + zd.viz_offcenter) - zd.total_pan_min * zd.total_zoom;
 
     // set total_pan_min to 0, no panning room remaining after being pushed right
-    zoom_data.total_pan_min = 0;
+    zd.total_pan_min = 0;
 
     // the cursor is effectively locked on the min (left) side of the matrix
-    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + zoom_data.viz_offcenter;
-    var new_pbz_relative_max = -zoom_data.inst_eff_zoom * new_cursor_relative_max;
-    zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
+    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + zd.viz_offcenter;
+    var new_pbz_relative_max = -zd.inst_eff_zoom * new_cursor_relative_max;
+    zd.total_pan_max = zd.total_pan_max + new_pbz_relative_max / zd.total_zoom;
 
-    // prevent push if fully zoomed out (&& zoom_data.inst_eff_zoom <=0)
-    if (zoom_data.fully_zoomed_out == true){
-      zoom_data.pan_by_zoom = 0;
-      zoom_data.total_pan_max = 0;
+    // prevent push if fully zoomed out (&& zd.inst_eff_zoom <=0)
+    if (zd.fully_zoomed_out == true){
+      zd.pan_by_zoom = 0;
+      zd.total_pan_max = 0;
     }
 
-    zoom_data.prev_restrict = 'min';
+    zd.prev_restrict = 'min';
 
   }
 
@@ -26589,23 +26589,23 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, ax
   if (ptp.max > zero_threshold) {
 
     // pin to max matrix, and 2) push left (negative) by total remaining pan
-    zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + zoom_data.heat_offset + zoom_data.viz_offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
+    zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.max + zd.heat_offset + zd.viz_offcenter) + zd.total_pan_max * zd.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
-    zoom_data.total_pan_max = 0 ;
+    zd.total_pan_max = 0 ;
 
     // the cursor is effectively locked on the max (right) side of the matrix
-    var new_cursor_relative_min = viz_dim_heat.max + zoom_data.heat_offset - viz_dim_heat.min + zoom_data.viz_offcenter;
-    var new_pbz_relative_min = -zoom_data.inst_eff_zoom * new_cursor_relative_min;
-    zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
+    var new_cursor_relative_min = viz_dim_heat.max + zd.heat_offset - viz_dim_heat.min + zd.viz_offcenter;
+    var new_pbz_relative_min = -zd.inst_eff_zoom * new_cursor_relative_min;
+    zd.total_pan_min = zd.total_pan_min + new_pbz_relative_min / zd.total_zoom;
 
     // prevent push if fully zoomed out
-    if (zoom_data.fully_zoomed_out == true){
-      zoom_data.pan_by_zoom = 0;
-      zoom_data.total_pan_min = 0;
+    if (zd.fully_zoomed_out == true){
+      zd.pan_by_zoom = 0;
+      zd.total_pan_min = 0;
     }
 
-    zoom_data.prev_restrict = 'max';
+    zd.prev_restrict = 'max';
 
   }
 
@@ -26618,13 +26618,13 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, ax
 
     // pin the matrix to either side
     // no need to push it to the edge since it was previously pushed to the edge
-    if (zoom_data_copy.prev_restrict === 'min') {
+    if (zd_copy.prev_restrict === 'min') {
 
-      zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.min + zoom_data.viz_offcenter);
+      zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.min + zd.viz_offcenter);
 
-    } else if (zoom_data_copy.prev_restrict === 'max'){
+    } else if (zd_copy.prev_restrict === 'max'){
 
-      zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + zoom_data.heat_offset + zoom_data.viz_offcenter);
+      zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.max + zd.heat_offset + zd.viz_offcenter);
 
     }
 
@@ -26641,11 +26641,11 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, ax
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function sanitize_inst_zoom(zoom_data){
+module.exports = function sanitize_inst_zoom(zd){
 
   // first sanitize zooming out if already completely zoomed out
-  if (zoom_data.total_zoom == 1 && zoom_data.inst_zoom < 1){
-    zoom_data.inst_zoom = 1;
+  if (zd.total_zoom == 1 && zd.inst_zoom < 1){
+    zd.inst_zoom = 1;
   }
 
 };
@@ -26660,41 +26660,41 @@ module.exports = function sanitize_inst_zoom(zoom_data){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function sanitize_potential_zoom(zoom_data, zoom_restrict){
+module.exports = function sanitize_potential_zoom(zd, zoom_restrict){
 
   var max_zoom = zoom_restrict.max;
   var min_zoom = zoom_restrict.min;
 
   // calc unsanitized ptz (potential-total-zoom)
   // checking this prevents the real total_zoom from going out of bounds
-  var ptz = zoom_data.total_zoom * zoom_data.inst_zoom;
+  var ptz = zd.total_zoom * zd.inst_zoom;
 
   // zooming within allowed range
   if (ptz < max_zoom && ptz > min_zoom){
-    zoom_data.total_zoom = ptz;
+    zd.total_zoom = ptz;
   }
 
   // Zoom above max
   else if (ptz >= max_zoom) {
-    if (zoom_data.inst_zoom < 1){
-      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
+    if (zd.inst_zoom < 1){
+      zd.total_zoom = zd.total_zoom * zd.inst_zoom;
     } else {
       // bump zoom up to max
-      zoom_data.inst_zoom = max_zoom/zoom_data.total_zoom;
+      zd.inst_zoom = max_zoom/zd.total_zoom;
       // set zoom to max
-      zoom_data.total_zoom = max_zoom;
+      zd.total_zoom = max_zoom;
     }
   }
   // Zoom below min
   else if (ptz <= min_zoom){
-    if (zoom_data.inst_zoom > 1){
-      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
+    if (zd.inst_zoom > 1){
+      zd.total_zoom = zd.total_zoom * zd.inst_zoom;
     } else {
 
       // bump zoom down to min
-      zoom_data.inst_zoom =  min_zoom/zoom_data.total_zoom;
+      zd.inst_zoom =  min_zoom/zd.total_zoom;
       // set zoom to min
-      zoom_data.total_zoom = min_zoom;
+      zd.total_zoom = min_zoom;
     }
   }
 
@@ -26791,7 +26791,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
   sanitize_inst_zoom(zoom_data);
   sanitize_potential_zoom(zoom_data, zoom_restrict);
-  // working on fixing zoom restrict when cursor is outside of matrix
   zoom_data.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
 
   //////////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,6 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
   sanitize_inst_zoom(zoom_data);
   sanitize_potential_zoom(zoom_data, zoom_restrict);
-  // working on fixing zoom restrict when cursor is outside of matrix
   zoom_data.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
 
   //////////////////////////////////////////////////////////////////////////////

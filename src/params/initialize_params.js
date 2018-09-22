@@ -293,12 +293,12 @@ module.exports = function initialize_params(regl, network){
   // update zoom_data
   zoom_rules_high_mat(regl, params);
 
-  params.cameras = make_cameras(regl, params);
+  make_cameras(regl, params);
 
   params.spillover_triangles = calc_spillover_triangles(params);
 
-  window.addEventListener('resize', params.cameras.mat.resize);
-  window.addEventListener('resize', params.cameras['row-labels'].resize);
+  // window.addEventListener('resize', params.cameras.mat.resize);
+  // window.addEventListener('resize', params.cameras['row-labels'].resize);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);

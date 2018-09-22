@@ -1,4 +1,4 @@
-module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat, inst_offset, offcenter){
+module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat, offcenter){
 
   // do not allow simultaneous panning and zooming
   if (zoom_data.inst_zoom > 1){
@@ -31,9 +31,9 @@ module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat, inst_offset
     // if (axis === 'x'){
     //   console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
     // }
-  } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset  + offcenter){
+  } else if (zoom_data.cursor_position > viz_dim_heat.max + zoom_data.heat_offset  + offcenter){
 
-    zoom_data.cursor_position = viz_dim_heat.max + inst_offset + offcenter;
+    zoom_data.cursor_position = viz_dim_heat.max + zoom_data.heat_offset + offcenter;
 
   }
 

@@ -34,7 +34,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
   //////////////////////////////////////////////////////////////////////////////
-  pan_by_drag_rules(zoom_data, viz_dim_heat, zoom_data.heat_offset, offcenter);
+  pan_by_drag_rules(zoom_data, viz_dim_heat, offcenter);
   var cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat, offcenter, zoom_data.heat_offset);
 
   //////////////////////////////////////////////////////////////////////////////

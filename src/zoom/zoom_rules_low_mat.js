@@ -1,6 +1,7 @@
 var sanitize_inst_zoom = require('./sanitize_inst_zoom');
 var sanitize_potential_zoom = require('./sanitize_potential_zoom');
 var pan_by_drag_rules = require('./pan_by_drag_rules');
+var calc_cursor_relative = require('./calc_cursor_relative');
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
@@ -37,30 +38,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 
   pan_by_drag_rules(zoom_data, viz_dim_heat, inst_offset, offcenter);
 
-
-  /* Cursor restriction does not seem to be doing anything */
-
-  // restrict cursor_relative_min
-  if (cursor_relative_min < 0){
-    cursor_relative_min = 0;
-    // console.log('LOWER than min ############################')
-  } else if (cursor_relative_min > viz_dim_heat.max){
-    cursor_relative_min = viz_dim_heat.max;
-    // console.log('HIGHER than min ############################')
-  }
-
-  // tracking cursor position relative to the maximum
-  /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
-  var cursor_relative_max = viz_dim_heat.max + inst_offset - zoom_data.cursor_position +  offcenter;
-
-  // restrict cursor_relative_max
-  if (cursor_relative_max < 0){
-    cursor_relative_max = 0;
-    // console.log('LOWER than max ############################')
-  } else if (cursor_relative_max > viz_dim_heat.max + inst_offset){
-    cursor_relative_max = viz_dim_heat.max + inst_offset;
-    // console.log('HIGHER than max ############################')
-  }
+  var cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat, offcenter, inst_offset);
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Zoom Rules
@@ -70,11 +48,11 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // zooming in causes negative panning
   // net positive panning is not allowed
   var inst_eff_zoom = zoom_data.inst_zoom - 1;
-  zoom_data.pbz_relative_min = -inst_eff_zoom * cursor_relative_min;
-  zoom_data.pbz_relative_max = -inst_eff_zoom * cursor_relative_max;
+  zoom_data.pbz_relative_min = -inst_eff_zoom * cursor_relative.min;
+  zoom_data.pbz_relative_max = -inst_eff_zoom * cursor_relative.max;
 
   // if (axis === 'x'){
-  //   console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
+  //   console.log(cursor_relative.min, cursor_relative.max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
   // }
 
   // calculate unsanitized versions of total pan values

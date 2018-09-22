@@ -37,8 +37,4 @@ module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat, inst_offset
 
   }
 
-
-  // tracking cursor position relative to the minimum
-  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min - offcenter;
-
 };

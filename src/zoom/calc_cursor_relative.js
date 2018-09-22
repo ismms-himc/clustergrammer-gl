@@ -1,9 +1,9 @@
-module.exports = function calc_cursor_relative(zoom_data, viz_dim_heat, offcenter){
+module.exports = function calc_cursor_relative(zoom_data, viz_dim_heat){
 
   var cursor_relative = {};
 
   // tracking cursor position relative to the minimum
-  cursor_relative.min = zoom_data.cursor_position - viz_dim_heat.min - offcenter;
+  cursor_relative.min = zoom_data.cursor_position - viz_dim_heat.min - zoom_data.viz_offcenter;
 
   /* Cursor restriction does not seem to be doing anything */
 
@@ -18,7 +18,7 @@ module.exports = function calc_cursor_relative(zoom_data, viz_dim_heat, offcente
 
   // tracking cursor position relative to the maximum
   /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
-  cursor_relative.max = viz_dim_heat.max + zoom_data.heat_offset - zoom_data.cursor_position +  offcenter;
+  cursor_relative.max = viz_dim_heat.max + zoom_data.heat_offset - zoom_data.cursor_position +  zoom_data.viz_offcenter;
 
   // restrict cursor_relative.max
   if (cursor_relative.max < 0){

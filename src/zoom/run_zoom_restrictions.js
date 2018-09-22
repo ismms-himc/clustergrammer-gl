@@ -1,5 +1,9 @@
 module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, offcenter, axis, inst_offset, zoom_data_copy){
 
+  /*
+    Sequential if statements
+  */
+
   //////////////////////////////////////////////////////////////////////////////
   // Prepare Restrictions
   //////////////////////////////////////////////////////////////////////////////
@@ -53,10 +57,6 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
       zoom_data.total_pan_max = 0;
     }
 
-    // if (axis === 'x' && has_been_both === true){
-    //   // debugger
-    // }
-
     zoom_data.prev_restrict = 'min';
 
   }
@@ -71,9 +71,6 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
 
     // zoom_data.pan_by_zoom = - zoom_data.inst_eff_zoom * zoom_data.cursor_position;
     // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
-    // total_pan_max
-    // zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * viz_dim_heat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
-    // zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + inst_offset) + zoom_data.total_pan_max * zoom_data.total_zoom;
     zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
 
     // set total_pan_max to 0, no panning room remaining after being pushed left
@@ -105,9 +102,6 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
   // if double restrict, pin to side that was previously pinned
   if (double_restrict){
 
-    // console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
-    // console.log('prev_restrict', zoom_data_copy.prev_restrict);
-
     // pin the matrix to either side
     // no need to push it to the edge since it was previously pushed to the edge
     if (zoom_data_copy.prev_restrict === 'min') {
@@ -116,8 +110,6 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
 
     } else if (zoom_data_copy.prev_restrict === 'max'){
 
-      // zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * viz_dim_heat.max;
-      // zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
       zoom_data.pan_by_zoom = -zoom_data.inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
 
     }

@@ -1,4 +1,4 @@
-module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat, offcenter){
+module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat){
 
   // do not allow simultaneous panning and zooming
   if (zoom_data.inst_zoom > 1){
@@ -21,20 +21,11 @@ module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat, offcenter){
     }
   }
 
-  // if (axis === 'x'){
-  //   console.log(zoom_data.cursor_position, viz_dim_heat.min, offcenter, viz_dim_heat.min + offcenter)
-  // }
-
   // restrict effective position of mouse
-  if (zoom_data.cursor_position < viz_dim_heat.min + offcenter){
-    zoom_data.cursor_position = viz_dim_heat.min + offcenter;
-    // if (axis === 'x'){
-    //   console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
-    // }
-  } else if (zoom_data.cursor_position > viz_dim_heat.max + zoom_data.heat_offset  + offcenter){
-
-    zoom_data.cursor_position = viz_dim_heat.max + zoom_data.heat_offset + offcenter;
-
+  if (zoom_data.cursor_position < viz_dim_heat.min + zoom_data.viz_offcenter){
+    zoom_data.cursor_position = viz_dim_heat.min + zoom_data.viz_offcenter;
+  } else if (zoom_data.cursor_position > viz_dim_heat.max + zoom_data.heat_offset  + zoom_data.viz_offcenter){
+    zoom_data.cursor_position = viz_dim_heat.max + zoom_data.heat_offset + zoom_data.viz_offcenter;
   }
 
 };

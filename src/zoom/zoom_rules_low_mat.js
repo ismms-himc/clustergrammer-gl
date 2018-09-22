@@ -16,7 +16,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   } else {
     canvas_dim = 'height';
   }
-  var offcenter = (params.viz_dim.canvas[canvas_dim] * params.offcenter[axis])/2;
+  zoom_data.viz_offcenter = (params.viz_dim.canvas[canvas_dim] * params.offcenter[axis])/2;
 
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);
@@ -32,8 +32,8 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
   //////////////////////////////////////////////////////////////////////////////
-  pan_by_drag_rules(zoom_data, viz_dim_heat, offcenter);
-  var cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat, offcenter);
+  pan_by_drag_rules(zoom_data, viz_dim_heat);
+  var cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat, zoom_data.viz_offcenter);
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Zoom Rules
@@ -44,7 +44,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Potential Total Pan
   //////////////////////////////////////////////////////////////////////////////
   var ptp = calc_potential_total_pan(zoom_data);
-  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, offcenter, axis, zoom_data_copy);
+  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, zoom_data.viz_offcenter, axis, zoom_data_copy);
 
   return zoom_data;
 

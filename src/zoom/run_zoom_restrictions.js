@@ -65,7 +65,7 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
   // Restrict total pan max
   //////////////////////////////////////////////////////////////////////////////
 
-  if (ptp.max > zero_threshold) {
+  else if (ptp.max > zero_threshold) {
 
     // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
 
@@ -100,7 +100,7 @@ module.exports = function run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, of
   //////////////////////////////////////////////////////////////////////////////
 
   // if double restrict, pin to side that was previously pinned
-  if (double_restrict){
+  else if (double_restrict){
 
     // pin the matrix to either side
     // no need to push it to the edge since it was previously pushed to the edge

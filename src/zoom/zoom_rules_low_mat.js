@@ -55,15 +55,15 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   //   console.log(cursor_relative.min, cursor_relative.max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
   // }
 
-  // calculate unsanitized versions of total pan values
-  var potential_total_pan = {};
-  potential_total_pan.min = zoom_data.total_pan_min +
+  // calculate unsanitized versions of the ptp (potential-total-pan)
+  var ptp = {};
+  ptp.min = zoom_data.total_pan_min +
                  zoom_data.pan_by_drag / zoom_data.total_zoom  +
                  zoom_data.pbz_relative_min / zoom_data.total_zoom ;
 
 
   // panning by drag has the opposite effect relative to the max/right side
-  potential_total_pan.max = zoom_data.total_pan_max +
+  ptp.max = zoom_data.total_pan_max +
                  -zoom_data.pan_by_drag / zoom_data.total_zoom  +
                  zoom_data.pbz_relative_max / zoom_data.total_zoom ;
 
@@ -75,7 +75,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   }
 
   var double_restrict = false;
-  if (potential_total_pan.min > zero_threshold && potential_total_pan.max > zero_threshold ) {
+  if (ptp.min > zero_threshold && ptp.max > zero_threshold ) {
 
     double_restrict = true;
 
@@ -83,21 +83,18 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   }
 
   // Panning in bounds
-  if (potential_total_pan.min <= zero_threshold && potential_total_pan.max <= zero_threshold){
-
+  if (ptp.min <= zero_threshold && ptp.max <= zero_threshold){
     zoom_data.pan_by_zoom = -inst_eff_zoom * zoom_data.cursor_position;
-    zoom_data.total_pan_min = potential_total_pan.min;
-    zoom_data.total_pan_max = potential_total_pan.max;
-
+    zoom_data.total_pan_min = ptp.min;
+    zoom_data.total_pan_max = ptp.max;
     zoom_data.prev_restrict = false;
-
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // Restrict total pan min
   //////////////////////////////////////////////////////////////////////////////
 
-  if (potential_total_pan.min > zero_threshold) {
+  if (ptp.min > zero_threshold) {
 
     // push over by total_pan (negative value) times total zoom applied
     // need to push more when matrix has been effectively increased in size
@@ -133,7 +130,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Restrict total pan max
   //////////////////////////////////////////////////////////////////////////////
 
-  if (potential_total_pan.max > zero_threshold) {
+  if (ptp.max > zero_threshold) {
 
     // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
 

@@ -24514,14 +24514,11 @@ module.exports = function get_ordered_labels(params){
   var inst_order;
   var ordered_labels = {};
 
-  var col_nodes = params.network.col_nodes;
-  ordered_labels.rows = [];
-  ordered_labels.cols = [];
-
-  // only showing col cat in mouseover for now
-
   var axis_nodes;
+
   _.each(['row', 'col'], function(inst_axis){
+
+    ordered_labels[inst_axis + 's'] = [];
 
     axis_nodes = params.network[inst_axis + '_nodes'];
 

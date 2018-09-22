@@ -26322,6 +26322,26 @@ module.exports = function calc_cursor_relative(zoom_data, viz_dim_heat, offcente
 
 /***/ }),
 
+/***/ "./src/zoom/calc_pan_by_zoom.js":
+/*!**************************************!*\
+  !*** ./src/zoom/calc_pan_by_zoom.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_pan_by_zoom(zoom_data, cursor_relative){
+
+  // pan_by_zoom relative to matrix max and min
+  // zooming in causes negative panning
+  // net positive panning is not allowed
+  zoom_data.inst_eff_zoom = zoom_data.inst_zoom - 1;
+  zoom_data.pbz_relative_min = -zoom_data.inst_eff_zoom * cursor_relative.min;
+  zoom_data.pbz_relative_max = -zoom_data.inst_eff_zoom * cursor_relative.max;
+
+};
+
+/***/ }),
+
 /***/ "./src/zoom/ini_zoom_data.js":
 /*!***********************************!*\
   !*** ./src/zoom/ini_zoom_data.js ***!
@@ -26608,6 +26628,7 @@ var sanitize_inst_zoom = __webpack_require__(/*! ./sanitize_inst_zoom */ "./src/
 var sanitize_potential_zoom = __webpack_require__(/*! ./sanitize_potential_zoom */ "./src/zoom/sanitize_potential_zoom.js");
 var pan_by_drag_rules = __webpack_require__(/*! ./pan_by_drag_rules */ "./src/zoom/pan_by_drag_rules.js");
 var calc_cursor_relative = __webpack_require__(/*! ./calc_cursor_relative */ "./src/zoom/calc_cursor_relative.js");
+var calc_pan_by_zoom = __webpack_require__(/*! ./calc_pan_by_zoom */ "./src/zoom/calc_pan_by_zoom.js");
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
@@ -26650,12 +26671,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   // Pan by Zoom Rules
   //////////////////////////////////////////////////////////////////////////////
 
-  // pan_by_zoom relative to matrix max and min
-  // zooming in causes negative panning
-  // net positive panning is not allowed
-  zoom_data.inst_eff_zoom = zoom_data.inst_zoom - 1;
-  zoom_data.pbz_relative_min = -zoom_data.inst_eff_zoom * cursor_relative.min;
-  zoom_data.pbz_relative_max = -zoom_data.inst_eff_zoom * cursor_relative.max;
+  calc_pan_by_zoom(zoom_data, cursor_relative);
 
   // if (axis === 'x'){
   //   console.log(cursor_relative.min, cursor_relative.max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);

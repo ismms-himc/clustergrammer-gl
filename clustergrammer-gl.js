@@ -22761,7 +22761,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
         // draw using text_triangle_args and axis triangles
         if (params['num_' + inst_axis] > params.max_num_text){
 
-          // console.log('\t\tcalc text triangles', calc_text_tri)
+          console.log('\t\tcalc text triangles', calc_text_tri)
 
           params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
         }
@@ -23033,6 +23033,7 @@ var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/upda
 var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
+var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23193,6 +23194,21 @@ module.exports = function run_viz(regl, network){
         in the background.
 
       */
+
+      var updated_labels = false;
+      _.each(['row', 'col'], function(inst_axis){
+        if (params.label_high_queue[inst_axis].length > 0){
+          var inst_name = params.label_high_queue[inst_axis][0];
+          params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
+          console.log(inst_name, params.label_high_queue[inst_axis].length)
+          updated_labels = true;
+        }
+      });
+
+      if (updated_labels){
+        console.log('draw')
+        draw_commands(regl, params);
+      }
 
     }
 
@@ -25236,9 +25252,9 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
     vect_text_attrs.textBaseline = 'middle';
   }
 
-  console.log(params.label_high_queue[inst_axis], inst_name)
+  // console.log(params.label_high_queue[inst_axis], inst_name)
   if (params.label_high_queue[inst_axis].indexOf(inst_name) > -1){
-    console.log('drop from high priority queue', params.label_high_queue[inst_axis].length)
+    // console.log('drop from high priority queue', params.label_high_queue[inst_axis].length)
     drop_label_from_queue(params.label_high_queue[inst_axis], inst_axis, inst_name);
   }
   drop_label_from_queue(params.label_low_queue[inst_axis], inst_axis, inst_name);

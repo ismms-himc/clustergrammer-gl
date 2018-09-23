@@ -7,6 +7,7 @@ var update_text_triangle_order = require('./../matrix_labels/update_text_triangl
 var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var ini_zoom_data = require('./../zoom/ini_zoom_data');
 var make_cameras = require('./../cameras/make_cameras');
+var vectorize_label = require('./../matrix_labels/vectorize_label');
 
 module.exports = function run_viz(regl, network){
 
@@ -167,6 +168,21 @@ module.exports = function run_viz(regl, network){
         in the background.
 
       */
+
+      var updated_labels = false;
+      _.each(['row', 'col'], function(inst_axis){
+        if (params.label_high_queue[inst_axis].length > 0){
+          var inst_name = params.label_high_queue[inst_axis][0];
+          params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
+          console.log(inst_name, params.label_high_queue[inst_axis].length)
+          updated_labels = true;
+        }
+      });
+
+      if (updated_labels){
+        console.log('draw')
+        draw_commands(regl, params);
+      }
 
     }
 

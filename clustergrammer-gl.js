@@ -24469,29 +24469,41 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
     if (offsets.inst > viz_area[inst_dim + '_min'] && offsets.inst < viz_area[inst_dim + '_max']){
 
+      ///////////////////////////////////
+      // add to high queue
+      ///////////////////////////////////
+
       var inst_name = inst_label.name;
 
       if (inst_name.indexOf(': ') >= 0){
           inst_name = inst_label.name.split(': ')[1];
       }
 
-      var tmp_text_vect;
-      if (inst_name in params.text_triangles[inst_axis]){
-        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
-      } else {
+      // add to high priority queue
+      params.label_high_queue[inst_axis].push(inst_name);
 
-        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
-        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+      ///////////////////////////////////
+      // calc new text triangles
+      ///////////////////////////////////
 
-      }
+      // var tmp_text_vect;
+      // if (inst_name in params.text_triangles[inst_axis]){
+      //   tmp_text_vect = params.text_triangles[inst_axis][inst_name];
+      // } else {
 
-      tmp_text_vect.inst_offset = [0, offsets.inst];
-      tmp_text_vect.new_offset = [0, offsets.new];
-      text_triangles.push(tmp_text_vect);
+      //   tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
+      //   params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
 
-      var inst_data = {};
-      inst_data.y = offsets.inst;
-      inst_data.name = inst_name;
+      // }
+
+      // tmp_text_vect.inst_offset = [0, offsets.inst];
+      // tmp_text_vect.new_offset = [0, offsets.new];
+      // text_triangles.push(tmp_text_vect);
+
+      // var inst_data = {};
+      // inst_data.y = offsets.inst;
+      // inst_data.name = inst_name;
+
     }
 
   });
@@ -24734,11 +24746,16 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 module.exports = function make_inst_queue(params){
 
   params.label_low_queue = {}
+  params.label_high_queue = {}
 
   var inst_queue;
 
   _.each(['row', 'col'], function(inst_axis){
 
+    // the high priority queue is empty initially
+    params.label_high_queue[inst_axis] = [];
+
+    // the low priority queue
     inst_queue = [];
 
     var inst_labels = params.ordered_labels[inst_axis + 's'];
@@ -25219,6 +25236,11 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
     vect_text_attrs.textBaseline = 'middle';
   }
 
+  console.log(params.label_high_queue[inst_axis], inst_name)
+  if (params.label_high_queue[inst_axis].indexOf(inst_name) > -1){
+    console.log('drop from high priority queue', params.label_high_queue[inst_axis].length)
+    drop_label_from_queue(params.label_high_queue[inst_axis], inst_axis, inst_name);
+  }
   drop_label_from_queue(params.label_low_queue[inst_axis], inst_axis, inst_name);
 
   return vectorize_text(inst_name, vect_text_attrs);

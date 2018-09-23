@@ -1,11 +1,16 @@
 module.exports = function make_inst_queue(params){
 
   params.label_low_queue = {}
+  params.label_high_queue = {}
 
   var inst_queue;
 
   _.each(['row', 'col'], function(inst_axis){
 
+    // the high priority queue is empty initially
+    params.label_high_queue[inst_axis] = [];
+
+    // the low priority queue
     inst_queue = [];
 
     var inst_labels = params.ordered_labels[inst_axis + 's'];

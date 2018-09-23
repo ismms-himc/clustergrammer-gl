@@ -24502,6 +24502,24 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
 /***/ }),
 
+/***/ "./src/matrix_labels/drop_label_from_queue.js":
+/*!****************************************************!*\
+  !*** ./src/matrix_labels/drop_label_from_queue.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function drop_label_from_queue(params, inst_axis, inst_name){
+
+  var index = params.label_queue[inst_axis].indexOf(inst_name);
+  if (index > -1) {
+    params.label_queue[inst_axis].splice(index, 1);
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/matrix_labels/get_ordered_labels.js":
 /*!*************************************************!*\
   !*** ./src/matrix_labels/get_ordered_labels.js ***!
@@ -25182,6 +25200,7 @@ module.exports = function update_text_triangle_order(params, inst_axis){
 /***/ (function(module, exports, __webpack_require__) {
 
 const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+var drop_label_from_queue = __webpack_require__(/*! ./drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
 
 module.exports = function vectorize_label(params, inst_axis, inst_name){
 
@@ -25199,6 +25218,8 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
     vect_text_attrs.textAlign = 'right';
     vect_text_attrs.textBaseline = 'middle';
   }
+
+  drop_label_from_queue(params, inst_axis, inst_name);
 
   return vectorize_text(inst_name, vect_text_attrs);
 

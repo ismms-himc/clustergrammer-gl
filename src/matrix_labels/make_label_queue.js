@@ -1,6 +1,6 @@
 module.exports = function make_inst_queue(params){
 
-  params.label_queue = {}
+  params.label_low_queue = {}
 
   var inst_queue;
 
@@ -20,7 +20,7 @@ module.exports = function make_inst_queue(params){
 
     });
 
-    params.label_queue[inst_axis] = inst_queue;
+    params.label_low_queue[inst_axis] = inst_queue;
 
   });
 

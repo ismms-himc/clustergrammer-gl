@@ -24509,11 +24509,11 @@ module.exports = function calc_text_triangles(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function drop_label_from_queue(params, inst_axis, inst_name){
+module.exports = function drop_label_from_queue(inst_queue, inst_axis, inst_name){
 
-  var index = params.label_queue[inst_axis].indexOf(inst_name);
+  var index = inst_queue.indexOf(inst_name);
   if (index > -1) {
-    params.label_queue[inst_axis].splice(index, 1);
+    inst_queue.splice(index, 1);
   }
 
 };
@@ -24733,7 +24733,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
 module.exports = function make_inst_queue(params){
 
-  params.label_queue = {}
+  params.label_low_queue = {}
 
   var inst_queue;
 
@@ -24753,7 +24753,7 @@ module.exports = function make_inst_queue(params){
 
     });
 
-    params.label_queue[inst_axis] = inst_queue;
+    params.label_low_queue[inst_axis] = inst_queue;
 
   });
 
@@ -25219,7 +25219,7 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
     vect_text_attrs.textBaseline = 'middle';
   }
 
-  drop_label_from_queue(params, inst_axis, inst_name);
+  drop_label_from_queue(params.label_low_queue[inst_axis], inst_axis, inst_name);
 
   return vectorize_text(inst_name, vect_text_attrs);
 

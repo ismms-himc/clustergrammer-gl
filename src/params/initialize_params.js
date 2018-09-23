@@ -17,6 +17,7 @@ var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
 var make_cat_position_array = require('./../cats/make_cat_position_array');
 var calc_alpha_order = require('./calc_alpha_order');
+var make_label_queue = require('./../matrix_labels/make_label_queue');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -229,6 +230,8 @@ module.exports = function initialize_params(regl, network){
     .clamp(true);
 
   get_ordered_labels(params);
+
+  make_label_queue(params);
 
   params.mouseover = {};
   params.mouseover.row_name = null;

@@ -24706,6 +24706,43 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
 /***/ }),
 
+/***/ "./src/matrix_labels/make_label_queue.js":
+/*!***********************************************!*\
+  !*** ./src/matrix_labels/make_label_queue.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_inst_queue(params){
+
+  params.label_queue = {}
+
+  var inst_queue;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    inst_queue = [];
+
+    var inst_labels = params.ordered_labels[inst_axis + 's'];
+
+    _.each(inst_labels, function(inst_label){
+
+      if (inst_label.indexOf(': ') >= 0){
+          inst_label = inst_label.split(': ')[1];
+      }
+
+      inst_queue.push(inst_label);
+
+    });
+
+    params.label_queue[inst_axis] = inst_queue;
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/matrix_labels/make_row_text_args.js":
 /*!*************************************************!*\
   !*** ./src/matrix_labels/make_row_text_args.js ***!
@@ -25410,6 +25447,7 @@ var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_
 var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
+var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25622,6 +25660,8 @@ module.exports = function initialize_params(regl, network){
     .clamp(true);
 
   get_ordered_labels(params);
+
+  make_label_queue(params);
 
   params.mouseover = {};
   params.mouseover.row_name = null;

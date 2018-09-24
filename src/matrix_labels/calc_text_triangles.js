@@ -43,19 +43,12 @@ module.exports = function calc_text_triangles(params, inst_axis){
   /*
   Need to pre-compute offsets in ini_parameters, then re-calc on reordering
   */
-
-  // console.log(params.network[inst_axis + '_nodes'][0].offsets)
+  calc_text_offsets(params, inst_axis);
 
   var min_viz = viz_area[inst_dim + '_min'];
   var max_viz = viz_area[inst_dim + '_max'];
 
-  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
-
-    inst_label.offsets = calc_text_offsets(params, inst_axis, inst_id);
-
-  });
-
-  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label){
 
 
     if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){

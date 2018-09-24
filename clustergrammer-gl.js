@@ -24414,44 +24414,48 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function calc_text_offsets(params, inst_axis, inst_id){
+module.exports = function calc_text_offsets(params, inst_axis){
 
-  var offsets = {};
-  var order_id;
-  var order_state;
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
 
-  var inst_dim;
-  if (inst_axis === 'col'){
-    inst_dim = 'x';
-  } else {
-    inst_dim = 'y';
-  }
+    var offsets = {};
+    var order_id;
+    var order_state;
 
-  var axis_arr = params.canvas_pos[inst_dim + '_arr'];
-  var inst_order = params.inst_order[inst_axis];
-  var new_order = params.new_order[inst_axis];
-  var num_labels = params['num_' + inst_axis];
-
-  // calculate inst and new offsets
-  _.each(['inst', 'new'], function(inst_state){
-
-    if (inst_state === 'inst'){
-      order_state = inst_order
-    } else {
-       order_state = new_order
-    }
-
+    var inst_dim;
     if (inst_axis === 'col'){
-      order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
-      offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+      inst_dim = 'x';
     } else {
-      order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
-      offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+      inst_dim = 'y';
     }
+
+    var axis_arr = params.canvas_pos[inst_dim + '_arr'];
+    var inst_order = params.inst_order[inst_axis];
+    var new_order = params.new_order[inst_axis];
+    var num_labels = params['num_' + inst_axis];
+
+    // calculate inst and new offsets
+    _.each(['inst', 'new'], function(inst_state){
+
+      if (inst_state === 'inst'){
+        order_state = inst_order
+      } else {
+         order_state = new_order
+      }
+
+      if (inst_axis === 'col'){
+        order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+      } else {
+        order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+      }
+
+    });
+
+    inst_label.offsets = offsets;
 
   });
-
-  return offsets;
 
 };
 
@@ -24509,19 +24513,12 @@ module.exports = function calc_text_triangles(params, inst_axis){
   /*
   Need to pre-compute offsets in ini_parameters, then re-calc on reordering
   */
-
-  // console.log(params.network[inst_axis + '_nodes'][0].offsets)
+  calc_text_offsets(params, inst_axis);
 
   var min_viz = viz_area[inst_dim + '_min'];
   var max_viz = viz_area[inst_dim + '_max'];
 
-  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
-
-    inst_label.offsets = calc_text_offsets(params, inst_axis, inst_id);
-
-  });
-
-  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label){
 
 
     if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){

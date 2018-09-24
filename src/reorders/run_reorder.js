@@ -25,6 +25,6 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
     params.text_triangles.draw[inst_axis] = false;
   }
 
-  // calc_text_offsets(params, inst_axis);
+  calc_text_offsets(params, inst_axis);
 
 };

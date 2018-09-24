@@ -23202,7 +23202,7 @@ module.exports = function run_viz(regl, network){
         if (params.label_high_queue[inst_axis].length > 0){
           var inst_name = params.label_high_queue[inst_axis][0];
           params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
-          // console.log(inst_name, params.label_high_queue[inst_axis].length)
+          console.log(inst_name, params.label_high_queue[inst_axis].length)
           updated_labels = true;
         }
       });
@@ -24547,26 +24547,30 @@ module.exports = function calc_text_triangles(params, inst_axis){
       var tmp_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
         tmp_text_vect = params.text_triangles[inst_axis][inst_name];
+
+        tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        tmp_text_vect.new_offset = [0, inst_label.offsets.new];
+        text_triangles.push(tmp_text_vect);
+
       } else {
 
-        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
-        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+        /*
+        working on delaying calculation of triangles until zooming has stopped
+        */
+
+        // tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
+        // params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+
+        // tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        // tmp_text_vect.new_offset = [0, inst_label.offsets.new];
+        // text_triangles.push(tmp_text_vect);
 
       }
 
-      tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
-      tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-      text_triangles.push(tmp_text_vect);
-
-      var inst_data = {};
-      inst_data.y = inst_label.offsets.inst;
-      inst_data.name = inst_name;
 
     }
 
   });
-
-  // console.log(params.network[inst_axis + '_nodes'][0].offsets)
 
   return text_triangles;
 
@@ -25964,7 +25968,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
     params.text_triangles.draw[inst_axis] = false;
   }
 
-  // calc_text_offsets(params, inst_axis);
+  calc_text_offsets(params, inst_axis);
 
 };
 

@@ -176,7 +176,7 @@ module.exports = function run_viz(regl, network){
         if (params.label_high_queue[inst_axis].length > 0){
           var inst_name = params.label_high_queue[inst_axis][0];
           params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
-          // console.log(inst_name, params.label_high_queue[inst_axis].length)
+          console.log(inst_name, params.label_high_queue[inst_axis].length)
           updated_labels = true;
         }
       });

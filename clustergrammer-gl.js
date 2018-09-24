@@ -24418,6 +24418,8 @@ var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
+  console.log('calc_text_triangles')
+
   /*
 
   // Make dictionary of text trianglesß
@@ -24464,6 +24466,10 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   _.each(inst_labels, function(inst_label, inst_id){
 
+    /*
+    Need to pre-compute offsets in ini_parameters, then re-calc on reordering
+    */
+
     // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
 
@@ -24492,7 +24498,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
       var inst_name = inst_label.name;
 
       if (inst_name.indexOf(': ') >= 0){
-          inst_name = inst_label.name.split(': ')[1];
+        inst_name = inst_label.name.split(': ')[1];
       }
 
       // add to high priority queue
@@ -24502,23 +24508,23 @@ module.exports = function calc_text_triangles(params, inst_axis){
       // calc new text triangles
       ///////////////////////////////////
 
-      // var tmp_text_vect;
-      // if (inst_name in params.text_triangles[inst_axis]){
-      //   tmp_text_vect = params.text_triangles[inst_axis][inst_name];
-      // } else {
+      var tmp_text_vect;
+      if (inst_name in params.text_triangles[inst_axis]){
+        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
+      } else {
 
-      //   tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
-      //   params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
 
-      // }
+      }
 
-      // tmp_text_vect.inst_offset = [0, offsets.inst];
-      // tmp_text_vect.new_offset = [0, offsets.new];
-      // text_triangles.push(tmp_text_vect);
+      tmp_text_vect.inst_offset = [0, offsets.inst];
+      tmp_text_vect.new_offset = [0, offsets.new];
+      text_triangles.push(tmp_text_vect);
 
-      // var inst_data = {};
-      // inst_data.y = offsets.inst;
-      // inst_data.name = inst_name;
+      var inst_data = {};
+      inst_data.y = offsets.inst;
+      inst_data.name = inst_name;
 
     }
 

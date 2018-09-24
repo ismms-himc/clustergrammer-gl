@@ -1,9 +1,13 @@
 module.exports = function update_text_triangle_order(params, inst_axis){
 
+  // Here we are updating the positions of the existing text triangles that
+  // we have already pre-calculated. This needs to be better harmonized with
+  // the update_text_offsets function that works directly on the network_data
+
   var inst_order = params.inst_order[inst_axis];
   var new_order = params.new_order[inst_axis];
 
-  var inst_labels = params.text_triangles.draw[inst_axis];
+  var inst_text_triangles = params.text_triangles.draw[inst_axis];
   var num_labels = params['num_' + inst_axis];
 
   var inst_dim;
@@ -19,7 +23,7 @@ module.exports = function update_text_triangle_order(params, inst_axis){
 
   var axis_arr = params.canvas_pos[inst_dim + '_arr'];
 
-  _.each(inst_labels, function(inst_label, inst_id){
+  _.each(inst_text_triangles, function(inst_label, inst_id){
 
     // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
@@ -45,6 +49,6 @@ module.exports = function update_text_triangle_order(params, inst_axis){
   });
 
 
-  return inst_labels;
+  return inst_text_triangles;
 
 }

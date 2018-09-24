@@ -1,8 +1,9 @@
 var vectorize_label = require('./vectorize_label')
+var calc_text_offsets = require('./calc_text_offsets');
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
-  console.log('calc_text_triangles')
+  // console.log('calc_text_triangles')
 
   /*
 
@@ -20,11 +21,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   */
 
-  var inst_order = params.inst_order[inst_axis];
-  var new_order = params.new_order[inst_axis];
-
-  var inst_labels = params.network[inst_axis + '_nodes'];
-  var num_labels = params['num_' + inst_axis];
+  // var inst_labels = params.network[inst_axis + '_nodes'];
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -35,45 +32,35 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   // draw matrix cells
   /////////////////////////////////////////
-  var axis_arr = params.canvas_pos[inst_dim + '_arr'];
 
   // generating array with text triangles and y-offsets
   var text_triangles = [];
   var viz_area = params.viz_area;
 
-  var order_id;
-  var order_state;
-  var offsets = {};
-
   // only calculating the text-triangles for labels that are within the visible
   // area
 
-  _.each(inst_labels, function(inst_label, inst_id){
+  /*
+  Need to pre-compute offsets in ini_parameters, then re-calc on reordering
+  */
 
-    /*
-    Need to pre-compute offsets in ini_parameters, then re-calc on reordering
-    */
+  // console.log(params.network[inst_axis + '_nodes'][0].offsets)
 
-    // calculate inst and new offsets
-    _.each(['inst', 'new'], function(inst_state){
+  var min_viz = viz_area[inst_dim + '_min'];
+  var max_viz = viz_area[inst_dim + '_max'];
 
-      if (inst_state === 'inst'){
-        order_state = inst_order
-      } else {
-         order_state = new_order
-      }
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
 
-      if (inst_axis === 'col'){
-        order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
-        offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
-      } else {
-        order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
-        offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
-      }
+    inst_label.offsets = calc_text_offsets(params, inst_axis, inst_id);
 
-    });
+  // });
 
-    if (offsets.inst > viz_area[inst_dim + '_min'] && offsets.inst < viz_area[inst_dim + '_max']){
+  // _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
+
+
+    if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
+
+      // console.log('FOUND')
 
       ///////////////////////////////////
       // add to high queue
@@ -102,17 +89,19 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
       }
 
-      tmp_text_vect.inst_offset = [0, offsets.inst];
-      tmp_text_vect.new_offset = [0, offsets.new];
+      tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
+      tmp_text_vect.new_offset = [0, inst_label.offsets.new];
       text_triangles.push(tmp_text_vect);
 
       var inst_data = {};
-      inst_data.y = offsets.inst;
+      inst_data.y = inst_label.offsets.inst;
       inst_data.name = inst_name;
 
     }
 
   });
+
+  // console.log(params.network[inst_axis + '_nodes'][0].offsets)
 
   return text_triangles;
 

@@ -8,6 +8,7 @@ var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var ini_zoom_data = require('./../zoom/ini_zoom_data');
 var make_cameras = require('./../cameras/make_cameras');
 var vectorize_label = require('./../matrix_labels/vectorize_label');
+// var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 
 module.exports = function run_viz(regl, network){
 
@@ -88,6 +89,7 @@ module.exports = function run_viz(regl, network){
       // transfer new order to text triangles
       _.each(['row', 'col'], function(inst_axis){
         params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+        // calc_text_offsets(params, inst_axis);
       });
 
       // update ordered_labels

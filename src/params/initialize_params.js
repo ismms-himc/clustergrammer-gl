@@ -18,6 +18,7 @@ var make_tooltip_background_args = require('./../tooltip/make_tooltip_background
 var make_cat_position_array = require('./../cats/make_cat_position_array');
 var calc_alpha_order = require('./calc_alpha_order');
 var make_label_queue = require('./../matrix_labels/make_label_queue');
+var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -126,6 +127,7 @@ module.exports = function initialize_params(regl, network){
   params.text_triangles.row = {};
   params.text_triangles.col = {};
 
+
   // calc row-downsampled matrix
   var run_downsampling = false;
   params.is_downsampled = false;
@@ -163,6 +165,9 @@ module.exports = function initialize_params(regl, network){
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
+
+  calc_text_offsets(params, 'row');
+  calc_text_offsets(params, 'col');
 
   params.dendro_args = {};
   params.dendro_args.row = make_dendro_args(regl, params, 'row');

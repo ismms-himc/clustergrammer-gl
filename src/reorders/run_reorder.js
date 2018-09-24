@@ -1,6 +1,7 @@
 var reorder_cat_args = require('./reorder_cat_args');
 var reorder_matrix_args = require('./reorder_matrix_args');
 var update_text_triangle_order = require('./../matrix_labels/update_text_triangle_order');
+var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
@@ -23,5 +24,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }
+
+  // calc_text_offsets(params, inst_axis);
 
 };

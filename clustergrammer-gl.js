@@ -23034,6 +23034,7 @@ var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
+// var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 
 module.exports = function run_viz(regl, network){
 
@@ -23114,6 +23115,7 @@ module.exports = function run_viz(regl, network){
       // transfer new order to text triangles
       _.each(['row', 'col'], function(inst_axis){
         params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+        // calc_text_offsets(params, inst_axis);
       });
 
       // update ordered_labels
@@ -24416,46 +24418,46 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 module.exports = function calc_text_offsets(params, inst_axis){
 
-  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
+    _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
 
-    var offsets = {};
-    var order_id;
-    var order_state;
+      var offsets = {};
+      var order_id;
+      var order_state;
 
-    var inst_dim;
-    if (inst_axis === 'col'){
-      inst_dim = 'x';
-    } else {
-      inst_dim = 'y';
-    }
-
-    var axis_arr = params.canvas_pos[inst_dim + '_arr'];
-    var inst_order = params.inst_order[inst_axis];
-    var new_order = params.new_order[inst_axis];
-    var num_labels = params['num_' + inst_axis];
-
-    // calculate inst and new offsets
-    _.each(['inst', 'new'], function(inst_state){
-
-      if (inst_state === 'inst'){
-        order_state = inst_order
-      } else {
-         order_state = new_order
-      }
-
+      var inst_dim;
       if (inst_axis === 'col'){
-        order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
-        offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+        inst_dim = 'x';
       } else {
-        order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
-        offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+        inst_dim = 'y';
       }
+
+      var axis_arr = params.canvas_pos[inst_dim + '_arr'];
+      var inst_order = params.inst_order[inst_axis];
+      var new_order = params.new_order[inst_axis];
+      var num_labels = params['num_' + inst_axis];
+
+      // calculate inst and new offsets
+      _.each(['inst', 'new'], function(inst_state){
+
+        if (inst_state === 'inst'){
+          order_state = inst_order
+        } else {
+           order_state = new_order
+        }
+
+        if (inst_axis === 'col'){
+          order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
+          offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+        } else {
+          order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
+          offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+        }
+
+      });
+
+      inst_label.offsets = offsets;
 
     });
-
-    inst_label.offsets = offsets;
-
-  });
 
 };
 
@@ -24469,7 +24471,7 @@ module.exports = function calc_text_offsets(params, inst_axis){
 /***/ (function(module, exports, __webpack_require__) {
 
 var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix_labels/vectorize_label.js")
-var calc_text_offsets = __webpack_require__(/*! ./calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
+// var calc_text_offsets = require('./calc_text_offsets');
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
@@ -24513,7 +24515,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
   /*
   Need to pre-compute offsets in ini_parameters, then re-calc on reordering
   */
-  calc_text_offsets(params, inst_axis);
+  // calc_text_offsets(params, inst_axis);
 
   var min_viz = viz_area[inst_dim + '_min'];
   var max_viz = viz_area[inst_dim + '_max'];
@@ -25236,7 +25238,6 @@ module.exports = function update_text_triangle_order(params, inst_axis){
 
   _.each(inst_labels, function(inst_label, inst_id){
 
-
     // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
 
@@ -25258,8 +25259,8 @@ module.exports = function update_text_triangle_order(params, inst_axis){
     inst_label.inst_offset = [0, offsets.inst];
     inst_label.new_offset = [0, offsets.new];
 
-
   });
+
 
   return inst_labels;
 
@@ -25549,6 +25550,7 @@ var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_too
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
+var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25657,6 +25659,7 @@ module.exports = function initialize_params(regl, network){
   params.text_triangles.row = {};
   params.text_triangles.col = {};
 
+
   // calc row-downsampled matrix
   var run_downsampling = false;
   params.is_downsampled = false;
@@ -25694,6 +25697,9 @@ module.exports = function initialize_params(regl, network){
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
+
+  calc_text_offsets(params, 'row');
+  calc_text_offsets(params, 'col');
 
   params.dendro_args = {};
   params.dendro_args.row = make_dendro_args(regl, params, 'row');
@@ -25930,6 +25936,7 @@ module.exports = function reorder_matrix_args(regl, cgm){
 var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
 var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
+var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
@@ -25952,6 +25959,8 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }
+
+  // calc_text_offsets(params, inst_axis);
 
 };
 

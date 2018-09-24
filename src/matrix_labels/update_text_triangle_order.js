@@ -21,7 +21,6 @@ module.exports = function update_text_triangle_order(params, inst_axis){
 
   _.each(inst_labels, function(inst_label, inst_id){
 
-
     // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
 
@@ -43,8 +42,8 @@ module.exports = function update_text_triangle_order(params, inst_axis){
     inst_label.inst_offset = [0, offsets.inst];
     inst_label.new_offset = [0, offsets.new];
 
-
   });
+
 
   return inst_labels;
 

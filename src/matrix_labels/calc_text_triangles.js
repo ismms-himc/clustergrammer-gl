@@ -1,5 +1,5 @@
 var vectorize_label = require('./vectorize_label')
-var calc_text_offsets = require('./calc_text_offsets');
+// var calc_text_offsets = require('./calc_text_offsets');
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
@@ -43,7 +43,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
   /*
   Need to pre-compute offsets in ini_parameters, then re-calc on reordering
   */
-  calc_text_offsets(params, inst_axis);
+  // calc_text_offsets(params, inst_axis);
 
   var min_viz = viz_area[inst_dim + '_min'];
   var max_viz = viz_area[inst_dim + '_max'];

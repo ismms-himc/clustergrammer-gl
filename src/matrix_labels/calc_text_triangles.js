@@ -53,14 +53,14 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
     inst_label.offsets = calc_text_offsets(params, inst_axis, inst_id);
 
-  // });
+  });
 
-  // _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
 
 
     if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
 
-      // console.log('FOUND')
+      console.log('FOUND')
 
       ///////////////////////////////////
       // add to high queue

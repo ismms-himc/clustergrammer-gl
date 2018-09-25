@@ -1,5 +1,4 @@
 var vectorize_label = require('./vectorize_label')
-// var calc_text_offsets = require('./calc_text_offsets');
 
 module.exports = function calc_text_triangles(params, inst_axis){
 
@@ -66,7 +65,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
       }
 
       // add to high priority queue
-      params.label_high_queue[inst_axis].push(inst_name);
+      params.label_queue.high[inst_axis].push(inst_name);
 
       ///////////////////////////////////
       // calc new text triangles

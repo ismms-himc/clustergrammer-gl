@@ -1,12 +1,12 @@
 var initialize_params = require('./../params/initialize_params');
 var draw_commands = require('./draw_commands');
 _ = require('underscore');
-var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
-var final_interaction_frame = require('./../interactions/final_interaction_frame');
 var vectorize_label = require('./../matrix_labels/vectorize_label');
 var reset_cameras = require('./../cameras/reset_cameras');
 var start_animation = require('./start_animation');
 var end_animation = require('./end_animation');
+var draw_interacting = require('./draw_interacting');
+var draw_mouseover = require('./draw_mouseover');
 
 module.exports = function run_viz(regl, network){
 
@@ -14,8 +14,6 @@ module.exports = function run_viz(regl, network){
   var params = initialize_params(regl, network);
 
   params.first_frame = true;
-   var wait_time_final_interact = 50;
-  var wait_time_final_mouseover = 50;
 
 
   regl.frame(function ({time}) {
@@ -49,47 +47,14 @@ module.exports = function run_viz(regl, network){
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
 
-      params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
-
-      draw_commands(regl, params);
-
-      setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
-
-      params.initialize_viz = false;
-
-      if (params.animation.time_remain > 0){
-        params.animation.time_remain = params.animation.time_remain - 1;
-      }
+      draw_interacting(regl, params);
 
     }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
 
-      /////////////////////////////////////
-      /////////////////////////////////////
-      // mouseover draw is causing some flashing after animation, clean up later
-      ////////////////////////////////////
-      /////////////////////////////////////
-
-      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
-
-      // remove old tooltip
-      if (params.remove_tooltip_frame){
-        // console.log('remove old tooltip ***********')
-        params.show_tooltip = false;
-
-        // console.log('still mouseover')
-        draw_commands(regl, params);
-      }
-
-      if (params.remove_tooltip_frame){
-          // console.log('--- shut down remove_tooltip_frame')
-        params.remove_tooltip_frame = false;
-      }
-
-      // wait_time_final_mouseover = 0;
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+      draw_mouseover(regl, params);
 
     } else if (params.draw_labels || params.show_tooltip){
 

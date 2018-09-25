@@ -22863,6 +22863,35 @@ module.exports = function draw_commands(regl, params){
 
 /***/ }),
 
+/***/ "./src/draws/draw_interacting.js":
+/*!***************************************!*\
+  !*** ./src/draws/draw_interacting.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
+var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
+
+module.exports = function draw_interacting(regl, params){
+
+  var wait_time_final_interact = 50;
+
+  params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
+
+  draw_commands(regl, params);
+
+  setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
+
+  params.initialize_viz = false;
+
+  if (params.animation.time_remain > 0){
+    params.animation.time_remain = params.animation.time_remain - 1;
+  }
+};
+
+/***/ }),
+
 /***/ "./src/draws/draw_matrix_components.js":
 /*!*********************************************!*\
   !*** ./src/draws/draw_matrix_components.js ***!
@@ -22908,6 +22937,47 @@ module.exports = function draw_matrix_components(regl, params){
 
   });
 
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_mouseover.js":
+/*!*************************************!*\
+  !*** ./src/draws/draw_mouseover.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
+var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
+var wait_time_final_mouseover = 50;
+
+module.exports = function draw_mouseover(regl, params){
+
+  /////////////////////////////////////
+  /////////////////////////////////////
+  // mouseover draw is causing some flashing after animation, clean up later
+  ////////////////////////////////////
+  /////////////////////////////////////
+
+  params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
+
+  // remove old tooltip
+  if (params.remove_tooltip_frame){
+    // console.log('remove old tooltip ***********')
+    params.show_tooltip = false;
+
+    // console.log('still mouseover')
+    draw_commands(regl, params);
+  }
+
+  if (params.remove_tooltip_frame){
+      // console.log('--- shut down remove_tooltip_frame')
+    params.remove_tooltip_frame = false;
+  }
+
+  // wait_time_final_mouseover = 0;
+  setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 };
 
 /***/ }),
@@ -23114,12 +23184,12 @@ module.exports = {
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
-var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
-var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
 var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
+var draw_interacting = __webpack_require__(/*! ./draw_interacting */ "./src/draws/draw_interacting.js");
+var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/draw_mouseover.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23127,8 +23197,6 @@ module.exports = function run_viz(regl, network){
   var params = initialize_params(regl, network);
 
   params.first_frame = true;
-   var wait_time_final_interact = 50;
-  var wait_time_final_mouseover = 50;
 
 
   regl.frame(function ({time}) {
@@ -23162,47 +23230,14 @@ module.exports = function run_viz(regl, network){
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
 
-      params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
-
-      draw_commands(regl, params);
-
-      setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
-
-      params.initialize_viz = false;
-
-      if (params.animation.time_remain > 0){
-        params.animation.time_remain = params.animation.time_remain - 1;
-      }
+      draw_interacting(regl, params);
 
     }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
 
-      /////////////////////////////////////
-      /////////////////////////////////////
-      // mouseover draw is causing some flashing after animation, clean up later
-      ////////////////////////////////////
-      /////////////////////////////////////
-
-      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
-
-      // remove old tooltip
-      if (params.remove_tooltip_frame){
-        // console.log('remove old tooltip ***********')
-        params.show_tooltip = false;
-
-        // console.log('still mouseover')
-        draw_commands(regl, params);
-      }
-
-      if (params.remove_tooltip_frame){
-          // console.log('--- shut down remove_tooltip_frame')
-        params.remove_tooltip_frame = false;
-      }
-
-      // wait_time_final_mouseover = 0;
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
+      draw_mouseover(regl, params);
 
     } else if (params.draw_labels || params.show_tooltip){
 

@@ -22988,6 +22988,65 @@ module.exports = function draw_tooltip_components(regl, params){
 
 /***/ }),
 
+/***/ "./src/draws/end_animation.js":
+/*!************************************!*\
+  !*** ./src/draws/end_animation.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
+var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
+var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
+
+module.exports = function end_animation(regl, params){
+
+  console.log('end_animation')
+
+  ///////////////////////////////////////
+  // The animation has finished
+  ///////////////////////////////////////
+
+  params.animation.running = false;
+  params.animation.run_switch = false;
+
+  // transfer the new positions to the matrix args attributes
+  params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
+        buffer: regl.buffer(params.arrs.position_arr.new),
+        divisor: 1
+      };
+
+  // transfer the new category positions to the cat args attributes
+  _.each(['row', 'col'], function(inst_axis){
+
+    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+      // update the attribute
+      params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
+          buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
+          divisor: 1
+      };
+    }
+
+    // transfer new order to old order
+    params.inst_order[inst_axis] = params.new_order[inst_axis]
+
+  });
+
+  // transfer new order to text triangles
+  _.each(['row', 'col'], function(inst_axis){
+    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+
+    // need to update text positions after animation
+    calc_text_offsets(params, inst_axis);
+  });
+
+  // update ordered_labels
+  get_ordered_labels(params);
+
+};
+
+/***/ }),
+
 /***/ "./src/draws/interp_fun.js":
 /*!*********************************!*\
   !*** ./src/draws/interp_fun.js ***!
@@ -23057,12 +23116,10 @@ var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
-var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
-var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
-var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
+var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23096,45 +23153,7 @@ module.exports = function run_viz(regl, network){
 
     } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
 
-      ///////////////////////////////////////
-      // The transition has finished
-      ///////////////////////////////////////
-
-      params.animation.running = false;
-      params.animation.run_switch = false;
-
-      // transfer the new positions to the matrix args attributes
-      params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
-            buffer: regl.buffer(params.arrs.position_arr.new),
-            divisor: 1
-          };
-
-      // transfer the new category positions to the cat args attributes
-      _.each(['row', 'col'], function(inst_axis){
-
-        for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
-          // update the attribute
-          params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
-              buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
-              divisor: 1
-          };
-        }
-
-        // transfer new order to old order
-        params.inst_order[inst_axis] = params.new_order[inst_axis]
-
-      });
-
-      // transfer new order to text triangles
-      _.each(['row', 'col'], function(inst_axis){
-        params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
-
-        // needed to update text positions after animation
-        calc_text_offsets(params, inst_axis);
-      });
-
-      // update ordered_labels
-      get_ordered_labels(params);
+      end_animation(regl, params);
 
     }
 
@@ -23249,6 +23268,8 @@ module.exports = function start_animation(params){
   params.animation.run_switch = false;
   params.animation.last_switch_time = params.time
   params.animation.running = true;
+
+  console.log('start_animation')
 
 };
 

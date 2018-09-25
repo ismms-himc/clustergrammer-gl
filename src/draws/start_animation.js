@@ -4,4 +4,6 @@ module.exports = function start_animation(params){
   params.animation.last_switch_time = params.time
   params.animation.running = true;
 
+  console.log('start_animation')
+
 };

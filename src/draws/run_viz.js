@@ -24,7 +24,6 @@ module.exports = function run_viz(regl, network){
     }
 
     params.time = time;
-    params.animation.loop = 0 ;
 
     if (params.reset_cameras){
       reset_cameras(regl, params);

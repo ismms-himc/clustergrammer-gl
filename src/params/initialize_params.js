@@ -40,7 +40,6 @@ module.exports = function initialize_params(regl, network){
   // animation params
   params.animation = {};
   params.animation.time_remain = 0;
-  params.animation.loop = params.time % 5
 
   params.animation.running = false;
   params.animation.run_switch = false;

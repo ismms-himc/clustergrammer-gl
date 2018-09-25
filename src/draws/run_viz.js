@@ -38,15 +38,10 @@ module.exports = function run_viz(regl, network){
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
-
-    // if (params.draw_labels){
-    //   console.log('updating_labels')
-    //   draw_interacting(regl, params);
-    // }
-
-    // mouseover may result in draw command
     else if (params.still_mouseover == true){
+      // mouseover may result in draw command
       draw_mouseover(regl, params);
+      draw_background_calculations(regl, params);
     } else if (params.draw_labels || params.show_tooltip){
       draw_labels_or_tooltips(regl, params);
     } else {

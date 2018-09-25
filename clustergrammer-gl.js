@@ -22823,8 +22823,8 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// var draw_commands = require('./draw_commands');
 var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
+var drop_label_from_queue = __webpack_require__(/*! ./../matrix_labels/drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
 
 module.exports = function draw_background_calculations(regl, params){
 
@@ -22838,38 +22838,23 @@ module.exports = function draw_background_calculations(regl, params){
   // var updated_labels = false;
   _.each(['row', 'col'], function(inst_axis){
 
-    // high priority queue
-    if (params.label_queue.high[inst_axis].length > 0){
+    // low priority queue
+    if (params.labels.queue.low[inst_axis].length > 0){
 
-      var inst_name = params.label_queue.high[inst_axis][0];
+      var inst_name = params.labels.queue.low[inst_axis][0];
+
       // add to text_triangles pre-calc
       var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
       params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-      var inst_offset = params.labels.offset_dict[inst_axis][inst_name];
+      drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
 
-      inst_text_vect.inst_offset = [0, inst_offset.inst];
-      inst_text_vect.new_offset = [0, inst_offset.new];
-      params.text_triangles.draw[inst_axis].push(inst_text_vect);
+      // console.log(params.labels.queue.low[inst_axis].length)
+      // params.draw_labels = true;
 
-      params.draw_labels = true;
-
-    } else {
-      // console.log('finished high queue')
     }
 
   });
-
-  /*
-    Need to draw if high priority queue is updated, not if low priority queue is
-    updated
-  */
-
-  // // run draw in the same loop, do not wait until next animation loop
-  // if (updated_labels){
-  //   // console.log('draw updated labels')
-  //   draw_commands(regl, params);
-  // }
 
 };
 
@@ -23308,15 +23293,10 @@ module.exports = function run_viz(regl, network){
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
-
-    // if (params.draw_labels){
-    //   console.log('updating_labels')
-    //   draw_interacting(regl, params);
-    // }
-
-    // mouseover may result in draw command
     else if (params.still_mouseover == true){
+      // mouseover may result in draw command
       draw_mouseover(regl, params);
+      draw_background_calculations(regl, params);
     } else if (params.draw_labels || params.show_tooltip){
       draw_labels_or_tooltips(regl, params);
     } else {
@@ -24653,8 +24633,6 @@ module.exports = function gather_text_triangles(params, inst_axis){
       var inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
 
-        // console.log('found', inst_name);
-
         // add to text_triangles.draw if pre-calculated
         inst_text_vect = params.text_triangles[inst_axis][inst_name];
         inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
@@ -24663,9 +24641,7 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       } else {
 
-        // // add to high priority queue if not found
-        // params.label_queue.high[inst_axis].push(inst_name);
-
+        // calculate text vector
         inst_text_vect = vectorize_label(params, inst_axis, inst_name);
 
         params.text_triangles[inst_axis][inst_name] = inst_text_vect;
@@ -24896,16 +24872,16 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
 module.exports = function make_inst_queue(params){
 
-  params.label_queue = {}
-  params.label_queue.low = {}
-  params.label_queue.high = {}
+  params.labels.queue = {}
+  params.labels.queue.low = {}
+  params.labels.queue.high = {}
 
   var inst_queue;
 
   _.each(['row', 'col'], function(inst_axis){
 
     // the high priority queue is empty initially
-    params.label_queue.high[inst_axis] = [];
+    params.labels.queue.high[inst_axis] = [];
 
     // the low priority queue
     inst_queue = [];
@@ -24922,7 +24898,7 @@ module.exports = function make_inst_queue(params){
 
     });
 
-    params.label_queue.low[inst_axis] = inst_queue;
+    params.labels.queue.low[inst_axis] = inst_queue;
 
   });
 
@@ -25391,12 +25367,7 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
     vect_text_attrs.textBaseline = 'middle';
   }
 
-  // console.log(params.label_queue.high[inst_axis], inst_name)
-  if (params.label_queue.high[inst_axis].indexOf(inst_name) > -1){
-    // console.log('drop from high priority queue', params.label_queue.high[inst_axis].length)
-    drop_label_from_queue(params.label_queue.high[inst_axis], inst_axis, inst_name);
-  }
-  drop_label_from_queue(params.label_queue.low[inst_axis], inst_axis, inst_name);
+  drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
 
   return vectorize_text(inst_name, vect_text_attrs);
 

@@ -12,7 +12,6 @@ var make_spillover_args = require('./../spillover/make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./../matrix_cells/calc_row_downsampled_mat');
 var make_cat_args = require('./../cats/make_cat_args');
-var generate_cat_data = require('./../cats/generate_cat_data');
 var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
 var make_cat_position_array = require('./../cats/make_cat_position_array');
@@ -20,6 +19,7 @@ var calc_alpha_order = require('./calc_alpha_order');
 var make_label_queue = require('./../matrix_labels/make_label_queue');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 var animation_params = require('./animation_params');
+var generate_cat_params = require('./generate_cat_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -59,9 +59,7 @@ module.exports = function initialize_params(regl, network){
   params.still_mouseover = false;
   params.mat_data = params.network.mat;
 
-  params.cat_data = {};
-  params.cat_data.row = generate_cat_data(params, 'row');
-  params.cat_data.col = generate_cat_data(params, 'col');
+  generate_cat_params(params);
 
   /*
   Working on resizing the matrix, need to have separte x and y sizes
@@ -72,17 +70,10 @@ module.exports = function initialize_params(regl, network){
   params.viz_dim.mat_size.x = 0.80;
   params.viz_dim.mat_size.y = 0.80;
 
-  params.cat_data.cat_num = {};
-  params.cat_data.cat_num.row = params.cat_data.row.length;
-  params.cat_data.cat_num.col = params.cat_data.col.length;
-
-  params.cat_room = {};
-  params.cat_room.x = 0.015;
-  params.cat_room.y = 0.015;
 
   params.heat_size = {};
-  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_room.x * params.cat_data.cat_num.row;
-  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_room.y * params.cat_data.cat_num.col;
+  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
 
   calc_viz_dim(regl, params);
 

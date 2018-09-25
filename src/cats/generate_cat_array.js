@@ -1,4 +1,4 @@
-module.exports = function generate_cat_data(params, inst_axis){
+module.exports = function generate_cat_array(params, inst_axis){
 
   var title_sep = ': ';
   current_cats = {};

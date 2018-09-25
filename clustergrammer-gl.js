@@ -21742,14 +21742,14 @@ module.exports = function reset_cameras(regl, params){
 
 /***/ }),
 
-/***/ "./src/cats/generate_cat_data.js":
-/*!***************************************!*\
-  !*** ./src/cats/generate_cat_data.js ***!
-  \***************************************/
+/***/ "./src/cats/generate_cat_array.js":
+/*!****************************************!*\
+  !*** ./src/cats/generate_cat_array.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function generate_cat_data(params, inst_axis){
+module.exports = function generate_cat_array(params, inst_axis){
 
   var title_sep = ': ';
   current_cats = {};
@@ -25615,6 +25615,33 @@ module.exports = function calc_viz_dim(regl, params){
 
 /***/ }),
 
+/***/ "./src/params/generate_cat_params.js":
+/*!*******************************************!*\
+  !*** ./src/params/generate_cat_params.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var generate_cat_array = __webpack_require__(/*! ./../cats/generate_cat_array */ "./src/cats/generate_cat_array.js");
+
+module.exports = function generate_cat_params(params){
+
+  params.cat_data = {};
+  params.cat_data.row = generate_cat_array(params, 'row');
+  params.cat_data.col = generate_cat_array(params, 'col');
+
+  params.cat_data.cat_num = {};
+  params.cat_data.cat_num.row = params.cat_data.row.length;
+  params.cat_data.cat_num.col = params.cat_data.col.length;
+
+  params.cat_data.cat_room = {};
+  params.cat_data.cat_room.x = 0.015;
+  params.cat_data.cat_room.y = 0.015;
+
+};
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25636,7 +25663,6 @@ var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
 var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
-var generate_cat_data = __webpack_require__(/*! ./../cats/generate_cat_data */ "./src/cats/generate_cat_data.js");
 var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
@@ -25644,6 +25670,7 @@ var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/para
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 var animation_params = __webpack_require__(/*! ./animation_params */ "./src/params/animation_params.js");
+var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25683,9 +25710,7 @@ module.exports = function initialize_params(regl, network){
   params.still_mouseover = false;
   params.mat_data = params.network.mat;
 
-  params.cat_data = {};
-  params.cat_data.row = generate_cat_data(params, 'row');
-  params.cat_data.col = generate_cat_data(params, 'col');
+  generate_cat_params(params);
 
   /*
   Working on resizing the matrix, need to have separte x and y sizes
@@ -25696,17 +25721,10 @@ module.exports = function initialize_params(regl, network){
   params.viz_dim.mat_size.x = 0.80;
   params.viz_dim.mat_size.y = 0.80;
 
-  params.cat_data.cat_num = {};
-  params.cat_data.cat_num.row = params.cat_data.row.length;
-  params.cat_data.cat_num.col = params.cat_data.col.length;
-
-  params.cat_room = {};
-  params.cat_room.x = 0.015;
-  params.cat_room.y = 0.015;
 
   params.heat_size = {};
-  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_room.x * params.cat_data.cat_num.row;
-  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_room.y * params.cat_data.cat_num.col;
+  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
 
   calc_viz_dim(regl, params);
 

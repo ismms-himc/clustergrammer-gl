@@ -22802,7 +22802,7 @@ var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_compone
 
 module.exports = function draw_commands(regl, params){
 
-  // if (params.slow_draw){
+  // if (params.draw_labels){
   //   console.log('\n***************');
   //   console.log('** slow draw **');
   //   console.log('***************');
@@ -22812,8 +22812,8 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.slow_draw);
-  draw_axis_components(regl, params, 'col', params.slow_draw);
+  draw_axis_components(regl, params, 'row', params.draw_labels);
+  draw_axis_components(regl, params, 'col', params.draw_labels);
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip && params.in_bounds_tooltip){
@@ -22821,9 +22821,9 @@ module.exports = function draw_commands(regl, params){
     draw_tooltip_components(regl, params);
   }
 
-  if (params.slow_draw){
+  if (params.draw_labels){
     // console.log('----- turn off slow draw -----')
-    params.slow_draw = false;
+    params.draw_labels = false;
   }
 
   if (params.show_tooltip){
@@ -23066,7 +23066,7 @@ module.exports = function run_viz(regl, network){
       params.zoom_data = ini_zoom_data();
       make_cameras(regl, params);
 
-      params.slow_draw = false;
+      params.draw_labels = false;
       params.first_frame = true;
       params.initialize_viz = true;
       // params.show_tooltip = false;
@@ -23170,7 +23170,7 @@ module.exports = function run_viz(regl, network){
       // wait_time_final_mouseover = 0;
       setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 
-    } else if (params.slow_draw || params.show_tooltip){
+    } else if (params.draw_labels || params.show_tooltip){
 
       // turn back on slow draw
       ///////////////////////////////
@@ -23240,7 +23240,7 @@ module.exports = function final_interaction_frame(regl, params){
     if (params.first_frame == false){
 
       // run draw commands
-      params.slow_draw = true;
+      params.draw_labels = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
         // console.log('SLOW_DRAW')
@@ -25655,7 +25655,7 @@ module.exports = function initialize_params(regl, network){
   params.shift_camera.x = -offcenter_magnitude_x;
   params.shift_camera.y = offcenter_magnitude_y;
 
-  params.slow_draw = false;
+  params.draw_labels = false;
 
   params.zoom_data = ini_zoom_data();
 

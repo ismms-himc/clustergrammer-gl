@@ -115,7 +115,7 @@ module.exports = function initialize_params(regl, network){
   params.shift_camera.x = -offcenter_magnitude_x;
   params.shift_camera.y = offcenter_magnitude_y;
 
-  params.slow_draw = false;
+  params.draw_labels = false;
 
   params.zoom_data = ini_zoom_data();
 

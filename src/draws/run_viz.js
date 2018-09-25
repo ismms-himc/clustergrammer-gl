@@ -40,7 +40,7 @@ module.exports = function run_viz(regl, network){
       params.zoom_data = ini_zoom_data();
       make_cameras(regl, params);
 
-      params.slow_draw = false;
+      params.draw_labels = false;
       params.first_frame = true;
       params.initialize_viz = true;
       // params.show_tooltip = false;
@@ -144,7 +144,7 @@ module.exports = function run_viz(regl, network){
       // wait_time_final_mouseover = 0;
       setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 
-    } else if (params.slow_draw || params.show_tooltip){
+    } else if (params.draw_labels || params.show_tooltip){
 
       // turn back on slow draw
       ///////////////////////////////

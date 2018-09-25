@@ -38,6 +38,7 @@ module.exports = function initialize_params(regl, network){
   params.time = 0;
   params.viz_interact = true;
 
+
   animation_params(params);
 
   params.initialize_viz = true;
@@ -80,6 +81,8 @@ module.exports = function initialize_params(regl, network){
   params.heat_size = {};
   params.heat_size.x = params.mat_size.x - params.cat_room.x * params.cat_num.row;
   params.heat_size.y = params.mat_size.y - params.cat_room.y * params.cat_num.col;
+
+  calc_viz_dim(regl, params);
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
@@ -204,25 +207,22 @@ module.exports = function initialize_params(regl, network){
   // make tooltip args
   params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
 
-  params.viz_dim = calc_viz_dim(regl, params);
+
 
   var pix_to_webgl = {};
-
-  var mat_width = params.viz_dim.heat.width;
-  var mat_height = params.viz_dim.heat.height;
 
   params.tile_pix_width = params.viz_dim.heat.width/params.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.num_row;
 
   pix_to_webgl.x = d3.scale.linear();
   pix_to_webgl.x
-    .domain([0, mat_width])
+    .domain([0, params.viz_dim.heat.width])
     .range([-0.5, 0.5])
     .clamp(true);
 
   pix_to_webgl.y = d3.scale.linear();
   pix_to_webgl.y
-    .domain([0, mat_height])
+    .domain([0, params.viz_dim.heat.height])
     .range([0.5, -0.5])
     .clamp(true);
 

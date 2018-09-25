@@ -23210,7 +23210,7 @@ const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases
 
 module.exports = function interp_fun(params){
   var inst_ease = ease((params.time - params.animation.last_switch_time) /
-              params.animation.switch_duration);
+              params.animation.ani_duration);
 
   // console.log(inst_ease)
   return inst_ease;
@@ -23294,11 +23294,9 @@ module.exports = function run_viz(regl, network){
       reset_cameras(regl, params);
     }
 
-    var duration_end_time = params.animation.last_switch_time + params.animation.switch_duration;
-
     if (params.animation.run_switch){
       start_animation(params);
-    } else if (params.time > duration_end_time && params.animation.running === true){
+    } else if (params.time > params.animation.duration_end && params.animation.running === true){
       end_animation(regl, params);
     }
 
@@ -23339,6 +23337,7 @@ module.exports = function start_animation(params){
   params.animation.running = true;
 
 
+  params.animation.duration_end = params.animation.last_switch_time + params.animation.ani_duration;
 };
 
 /***/ }),
@@ -25710,7 +25709,8 @@ module.exports = function initialize_params(regl, network){
   params.animation.run_switch = false;
 
   params.animation.last_switch_time = 0;
-  params.animation.switch_duration = 3;
+  params.animation.ani_duration = 3;
+  params.animation.duration_end = 0;
 
   params.initialize_viz = true;
   params.first_frame = true;

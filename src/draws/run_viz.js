@@ -29,11 +29,9 @@ module.exports = function run_viz(regl, network){
       reset_cameras(regl, params);
     }
 
-    var duration_end_time = params.animation.last_switch_time + params.animation.switch_duration;
-
     if (params.animation.run_switch){
       start_animation(params);
-    } else if (params.time > duration_end_time && params.animation.running === true){
+    } else if (params.time > params.animation.duration_end && params.animation.running === true){
       end_animation(regl, params);
     }
 

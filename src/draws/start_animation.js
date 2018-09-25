@@ -6,4 +6,5 @@ module.exports = function start_animation(params){
   params.animation.running = true;
 
 
+  params.animation.duration_end = params.animation.last_switch_time + params.animation.ani_duration;
 };

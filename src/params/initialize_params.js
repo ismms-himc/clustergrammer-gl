@@ -45,7 +45,8 @@ module.exports = function initialize_params(regl, network){
   params.animation.run_switch = false;
 
   params.animation.last_switch_time = 0;
-  params.animation.switch_duration = 3;
+  params.animation.ani_duration = 3;
+  params.animation.duration_end = 0;
 
   params.initialize_viz = true;
   params.first_frame = true;

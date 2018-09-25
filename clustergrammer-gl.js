@@ -22816,6 +22816,52 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
 /***/ }),
 
+/***/ "./src/draws/draw_background_calculations.js":
+/*!***************************************************!*\
+  !*** ./src/draws/draw_background_calculations.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
+var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
+
+module.exports = function draw_background_calculations(regl, params){
+
+  /*
+
+    Set up something to run background calculations if
+    necessary when the visualization is not being updated. For instance,
+    we could calculate the text triangles of all rows a little at a time
+    in the background.
+
+  */
+
+  var updated_labels = false;
+  _.each(['row', 'col'], function(inst_axis){
+    if (params.label_high_queue[inst_axis].length > 0){
+      var inst_name = params.label_high_queue[inst_axis][0];
+      params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
+
+      /*
+        updated the text_triangles axis, but need to update the draw
+      */
+
+      // console.log(inst_name, params.label_high_queue[inst_axis].length)
+      updated_labels = true;
+    }
+  });
+
+  // run draw in the same loop, do not wait until next animation loop
+  if (updated_labels){
+    // console.log('draw updated labels')
+    draw_commands(regl, params);
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/draws/draw_commands.js":
 /*!************************************!*\
   !*** ./src/draws/draw_commands.js ***!
@@ -23210,15 +23256,14 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
-var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
 var draw_interacting = __webpack_require__(/*! ./draw_interacting */ "./src/draws/draw_interacting.js");
 var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/draw_mouseover.js");
 var draw_labels_or_tooltips = __webpack_require__(/*! ./draw_labels_or_tooltips */ "./src/draws/draw_labels_or_tooltips.js");
+var draw_background_calculations = __webpack_require__(/*! ./draw_background_calculations */ "./src/draws/draw_background_calculations.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23229,8 +23274,6 @@ module.exports = function run_viz(regl, network){
 
 
   regl.frame(function ({time}) {
-
-    // console.log(params.zoom_data.x.total_int)
 
     // prevent this from being negative, can happen when resetting zooo
     if (params.zoom_data.x.total_int < 0){
@@ -23247,63 +23290,23 @@ module.exports = function run_viz(regl, network){
     var duration_end_time = params.animation.last_switch_time + params.animation.switch_duration;
 
     if (params.animation.run_switch){
-
       start_animation(params);
-
     } else if (params.time > duration_end_time && params.animation.running === true){
-
       end_animation(regl, params);
-
     }
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
-
       draw_interacting(regl, params);
-
     }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
-
       draw_mouseover(regl, params);
-
     } else if (params.draw_labels || params.show_tooltip){
-
       draw_labels_or_tooltips(regl, params);
-
     } else {
-
-      /*
-
-        Set up something to run background calculations if
-        necessary when the visualization is not being updated. For instance,
-        we could calculate the text triangles of all rows a little at a time
-        in the background.
-
-      */
-
-      var updated_labels = false;
-      _.each(['row', 'col'], function(inst_axis){
-        if (params.label_high_queue[inst_axis].length > 0){
-          var inst_name = params.label_high_queue[inst_axis][0];
-          params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
-
-          /*
-            updated the text_triangles axis, but need to update the draw
-          */
-
-          // console.log(inst_name, params.label_high_queue[inst_axis].length)
-          updated_labels = true;
-        }
-      });
-
-      // run draw in the same loop, do not wait until next animation loop
-      if (updated_labels){
-        // console.log('draw updated labels')
-        draw_commands(regl, params);
-      }
-
+      draw_background_calculations(regl, params);
     }
 
   });

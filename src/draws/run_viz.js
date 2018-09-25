@@ -1,13 +1,12 @@
 var initialize_params = require('./../params/initialize_params');
-var draw_commands = require('./draw_commands');
 _ = require('underscore');
-var vectorize_label = require('./../matrix_labels/vectorize_label');
 var reset_cameras = require('./../cameras/reset_cameras');
 var start_animation = require('./start_animation');
 var end_animation = require('./end_animation');
 var draw_interacting = require('./draw_interacting');
 var draw_mouseover = require('./draw_mouseover');
 var draw_labels_or_tooltips = require('./draw_labels_or_tooltips');
+var draw_background_calculations = require('./draw_background_calculations');
 
 module.exports = function run_viz(regl, network){
 
@@ -18,8 +17,6 @@ module.exports = function run_viz(regl, network){
 
 
   regl.frame(function ({time}) {
-
-    // console.log(params.zoom_data.x.total_int)
 
     // prevent this from being negative, can happen when resetting zooo
     if (params.zoom_data.x.total_int < 0){
@@ -36,63 +33,23 @@ module.exports = function run_viz(regl, network){
     var duration_end_time = params.animation.last_switch_time + params.animation.switch_duration;
 
     if (params.animation.run_switch){
-
       start_animation(params);
-
     } else if (params.time > duration_end_time && params.animation.running === true){
-
       end_animation(regl, params);
-
     }
 
     // run draw command
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
-
       draw_interacting(regl, params);
-
     }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
-
       draw_mouseover(regl, params);
-
     } else if (params.draw_labels || params.show_tooltip){
-
       draw_labels_or_tooltips(regl, params);
-
     } else {
-
-      /*
-
-        Set up something to run background calculations if
-        necessary when the visualization is not being updated. For instance,
-        we could calculate the text triangles of all rows a little at a time
-        in the background.
-
-      */
-
-      var updated_labels = false;
-      _.each(['row', 'col'], function(inst_axis){
-        if (params.label_high_queue[inst_axis].length > 0){
-          var inst_name = params.label_high_queue[inst_axis][0];
-          params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
-
-          /*
-            updated the text_triangles axis, but need to update the draw
-          */
-
-          // console.log(inst_name, params.label_high_queue[inst_axis].length)
-          updated_labels = true;
-        }
-      });
-
-      // run draw in the same loop, do not wait until next animation loop
-      if (updated_labels){
-        // console.log('draw updated labels')
-        draw_commands(regl, params);
-      }
-
+      draw_background_calculations(regl, params);
     }
 
   });

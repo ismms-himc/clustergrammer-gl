@@ -22737,7 +22737,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
 var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
+var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
@@ -22791,7 +22791,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
           // console.log('\t\tcalc text triangles', calc_text_tri)
 
-          params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+          params.text_triangles.draw[inst_axis] = gather_text_triangles(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
@@ -24576,18 +24576,36 @@ module.exports = function calc_text_offsets(params, inst_axis){
 
 /***/ }),
 
-/***/ "./src/matrix_labels/calc_text_triangles.js":
-/*!**************************************************!*\
-  !*** ./src/matrix_labels/calc_text_triangles.js ***!
-  \**************************************************/
+/***/ "./src/matrix_labels/drop_label_from_queue.js":
+/*!****************************************************!*\
+  !*** ./src/matrix_labels/drop_label_from_queue.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function drop_label_from_queue(inst_queue, inst_axis, inst_name){
+
+  var index = inst_queue.indexOf(inst_name);
+  if (index > -1) {
+    inst_queue.splice(index, 1);
+  }
+
+};
+
+/***/ }),
+
+/***/ "./src/matrix_labels/gather_text_triangles.js":
+/*!****************************************************!*\
+  !*** ./src/matrix_labels/gather_text_triangles.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix_labels/vectorize_label.js")
 
-module.exports = function calc_text_triangles(params, inst_axis){
+module.exports = function gather_text_triangles(params, inst_axis){
 
-  // console.log('calc_text_triangles')
+  // console.log('gather_text_triangles')
 
   /*
 
@@ -24618,7 +24636,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
   /////////////////////////////////////////
 
   // generating array with text triangles and y-offsets
-  var text_triangles = [];
+  var draw_text = [];
   var viz_area = params.viz_area;
 
   // only calculating the text-triangles for labels that are within the visible
@@ -24662,7 +24680,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
         tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
         tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        text_triangles.push(tmp_text_vect);
+        draw_text.push(tmp_text_vect);
 
       } else {
 
@@ -24677,7 +24695,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
         tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
         tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        text_triangles.push(tmp_text_vect);
+        draw_text.push(tmp_text_vect);
 
       }
 
@@ -24686,25 +24704,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   });
 
-  return text_triangles;
-
-};
-
-/***/ }),
-
-/***/ "./src/matrix_labels/drop_label_from_queue.js":
-/*!****************************************************!*\
-  !*** ./src/matrix_labels/drop_label_from_queue.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function drop_label_from_queue(inst_queue, inst_axis, inst_name){
-
-  var index = inst_queue.indexOf(inst_name);
-  if (index > -1) {
-    inst_queue.splice(index, 1);
-  }
+  return draw_text;
 
 };
 
@@ -25654,7 +25654,7 @@ module.exports = function calc_viz_dim(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js");
-var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
+var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
@@ -25935,7 +25935,7 @@ module.exports = function initialize_params(regl, network){
     if (params['num_' + inst_axis] > params.max_num_text){
       params.text_triangles.draw[inst_axis] = false;
     } else {
-      params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+      params.text_triangles.draw[inst_axis] = gather_text_triangles(params, inst_axis);
     }
   });
 

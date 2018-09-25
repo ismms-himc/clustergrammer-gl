@@ -1,8 +1,8 @@
 var vectorize_label = require('./vectorize_label')
 
-module.exports = function calc_text_triangles(params, inst_axis){
+module.exports = function gather_text_triangles(params, inst_axis){
 
-  // console.log('calc_text_triangles')
+  // console.log('gather_text_triangles')
 
   /*
 
@@ -33,7 +33,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
   /////////////////////////////////////////
 
   // generating array with text triangles and y-offsets
-  var text_triangles = [];
+  var draw_text = [];
   var viz_area = params.viz_area;
 
   // only calculating the text-triangles for labels that are within the visible
@@ -77,7 +77,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
         tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
         tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        text_triangles.push(tmp_text_vect);
+        draw_text.push(tmp_text_vect);
 
       } else {
 
@@ -92,7 +92,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
         tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
         tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        text_triangles.push(tmp_text_vect);
+        draw_text.push(tmp_text_vect);
 
       }
 
@@ -101,6 +101,6 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
   });
 
-  return text_triangles;
+  return draw_text;
 
 };

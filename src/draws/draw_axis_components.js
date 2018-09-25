@@ -1,7 +1,7 @@
 var make_col_text_args = require('./../matrix_labels/make_col_text_args');
 var make_row_text_args = require('./../matrix_labels/make_row_text_args');
 var calc_viz_area = require('./../params/calc_viz_area');
-var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
+var gather_text_triangles = require('./../matrix_labels/gather_text_triangles');
 var make_viz_aid_tri_args = require('./../matrix_labels/make_viz_aid_tri_args');
 var interp_fun = require('./interp_fun');
 
@@ -55,7 +55,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
           // console.log('\t\tcalc text triangles', calc_text_tri)
 
-          params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+          params.text_triangles.draw[inst_axis] = gather_text_triangles(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 

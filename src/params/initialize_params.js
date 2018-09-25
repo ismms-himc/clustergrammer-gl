@@ -1,5 +1,5 @@
 var calc_row_and_col_canvas_positions = require('./calc_row_and_col_canvas_positions');
-var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
+var gather_text_triangles = require('./../matrix_labels/gather_text_triangles');
 var calc_viz_dim = require('./calc_viz_dim');
 var ini_zoom_data = require('./../zoom/ini_zoom_data');
 var ini_zoom_restrict = require('./../zoom/ini_zoom_restrict');
@@ -280,7 +280,7 @@ module.exports = function initialize_params(regl, network){
     if (params['num_' + inst_axis] > params.max_num_text){
       params.text_triangles.draw[inst_axis] = false;
     } else {
-      params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+      params.text_triangles.draw[inst_axis] = gather_text_triangles(params, inst_axis);
     }
   });
 

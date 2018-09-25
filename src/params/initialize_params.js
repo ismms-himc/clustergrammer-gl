@@ -275,7 +275,7 @@ module.exports = function initialize_params(regl, network){
 
   calc_viz_area(params);
 
-  params.max_num_text = 75;
+  params.max_num_text = 200;
 
   params.text_triangles.draw = {};
 

@@ -169,6 +169,9 @@ module.exports = function initialize_params(regl, network){
     }
   });
 
+  params.labels = {};
+  params.labels.offset_dict = {};
+
   calc_text_offsets(params, 'row');
   calc_text_offsets(params, 'col');
 

@@ -22845,12 +22845,15 @@ module.exports = function draw_background_calculations(regl, params){
 
       if (inst_name in params.text_triangles[inst_axis] === false){
 
-        params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
+        console.log('vectorize', inst_name)
 
-        // updated_labels = true;
+        // add to text_triangles pre-calc
+        var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-        // need to update the draw triangles, make a special gather function
-        // that updates a single label
+        // var inst_offset = params.
+
+        // add to draw text_triangles
 
 
       } else {
@@ -24536,46 +24539,57 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 module.exports = function calc_text_offsets(params, inst_axis){
 
-    _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
+  params.labels.offset_dict[inst_axis] = {};
 
-      var offsets = {};
-      var order_id;
-      var order_state;
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
 
-      var inst_dim;
-      if (inst_axis === 'col'){
-        inst_dim = 'x';
+    var offsets = {};
+    var order_id;
+    var order_state;
+
+    var inst_dim;
+    if (inst_axis === 'col'){
+      inst_dim = 'x';
+    } else {
+      inst_dim = 'y';
+    }
+
+    var axis_arr = params.canvas_pos[inst_dim + '_arr'];
+    var inst_order = params.inst_order[inst_axis];
+    var new_order = params.new_order[inst_axis];
+    var num_labels = params['num_' + inst_axis];
+
+    // calculate inst and new offsets
+    _.each(['inst', 'new'], function(inst_state){
+
+      if (inst_state === 'inst'){
+        order_state = inst_order
       } else {
-        inst_dim = 'y';
+         order_state = new_order
       }
 
-      var axis_arr = params.canvas_pos[inst_dim + '_arr'];
-      var inst_order = params.inst_order[inst_axis];
-      var new_order = params.new_order[inst_axis];
-      var num_labels = params['num_' + inst_axis];
-
-      // calculate inst and new offsets
-      _.each(['inst', 'new'], function(inst_state){
-
-        if (inst_state === 'inst'){
-          order_state = inst_order
-        } else {
-           order_state = new_order
-        }
-
-        if (inst_axis === 'col'){
-          order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
-          offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
-        } else {
-          order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
-          offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
-        }
-
-      });
-
-      inst_label.offsets = offsets;
+      if (inst_axis === 'col'){
+        order_id = params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ (num_labels - 1) - order_id ] + 0.5/num_labels;
+      } else {
+        order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
+        offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
+      }
 
     });
+
+    inst_label.offsets = offsets;
+
+    // will use for lookup of text offsets outside of using network_data
+
+    var inst_name = inst_label.name;
+    if (inst_name.indexOf(': ') >= 0){
+      inst_name = inst_label.name.split(': ')[1];
+    }
+
+    params.labels.offset_dict[inst_axis][inst_name] = offsets;
+
+  });
 
 };
 
@@ -24618,7 +24632,7 @@ module.exports = function gather_text_triangles(params, inst_axis){
   }
 
   // generating array with text triangles and y-offsets
-  var draw_text = [];
+  params.text_triangles.draw[inst_axis] = [];
   var viz_area = params.viz_area;
 
   var min_viz = viz_area[inst_dim + '_min'];
@@ -24634,33 +24648,34 @@ module.exports = function gather_text_triangles(params, inst_axis){
         inst_name = inst_label.name.split(': ')[1];
       }
 
-      // add to high priority queue
-      params.label_queue.high[inst_axis].push(inst_name);
-
-      var tmp_text_vect;
+      var inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
-        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
 
-        tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        draw_text.push(tmp_text_vect);
+        console.log('found', inst_name)
+        // add to text_triangles.draw if pre-calculated
+        inst_text_vect = params.text_triangles[inst_axis][inst_name];
+        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
       } else {
 
-        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
-        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+        // add to high priority queue if not found
+        params.label_queue.high[inst_axis].push(inst_name);
 
-        tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        draw_text.push(tmp_text_vect);
+
+        // inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+
+        // params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+        // inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        // inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        // params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
       }
 
     }
 
   });
-
-  params.text_triangles.draw[inst_axis] =  draw_text;
 
 };
 
@@ -25779,6 +25794,9 @@ module.exports = function initialize_params(regl, network){
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
+
+  params.labels = {};
+  params.labels.offset_dict = {};
 
   calc_text_offsets(params, 'row');
   calc_text_offsets(params, 'col');

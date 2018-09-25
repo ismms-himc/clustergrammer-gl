@@ -20,12 +20,15 @@ module.exports = function draw_background_calculations(regl, params){
 
       if (inst_name in params.text_triangles[inst_axis] === false){
 
-        params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
+        console.log('vectorize', inst_name)
 
-        // updated_labels = true;
+        // add to text_triangles pre-calc
+        var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-        // need to update the draw triangles, make a special gather function
-        // that updates a single label
+        // var inst_offset = params.
+
+        // add to draw text_triangles
 
 
       } else {

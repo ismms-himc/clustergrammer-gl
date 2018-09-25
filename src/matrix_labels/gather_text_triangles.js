@@ -10,7 +10,7 @@ module.exports = function gather_text_triangles(params, inst_axis){
   }
 
   // generating array with text triangles and y-offsets
-  var draw_text = [];
+  params.text_triangles.draw[inst_axis] = [];
   var viz_area = params.viz_area;
 
   var min_viz = viz_area[inst_dim + '_min'];
@@ -26,32 +26,33 @@ module.exports = function gather_text_triangles(params, inst_axis){
         inst_name = inst_label.name.split(': ')[1];
       }
 
-      // add to high priority queue
-      params.label_queue.high[inst_axis].push(inst_name);
-
-      var tmp_text_vect;
+      var inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
-        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
 
-        tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        draw_text.push(tmp_text_vect);
+        console.log('found', inst_name)
+        // add to text_triangles.draw if pre-calculated
+        inst_text_vect = params.text_triangles[inst_axis][inst_name];
+        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
       } else {
 
-        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
-        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+        // add to high priority queue if not found
+        params.label_queue.high[inst_axis].push(inst_name);
 
-        tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        draw_text.push(tmp_text_vect);
+
+        // inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+
+        // params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+        // inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        // inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        // params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
       }
 
     }
 
   });
-
-  params.text_triangles.draw[inst_axis] =  draw_text;
 
 };

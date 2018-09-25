@@ -39,6 +39,11 @@ module.exports = function run_viz(regl, network){
       draw_interacting(regl, params);
     }
 
+    // if (params.draw_labels){
+    //   console.log('updating_labels')
+    //   draw_interacting(regl, params);
+    // }
+
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
       draw_mouseover(regl, params);

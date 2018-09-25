@@ -22842,23 +22842,20 @@ module.exports = function draw_background_calculations(regl, params){
     if (params.label_queue.high[inst_axis].length > 0){
 
       var inst_name = params.label_queue.high[inst_axis][0];
+      // add to text_triangles pre-calc
+      var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+      params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-      if (inst_name in params.text_triangles[inst_axis] === false){
+      var inst_offset = params.labels.offset_dict[inst_axis][inst_name];
 
-        console.log('vectorize', inst_name)
+      inst_text_vect.inst_offset = [0, inst_offset.inst];
+      inst_text_vect.new_offset = [0, inst_offset.new];
+      params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
-        // add to text_triangles pre-calc
-        var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
-        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+      params.draw_labels = true;
 
-        // var inst_offset = params.
-
-        // add to draw text_triangles
-
-
-      } else {
-        // console.log('already found triangle', params.label_queue.high[inst_axis].length)
-      }
+    } else {
+      // console.log('finished high queue')
     }
 
   });
@@ -23311,6 +23308,11 @@ module.exports = function run_viz(regl, network){
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
+
+    // if (params.draw_labels){
+    //   console.log('updating_labels')
+    //   draw_interacting(regl, params);
+    // }
 
     // mouseover may result in draw command
     else if (params.still_mouseover == true){
@@ -24651,7 +24653,8 @@ module.exports = function gather_text_triangles(params, inst_axis){
       var inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
 
-        console.log('found', inst_name)
+        // console.log('found', inst_name);
+
         // add to text_triangles.draw if pre-calculated
         inst_text_vect = params.text_triangles[inst_axis][inst_name];
         inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
@@ -24660,16 +24663,15 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       } else {
 
-        // add to high priority queue if not found
-        params.label_queue.high[inst_axis].push(inst_name);
+        // // add to high priority queue if not found
+        // params.label_queue.high[inst_axis].push(inst_name);
 
+        inst_text_vect = vectorize_label(params, inst_axis, inst_name);
 
-        // inst_text_vect = vectorize_label(params, inst_axis, inst_name);
-
-        // params.text_triangles[inst_axis][inst_name] = inst_text_vect;
-        // inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        // inst_text_vect.new_offset = [0, inst_label.offsets.new];
-        // params.text_triangles.draw[inst_axis].push(inst_text_vect);
+        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
       }
 

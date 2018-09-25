@@ -14,8 +14,8 @@ module.exports = function run_viz(regl, network){
   var params = initialize_params(regl, network);
 
   params.first_frame = true;
-  var wait_time_final_interact = 100;
-  var wait_time_final_mouseover = 100;
+   var wait_time_final_interact = 50;
+  var wait_time_final_mouseover = 50;
 
 
   regl.frame(function ({time}) {
@@ -34,11 +34,13 @@ module.exports = function run_viz(regl, network){
       reset_cameras(regl, params);
     }
 
+    var duration_end_time = params.animation.last_switch_time + params.animation.switch_duration;
+
     if (params.animation.run_switch){
 
       start_animation(params);
 
-    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
+    } else if (params.time > duration_end_time && params.animation.running === true){
 
       end_animation(regl, params);
 
@@ -48,8 +50,6 @@ module.exports = function run_viz(regl, network){
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
-
-      // console.log('still interacting', params.still_interacting, params.initialize_viz, params.animation.running);
 
       draw_commands(regl, params);
 

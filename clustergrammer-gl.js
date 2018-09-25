@@ -23001,7 +23001,7 @@ var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_
 
 module.exports = function end_animation(regl, params){
 
-  console.log('end_animation')
+  // console.log('end_animation')
 
   ///////////////////////////////////////
   // The animation has finished
@@ -23127,8 +23127,8 @@ module.exports = function run_viz(regl, network){
   var params = initialize_params(regl, network);
 
   params.first_frame = true;
-  var wait_time_final_interact = 100;
-  var wait_time_final_mouseover = 100;
+   var wait_time_final_interact = 50;
+  var wait_time_final_mouseover = 50;
 
 
   regl.frame(function ({time}) {
@@ -23147,11 +23147,13 @@ module.exports = function run_viz(regl, network){
       reset_cameras(regl, params);
     }
 
+    var duration_end_time = params.animation.last_switch_time + params.animation.switch_duration;
+
     if (params.animation.run_switch){
 
       start_animation(params);
 
-    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
+    } else if (params.time > duration_end_time && params.animation.running === true){
 
       end_animation(regl, params);
 
@@ -23161,8 +23163,6 @@ module.exports = function run_viz(regl, network){
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
 
       params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
-
-      // console.log('still interacting', params.still_interacting, params.initialize_viz, params.animation.running);
 
       draw_commands(regl, params);
 
@@ -23265,11 +23265,11 @@ module.exports = function run_viz(regl, network){
 
 module.exports = function start_animation(params){
 
+  // console.log('start_animation')
   params.animation.run_switch = false;
   params.animation.last_switch_time = params.time
   params.animation.running = true;
 
-  console.log('start_animation')
 
 };
 
@@ -23859,6 +23859,8 @@ function interactionEvents (opts) {
 
 module.exports = function keep_track_of_interactions(params){
 
+  var wait_time_final_interact = 100;
+
   // keep track of interactions
   if (params.still_interacting == false){
 
@@ -23867,7 +23869,7 @@ module.exports = function keep_track_of_interactions(params){
     // wait some time to confirm still not interacting
     setTimeout(function(){
       params.still_interacting = false;
-    }, 1000);
+    }, wait_time_final_interact);
 
   }
 

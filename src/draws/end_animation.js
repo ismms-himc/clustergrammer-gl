@@ -4,7 +4,7 @@ var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 
 module.exports = function end_animation(regl, params){
 
-  console.log('end_animation')
+  // console.log('end_animation')
 
   ///////////////////////////////////////
   // The animation has finished

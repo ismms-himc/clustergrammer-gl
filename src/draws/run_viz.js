@@ -5,10 +5,9 @@ var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
 var final_interaction_frame = require('./../interactions/final_interaction_frame');
 var update_text_triangle_order = require('./../matrix_labels/update_text_triangle_order');
 var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
-var ini_zoom_data = require('./../zoom/ini_zoom_data');
-var make_cameras = require('./../cameras/make_cameras');
 var vectorize_label = require('./../matrix_labels/vectorize_label');
 // var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
+var reset_cameras = require('./../cameras/reset_cameras');
 
 module.exports = function run_viz(regl, network){
 
@@ -33,19 +32,7 @@ module.exports = function run_viz(regl, network){
     params.animation.loop = 0 ;
 
     if (params.reset_cameras){
-
-      // console.log('reset_cameras\n-------------------')
-      params.reset_cameras = false;
-
-      params.zoom_data = ini_zoom_data();
-      make_cameras(regl, params);
-
-      params.draw_labels = false;
-      params.first_frame = true;
-      params.initialize_viz = true;
-      // params.show_tooltip = false;
-      params.zoom_data.x.total_int = 0
-
+      reset_cameras(regl, params);
     }
 
     if (params.animation.run_switch){
@@ -146,7 +133,7 @@ module.exports = function run_viz(regl, network){
 
     } else if (params.draw_labels || params.show_tooltip){
 
-      // turn back on slow draw
+      // turn back on draw_labels
       ///////////////////////////////
 
       // console.log('slow_draw or show_tooltip');
@@ -176,7 +163,7 @@ module.exports = function run_viz(regl, network){
         if (params.label_high_queue[inst_axis].length > 0){
           var inst_name = params.label_high_queue[inst_axis][0];
           params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
-          console.log(inst_name, params.label_high_queue[inst_axis].length)
+          // console.log(inst_name, params.label_high_queue[inst_axis].length)
           updated_labels = true;
         }
       });

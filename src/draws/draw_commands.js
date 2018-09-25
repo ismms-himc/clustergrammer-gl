@@ -7,7 +7,7 @@ module.exports = function draw_commands(regl, params){
 
   // if (params.draw_labels){
   //   console.log('\n***************');
-  //   console.log('** slow draw **');
+  //   console.log('** draw_labels **');
   //   console.log('***************');
   // }
 
@@ -25,7 +25,7 @@ module.exports = function draw_commands(regl, params){
   }
 
   if (params.draw_labels){
-    // console.log('----- turn off slow draw -----')
+    // console.log('----- turn off draw_labels -----')
     params.draw_labels = false;
   }
 

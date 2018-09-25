@@ -21714,6 +21714,34 @@ module.exports = function make_cameras(regl, params){
 
 /***/ }),
 
+/***/ "./src/cameras/reset_cameras.js":
+/*!**************************************!*\
+  !*** ./src/cameras/reset_cameras.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
+var make_cameras = __webpack_require__(/*! ./make_cameras */ "./src/cameras/make_cameras.js");
+
+module.exports = function reset_cameras(regl, params){
+
+  // console.log('reset_cameras\n-------------------')
+  params.reset_cameras = false;
+
+  params.zoom_data = ini_zoom_data();
+  make_cameras(regl, params);
+
+  params.draw_labels = false;
+  params.first_frame = true;
+  params.initialize_viz = true;
+  // params.show_tooltip = false;
+  params.zoom_data.x.total_int = 0
+
+};
+
+/***/ }),
+
 /***/ "./src/cats/generate_cat_data.js":
 /*!***************************************!*\
   !*** ./src/cats/generate_cat_data.js ***!
@@ -22804,7 +22832,7 @@ module.exports = function draw_commands(regl, params){
 
   // if (params.draw_labels){
   //   console.log('\n***************');
-  //   console.log('** slow draw **');
+  //   console.log('** draw_labels **');
   //   console.log('***************');
   // }
 
@@ -22822,7 +22850,7 @@ module.exports = function draw_commands(regl, params){
   }
 
   if (params.draw_labels){
-    // console.log('----- turn off slow draw -----')
+    // console.log('----- turn off draw_labels -----')
     params.draw_labels = false;
   }
 
@@ -23031,10 +23059,9 @@ var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mous
 var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
-var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
-var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
 // var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
+var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23059,19 +23086,7 @@ module.exports = function run_viz(regl, network){
     params.animation.loop = 0 ;
 
     if (params.reset_cameras){
-
-      // console.log('reset_cameras\n-------------------')
-      params.reset_cameras = false;
-
-      params.zoom_data = ini_zoom_data();
-      make_cameras(regl, params);
-
-      params.draw_labels = false;
-      params.first_frame = true;
-      params.initialize_viz = true;
-      // params.show_tooltip = false;
-      params.zoom_data.x.total_int = 0
-
+      reset_cameras(regl, params);
     }
 
     if (params.animation.run_switch){
@@ -23172,7 +23187,7 @@ module.exports = function run_viz(regl, network){
 
     } else if (params.draw_labels || params.show_tooltip){
 
-      // turn back on slow draw
+      // turn back on draw_labels
       ///////////////////////////////
 
       // console.log('slow_draw or show_tooltip');
@@ -23202,7 +23217,7 @@ module.exports = function run_viz(regl, network){
         if (params.label_high_queue[inst_axis].length > 0){
           var inst_name = params.label_high_queue[inst_axis][0];
           params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
-          console.log(inst_name, params.label_high_queue[inst_axis].length)
+          // console.log(inst_name, params.label_high_queue[inst_axis].length)
           updated_labels = true;
         }
       });
@@ -24525,7 +24540,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
     if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
 
-      console.log('FOUND')
+      // console.log('FOUND')
 
       ///////////////////////////////////
       // add to high queue
@@ -24558,12 +24573,14 @@ module.exports = function calc_text_triangles(params, inst_axis){
         working on delaying calculation of triangles until zooming has stopped
         */
 
-        // tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
-        // params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+        // console.log('working on delaying calculation of triangles until zooming has stopped')
 
-        // tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        // tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        // text_triangles.push(tmp_text_vect);
+        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+
+        tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        tmp_text_vect.new_offset = [0, inst_label.offsets.new];
+        text_triangles.push(tmp_text_vect);
 
       }
 

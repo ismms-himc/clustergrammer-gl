@@ -53,7 +53,7 @@ module.exports = function calc_text_triangles(params, inst_axis){
 
     if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
 
-      console.log('FOUND')
+      // console.log('FOUND')
 
       ///////////////////////////////////
       // add to high queue
@@ -86,12 +86,14 @@ module.exports = function calc_text_triangles(params, inst_axis){
         working on delaying calculation of triangles until zooming has stopped
         */
 
-        // tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
-        // params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+        // console.log('working on delaying calculation of triangles until zooming has stopped')
 
-        // tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        // tmp_text_vect.new_offset = [0, inst_label.offsets.new];
-        // text_triangles.push(tmp_text_vect);
+        tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
+
+        tmp_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        tmp_text_vect.new_offset = [0, inst_label.offsets.new];
+        text_triangles.push(tmp_text_vect);
 
       }
 

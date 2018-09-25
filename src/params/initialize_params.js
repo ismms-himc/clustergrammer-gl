@@ -280,7 +280,7 @@ module.exports = function initialize_params(regl, network){
     if (params['num_' + inst_axis] > params.max_num_text){
       params.text_triangles.draw[inst_axis] = false;
     } else {
-      params.text_triangles.draw[inst_axis] = gather_text_triangles(params, inst_axis);
+      gather_text_triangles(params, inst_axis);
     }
   });
 

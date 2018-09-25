@@ -1,15 +1,13 @@
-var draw_commands = require('./draw_commands');
+// var draw_commands = require('./draw_commands');
 var vectorize_label = require('./../matrix_labels/vectorize_label');
 
 module.exports = function draw_background_calculations(regl, params){
 
   /*
-
     Set up something to run background calculations if
     necessary when the visualization is not being updated. For instance,
     we could calculate the text triangles of all rows a little at a time
     in the background.
-
   */
 
   // var updated_labels = false;
@@ -25,8 +23,6 @@ module.exports = function draw_background_calculations(regl, params){
         params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
 
         // updated_labels = true;
-
-        console.log(inst_name, params.label_queue.high[inst_axis].length)
 
         // need to update the draw triangles, make a special gather function
         // that updates a single label

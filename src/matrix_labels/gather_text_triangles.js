@@ -2,26 +2,6 @@ var vectorize_label = require('./vectorize_label')
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
-  // console.log('gather_text_triangles')
-
-  /*
-
-  // Make dictionary of text trianglesß
-  //////////////////////////////////////
-  1. Save all calculated text triangles in a dictionary for re-use. We can
-  construct the text triangle array when necessary by gathering the pre-
-  calculated text triangles and calculating any new text triangles (as well as
-  storing them back in the dictionary).
-
-  2. Try calculating text triangles in the background, e.g. when not interacting,
-  and save these to the text triangle dictionary.
-
-  3. Try combining text triangles, for instance title and category.
-
-  */
-
-  // var inst_labels = params.network[inst_axis + '_nodes'];
-
   var inst_dim;
   if (inst_axis === 'col'){
     inst_dim = 'x';
@@ -29,34 +9,16 @@ module.exports = function gather_text_triangles(params, inst_axis){
     inst_dim = 'y';
   }
 
-  // draw matrix cells
-  /////////////////////////////////////////
-
   // generating array with text triangles and y-offsets
   var draw_text = [];
   var viz_area = params.viz_area;
-
-  // only calculating the text-triangles for labels that are within the visible
-  // area
-
-  /*
-  Need to pre-compute offsets in ini_parameters, then re-calc on reordering
-  */
-  // calc_text_offsets(params, inst_axis);
 
   var min_viz = viz_area[inst_dim + '_min'];
   var max_viz = viz_area[inst_dim + '_max'];
 
   _.each(params.network[inst_axis + '_nodes'], function(inst_label){
 
-
     if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
-
-      // console.log('FOUND')
-
-      ///////////////////////////////////
-      // add to high queue
-      ///////////////////////////////////
 
       var inst_name = inst_label.name;
 
@@ -66,10 +28,6 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       // add to high priority queue
       params.label_queue.high[inst_axis].push(inst_name);
-
-      ///////////////////////////////////
-      // calc new text triangles
-      ///////////////////////////////////
 
       var tmp_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
@@ -81,12 +39,6 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       } else {
 
-        /*
-        working on delaying calculation of triangles until zooming has stopped
-        */
-
-        // console.log('working on delaying calculation of triangles until zooming has stopped')
-
         tmp_text_vect = vectorize_label(params, inst_axis, inst_name);
         params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
 
@@ -96,11 +48,10 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       }
 
-
     }
 
   });
 
-  return draw_text;
+  params.text_triangles.draw[inst_axis] =  draw_text;
 
 };

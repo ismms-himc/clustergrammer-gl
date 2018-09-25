@@ -55,7 +55,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
           // console.log('\t\tcalc text triangles', calc_text_tri)
 
-          params.text_triangles.draw[inst_axis] = gather_text_triangles(params, inst_axis);
+          gather_text_triangles(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 

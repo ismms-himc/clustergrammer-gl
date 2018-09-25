@@ -23,13 +23,14 @@ module.exports = function draw_background_calculations(regl, params){
       if (inst_name in params.text_triangles[inst_axis] === false){
 
         params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
+
         // updated_labels = true;
 
         console.log(inst_name, params.label_queue.high[inst_axis].length)
 
-        /*
-          updated the text_triangles axis, might not update the gathered draw triangles
-        */
+        // need to update the draw triangles, make a special gather function
+        // that updates a single label
+
 
       } else {
         // console.log('already found triangle', params.label_queue.high[inst_axis].length)
@@ -39,8 +40,8 @@ module.exports = function draw_background_calculations(regl, params){
   });
 
   /*
-  Do not need to draw when updating the text_triangles, only need to draw
-  when updating the gathered draw text triangles
+    Need to draw if high priority queue is updated, not if low priority queue is
+    updated
   */
 
   // // run draw in the same loop, do not wait until next animation loop

@@ -69,7 +69,6 @@ module.exports = function initialize_params(regl, network){
   params.cat_data.row = generate_cat_data(params, 'row');
   params.cat_data.col = generate_cat_data(params, 'col');
 
-
   params.cat_num = {};
   params.cat_num.row = params.cat_data.row.length;
   params.cat_num.col = params.cat_data.col.length;
@@ -117,7 +116,6 @@ module.exports = function initialize_params(regl, network){
   params.text_triangles = {};
   params.text_triangles.row = {};
   params.text_triangles.col = {};
-
 
   // calc row-downsampled matrix
   var run_downsampling = false;
@@ -240,7 +238,6 @@ module.exports = function initialize_params(regl, network){
 
   params.pix_to_webgl = pix_to_webgl;
 
-
   params.text_zoom = {};
 
   // text zooming info
@@ -275,9 +272,6 @@ module.exports = function initialize_params(regl, network){
     }
   });
 
-
-  // console.log('row_text_triangles in initialize_params')
-  // console.log(params.row_text_triangles)
 
   // have max zoom restricted by column number in a similar manner to
   // how col viz aid triangle restricted zooming in previous version

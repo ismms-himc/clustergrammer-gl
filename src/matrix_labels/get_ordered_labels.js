@@ -13,7 +13,7 @@ module.exports = function get_ordered_labels(params){
 
     var found_axis_cat = false;
     ordered_labels[inst_axis + '_cats'] = [];
-    if (params.cat_num[inst_axis] > 0){
+    if (params.cat_data.cat_num[inst_axis] > 0){
       found_axis_cat = true;
     }
 

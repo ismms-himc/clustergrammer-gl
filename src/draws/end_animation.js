@@ -22,7 +22,7 @@ module.exports = function end_animation(regl, params){
   // transfer the new category positions to the cat args attributes
   _.each(['row', 'col'], function(inst_axis){
 
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
       // update the attribute
       params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
           buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),

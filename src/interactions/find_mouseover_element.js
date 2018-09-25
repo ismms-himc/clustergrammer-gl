@@ -67,7 +67,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     }
 
     var mouseover_text;
-    if (params.cat_num.col == 0){
+    if (params.cat_data.cat_num.col == 0){
       // calculate text triangles, they require an offset element
       mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
       params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);

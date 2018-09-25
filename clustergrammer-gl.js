@@ -23115,7 +23115,7 @@ module.exports = function draw_tooltip_components(regl, params){
     inst_triangles = params.mouseover.text_triangles['line-1'];
     regl(text_triangle_args)(inst_triangles);
 
-    if (params.cat_num.col > 0){
+    if (params.cat_data.cat_num.col > 0){
 
       line_offset = 1.5;
       text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
@@ -23160,7 +23160,7 @@ module.exports = function end_animation(regl, params){
   // transfer the new category positions to the cat args attributes
   _.each(['row', 'col'], function(inst_axis){
 
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
       // update the attribute
       params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
           buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
@@ -23461,7 +23461,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     }
 
     var mouseover_text;
-    if (params.cat_num.col == 0){
+    if (params.cat_data.cat_num.col == 0){
       // calculate text triangles, they require an offset element
       mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
       params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
@@ -24680,7 +24680,7 @@ module.exports = function get_ordered_labels(params){
 
     var found_axis_cat = false;
     ordered_labels[inst_axis + '_cats'] = [];
-    if (params.cat_num[inst_axis] > 0){
+    if (params.cat_data.cat_num[inst_axis] > 0){
       found_axis_cat = true;
     }
 
@@ -25683,6 +25683,10 @@ module.exports = function initialize_params(regl, network){
   params.still_mouseover = false;
   params.mat_data = params.network.mat;
 
+  params.cat_data = {};
+  params.cat_data.row = generate_cat_data(params, 'row');
+  params.cat_data.col = generate_cat_data(params, 'col');
+
   /*
   Working on resizing the matrix, need to have separte x and y sizes
   */
@@ -25692,21 +25696,17 @@ module.exports = function initialize_params(regl, network){
   params.viz_dim.mat_size.x = 0.80;
   params.viz_dim.mat_size.y = 0.80;
 
-  params.cat_data = {};
-  params.cat_data.row = generate_cat_data(params, 'row');
-  params.cat_data.col = generate_cat_data(params, 'col');
-
-  params.cat_num = {};
-  params.cat_num.row = params.cat_data.row.length;
-  params.cat_num.col = params.cat_data.col.length;
+  params.cat_data.cat_num = {};
+  params.cat_data.cat_num.row = params.cat_data.row.length;
+  params.cat_data.cat_num.col = params.cat_data.col.length;
 
   params.cat_room = {};
   params.cat_room.x = 0.015;
   params.cat_room.y = 0.015;
 
   params.heat_size = {};
-  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_room.x * params.cat_num.row;
-  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_room.y * params.cat_num.col;
+  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_room.x * params.cat_data.cat_num.row;
+  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_room.y * params.cat_data.cat_num.col;
 
   calc_viz_dim(regl, params);
 
@@ -25777,7 +25777,7 @@ module.exports = function initialize_params(regl, network){
   params.cat_arrs.new.col = {};
 
   _.each(['row', 'col'], function(inst_axis){
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
       params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.inst_order[inst_axis]);
       params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
@@ -25963,7 +25963,7 @@ module.exports = function reorder_cat_args(regl, cgm){
   _.each(['row', 'col'], function(inst_axis){
 
     // update cat position arrays
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
 
       params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
 

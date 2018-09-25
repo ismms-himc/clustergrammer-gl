@@ -59,6 +59,10 @@ module.exports = function initialize_params(regl, network){
   params.still_mouseover = false;
   params.mat_data = params.network.mat;
 
+  params.cat_data = {};
+  params.cat_data.row = generate_cat_data(params, 'row');
+  params.cat_data.col = generate_cat_data(params, 'col');
+
   /*
   Working on resizing the matrix, need to have separte x and y sizes
   */
@@ -68,21 +72,17 @@ module.exports = function initialize_params(regl, network){
   params.viz_dim.mat_size.x = 0.80;
   params.viz_dim.mat_size.y = 0.80;
 
-  params.cat_data = {};
-  params.cat_data.row = generate_cat_data(params, 'row');
-  params.cat_data.col = generate_cat_data(params, 'col');
-
-  params.cat_num = {};
-  params.cat_num.row = params.cat_data.row.length;
-  params.cat_num.col = params.cat_data.col.length;
+  params.cat_data.cat_num = {};
+  params.cat_data.cat_num.row = params.cat_data.row.length;
+  params.cat_data.cat_num.col = params.cat_data.col.length;
 
   params.cat_room = {};
   params.cat_room.x = 0.015;
   params.cat_room.y = 0.015;
 
   params.heat_size = {};
-  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_room.x * params.cat_num.row;
-  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_room.y * params.cat_num.col;
+  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_room.x * params.cat_data.cat_num.row;
+  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_room.y * params.cat_data.cat_num.col;
 
   calc_viz_dim(regl, params);
 
@@ -153,7 +153,7 @@ module.exports = function initialize_params(regl, network){
   params.cat_arrs.new.col = {};
 
   _.each(['row', 'col'], function(inst_axis){
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
       params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.inst_order[inst_axis]);
       params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);

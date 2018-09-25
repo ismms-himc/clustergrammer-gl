@@ -9,7 +9,7 @@ module.exports = function reorder_cat_args(regl, cgm){
   _.each(['row', 'col'], function(inst_axis){
 
     // update cat position arrays
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
 
       params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
 

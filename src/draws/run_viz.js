@@ -7,6 +7,7 @@ var start_animation = require('./start_animation');
 var end_animation = require('./end_animation');
 var draw_interacting = require('./draw_interacting');
 var draw_mouseover = require('./draw_mouseover');
+var draw_labels_or_tooltips = require('./draw_labels_or_tooltips');
 
 module.exports = function run_viz(regl, network){
 
@@ -58,18 +59,7 @@ module.exports = function run_viz(regl, network){
 
     } else if (params.draw_labels || params.show_tooltip){
 
-      // turn back on draw_labels
-      ///////////////////////////////
-
-      // console.log('slow_draw or show_tooltip');
-      draw_commands(regl, params);
-      params.remove_tooltip_frame = true;
-
-      // set up extra frame specifically to remove old tooltip
-      if (params.show_tooltip){
-        params.show_tooltip = false;
-        // console.log('initialize remove_tooltip_frame')
-      }
+      draw_labels_or_tooltips(regl, params);
 
     } else {
 

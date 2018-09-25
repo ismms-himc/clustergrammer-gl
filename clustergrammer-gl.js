@@ -22892,6 +22892,34 @@ module.exports = function draw_interacting(regl, params){
 
 /***/ }),
 
+/***/ "./src/draws/draw_labels_or_tooltips.js":
+/*!**********************************************!*\
+  !*** ./src/draws/draw_labels_or_tooltips.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
+
+module.exports = function draw_labels_or_tooltips(regl, params){
+  // turn back on draw_labels
+  ///////////////////////////////
+
+  // console.log('slow_draw or show_tooltip');
+  draw_commands(regl, params);
+  params.remove_tooltip_frame = true;
+
+  // set up extra frame specifically to remove old tooltip
+  if (params.show_tooltip){
+    params.show_tooltip = false;
+    // console.log('initialize remove_tooltip_frame')
+  }
+
+
+};
+
+/***/ }),
+
 /***/ "./src/draws/draw_matrix_components.js":
 /*!*********************************************!*\
   !*** ./src/draws/draw_matrix_components.js ***!
@@ -23190,6 +23218,7 @@ var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
 var draw_interacting = __webpack_require__(/*! ./draw_interacting */ "./src/draws/draw_interacting.js");
 var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/draw_mouseover.js");
+var draw_labels_or_tooltips = __webpack_require__(/*! ./draw_labels_or_tooltips */ "./src/draws/draw_labels_or_tooltips.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23241,18 +23270,7 @@ module.exports = function run_viz(regl, network){
 
     } else if (params.draw_labels || params.show_tooltip){
 
-      // turn back on draw_labels
-      ///////////////////////////////
-
-      // console.log('slow_draw or show_tooltip');
-      draw_commands(regl, params);
-      params.remove_tooltip_frame = true;
-
-      // set up extra frame specifically to remove old tooltip
-      if (params.show_tooltip){
-        params.show_tooltip = false;
-        // console.log('initialize remove_tooltip_frame')
-      }
+      draw_labels_or_tooltips(regl, params);
 
     } else {
 

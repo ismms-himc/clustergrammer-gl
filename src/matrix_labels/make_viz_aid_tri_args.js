@@ -24,7 +24,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     tri_width  = mat_size/num_labels;
 
     // original top_offset calc (undercorrects)
-    top_offset = -params.mat_size.y - tri_height;
+    top_offset = -params.viz_dim.mat_size.y - tri_height;
 
   } else {
 
@@ -32,7 +32,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     mat_size = params.heat_size.y;
     tri_height = 0.0125;
     tri_width = mat_size/num_labels;
-    top_offset = -params.mat_size.x - tri_height;
+    top_offset = -params.viz_dim.mat_size.x - tri_height;
 
   }
 

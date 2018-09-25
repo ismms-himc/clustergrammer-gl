@@ -18,7 +18,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
   var mat_rotate = m3.rotation(Math.PI/2);
 
-  var x_offset = params.mat_size.x + 0.02;
+  var x_offset = params.viz_dim.mat_size.x + 0.02;
 
   var vert_arg = `
       precision mediump float;
@@ -95,7 +95,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       scale_text: scale_text,
       x_offset: x_offset,
       heat_size: params.heat_size.y,
-      shift_heat: params.mat_size.y - params.heat_size.y,
+      shift_heat: params.viz_dim.mat_size.y - params.heat_size.y,
       total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni

@@ -25,8 +25,8 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.mat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.mat.width  = params.mat_size.x * viz_dim.canvas.width;
-  viz_dim.mat.height = params.mat_size.y * viz_dim.canvas.height;
+  viz_dim.mat.width  = params.viz_dim.mat_size.x * viz_dim.canvas.width;
+  viz_dim.mat.height = params.viz_dim.mat_size.y * viz_dim.canvas.height;
 
   // min and max position of matrix
   viz_dim.mat.x = {};

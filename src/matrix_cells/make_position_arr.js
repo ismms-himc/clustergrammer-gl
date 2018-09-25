@@ -9,8 +9,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.mat_size.x ;//+ params.offcenter.x;
-  offset.y = params.mat_size.y ;//+ params.offcenter.y;
+  offset.x = params.viz_dim.mat_size.x ;//+ params.offcenter.x;
+  offset.y = params.viz_dim.mat_size.y ;//+ params.offcenter.y;
 
   // generate x position array
   var x_arr = Array(num_col).fill()

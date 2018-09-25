@@ -4,7 +4,7 @@ module.exports = function calc_spillover_triangles(params){
 
   var viz_dim = params.viz_dim;
 
-  var ini_mat = params.mat_size;
+  var ini_mat = params.viz_dim.mat_size;
   var ini_heat = params.heat_size;
 
   var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
@@ -21,8 +21,8 @@ module.exports = function calc_spillover_triangles(params){
 
   // trying to shift based on diff between mat and heat size
   var inst_shift = {}
-  inst_shift.x = params.mat_size.x - params.heat_size.x;
-  inst_shift.y = params.mat_size.y - params.heat_size.y;
+  inst_shift.x = params.viz_dim.mat_size.x - params.heat_size.x;
+  inst_shift.y = params.viz_dim.mat_size.y - params.heat_size.y;
 
   spillover_triangles.mat_sides = [
 

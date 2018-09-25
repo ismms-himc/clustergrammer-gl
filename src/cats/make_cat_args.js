@@ -31,12 +31,12 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   cat_height = 0.04;
   if (inst_axis === 'col'){
     mat_size = params.heat_size.x;
-    top_shift_triangles = params.mat_size.y;
+    top_shift_triangles = params.viz_dim.mat_size.y;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
     mat_size = params.heat_size.y;
-    top_shift_triangles = params.mat_size.x;
+    top_shift_triangles = params.viz_dim.mat_size.x;
     cat_width = (params.heat_size.y/0.5)/num_labels;
   }
 

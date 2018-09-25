@@ -31,10 +31,10 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     if (inst_axis == 'row'){
       order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
       // vertical shift
-      shift_mat_heat = -(params.mat_size.y - params.heat_size.y)
+      shift_mat_heat = -(params.viz_dim.mat_size.y - params.heat_size.y)
     } else {
       order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x
+      shift_mat_heat = params.viz_dim.mat_size.x - params.heat_size.x
     }
 
     /* need to position based on clustering order */

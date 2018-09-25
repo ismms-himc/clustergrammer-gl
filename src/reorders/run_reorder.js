@@ -21,7 +21,9 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   /*
   No need to run calc_text_offset (in network_data) during a reorder event
   */
-  if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] < params.max_num_text){
+
+  // either update the existing draw text_triangles or trash them
+  if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] <= params.max_num_text){
     params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;

@@ -21733,7 +21733,7 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.draw_labels = false;
-  params.first_frame = true;
+  // params.first_frame = true;
   params.initialize_viz = true;
   // params.show_tooltip = false;
   params.interact.total = 0
@@ -22785,7 +22785,13 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       if (num_viz_labels < params.max_num_text){
 
         calc_viz_area(params);
-        gather_text_triangles(params, inst_axis);
+
+        // only regather if there are more labels than can be shown at once
+        if (params['num_' + inst_axis] > params.max_num_text){
+
+          gather_text_triangles(params, inst_axis);
+
+        }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
       } else {
@@ -26022,7 +26028,9 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   /*
   No need to run calc_text_offset (in network_data) during a reorder event
   */
-  if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] < params.max_num_text){
+
+  // either update the existing draw text_triangles or trash them
+  if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] <= params.max_num_text){
     params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;

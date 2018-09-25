@@ -10,7 +10,7 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.draw_labels = false;
-  params.first_frame = true;
+  // params.first_frame = true;
   params.initialize_viz = true;
   // params.show_tooltip = false;
   params.interact.total = 0

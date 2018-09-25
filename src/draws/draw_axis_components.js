@@ -49,7 +49,13 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       if (num_viz_labels < params.max_num_text){
 
         calc_viz_area(params);
-        gather_text_triangles(params, inst_axis);
+
+        // only regather if there are more labels than can be shown at once
+        if (params['num_' + inst_axis] > params.max_num_text){
+
+          gather_text_triangles(params, inst_axis);
+
+        }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
       } else {

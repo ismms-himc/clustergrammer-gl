@@ -23160,7 +23160,7 @@ module.exports = function end_animation(regl, params){
   ///////////////////////////////////////
 
   params.animation.running = false;
-  params.animation.run_switch = false;
+  params.animation.run_animation = false;
 
   // transfer the new positions to the matrix args attributes
   params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -23294,7 +23294,7 @@ module.exports = function run_viz(regl, network){
       reset_cameras(regl, params);
     }
 
-    if (params.animation.run_switch){
+    if (params.animation.run_animation){
       start_animation(params);
     } else if (params.time > params.animation.duration_end && params.animation.running === true){
       end_animation(regl, params);
@@ -23332,7 +23332,7 @@ module.exports = function run_viz(regl, network){
 module.exports = function start_animation(params){
 
   // console.log('start_animation')
-  params.animation.run_switch = false;
+  params.animation.run_animation = false;
   params.animation.last_switch_time = params.time
   params.animation.running = true;
 
@@ -25706,7 +25706,7 @@ module.exports = function initialize_params(regl, network){
   params.animation.time_remain = 0;
 
   params.animation.running = false;
-  params.animation.run_switch = false;
+  params.animation.run_animation = false;
 
   params.animation.last_switch_time = 0;
   params.animation.ani_duration = 3;
@@ -26076,7 +26076,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  params.animation.run_switch = true;
+  params.animation.run_animation = true;
   params.new_order[inst_axis] = new_order;
 
   reorder_matrix_args(regl, cgm);

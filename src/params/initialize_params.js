@@ -42,7 +42,7 @@ module.exports = function initialize_params(regl, network){
   params.animation.time_remain = 0;
 
   params.animation.running = false;
-  params.animation.run_switch = false;
+  params.animation.run_animation = false;
 
   params.animation.last_switch_time = 0;
   params.animation.ani_duration = 3;

@@ -11,7 +11,7 @@ module.exports = function end_animation(regl, params){
   ///////////////////////////////////////
 
   params.animation.running = false;
-  params.animation.run_switch = false;
+  params.animation.run_animation = false;
 
   // transfer the new positions to the matrix args attributes
   params.matrix_args.regl_props.rects.attributes.pos_att_ini = {

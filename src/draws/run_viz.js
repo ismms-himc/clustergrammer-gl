@@ -18,12 +18,12 @@ module.exports = function run_viz(regl, network){
 
   regl.frame(function ({time}) {
 
+    params.time = time;
+
     // prevent this from being negative, can happen when resetting zooo
     if (params.interact.total < 0){
       params.interact.total = 0;
     }
-
-    params.time = time;
 
     if (params.reset_cameras){
       reset_cameras(regl, params);
@@ -35,7 +35,6 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    // run draw command
     if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
@@ -46,6 +45,7 @@ module.exports = function run_viz(regl, network){
     } else if (params.draw_labels || params.show_tooltip){
       draw_labels_or_tooltips(regl, params);
     } else {
+      // run background calculations
       draw_background_calculations(regl, params);
     }
 

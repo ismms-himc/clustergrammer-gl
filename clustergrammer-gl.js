@@ -23245,7 +23245,6 @@ module.exports = function run_viz(regl, network){
       ///////////////////////////////
 
       // console.log('slow_draw or show_tooltip');
-
       draw_commands(regl, params);
       params.remove_tooltip_frame = true;
 
@@ -23281,6 +23280,7 @@ module.exports = function run_viz(regl, network){
         }
       });
 
+      // run draw in the same loop, do not wait until next animation loop
       if (updated_labels){
         // console.log('draw updated labels')
         draw_commands(regl, params);

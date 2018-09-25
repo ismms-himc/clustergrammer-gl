@@ -19,6 +19,7 @@ var make_cat_position_array = require('./../cats/make_cat_position_array');
 var calc_alpha_order = require('./calc_alpha_order');
 var make_label_queue = require('./../matrix_labels/make_label_queue');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
+var animation_params = require('./animation_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -37,29 +38,16 @@ module.exports = function initialize_params(regl, network){
   params.time = 0;
   params.viz_interact = true;
 
-  // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
-
-  params.animation.running = false;
-  params.animation.run_animation = false;
-
-  params.animation.last_switch_time = 0;
-  params.animation.ani_duration = 3;
-  params.animation.duration_end = 0;
+  animation_params(params);
 
   params.initialize_viz = true;
   params.first_frame = true;
 
-  // debugger;
-
-  network = calc_alpha_order(network)
-
-  // debugger;
-
   // use data from network
   //////////////////////////
   params.network = network;
+
+  calc_alpha_order(params)
 
   var zoom_function = function(context){
     return context.view;
@@ -68,7 +56,7 @@ module.exports = function initialize_params(regl, network){
   params.zoom_function = zoom_function;
   params.still_interacting = false;
   params.still_mouseover = false;
-  params.mat_data = network.mat;
+  params.mat_data = params.network.mat;
 
   /*
   Working on resizing the matrix, need to have separte x and y sizes

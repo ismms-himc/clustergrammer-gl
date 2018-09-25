@@ -25374,6 +25374,30 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
 
 /***/ }),
 
+/***/ "./src/params/animation_params.js":
+/*!****************************************!*\
+  !*** ./src/params/animation_params.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function animation_params(params){
+
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
+
+  params.animation.running = false;
+  params.animation.run_animation = false;
+
+  params.animation.last_switch_time = 0;
+  params.animation.ani_duration = 3;
+  params.animation.duration_end = 0;
+
+};
+
+/***/ }),
+
 /***/ "./src/params/calc_alpha_order.js":
 /*!****************************************!*\
   !*** ./src/params/calc_alpha_order.js ***!
@@ -25382,7 +25406,9 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
 /***/ (function(module, exports, __webpack_require__) {
 
 var utils = __webpack_require__(/*! ./../utils/utils_clust */ "./src/utils/utils_clust.js");
-module.exports = function calc_alpha_order(network){
+module.exports = function calc_alpha_order(params){
+
+  var network = params.network
 
   var node_names;
   var tmp_names;
@@ -25411,7 +25437,7 @@ module.exports = function calc_alpha_order(network){
 
   });
 
-  return network;
+  // return network;
 }
 
 /***/ }),
@@ -25617,6 +25643,7 @@ var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_positio
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
+var animation_params = __webpack_require__(/*! ./animation_params */ "./src/params/animation_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25635,29 +25662,16 @@ module.exports = function initialize_params(regl, network){
   params.time = 0;
   params.viz_interact = true;
 
-  // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
-
-  params.animation.running = false;
-  params.animation.run_animation = false;
-
-  params.animation.last_switch_time = 0;
-  params.animation.ani_duration = 3;
-  params.animation.duration_end = 0;
+  animation_params(params);
 
   params.initialize_viz = true;
   params.first_frame = true;
 
-  // debugger;
-
-  network = calc_alpha_order(network)
-
-  // debugger;
-
   // use data from network
   //////////////////////////
   params.network = network;
+
+  calc_alpha_order(params)
 
   var zoom_function = function(context){
     return context.view;
@@ -25666,7 +25680,7 @@ module.exports = function initialize_params(regl, network){
   params.zoom_function = zoom_function;
   params.still_interacting = false;
   params.still_mouseover = false;
-  params.mat_data = network.mat;
+  params.mat_data = params.network.mat;
 
   /*
   Working on resizing the matrix, need to have separte x and y sizes

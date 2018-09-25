@@ -1,5 +1,7 @@
 var utils = require('./../utils/utils_clust');
-module.exports = function calc_alpha_order(network){
+module.exports = function calc_alpha_order(params){
+
+  var network = params.network
 
   var node_names;
   var tmp_names;
@@ -28,5 +30,5 @@ module.exports = function calc_alpha_order(network){
 
   });
 
-  return network;
+  // return network;
 }

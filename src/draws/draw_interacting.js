@@ -5,7 +5,7 @@ module.exports = function draw_interacting(regl, params){
 
   var wait_time_final_interact = 50;
 
-  params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
+  params.interact.total = params.interact.total + 1;
 
   draw_commands(regl, params);
 

@@ -21736,7 +21736,7 @@ module.exports = function reset_cameras(regl, params){
   params.first_frame = true;
   params.initialize_viz = true;
   // params.show_tooltip = false;
-  params.zoom_data.x.total_int = 0
+  params.interact.total = 0
 
 };
 
@@ -22931,7 +22931,7 @@ module.exports = function draw_interacting(regl, params){
 
   var wait_time_final_interact = 50;
 
-  params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
+  params.interact.total = params.interact.total + 1;
 
   draw_commands(regl, params);
 
@@ -23284,8 +23284,8 @@ module.exports = function run_viz(regl, network){
   regl.frame(function ({time}) {
 
     // prevent this from being negative, can happen when resetting zooo
-    if (params.zoom_data.x.total_int < 0){
-      params.zoom_data.x.total_int = 0;
+    if (params.interact.total < 0){
+      params.interact.total = 0;
     }
 
     params.time = time;
@@ -23352,9 +23352,9 @@ module.exports = function start_animation(params){
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
-  params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+  params.interact.total = params.interact.total - 1;
 
-  if (params.zoom_data.x.total_int == 0 && params.initialize_viz == false){
+  if (params.interact.total == 0 && params.initialize_viz == false){
 
     // preventing from running on first frame
     if (params.first_frame == false){
@@ -23372,7 +23372,7 @@ module.exports = function final_interaction_frame(regl, params){
     }
   }
 
-}
+};
 
 /***/ }),
 
@@ -23388,17 +23388,8 @@ module.exports = function final_mouseover_frame(regl, params){
   // reduce the number of mouseovers
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
-  // console.log('check  ', params.zoom_data.x.total_mouseover)
   if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
-    // console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
-
-    // run draw commands
-    // var slow_draw = true;
     params.show_tooltip = true;
-
-    // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-    //   // console.log('final_mouseover_frame', params.show_tooltip)
-    // }
   }
 
 };
@@ -25783,6 +25774,9 @@ module.exports = function initialize_params(regl, network){
 
   params.zoom_data = ini_zoom_data();
 
+  params.interact = {};
+  params.interact.total = 0;
+
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
 
@@ -26738,10 +26732,6 @@ module.exports = function ini_zoom_data(){
 
     // keep track of when zooming stops
     inst_data.still_zooming = false;
-
-    // keep a running total of the number of interactions (zoom/pan)
-    // this is used to keep track of the final interaction
-    inst_data.total_int = 0;
 
     // keep a running total of the number of mouseovers
     // this is used to keep track of the final mouseover

@@ -19,8 +19,8 @@ module.exports = function run_viz(regl, network){
   regl.frame(function ({time}) {
 
     // prevent this from being negative, can happen when resetting zooo
-    if (params.zoom_data.x.total_int < 0){
-      params.zoom_data.x.total_int = 0;
+    if (params.interact.total < 0){
+      params.interact.total = 0;
     }
 
     params.time = time;

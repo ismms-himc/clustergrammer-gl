@@ -13,6 +13,6 @@ module.exports = function reset_cameras(regl, params){
   params.first_frame = true;
   params.initialize_viz = true;
   // params.show_tooltip = false;
-  params.zoom_data.x.total_int = 0
+  params.interact.total = 0
 
 };

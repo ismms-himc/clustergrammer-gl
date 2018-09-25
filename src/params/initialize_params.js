@@ -119,6 +119,9 @@ module.exports = function initialize_params(regl, network){
 
   params.zoom_data = ini_zoom_data();
 
+  params.interact = {};
+  params.interact.total = 0;
+
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
 

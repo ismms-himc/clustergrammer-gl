@@ -34,10 +34,6 @@ module.exports = function ini_zoom_data(){
     // keep track of when zooming stops
     inst_data.still_zooming = false;
 
-    // keep a running total of the number of interactions (zoom/pan)
-    // this is used to keep track of the final interaction
-    inst_data.total_int = 0;
-
     // keep a running total of the number of mouseovers
     // this is used to keep track of the final mouseover
     inst_data.total_mouseover = 0;

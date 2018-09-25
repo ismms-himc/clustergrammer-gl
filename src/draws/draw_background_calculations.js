@@ -15,15 +15,23 @@ module.exports = function draw_background_calculations(regl, params){
   var updated_labels = false;
   _.each(['row', 'col'], function(inst_axis){
     if (params.label_high_queue[inst_axis].length > 0){
+
       var inst_name = params.label_high_queue[inst_axis][0];
-      params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
 
-      /*
-        updated the text_triangles axis, but need to update the draw
-      */
+      if (inst_name in params.text_triangles[inst_axis] === false){
 
-      // console.log(inst_name, params.label_high_queue[inst_axis].length)
-      updated_labels = true;
+        params.text_triangles[inst_axis][inst_name] = vectorize_label(params, inst_axis, inst_name);
+        updated_labels = true;
+
+        console.log(inst_name, params.label_high_queue[inst_axis].length)
+
+        /*
+          updated the text_triangles axis, but need to update the draw
+        */
+
+      } else {
+        console.log('already found triangle', params.label_high_queue[inst_axis].length)
+      }
     }
   });
 

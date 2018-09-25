@@ -6,8 +6,9 @@ var final_interaction_frame = require('./../interactions/final_interaction_frame
 var update_text_triangle_order = require('./../matrix_labels/update_text_triangle_order');
 var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var vectorize_label = require('./../matrix_labels/vectorize_label');
-// var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
+var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 var reset_cameras = require('./../cameras/reset_cameras');
+var start_animation = require('./start_animation');
 
 module.exports = function run_viz(regl, network){
 
@@ -37,10 +38,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.animation.run_switch){
 
-      // console.log('turn switch off')
-      params.animation.run_switch = false;
-      params.animation.last_switch_time = time
-      params.animation.running = true;
+      start_animation(params);
 
     } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
 
@@ -76,7 +74,9 @@ module.exports = function run_viz(regl, network){
       // transfer new order to text triangles
       _.each(['row', 'col'], function(inst_axis){
         params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
-        // calc_text_offsets(params, inst_axis);
+
+        // needed to update text positions after animation
+        calc_text_offsets(params, inst_axis);
       });
 
       // update ordered_labels

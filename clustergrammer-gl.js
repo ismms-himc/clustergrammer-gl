@@ -23060,8 +23060,9 @@ var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_in
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
-// var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
+var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
+var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 
 module.exports = function run_viz(regl, network){
 
@@ -23091,10 +23092,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.animation.run_switch){
 
-      // console.log('turn switch off')
-      params.animation.run_switch = false;
-      params.animation.last_switch_time = time
-      params.animation.running = true;
+      start_animation(params);
 
     } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
 
@@ -23130,7 +23128,9 @@ module.exports = function run_viz(regl, network){
       // transfer new order to text triangles
       _.each(['row', 'col'], function(inst_axis){
         params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
-        // calc_text_offsets(params, inst_axis);
+
+        // needed to update text positions after animation
+        calc_text_offsets(params, inst_axis);
       });
 
       // update ordered_labels
@@ -23232,6 +23232,23 @@ module.exports = function run_viz(regl, network){
   });
 
   return params;
+
+};
+
+/***/ }),
+
+/***/ "./src/draws/start_animation.js":
+/*!**************************************!*\
+  !*** ./src/draws/start_animation.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function start_animation(params){
+
+  params.animation.run_switch = false;
+  params.animation.last_switch_time = params.time
+  params.animation.running = true;
 
 };
 
@@ -25961,7 +25978,6 @@ module.exports = function reorder_matrix_args(regl, cgm){
 var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
 var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
-var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
@@ -25979,13 +25995,14 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   // preventing tmp reordering bug that happens when pre-calculated labels are
   // incorrectly animated on reordering. The bug seems to occur only when the
   // number of pre-calculated (drawn) rows is less than the total number of rows
+  /*
+  No need to run calc_text_offset (in network_data) during a reorder event
+  */
   if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] < params.max_num_text){
     params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }
-
-  calc_text_offsets(params, inst_axis);
 
 };
 

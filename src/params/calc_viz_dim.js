@@ -11,7 +11,7 @@ module.exports = function calc_viz_dim(regl, params){
 
   var element = options.element;
 
-  var viz_dim = {};
+  var viz_dim = params.viz_dim;
   viz_dim.canvas = {};
 
   _.each(['width', 'height'], function(inst_dim){

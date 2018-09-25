@@ -25561,7 +25561,7 @@ module.exports = function calc_viz_dim(regl, params){
 
   var element = options.element;
 
-  var viz_dim = {};
+  var viz_dim = params.viz_dim;
   viz_dim.canvas = {};
 
   _.each(['width', 'height'], function(inst_dim){
@@ -25706,6 +25706,7 @@ module.exports = function initialize_params(regl, network){
   params.heat_size.x = params.mat_size.x - params.cat_room.x * params.cat_num.row;
   params.heat_size.y = params.mat_size.y - params.cat_room.y * params.cat_num.col;
 
+  params.viz_dim = {};
   calc_viz_dim(regl, params);
 
   params.num_row = params.mat_data.length;
@@ -25830,8 +25831,6 @@ module.exports = function initialize_params(regl, network){
   params.tooltip.background_opacity = 0.75;
   // make tooltip args
   params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
-
-
 
   var pix_to_webgl = {};
 

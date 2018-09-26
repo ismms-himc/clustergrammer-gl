@@ -12,7 +12,6 @@ var make_spillover_args = require('./../spillover/make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./../matrix_cells/calc_row_downsampled_mat');
 var make_cat_args = require('./../cats/make_cat_args');
-var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
 var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
 var make_cat_position_array = require('./../cats/make_cat_position_array');
 var calc_alpha_order = require('./calc_alpha_order');
@@ -20,6 +19,7 @@ var make_label_queue = require('./../matrix_labels/make_label_queue');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 var animation_params = require('./animation_params');
 var generate_cat_params = require('./generate_cat_params');
+var generate_label_params = require('./generate_label_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -138,9 +138,7 @@ module.exports = function initialize_params(regl, network){
     }
   });
 
-  params.labels = {};
-  params.labels.offset_dict = {};
-  params.labels.draw_labels = false;
+  generate_label_params(params);
 
   calc_text_offsets(params, 'row');
   calc_text_offsets(params, 'col');
@@ -205,14 +203,11 @@ module.exports = function initialize_params(regl, network){
     .range([0.5, -0.5])
     .clamp(true);
 
-  get_ordered_labels(params);
-
   make_label_queue(params);
 
   params.mouseover = {};
   params.mouseover.row_name = null;
   params.mouseover.col_name = null;
-
   params.mouseover.text_triangles = {};
 
   params.pix_to_webgl = pix_to_webgl;
@@ -272,15 +267,9 @@ module.exports = function initialize_params(regl, network){
 
   params.spillover_triangles = calc_spillover_triangles(params);
 
-  // window.addEventListener('resize', params.cameras.mat.resize);
-  // window.addEventListener('resize', params.cameras['row-labels'].resize);
-
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
 
-  // 1 no zooming allowed, 3 is good value, 10 allows zooming
-  // rc_two_cats: 3
-  // mnist: 7
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
     .range([2, 30]);

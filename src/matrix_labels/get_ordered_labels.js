@@ -30,5 +30,6 @@ module.exports = function get_ordered_labels(params){
 
   });
 
-  params.ordered_labels = ordered_labels;
+  params.labels.ordered_labels = ordered_labels;
+
 };

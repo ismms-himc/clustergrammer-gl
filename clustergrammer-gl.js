@@ -23449,8 +23449,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    params.mouseover.row_name = params.ordered_labels.rows[row_index];
-    params.mouseover.col_name = params.ordered_labels.cols[col_index];
+    params.mouseover.row_name = params.labels.ordered_labels.rows[row_index];
+    params.mouseover.col_name = params.labels.ordered_labels.cols[col_index];
 
     if (params.mouseover.row_name.includes(': ')){
       params.mouseover.row_name = params.mouseover.row_name.split(': ')[1];
@@ -23472,7 +23472,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.mouseover.text_triangles['line-1'].offset = [0,0];
 
-      params.mouseover.col_cat = params.ordered_labels.col_cats[col_index];
+      params.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
       mouseover_text = params.mouseover.col_cat;
       params.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.mouseover.text_triangles['line-2'].offset = [0,0];
@@ -24697,7 +24697,8 @@ module.exports = function get_ordered_labels(params){
 
   });
 
-  params.ordered_labels = ordered_labels;
+  params.labels.ordered_labels = ordered_labels;
+
 };
 
 /***/ }),
@@ -24885,7 +24886,7 @@ module.exports = function make_inst_queue(params){
     // the low priority queue
     inst_queue = [];
 
-    var inst_labels = params.ordered_labels[inst_axis + 's'];
+    var inst_labels = params.labels.ordered_labels[inst_axis + 's'];
 
     _.each(inst_labels, function(inst_label){
 
@@ -25649,6 +25650,26 @@ module.exports = function generate_cat_params(params){
 
 /***/ }),
 
+/***/ "./src/params/generate_label_params.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_label_params.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
+module.exports = function generate_label_params(params){
+
+  params.labels = {};
+  params.labels.offset_dict = {};
+  params.labels.draw_labels = false;
+
+  get_ordered_labels(params);
+
+};
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25670,7 +25691,6 @@ var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
 var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
-var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
@@ -25678,6 +25698,7 @@ var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_que
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 var animation_params = __webpack_require__(/*! ./animation_params */ "./src/params/animation_params.js");
 var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
+var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25796,9 +25817,7 @@ module.exports = function initialize_params(regl, network){
     }
   });
 
-  params.labels = {};
-  params.labels.offset_dict = {};
-  params.labels.draw_labels = false;
+  generate_label_params(params);
 
   calc_text_offsets(params, 'row');
   calc_text_offsets(params, 'col');
@@ -25863,14 +25882,11 @@ module.exports = function initialize_params(regl, network){
     .range([0.5, -0.5])
     .clamp(true);
 
-  get_ordered_labels(params);
-
   make_label_queue(params);
 
   params.mouseover = {};
   params.mouseover.row_name = null;
   params.mouseover.col_name = null;
-
   params.mouseover.text_triangles = {};
 
   params.pix_to_webgl = pix_to_webgl;
@@ -25930,15 +25946,9 @@ module.exports = function initialize_params(regl, network){
 
   params.spillover_triangles = calc_spillover_triangles(params);
 
-  // window.addEventListener('resize', params.cameras.mat.resize);
-  // window.addEventListener('resize', params.cameras['row-labels'].resize);
-
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
 
-  // 1 no zooming allowed, 3 is good value, 10 allows zooming
-  // rc_two_cats: 3
-  // mnist: 7
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
     .range([2, 30]);

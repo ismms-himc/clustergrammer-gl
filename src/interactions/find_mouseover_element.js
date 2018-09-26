@@ -55,8 +55,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    params.mouseover.row_name = params.ordered_labels.rows[row_index];
-    params.mouseover.col_name = params.ordered_labels.cols[col_index];
+    params.mouseover.row_name = params.labels.ordered_labels.rows[row_index];
+    params.mouseover.col_name = params.labels.ordered_labels.cols[col_index];
 
     if (params.mouseover.row_name.includes(': ')){
       params.mouseover.row_name = params.mouseover.row_name.split(': ')[1];
@@ -78,7 +78,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.mouseover.text_triangles['line-1'].offset = [0,0];
 
-      params.mouseover.col_cat = params.ordered_labels.col_cats[col_index];
+      params.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
       mouseover_text = params.mouseover.col_cat;
       params.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.mouseover.text_triangles['line-2'].offset = [0,0];

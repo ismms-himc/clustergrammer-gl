@@ -24251,8 +24251,8 @@ module.exports = function make_matrix_args(regl, params){
     usage: 'dynamic'
   })(params.arrs.opacity_arr);
 
-  var tile_width = params.tile_width;
-  var tile_height = params.tile_height;
+  var tile_width = params.viz_dim.tile_width;
+  var tile_height = params.viz_dim.tile_height;
 
   var triangle_verts = [
     [tile_width, 0.0 ],
@@ -25842,8 +25842,8 @@ module.exports = function initialize_params(regl, network){
 
   generate_label_params(params);
 
-  params.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
-  params.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
+  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
+  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
 
   // will set up global offset later
   params.offcenter = {};

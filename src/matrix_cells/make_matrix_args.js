@@ -24,8 +24,8 @@ module.exports = function make_matrix_args(regl, params){
     usage: 'dynamic'
   })(params.arrs.opacity_arr);
 
-  var tile_width = params.tile_width;
-  var tile_height = params.tile_height;
+  var tile_width = params.viz_dim.tile_width;
+  var tile_height = params.viz_dim.tile_height;
 
   var triangle_verts = [
     [tile_width, 0.0 ],

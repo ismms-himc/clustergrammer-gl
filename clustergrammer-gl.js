@@ -23195,7 +23195,7 @@ module.exports = function end_animation(regl, params){
 const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
 
 module.exports = function interp_fun(params){
-  var inst_ease = ease((params.time - params.animation.last_switch_time) /
+  var inst_ease = ease((params.animation.time - params.animation.last_switch_time) /
               params.animation.ani_duration);
 
   // console.log(inst_ease)
@@ -23269,7 +23269,7 @@ module.exports = function run_viz(regl, network){
 
   regl.frame(function ({time}) {
 
-    params.time = time;
+    params.animation.time = time;
 
     // prevent this from being negative, can happen when resetting zooo
     if (params.interact.total < 0){
@@ -23282,7 +23282,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.animation.run_animation){
       start_animation(params);
-    } else if (params.time > params.animation.duration_end && params.animation.running === true){
+    } else if (params.animation.time > params.animation.duration_end && params.animation.running === true){
       end_animation(regl, params);
     }
 
@@ -23319,7 +23319,7 @@ module.exports = function start_animation(params){
 
   // console.log('start_animation')
   params.animation.run_animation = false;
-  params.animation.last_switch_time = params.time
+  params.animation.last_switch_time = params.animation.time
   params.animation.running = true;
 
 
@@ -25634,6 +25634,8 @@ module.exports = function generate_animation_params(params){
   params.animation.last_switch_time = 0;
   params.animation.ani_duration = 3;
   params.animation.duration_end = 0;
+
+  params.animation.time = 0;
 
 };
 

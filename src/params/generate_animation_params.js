@@ -11,4 +11,6 @@ module.exports = function generate_animation_params(params){
   params.animation.ani_duration = 3;
   params.animation.duration_end = 0;
 
+  params.animation.time = 0;
+
 };

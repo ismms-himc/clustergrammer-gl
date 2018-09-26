@@ -18,7 +18,7 @@ module.exports = function run_viz(regl, network){
 
   regl.frame(function ({time}) {
 
-    params.time = time;
+    params.animation.time = time;
 
     // prevent this from being negative, can happen when resetting zooo
     if (params.interact.total < 0){
@@ -31,7 +31,7 @@ module.exports = function run_viz(regl, network){
 
     if (params.animation.run_animation){
       start_animation(params);
-    } else if (params.time > params.animation.duration_end && params.animation.running === true){
+    } else if (params.animation.time > params.animation.duration_end && params.animation.running === true){
       end_animation(regl, params);
     }
 

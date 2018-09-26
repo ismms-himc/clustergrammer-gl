@@ -4,7 +4,7 @@ module.exports = function final_mouseover_frame(regl, params){
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
   if (params.zoom_data.x.total_mouseover == 0 && params.interact.still_mouseover == false){
-    params.show_tooltip = true;
+    params.tooltip.show_tooltip = true;
   }
 
 };

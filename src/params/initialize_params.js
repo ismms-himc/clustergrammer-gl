@@ -75,29 +75,20 @@ module.exports = function initialize_params(regl, network){
 
   generate_spillover_params(regl, params);
 
-  params.show_tooltip = false;
-
-  // the default is to remove the tooltip
-  params.remove_tooltip_frame = true;
-
-  params.in_bounds_tooltip = false;
   params.tooltip = {};
+  params.tooltip.show_tooltip = false;
+  params.tooltip.remove_tooltip_frame = true;
+  params.in_bounds_tooltip = false;
   params.tooltip.background_opacity = 0.75;
-  // make tooltip args
   params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
-
 
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
   generate_pix_to_webgl(params);
-
   make_label_queue(params);
-
   generate_text_zoom_params(params);
-
   calc_viz_area(params);
-
   generate_text_triangle_params(params);
 
   var min_dim;

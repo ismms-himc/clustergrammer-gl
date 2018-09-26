@@ -21735,7 +21735,7 @@ module.exports = function reset_cameras(regl, params){
   params.labels.draw_labels = false;
   // params.animation.first_frame = true;
   params.animation.initialize_viz = true;
-  // params.show_tooltip = false;
+  // params.tooltip.show_tooltip = false;
   params.interact.total = 0
 
 };
@@ -22884,7 +22884,7 @@ module.exports = function draw_commands(regl, params){
   draw_axis_components(regl, params, 'col', params.labels.draw_labels);
   draw_spillover_components(regl, params);
 
-  if (params.show_tooltip && params.in_bounds_tooltip){
+  if (params.tooltip.show_tooltip && params.in_bounds_tooltip){
     // console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }
@@ -22894,9 +22894,9 @@ module.exports = function draw_commands(regl, params){
     params.labels.draw_labels = false;
   }
 
-  if (params.show_tooltip){
+  if (params.tooltip.show_tooltip){
     // console.log('----- turn off show tooltip ------')
-    params.show_tooltip = false;
+    params.tooltip.show_tooltip = false;
   }
 
 };
@@ -22947,11 +22947,11 @@ module.exports = function draw_labels_or_tooltips(regl, params){
 
   // console.log('slow_draw or show_tooltip');
   draw_commands(regl, params);
-  params.remove_tooltip_frame = true;
+  params.tooltip.remove_tooltip_frame = true;
 
   // set up extra frame specifically to remove old tooltip
-  if (params.show_tooltip){
-    params.show_tooltip = false;
+  if (params.tooltip.show_tooltip){
+    params.tooltip.show_tooltip = false;
     // console.log('initialize remove_tooltip_frame')
   }
 
@@ -23031,17 +23031,17 @@ module.exports = function draw_mouseover(regl, params){
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
   // remove old tooltip
-  if (params.remove_tooltip_frame){
+  if (params.tooltip.remove_tooltip_frame){
     // console.log('remove old tooltip ***********')
-    params.show_tooltip = false;
+    params.tooltip.show_tooltip = false;
 
     // console.log('still mouseover')
     draw_commands(regl, params);
   }
 
-  if (params.remove_tooltip_frame){
+  if (params.tooltip.remove_tooltip_frame){
       // console.log('--- shut down remove_tooltip_frame')
-    params.remove_tooltip_frame = false;
+    params.tooltip.remove_tooltip_frame = false;
   }
 
   // wait_time_final_mouseover = 0;
@@ -23293,7 +23293,7 @@ module.exports = function run_viz(regl, network){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
-    } else if (params.labels.draw_labels || params.show_tooltip){
+    } else if (params.labels.draw_labels || params.tooltip.show_tooltip){
       draw_labels_or_tooltips(regl, params);
     } else {
       // run background calculations
@@ -23375,7 +23375,7 @@ module.exports = function final_mouseover_frame(regl, params){
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
   if (params.zoom_data.x.total_mouseover == 0 && params.interact.still_mouseover == false){
-    params.show_tooltip = true;
+    params.tooltip.show_tooltip = true;
   }
 
 };
@@ -26007,29 +26007,20 @@ module.exports = function initialize_params(regl, network){
 
   generate_spillover_params(regl, params);
 
-  params.show_tooltip = false;
-
-  // the default is to remove the tooltip
-  params.remove_tooltip_frame = true;
-
-  params.in_bounds_tooltip = false;
   params.tooltip = {};
+  params.tooltip.show_tooltip = false;
+  params.tooltip.remove_tooltip_frame = true;
+  params.in_bounds_tooltip = false;
   params.tooltip.background_opacity = 0.75;
-  // make tooltip args
   params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
-
 
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
   generate_pix_to_webgl(params);
-
   make_label_queue(params);
-
   generate_text_zoom_params(params);
-
   calc_viz_area(params);
-
   generate_text_triangle_params(params);
 
   var min_dim;

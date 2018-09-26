@@ -23289,7 +23289,7 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
+    if (params.interact.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
     else if (params.still_mouseover == true){
@@ -23909,13 +23909,13 @@ module.exports = function keep_track_of_interactions(params){
   var wait_time_final_interact = 100;
 
   // keep track of interactions
-  if (params.still_interacting == false){
+  if (params.interact.still_interacting == false){
 
-    params.still_interacting = true;
+    params.interact.still_interacting = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.still_interacting = false;
+      params.interact.still_interacting = false;
     }, wait_time_final_interact);
 
   }
@@ -25695,12 +25695,10 @@ module.exports = function initialize_params(regl, network){
 
   params.time = 0;
   params.viz_interact = true;
-
-
-  animation_params(params);
-
   params.initialize_viz = true;
   params.first_frame = true;
+
+  animation_params(params);
 
   // use data from network
   //////////////////////////
@@ -25712,8 +25710,11 @@ module.exports = function initialize_params(regl, network){
     return context.view;
   };
 
+  params.interact = {};
+  params.interact.total = 0;
+  params.interact.still_interacting = false;
+
   params.zoom_function = zoom_function;
-  params.still_interacting = false;
   params.still_mouseover = false;
   params.mat_data = params.network.mat;
 
@@ -25750,9 +25751,6 @@ module.exports = function initialize_params(regl, network){
   params.draw_labels = false;
 
   params.zoom_data = ini_zoom_data();
-
-  params.interact = {};
-  params.interact.total = 0;
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);

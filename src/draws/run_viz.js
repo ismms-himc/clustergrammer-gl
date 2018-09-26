@@ -35,7 +35,7 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    if (params.still_interacting == true || params.initialize_viz == true || params.animation.running){
+    if (params.interact.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
     else if (params.still_mouseover == true){

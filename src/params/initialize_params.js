@@ -66,7 +66,6 @@ module.exports = function initialize_params(regl, network){
 
   calc_viz_dim(regl, params);
 
-
   generate_order_params(params);
 
   params.num_row = params.mat_data.length;
@@ -75,6 +74,10 @@ module.exports = function initialize_params(regl, network){
   var num_row = params.num_row;
   var num_col = params.num_col;
 
+
+  params.labels = {};
+  params.labels.num_row = params.mat_data.length;
+  params.labels.num_col = params.mat_data[0].length;
   generate_label_params(params);
 
   params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/num_col;

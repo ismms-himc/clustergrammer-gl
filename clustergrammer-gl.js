@@ -25724,7 +25724,6 @@ module.exports = function generate_label_params(params){
   params.labels.draw_labels = false;
 
   // font_detail range: min ~12 max ~200
-  ////////////////////////////////////////
   // usable range: 14-30 (was using 25)
   params.labels.font_detail = 20;
 
@@ -25751,6 +25750,34 @@ module.exports = function generate_order_params(params){
     params.order[inst_state].col = 'clust';
 
   });
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_pix_to_webgl.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_pix_to_webgl.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_pix_to_webgl(params){
+
+  var pix_to_webgl = {};
+  pix_to_webgl.x = d3.scale.linear();
+  pix_to_webgl.x
+    .domain([0, params.viz_dim.heat.width])
+    .range([-0.5, 0.5])
+    .clamp(true);
+
+  pix_to_webgl.y = d3.scale.linear();
+  pix_to_webgl.y
+    .domain([0, params.viz_dim.heat.height])
+    .range([0.5, -0.5])
+    .clamp(true);
+
+  params.pix_to_webgl = pix_to_webgl;
 
 };
 
@@ -25857,6 +25884,7 @@ var generate_interact_params = __webpack_require__(/*! ./generate_interact_param
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
 var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
 var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
+var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "./src/params/generate_pix_to_webgl.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25910,15 +25938,20 @@ module.exports = function initialize_params(regl, network){
 
   _.each(['row', 'col'], function(inst_axis){
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
-      params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.inst[inst_axis]);
-      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.new[inst_axis]);
+      _.each(['inst', 'new'], function(inst_state){
+
+        params.cat_arrs[inst_state][inst_axis][cat_index] = make_cat_position_array(
+          params, inst_axis, cat_index, params.order[inst_state][inst_axis]
+        );
+
+      });
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
 
-
-  calc_text_offsets(params, 'row');
-  calc_text_offsets(params, 'col');
+  _.each(['row', 'col'], function(inst_axis){
+    calc_text_offsets(params, inst_axis);
+  });
 
   params.dendro_args = {};
   _.each(['row', 'col'], function(inst_axis){
@@ -25938,26 +25971,13 @@ module.exports = function initialize_params(regl, network){
   // make tooltip args
   params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
 
-  var pix_to_webgl = {};
 
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
-  pix_to_webgl.x = d3.scale.linear();
-  pix_to_webgl.x
-    .domain([0, params.viz_dim.heat.width])
-    .range([-0.5, 0.5])
-    .clamp(true);
-
-  pix_to_webgl.y = d3.scale.linear();
-  pix_to_webgl.y
-    .domain([0, params.viz_dim.heat.height])
-    .range([0.5, -0.5])
-    .clamp(true);
+  generate_pix_to_webgl(params);
 
   make_label_queue(params);
-
-  params.pix_to_webgl = pix_to_webgl;
 
   params.text_zoom = {};
 

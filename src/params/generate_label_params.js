@@ -9,7 +9,6 @@ module.exports = function generate_label_params(params){
   params.labels.draw_labels = false;
 
   // font_detail range: min ~12 max ~200
-  ////////////////////////////////////////
   // usable range: 14-30 (was using 25)
   params.labels.font_detail = 20;
 

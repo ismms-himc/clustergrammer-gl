@@ -3,7 +3,7 @@ var restrict_rel_min = require('./restrict_rel_min');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
-  // console.log('still_mouseover', params.still_mouseover)
+  // console.log('still_mouseover', params.interact.still_mouseover)
 
   /*
 

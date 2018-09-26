@@ -55,9 +55,9 @@ module.exports = function initialize_params(regl, network){
   params.interact = {};
   params.interact.total = 0;
   params.interact.still_interacting = false;
+  params.interact.still_mouseover = false;
 
   params.zoom_function = zoom_function;
-  params.still_mouseover = false;
   params.mat_data = params.network.mat;
 
   generate_cat_params(params);

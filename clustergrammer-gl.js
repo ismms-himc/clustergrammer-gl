@@ -23292,7 +23292,7 @@ module.exports = function run_viz(regl, network){
     if (params.interact.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
-    else if (params.still_mouseover == true){
+    else if (params.interact.still_mouseover == true){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
@@ -23377,7 +23377,7 @@ module.exports = function final_mouseover_frame(regl, params){
   // reduce the number of mouseovers
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
-  if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
+  if (params.zoom_data.x.total_mouseover == 0 && params.interact.still_mouseover == false){
     params.show_tooltip = true;
   }
 
@@ -23397,7 +23397,7 @@ var restrict_rel_min = __webpack_require__(/*! ./restrict_rel_min */ "./src/inte
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
-  // console.log('still_mouseover', params.still_mouseover)
+  // console.log('still_mouseover', params.interact.still_mouseover)
 
   /*
 
@@ -23934,13 +23934,13 @@ module.exports = function keep_track_of_interactions(params){
 module.exports = function keep_track_of_mouseovers(params){
 
   // keep track of mouseovers
-  if (params.still_mouseover == false){
+  if (params.interact.still_mouseover == false){
 
-    params.still_mouseover = true;
+    params.interact.still_mouseover = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.still_mouseover = false;
+      params.interact.still_mouseover = false;
     }, 1000);
 
   }
@@ -25713,9 +25713,9 @@ module.exports = function initialize_params(regl, network){
   params.interact = {};
   params.interact.total = 0;
   params.interact.still_interacting = false;
+  params.interact.still_mouseover = false;
 
   params.zoom_function = zoom_function;
-  params.still_mouseover = false;
   params.mat_data = params.network.mat;
 
   generate_cat_params(params);

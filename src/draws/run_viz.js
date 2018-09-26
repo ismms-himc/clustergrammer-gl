@@ -38,7 +38,7 @@ module.exports = function run_viz(regl, network){
     if (params.interact.still_interacting == true || params.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
-    else if (params.still_mouseover == true){
+    else if (params.interact.still_mouseover == true){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);

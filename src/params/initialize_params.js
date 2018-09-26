@@ -68,16 +68,13 @@ module.exports = function initialize_params(regl, network){
 
   generate_order_params(params);
 
-  params.num_row = params.mat_data.length;
-  params.num_col = params.mat_data[0].length;
-
-  var num_row = params.num_row;
-  var num_col = params.num_col;
-
-
   params.labels = {};
   params.labels.num_row = params.mat_data.length;
   params.labels.num_col = params.mat_data[0].length;
+
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
+
   generate_label_params(params);
 
   params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/num_col;
@@ -202,7 +199,7 @@ module.exports = function initialize_params(regl, network){
   params.text_triangles.draw = {};
 
   _.each(['row', 'col'], function(inst_axis){
-    if (params['num_' + inst_axis] > params.max_num_text){
+    if (params.labels['num_' + inst_axis] > params.max_num_text){
       params.text_triangles.draw[inst_axis] = false;
     } else {
       gather_text_triangles(params, inst_axis);

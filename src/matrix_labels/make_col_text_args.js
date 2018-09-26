@@ -4,7 +4,7 @@ var interp_fun = require('./../draws/interp_fun');
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
   var inst_axis = 'col';
-  var num_col = params['num_' + inst_axis];
+  var num_col = params.labels['num_' + inst_axis];
 
   var col_width = params.viz_dim.heat_size.x/num_col;
 

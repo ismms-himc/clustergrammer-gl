@@ -4,7 +4,7 @@ var interp_fun = require('./../draws/interp_fun');
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
   var inst_axis = 'row';
-  var num_row = params['num_' + inst_axis];
+  var num_row = params.labels['num_' + inst_axis];
 
   var scale_text = num_row;
 

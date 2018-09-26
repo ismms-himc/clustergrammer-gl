@@ -24536,7 +24536,7 @@ module.exports = function calc_text_offsets(params, inst_axis){
     var axis_arr = params.canvas_pos[inst_dim + '_arr'];
     var inst_order = params.order.inst[inst_axis];
     var new_order = params.order.new[inst_axis];
-    var num_labels = params['num_' + inst_axis];
+    var num_labels = params.labels['num_' + inst_axis];
 
     // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
@@ -24693,7 +24693,7 @@ module.exports = function generate_ordered_labels(params){
 
     _.each(axis_nodes, function(inst_node){
 
-      inst_order = params['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
+      inst_order = params.labels['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
       ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
 
       if (found_axis_cat){
@@ -24728,7 +24728,7 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
   var inst_axis = 'col';
-  var num_col = params['num_' + inst_axis];
+  var num_col = params.labels['num_' + inst_axis];
 
   var col_width = params.viz_dim.heat_size.x/num_col;
 
@@ -24934,7 +24934,7 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
   var inst_axis = 'row';
-  var num_row = params['num_' + inst_axis];
+  var num_row = params.labels['num_' + inst_axis];
 
   var scale_text = num_row;
 
@@ -25064,7 +25064,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   var inst_rgba = color_to_rgba('#eee', 1.0);
   // var inst_rgba = color_to_rgba('red', 1.0);
-  var num_labels = params['num_' + inst_axis];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var tri_height;
   var tri_width;
@@ -25236,9 +25236,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order){
 
 
-  var num_labels = params['num_'+inst_axis];
+  var num_labels = params.labels['num_'+inst_axis];
   var mat_size;
-  // var tri_height;
   var tri_width;
 
   if (inst_axis === 'col'){
@@ -25310,7 +25309,7 @@ module.exports = function update_text_triangle_order(params, inst_axis){
   var new_order = params.order.new[inst_axis];
 
   var inst_text_triangles = params.text_triangles.draw[inst_axis];
-  var num_labels = params['num_' + inst_axis];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -25470,9 +25469,9 @@ module.exports = function calc_alpha_order(params){
 module.exports = function calc_row_and_col_canvas_positions(params){
 
   var inst_axis = 'row';
-  var num_row = params['num_' + inst_axis];
+  var num_row = params.labels['num_' + inst_axis];
   inst_axis = 'col';
-  var num_col = params['num_' + inst_axis];
+  var num_col = params.labels['num_' + inst_axis];
 
   // draw matrix cells
   /////////////////////////////////////////
@@ -25855,16 +25854,13 @@ module.exports = function initialize_params(regl, network){
 
   generate_order_params(params);
 
-  params.num_row = params.mat_data.length;
-  params.num_col = params.mat_data[0].length;
-
-  var num_row = params.num_row;
-  var num_col = params.num_col;
-
-
   params.labels = {};
   params.labels.num_row = params.mat_data.length;
   params.labels.num_col = params.mat_data[0].length;
+
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
+
   generate_label_params(params);
 
   params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/num_col;
@@ -25989,7 +25985,7 @@ module.exports = function initialize_params(regl, network){
   params.text_triangles.draw = {};
 
   _.each(['row', 'col'], function(inst_axis){
-    if (params['num_' + inst_axis] > params.max_num_text){
+    if (params.labels['num_' + inst_axis] > params.max_num_text){
       params.text_triangles.draw[inst_axis] = false;
     } else {
       gather_text_triangles(params, inst_axis);
@@ -26129,7 +26125,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   */
 
   // either update the existing draw text_triangles or trash them
-  if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] <= params.max_num_text){
+  if (cgm.params.text_triangles.draw[inst_axis] != false && params.labels['num_' + inst_axis] <= params.max_num_text){
     params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;

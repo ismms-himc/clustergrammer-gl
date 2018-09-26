@@ -28,7 +28,7 @@ module.exports = function generate_ordered_labels(params){
 
     _.each(axis_nodes, function(inst_node){
 
-      inst_order = params['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
+      inst_order = params.labels['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
       ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
 
       if (found_axis_cat){

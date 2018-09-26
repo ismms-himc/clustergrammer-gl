@@ -7,7 +7,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   var inst_rgba = color_to_rgba('#eee', 1.0);
   // var inst_rgba = color_to_rgba('red', 1.0);
-  var num_labels = params['num_' + inst_axis];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var tri_height;
   var tri_width;

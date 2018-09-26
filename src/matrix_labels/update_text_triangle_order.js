@@ -8,7 +8,7 @@ module.exports = function update_text_triangle_order(params, inst_axis){
   var new_order = params.order.new[inst_axis];
 
   var inst_text_triangles = params.text_triangles.draw[inst_axis];
-  var num_labels = params['num_' + inst_axis];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var inst_dim;
   if (inst_axis === 'col'){

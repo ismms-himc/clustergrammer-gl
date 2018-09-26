@@ -1,9 +1,8 @@
 module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order){
 
 
-  var num_labels = params['num_'+inst_axis];
+  var num_labels = params.labels['num_'+inst_axis];
   var mat_size;
-  // var tri_height;
   var tri_width;
 
   if (inst_axis === 'col'){

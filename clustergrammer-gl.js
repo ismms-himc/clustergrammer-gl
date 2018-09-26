@@ -21829,10 +21829,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   // var inst_rgba = color_to_rgba('#ff0000', 0.5);
   var inst_rgba = color_to_rgba('purple', 0.95);
-
-  // var color_names = _.keys(olor_table);
-
-  var num_labels = params['num_'+inst_axis];
+  var num_labels = params.labels['num_'+inst_axis];
 
   // category tiles have fixed heights
   var cat_height;
@@ -25709,7 +25706,6 @@ module.exports = function generate_interact_params(params){
 var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
 module.exports = function generate_label_params(params){
 
-  params.labels = {};
   params.labels.offset_dict = {};
   params.labels.draw_labels = false;
 

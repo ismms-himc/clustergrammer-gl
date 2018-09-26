@@ -25650,6 +25650,28 @@ module.exports = function generate_cat_params(params){
 
 /***/ }),
 
+/***/ "./src/params/generate_interact_params.js":
+/*!************************************************!*\
+  !*** ./src/params/generate_interact_params.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_interact_params(params){
+
+  params.interact = {};
+  params.interact.total = 0;
+  params.interact.still_interacting = false;
+  params.interact.still_mouseover = false;
+  params.interact.mouseover = {};
+  params.interact.mouseover.row_name = null;
+  params.interact.mouseover.col_name = null;
+  params.interact.mouseover.text_triangles = {};
+
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_label_params.js":
 /*!*********************************************!*\
   !*** ./src/params/generate_label_params.js ***!
@@ -25699,6 +25721,7 @@ var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_off
 var animation_params = __webpack_require__(/*! ./animation_params */ "./src/params/animation_params.js");
 var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
 var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
+var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25727,14 +25750,11 @@ module.exports = function initialize_params(regl, network){
 
   calc_alpha_order(params)
 
+  generate_interact_params(params);
+
   var zoom_function = function(context){
     return context.view;
   };
-
-  params.interact = {};
-  params.interact.total = 0;
-  params.interact.still_interacting = false;
-  params.interact.still_mouseover = false;
 
   params.zoom_function = zoom_function;
   params.mat_data = params.network.mat;
@@ -25745,11 +25765,20 @@ module.exports = function initialize_params(regl, network){
   Working on resizing the matrix, need to have separte x and y sizes
   */
 
-
   calc_viz_dim(regl, params);
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
+
+  params.inst_order = {};
+  params.inst_order.row = 'clust';
+  params.inst_order.col = 'clust';
+
+  params.new_order = {};
+  params.new_order.row = 'clust';
+  params.new_order.col = 'clust';
+
+  generate_label_params(params);
 
   params.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
   params.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
@@ -25784,13 +25813,6 @@ module.exports = function initialize_params(regl, network){
   params.is_downsampled = false;
   calc_row_downsampled_mat(params, run_downsampling);
 
-  params.inst_order = {};
-  params.inst_order.row = 'clust';
-  params.inst_order.col = 'clust';
-
-  params.new_order = {};
-  params.new_order.row = 'clust';
-  params.new_order.col = 'clust';
 
   params.viz_aid_tri_args = {};
 
@@ -25809,6 +25831,7 @@ module.exports = function initialize_params(regl, network){
   params.cat_arrs.new.row = {};
   params.cat_arrs.new.col = {};
 
+
   _.each(['row', 'col'], function(inst_axis){
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
       params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.inst_order[inst_axis]);
@@ -25817,7 +25840,6 @@ module.exports = function initialize_params(regl, network){
     }
   });
 
-  generate_label_params(params);
 
   calc_text_offsets(params, 'row');
   calc_text_offsets(params, 'col');
@@ -25883,11 +25905,6 @@ module.exports = function initialize_params(regl, network){
     .clamp(true);
 
   make_label_queue(params);
-
-  params.interact.mouseover = {};
-  params.interact.mouseover.row_name = null;
-  params.interact.mouseover.col_name = null;
-  params.interact.mouseover.text_triangles = {};
 
   params.pix_to_webgl = pix_to_webgl;
 

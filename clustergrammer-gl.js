@@ -25849,10 +25849,11 @@ module.exports = function initialize_params(regl, network){
 
   calc_viz_dim(regl, params);
 
-  params.num_row = params.mat_data.length;
-  params.num_col = params.mat_data[0].length;
 
   generate_order_params(params);
+
+  params.num_row = params.mat_data.length;
+  params.num_col = params.mat_data[0].length;
 
   generate_label_params(params);
 

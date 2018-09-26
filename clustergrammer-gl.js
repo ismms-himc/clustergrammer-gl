@@ -22884,7 +22884,7 @@ module.exports = function draw_commands(regl, params){
   draw_axis_components(regl, params, 'col', params.labels.draw_labels);
   draw_spillover_components(regl, params);
 
-  if (params.tooltip.show_tooltip && params.in_bounds_tooltip){
+  if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
     // console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }
@@ -23092,7 +23092,7 @@ module.exports = function draw_tooltip_components(regl, params){
   params.cameras.static.draw(() => {
 
     // var args = params.spillover_args.mat_corners;
-    var args = params.tooltip_args;
+    var args = params.tooltip.tooltip_args;
 
     // tooltip background
     ////////////////////////////
@@ -23476,10 +23476,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.interact.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-    params.in_bounds_tooltip = true;
+    params.tooltip.in_bounds_tooltip = true;
   } else {
     // console.log('OUTSIDE OF MATRIX')
-    params.in_bounds_tooltip = false;
+    params.tooltip.in_bounds_tooltip = false;
   }
 
 };
@@ -25923,6 +25923,27 @@ module.exports = function generate_text_zoom_params(params){
 
 /***/ }),
 
+/***/ "./src/params/generate_tooltip_params.js":
+/*!***********************************************!*\
+  !*** ./src/params/generate_tooltip_params.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
+module.exports = function generate_tooltip_params(regl, params){
+
+  params.tooltip = {};
+  params.tooltip.show_tooltip = false;
+  params.tooltip.remove_tooltip_frame = true;
+  params.tooltip.in_bounds_tooltip = false;
+  params.tooltip.background_opacity = 0.75;
+  params.tooltip.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
+
+}
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25940,7 +25961,6 @@ var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_arg
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
-var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
@@ -25954,6 +25974,7 @@ var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_tria
 var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "./src/params/generate_pix_to_webgl.js");
 var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
 var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
+var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25974,17 +25995,11 @@ module.exports = function initialize_params(regl, network){
   params.mat_data = params.network.mat;
 
   generate_cat_params(params);
-
   generate_order_params(params);
-
   generate_label_params(params);
-
   calc_viz_dim(regl, params);
-
   generate_cat_args_arrs(regl, params);
-
   params.zoom_data = ini_zoom_data();
-
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
@@ -26007,12 +26022,7 @@ module.exports = function initialize_params(regl, network){
 
   generate_spillover_params(regl, params);
 
-  params.tooltip = {};
-  params.tooltip.show_tooltip = false;
-  params.tooltip.remove_tooltip_frame = true;
-  params.in_bounds_tooltip = false;
-  params.tooltip.background_opacity = 0.75;
-  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
+  generate_tooltip_params(regl, params);
 
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
@@ -26035,7 +26045,6 @@ module.exports = function initialize_params(regl, network){
 
   // update zoom_data
   zoom_rules_high_mat(regl, params);
-
   make_cameras(regl, params);
 
   // generate matrix_args using buffers

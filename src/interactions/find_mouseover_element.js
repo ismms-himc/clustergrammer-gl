@@ -85,10 +85,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.interact.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-    params.in_bounds_tooltip = true;
+    params.tooltip.in_bounds_tooltip = true;
   } else {
     // console.log('OUTSIDE OF MATRIX')
-    params.in_bounds_tooltip = false;
+    params.tooltip.in_bounds_tooltip = false;
   }
 
 };

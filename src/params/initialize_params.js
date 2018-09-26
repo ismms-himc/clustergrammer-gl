@@ -8,7 +8,6 @@ var make_matrix_args = require('./../matrix_cells/make_matrix_args');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./../matrix_cells/calc_row_downsampled_mat');
-var make_tooltip_background_args = require('./../tooltip/make_tooltip_background_args');
 var calc_alpha_order = require('./calc_alpha_order');
 var make_label_queue = require('./../matrix_labels/make_label_queue');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
@@ -22,6 +21,7 @@ var generate_text_triangle_params = require('./generate_text_triangle_params');
 var generate_pix_to_webgl = require('./generate_pix_to_webgl');
 var generate_text_zoom_params = require('./generate_text_zoom_params');
 var generate_cat_args_arrs = require('./generate_cat_args_arrs');
+var generate_tooltip_params = require('./generate_tooltip_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -42,17 +42,11 @@ module.exports = function initialize_params(regl, network){
   params.mat_data = params.network.mat;
 
   generate_cat_params(params);
-
   generate_order_params(params);
-
   generate_label_params(params);
-
   calc_viz_dim(regl, params);
-
   generate_cat_args_arrs(regl, params);
-
   params.zoom_data = ini_zoom_data();
-
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
@@ -75,12 +69,7 @@ module.exports = function initialize_params(regl, network){
 
   generate_spillover_params(regl, params);
 
-  params.tooltip = {};
-  params.tooltip.show_tooltip = false;
-  params.tooltip.remove_tooltip_frame = true;
-  params.in_bounds_tooltip = false;
-  params.tooltip.background_opacity = 0.75;
-  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
+  generate_tooltip_params(regl, params);
 
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
@@ -103,7 +92,6 @@ module.exports = function initialize_params(regl, network){
 
   // update zoom_data
   zoom_rules_high_mat(regl, params);
-
   make_cameras(regl, params);
 
   // generate matrix_args using buffers

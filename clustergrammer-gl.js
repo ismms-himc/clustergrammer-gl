@@ -22058,7 +22058,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
 module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
 
-  var num_labels = params['num_'+inst_axis];
+  var num_labels = params.labels['num_'+inst_axis];
   // category tiles have fixed heights
   // category widths depend on the number of labels
   var cat_width;
@@ -22608,7 +22608,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
     y_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
   }
 
-  var num_labels = params['num_' + inst_rc];
+  var num_labels = params.labels['num_' + inst_rc];
 
   var row_width = 0.025;
   var tile_height = (1/num_labels) * (mat_size/0.5);

@@ -1,6 +1,6 @@
 module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
 
-  var num_labels = params['num_'+inst_axis];
+  var num_labels = params.labels['num_'+inst_axis];
   // category tiles have fixed heights
   // category widths depend on the number of labels
   var cat_width;

@@ -18,9 +18,11 @@ module.exports = function generate_spillover_params(regl, params){
   var spillover_elements = ['mat_sides', 'cats', 'mat_corners', 'label_corners'];
 
   _.each(spillover_elements, function(inst_element){
-    spillover_args[inst_element] = make_spillover_args(regl,
-                                                   params.spill_depth[inst_element],
-                                                   inst_color);
+    spillover_args[inst_element] = make_spillover_args(
+                                     regl,
+                                     params.spill_depth[inst_element],
+                                     inst_color
+                                   );
   });
 
   params.spillover_args = spillover_args;

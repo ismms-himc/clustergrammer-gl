@@ -102,7 +102,6 @@ module.exports = function initialize_params(regl, network){
   params.is_downsampled = false;
   calc_row_downsampled_mat(params, run_downsampling);
 
-
   params.viz_aid_tri_args = {};
 
   params.cat_args = {};

@@ -78,7 +78,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
 
-      params.interact.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
+      params.interact.mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index];
+
       mouseover_text = params.interact.mouseover.col_cat;
       params.interact.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.interact.mouseover.text_triangles['line-2'].offset = [0,0];

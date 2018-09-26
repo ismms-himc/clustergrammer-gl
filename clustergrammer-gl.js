@@ -23138,7 +23138,7 @@ module.exports = function draw_tooltip_components(regl, params){
 
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
+var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
 
 module.exports = function end_animation(regl, params){
 
@@ -23182,7 +23182,7 @@ module.exports = function end_animation(regl, params){
   });
 
   // update ordered_labels
-  get_ordered_labels(params);
+  generate_ordered_labels(params);
 
 };
 
@@ -23472,7 +23472,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
       params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
 
-      params.interact.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
+      params.interact.mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index];
+
       mouseover_text = params.interact.mouseover.col_cat;
       params.interact.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.interact.mouseover.text_triangles['line-2'].offset = [0,0];
@@ -24658,14 +24659,18 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
 /***/ }),
 
-/***/ "./src/matrix_labels/get_ordered_labels.js":
-/*!*************************************************!*\
-  !*** ./src/matrix_labels/get_ordered_labels.js ***!
-  \*************************************************/
+/***/ "./src/matrix_labels/generate_ordered_labels.js":
+/*!******************************************************!*\
+  !*** ./src/matrix_labels/generate_ordered_labels.js ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function get_ordered_labels(params){
+module.exports = function generate_ordered_labels(params){
+
+  /*
+    Generate lists of ordered label and category names for mouseover
+  */
 
   var inst_order;
   var ordered_labels = {};
@@ -24679,7 +24684,11 @@ module.exports = function get_ordered_labels(params){
     axis_nodes = params.network[inst_axis + '_nodes'];
 
     var found_axis_cat = false;
-    ordered_labels[inst_axis + '_cats'] = [];
+
+    for (var i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+      ordered_labels[inst_axis + '_cats-' + String(i)] = [];
+    }
+
     if (params.cat_data.cat_num[inst_axis] > 0){
       found_axis_cat = true;
     }
@@ -24690,7 +24699,12 @@ module.exports = function get_ordered_labels(params){
       ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
 
       if (found_axis_cat){
-        ordered_labels[inst_axis + '_cats'][inst_order] = inst_node['cat-0'];
+
+        for (var i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+
+          ordered_labels[inst_axis + '_cats-' + String(i)][inst_order] = inst_node['cat-' + String(i)];
+
+        }
       }
 
     });
@@ -25684,14 +25698,14 @@ module.exports = function generate_interact_params(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
+var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
 module.exports = function generate_label_params(params){
 
   params.labels = {};
   params.labels.offset_dict = {};
   params.labels.draw_labels = false;
 
-  get_ordered_labels(params);
+  generate_ordered_labels(params);
 
 };
 
@@ -25870,7 +25884,6 @@ module.exports = function initialize_params(regl, network){
   var run_downsampling = false;
   params.is_downsampled = false;
   calc_row_downsampled_mat(params, run_downsampling);
-
 
   params.viz_aid_tri_args = {};
 

@@ -1,4 +1,8 @@
-module.exports = function get_ordered_labels(params){
+module.exports = function generate_ordered_labels(params){
+
+  /*
+    Generate lists of ordered label and category names for mouseover
+  */
 
   var inst_order;
   var ordered_labels = {};
@@ -12,7 +16,11 @@ module.exports = function get_ordered_labels(params){
     axis_nodes = params.network[inst_axis + '_nodes'];
 
     var found_axis_cat = false;
-    ordered_labels[inst_axis + '_cats'] = [];
+
+    for (var i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+      ordered_labels[inst_axis + '_cats-' + String(i)] = [];
+    }
+
     if (params.cat_data.cat_num[inst_axis] > 0){
       found_axis_cat = true;
     }
@@ -23,7 +31,12 @@ module.exports = function get_ordered_labels(params){
       ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
 
       if (found_axis_cat){
-        ordered_labels[inst_axis + '_cats'][inst_order] = inst_node['cat-0'];
+
+        for (var i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+
+          ordered_labels[inst_axis + '_cats-' + String(i)][inst_order] = inst_node['cat-' + String(i)];
+
+        }
       }
 
     });

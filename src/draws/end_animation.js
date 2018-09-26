@@ -1,6 +1,6 @@
 var update_text_triangle_order = require('./../matrix_labels/update_text_triangle_order');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
-var get_ordered_labels = require('./../matrix_labels/get_ordered_labels');
+var generate_ordered_labels = require('./../matrix_labels/generate_ordered_labels');
 
 module.exports = function end_animation(regl, params){
 
@@ -44,6 +44,6 @@ module.exports = function end_animation(regl, params){
   });
 
   // update ordered_labels
-  get_ordered_labels(params);
+  generate_ordered_labels(params);
 
 };

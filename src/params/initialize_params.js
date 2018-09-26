@@ -8,7 +8,6 @@ var make_cameras = require('./../cameras/make_cameras');
 var calc_spillover_triangles = require('./../spillover/calc_spillover_triangles');
 var make_matrix_args = require('./../matrix_cells/make_matrix_args');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
-var make_spillover_args = require('./../spillover/make_spillover_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./../matrix_cells/calc_row_downsampled_mat');
 var make_cat_args = require('./../cats/make_cat_args');
@@ -22,6 +21,7 @@ var generate_cat_params = require('./generate_cat_params');
 var generate_label_params = require('./generate_label_params');
 var generate_interact_params = require('./generate_interact_params');
 var generate_order_params = require('./generate_order_params');
+var generate_spillover_params = require('./generate_spillover_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -136,33 +136,7 @@ module.exports = function initialize_params(regl, network){
   params.dendro_args.row = make_dendro_args(regl, params, 'row');
   params.dendro_args.col = make_dendro_args(regl, params, 'col');
 
-  var spillover_args = {};
-
-  // inst_depth is passed to spillover rects
-  // var inst_color = [0, 0, 0, 0.02];
-  var inst_color = [1, 1, 1, 1];
-
-  params.spill_depth = {};
-  params.spill_depth.mat_sides = 0.5;
-  spillover_args.mat_sides = make_spillover_args(regl,
-                                                 params.spill_depth.mat_sides,
-                                                 inst_color);
-
-  params.spill_depth.cats = 0.5;
-  spillover_args.cats = make_spillover_args(regl,
-                                                 params.spill_depth.cats,
-                                                 inst_color);
-
-  params.spill_depth.mat_corners = 0.2;
-  spillover_args.mat_corners = make_spillover_args(regl,
-                                                   params.spill_depth.mat_corners,
-                                                   inst_color);
-  params.spill_depth.label_corners = 0.001;
-  spillover_args.label_corners = make_spillover_args(regl,
-                                                     params.spill_depth.label_corners,
-                                                     inst_color);
-
-  params.spillover_args = spillover_args;
+  generate_spillover_params(regl, params);
 
   params.show_tooltip = false;
 

@@ -25719,6 +25719,49 @@ module.exports = function generate_order_params(params){
 
 /***/ }),
 
+/***/ "./src/params/generate_spillover_params.js":
+/*!*************************************************!*\
+  !*** ./src/params/generate_spillover_params.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
+
+module.exports = function generate_spillover_params(regl, params){
+
+  var spillover_args = {};
+
+  // inst_depth is passed to spillover rects
+  // var inst_color = [0, 0, 0, 0.02];
+  var inst_color = [1, 1, 1, 1];
+
+  params.spill_depth = {};
+  params.spill_depth.mat_sides = 0.5;
+  spillover_args.mat_sides = make_spillover_args(regl,
+                                                 params.spill_depth.mat_sides,
+                                                 inst_color);
+
+  params.spill_depth.cats = 0.5;
+  spillover_args.cats = make_spillover_args(regl,
+                                                 params.spill_depth.cats,
+                                                 inst_color);
+
+  params.spill_depth.mat_corners = 0.2;
+  spillover_args.mat_corners = make_spillover_args(regl,
+                                                   params.spill_depth.mat_corners,
+                                                   inst_color);
+  params.spill_depth.label_corners = 0.001;
+  spillover_args.label_corners = make_spillover_args(regl,
+                                                     params.spill_depth.label_corners,
+                                                     inst_color);
+
+  params.spillover_args = spillover_args;
+
+};
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25736,7 +25779,6 @@ var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/c
 var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
-var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
 var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
@@ -25750,6 +25792,7 @@ var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./sr
 var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
 var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
+var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25864,33 +25907,7 @@ module.exports = function initialize_params(regl, network){
   params.dendro_args.row = make_dendro_args(regl, params, 'row');
   params.dendro_args.col = make_dendro_args(regl, params, 'col');
 
-  var spillover_args = {};
-
-  // inst_depth is passed to spillover rects
-  // var inst_color = [0, 0, 0, 0.02];
-  var inst_color = [1, 1, 1, 1];
-
-  params.spill_depth = {};
-  params.spill_depth.mat_sides = 0.5;
-  spillover_args.mat_sides = make_spillover_args(regl,
-                                                 params.spill_depth.mat_sides,
-                                                 inst_color);
-
-  params.spill_depth.cats = 0.5;
-  spillover_args.cats = make_spillover_args(regl,
-                                                 params.spill_depth.cats,
-                                                 inst_color);
-
-  params.spill_depth.mat_corners = 0.2;
-  spillover_args.mat_corners = make_spillover_args(regl,
-                                                   params.spill_depth.mat_corners,
-                                                   inst_color);
-  params.spill_depth.label_corners = 0.001;
-  spillover_args.label_corners = make_spillover_args(regl,
-                                                     params.spill_depth.label_corners,
-                                                     inst_color);
-
-  params.spillover_args = spillover_args;
+  generate_spillover_params(regl, params);
 
   params.show_tooltip = false;
 

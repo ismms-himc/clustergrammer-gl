@@ -11,7 +11,7 @@ module.exports = function reset_cameras(regl, params){
 
   params.labels.draw_labels = false;
   // params.animation.first_frame = true;
-  params.initialize_viz = true;
+  params.animation.initialize_viz = true;
   // params.show_tooltip = false;
   params.interact.total = 0
 

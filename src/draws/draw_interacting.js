@@ -11,7 +11,7 @@ module.exports = function draw_interacting(regl, params){
 
   setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
-  params.initialize_viz = false;
+  params.animation.initialize_viz = false;
 
   if (params.animation.time_remain > 0){
     params.animation.time_remain = params.animation.time_remain - 1;

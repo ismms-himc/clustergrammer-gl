@@ -21734,7 +21734,7 @@ module.exports = function reset_cameras(regl, params){
 
   params.labels.draw_labels = false;
   // params.animation.first_frame = true;
-  params.initialize_viz = true;
+  params.animation.initialize_viz = true;
   // params.show_tooltip = false;
   params.interact.total = 0
 
@@ -22923,7 +22923,7 @@ module.exports = function draw_interacting(regl, params){
 
   setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
-  params.initialize_viz = false;
+  params.animation.initialize_viz = false;
 
   if (params.animation.time_remain > 0){
     params.animation.time_remain = params.animation.time_remain - 1;
@@ -23286,7 +23286,7 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    if (params.interact.still_interacting == true || params.initialize_viz == true || params.animation.running){
+    if (params.interact.still_interacting == true || params.animation.initialize_viz == true || params.animation.running){
       draw_interacting(regl, params);
     }
     else if (params.interact.still_mouseover == true){
@@ -23340,7 +23340,7 @@ module.exports = function final_interaction_frame(regl, params){
   // reduce the number of interactions
   params.interact.total = params.interact.total - 1;
 
-  if (params.interact.total == 0 && params.initialize_viz == false){
+  if (params.interact.total == 0 && params.animation.initialize_viz == false){
 
     // preventing from running on first frame
     if (params.animation.first_frame == false){
@@ -25637,6 +25637,7 @@ module.exports = function generate_animation_params(params){
 
   params.animation.time = 0;
   params.animation.first_frame = true;
+  params.animation.initialize_viz = true;
 
 };
 
@@ -25824,8 +25825,7 @@ module.exports = function initialize_params(regl, network){
   params.network = network;
 
   generate_animation_params(params);
-  params.first_frame = true;
-  params.initialize_viz = true;
+  params.animation.initialize_viz = true;
 
   params.viz_interact = true;
 

@@ -77,10 +77,6 @@ module.exports = function initialize_params(regl, network){
   params.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
   params.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
 
-  params.center = {};
-  params.center.x = 0.5;
-  params.center.y = 0.5;
-
   // will set up global offset later
   params.offcenter = {};
   var offcenter_magnitude_x = 0.075;
@@ -124,7 +120,6 @@ module.exports = function initialize_params(regl, network){
   params.cat_arrs.new = {}
   params.cat_arrs.new.row = {};
   params.cat_arrs.new.col = {};
-
 
   _.each(['row', 'col'], function(inst_axis){
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {

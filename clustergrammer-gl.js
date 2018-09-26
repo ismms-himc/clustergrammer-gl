@@ -25459,8 +25459,8 @@ module.exports = function calc_row_and_col_canvas_positions(params){
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.center.x;
-  offset.y = params.center.y;
+  offset.x = params.viz_dim.center.x;
+  offset.y = params.viz_dim.center.y;
 
   // generate x position array
   var x_arr = Array(num_col).fill()
@@ -25617,7 +25617,13 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
   viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
 
+
+  viz_dim.center = {};
+  viz_dim.center.x = 0.5;
+  viz_dim.center.y = 0.5;
+
   params.viz_dim = viz_dim;
+
 
 };
 
@@ -25800,10 +25806,6 @@ module.exports = function initialize_params(regl, network){
   params.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
   params.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
 
-  params.center = {};
-  params.center.x = 0.5;
-  params.center.y = 0.5;
-
   // will set up global offset later
   params.offcenter = {};
   var offcenter_magnitude_x = 0.075;
@@ -25847,7 +25849,6 @@ module.exports = function initialize_params(regl, network){
   params.cat_arrs.new = {}
   params.cat_arrs.new.row = {};
   params.cat_arrs.new.col = {};
-
 
   _.each(['row', 'col'], function(inst_axis){
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {

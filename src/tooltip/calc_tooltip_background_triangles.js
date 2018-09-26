@@ -15,8 +15,8 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
 
   // // trying to shift based on diff between mat and heat size
   // var inst_shift = {}
-  // inst_shift.x = params.viz_dim.mat_size.x - params.heat_size.x;
-  // inst_shift.y = params.viz_dim.mat_size.y - params.heat_size.y;
+  // inst_shift.x = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+  // inst_shift.y = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
 
   var tooltip_width = 0.5;
   var tooltip_height = 0.1;

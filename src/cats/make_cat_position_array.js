@@ -6,12 +6,12 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
   var cat_width;
   var mat_size;
   if (inst_axis === 'col'){
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
-    mat_size = params.heat_size.y;
-    cat_width = (params.heat_size.y/0.5)/num_labels;
+    mat_size = params.viz_dim.heat_size.y;
+    cat_width = (params.viz_dim.heat_size.y/0.5)/num_labels;
   }
 
   /////////////////////////////////
@@ -31,10 +31,10 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     if (inst_axis == 'row'){
       order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
       // vertical shift
-      shift_mat_heat = -(params.viz_dim.mat_size.y - params.heat_size.y)
+      shift_mat_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y)
     } else {
       order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.viz_dim.mat_size.x - params.heat_size.x
+      shift_mat_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x
     }
 
     /* need to position based on clustering order */

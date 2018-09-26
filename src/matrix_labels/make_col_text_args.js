@@ -3,7 +3,7 @@ var interp_fun = require('./../draws/interp_fun');
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
-  var col_width = params.heat_size.x/params.num_col;
+  var col_width = params.viz_dim.heat_size.x/params.num_col;
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
@@ -124,8 +124,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       y_offset: params.viz_dim.mat_size.y,
-      heat_size: params.heat_size.x,
-      shift_heat: params.viz_dim.mat_size.x - params.heat_size.x,
+      heat_size: params.viz_dim.heat_size.x,
+      shift_heat: params.viz_dim.mat_size.x - params.viz_dim.heat_size.x,
       shift_text_right: shift_text_right,
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,

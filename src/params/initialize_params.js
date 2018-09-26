@@ -70,18 +70,17 @@ module.exports = function initialize_params(regl, network){
   params.viz_dim.mat_size.x = 0.80;
   params.viz_dim.mat_size.y = 0.80;
 
-
-  params.heat_size = {};
-  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
-  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
+  params.viz_dim.heat_size = {};
+  params.viz_dim.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  params.viz_dim.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
 
   calc_viz_dim(regl, params);
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
-  params.tile_width = (params.heat_size.x/0.5)/params.num_col;
-  params.tile_height = (params.heat_size.y/0.5)/params.num_row;
+  params.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
+  params.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
 
   params.center = {};
   params.center.x = 0.5;

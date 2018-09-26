@@ -43,8 +43,8 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.heat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.heat.width  = params.heat_size.x * viz_dim.canvas.width;
-  viz_dim.heat.height = params.heat_size.y * viz_dim.canvas.height;
+  viz_dim.heat.width  = params.viz_dim.heat_size.x * viz_dim.canvas.width;
+  viz_dim.heat.height = params.viz_dim.heat_size.y * viz_dim.canvas.height;
 
   var offset_heat = {};
 

@@ -10,14 +10,14 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   var y_shift;
   if (inst_rc === 'row'){
     rotation_radians = 0;
-    mat_size = params.heat_size.y;
+    mat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
-    y_shift = -(params.viz_dim.mat_size.y - params.heat_size.y);
+    y_shift = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
   } else if (inst_rc === 'col'){
     rotation_radians = Math.PI/2;
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
-    y_shift = params.viz_dim.mat_size.x - params.heat_size.x;
+    y_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
   }
 
   var num_labels = params['num_' + inst_rc];

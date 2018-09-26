@@ -21842,14 +21842,14 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var top_shift_triangles;
   cat_height = 0.04;
   if (inst_axis === 'col'){
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     top_shift_triangles = params.viz_dim.mat_size.y;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
-    mat_size = params.heat_size.y;
+    mat_size = params.viz_dim.heat_size.y;
     top_shift_triangles = params.viz_dim.mat_size.x;
-    cat_width = (params.heat_size.y/0.5)/num_labels;
+    cat_width = (params.viz_dim.heat_size.y/0.5)/num_labels;
   }
 
   var zoom_function = function(context){
@@ -22067,12 +22067,12 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
   var cat_width;
   var mat_size;
   if (inst_axis === 'col'){
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
-    mat_size = params.heat_size.y;
-    cat_width = (params.heat_size.y/0.5)/num_labels;
+    mat_size = params.viz_dim.heat_size.y;
+    cat_width = (params.viz_dim.heat_size.y/0.5)/num_labels;
   }
 
   /////////////////////////////////
@@ -22092,10 +22092,10 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     if (inst_axis == 'row'){
       order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
       // vertical shift
-      shift_mat_heat = -(params.viz_dim.mat_size.y - params.heat_size.y)
+      shift_mat_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y)
     } else {
       order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.viz_dim.mat_size.x - params.heat_size.x
+      shift_mat_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x
     }
 
     /* need to position based on clustering order */
@@ -22601,14 +22601,14 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   var y_shift;
   if (inst_rc === 'row'){
     rotation_radians = 0;
-    mat_size = params.heat_size.y;
+    mat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
-    y_shift = -(params.viz_dim.mat_size.y - params.heat_size.y);
+    y_shift = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
   } else if (inst_rc === 'col'){
     rotation_radians = Math.PI/2;
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
-    y_shift = params.viz_dim.mat_size.x - params.heat_size.x;
+    y_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
   }
 
   var num_labels = params['num_' + inst_rc];
@@ -24434,14 +24434,14 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   // generate x position array
   var x_arr = Array(num_col).fill()
     .map(function(_, i){
-      return i/num_col * (params.heat_size.x/0.5) -  (offset.x - 2*(offset.x - params.heat_size.x) );
+      return i/num_col * (params.viz_dim.heat_size.x/0.5) -  (offset.x - 2*(offset.x - params.viz_dim.heat_size.x) );
     });
 
   var y_arr = Array(num_row).fill()
     .map(function(_, i){
 
-      // updated to take into consideration params.heat_size.x
-      return -i/num_row * (params.heat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.heat_size.y) - 2*(offset.y - params.heat_size.y) ;
+      // updated to take into consideration params.viz_dim.heat_size.x
+      return -i/num_row * (params.viz_dim.heat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.viz_dim.heat_size.y) - 2*(offset.y - params.viz_dim.heat_size.y) ;
     });
 
   var node_canvas_pos = {};
@@ -24714,7 +24714,7 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
-  var col_width = params.heat_size.x/params.num_col;
+  var col_width = params.viz_dim.heat_size.x/params.num_col;
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
@@ -24835,8 +24835,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       y_offset: params.viz_dim.mat_size.y,
-      heat_size: params.heat_size.x,
-      shift_heat: params.viz_dim.mat_size.x - params.heat_size.x,
+      heat_size: params.viz_dim.heat_size.x,
+      shift_heat: params.viz_dim.mat_size.x - params.viz_dim.heat_size.x,
       shift_text_right: shift_text_right,
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,
@@ -25008,8 +25008,8 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       x_offset: x_offset,
-      heat_size: params.heat_size.y,
-      shift_heat: params.viz_dim.mat_size.y - params.heat_size.y,
+      heat_size: params.viz_dim.heat_size.y,
+      shift_heat: params.viz_dim.mat_size.y - params.viz_dim.heat_size.y,
       total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
@@ -25055,7 +25055,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   if (inst_axis === 'col'){
 
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
     var reduce_height = params.zoom_data.x.total_zoom;
@@ -25068,7 +25068,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
   } else {
 
     // rows have fixed viz aid triangle 'heights'
-    mat_size = params.heat_size.y;
+    mat_size = params.viz_dim.heat_size.y;
     tri_height = 0.0125;
     tri_width = mat_size/num_labels;
     top_offset = -params.viz_dim.mat_size.x - tri_height;
@@ -25225,7 +25225,7 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
 
   if (inst_axis === 'col'){
 
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
     // var reduce_height = params.zoom_data.x.total_zoom;
@@ -25238,7 +25238,7 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   } else {
 
     // rows have fixed viz aid triangle 'heights'
-    mat_size = params.heat_size.y;
+    mat_size = params.viz_dim.heat_size.y;
     // tri_height = 0.0125;
     tri_width = mat_size/num_labels;
     // top_offset = -params.viz_dim.mat_size.x - tri_height;
@@ -25256,10 +25256,10 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     var shift_mat_heat;
     if (inst_axis == 'row'){
       order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
-      shift_mat_heat = -(params.viz_dim.mat_size.y - params.heat_size.y);
+      shift_mat_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
     } else {
       order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.viz_dim.mat_size.x - params.heat_size.x;
+      shift_mat_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
     }
 
     /* need to position based on clustering order */
@@ -25593,8 +25593,8 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.heat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.heat.width  = params.heat_size.x * viz_dim.canvas.width;
-  viz_dim.heat.height = params.heat_size.y * viz_dim.canvas.height;
+  viz_dim.heat.width  = params.viz_dim.heat_size.x * viz_dim.canvas.width;
+  viz_dim.heat.height = params.viz_dim.heat_size.y * viz_dim.canvas.height;
 
   var offset_heat = {};
 
@@ -25721,18 +25721,17 @@ module.exports = function initialize_params(regl, network){
   params.viz_dim.mat_size.x = 0.80;
   params.viz_dim.mat_size.y = 0.80;
 
-
-  params.heat_size = {};
-  params.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
-  params.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
+  params.viz_dim.heat_size = {};
+  params.viz_dim.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  params.viz_dim.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
 
   calc_viz_dim(regl, params);
 
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
-  params.tile_width = (params.heat_size.x/0.5)/params.num_col;
-  params.tile_height = (params.heat_size.y/0.5)/params.num_row;
+  params.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
+  params.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
 
   params.center = {};
   params.center.x = 0.5;
@@ -26080,7 +26079,7 @@ module.exports = function calc_spillover_triangles(params){
   var viz_dim = params.viz_dim;
 
   var ini_mat = params.viz_dim.mat_size;
-  var ini_heat = params.heat_size;
+  var ini_heat = params.viz_dim.heat_size;
 
   var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
 
@@ -26096,8 +26095,8 @@ module.exports = function calc_spillover_triangles(params){
 
   // trying to shift based on diff between mat and heat size
   var inst_shift = {}
-  inst_shift.x = params.viz_dim.mat_size.x - params.heat_size.x;
-  inst_shift.y = params.viz_dim.mat_size.y - params.heat_size.y;
+  inst_shift.x = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+  inst_shift.y = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
 
   spillover_triangles.mat_sides = [
 
@@ -26307,8 +26306,8 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
 
   // // trying to shift based on diff between mat and heat size
   // var inst_shift = {}
-  // inst_shift.x = params.viz_dim.mat_size.x - params.heat_size.x;
-  // inst_shift.y = params.viz_dim.mat_size.y - params.heat_size.y;
+  // inst_shift.x = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+  // inst_shift.y = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
 
   var tooltip_width = 0.5;
   var tooltip_height = 0.1;

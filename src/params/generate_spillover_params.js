@@ -1,4 +1,5 @@
 var make_spillover_args = require('./../spillover/make_spillover_args');
+var calc_spillover_triangles = require('./../spillover/calc_spillover_triangles');
 
 module.exports = function generate_spillover_params(regl, params){
 
@@ -10,24 +11,19 @@ module.exports = function generate_spillover_params(regl, params){
 
   params.spill_depth = {};
   params.spill_depth.mat_sides = 0.5;
-  spillover_args.mat_sides = make_spillover_args(regl,
-                                                 params.spill_depth.mat_sides,
-                                                 inst_color);
-
   params.spill_depth.cats = 0.5;
-  spillover_args.cats = make_spillover_args(regl,
-                                                 params.spill_depth.cats,
-                                                 inst_color);
-
   params.spill_depth.mat_corners = 0.2;
-  spillover_args.mat_corners = make_spillover_args(regl,
-                                                   params.spill_depth.mat_corners,
-                                                   inst_color);
   params.spill_depth.label_corners = 0.001;
-  spillover_args.label_corners = make_spillover_args(regl,
-                                                     params.spill_depth.label_corners,
-                                                     inst_color);
+
+  var spillover_elements = ['mat_sides', 'cats', 'mat_corners', 'label_corners'];
+
+  _.each(spillover_elements, function(inst_element){
+    spillover_args[inst_element] = make_spillover_args(regl,
+                                                   params.spill_depth[inst_element],
+                                                   inst_color);
+  });
 
   params.spillover_args = spillover_args;
+  params.spillover_triangles = calc_spillover_triangles(params);
 
 };

@@ -25727,6 +25727,7 @@ module.exports = function generate_order_params(params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
+var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 
 module.exports = function generate_spillover_params(regl, params){
 
@@ -25738,25 +25739,20 @@ module.exports = function generate_spillover_params(regl, params){
 
   params.spill_depth = {};
   params.spill_depth.mat_sides = 0.5;
-  spillover_args.mat_sides = make_spillover_args(regl,
-                                                 params.spill_depth.mat_sides,
-                                                 inst_color);
-
   params.spill_depth.cats = 0.5;
-  spillover_args.cats = make_spillover_args(regl,
-                                                 params.spill_depth.cats,
-                                                 inst_color);
-
   params.spill_depth.mat_corners = 0.2;
-  spillover_args.mat_corners = make_spillover_args(regl,
-                                                   params.spill_depth.mat_corners,
-                                                   inst_color);
   params.spill_depth.label_corners = 0.001;
-  spillover_args.label_corners = make_spillover_args(regl,
-                                                     params.spill_depth.label_corners,
-                                                     inst_color);
+
+  var spillover_elements = ['mat_sides', 'cats', 'mat_corners', 'label_corners'];
+
+  _.each(spillover_elements, function(inst_element){
+    spillover_args[inst_element] = make_spillover_args(regl,
+                                                   params.spill_depth[inst_element],
+                                                   inst_color);
+  });
 
   params.spillover_args = spillover_args;
+  params.spillover_triangles = calc_spillover_triangles(params);
 
 };
 
@@ -25776,7 +25772,6 @@ var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zo
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
 var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
-var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
@@ -25992,8 +25987,6 @@ module.exports = function initialize_params(regl, network){
   zoom_rules_high_mat(regl, params);
 
   make_cameras(regl, params);
-
-  params.spillover_triangles = calc_spillover_triangles(params);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);

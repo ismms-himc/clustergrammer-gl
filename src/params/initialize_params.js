@@ -5,7 +5,6 @@ var ini_zoom_data = require('./../zoom/ini_zoom_data');
 var ini_zoom_restrict = require('./../zoom/ini_zoom_restrict');
 var zoom_rules_high_mat = require('./../zoom/zoom_rules_high_mat');
 var make_cameras = require('./../cameras/make_cameras');
-var calc_spillover_triangles = require('./../spillover/calc_spillover_triangles');
 var make_matrix_args = require('./../matrix_cells/make_matrix_args');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
 var calc_viz_area = require('./calc_viz_area');
@@ -221,8 +220,6 @@ module.exports = function initialize_params(regl, network){
   zoom_rules_high_mat(regl, params);
 
   make_cameras(regl, params);
-
-  params.spillover_triangles = calc_spillover_triangles(params);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);

@@ -65,20 +65,11 @@ module.exports = function initialize_params(regl, network){
   */
 
   calc_viz_dim(regl, params);
-
   generate_order_params(params);
-
-  params.labels = {};
-  params.labels.num_row = params.mat_data.length;
-  params.labels.num_col = params.mat_data[0].length;
-
-  var num_row = params.labels.num_row;
-  var num_col = params.labels.num_col;
-
   generate_label_params(params);
 
-  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/num_col;
-  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/num_row;
+  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
+  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
 
   // will set up global offset later
   params.offcenter = {};
@@ -153,8 +144,8 @@ module.exports = function initialize_params(regl, network){
 
   var pix_to_webgl = {};
 
-  params.tile_pix_width = params.viz_dim.heat.width/num_col;
-  params.tile_pix_height = params.viz_dim.heat.height/num_row;
+  params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
+  params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
   pix_to_webgl.x = d3.scale.linear();
   pix_to_webgl.x
@@ -176,13 +167,13 @@ module.exports = function initialize_params(regl, network){
 
   // text zooming info
   params.text_zoom.row = {};
-  params.text_zoom.row.scaled_num = num_row;
+  params.text_zoom.row.scaled_num = params.labels.num_row;
   params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
   params.text_zoom.row.factor = 1;
   params.text_zoom.row.max_webgl_fs = 0.05;
 
   params.text_zoom.col = {};
-  params.text_zoom.col.scaled_num = num_col;
+  params.text_zoom.col.scaled_num = params.labels.num_col;
   params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
   params.text_zoom.col.factor = 1;
   params.text_zoom.col.max_webgl_fs = 0.06;
@@ -210,10 +201,10 @@ module.exports = function initialize_params(regl, network){
   // how col viz aid triangle restricted zooming in previous version
 
   var min_dim;
-  if (num_col < num_row){
-    min_dim = num_col;
+  if (params.labels.num_col < params.labels.num_row){
+    min_dim = params.labels.num_col;
   } else {
-    min_dim = num_row;
+    min_dim = params.labels.num_row;
   }
 
   params.max_zoom = min_dim/4.0;
@@ -232,8 +223,8 @@ module.exports = function initialize_params(regl, network){
     .range([2, 30]);
 
   params.allowable_zoom_factor = {};
-  params.allowable_zoom_factor.col = allow_factor(num_col);
-  params.allowable_zoom_factor.row = allow_factor(num_col);
+  params.allowable_zoom_factor.col = allow_factor(params.labels.num_col);
+  params.allowable_zoom_factor.row = allow_factor(params.labels.num_col);
 
   params.text_scale = {};
 

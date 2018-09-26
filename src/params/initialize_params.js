@@ -21,6 +21,7 @@ var animation_params = require('./animation_params');
 var generate_cat_params = require('./generate_cat_params');
 var generate_label_params = require('./generate_label_params');
 var generate_interact_params = require('./generate_interact_params');
+var generate_order_params = require('./generate_order_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -69,14 +70,7 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
-  params.order = {};
-  params.order.inst = {};
-  params.order.inst.row = 'clust';
-  params.order.inst.col = 'clust';
-
-  params.order.new = {};
-  params.order.new.row = 'clust';
-  params.order.new.col = 'clust';
+  generate_order_params(params);
 
   generate_label_params(params);
 

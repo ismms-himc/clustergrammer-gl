@@ -25692,6 +25692,28 @@ module.exports = function generate_label_params(params){
 
 /***/ }),
 
+/***/ "./src/params/generate_order_params.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_order_params.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_order_params(params){
+
+  params.order = {};
+  _.each(['inst', 'new'], function(inst_state){
+
+    params.order[inst_state] = {};
+    params.order[inst_state].row = 'clust';
+    params.order[inst_state].col = 'clust';
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25722,6 +25744,7 @@ var animation_params = __webpack_require__(/*! ./animation_params */ "./src/para
 var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
 var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
 var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
+var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25770,14 +25793,7 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
-  params.order = {};
-  params.order.inst = {};
-  params.order.inst.row = 'clust';
-  params.order.inst.col = 'clust';
-
-  params.order.new = {};
-  params.order.new.row = 'clust';
-  params.order.new.col = 'clust';
+  generate_order_params(params);
 
   generate_label_params(params);
 

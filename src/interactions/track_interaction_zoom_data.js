@@ -47,6 +47,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       if (potential_zoom > zoom_restrict.y.ratio){
 
         // bump x inst_zoom
+        console.log('tall: bump x inst_zoom')
         zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
 
       }
@@ -64,7 +65,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       if (potential_zoom > zoom_restrict.x.ratio){
 
         // bump x inst_zoom
-        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
+        console.log('wide: bump y inst_zoom')
+        zoom_data.y.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
 
       }
 

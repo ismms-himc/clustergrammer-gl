@@ -13,7 +13,7 @@ module.exports = function run_viz(regl, network){
   // global params
   var params = initialize_params(regl, network);
 
-  params.first_frame = true;
+  params.animation.first_frame = true;
 
 
   regl.frame(function ({time}) {

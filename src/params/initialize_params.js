@@ -38,7 +38,6 @@ module.exports = function initialize_params(regl, network){
   params.network = network;
 
   generate_animation_params(params);
-  params.time = 0;
   params.first_frame = true;
   params.initialize_viz = true;
 

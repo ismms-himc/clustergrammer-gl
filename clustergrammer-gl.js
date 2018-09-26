@@ -21733,7 +21733,7 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.labels.draw_labels = false;
-  // params.first_frame = true;
+  // params.animation.first_frame = true;
   params.initialize_viz = true;
   // params.show_tooltip = false;
   params.interact.total = 0
@@ -23264,7 +23264,7 @@ module.exports = function run_viz(regl, network){
   // global params
   var params = initialize_params(regl, network);
 
-  params.first_frame = true;
+  params.animation.first_frame = true;
 
 
   regl.frame(function ({time}) {
@@ -23343,7 +23343,7 @@ module.exports = function final_interaction_frame(regl, params){
   if (params.interact.total == 0 && params.initialize_viz == false){
 
     // preventing from running on first frame
-    if (params.first_frame == false){
+    if (params.animation.first_frame == false){
 
       // run draw commands
       params.labels.draw_labels = true;
@@ -23354,7 +23354,7 @@ module.exports = function final_interaction_frame(regl, params){
 
     } else {
 
-      params.first_frame = false;
+      params.animation.first_frame = false;
     }
   }
 
@@ -25636,6 +25636,7 @@ module.exports = function generate_animation_params(params){
   params.animation.duration_end = 0;
 
   params.animation.time = 0;
+  params.animation.first_frame = true;
 
 };
 
@@ -25823,7 +25824,6 @@ module.exports = function initialize_params(regl, network){
   params.network = network;
 
   generate_animation_params(params);
-  params.time = 0;
   params.first_frame = true;
   params.initialize_viz = true;
 

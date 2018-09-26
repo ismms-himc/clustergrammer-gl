@@ -6,7 +6,7 @@ module.exports = function final_interaction_frame(regl, params){
   if (params.interact.total == 0 && params.initialize_viz == false){
 
     // preventing from running on first frame
-    if (params.first_frame == false){
+    if (params.animation.first_frame == false){
 
       // run draw commands
       params.labels.draw_labels = true;
@@ -17,7 +17,7 @@ module.exports = function final_interaction_frame(regl, params){
 
     } else {
 
-      params.first_frame = false;
+      params.animation.first_frame = false;
     }
   }
 

@@ -22,6 +22,7 @@ var generate_order_params = require('./generate_order_params');
 var generate_spillover_params = require('./generate_spillover_params');
 var generate_text_triangle_params = require('./generate_text_triangle_params');
 var generate_pix_to_webgl = require('./generate_pix_to_webgl');
+var generate_text_zoom_params = require('./generate_text_zoom_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -41,13 +42,42 @@ module.exports = function initialize_params(regl, network){
 
   params.mat_data = params.network.mat;
 
+
   generate_cat_params(params);
+
   generate_order_params(params);
   generate_label_params(params);
 
   calc_viz_dim(regl, params);
 
+  // cat arrs and args
+  //////////////////////////////////////////////////////////////////////////////
+  params.cat_args = {};
+  params.cat_args.row = [];
+  params.cat_args.col = [];
+
+  params.cat_arrs = {};
+
+  _.each(['inst', 'new'], function(inst_state){
+    params.cat_arrs[inst_state] = {}
+    params.cat_arrs[inst_state].row = {};
+    params.cat_arrs[inst_state].col = {};
+  });
+
+  _.each(['row', 'col'], function(inst_axis){
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
+      _.each(['inst', 'new'], function(inst_state){
+        params.cat_arrs[inst_state][inst_axis][cat_index] = make_cat_position_array(
+          params, inst_axis, cat_index, params.order[inst_state][inst_axis]
+        );
+      });
+      params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
+    }
+  });
+  //////////////////////////////////////////////////////////////////////////////
+
   params.zoom_data = ini_zoom_data();
+
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
@@ -57,34 +87,10 @@ module.exports = function initialize_params(regl, network){
   params.is_downsampled = false;
   calc_row_downsampled_mat(params, run_downsampling);
 
+
+
   params.viz_aid_tri_args = {};
 
-  params.cat_args = {};
-  params.cat_args.row = [];
-  params.cat_args.col = [];
-
-  // array positions of categories inst and new
-  params.cat_arrs = {};
-  _.each(['inst', 'new'], function(inst_state){
-
-    params.cat_arrs[inst_state] = {}
-    params.cat_arrs[inst_state].row = {};
-    params.cat_arrs[inst_state].col = {};
-
-  });
-
-  _.each(['row', 'col'], function(inst_axis){
-    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
-      _.each(['inst', 'new'], function(inst_state){
-
-        params.cat_arrs[inst_state][inst_axis][cat_index] = make_cat_position_array(
-          params, inst_axis, cat_index, params.order[inst_state][inst_axis]
-        );
-
-      });
-      params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
-    }
-  });
 
   _.each(['row', 'col'], function(inst_axis){
     calc_text_offsets(params, inst_axis);
@@ -116,27 +122,11 @@ module.exports = function initialize_params(regl, network){
 
   make_label_queue(params);
 
-  params.text_zoom = {};
-
-  // text zooming info
-  params.text_zoom.row = {};
-  params.text_zoom.row.scaled_num = params.labels.num_row;
-  params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
-  params.text_zoom.row.factor = 1;
-  params.text_zoom.row.max_webgl_fs = 0.05;
-
-  params.text_zoom.col = {};
-  params.text_zoom.col.scaled_num = params.labels.num_col;
-  params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
-  params.text_zoom.col.factor = 1;
-  params.text_zoom.col.max_webgl_fs = 0.06;
+  generate_text_zoom_params(params);
 
   calc_viz_area(params);
 
   generate_text_triangle_params(params);
-
-  // have max zoom restricted by column number in a similar manner to
-  // how col viz aid triangle restricted zooming in previous version
 
   var min_dim;
   if (params.labels.num_col < params.labels.num_row){

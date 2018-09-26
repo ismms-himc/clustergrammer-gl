@@ -25656,6 +25656,47 @@ module.exports = function generate_animation_params(params){
 
 /***/ }),
 
+/***/ "./src/params/generate_cat_args_arrs.js":
+/*!**********************************************!*\
+  !*** ./src/params/generate_cat_args_arrs.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
+var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
+
+/* eslint-disable no-loop-func */
+
+module.exports = function generate_cat_args_arrs_params(regl, params){
+
+  params.cat_args = {};
+  params.cat_args.row = [];
+  params.cat_args.col = [];
+
+  params.cat_arrs = {};
+
+  _.each(['inst', 'new'], function(inst_state){
+    params.cat_arrs[inst_state] = {}
+    params.cat_arrs[inst_state].row = {};
+    params.cat_arrs[inst_state].col = {};
+  });
+
+  _.each(['row', 'col'], function(inst_axis){
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
+      _.each(['inst', 'new'], function(inst_state){
+        params.cat_arrs[inst_state][inst_axis][cat_index] = make_cat_position_array(
+          params, inst_axis, cat_index, params.order[inst_state][inst_axis]
+        );
+      });
+      params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
+    }
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_cat_params.js":
 /*!*******************************************!*\
   !*** ./src/params/generate_cat_params.js ***!
@@ -25899,9 +25940,7 @@ var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_arg
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
-var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
 var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
-var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
@@ -25914,6 +25953,7 @@ var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_par
 var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
 var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "./src/params/generate_pix_to_webgl.js");
 var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
+var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25933,39 +25973,15 @@ module.exports = function initialize_params(regl, network){
 
   params.mat_data = params.network.mat;
 
-
   generate_cat_params(params);
 
   generate_order_params(params);
+
   generate_label_params(params);
 
   calc_viz_dim(regl, params);
 
-  // cat arrs and args
-  //////////////////////////////////////////////////////////////////////////////
-  params.cat_args = {};
-  params.cat_args.row = [];
-  params.cat_args.col = [];
-
-  params.cat_arrs = {};
-
-  _.each(['inst', 'new'], function(inst_state){
-    params.cat_arrs[inst_state] = {}
-    params.cat_arrs[inst_state].row = {};
-    params.cat_arrs[inst_state].col = {};
-  });
-
-  _.each(['row', 'col'], function(inst_axis){
-    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
-      _.each(['inst', 'new'], function(inst_state){
-        params.cat_arrs[inst_state][inst_axis][cat_index] = make_cat_position_array(
-          params, inst_axis, cat_index, params.order[inst_state][inst_axis]
-        );
-      });
-      params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
-    }
-  });
-  //////////////////////////////////////////////////////////////////////////////
+  generate_cat_args_arrs(regl, params);
 
   params.zoom_data = ini_zoom_data();
 
@@ -25978,10 +25994,7 @@ module.exports = function initialize_params(regl, network){
   params.is_downsampled = false;
   calc_row_downsampled_mat(params, run_downsampling);
 
-
-
   params.viz_aid_tri_args = {};
-
 
   _.each(['row', 'col'], function(inst_axis){
     calc_text_offsets(params, inst_axis);

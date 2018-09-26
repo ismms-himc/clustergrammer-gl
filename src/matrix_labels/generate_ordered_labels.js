@@ -8,6 +8,7 @@ module.exports = function generate_ordered_labels(params){
   var ordered_labels = {};
 
   var axis_nodes;
+  var i;
 
   _.each(['row', 'col'], function(inst_axis){
 
@@ -17,7 +18,7 @@ module.exports = function generate_ordered_labels(params){
 
     var found_axis_cat = false;
 
-    for (var i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+    for (i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
       ordered_labels[inst_axis + '_cats-' + String(i)] = [];
     }
 
@@ -32,7 +33,7 @@ module.exports = function generate_ordered_labels(params){
 
       if (found_axis_cat){
 
-        for (var i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+        for (i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
 
           ordered_labels[inst_axis + '_cats-' + String(i)][inst_order] = inst_node['cat-' + String(i)];
 

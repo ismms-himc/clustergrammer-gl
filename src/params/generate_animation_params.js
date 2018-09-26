@@ -1,4 +1,4 @@
-module.exports = function animation_params(params){
+module.exports = function generate_animation_params(params){
 
   // animation params
   params.animation = {};

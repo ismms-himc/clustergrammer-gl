@@ -14,12 +14,6 @@ module.exports = function calc_alpha_order(params){
 
     tmp_names = node_names.sort();
 
-    // console.log(tmp_names)
-    // console.log('node names\n------------')
-    // console.log(node_names);
-    // console.log('tmp names\n------------')
-    // console.log(tmp_names);
-
     _.map(inst_nodes, function(inst_node){
 
       var inst_alpha = node_names.length -  tmp_names.indexOf(inst_node.name) - 1;
@@ -30,5 +24,4 @@ module.exports = function calc_alpha_order(params){
 
   });
 
-  // return network;
-}
+};

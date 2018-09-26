@@ -15,7 +15,7 @@ var make_cat_position_array = require('./../cats/make_cat_position_array');
 var calc_alpha_order = require('./calc_alpha_order');
 var make_label_queue = require('./../matrix_labels/make_label_queue');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
-var animation_params = require('./animation_params');
+var generate_animation_params = require('./generate_animation_params');
 var generate_cat_params = require('./generate_cat_params');
 var generate_label_params = require('./generate_label_params');
 var generate_interact_params = require('./generate_interact_params');
@@ -35,17 +35,14 @@ var generate_spillover_params = require('./generate_spillover_params');
 module.exports = function initialize_params(regl, network){
 
   var params = {};
-
-  params.time = 0;
-  params.viz_interact = true;
-  params.initialize_viz = true;
-  params.first_frame = true;
-
-  animation_params(params);
-
-  // use data from network
-  //////////////////////////
   params.network = network;
+
+  generate_animation_params(params);
+  params.time = 0;
+  params.first_frame = true;
+  params.initialize_viz = true;
+
+  params.viz_interact = true;
 
   calc_alpha_order(params)
 

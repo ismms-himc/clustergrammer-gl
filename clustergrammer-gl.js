@@ -25391,30 +25391,6 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
 
 /***/ }),
 
-/***/ "./src/params/animation_params.js":
-/*!****************************************!*\
-  !*** ./src/params/animation_params.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function animation_params(params){
-
-  // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
-
-  params.animation.running = false;
-  params.animation.run_animation = false;
-
-  params.animation.last_switch_time = 0;
-  params.animation.ani_duration = 3;
-  params.animation.duration_end = 0;
-
-};
-
-/***/ }),
-
 /***/ "./src/params/calc_alpha_order.js":
 /*!****************************************!*\
   !*** ./src/params/calc_alpha_order.js ***!
@@ -25438,12 +25414,6 @@ module.exports = function calc_alpha_order(params){
 
     tmp_names = node_names.sort();
 
-    // console.log(tmp_names)
-    // console.log('node names\n------------')
-    // console.log(node_names);
-    // console.log('tmp names\n------------')
-    // console.log(tmp_names);
-
     _.map(inst_nodes, function(inst_node){
 
       var inst_alpha = node_names.length -  tmp_names.indexOf(inst_node.name) - 1;
@@ -25454,8 +25424,7 @@ module.exports = function calc_alpha_order(params){
 
   });
 
-  // return network;
-}
+};
 
 /***/ }),
 
@@ -25646,6 +25615,30 @@ module.exports = function calc_viz_dim(regl, params){
 
 /***/ }),
 
+/***/ "./src/params/generate_animation_params.js":
+/*!*************************************************!*\
+  !*** ./src/params/generate_animation_params.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_animation_params(params){
+
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
+
+  params.animation.running = false;
+  params.animation.run_animation = false;
+
+  params.animation.last_switch_time = 0;
+  params.animation.ani_duration = 3;
+  params.animation.duration_end = 0;
+
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_cat_params.js":
 /*!*******************************************!*\
   !*** ./src/params/generate_cat_params.js ***!
@@ -25805,7 +25798,7 @@ var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_positio
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-var animation_params = __webpack_require__(/*! ./animation_params */ "./src/params/animation_params.js");
+var generate_animation_params = __webpack_require__(/*! ./generate_animation_params */ "./src/params/generate_animation_params.js");
 var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
 var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
 var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
@@ -25825,17 +25818,14 @@ var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_par
 module.exports = function initialize_params(regl, network){
 
   var params = {};
-
-  params.time = 0;
-  params.viz_interact = true;
-  params.initialize_viz = true;
-  params.first_frame = true;
-
-  animation_params(params);
-
-  // use data from network
-  //////////////////////////
   params.network = network;
+
+  generate_animation_params(params);
+  params.time = 0;
+  params.first_frame = true;
+  params.initialize_viz = true;
+
+  params.viz_interact = true;
 
   calc_alpha_order(params)
 

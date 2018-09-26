@@ -1,5 +1,4 @@
 var calc_row_and_col_canvas_positions = require('./calc_row_and_col_canvas_positions');
-var gather_text_triangles = require('./../matrix_labels/gather_text_triangles');
 var calc_viz_dim = require('./calc_viz_dim');
 var ini_zoom_data = require('./../zoom/ini_zoom_data');
 var ini_zoom_restrict = require('./../zoom/ini_zoom_restrict');
@@ -21,6 +20,7 @@ var generate_label_params = require('./generate_label_params');
 var generate_interact_params = require('./generate_interact_params');
 var generate_order_params = require('./generate_order_params');
 var generate_spillover_params = require('./generate_spillover_params');
+var generate_text_triangle_params = require('./generate_text_triangle_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -50,11 +50,6 @@ module.exports = function initialize_params(regl, network){
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
-
-  // save text triangles for later use
-  params.text_triangles = {};
-  params.text_triangles.row = {};
-  params.text_triangles.col = {};
 
   // calc row-downsampled matrix
   var run_downsampling = false;
@@ -90,8 +85,9 @@ module.exports = function initialize_params(regl, network){
   calc_text_offsets(params, 'col');
 
   params.dendro_args = {};
-  params.dendro_args.row = make_dendro_args(regl, params, 'row');
-  params.dendro_args.col = make_dendro_args(regl, params, 'col');
+  _.each(['row', 'col'], function(inst_axis){
+    params.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+  });
 
   generate_spillover_params(regl, params);
 
@@ -149,17 +145,7 @@ module.exports = function initialize_params(regl, network){
 
   calc_viz_area(params);
 
-  params.max_num_text = 200;
-
-  params.text_triangles.draw = {};
-
-  _.each(['row', 'col'], function(inst_axis){
-    if (params.labels['num_' + inst_axis] > params.max_num_text){
-      params.text_triangles.draw[inst_axis] = false;
-    } else {
-      gather_text_triangles(params, inst_axis);
-    }
-  });
+  generate_text_triangle_params(params);
 
   // have max zoom restricted by column number in a similar manner to
   // how col viz aid triangle restricted zooming in previous version

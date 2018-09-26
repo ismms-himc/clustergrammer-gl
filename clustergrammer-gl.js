@@ -25792,6 +25792,36 @@ module.exports = function generate_spillover_params(regl, params){
 
 /***/ }),
 
+/***/ "./src/params/generate_text_triangle_params.js":
+/*!*****************************************************!*\
+  !*** ./src/params/generate_text_triangle_params.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
+module.exports = function generate_text_triangle_params(params){
+
+  // save text triangles for later use
+  params.text_triangles = {};
+  params.text_triangles.row = {};
+  params.text_triangles.col = {};
+
+  params.max_num_text = 200;
+
+  params.text_triangles.draw = {};
+
+  _.each(['row', 'col'], function(inst_axis){
+    if (params.labels['num_' + inst_axis] > params.max_num_text){
+      params.text_triangles.draw[inst_axis] = false;
+    } else {
+      gather_text_triangles(params, inst_axis);
+    }
+  });
+};
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -25800,7 +25830,6 @@ module.exports = function generate_spillover_params(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js");
-var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
@@ -25822,6 +25851,7 @@ var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "
 var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
 var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
+var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -25851,11 +25881,6 @@ module.exports = function initialize_params(regl, network){
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
-
-  // save text triangles for later use
-  params.text_triangles = {};
-  params.text_triangles.row = {};
-  params.text_triangles.col = {};
 
   // calc row-downsampled matrix
   var run_downsampling = false;
@@ -25891,8 +25916,9 @@ module.exports = function initialize_params(regl, network){
   calc_text_offsets(params, 'col');
 
   params.dendro_args = {};
-  params.dendro_args.row = make_dendro_args(regl, params, 'row');
-  params.dendro_args.col = make_dendro_args(regl, params, 'col');
+  _.each(['row', 'col'], function(inst_axis){
+    params.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+  });
 
   generate_spillover_params(regl, params);
 
@@ -25950,17 +25976,7 @@ module.exports = function initialize_params(regl, network){
 
   calc_viz_area(params);
 
-  params.max_num_text = 200;
-
-  params.text_triangles.draw = {};
-
-  _.each(['row', 'col'], function(inst_axis){
-    if (params.labels['num_' + inst_axis] > params.max_num_text){
-      params.text_triangles.draw[inst_axis] = false;
-    } else {
-      gather_text_triangles(params, inst_axis);
-    }
-  });
+  generate_text_triangle_params(params);
 
   // have max zoom restricted by column number in a similar manner to
   // how col viz aid triangle restricted zooming in previous version

@@ -138,11 +138,6 @@ module.exports = function initialize_params(regl, network){
   params.text_zoom.col.factor = 1;
   params.text_zoom.col.max_webgl_fs = 0.06;
 
-  // font_detail range: min ~12 max ~200
-  ////////////////////////////////////////
-  // usable range: 14-30 (was using 25)
-  params.font_detail = 20;
-
   calc_viz_area(params);
 
   generate_text_triangle_params(params);

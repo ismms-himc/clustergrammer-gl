@@ -6,7 +6,7 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
   var vect_text_attrs = {
     textAlign: 'left',
     triangles: true,
-    size: params.font_detail,
+    size: params.labels.font_detail,
     font: '"Open Sans", verdana, arial, sans-serif'
   };
 

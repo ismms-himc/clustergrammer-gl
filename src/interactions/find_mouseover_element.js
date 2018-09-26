@@ -23,7 +23,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     textAlign: 'right',
     textBaseline: 'middle',
     triangles:true,
-    size:params.font_detail,
+    size:params.labels.font_detail,
     font:'"Open Sans", verdana, arial, sans-serif'
   };
 

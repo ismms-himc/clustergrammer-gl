@@ -23414,7 +23414,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     textAlign: 'right',
     textBaseline: 'middle',
     triangles:true,
-    size:params.font_detail,
+    size:params.labels.font_detail,
     font:'"Open Sans", verdana, arial, sans-serif'
   };
 
@@ -25371,7 +25371,7 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
   var vect_text_attrs = {
     textAlign: 'left',
     triangles: true,
-    size: params.font_detail,
+    size: params.labels.font_detail,
     font: '"Open Sans", verdana, arial, sans-serif'
   };
 
@@ -25723,6 +25723,11 @@ module.exports = function generate_label_params(params){
   params.labels.offset_dict = {};
   params.labels.draw_labels = false;
 
+  // font_detail range: min ~12 max ~200
+  ////////////////////////////////////////
+  // usable range: 14-30 (was using 25)
+  params.labels.font_detail = 20;
+
   generate_ordered_labels(params);
 
 };
@@ -25968,11 +25973,6 @@ module.exports = function initialize_params(regl, network){
   params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
   params.text_zoom.col.factor = 1;
   params.text_zoom.col.max_webgl_fs = 0.06;
-
-  // font_detail range: min ~12 max ~200
-  ////////////////////////////////////////
-  // usable range: 14-30 (was using 25)
-  params.font_detail = 20;
 
   calc_viz_area(params);
 

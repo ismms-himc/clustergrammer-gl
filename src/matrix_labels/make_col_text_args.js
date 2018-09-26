@@ -3,21 +3,24 @@ var interp_fun = require('./../draws/interp_fun');
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
-  var col_width = params.viz_dim.heat_size.x/params.num_col;
+  var inst_axis = 'col';
+  var num_col = params['num_' + inst_axis];
+
+  var col_width = params.viz_dim.heat_size.x/num_col;
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor.col]);
 
   // 17.5, lowering makes larger text
-  var final_increase_font_size = params.num_col/5.0;
+  var final_increase_font_size = num_col/5.0;
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
 
-  var scale_text = params.num_col ;
+  var scale_text = num_col ;
 
-  var webgl_fs = (1/params.num_col) * params.zoom_data.x.total_zoom;
+  var webgl_fs = (1/num_col) * params.zoom_data.x.total_zoom;
 
   var max_webgl_fs = params.text_zoom.col.max_webgl_fs;
 

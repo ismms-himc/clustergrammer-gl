@@ -1,7 +1,9 @@
 module.exports = function calc_row_and_col_canvas_positions(params){
 
-  var num_col = params.num_col;
-  var num_row = params.num_row;
+  var inst_axis = 'row';
+  var num_row = params['num_' + inst_axis];
+  inst_axis = 'col';
+  var num_col = params['num_' + inst_axis];
 
   // draw matrix cells
   /////////////////////////////////////////

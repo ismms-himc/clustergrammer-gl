@@ -24730,21 +24730,24 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
-  var col_width = params.viz_dim.heat_size.x/params.num_col;
+  var inst_axis = 'col';
+  var num_col = params['num_' + inst_axis];
+
+  var col_width = params.viz_dim.heat_size.x/num_col;
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor.col]);
 
   // 17.5, lowering makes larger text
-  var final_increase_font_size = params.num_col/5.0;
+  var final_increase_font_size = num_col/5.0;
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
 
-  var scale_text = params.num_col ;
+  var scale_text = num_col ;
 
-  var webgl_fs = (1/params.num_col) * params.zoom_data.x.total_zoom;
+  var webgl_fs = (1/num_col) * params.zoom_data.x.total_zoom;
 
   var max_webgl_fs = params.text_zoom.col.max_webgl_fs;
 
@@ -24933,10 +24936,12 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
+  var inst_axis = 'row';
+  var num_row = params['num_' + inst_axis];
 
-  var scale_text = params.num_row;
+  var scale_text = num_row;
 
-  var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
+  var webgl_fs = (1/num_row) * params.zoom_data.y.total_zoom;
 
   var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
 
@@ -25467,8 +25472,10 @@ module.exports = function calc_alpha_order(params){
 
 module.exports = function calc_row_and_col_canvas_positions(params){
 
-  var num_col = params.num_col;
-  var num_row = params.num_row;
+  var inst_axis = 'row';
+  var num_row = params['num_' + inst_axis];
+  inst_axis = 'col';
+  var num_col = params['num_' + inst_axis];
 
   // draw matrix cells
   /////////////////////////////////////////
@@ -25856,10 +25863,13 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
+  var num_row = params.num_row;
+  var num_col = params.num_col;
+
   generate_label_params(params);
 
-  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.num_col;
-  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.num_row;
+  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/num_col;
+  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/num_row;
 
   // will set up global offset later
   params.offcenter = {};
@@ -25934,8 +25944,8 @@ module.exports = function initialize_params(regl, network){
 
   var pix_to_webgl = {};
 
-  params.tile_pix_width = params.viz_dim.heat.width/params.num_col;
-  params.tile_pix_height = params.viz_dim.heat.height/params.num_row;
+  params.tile_pix_width = params.viz_dim.heat.width/num_col;
+  params.tile_pix_height = params.viz_dim.heat.height/num_row;
 
   pix_to_webgl.x = d3.scale.linear();
   pix_to_webgl.x
@@ -25957,13 +25967,13 @@ module.exports = function initialize_params(regl, network){
 
   // text zooming info
   params.text_zoom.row = {};
-  params.text_zoom.row.scaled_num = params.num_row;
+  params.text_zoom.row.scaled_num = num_row;
   params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
   params.text_zoom.row.factor = 1;
   params.text_zoom.row.max_webgl_fs = 0.05;
 
   params.text_zoom.col = {};
-  params.text_zoom.col.scaled_num = params.num_col;
+  params.text_zoom.col.scaled_num = num_col;
   params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
   params.text_zoom.col.factor = 1;
   params.text_zoom.col.max_webgl_fs = 0.06;
@@ -25991,10 +26001,10 @@ module.exports = function initialize_params(regl, network){
   // how col viz aid triangle restricted zooming in previous version
 
   var min_dim;
-  if (params.num_col < params.num_row){
-    min_dim = params.num_col;
+  if (num_col < num_row){
+    min_dim = num_col;
   } else {
-    min_dim = params.num_row;
+    min_dim = num_row;
   }
 
   params.max_zoom = min_dim/4.0;
@@ -26013,8 +26023,8 @@ module.exports = function initialize_params(regl, network){
     .range([2, 30]);
 
   params.allowable_zoom_factor = {};
-  params.allowable_zoom_factor.col = allow_factor(params.num_col);
-  params.allowable_zoom_factor.row = allow_factor(params.num_col);
+  params.allowable_zoom_factor.col = allow_factor(num_col);
+  params.allowable_zoom_factor.row = allow_factor(num_col);
 
   params.text_scale = {};
 

@@ -3,10 +3,12 @@ var interp_fun = require('./../draws/interp_fun');
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
+  var inst_axis = 'row';
+  var num_row = params['num_' + inst_axis];
 
-  var scale_text = params.num_row;
+  var scale_text = num_row;
 
-  var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
+  var webgl_fs = (1/num_row) * params.zoom_data.y.total_zoom;
 
   var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
 

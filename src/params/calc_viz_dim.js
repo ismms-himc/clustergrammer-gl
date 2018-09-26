@@ -66,7 +66,6 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
   viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
 
-
   viz_dim.center = {};
   viz_dim.center.x = 0.5;
   viz_dim.center.y = 0.5;

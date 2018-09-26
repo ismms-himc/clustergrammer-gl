@@ -112,14 +112,13 @@ module.exports = function initialize_params(regl, network){
 
   // array positions of categories inst and new
   params.cat_arrs = {};
+  _.each(['inst', 'new'], function(inst_state){
 
-  params.cat_arrs.inst = {}
-  params.cat_arrs.inst.row = {};
-  params.cat_arrs.inst.col = {};
+    params.cat_arrs[inst_state] = {}
+    params.cat_arrs[inst_state].row = {};
+    params.cat_arrs[inst_state].col = {};
 
-  params.cat_arrs.new = {}
-  params.cat_arrs.new.row = {};
-  params.cat_arrs.new.col = {};
+  });
 
   _.each(['row', 'col'], function(inst_axis){
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {

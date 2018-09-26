@@ -21579,8 +21579,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var width = getWidth();
   var height = getHeight();
 
-  var xcen = 0.5 * (xrange[1] + xrange[0]) + params.shift_camera.x;
-  var ycen = 0.5 * (yrange[1] + yrange[0]) + params.shift_camera.y;
+  var xcen = 0.5 * (xrange[1] + xrange[0]) + params.viz_dim.shift_camera.x;
+  var ycen = 0.5 * (yrange[1] + yrange[0]) + params.viz_dim.shift_camera.y;
   var xrng = 0.5 * (xrange[1] - xrange[0]);
   var yrng = xrng / aspectRatio / width * height;
 
@@ -23426,8 +23426,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   // convert offcenter WebGl units to pixel units
   var offcenter = {};
-  offcenter.x = (params.viz_dim.canvas.width * params.offcenter.x)/2;
-  offcenter.y = (params.viz_dim.canvas.height * params.offcenter.y)/2;
+  offcenter.x = (params.viz_dim.canvas.width * params.viz_dim.offcenter.x)/2;
+  offcenter.y = (params.viz_dim.canvas.height * params.viz_dim.offcenter.y)/2;
 
   var cursor_rel_min = {};
   cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
@@ -24426,8 +24426,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.viz_dim.mat_size.x ;//+ params.offcenter.x;
-  offset.y = params.viz_dim.mat_size.y ;//+ params.offcenter.y;
+  offset.x = params.viz_dim.mat_size.x ;//+ params.viz_dim.offcenter.x;
+  offset.y = params.viz_dim.mat_size.y ;//+ params.viz_dim.offcenter.y;
 
   // generate x position array
   var x_arr = Array(num_col).fill()
@@ -25514,7 +25514,7 @@ module.exports = function calc_viz_area(params){
   experimenting with viz_area calc
   */
 
-   // - params.offcenter.y/2
+   // - params.viz_dim.offcenter.y/2
 
   viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
   // minus offset not necessary
@@ -25610,6 +25610,19 @@ module.exports = function calc_viz_dim(regl, params){
 
   params.viz_dim = viz_dim;
 
+  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
+  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
+
+  // will set up global offset later
+  params.viz_dim.offcenter = {};
+  var offcenter_magnitude_x = 0.075;
+  var offcenter_magnitude_y = 0.075;
+  params.viz_dim.offcenter.x = offcenter_magnitude_x;
+  params.viz_dim.offcenter.y = offcenter_magnitude_y;
+
+  params.viz_dim.shift_camera = {};
+  params.viz_dim.shift_camera.x = -offcenter_magnitude_x;
+  params.viz_dim.shift_camera.y = offcenter_magnitude_y;
 
 };
 
@@ -25845,23 +25858,10 @@ module.exports = function initialize_params(regl, network){
   Working on resizing the matrix, need to have separte x and y sizes
   */
 
-  calc_viz_dim(regl, params);
   generate_order_params(params);
   generate_label_params(params);
 
-  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
-  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
-
-  // will set up global offset later
-  params.offcenter = {};
-  var offcenter_magnitude_x = 0.075;
-  var offcenter_magnitude_y = 0.075;
-  params.offcenter.x = offcenter_magnitude_x;
-  params.offcenter.y = offcenter_magnitude_y;
-
-  params.shift_camera = {};
-  params.shift_camera.x = -offcenter_magnitude_x;
-  params.shift_camera.y = offcenter_magnitude_y;
+  calc_viz_dim(regl, params);
 
   params.zoom_data = ini_zoom_data();
 
@@ -26157,43 +26157,43 @@ module.exports = function calc_spillover_triangles(params){
   spillover_triangles.mat_sides = [
 
     // left spillover rect
-    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x, -1], [-1.0, -1]]},
-    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x,  1], [-ini_mat.x + params.offcenter.x, -1]]},
+    {'pos': [[-1, 1], [-ini_mat.x + params.viz_dim.offcenter.x, -1], [-1.0, -1]]},
+    {'pos': [[-1, 1], [-ini_mat.x + params.viz_dim.offcenter.x,  1], [-ini_mat.x + params.viz_dim.offcenter.x, -1]]},
 
     // right spillover rect
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x, -1], [1.0, -1]]},
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x,  1], [ini_mat.x + params.offcenter.x, -1]]},
+    {'pos': [[1, 1], [ini_mat.x + params.viz_dim.offcenter.x, -1], [1.0, -1]]},
+    {'pos': [[1, 1], [ini_mat.x + params.viz_dim.offcenter.x,  1], [ini_mat.x + params.viz_dim.offcenter.x, -1]]},
 
     // // top spillover rect
-    {'pos': [[-ini_mat.x + params.offcenter.x, 1], [-ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, 1]]},
-    {'pos': [[ ini_mat.x + params.offcenter.x, 1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[-ini_mat.x + params.viz_dim.offcenter.x, 1], [-ini_mat.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y], [ini_mat.x + params.viz_dim.offcenter.x, 1]]},
+    {'pos': [[ ini_mat.x + params.viz_dim.offcenter.x, 1], [ini_mat.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y], [-ini_mat.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y]]},
 
     // // bottom spillover rect
-    {'pos': [[-ini_mat.x + params.offcenter.x, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, -1]]},
-    {'pos': [[ ini_mat.x + params.offcenter.x, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[-ini_mat.x + params.viz_dim.offcenter.x, -1], [-ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y], [ini_mat.x + params.viz_dim.offcenter.x, -1]]},
+    {'pos': [[ ini_mat.x + params.viz_dim.offcenter.x, -1], [ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y], [-ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y]]},
 
   ];
 
   spillover_triangles.cats = [
 
     // col spillover rect
-    {'pos': [[ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[ini_heat.x  + inst_shift.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y],
+             [ini_heat.x  + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]]
            },
-    {'pos': [[-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [ ini_mat.x + params.offcenter.x,  scaled_mat.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y],
+             [ ini_mat.x + params.viz_dim.offcenter.x,  scaled_mat.y - params.viz_dim.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]]
            },
 
     // col spillover rect
-    {'pos': [[-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
-             [-ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[-ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y],
+             [-ini_mat.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]]
            },
-    {'pos': [[-ini_mat.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
-             [ -ini_heat.x + inst_shift.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[-ini_mat.x + params.viz_dim.offcenter.x,  -scaled_mat.y - params.viz_dim.offcenter.y],
+             [ -ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x,  -scaled_mat.y - params.viz_dim.offcenter.y],
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]]
            },
 
   ];
@@ -26202,26 +26202,26 @@ module.exports = function calc_spillover_triangles(params){
 
     // top-left spillover rect
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [-1.0 , scaled_heat.y - inst_shift.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y],
+             [-1.0 , scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]
              ]},
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x,  1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x,  1],
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]
              ]},
 
     // bottom-left spillover rect
-    {'pos': [[-1, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-1.0, -scaled_mat.y - params.offcenter.y]]},
-    {'pos': [[-1, -1], [-ini_mat.x + params.offcenter.x,  -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[-1, -1], [-ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y], [-1.0, -scaled_mat.y - params.viz_dim.offcenter.y]]},
+    {'pos': [[-1, -1], [-ini_mat.x + params.viz_dim.offcenter.x,  -1], [-ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y]]},
 
     // top-right spillover rect
     // mat corners
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [1.0, scaled_mat.y - params.offcenter.y]]},
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x,  1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[1, 1], [ini_mat.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y], [1.0, scaled_mat.y - params.viz_dim.offcenter.y]]},
+    {'pos': [[1, 1], [ini_mat.x + params.viz_dim.offcenter.x,  1], [ini_mat.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y]]},
 
     // bottom-right spillover rect
-    {'pos': [[1, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [1.0, -scaled_mat.y - params.offcenter.y]]},
-    {'pos': [[1, -1], [ini_mat.x + params.offcenter.x,  -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[1, -1], [ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y], [1.0, -scaled_mat.y - params.viz_dim.offcenter.y]]},
+    {'pos': [[1, -1], [ini_mat.x + params.viz_dim.offcenter.x,  -1], [ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y]]},
 
   ];
 
@@ -26229,50 +26229,50 @@ module.exports = function calc_spillover_triangles(params){
 
     // top-left spillover rect
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [-1.0, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y],
+             [-1.0, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]]
            },
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x,  1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x,  1],
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]
              ]},
 
     // bottom-left spillover rect
     {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
-             [-1.0, -scaled_mat.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y],
+             [-1.0, -scaled_mat.y - params.viz_dim.offcenter.y]
              ]},
     {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x,  -1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x,  -1],
+             [-ini_heat.x + inst_shift.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y]
              ]},
 
     // top-right spillover rect (right angle triangle for slanted text only)
     {'pos': [
-             // [1, scaled_mat.y + 1 - ini_mat.x - params.offcenter.y],
-             [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * params.offcenter.x],
-             [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [1.0, scaled_mat.y - params.offcenter.y]
+             // [1, scaled_mat.y + 1 - ini_mat.x - params.viz_dim.offcenter.y],
+             [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * params.viz_dim.offcenter.x],
+             [ini_mat.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y],
+             [1.0, scaled_mat.y - params.viz_dim.offcenter.y]
              ]},
 
     // area under slanted triangle
-    {'pos': [[1.0, scaled_mat.y - params.offcenter.y],
-             [ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [1.0, scaled_heat.y - inst_shift.y - params.offcenter.y]
+    {'pos': [[1.0, scaled_mat.y - params.viz_dim.offcenter.y],
+             [ini_mat.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y],
+             [1.0, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]
              ]},
-    {'pos': [[ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [1.0,  scaled_mat.y - params.offcenter.y],
-             [ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
+    {'pos': [[ini_mat.x + params.viz_dim.offcenter.x, scaled_mat.y - params.viz_dim.offcenter.y],
+             [1.0,  scaled_mat.y - params.viz_dim.offcenter.y],
+             [ini_mat.x + params.viz_dim.offcenter.x, scaled_heat.y - inst_shift.y - params.viz_dim.offcenter.y]
              ]},
 
     // bottom-right spillover rect
     {'pos': [[1, -1],
-             [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
-             [1.0, -scaled_mat.y - params.offcenter.y]
+             [ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y],
+             [1.0, -scaled_mat.y - params.viz_dim.offcenter.y]
              ]},
     {'pos': [[1, -1],
-             [ini_mat.x + params.offcenter.x,  -1],
-             [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]
+             [ini_mat.x + params.viz_dim.offcenter.x,  -1],
+             [ini_mat.x + params.viz_dim.offcenter.x, -scaled_mat.y - params.viz_dim.offcenter.y]
              ]},
 
   ];
@@ -27131,7 +27131,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   } else {
     canvas_dim = 'height';
   }
-  zoom_data.viz_offcenter = (params.viz_dim.canvas[canvas_dim] * params.offcenter[axis])/2;
+  zoom_data.viz_offcenter = (params.viz_dim.canvas[canvas_dim] * params.viz_dim.offcenter[axis])/2;
 
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);

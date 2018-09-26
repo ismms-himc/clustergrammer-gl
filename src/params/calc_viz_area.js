@@ -35,7 +35,7 @@ module.exports = function calc_viz_area(params){
   experimenting with viz_area calc
   */
 
-   // - params.offcenter.y/2
+   // - params.viz_dim.offcenter.y/2
 
   viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
   // minus offset not necessary

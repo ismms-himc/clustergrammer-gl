@@ -16,7 +16,7 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
   } else {
     canvas_dim = 'height';
   }
-  zoom_data.viz_offcenter = (params.viz_dim.canvas[canvas_dim] * params.offcenter[axis])/2;
+  zoom_data.viz_offcenter = (params.viz_dim.canvas[canvas_dim] * params.viz_dim.offcenter[axis])/2;
 
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);

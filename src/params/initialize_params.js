@@ -58,23 +58,10 @@ module.exports = function initialize_params(regl, network){
   Working on resizing the matrix, need to have separte x and y sizes
   */
 
-  calc_viz_dim(regl, params);
   generate_order_params(params);
   generate_label_params(params);
 
-  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
-  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
-
-  // will set up global offset later
-  params.offcenter = {};
-  var offcenter_magnitude_x = 0.075;
-  var offcenter_magnitude_y = 0.075;
-  params.offcenter.x = offcenter_magnitude_x;
-  params.offcenter.y = offcenter_magnitude_y;
-
-  params.shift_camera = {};
-  params.shift_camera.x = -offcenter_magnitude_x;
-  params.shift_camera.y = offcenter_magnitude_y;
+  calc_viz_dim(regl, params);
 
   params.zoom_data = ini_zoom_data();
 

@@ -35,8 +35,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   // convert offcenter WebGl units to pixel units
   var offcenter = {};
-  offcenter.x = (params.viz_dim.canvas.width * params.offcenter.x)/2;
-  offcenter.y = (params.viz_dim.canvas.height * params.offcenter.y)/2;
+  offcenter.x = (params.viz_dim.canvas.width * params.viz_dim.offcenter.x)/2;
+  offcenter.y = (params.viz_dim.canvas.height * params.viz_dim.offcenter.y)/2;
 
   var cursor_rel_min = {};
   cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;

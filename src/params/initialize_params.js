@@ -64,15 +64,7 @@ module.exports = function initialize_params(regl, network){
   /*
   Working on resizing the matrix, need to have separte x and y sizes
   */
-  params.viz_dim = {};
 
-  params.viz_dim.mat_size = {};
-  params.viz_dim.mat_size.x = 0.80;
-  params.viz_dim.mat_size.y = 0.80;
-
-  params.viz_dim.heat_size = {};
-  params.viz_dim.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
-  params.viz_dim.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
 
   calc_viz_dim(regl, params);
 

@@ -2,6 +2,16 @@ var extend = require('xtend/mutable');
 
 module.exports = function calc_viz_dim(regl, params){
 
+  params.viz_dim = {};
+
+  params.viz_dim.mat_size = {};
+  params.viz_dim.mat_size.x = 0.80;
+  params.viz_dim.mat_size.y = 0.80;
+
+  params.viz_dim.heat_size = {};
+  params.viz_dim.heat_size.x = params.viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  params.viz_dim.heat_size.y = params.viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
+
   // Set up viz_dim
   ///////////////////////
   var opts = opts || {};
@@ -12,6 +22,7 @@ module.exports = function calc_viz_dim(regl, params){
   var element = options.element;
 
   var viz_dim = params.viz_dim;
+
   viz_dim.canvas = {};
 
   _.each(['width', 'height'], function(inst_dim){

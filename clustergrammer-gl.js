@@ -22514,7 +22514,7 @@ module.exports = function build_control_panel(regl, cgm){
                            .replace('var', 'rankvar')
 
         // tmp preventing dispersion reordering from working
-        if (cgm.params.inst_order[inst_axis] != clean_order && clean_order != 'disp'){
+        if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
 
           run_reorder(regl, cgm, inst_axis, d);
 
@@ -22538,7 +22538,7 @@ module.exports = function build_control_panel(regl, cgm){
       .style('ry', 10)
       .style('stroke', function(d){
         var inst_color;
-        if (cgm.params.inst_order[inst_axis] == d){
+        if (cgm.params.order.inst[inst_axis] == d){
           inst_color = 'red';
         } else {
           inst_color = button_color;
@@ -23169,7 +23169,7 @@ module.exports = function end_animation(regl, params){
     }
 
     // transfer new order to old order
-    params.inst_order[inst_axis] = params.new_order[inst_axis]
+    params.order.inst[inst_axis] = params.order.new[inst_axis]
 
   });
 
@@ -24238,12 +24238,12 @@ module.exports = function make_matrix_args(regl, params){
   params.arrs.position_arr = {};
 
   params.arrs.position_arr.ini = make_position_arr(params,
-                                               params.inst_order.row,
-                                               params.inst_order.col);
+                                               params.order.inst.row,
+                                               params.order.inst.col);
 
   params.arrs.position_arr.new = make_position_arr(params,
-                                               params.new_order.row,
-                                               params.new_order.col);
+                                               params.order.new.row,
+                                               params.order.new.col);
 
 
   var opacity_buffer = regl.buffer({
@@ -24536,8 +24536,8 @@ module.exports = function calc_text_offsets(params, inst_axis){
     }
 
     var axis_arr = params.canvas_pos[inst_dim + '_arr'];
-    var inst_order = params.inst_order[inst_axis];
-    var new_order = params.new_order[inst_axis];
+    var inst_order = params.order.inst[inst_axis];
+    var new_order = params.order.new[inst_axis];
     var num_labels = params['num_' + inst_axis];
 
     // calculate inst and new offsets
@@ -24686,7 +24686,7 @@ module.exports = function get_ordered_labels(params){
 
     _.each(axis_nodes, function(inst_node){
 
-      inst_order = params['num_' + inst_axis] - 1 - inst_node[params.inst_order[inst_axis]];
+      inst_order = params['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
       ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
 
       if (found_axis_cat){
@@ -25080,8 +25080,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     return context.view;
   };
 
-  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(params, inst_axis, params.inst_order[inst_axis]);
-  var tri_offset_array_new = make_viz_aid_tri_pos_arr(params, inst_axis, params.new_order[inst_axis]);
+  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(params, inst_axis, params.order.inst[inst_axis]);
+  var tri_offset_array_new = make_viz_aid_tri_pos_arr(params, inst_axis, params.order.new[inst_axis]);
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -25289,8 +25289,8 @@ module.exports = function update_text_triangle_order(params, inst_axis){
   // we have already pre-calculated. This needs to be better harmonized with
   // the update_text_offsets function that works directly on the network_data
 
-  var inst_order = params.inst_order[inst_axis];
-  var new_order = params.new_order[inst_axis];
+  var inst_order = params.order.inst[inst_axis];
+  var new_order = params.order.new[inst_axis];
 
   var inst_text_triangles = params.text_triangles.draw[inst_axis];
   var num_labels = params['num_' + inst_axis];
@@ -25770,13 +25770,14 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
-  params.inst_order = {};
-  params.inst_order.row = 'clust';
-  params.inst_order.col = 'clust';
+  params.order = {};
+  params.order.inst = {};
+  params.order.inst.row = 'clust';
+  params.order.inst.col = 'clust';
 
-  params.new_order = {};
-  params.new_order.row = 'clust';
-  params.new_order.col = 'clust';
+  params.order.new = {};
+  params.order.new.row = 'clust';
+  params.order.new.col = 'clust';
 
   generate_label_params(params);
 
@@ -25834,8 +25835,8 @@ module.exports = function initialize_params(regl, network){
 
   _.each(['row', 'col'], function(inst_axis){
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
-      params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.inst_order[inst_axis]);
-      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
+      params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.inst[inst_axis]);
+      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.new[inst_axis]);
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
@@ -26004,7 +26005,7 @@ module.exports = function reorder_cat_args(regl, cgm){
     // update cat position arrays
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
 
-      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
+      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.new[inst_axis]);
 
       // update the attribute
       params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_new = {
@@ -26034,8 +26035,8 @@ module.exports = function reorder_matrix_args(regl, cgm){
 
   // calculate new ordering
   params.arrs.position_arr.new = make_position_arr(params,
-                                  params.new_order.row,
-                                  params.new_order.col);
+                                  params.order.new.row,
+                                  params.order.new.col);
 
   params.matrix_args.regl_props.rects.attributes.pos_att_new = {
         buffer: regl.buffer(params.arrs.position_arr.new),
@@ -26064,7 +26065,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
                                .replace('var', 'rankvar');
 
   params.animation.run_animation = true;
-  params.new_order[inst_axis] = new_order;
+  params.order.new[inst_axis] = new_order;
 
   reorder_matrix_args(regl, cgm);
   reorder_cat_args(regl, cgm);

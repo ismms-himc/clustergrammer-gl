@@ -11,7 +11,7 @@ module.exports = function reorder_cat_args(regl, cgm){
     // update cat position arrays
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
 
-      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
+      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.new[inst_axis]);
 
       // update the attribute
       params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_new = {

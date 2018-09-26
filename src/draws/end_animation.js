@@ -31,7 +31,7 @@ module.exports = function end_animation(regl, params){
     }
 
     // transfer new order to old order
-    params.inst_order[inst_axis] = params.new_order[inst_axis]
+    params.order.inst[inst_axis] = params.order.new[inst_axis]
 
   });
 

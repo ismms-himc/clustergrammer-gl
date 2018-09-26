@@ -40,8 +40,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     return context.view;
   };
 
-  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(params, inst_axis, params.inst_order[inst_axis]);
-  var tri_offset_array_new = make_viz_aid_tri_pos_arr(params, inst_axis, params.new_order[inst_axis]);
+  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(params, inst_axis, params.order.inst[inst_axis]);
+  var tri_offset_array_new = make_viz_aid_tri_pos_arr(params, inst_axis, params.order.new[inst_axis]);
 
   /////////////////////////////////
   // Rotation and Scaling

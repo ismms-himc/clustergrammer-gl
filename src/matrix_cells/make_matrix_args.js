@@ -11,12 +11,12 @@ module.exports = function make_matrix_args(regl, params){
   params.arrs.position_arr = {};
 
   params.arrs.position_arr.ini = make_position_arr(params,
-                                               params.inst_order.row,
-                                               params.inst_order.col);
+                                               params.order.inst.row,
+                                               params.order.inst.col);
 
   params.arrs.position_arr.new = make_position_arr(params,
-                                               params.new_order.row,
-                                               params.new_order.col);
+                                               params.order.new.row,
+                                               params.order.new.col);
 
 
   var opacity_buffer = regl.buffer({

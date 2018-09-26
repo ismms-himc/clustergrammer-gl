@@ -10,7 +10,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
                                .replace('var', 'rankvar');
 
   params.animation.run_animation = true;
-  params.new_order[inst_axis] = new_order;
+  params.order.new[inst_axis] = new_order;
 
   reorder_matrix_args(regl, cgm);
   reorder_cat_args(regl, cgm);

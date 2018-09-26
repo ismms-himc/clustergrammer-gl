@@ -161,7 +161,7 @@ module.exports = function build_control_panel(regl, cgm){
                            .replace('var', 'rankvar')
 
         // tmp preventing dispersion reordering from working
-        if (cgm.params.inst_order[inst_axis] != clean_order && clean_order != 'disp'){
+        if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
 
           run_reorder(regl, cgm, inst_axis, d);
 
@@ -185,7 +185,7 @@ module.exports = function build_control_panel(regl, cgm){
       .style('ry', 10)
       .style('stroke', function(d){
         var inst_color;
-        if (cgm.params.inst_order[inst_axis] == d){
+        if (cgm.params.order.inst[inst_axis] == d){
           inst_color = 'red';
         } else {
           inst_color = button_color;

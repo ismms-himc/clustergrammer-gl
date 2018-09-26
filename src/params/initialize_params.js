@@ -69,13 +69,14 @@ module.exports = function initialize_params(regl, network){
   params.num_row = params.mat_data.length;
   params.num_col = params.mat_data[0].length;
 
-  params.inst_order = {};
-  params.inst_order.row = 'clust';
-  params.inst_order.col = 'clust';
+  params.order = {};
+  params.order.inst = {};
+  params.order.inst.row = 'clust';
+  params.order.inst.col = 'clust';
 
-  params.new_order = {};
-  params.new_order.row = 'clust';
-  params.new_order.col = 'clust';
+  params.order.new = {};
+  params.order.new.row = 'clust';
+  params.order.new.col = 'clust';
 
   generate_label_params(params);
 
@@ -133,8 +134,8 @@ module.exports = function initialize_params(regl, network){
 
   _.each(['row', 'col'], function(inst_axis){
     for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
-      params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.inst_order[inst_axis]);
-      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
+      params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.inst[inst_axis]);
+      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.new[inst_axis]);
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });

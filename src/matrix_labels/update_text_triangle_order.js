@@ -4,8 +4,8 @@ module.exports = function update_text_triangle_order(params, inst_axis){
   // we have already pre-calculated. This needs to be better harmonized with
   // the update_text_offsets function that works directly on the network_data
 
-  var inst_order = params.inst_order[inst_axis];
-  var new_order = params.new_order[inst_axis];
+  var inst_order = params.order.inst[inst_axis];
+  var new_order = params.order.new[inst_axis];
 
   var inst_text_triangles = params.text_triangles.draw[inst_axis];
   var num_labels = params['num_' + inst_axis];

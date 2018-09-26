@@ -16,8 +16,8 @@ module.exports = function calc_text_offsets(params, inst_axis){
     }
 
     var axis_arr = params.canvas_pos[inst_dim + '_arr'];
-    var inst_order = params.inst_order[inst_axis];
-    var new_order = params.new_order[inst_axis];
+    var inst_order = params.order.inst[inst_axis];
+    var new_order = params.order.new[inst_axis];
     var num_labels = params['num_' + inst_axis];
 
     // calculate inst and new offsets

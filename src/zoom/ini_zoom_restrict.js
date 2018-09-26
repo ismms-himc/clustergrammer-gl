@@ -1,9 +1,9 @@
 module.exports = function ini_zoom_restrict(params){
 
   var inst_axis = 'row';
-  var num_row = params['num_' + inst_axis];
+  var num_row = params.labels['num_' + inst_axis];
   inst_axis = 'col';
-  var num_col = params['num_' + inst_axis];
+  var num_col = params.labels['num_' + inst_axis];
 
   // working on improved matrix zooming
   var max_zoom = params.max_zoom;

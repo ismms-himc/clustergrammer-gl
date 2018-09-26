@@ -22777,14 +22777,14 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
     if (calc_text_tri){
 
-      var num_viz_labels = params['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
+      var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
       if (num_viz_labels < params.max_num_text){
 
         calc_viz_area(params);
 
         // only regather if there are more labels than can be shown at once
-        if (params['num_' + inst_axis] > params.max_num_text){
+        if (params.labels['num_' + inst_axis] > params.max_num_text){
 
           gather_text_triangles(params, inst_axis);
 
@@ -26804,9 +26804,9 @@ module.exports = function ini_zoom_data(){
 module.exports = function ini_zoom_restrict(params){
 
   var inst_axis = 'row';
-  var num_row = params['num_' + inst_axis];
+  var num_row = params.labels['num_' + inst_axis];
   inst_axis = 'col';
-  var num_col = params['num_' + inst_axis];
+  var num_col = params.labels['num_' + inst_axis];
 
   // working on improved matrix zooming
   var max_zoom = params.max_zoom;

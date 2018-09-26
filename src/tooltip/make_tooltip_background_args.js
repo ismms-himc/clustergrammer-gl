@@ -1,6 +1,6 @@
 module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
 
-  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+  // console.log('rel min', params.interact.mouseover.row_name, params.interact.mouseover.col_name);
 
   /*
 

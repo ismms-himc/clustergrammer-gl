@@ -205,10 +205,10 @@ module.exports = function initialize_params(regl, network){
 
   make_label_queue(params);
 
-  params.mouseover = {};
-  params.mouseover.row_name = null;
-  params.mouseover.col_name = null;
-  params.mouseover.text_triangles = {};
+  params.interact.mouseover = {};
+  params.interact.mouseover.row_name = null;
+  params.interact.mouseover.col_name = null;
+  params.interact.mouseover.text_triangles = {};
 
   params.pix_to_webgl = pix_to_webgl;
 
@@ -245,7 +245,6 @@ module.exports = function initialize_params(regl, network){
       gather_text_triangles(params, inst_axis);
     }
   });
-
 
   // have max zoom restricted by column number in a similar manner to
   // how col viz aid triangle restricted zooming in previous version

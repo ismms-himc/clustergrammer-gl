@@ -55,33 +55,33 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    params.mouseover.row_name = params.labels.ordered_labels.rows[row_index];
-    params.mouseover.col_name = params.labels.ordered_labels.cols[col_index];
+    params.interact.mouseover.row_name = params.labels.ordered_labels.rows[row_index];
+    params.interact.mouseover.col_name = params.labels.ordered_labels.cols[col_index];
 
-    if (params.mouseover.row_name.includes(': ')){
-      params.mouseover.row_name = params.mouseover.row_name.split(': ')[1];
+    if (params.interact.mouseover.row_name.includes(': ')){
+      params.interact.mouseover.row_name = params.interact.mouseover.row_name.split(': ')[1];
     }
 
-    if (params.mouseover.col_name.includes(': ')){
-      params.mouseover.col_name = params.mouseover.col_name.split(': ')[1];
+    if (params.interact.mouseover.col_name.includes(': ')){
+      params.interact.mouseover.col_name = params.interact.mouseover.col_name.split(': ')[1];
     }
 
     var mouseover_text;
     if (params.cat_data.cat_num.col == 0){
       // calculate text triangles, they require an offset element
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
-      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-1'].offset = [0,0];
+      mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
+      params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
     } else {
       // calculate text triangles, they require an offset element
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
-      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-1'].offset = [0,0];
+      mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
+      params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
 
-      params.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
-      mouseover_text = params.mouseover.col_cat;
-      params.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-2'].offset = [0,0];
+      params.interact.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
+      mouseover_text = params.interact.mouseover.col_cat;
+      params.interact.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.interact.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
     params.in_bounds_tooltip = true;

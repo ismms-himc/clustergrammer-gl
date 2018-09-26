@@ -23112,14 +23112,14 @@ module.exports = function draw_tooltip_components(regl, params){
     // draw row/col names
     line_offset = 3.0;
     text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-    inst_triangles = params.mouseover.text_triangles['line-1'];
+    inst_triangles = params.interact.mouseover.text_triangles['line-1'];
     regl(text_triangle_args)(inst_triangles);
 
     if (params.cat_data.cat_num.col > 0){
 
       line_offset = 1.5;
       text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-      inst_triangles = params.mouseover.text_triangles['line-2'];
+      inst_triangles = params.interact.mouseover.text_triangles['line-2'];
       regl(text_triangle_args)(inst_triangles);
 
     }
@@ -23449,33 +23449,33 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    params.mouseover.row_name = params.labels.ordered_labels.rows[row_index];
-    params.mouseover.col_name = params.labels.ordered_labels.cols[col_index];
+    params.interact.mouseover.row_name = params.labels.ordered_labels.rows[row_index];
+    params.interact.mouseover.col_name = params.labels.ordered_labels.cols[col_index];
 
-    if (params.mouseover.row_name.includes(': ')){
-      params.mouseover.row_name = params.mouseover.row_name.split(': ')[1];
+    if (params.interact.mouseover.row_name.includes(': ')){
+      params.interact.mouseover.row_name = params.interact.mouseover.row_name.split(': ')[1];
     }
 
-    if (params.mouseover.col_name.includes(': ')){
-      params.mouseover.col_name = params.mouseover.col_name.split(': ')[1];
+    if (params.interact.mouseover.col_name.includes(': ')){
+      params.interact.mouseover.col_name = params.interact.mouseover.col_name.split(': ')[1];
     }
 
     var mouseover_text;
     if (params.cat_data.cat_num.col == 0){
       // calculate text triangles, they require an offset element
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
-      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-1'].offset = [0,0];
+      mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
+      params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
     } else {
       // calculate text triangles, they require an offset element
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
-      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-1'].offset = [0,0];
+      mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
+      params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
 
-      params.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
-      mouseover_text = params.mouseover.col_cat;
-      params.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-2'].offset = [0,0];
+      params.interact.mouseover.col_cat = params.labels.ordered_labels.col_cats[col_index];
+      mouseover_text = params.interact.mouseover.col_cat;
+      params.interact.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
+      params.interact.mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
     params.in_bounds_tooltip = true;
@@ -25884,10 +25884,10 @@ module.exports = function initialize_params(regl, network){
 
   make_label_queue(params);
 
-  params.mouseover = {};
-  params.mouseover.row_name = null;
-  params.mouseover.col_name = null;
-  params.mouseover.text_triangles = {};
+  params.interact.mouseover = {};
+  params.interact.mouseover.row_name = null;
+  params.interact.mouseover.col_name = null;
+  params.interact.mouseover.text_triangles = {};
 
   params.pix_to_webgl = pix_to_webgl;
 
@@ -25924,7 +25924,6 @@ module.exports = function initialize_params(regl, network){
       gather_text_triangles(params, inst_axis);
     }
   });
-
 
   // have max zoom restricted by column number in a similar manner to
   // how col viz aid triangle restricted zooming in previous version
@@ -26345,7 +26344,7 @@ module.exports = function calc_background_tooltip_triangles(regl, params){
 
 module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
 
-  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
+  // console.log('rel min', params.interact.mouseover.row_name, params.interact.mouseover.col_name);
 
   /*
 

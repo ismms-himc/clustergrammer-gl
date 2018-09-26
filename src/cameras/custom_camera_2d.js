@@ -93,7 +93,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-    if (params.viz_interact){
+    if (params.interact.enable_viz_interact){
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
@@ -107,7 +107,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   // })
   // .on('wheel', function (ev) {
   //   console.log('norm interact: camera');
-  //   if (params.viz_interact){
+  //   if (params.interact.enable_viz_interact){
   //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
   //                        emitter, dViewport, mViewport);
   //   }

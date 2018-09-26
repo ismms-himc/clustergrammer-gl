@@ -8,5 +8,6 @@ module.exports = function generate_interact_params(params){
   params.interact.mouseover.row_name = null;
   params.interact.mouseover.col_name = null;
   params.interact.mouseover.text_triangles = {};
+  params.interact.enable_viz_interact = true;
 
 };

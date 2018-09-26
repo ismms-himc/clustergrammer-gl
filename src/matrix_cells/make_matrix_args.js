@@ -87,7 +87,7 @@ module.exports = function make_matrix_args(regl, params){
     }`;
 
   var num_instances = params.arrs.position_arr.ini.length;
-  var zoom_function = params.zoom_function;
+  var zoom_function = params.zoom_data.zoom_function;
 
   var inst_properties = {
     vert: vert_string,

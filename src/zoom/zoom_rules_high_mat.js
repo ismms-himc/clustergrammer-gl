@@ -22,7 +22,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     // working on toggling tracking for cases when we need to ignore
     // (e.g. moving a slider)
-    if (params.viz_interact){
+    if (params.interact.enable_viz_interact){
       track_interaction_zoom_data(regl, params, ev);
     } else {
 

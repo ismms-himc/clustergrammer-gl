@@ -21617,7 +21617,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-    if (params.viz_interact){
+    if (params.interact.enable_viz_interact){
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
@@ -21631,7 +21631,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   // })
   // .on('wheel', function (ev) {
   //   console.log('norm interact: camera');
-  //   if (params.viz_interact){
+  //   if (params.interact.enable_viz_interact){
   //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
   //                        emitter, dViewport, mViewport);
   //   }
@@ -22770,9 +22770,9 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     // make the arguments for the draw command
     var text_triangle_args
     if (inst_axis === 'col'){
-      text_triangle_args = make_col_text_args(regl, params, params.zoom_function);
+      text_triangle_args = make_col_text_args(regl, params, params.zoom_data.zoom_function);
     } else {
-      text_triangle_args = make_row_text_args(regl, params, params.zoom_function);
+      text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
     }
 
     if (calc_text_tri){
@@ -24312,7 +24312,7 @@ module.exports = function make_matrix_args(regl, params){
     }`;
 
   var num_instances = params.arrs.position_arr.ini.length;
-  var zoom_function = params.zoom_function;
+  var zoom_function = params.zoom_data.zoom_function;
 
   var inst_properties = {
     vert: vert_string,
@@ -25700,6 +25700,7 @@ module.exports = function generate_interact_params(params){
   params.interact.mouseover.row_name = null;
   params.interact.mouseover.col_name = null;
   params.interact.mouseover.text_triangles = {};
+  params.interact.enable_viz_interact = true;
 
 };
 
@@ -25827,10 +25828,7 @@ var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_par
 // */
 // var core = require('mathjs/core');
 // var math = core.create();
-
 // math.import(require('mathjs/lib/function/probability/factorial'));
-
-// console.log(math)
 
 module.exports = function initialize_params(regl, network){
 
@@ -25838,26 +25836,12 @@ module.exports = function initialize_params(regl, network){
   params.network = network;
 
   generate_animation_params(params);
-
-  params.viz_interact = true;
-
   calc_alpha_order(params)
-
   generate_interact_params(params);
 
-  var zoom_function = function(context){
-    return context.view;
-  };
-
-  params.zoom_function = zoom_function;
   params.mat_data = params.network.mat;
 
   generate_cat_params(params);
-
-  /*
-  Working on resizing the matrix, need to have separte x and y sizes
-  */
-
   generate_order_params(params);
   generate_label_params(params);
 
@@ -26728,8 +26712,15 @@ module.exports = function calc_potential_total_pan(zoom_data){
 
 module.exports = function ini_zoom_data(){
 
+  var zoom_function = function(context){
+    return context.view;
+  };
+
   // organize zoom rules into x and y components
   var zoom_data = {};
+
+  zoom_data.zoom_function = zoom_function;
+
   _.each(['x', 'y'], function(inst_dim){
 
     var inst_data = {};
@@ -27083,7 +27074,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     // working on toggling tracking for cases when we need to ignore
     // (e.g. moving a slider)
-    if (params.viz_interact){
+    if (params.interact.enable_viz_interact){
       track_interaction_zoom_data(regl, params, ev);
     } else {
 

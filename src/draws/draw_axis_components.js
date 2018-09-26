@@ -37,9 +37,9 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     // make the arguments for the draw command
     var text_triangle_args
     if (inst_axis === 'col'){
-      text_triangle_args = make_col_text_args(regl, params, params.zoom_function);
+      text_triangle_args = make_col_text_args(regl, params, params.zoom_data.zoom_function);
     } else {
-      text_triangle_args = make_row_text_args(regl, params, params.zoom_function);
+      text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
     }
 
     if (calc_text_tri){

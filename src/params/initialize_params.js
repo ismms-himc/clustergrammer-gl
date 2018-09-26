@@ -27,10 +27,7 @@ var generate_spillover_params = require('./generate_spillover_params');
 // */
 // var core = require('mathjs/core');
 // var math = core.create();
-
 // math.import(require('mathjs/lib/function/probability/factorial'));
-
-// console.log(math)
 
 module.exports = function initialize_params(regl, network){
 
@@ -38,26 +35,12 @@ module.exports = function initialize_params(regl, network){
   params.network = network;
 
   generate_animation_params(params);
-
-  params.viz_interact = true;
-
   calc_alpha_order(params)
-
   generate_interact_params(params);
 
-  var zoom_function = function(context){
-    return context.view;
-  };
-
-  params.zoom_function = zoom_function;
   params.mat_data = params.network.mat;
 
   generate_cat_params(params);
-
-  /*
-  Working on resizing the matrix, need to have separte x and y sizes
-  */
-
   generate_order_params(params);
   generate_label_params(params);
 

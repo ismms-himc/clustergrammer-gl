@@ -21732,7 +21732,7 @@ module.exports = function reset_cameras(regl, params){
   params.zoom_data = ini_zoom_data();
   make_cameras(regl, params);
 
-  params.draw_labels = false;
+  params.labels.draw_labels = false;
   // params.first_frame = true;
   params.initialize_viz = true;
   // params.show_tooltip = false;
@@ -22849,7 +22849,7 @@ module.exports = function draw_background_calculations(regl, params){
       drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
 
       // console.log(params.labels.queue.low[inst_axis].length)
-      // params.draw_labels = true;
+      // params.labels.draw_labels = true;
 
     }
 
@@ -22873,7 +22873,7 @@ var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_compone
 
 module.exports = function draw_commands(regl, params){
 
-  // if (params.draw_labels){
+  // if (params.labels.draw_labels){
   //   console.log('\n***************');
   //   console.log('** draw_labels **');
   //   console.log('***************');
@@ -22883,8 +22883,8 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.draw_labels);
-  draw_axis_components(regl, params, 'col', params.draw_labels);
+  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
+  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip && params.in_bounds_tooltip){
@@ -22892,9 +22892,9 @@ module.exports = function draw_commands(regl, params){
     draw_tooltip_components(regl, params);
   }
 
-  if (params.draw_labels){
+  if (params.labels.draw_labels){
     // console.log('----- turn off draw_labels -----')
-    params.draw_labels = false;
+    params.labels.draw_labels = false;
   }
 
   if (params.show_tooltip){
@@ -23296,7 +23296,7 @@ module.exports = function run_viz(regl, network){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
-    } else if (params.draw_labels || params.show_tooltip){
+    } else if (params.labels.draw_labels || params.show_tooltip){
       draw_labels_or_tooltips(regl, params);
     } else {
       // run background calculations
@@ -23349,7 +23349,7 @@ module.exports = function final_interaction_frame(regl, params){
     if (params.first_frame == false){
 
       // run draw commands
-      params.draw_labels = true;
+      params.labels.draw_labels = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
         // console.log('SLOW_DRAW')
@@ -25748,8 +25748,6 @@ module.exports = function initialize_params(regl, network){
   params.shift_camera.x = -offcenter_magnitude_x;
   params.shift_camera.y = offcenter_magnitude_y;
 
-  params.draw_labels = false;
-
   params.zoom_data = ini_zoom_data();
 
   // calculate row/col canvas positions
@@ -25800,6 +25798,7 @@ module.exports = function initialize_params(regl, network){
 
   params.labels = {};
   params.labels.offset_dict = {};
+  params.labels.draw_labels = false;
 
   calc_text_offsets(params, 'row');
   calc_text_offsets(params, 'col');

@@ -25,7 +25,7 @@ module.exports = function draw_background_calculations(regl, params){
       drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
 
       // console.log(params.labels.queue.low[inst_axis].length)
-      // params.draw_labels = true;
+      // params.labels.draw_labels = true;
 
     }
 

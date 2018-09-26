@@ -90,8 +90,6 @@ module.exports = function initialize_params(regl, network){
   params.shift_camera.x = -offcenter_magnitude_x;
   params.shift_camera.y = offcenter_magnitude_y;
 
-  params.draw_labels = false;
-
   params.zoom_data = ini_zoom_data();
 
   // calculate row/col canvas positions
@@ -142,6 +140,7 @@ module.exports = function initialize_params(regl, network){
 
   params.labels = {};
   params.labels.offset_dict = {};
+  params.labels.draw_labels = false;
 
   calc_text_offsets(params, 'row');
   calc_text_offsets(params, 'col');

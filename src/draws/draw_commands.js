@@ -5,7 +5,7 @@ var draw_spillover_components = require('./draw_spillover_components');
 
 module.exports = function draw_commands(regl, params){
 
-  // if (params.draw_labels){
+  // if (params.labels.draw_labels){
   //   console.log('\n***************');
   //   console.log('** draw_labels **');
   //   console.log('***************');
@@ -15,8 +15,8 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.draw_labels);
-  draw_axis_components(regl, params, 'col', params.draw_labels);
+  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
+  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
   draw_spillover_components(regl, params);
 
   if (params.show_tooltip && params.in_bounds_tooltip){
@@ -24,9 +24,9 @@ module.exports = function draw_commands(regl, params){
     draw_tooltip_components(regl, params);
   }
 
-  if (params.draw_labels){
+  if (params.labels.draw_labels){
     // console.log('----- turn off draw_labels -----')
-    params.draw_labels = false;
+    params.labels.draw_labels = false;
   }
 
   if (params.show_tooltip){

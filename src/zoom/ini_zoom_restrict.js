@@ -23,11 +23,11 @@ module.exports = function ini_zoom_restrict(params){
 
   // increase max zoom in y or x direction
   if (num_row > num_col){
-    console.log('more rows than cols')
+    // console.log('more rows than cols')
     zoom_restrict.y.max = zoom_restrict.y.max * ( 1/col_vs_row_space );
     zoom_restrict.y.ratio = 1/col_vs_row_space;
   } else {
-    console.log('more cols than rows')
+    // console.log('more cols than rows')
     zoom_restrict.x.max = zoom_restrict.x.max * col_vs_row_space;
     zoom_restrict.x.ratio = col_vs_row_space;
   }

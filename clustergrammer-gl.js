@@ -24025,7 +24025,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       if (potential_zoom > zoom_restrict.y.ratio){
 
         // bump x inst_zoom
-        console.log('tall: bump x inst_zoom')
+        // console.log('tall: bump x inst_zoom')
         zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
 
       }
@@ -24043,7 +24043,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       if (potential_zoom > zoom_restrict.x.ratio){
 
         // bump x inst_zoom
-        console.log('wide: bump y inst_zoom')
+        // console.log('wide: bump y inst_zoom')
         zoom_data.y.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
 
       }
@@ -26868,11 +26868,11 @@ module.exports = function ini_zoom_restrict(params){
 
   // increase max zoom in y or x direction
   if (num_row > num_col){
-    console.log('more rows than cols')
+    // console.log('more rows than cols')
     zoom_restrict.y.max = zoom_restrict.y.max * ( 1/col_vs_row_space );
     zoom_restrict.y.ratio = 1/col_vs_row_space;
   } else {
-    console.log('more cols than rows')
+    // console.log('more cols than rows')
     zoom_restrict.x.max = zoom_restrict.x.max * col_vs_row_space;
     zoom_restrict.x.ratio = col_vs_row_space;
   }

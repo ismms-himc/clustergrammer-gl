@@ -94,7 +94,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
         vec_translate = vec3(top_offset, viz_aid_pos);
 
         // rotate translated triangles
-        new_position = mat_rotate * ( new_position + vec_translate ) ;
+        new_position = mat_rotate * ( new_position + vec_translate );
 
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
@@ -121,7 +121,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     attributes: {
       ini_position: [
         [tri_height,    tri_width],
-        [    0,  0.0],
+        [         0,          0.0],
         [tri_height,   -tri_width],
       ],
 

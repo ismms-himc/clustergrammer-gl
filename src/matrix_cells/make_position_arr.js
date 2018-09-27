@@ -26,9 +26,6 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       num_labels = num_row;
     }
 
-    // h - (m - h)
-    // h - m + h)
-    // 2h - m
 
     heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
 

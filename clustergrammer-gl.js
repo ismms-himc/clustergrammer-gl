@@ -22915,7 +22915,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = heat_size - shift_heat - 2 * tri_width * inst_index - tri_width;
+    y_offset_array[inst_index] = heat_size - shift_heat - 2 * tri_width * inst_index;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -22951,10 +22951,9 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
         vec_translate = vec3(x_offset, y_offset_att, 0);
 
-        // new_position = mat_rotate * mat_scale * new_position + vec_translate;
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
-        // depth is being set to 0.45
+        // depth is being set to 0.40
         gl_Position = zoom * vec4(new_position[0], new_position[1], 0.40, 1);
 
       }
@@ -22975,9 +22974,9 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
     attributes: {
       position: [
-        [0.0,  2 * tri_width/2],
-        [row_width/2,  0.0],
-        [0.0, -2 * tri_width/2],
+        [      0.0, 0 ],
+        [row_width, -tri_width],
+        [      0.0, -2 * tri_width],
       ],
       y_offset_att: {
         buffer: y_offset_buffer,
@@ -24736,9 +24735,6 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       num_labels = num_row;
     }
 
-    // h - (m - h)
-    // h - m + h)
-    // 2h - m
 
     heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
 
@@ -25465,7 +25461,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
         vec_translate = vec3(top_offset, viz_aid_pos);
 
         // rotate translated triangles
-        new_position = mat_rotate * ( new_position + vec_translate ) ;
+        new_position = mat_rotate * ( new_position + vec_translate );
 
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
@@ -25492,7 +25488,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     attributes: {
       ini_position: [
         [tri_height,    tri_width],
-        [    0,  0.0],
+        [         0,          0.0],
         [tri_height,   -tri_width],
       ],
 

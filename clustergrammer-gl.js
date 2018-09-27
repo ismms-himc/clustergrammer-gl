@@ -22957,7 +22957,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       );
     });
 
-    regl(params.dendro_args[inst_axis])();
+    regl(params.dendro.dendro_args[inst_axis])();
 
     // make the arguments for the draw command
     var text_triangle_args
@@ -25918,6 +25918,27 @@ module.exports = function generate_cat_params(params){
 
 /***/ }),
 
+/***/ "./src/params/generate_dendro_params.js":
+/*!**********************************************!*\
+  !*** ./src/params/generate_dendro_params.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+
+module.exports = function generate_dendro_params(regl, params){
+
+  params.dendro = {};
+  params.dendro.dendro_args = {};
+  _.each(['row', 'col'], function(inst_axis){
+    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_interact_params.js":
 /*!************************************************!*\
   !*** ./src/params/generate_interact_params.js ***!
@@ -26152,7 +26173,6 @@ var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "
 var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
-var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
@@ -26169,6 +26189,7 @@ var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "
 var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
 var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
 var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
+var generate_dendro_params = __webpack_require__(/*! ./generate_dendro_params */ "./src/params/generate_dendro_params.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -26209,10 +26230,7 @@ module.exports = function initialize_params(regl, network){
     calc_text_offsets(params, inst_axis);
   });
 
-  params.dendro_args = {};
-  _.each(['row', 'col'], function(inst_axis){
-    params.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
-  });
+  generate_dendro_params(regl, params);
 
   generate_spillover_params(regl, params);
 

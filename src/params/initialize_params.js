@@ -5,7 +5,6 @@ var ini_zoom_restrict = require('./../zoom/ini_zoom_restrict');
 var zoom_rules_high_mat = require('./../zoom/zoom_rules_high_mat');
 var make_cameras = require('./../cameras/make_cameras');
 var make_matrix_args = require('./../matrix_cells/make_matrix_args');
-var make_dendro_args = require('./../dendrogram/make_dendro_args');
 var calc_viz_area = require('./calc_viz_area');
 var calc_row_downsampled_mat = require('./../matrix_cells/calc_row_downsampled_mat');
 var calc_alpha_order = require('./calc_alpha_order');
@@ -22,6 +21,7 @@ var generate_pix_to_webgl = require('./generate_pix_to_webgl');
 var generate_text_zoom_params = require('./generate_text_zoom_params');
 var generate_cat_args_arrs = require('./generate_cat_args_arrs');
 var generate_tooltip_params = require('./generate_tooltip_params');
+var generate_dendro_params = require('./generate_dendro_params');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -62,10 +62,7 @@ module.exports = function initialize_params(regl, network){
     calc_text_offsets(params, inst_axis);
   });
 
-  params.dendro_args = {};
-  _.each(['row', 'col'], function(inst_axis){
-    params.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
-  });
+  generate_dendro_params(regl, params);
 
   generate_spillover_params(regl, params);
 

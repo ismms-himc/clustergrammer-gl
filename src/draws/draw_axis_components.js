@@ -32,7 +32,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       );
     });
 
-    regl(params.dendro_args[inst_axis])();
+    regl(params.dendro.dendro_args[inst_axis])();
 
     // make the arguments for the draw command
     var text_triangle_args

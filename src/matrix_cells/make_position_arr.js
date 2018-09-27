@@ -50,31 +50,6 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
   });
 
-
-  // params.node_canvas_pos.x_arr = Array(num_col).fill()
-  //   .map(function(_, i){
-  //     inst_index = i;
-  //     inst_direct = 1;
-  //     num_labels = num_col;
-
-  //     inst_offset = offset.x
-  //     inst_heat_size = params.viz_dim.heat_size.x;
-  //     inst_pos = 2.0 * inst_heat_size * (inst_index/num_labels - 1) + inst_offset;
-  //     return  inst_pos * inst_direct;
-  //   });
-
-  // params.node_canvas_pos.y_arr = Array(num_row).fill()
-  //   .map(function(_, i){
-  //     inst_index = i + 1;
-  //     inst_direct = -1;
-  //     num_labels = num_row;
-
-  //     inst_offset = offset.y;
-  //     inst_heat_size = params.viz_dim.heat_size.y;
-  //     inst_pos = 2.0 * inst_heat_size * (inst_index/num_labels - 1) + inst_offset;
-  //     return inst_pos * inst_direct;
-  //   });
-
   // pass along row and col node information
   var row_nodes = network.row_nodes;
   var col_nodes = network.col_nodes;

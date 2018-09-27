@@ -22879,26 +22879,26 @@ module.exports = function (cgm, inst_rc, slider_value) {
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
-module.exports = function draw_mat_labels(regl, params, inst_rc){
+module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
   var mat_size;
   var mat_size_offset;
   var y_shift;
-  if (inst_rc === 'row'){
+  if (inst_axis === 'row'){
     rotation_radians = 0;
     mat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
     y_shift = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
-  } else if (inst_rc === 'col'){
+  } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
     mat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
     y_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
   }
 
-  var num_labels = params.labels['num_' + inst_rc];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var row_width = 0.025;
   var tile_height = (1/num_labels) * (mat_size/0.5);
@@ -22927,7 +22927,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   y_offset_buffer(y_offset_array);
 
   var mat_scale = m3.scaling(1, 1);
-
 
   var mat_rotate = m3.rotation(rotation_radians);
 
@@ -24762,31 +24761,6 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       });
 
   });
-
-
-  // params.node_canvas_pos.x_arr = Array(num_col).fill()
-  //   .map(function(_, i){
-  //     inst_index = i;
-  //     inst_direct = 1;
-  //     num_labels = num_col;
-
-  //     inst_offset = offset.x
-  //     inst_heat_size = params.viz_dim.heat_size.x;
-  //     inst_pos = 2.0 * inst_heat_size * (inst_index/num_labels - 1) + inst_offset;
-  //     return  inst_pos * inst_direct;
-  //   });
-
-  // params.node_canvas_pos.y_arr = Array(num_row).fill()
-  //   .map(function(_, i){
-  //     inst_index = i + 1;
-  //     inst_direct = -1;
-  //     num_labels = num_row;
-
-  //     inst_offset = offset.y;
-  //     inst_heat_size = params.viz_dim.heat_size.y;
-  //     inst_pos = 2.0 * inst_heat_size * (inst_index/num_labels - 1) + inst_offset;
-  //     return inst_pos * inst_direct;
-  //   });
 
   // pass along row and col node information
   var row_nodes = network.row_nodes;

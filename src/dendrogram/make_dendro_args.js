@@ -1,26 +1,26 @@
 var m3 = require('./../draws/mat3_transform');
 var color_to_rgba = require('./../colors/color_to_rgba');
 
-module.exports = function draw_mat_labels(regl, params, inst_rc){
+module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
   var mat_size;
   var mat_size_offset;
   var y_shift;
-  if (inst_rc === 'row'){
+  if (inst_axis === 'row'){
     rotation_radians = 0;
     mat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
     y_shift = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
-  } else if (inst_rc === 'col'){
+  } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
     mat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
     y_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
   }
 
-  var num_labels = params.labels['num_' + inst_rc];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var row_width = 0.025;
   var tile_height = (1/num_labels) * (mat_size/0.5);
@@ -49,7 +49,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
   y_offset_buffer(y_offset_array);
 
   var mat_scale = m3.scaling(1, 1);
-
 
   var mat_rotate = m3.rotation(rotation_radians);
 

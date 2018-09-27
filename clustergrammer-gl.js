@@ -22783,7 +22783,7 @@ module.exports = function calc_row_dendro_triangles(params){
   var triangle_info = {};
   var inst_level = params.dendro.group_level.row;
   var row_nodes = params.network.row_nodes;
-  var row_nodes_names = params.network.row_nodes_names;
+  // var row_nodes_names = params.network.row_nodes_names;
 
   underscore.each(row_nodes, function(inst_node){
 
@@ -24735,11 +24735,10 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       num_labels = num_row;
     }
 
-
     heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
 
     heat_size = params.viz_dim.heat_size[inst_axis];
-    var tri_width = heat_size/num_labels;
+    tri_width = heat_size/num_labels;
 
     params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
       .map(function(_, i){
@@ -24768,14 +24767,14 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   /*
     working on saving actual row positions (downsampling)
   */
-  params.row_positions = _.range(row_nodes.length);
+  params.row_positions = _.range(num_row);
 
   var row_order_id;
   var col_order_id;
 
   // generate x and y positions
   ////////////////////////////////
-  function position_function(_, i){
+  function position_function(d, i){
 
     // looking up x and y position
     var col_id = i % num_col;
@@ -25487,9 +25486,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tri_height,    tri_width],
-        [         0,          0.0],
-        [tri_height,   -tri_width],
+        [tri_height, 0],
+        [         0, -tri_width],
+        [tri_height, -2 * tri_width],
       ],
 
       // pass tri_offset_att_inst buffer
@@ -25579,7 +25578,7 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     }
 
     // shift the viz aid triangles because of smaller size of the heatmap
-    tri_offset_array[i] = heat_size - heat_shift - 2 * tri_width * inst_index - tri_width;
+    tri_offset_array[i] = heat_size - heat_shift - 2 * tri_width * inst_index;
   }
 
   return tri_offset_array;

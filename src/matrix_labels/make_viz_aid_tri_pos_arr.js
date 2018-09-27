@@ -34,7 +34,7 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     }
 
     // shift the viz aid triangles because of smaller size of the heatmap
-    tri_offset_array[i] = heat_size - heat_shift - 2 * tri_width * inst_index - tri_width;
+    tri_offset_array[i] = heat_size - heat_shift - 2 * tri_width * inst_index;
   }
 
   return tri_offset_array;

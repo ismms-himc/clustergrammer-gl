@@ -120,9 +120,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tri_height,    tri_width],
-        [         0,          0.0],
-        [tri_height,   -tri_width],
+        [tri_height, 0],
+        [         0, -tri_width],
+        [tri_height, -2 * tri_width],
       ],
 
       // pass tri_offset_att_inst buffer

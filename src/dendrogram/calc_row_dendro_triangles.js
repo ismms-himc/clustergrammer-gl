@@ -5,7 +5,7 @@ module.exports = function calc_row_dendro_triangles(params){
   var triangle_info = {};
   var inst_level = params.dendro.group_level.row;
   var row_nodes = params.network.row_nodes;
-  var row_nodes_names = params.network.row_nodes_names;
+  // var row_nodes_names = params.network.row_nodes_names;
 
   underscore.each(row_nodes, function(inst_node){
 

@@ -33,7 +33,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   // make buffer for row offsets
   /////////////////////////////////
 
-  var x_offset = 0.5 * (mat_size_offset/0.5);
+  var x_offset = mat_size_offset;
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){

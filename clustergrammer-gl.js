@@ -22911,7 +22911,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   // make buffer for row offsets
   /////////////////////////////////
 
-  var x_offset = 0.5 * (mat_size_offset/0.5);
+  var x_offset = mat_size_offset;
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
@@ -24725,7 +24725,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   // generate x position array
   params.node_canvas_pos = {};
   var inst_pos;
-  var inst_heat_size
+  var mat_size
   var num_labels;
   var inst_index;
   var inst_offset;
@@ -24753,8 +24753,10 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
         }
 
         inst_offset = offset[inst_axis]
-        inst_heat_size = params.viz_dim.heat_size[inst_axis];
-        inst_pos = 2.0 * inst_heat_size * (inst_index/num_labels - 1) + inst_offset;
+        mat_size = params.viz_dim.heat_size[inst_axis];
+
+        inst_pos = 2.0 * mat_size * inst_index/num_labels - 2.0 * mat_size + inst_offset;
+
         return  inst_pos * inst_direct;
       });
 

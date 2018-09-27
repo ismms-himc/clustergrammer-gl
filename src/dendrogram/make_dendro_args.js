@@ -7,17 +7,17 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var rotation_radians;
   var mat_size;
   var mat_size_offset;
-  var y_shift;
+  var shift_heat;
   if (inst_axis === 'row'){
     rotation_radians = 0;
     mat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
-    y_shift = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
+    shift_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
   } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
     mat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
-    y_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+    shift_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
   }
 
   var num_labels = params.labels['num_' + inst_axis];
@@ -37,7 +37,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = mat_size - 2*tri_width/2 - inst_index * 2 *tri_width;
+    y_offset_array[inst_index] = mat_size - tri_width - 2 * inst_index * tri_width + shift_heat;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -63,7 +63,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       uniform mat3 mat_scale;
       uniform mat4 zoom;
       uniform float x_offset;
-      uniform float y_shift;
+      uniform float shift_heat;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -72,7 +72,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
         new_position = vec3(position, 0);
 
-        vec_translate = vec3(x_offset, y_offset_att + y_shift, 0);
+        vec_translate = vec3(x_offset, y_offset_att, 0);
 
         // new_position = mat_rotate * mat_scale * new_position + vec_translate;
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
@@ -100,7 +100,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       position: [
         [0.0,  2 * tri_width/2],
         [row_width/2,  0.0],
-        [0.0, - 2 * tri_width/2],
+        [0.0, -2 * tri_width/2],
       ],
       y_offset_att: {
         buffer: y_offset_buffer,
@@ -113,7 +113,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       mat_rotate: mat_rotate,
       mat_scale: mat_scale,
       x_offset: x_offset,
-      y_shift: y_shift,
+      shift_heat: shift_heat,
       triangle_color: inst_rgba
     },
 

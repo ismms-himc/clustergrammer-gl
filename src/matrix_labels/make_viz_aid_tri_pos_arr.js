@@ -21,17 +21,18 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   /////////////////////////////////
   var tri_offset_array = [];
   var i;
-  var order_id;
+  var inst_index;
   for (i = 0; i < num_labels; i++){
 
     // emperically found rules
     if (inst_axis == 'row'){
-      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
+      inst_index = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
     } else {
-      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
+      inst_index = params.network[inst_axis + '_nodes'][i][inst_order] ;
     }
+
     // shfit the viz aid triangles because of smaller size of the heatmap
-    tri_offset_array[i] = mat_size + shift_mat_heat - tri_width - order_id * 2 * tri_width;
+    tri_offset_array[i] = mat_size + shift_mat_heat - tri_width - inst_index * 2 * tri_width;
   }
 
   return tri_offset_array;

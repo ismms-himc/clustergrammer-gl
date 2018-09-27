@@ -22901,7 +22901,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var num_labels = params.labels['num_' + inst_axis];
 
   var row_width = 0.025;
-  var tile_height = mat_size/num_labels;
+  var tri_width = mat_size/num_labels;
 
   var zoom_function = function(context){
     return context.view;
@@ -22914,8 +22914,8 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var x_offset = 0.5 * (mat_size_offset/0.5);
 
   var y_offset_array = [];
-  for (var i = 0; i < num_labels; i++){
-    y_offset_array[i] = mat_size - 2*tile_height/2 - i * 2 *tile_height;
+  for (var inst_index=0; inst_index < num_labels; inst_index++){
+    y_offset_array[inst_index] = mat_size - 2*tri_width/2 - inst_index * 2 *tri_width;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -22976,9 +22976,9 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
     attributes: {
       position: [
-        [0.0,  2 * tile_height/2],
+        [0.0,  2 * tri_width/2],
         [row_width/2,  0.0],
-        [0.0, - 2 * tile_height/2],
+        [0.0, - 2 * tri_width/2],
       ],
       y_offset_att: {
         buffer: y_offset_buffer,
@@ -25567,17 +25567,18 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   /////////////////////////////////
   var tri_offset_array = [];
   var i;
-  var order_id;
+  var inst_index;
   for (i = 0; i < num_labels; i++){
 
     // emperically found rules
     if (inst_axis == 'row'){
-      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
+      inst_index = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
     } else {
-      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
+      inst_index = params.network[inst_axis + '_nodes'][i][inst_order] ;
     }
+
     // shfit the viz aid triangles because of smaller size of the heatmap
-    tri_offset_array[i] = mat_size + shift_mat_heat - tri_width - order_id * 2 * tri_width;
+    tri_offset_array[i] = mat_size + shift_mat_heat - tri_width - inst_index * 2 * tri_width;
   }
 
   return tri_offset_array;

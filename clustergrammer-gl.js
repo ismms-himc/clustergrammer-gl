@@ -24726,18 +24726,17 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   offset.y = params.viz_dim.mat_size.y ;//+ params.viz_dim.offcenter.y;
 
   // generate x position array
+  var inst_index;
   var x_arr = Array(num_col).fill()
     .map(function(_, i){
-      // return   2 * params.viz_dim.heat_size.x * i/num_col - 2 * params.viz_dim.heat_size.x + offset.x;
-      return      2 * params.viz_dim.heat_size.x * ( i/num_col - 1 ) + offset.x;
+      inst_index = i;
+      return  2.0 * params.viz_dim.heat_size.x * (inst_index/num_col - 1) + offset.x;
     });
 
   var y_arr = Array(num_row).fill()
     .map(function(_, i){
-
-      // updated to take into consideration params.viz_dim.heat_size.x
-      // return -(2 * params.viz_dim.heat_size.y * i/num_row - 2 * params.viz_dim.heat_size.y * (1 - 1/num_row) + offset.y);
-      return    2*params.viz_dim.heat_size.y * (1 - 1/num_row - i/num_row)  - offset.y;
+      inst_index = i + 1;
+      return -2.0 * params.viz_dim.heat_size.y * (inst_index/num_row - 1)  - offset.y;
     });
 
   params.node_canvas_pos = {};

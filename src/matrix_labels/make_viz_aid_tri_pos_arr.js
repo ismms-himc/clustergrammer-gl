@@ -10,11 +10,11 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   if (inst_axis === 'row'){
     mat_size = params.viz_dim.heat_size.y;
     tri_width = mat_size/num_labels;
-    shift_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
+    shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else {
     mat_size = params.viz_dim.heat_size.x;
     tri_width  = mat_size/num_labels;
-    shift_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+    shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   // make viz_aid triangle array
@@ -22,17 +22,19 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   var tri_offset_array = [];
   var i;
   var inst_index;
+  var order_index;
   for (i = 0; i < num_labels; i++){
 
-    // emperically found rules
+    order_index = params.network[inst_axis + '_nodes'][i][inst_order];
+
     if (inst_axis == 'row'){
-      inst_index = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
+      inst_index = num_labels - order_index - 1;
     } else {
-      inst_index = params.network[inst_axis + '_nodes'][i][inst_order] ;
+      inst_index = order_index ;
     }
 
-    // shfit the viz aid triangles because of smaller size of the heatmap
-    tri_offset_array[i] = mat_size - tri_width - 2 * inst_index * tri_width + shift_heat;
+    // shift the viz aid triangles because of smaller size of the heatmap
+    tri_offset_array[i] = mat_size - tri_width - shift_heat - 2 * tri_width * inst_index;
   }
 
   return tri_offset_array;

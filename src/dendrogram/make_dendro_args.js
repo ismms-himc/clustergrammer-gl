@@ -12,12 +12,12 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     rotation_radians = 0;
     mat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
-    shift_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
+    shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
     mat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
-    shift_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+    shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   var num_labels = params.labels['num_' + inst_axis];
@@ -37,7 +37,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = mat_size - tri_width - 2 * inst_index * tri_width + shift_heat;
+    y_offset_array[inst_index] = mat_size - tri_width - shift_heat - 2 * tri_width * inst_index;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -63,7 +63,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       uniform mat3 mat_scale;
       uniform mat4 zoom;
       uniform float x_offset;
-      uniform float shift_heat;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -113,7 +112,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       mat_rotate: mat_rotate,
       mat_scale: mat_scale,
       x_offset: x_offset,
-      shift_heat: shift_heat,
       triangle_color: inst_rgba
     },
 

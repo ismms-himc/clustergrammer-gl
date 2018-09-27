@@ -22890,12 +22890,12 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     rotation_radians = 0;
     mat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
-    shift_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
+    shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
     mat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
-    shift_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+    shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   var num_labels = params.labels['num_' + inst_axis];
@@ -22915,7 +22915,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = mat_size - tri_width - 2 * inst_index * tri_width + shift_heat;
+    y_offset_array[inst_index] = mat_size - tri_width - shift_heat - 2 * tri_width * inst_index;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -22941,7 +22941,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       uniform mat3 mat_scale;
       uniform mat4 zoom;
       uniform float x_offset;
-      uniform float shift_heat;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -22991,7 +22990,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       mat_rotate: mat_rotate,
       mat_scale: mat_scale,
       x_offset: x_offset,
-      shift_heat: shift_heat,
       triangle_color: inst_rgba
     },
 
@@ -25556,11 +25554,11 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   if (inst_axis === 'row'){
     mat_size = params.viz_dim.heat_size.y;
     tri_width = mat_size/num_labels;
-    shift_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y);
+    shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else {
     mat_size = params.viz_dim.heat_size.x;
     tri_width  = mat_size/num_labels;
-    shift_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+    shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   // make viz_aid triangle array
@@ -25568,17 +25566,19 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   var tri_offset_array = [];
   var i;
   var inst_index;
+  var order_index;
   for (i = 0; i < num_labels; i++){
 
-    // emperically found rules
+    order_index = params.network[inst_axis + '_nodes'][i][inst_order];
+
     if (inst_axis == 'row'){
-      inst_index = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
+      inst_index = num_labels - order_index - 1;
     } else {
-      inst_index = params.network[inst_axis + '_nodes'][i][inst_order] ;
+      inst_index = order_index ;
     }
 
-    // shfit the viz aid triangles because of smaller size of the heatmap
-    tri_offset_array[i] = mat_size - tri_width - 2 * inst_index * tri_width + shift_heat;
+    // shift the viz aid triangles because of smaller size of the heatmap
+    tri_offset_array[i] = mat_size - tri_width - shift_heat - 2 * tri_width * inst_index;
   }
 
   return tri_offset_array;

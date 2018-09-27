@@ -22590,8 +22590,6 @@ var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_s
 
 module.exports = function build_dendrogram_sliders(cgm){
 
-  // console.log('build_dendrogram_sliders')
-
   // Add sliders on top of the canvas
   /////////////////////////////////////
   var slider_length = 130;
@@ -22625,9 +22623,9 @@ module.exports = function build_dendrogram_sliders(cgm){
   !*** ./src/dendrogram/build_single_dendro_slider.js ***!
   \******************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// var change_groups = require('./change_groups');
+var change_groups = __webpack_require__(/*! ./change_groups */ "./src/dendrogram/change_groups.js");
 // var position_dendro_slider = require('./position_dendro_slider');
 
 module.exports = function build_single_dendro_slider(cgm, inst_rc){
@@ -22745,11 +22743,11 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     slider_pos = d3.round(slider_pos, -1);
 
-    // var slider_value = 10 - slider_pos/10;
+    var slider_value = 10 - slider_pos/10;
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    // change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_rc, slider_value);
 
   }
 
@@ -22762,12 +22760,43 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
     d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
-    // var slider_value = 10 - rel_pos/10;
+    var slider_value = 10 - rel_pos/10;
 
-    // change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_rc, slider_value);
 
   }
 };
+
+/***/ }),
+
+/***/ "./src/dendrogram/change_groups.js":
+/*!*****************************************!*\
+  !*** ./src/dendrogram/change_groups.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// var make_dendro_triangles = require('./make_dendro_triangles');
+
+/* Changes the groupings (x- and y-axis color bars).
+ */
+module.exports = function (cgm, inst_rc, slider_value) {
+
+  var params = cgm.params;
+
+  if (inst_rc==='row'){
+    params.dendro.group_level.row = slider_value;
+  } else if (inst_rc==='col'){
+    params.dendro.group_level.col = slider_value;
+  }
+
+  // var is_change_group = true;
+  // make_dendro_triangles(cgm, inst_rc, is_change_group);
+
+  console.log(slider_value);
+
+};
+
 
 /***/ }),
 

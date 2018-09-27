@@ -1,4 +1,4 @@
-// var change_groups = require('./change_groups');
+var change_groups = require('./change_groups');
 // var position_dendro_slider = require('./position_dendro_slider');
 
 module.exports = function build_single_dendro_slider(cgm, inst_rc){
@@ -116,11 +116,11 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     slider_pos = d3.round(slider_pos, -1);
 
-    // var slider_value = 10 - slider_pos/10;
+    var slider_value = 10 - slider_pos/10;
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    // change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_rc, slider_value);
 
   }
 
@@ -133,9 +133,9 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
     d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
-    // var slider_value = 10 - rel_pos/10;
+    var slider_value = 10 - rel_pos/10;
 
-    // change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_rc, slider_value);
 
   }
 };

@@ -24,7 +24,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
       // updated to take into consideration params.viz_dim.heat_size.x
       // return -(2 * params.viz_dim.heat_size.y * i/num_row - 2 * params.viz_dim.heat_size.y * (1 - 1/num_row) + offset.y);
-      return    -2*params.viz_dim.heat_size.y * i/num_row + 2*params.viz_dim.heat_size.y * (1 - 1/num_row) - offset.y;
+      return    2*params.viz_dim.heat_size.y * (1 - 1/num_row) - 2*params.viz_dim.heat_size.y * i/num_row  - offset.y;
     });
 
   params.node_canvas_pos = {};

@@ -22915,7 +22915,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = mat_size - tri_width - shift_heat - 2 * tri_width * inst_index;
+    y_offset_array[inst_index] = mat_size - shift_heat - 2 * tri_width * inst_index - tri_width;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -24717,10 +24717,6 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
   // draw matrix cells
   /////////////////////////////////////////
-  // set up offset array for buffer
-  var offset = {};
-  offset.x = params.viz_dim.mat_size.x ;//+ params.viz_dim.offcenter.x;
-  offset.y = params.viz_dim.mat_size.y ;//+ params.viz_dim.offcenter.y;
 
   // generate x position array
   params.node_canvas_pos = {};
@@ -24728,9 +24724,9 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   var mat_size
   var num_labels;
   var inst_index;
-  var inst_offset;
   var inst_direct;
-  var tile_width;
+  var tri_width;
+  var shift_heat;
 
   _.each(['x', 'y'], function(inst_axis){
 
@@ -24740,26 +24736,25 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       num_labels = num_row;
     }
 
+    shift_heat = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+
     mat_size = params.viz_dim.heat_size[inst_axis];
-    var tile_width = mat_size/num_labels;
+    var tri_width = mat_size/num_labels;
 
     params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
       .map(function(_, i){
 
         if (inst_axis === 'x'){
           inst_index = i;
-          inst_direct = 1;
+          inst_direct = -1;
           num_labels = num_col;
         } else {
           inst_index = i + 1;
-          inst_direct = -1;
+          inst_direct = 1;
           num_labels = num_row;
         }
 
-        inst_offset = offset[inst_axis]
-
-
-        inst_pos = 2.0 * inst_index * tile_width - 2.0 * mat_size + inst_offset;
+        inst_pos =  mat_size - shift_heat - 2 * tri_width * inst_index;
 
         return  inst_pos * inst_direct;
       });

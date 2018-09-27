@@ -37,7 +37,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = mat_size - tri_width - shift_heat - 2 * tri_width * inst_index;
+    y_offset_array[inst_index] = mat_size - shift_heat - 2 * tri_width * inst_index - tri_width;
   }
 
   const y_offset_buffer = regl.buffer({

@@ -68,11 +68,14 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     var mouseover_text;
     if (params.cat_data.cat_num.col == 0){
+
       // calculate text triangles, they require an offset element
       mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
       params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
+
     } else {
+
       // calculate text triangles, they require an offset element
       mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
       params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
@@ -86,6 +89,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     }
 
     params.tooltip.in_bounds_tooltip = true;
+
   } else {
     // console.log('OUTSIDE OF MATRIX')
     params.tooltip.in_bounds_tooltip = false;

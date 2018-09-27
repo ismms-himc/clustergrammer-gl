@@ -25,9 +25,9 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       return -i/num_row * (params.viz_dim.heat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.viz_dim.heat_size.y) - 2*(offset.y - params.viz_dim.heat_size.y) ;
     });
 
-  var node_canvas_pos = {};
-  node_canvas_pos.x_arr = x_arr;
-  node_canvas_pos.y_arr = y_arr;
+  params.node_canvas_pos = {};
+  params.node_canvas_pos.x_arr = x_arr;
+  params.node_canvas_pos.y_arr = y_arr;
 
   // var canvas_pos = params.canvas_pos;
 
@@ -71,11 +71,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
     }
 
-    var y = node_canvas_pos.y_arr[row_order_id];
-    var x = node_canvas_pos.x_arr[col_order_id];
-
-    // var y = canvas_pos.y_arr[row_order_id];
-    // var x = canvas_pos.x_arr[col_order_id];
+    var y = params.node_canvas_pos.y_arr[row_order_id];
+    var x = params.node_canvas_pos.x_arr[col_order_id];
 
     params.row_positions[row_id] = y;
 

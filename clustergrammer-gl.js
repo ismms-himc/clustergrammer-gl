@@ -22769,6 +22769,75 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
 /***/ }),
 
+/***/ "./src/dendrogram/calc_row_dendro_triangles.js":
+/*!*****************************************************!*\
+  !*** ./src/dendrogram/calc_row_dendro_triangles.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var underscore = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+module.exports = function calc_row_dendro_triangles(params){
+
+  var triangle_info = {};
+  var inst_level = params.dendro.group_level.row;
+  var row_nodes = params.network.row_nodes;
+  var row_nodes_names = params.network.row_nodes_names;
+
+  underscore.each(row_nodes, function(d){
+
+    // console.log('row_node '+d.name)
+
+    var tmp_group = d.group[inst_level];
+    var inst_index = underscore.indexOf(row_nodes_names, d.name);
+
+    // var inst_top = params.viz.y_scale(inst_index);
+    // var inst_bot = inst_top + params.viz.y_scale.rangeBand();
+
+    var inst_top = 1; // params.viz.y_scale(inst_index);
+    var inst_bot = 1; // inst_top + params.viz.y_scale.rangeBand();
+
+    if ( underscore.has(triangle_info, tmp_group) === false ){
+      triangle_info[tmp_group] = {};
+      triangle_info[tmp_group].name_top = d.name;
+      triangle_info[tmp_group].name_bot = d.name;
+      triangle_info[tmp_group].pos_top = inst_top;
+      triangle_info[tmp_group].pos_bot = inst_bot;
+      triangle_info[tmp_group].pos_mid = (inst_top + inst_bot)/2;
+      triangle_info[tmp_group].name = tmp_group;
+      triangle_info[tmp_group].all_names = [];
+      triangle_info[tmp_group].inst_rc = 'row';
+    }
+
+    triangle_info[tmp_group].all_names.push(d.name);
+
+    if (inst_top < triangle_info[tmp_group].pos_top){
+      triangle_info[tmp_group].name_top = d.name;
+      triangle_info[tmp_group].pos_top = inst_top;
+      triangle_info[tmp_group].pos_mid = (inst_top + triangle_info[tmp_group].pos_bot)/2;
+    }
+
+    if (inst_bot > triangle_info[tmp_group].pos_bot){
+      triangle_info[tmp_group].name_bot = d.name;
+      triangle_info[tmp_group].pos_bot = inst_bot;
+      triangle_info[tmp_group].pos_mid = (triangle_info[tmp_group].pos_top + inst_bot)/2;
+    }
+
+  });
+
+  var group_info = [];
+
+  underscore.each(triangle_info, function(d){
+    group_info.push(d);
+  });
+
+  return group_info;
+
+};
+
+/***/ }),
+
 /***/ "./src/dendrogram/change_groups.js":
 /*!*****************************************!*\
   !*** ./src/dendrogram/change_groups.js ***!
@@ -23680,11 +23749,14 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     var mouseover_text;
     if (params.cat_data.cat_num.col == 0){
+
       // calculate text triangles, they require an offset element
       mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
       params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
       params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
+
     } else {
+
       // calculate text triangles, they require an offset element
       mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
       params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
@@ -23698,6 +23770,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     }
 
     params.tooltip.in_bounds_tooltip = true;
+
   } else {
     // console.log('OUTSIDE OF MATRIX')
     params.tooltip.in_bounds_tooltip = false;
@@ -24665,9 +24738,9 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       return -i/num_row * (params.viz_dim.heat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.viz_dim.heat_size.y) - 2*(offset.y - params.viz_dim.heat_size.y) ;
     });
 
-  var node_canvas_pos = {};
-  node_canvas_pos.x_arr = x_arr;
-  node_canvas_pos.y_arr = y_arr;
+  params.node_canvas_pos = {};
+  params.node_canvas_pos.x_arr = x_arr;
+  params.node_canvas_pos.y_arr = y_arr;
 
   // var canvas_pos = params.canvas_pos;
 
@@ -24711,11 +24784,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
     }
 
-    var y = node_canvas_pos.y_arr[row_order_id];
-    var x = node_canvas_pos.x_arr[col_order_id];
-
-    // var y = canvas_pos.y_arr[row_order_id];
-    // var x = canvas_pos.x_arr[col_order_id];
+    var y = params.node_canvas_pos.y_arr[row_order_id];
+    var x = params.node_canvas_pos.x_arr[col_order_id];
 
     params.row_positions[row_id] = y;
 
@@ -25955,6 +26025,7 @@ module.exports = function generate_cat_params(params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+var calc_row_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_row_dendro_triangles */ "./src/dendrogram/calc_row_dendro_triangles.js");
 
 module.exports = function generate_dendro_params(regl, params){
 
@@ -25971,6 +26042,8 @@ module.exports = function generate_dendro_params(regl, params){
     params.dendro.group_level[inst_axis] = params.dendro.default_level;
 
   });
+
+  var group_info = calc_row_dendro_triangles(params);
 
 };
 

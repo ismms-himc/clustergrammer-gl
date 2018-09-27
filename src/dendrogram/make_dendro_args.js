@@ -35,18 +35,31 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var x_offset = mat_size_offset;
 
-  var y_offset_array = [];
+  var offset_array = [];
+  var inst_offset;
+  // width of the trapezoid
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = heat_size - shift_heat - 2 * tri_width * inst_index;
+
+    var trap_width_scale;
+    if (inst_axis === 'row'){
+      trap_width_scale = 0.15 * inst_index;
+    } else {
+      trap_width_scale = 0.15 * (num_labels - inst_index - 1);
+    }
+
+
+    // add in additional element for width scale
+    inst_offset = [heat_size - shift_heat - 2 * tri_width * inst_index, trap_width_scale];
+    offset_array.push(inst_offset) ;
   }
 
-  const y_offset_buffer = regl.buffer({
+  const offset_buffer = regl.buffer({
     length: num_labels,
     type: 'float',
     usage: 'dynamic'
   });
 
-  y_offset_buffer(y_offset_array);
+  offset_buffer(offset_array);
 
   var mat_scale = m3.scaling(1, 1);
 
@@ -57,7 +70,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     vert: `
       precision highp float;
       attribute vec2 position;
-      attribute float y_offset_att;
+      attribute vec2 offset_att;
 
       uniform mat3 mat_rotate;
       uniform mat3 mat_scale;
@@ -69,9 +82,11 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
       void main () {
 
-        new_position = vec3(position, 0);
+        // offset[1] will contain dendro width
+        new_position = vec3(position[0] * offset_att[1], position[1], 0);
 
-        vec_translate = vec3(x_offset, y_offset_att, 0);
+        // offset[0] contains the actual offset
+        vec_translate = vec3(x_offset, offset_att[0], 0);
 
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
@@ -88,7 +103,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
       // color triangle red
       void main () {
-        // gl_FragColor = vec4(0.0, 1, 0.0, 1);
         gl_FragColor = triangle_color;
       }
 
@@ -100,8 +114,8 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
         [row_width, -tri_width],
         [      0.0, -2 * tri_width],
       ],
-      y_offset_att: {
-        buffer: y_offset_buffer,
+      offset_att: {
+        buffer: offset_buffer,
         divisor: 1
       }
     },

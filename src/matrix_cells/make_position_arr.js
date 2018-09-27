@@ -2,8 +2,8 @@
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
   var network = params.network;
-  var num_row = params.mat_data.length;
-  var num_col = params.mat_data[0].length;
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
 
   // draw matrix cells
   /////////////////////////////////////////
@@ -13,24 +13,30 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   offset.y = params.viz_dim.mat_size.y ;//+ params.viz_dim.offcenter.y;
 
   // generate x position array
+  params.node_canvas_pos = {};
   var inst_index;
-  var x_arr = Array(num_col).fill()
+
+  // _.each(['x', 'y'], function(inst_axis){
+
+  //   params.node_canvas_pos[inst_axis + '_arr'] = Array(num_col).fill()
+  //     .map(function(_, i){
+  //       inst_index = i;
+  //       return  2.0 * params.viz_dim.heat_size.x * (inst_index/num_col - 1) + offset.x;
+  //     });
+
+  // });
+
+  params.node_canvas_pos.x_arr = Array(num_col).fill()
     .map(function(_, i){
       inst_index = i;
       return  2.0 * params.viz_dim.heat_size.x * (inst_index/num_col - 1) + offset.x;
     });
 
-  var y_arr = Array(num_row).fill()
+  params.node_canvas_pos.y_arr = Array(num_row).fill()
     .map(function(_, i){
       inst_index = i + 1;
       return -2.0 * params.viz_dim.heat_size.y * (inst_index/num_row - 1)  - offset.y;
     });
-
-  params.node_canvas_pos = {};
-  params.node_canvas_pos.x_arr = x_arr;
-  params.node_canvas_pos.y_arr = y_arr;
-
-  // var canvas_pos = params.canvas_pos;
 
   // pass along row and col node information
   var row_nodes = network.row_nodes;

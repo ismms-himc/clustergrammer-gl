@@ -5,17 +5,17 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
-  var mat_size;
+  var heat_size;
   var mat_size_offset;
   var shift_heat;
   if (inst_axis === 'row'){
     rotation_radians = 0;
-    mat_size = params.viz_dim.heat_size.y;
+    heat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
     shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
-    mat_size = params.viz_dim.heat_size.x;
+    heat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
     shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
@@ -23,7 +23,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var num_labels = params.labels['num_' + inst_axis];
 
   var row_width = 0.025;
-  var tri_width = mat_size/num_labels;
+  var tri_width = heat_size/num_labels;
 
   var zoom_function = function(context){
     return context.view;
@@ -37,7 +37,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = mat_size - shift_heat - 2 * tri_width * inst_index - tri_width;
+    y_offset_array[inst_index] = heat_size - shift_heat - 2 * tri_width * inst_index - tri_width;
   }
 
   const y_offset_buffer = regl.buffer({

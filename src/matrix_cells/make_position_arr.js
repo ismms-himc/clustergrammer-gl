@@ -11,12 +11,12 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   // generate x position array
   params.node_canvas_pos = {};
   var inst_pos;
-  var mat_size
+  var heat_size
   var num_labels;
   var inst_index;
   var inst_direct;
   var tri_width;
-  var shift_heat;
+  var heat_shift;
 
   _.each(['x', 'y'], function(inst_axis){
 
@@ -26,10 +26,14 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       num_labels = num_row;
     }
 
-    shift_heat = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+    // h - (m - h)
+    // h - m + h)
+    // 2h - m
 
-    mat_size = params.viz_dim.heat_size[inst_axis];
-    var tri_width = mat_size/num_labels;
+    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+
+    heat_size = params.viz_dim.heat_size[inst_axis];
+    var tri_width = heat_size/num_labels;
 
     params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
       .map(function(_, i){
@@ -44,7 +48,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
           num_labels = num_row;
         }
 
-        inst_pos =  mat_size - shift_heat - 2 * tri_width * inst_index;
+        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
 
         return  inst_pos * inst_direct;
       });

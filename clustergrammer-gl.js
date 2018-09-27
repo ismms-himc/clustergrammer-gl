@@ -22883,17 +22883,17 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
-  var mat_size;
+  var heat_size;
   var mat_size_offset;
   var shift_heat;
   if (inst_axis === 'row'){
     rotation_radians = 0;
-    mat_size = params.viz_dim.heat_size.y;
+    heat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
     shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
-    mat_size = params.viz_dim.heat_size.x;
+    heat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
     shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
@@ -22901,7 +22901,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var num_labels = params.labels['num_' + inst_axis];
 
   var row_width = 0.025;
-  var tri_width = mat_size/num_labels;
+  var tri_width = heat_size/num_labels;
 
   var zoom_function = function(context){
     return context.view;
@@ -22915,7 +22915,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   var y_offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
-    y_offset_array[inst_index] = mat_size - shift_heat - 2 * tri_width * inst_index - tri_width;
+    y_offset_array[inst_index] = heat_size - shift_heat - 2 * tri_width * inst_index - tri_width;
   }
 
   const y_offset_buffer = regl.buffer({
@@ -24721,12 +24721,12 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   // generate x position array
   params.node_canvas_pos = {};
   var inst_pos;
-  var mat_size
+  var heat_size
   var num_labels;
   var inst_index;
   var inst_direct;
   var tri_width;
-  var shift_heat;
+  var heat_shift;
 
   _.each(['x', 'y'], function(inst_axis){
 
@@ -24736,10 +24736,14 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
       num_labels = num_row;
     }
 
-    shift_heat = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+    // h - (m - h)
+    // h - m + h)
+    // 2h - m
 
-    mat_size = params.viz_dim.heat_size[inst_axis];
-    var tri_width = mat_size/num_labels;
+    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+
+    heat_size = params.viz_dim.heat_size[inst_axis];
+    var tri_width = heat_size/num_labels;
 
     params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
       .map(function(_, i){
@@ -24754,7 +24758,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
           num_labels = num_row;
         }
 
-        inst_pos =  mat_size - shift_heat - 2 * tri_width * inst_index;
+        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
 
         return  inst_pos * inst_direct;
       });
@@ -25546,20 +25550,20 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order){
 
   var num_labels = params.labels['num_'+inst_axis];
-  var mat_size;
+  var heat_size;
   var tri_width;
-  var shift_heat;
+  var heat_shift;
 
   // keep positioned at matrix not heatmap (make room for categories)
   // making triangle smaller
   if (inst_axis === 'row'){
-    mat_size = params.viz_dim.heat_size.y;
-    tri_width = mat_size/num_labels;
-    shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
+    heat_size = params.viz_dim.heat_size.y;
+    tri_width = heat_size/num_labels;
+    heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else {
-    mat_size = params.viz_dim.heat_size.x;
-    tri_width  = mat_size/num_labels;
-    shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
+    heat_size = params.viz_dim.heat_size.x;
+    tri_width  = heat_size/num_labels;
+    heat_shift = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   // make viz_aid triangle array
@@ -25579,7 +25583,7 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
     }
 
     // shift the viz aid triangles because of smaller size of the heatmap
-    tri_offset_array[i] = mat_size - tri_width - shift_heat - 2 * tri_width * inst_index;
+    tri_offset_array[i] = heat_size - heat_shift - 2 * tri_width * inst_index - tri_width;
   }
 
   return tri_offset_array;

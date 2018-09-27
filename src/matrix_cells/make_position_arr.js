@@ -20,6 +20,7 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   var inst_index;
   var inst_offset;
   var inst_direct;
+  var tile_width;
 
   _.each(['x', 'y'], function(inst_axis){
 
@@ -28,6 +29,9 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
     } else {
       num_labels = num_row;
     }
+
+    mat_size = params.viz_dim.heat_size[inst_axis];
+    var tile_width = mat_size/num_labels;
 
     params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
       .map(function(_, i){
@@ -43,9 +47,9 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
         }
 
         inst_offset = offset[inst_axis]
-        mat_size = params.viz_dim.heat_size[inst_axis];
 
-        inst_pos = 2.0 * mat_size * inst_index/num_labels - 2.0 * mat_size + inst_offset;
+
+        inst_pos = 2.0 * inst_index * tile_width - 2.0 * mat_size + inst_offset;
 
         return  inst_pos * inst_direct;
       });

@@ -22628,7 +22628,7 @@ module.exports = function build_dendrogram_sliders(cgm){
 var change_groups = __webpack_require__(/*! ./change_groups */ "./src/dendrogram/change_groups.js");
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(cgm, inst_rc){
+module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
@@ -22642,7 +22642,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
   var slider_group = d3.select(cgm.params.root + ' .dendro_slider_svg')
       .append('g')
-      .classed( inst_rc + '_slider_group', true)
+      .classed( inst_axis + '_slider_group', true)
       .attr('transform', function(){
         var inst_translation;
 
@@ -22650,11 +22650,11 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
         return inst_translation;
       })
 
-  // position_dendro_slider(cgm, inst_rc);
+  // position_dendro_slider(cgm, inst_axis);
 
   slider_group
     .append('rect')
-    .classed(inst_rc+'_slider_background', true)
+    .classed(inst_axis+'_slider_background', true)
     .attr('height', rect_height+'px')
     .attr('width', rect_width+'px')
     .attr('fill', 'red')
@@ -22707,7 +22707,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
   var high_opacity = 0.6;
   slider_group
     .append('circle')
-    .classed(inst_rc+'_group_circle', true)
+    .classed(inst_axis+'_group_circle', true)
     .attr('r', slider_length * 0.08)
     .attr('transform', function(){
       return 'translate(0, '+slider_length/2+')';
@@ -22747,7 +22747,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 
@@ -22757,12 +22757,12 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     var rel_pos = d3.round(clicked_line_position[1], -1);
 
-    d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
+    d3.select(cgm.params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     var slider_value = 10 - rel_pos/10;
 
-    change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 };
@@ -22790,7 +22790,7 @@ module.exports = function calc_row_dendro_triangles(params){
     // console.log('row_node '+d.name)
 
     var tmp_group = d.group[inst_level];
-    var inst_index = underscore.indexOf(row_nodes_names, d.name);
+    // var inst_index = underscore.indexOf(row_nodes_names, d.name);
 
     // var inst_top = params.viz.y_scale(inst_index);
     // var inst_bot = inst_top + params.viz.y_scale.rangeBand();
@@ -22807,7 +22807,7 @@ module.exports = function calc_row_dendro_triangles(params){
       triangle_info[tmp_group].pos_mid = (inst_top + inst_bot)/2;
       triangle_info[tmp_group].name = tmp_group;
       triangle_info[tmp_group].all_names = [];
-      triangle_info[tmp_group].inst_rc = 'row';
+      triangle_info[tmp_group].inst_axis = 'row';
     }
 
     triangle_info[tmp_group].all_names.push(d.name);
@@ -22849,20 +22849,20 @@ module.exports = function calc_row_dendro_triangles(params){
 
 /* Changes the groupings (x- and y-axis color bars).
  */
-module.exports = function (cgm, inst_rc, slider_value) {
+module.exports = function (cgm, inst_axis, slider_value) {
 
   var params = cgm.params;
 
-  if (inst_rc==='row'){
+  if (inst_axis==='row'){
     params.dendro.group_level.row = slider_value;
-  } else if (inst_rc==='col'){
+  } else if (inst_axis==='col'){
     params.dendro.group_level.col = slider_value;
   }
 
   // var is_change_group = true;
-  // make_dendro_triangles(cgm, inst_rc, is_change_group);
+  // make_dendro_triangles(cgm, inst_axis, is_change_group);
 
-  console.log(slider_value);
+  // console.log(slider_value);
 
 };
 
@@ -26061,7 +26061,7 @@ module.exports = function generate_dendro_params(regl, params){
 
   });
 
-  var group_info = calc_row_dendro_triangles(params);
+  params.dendro.group_info = calc_row_dendro_triangles(params);
 
 };
 

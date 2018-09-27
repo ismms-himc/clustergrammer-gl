@@ -1,7 +1,7 @@
 var change_groups = require('./change_groups');
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(cgm, inst_rc){
+module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
@@ -15,7 +15,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
   var slider_group = d3.select(cgm.params.root + ' .dendro_slider_svg')
       .append('g')
-      .classed( inst_rc + '_slider_group', true)
+      .classed( inst_axis + '_slider_group', true)
       .attr('transform', function(){
         var inst_translation;
 
@@ -23,11 +23,11 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
         return inst_translation;
       })
 
-  // position_dendro_slider(cgm, inst_rc);
+  // position_dendro_slider(cgm, inst_axis);
 
   slider_group
     .append('rect')
-    .classed(inst_rc+'_slider_background', true)
+    .classed(inst_axis+'_slider_background', true)
     .attr('height', rect_height+'px')
     .attr('width', rect_width+'px')
     .attr('fill', 'red')
@@ -80,7 +80,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
   var high_opacity = 0.6;
   slider_group
     .append('circle')
-    .classed(inst_rc+'_group_circle', true)
+    .classed(inst_axis+'_group_circle', true)
     .attr('r', slider_length * 0.08)
     .attr('transform', function(){
       return 'translate(0, '+slider_length/2+')';
@@ -120,7 +120,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 
@@ -130,12 +130,12 @@ module.exports = function build_single_dendro_slider(cgm, inst_rc){
 
     var rel_pos = d3.round(clicked_line_position[1], -1);
 
-    d3.select(cgm.params.root+ ' .'+inst_rc+'_group_circle')
+    d3.select(cgm.params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     var slider_value = 10 - rel_pos/10;
 
-    change_groups(cgm, inst_rc, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 };

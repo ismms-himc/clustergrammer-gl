@@ -17,6 +17,6 @@ module.exports = function generate_dendro_params(regl, params){
 
   });
 
-  var group_info = calc_row_dendro_triangles(params);
+  params.dendro.group_info = calc_row_dendro_triangles(params);
 
 };

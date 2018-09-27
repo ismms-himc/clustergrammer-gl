@@ -15,14 +15,15 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   // generate x position array
   var x_arr = Array(num_col).fill()
     .map(function(_, i){
-      return i/num_col * (params.viz_dim.heat_size.x/0.5) -  (offset.x - 2*(offset.x - params.viz_dim.heat_size.x) );
+      return i/num_col * (params.viz_dim.heat_size.x/0.5) + offset.x - 2*params.viz_dim.heat_size.x;
     });
 
   var y_arr = Array(num_row).fill()
     .map(function(_, i){
 
       // updated to take into consideration params.viz_dim.heat_size.x
-      return -i/num_row * (params.viz_dim.heat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.viz_dim.heat_size.y) - 2*(offset.y - params.viz_dim.heat_size.y) ;
+   // return -i/num_row * (params.viz_dim.heat_size.y/0.5) + offset.y - 1/num_row /(0.5/params.viz_dim.heat_size.y) - 2*(offset.y - params.viz_dim.heat_size.y) ;
+      return -i/num_row * (params.viz_dim.heat_size.y/0.5) + offset.y - 2*params.viz_dim.heat_size.y/num_row - 2*offset.y + 2*params.viz_dim.heat_size.y;
     });
 
   params.node_canvas_pos = {};

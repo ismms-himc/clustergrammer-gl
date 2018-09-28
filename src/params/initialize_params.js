@@ -22,6 +22,7 @@ var generate_text_zoom_params = require('./generate_text_zoom_params');
 var generate_cat_args_arrs = require('./generate_cat_args_arrs');
 var generate_tooltip_params = require('./generate_tooltip_params');
 var generate_dendro_params = require('./generate_dendro_params');
+var calc_mat_arr = require('./../params/calc_mat_arr');
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -90,6 +91,8 @@ module.exports = function initialize_params(regl, network){
   // update zoom_data
   zoom_rules_high_mat(regl, params);
   make_cameras(regl, params);
+
+  calc_mat_arr(params);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);

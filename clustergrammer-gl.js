@@ -24718,16 +24718,13 @@ module.exports = function make_opacity_arr(params){
   !*** ./src/matrix_cells/make_position_arr.js ***!
   \***********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var calc_mat_arr = __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js");
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
   var num_row = params.labels.num_row;
   var num_col = params.labels.num_col;
-
-  calc_mat_arr(params);
 
   // pass along row and col node information
   var row_nodes = params.network.row_nodes;
@@ -26333,6 +26330,7 @@ var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_par
 var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
 var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
 var generate_dendro_params = __webpack_require__(/*! ./generate_dendro_params */ "./src/params/generate_dendro_params.js");
+var calc_mat_arr = __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
@@ -26401,6 +26399,8 @@ module.exports = function initialize_params(regl, network){
   // update zoom_data
   zoom_rules_high_mat(regl, params);
   make_cameras(regl, params);
+
+  calc_mat_arr(params);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);

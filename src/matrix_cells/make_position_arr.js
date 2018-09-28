@@ -1,11 +1,8 @@
-var calc_mat_arr = require('./../params/calc_mat_arr');
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
   var num_row = params.labels.num_row;
   var num_col = params.labels.num_col;
-
-  calc_mat_arr(params);
 
   // pass along row and col node information
   var row_nodes = params.network.row_nodes;

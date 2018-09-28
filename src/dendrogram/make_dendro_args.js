@@ -48,7 +48,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   console.log(offset_array)
 
-
   make_dendro_arr(params);
 
   const offset_buffer = regl.buffer({

@@ -18,7 +18,6 @@ module.exports = function make_matrix_args(regl, params){
                                                params.order.new.row,
                                                params.order.new.col);
 
-
   var opacity_buffer = regl.buffer({
     type: 'float',
     usage: 'dynamic'
@@ -138,7 +137,6 @@ module.exports = function make_matrix_args(regl, params){
   var matrix_args = {};
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
-
 
   return matrix_args;
 

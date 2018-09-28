@@ -21,7 +21,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   }
 
   var num_labels = params.labels['num_' + inst_axis];
-
   var row_width = 0.025;
   var tri_width = heat_size/num_labels;
 

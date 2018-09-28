@@ -25,6 +25,4 @@ module.exports = function generate_dendro_params(regl, params){
 
   });
 
-  console.log('make_dendro_args')
-
 };

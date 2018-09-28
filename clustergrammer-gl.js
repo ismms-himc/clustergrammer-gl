@@ -22930,7 +22930,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
 
   const dendro_buffer = regl.buffer({
-    length: num_labels,
+    length: dendro_arr.length,
     type: 'float',
     usage: 'dynamic'
   });
@@ -23006,7 +23006,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     },
 
     count: 3,
-    instances: num_labels,
+    instances: dendro_arr.length,
     depth: {
       enable: true,
       mask: true,
@@ -23047,7 +23047,6 @@ module.exports = function make_dendro_arr(params, inst_axis){
   var inst_trap;
 
   console.log('make_dendro_arr')
-  console.log(params.dendro.group_info.row)
 
   var offset_array = [];
   for (var inst_index=0; inst_index < num_labels; inst_index++){
@@ -23064,7 +23063,21 @@ module.exports = function make_dendro_arr(params, inst_axis){
     offset_array.push(inst_trap) ;
   }
 
-  console.log(offset_array)
+  console.log('old', offset_array.length)
+
+  console.log(params.dendro.group_info.row)
+
+  var offset_array = [];
+  _.each(params.dendro.group_info.row, function(inst_group){
+    console.log(inst_group.pos_top)
+
+    inst_trap = [inst_group.pos_top, 1];
+
+    offset_array.push(inst_trap);
+
+  });
+
+  console.log('new', offset_array.length)
 
   return offset_array;
 }

@@ -29,7 +29,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
 
   const dendro_buffer = regl.buffer({
-    length: num_labels,
+    length: dendro_arr.length,
     type: 'float',
     usage: 'dynamic'
   });
@@ -105,7 +105,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     },
 
     count: 3,
-    instances: num_labels,
+    instances: dendro_arr.length,
     depth: {
       enable: true,
       mask: true,

@@ -30,12 +30,12 @@ module.exports = function calc_row_dendro_triangles(params){
     // var inst_top = params.viz.y_scale(inst_index);
     // var inst_bot = inst_top + params.viz.y_scale.rangeBand();
 
-    var inst_top = params.node_canvas_pos.y_arr[inst_index];
-    var inst_bot = inst_top - tri_width;
-
-    console.log(inst_index, inst_top, inst_bot);
+    var inst_top = -params.node_canvas_pos.y_arr[inst_index];
+    var inst_bot = inst_top + tri_width;
 
     var inst_name = inst_node.name;
+
+    console.log(inst_name, inst_index, inst_top, inst_bot);
 
     if (inst_name.indexOf(': ') >= 0){
       inst_name = inst_name.split(': ')[1];

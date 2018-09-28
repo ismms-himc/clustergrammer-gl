@@ -24458,67 +24458,6 @@ module.exports = clustergrammer_gl;
 
 /***/ }),
 
-/***/ "./src/matrix_cells/calc_mat_arr.js":
-/*!******************************************!*\
-  !*** ./src/matrix_cells/calc_mat_arr.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_mat_arr(params){
-
-  var num_row = params.labels.num_row;
-  var num_col = params.labels.num_col;
-
-  // draw matrix cells
-  /////////////////////////////////////////
-  // generate x position array
-  params.node_canvas_pos = {};
-  var inst_pos;
-  var heat_size
-  var num_labels;
-  var inst_index;
-  var inst_direct;
-  var tri_width;
-  var heat_shift;
-
-  _.each(['x', 'y'], function(inst_axis){
-
-    if (inst_axis == 'x'){
-      num_labels = num_col;
-    } else {
-      num_labels = num_row;
-    }
-
-    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
-
-    heat_size = params.viz_dim.heat_size[inst_axis];
-    tri_width = heat_size/num_labels;
-
-    params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
-      .map(function(_, i){
-
-        if (inst_axis === 'x'){
-          inst_index = i;
-          inst_direct = -1;
-          num_labels = num_col;
-        } else {
-          inst_index = i + 1;
-          inst_direct = 1;
-          num_labels = num_row;
-        }
-
-        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
-
-        return  inst_pos * inst_direct;
-      });
-
-  });
-
-};
-
-/***/ }),
-
 /***/ "./src/matrix_cells/calc_row_downsampled_mat.js":
 /*!******************************************************!*\
   !*** ./src/matrix_cells/calc_row_downsampled_mat.js ***!
@@ -24781,7 +24720,7 @@ module.exports = function make_opacity_arr(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var calc_mat_arr = __webpack_require__(/*! ./calc_mat_arr */ "./src/matrix_cells/calc_mat_arr.js");
+var calc_mat_arr = __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js");
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
@@ -25754,6 +25693,67 @@ module.exports = function calc_alpha_order(params){
 
 /***/ }),
 
+/***/ "./src/params/calc_mat_arr.js":
+/*!************************************!*\
+  !*** ./src/params/calc_mat_arr.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_mat_arr(params){
+
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
+
+  // draw matrix cells
+  /////////////////////////////////////////
+  // generate x position array
+  params.node_canvas_pos = {};
+  var inst_pos;
+  var heat_size
+  var num_labels;
+  var inst_index;
+  var inst_direct;
+  var tri_width;
+  var heat_shift;
+
+  _.each(['x', 'y'], function(inst_axis){
+
+    if (inst_axis == 'x'){
+      num_labels = num_col;
+    } else {
+      num_labels = num_row;
+    }
+
+    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+
+    heat_size = params.viz_dim.heat_size[inst_axis];
+    tri_width = heat_size/num_labels;
+
+    params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
+      .map(function(_, i){
+
+        if (inst_axis === 'x'){
+          inst_index = i;
+          inst_direct = -1;
+          num_labels = num_col;
+        } else {
+          inst_index = i + 1;
+          inst_direct = 1;
+          num_labels = num_row;
+        }
+
+        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
+
+        return  inst_pos * inst_direct;
+      });
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/params/calc_row_and_col_canvas_positions.js":
 /*!*********************************************************!*\
   !*** ./src/params/calc_row_and_col_canvas_positions.js ***!
@@ -26417,6 +26417,8 @@ module.exports = function initialize_params(regl, network){
 
   // save category colors
   params.cat_colors = params.network.cat_colors;
+
+
 
   return params;
 

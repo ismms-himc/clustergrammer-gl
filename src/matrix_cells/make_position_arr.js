@@ -1,4 +1,4 @@
-var calc_mat_arr = require('./calc_mat_arr');
+var calc_mat_arr = require('./../params/calc_mat_arr');
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 

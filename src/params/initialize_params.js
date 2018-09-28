@@ -107,6 +107,8 @@ module.exports = function initialize_params(regl, network){
   // save category colors
   params.cat_colors = params.network.cat_colors;
 
+
+
   return params;
 
 };

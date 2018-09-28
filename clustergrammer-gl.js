@@ -22960,7 +22960,8 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       void main () {
 
         // offset[1] will contain dendro width
-        new_position = vec3(position[0] * dendro_att[1], position[1], 0);
+        // new_position = vec3(position[0] * dendro_att[1], position[1], 0);
+        new_position = vec3(position[0], position[1]  * dendro_att[1], 0);
 
         // offset[0] contains the actual offset
         vec_translate = vec3(mat_size_offset, dendro_att[0], 0);
@@ -23046,10 +23047,12 @@ module.exports = function make_dendro_arr(params, inst_axis){
   }
 
   var offset_array = [];
+  var num_in_group;
   _.each(group_info, function(inst_group){
     // console.log(inst_group.pos_top)
 
-    inst_trap = [inst_group.pos_top, 1];
+    num_in_group = inst_group.all_names.length;
+    inst_trap = [inst_group.pos_top, num_in_group];
 
     offset_array.push(inst_trap);
 

@@ -86,9 +86,9 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
     attributes: {
       position: [
-        [      0.0, 0 ],
-        [row_width, -tri_width],
-        [      0.0, -2 * tri_width],
+        [      0.0, 2*tri_width],
+        [row_width, tri_width],
+        [      0.0, 0],
       ],
       dendro_att: {
         buffer: dendro_buffer,

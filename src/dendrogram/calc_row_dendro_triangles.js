@@ -34,7 +34,7 @@ module.exports = function calc_row_dendro_triangles(params){
 
     var inst_name = inst_node.name;
 
-    console.log(inst_name, order_index, inst_top, inst_bot);
+    // console.log(inst_name, order_index, inst_top, inst_bot);
 
     if (inst_name.indexOf(': ') >= 0){
       inst_name = inst_name.split(': ')[1];

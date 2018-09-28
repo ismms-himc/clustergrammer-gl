@@ -22812,7 +22812,7 @@ module.exports = function calc_row_dendro_triangles(params){
 
     var inst_name = inst_node.name;
 
-    console.log(inst_name, order_index, inst_top, inst_bot);
+    // console.log(inst_name, order_index, inst_top, inst_bot);
 
     if (inst_name.indexOf(': ') >= 0){
       inst_name = inst_name.split(': ')[1];
@@ -22898,6 +22898,7 @@ module.exports = function (cgm, inst_axis, slider_value) {
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
+var make_dendro_arr = __webpack_require__(/*! ./make_dendro_arr */ "./src/dendrogram/make_dendro_arr.js");
 
 module.exports = function draw_mat_labels(regl, params, inst_axis){
 
@@ -22926,12 +22927,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     return context.view;
   };
 
-  /////////////////////////////////
-  // make buffer for row offsets
-  /////////////////////////////////
-
-  var x_offset = mat_size_offset;
-
   var offset_array = [];
   var inst_offset;
   // width of the trapezoid
@@ -22944,11 +22939,15 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       trap_width_scale = 0.15 * (num_labels - inst_index - 1);
     }
 
-
     // add in additional element for width scale
     inst_offset = [heat_size - shift_heat - 2 * tri_width * inst_index, trap_width_scale];
     offset_array.push(inst_offset) ;
   }
+
+  console.log(offset_array)
+
+
+  make_dendro_arr(params);
 
   const offset_buffer = regl.buffer({
     length: num_labels,
@@ -22972,7 +22971,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       uniform mat3 mat_rotate;
       uniform mat3 mat_scale;
       uniform mat4 zoom;
-      uniform float x_offset;
+      uniform float mat_size_offset;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
@@ -22983,7 +22982,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
         new_position = vec3(position[0] * offset_att[1], position[1], 0);
 
         // offset[0] contains the actual offset
-        vec_translate = vec3(x_offset, offset_att[0], 0);
+        vec_translate = vec3(mat_size_offset, offset_att[0], 0);
 
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
@@ -23021,7 +23020,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       zoom: zoom_function,
       mat_rotate: mat_rotate,
       mat_scale: mat_scale,
-      x_offset: x_offset,
+      mat_size_offset: mat_size_offset,
       triangle_color: inst_rgba
     },
 
@@ -23040,6 +23039,34 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   return args;
 
 };
+
+/***/ }),
+
+/***/ "./src/dendrogram/make_dendro_arr.js":
+/*!*******************************************!*\
+  !*** ./src/dendrogram/make_dendro_arr.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_dendro_arr(params){
+  // var offset_array = [];
+  // var inst_offset;
+  // // width of the trapezoid
+  // for (var inst_index=0; inst_index < num_labels; inst_index++){
+
+  //   var trap_width_scale;
+  //   if (inst_axis === 'row'){
+  //     trap_width_scale = 0.15 * inst_index;
+  //   } else {
+  //     trap_width_scale = 0.15 * (num_labels - inst_index - 1);
+  //   }
+
+  //   // add in additional element for width scale
+  //   inst_offset = [heat_size - shift_heat - 2 * tri_width * inst_index, trap_width_scale];
+  //   offset_array.push(inst_offset) ;
+  // }
+}
 
 /***/ }),
 

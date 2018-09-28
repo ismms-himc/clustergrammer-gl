@@ -3,6 +3,7 @@ module.exports = function make_dendro_arr(params, inst_axis){
   var shift_heat;
   if (inst_axis === 'row'){
     heat_size = params.viz_dim.heat_size.y;
+    shift_heat = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else if (inst_axis === 'col'){
     heat_size = params.viz_dim.heat_size.x;
     shift_heat = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);

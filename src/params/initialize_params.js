@@ -63,8 +63,6 @@ module.exports = function initialize_params(regl, network){
     calc_text_offsets(params, inst_axis);
   });
 
-  generate_dendro_params(regl, params);
-
   generate_spillover_params(regl, params);
 
   generate_tooltip_params(regl, params);
@@ -92,10 +90,13 @@ module.exports = function initialize_params(regl, network){
   zoom_rules_high_mat(regl, params);
   make_cameras(regl, params);
 
+  // calc offsets used for matrix
   calc_mat_arr(params);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
+
+  generate_dendro_params(regl, params);
 
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
@@ -109,8 +110,6 @@ module.exports = function initialize_params(regl, network){
 
   // save category colors
   params.cat_colors = params.network.cat_colors;
-
-
 
   return params;
 

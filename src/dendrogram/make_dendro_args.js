@@ -21,20 +21,20 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var row_width = 0.025;
   var tri_width = heat_size/num_labels;
 
-  var offset_array = make_dendro_arr(params, inst_axis);
+  var dendro_arr = make_dendro_arr(params, inst_axis);
 
   var zoom_function = function(context){
     return context.view;
   };
 
 
-  const offset_buffer = regl.buffer({
+  const dendro_buffer = regl.buffer({
     length: num_labels,
     type: 'float',
     usage: 'dynamic'
   });
 
-  offset_buffer(offset_array);
+  dendro_buffer(dendro_arr);
 
   var mat_scale = m3.scaling(1, 1);
 
@@ -46,7 +46,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     vert: `
       precision highp float;
       attribute vec2 position;
-      attribute vec2 offset_att;
+      attribute vec2 dendro_att;
 
       uniform mat3 mat_rotate;
       uniform mat3 mat_scale;
@@ -59,10 +59,10 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       void main () {
 
         // offset[1] will contain dendro width
-        new_position = vec3(position[0] * offset_att[1], position[1], 0);
+        new_position = vec3(position[0] * dendro_att[1], position[1], 0);
 
         // offset[0] contains the actual offset
-        vec_translate = vec3(mat_size_offset, offset_att[0], 0);
+        vec_translate = vec3(mat_size_offset, dendro_att[0], 0);
 
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
@@ -90,8 +90,8 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
         [row_width, -tri_width],
         [      0.0, -2 * tri_width],
       ],
-      offset_att: {
-        buffer: offset_buffer,
+      dendro_att: {
+        buffer: dendro_buffer,
         divisor: 1
       }
     },

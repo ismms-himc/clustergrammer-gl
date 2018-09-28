@@ -22922,20 +22922,20 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var row_width = 0.025;
   var tri_width = heat_size/num_labels;
 
-  var offset_array = make_dendro_arr(params, inst_axis);
+  var dendro_arr = make_dendro_arr(params, inst_axis);
 
   var zoom_function = function(context){
     return context.view;
   };
 
 
-  const offset_buffer = regl.buffer({
+  const dendro_buffer = regl.buffer({
     length: num_labels,
     type: 'float',
     usage: 'dynamic'
   });
 
-  offset_buffer(offset_array);
+  dendro_buffer(dendro_arr);
 
   var mat_scale = m3.scaling(1, 1);
 
@@ -22947,7 +22947,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
     vert: `
       precision highp float;
       attribute vec2 position;
-      attribute vec2 offset_att;
+      attribute vec2 dendro_att;
 
       uniform mat3 mat_rotate;
       uniform mat3 mat_scale;
@@ -22960,10 +22960,10 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       void main () {
 
         // offset[1] will contain dendro width
-        new_position = vec3(position[0] * offset_att[1], position[1], 0);
+        new_position = vec3(position[0] * dendro_att[1], position[1], 0);
 
         // offset[0] contains the actual offset
-        vec_translate = vec3(mat_size_offset, offset_att[0], 0);
+        vec_translate = vec3(mat_size_offset, dendro_att[0], 0);
 
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
@@ -22991,8 +22991,8 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
         [row_width, -tri_width],
         [      0.0, -2 * tri_width],
       ],
-      offset_att: {
-        buffer: offset_buffer,
+      dendro_att: {
+        buffer: dendro_buffer,
         divisor: 1
       }
     },
@@ -23044,9 +23044,12 @@ module.exports = function make_dendro_arr(params, inst_axis){
   var num_labels = params.labels['num_' + inst_axis];
   var tri_width = heat_size/num_labels;
 
+  var inst_trap;
+
+  console.log('make_dendro_arr')
+  console.log(params.dendro.group_info.row)
+
   var offset_array = [];
-  var inst_offset;
-  // width of the trapezoid
   for (var inst_index=0; inst_index < num_labels; inst_index++){
 
     var trap_width_scale;
@@ -23057,9 +23060,11 @@ module.exports = function make_dendro_arr(params, inst_axis){
     }
 
     // add in additional element for width scale
-    inst_offset = [heat_size - shift_heat - 2 * tri_width * inst_index, trap_width_scale];
-    offset_array.push(inst_offset) ;
+    inst_trap = [heat_size - shift_heat - 2 * tri_width * inst_index, trap_width_scale];
+    offset_array.push(inst_trap) ;
   }
+
+  console.log(offset_array)
 
   return offset_array;
 }
@@ -26107,14 +26112,22 @@ module.exports = function generate_dendro_params(regl, params){
   params.dendro.dendro_args = {};
   params.dendro.group_level = {};
 
+  params.dendro.group_info = {};
+
   _.each(['row', 'col'], function(inst_axis){
 
-    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
     params.dendro.group_level[inst_axis] = params.dendro.default_level;
+
+    if (inst_axis === 'row'){
+      params.dendro.group_info.row = calc_row_dendro_triangles(params);
+      // params.dendro.group_info.col = calc_col_dendro_triangles(params);
+    }
+
+    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
 
   });
 
-  params.dendro.group_info = calc_row_dendro_triangles(params);
+  console.log('make_dendro_args')
 
 };
 

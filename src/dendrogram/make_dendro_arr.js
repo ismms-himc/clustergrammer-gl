@@ -12,9 +12,12 @@ module.exports = function make_dendro_arr(params, inst_axis){
   var num_labels = params.labels['num_' + inst_axis];
   var tri_width = heat_size/num_labels;
 
+  var inst_trap;
+
+  console.log('make_dendro_arr')
+  console.log(params.dendro.group_info.row)
+
   var offset_array = [];
-  var inst_offset;
-  // width of the trapezoid
   for (var inst_index=0; inst_index < num_labels; inst_index++){
 
     var trap_width_scale;
@@ -25,9 +28,11 @@ module.exports = function make_dendro_arr(params, inst_axis){
     }
 
     // add in additional element for width scale
-    inst_offset = [heat_size - shift_heat - 2 * tri_width * inst_index, trap_width_scale];
-    offset_array.push(inst_offset) ;
+    inst_trap = [heat_size - shift_heat - 2 * tri_width * inst_index, trap_width_scale];
+    offset_array.push(inst_trap) ;
   }
+
+  console.log(offset_array)
 
   return offset_array;
 }

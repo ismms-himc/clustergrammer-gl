@@ -1,59 +1,15 @@
+var calc_mat_arr = require('./calc_mat_arr');
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
-  var network = params.network;
   var num_row = params.labels.num_row;
   var num_col = params.labels.num_col;
 
-  // draw matrix cells
-  /////////////////////////////////////////
-
-  // generate x position array
-  params.node_canvas_pos = {};
-  var inst_pos;
-  var heat_size
-  var num_labels;
-  var inst_index;
-  var inst_direct;
-  var tri_width;
-  var heat_shift;
-
-  _.each(['x', 'y'], function(inst_axis){
-
-    if (inst_axis == 'x'){
-      num_labels = num_col;
-    } else {
-      num_labels = num_row;
-    }
-
-    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
-
-    heat_size = params.viz_dim.heat_size[inst_axis];
-    tri_width = heat_size/num_labels;
-
-    params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
-      .map(function(_, i){
-
-        if (inst_axis === 'x'){
-          inst_index = i;
-          inst_direct = -1;
-          num_labels = num_col;
-        } else {
-          inst_index = i + 1;
-          inst_direct = 1;
-          num_labels = num_row;
-        }
-
-        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
-
-        return  inst_pos * inst_direct;
-      });
-
-  });
+  calc_mat_arr(params);
 
   // pass along row and col node information
-  var row_nodes = network.row_nodes;
-  var col_nodes = network.col_nodes;
+  var row_nodes = params.network.row_nodes;
+  var col_nodes = params.network.col_nodes;
 
   /*
     working on saving actual row positions (downsampling)
@@ -91,12 +47,12 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
     }
 
-    var y = params.node_canvas_pos.y_arr[row_order_id];
-    var x = params.node_canvas_pos.x_arr[col_order_id];
+    var inst_y = params.node_canvas_pos.y_arr[row_order_id];
+    var inst_x = params.node_canvas_pos.x_arr[col_order_id];
 
-    params.row_positions[row_id] = y;
+    params.row_positions[row_id] = inst_y;
 
-    return [x, y];
+    return [inst_x, inst_y];
   }
 
   var position_arr = Array(num_row * num_col)

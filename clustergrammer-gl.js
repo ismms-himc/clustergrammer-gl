@@ -22785,7 +22785,7 @@ module.exports = function calc_row_dendro_triangles(params){
   var row_nodes = params.network.row_nodes;
   // var row_nodes_names = params.network.row_nodes_names;
 
-  _.each(row_nodes, function(inst_node){
+  _.each(row_nodes, function(inst_node, inst_index){
 
     // console.log('row_node '+d.name)
 
@@ -22795,7 +22795,9 @@ module.exports = function calc_row_dendro_triangles(params){
     // var inst_top = params.viz.y_scale(inst_index);
     // var inst_bot = inst_top + params.viz.y_scale.rangeBand();
 
-    var inst_top = 1; // params.viz.y_scale(inst_index);
+    // console.log(inst_index);
+
+    var inst_top = 1; // params.node_canvas_pos.x_arr[inst_index];
     var inst_bot = 1; // inst_top + params.viz.y_scale.rangeBand();
 
     if ( _.has(triangle_info, inst_group) === false ){
@@ -24456,6 +24458,67 @@ module.exports = clustergrammer_gl;
 
 /***/ }),
 
+/***/ "./src/matrix_cells/calc_mat_arr.js":
+/*!******************************************!*\
+  !*** ./src/matrix_cells/calc_mat_arr.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_mat_arr(params){
+
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
+
+  // draw matrix cells
+  /////////////////////////////////////////
+  // generate x position array
+  params.node_canvas_pos = {};
+  var inst_pos;
+  var heat_size
+  var num_labels;
+  var inst_index;
+  var inst_direct;
+  var tri_width;
+  var heat_shift;
+
+  _.each(['x', 'y'], function(inst_axis){
+
+    if (inst_axis == 'x'){
+      num_labels = num_col;
+    } else {
+      num_labels = num_row;
+    }
+
+    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+
+    heat_size = params.viz_dim.heat_size[inst_axis];
+    tri_width = heat_size/num_labels;
+
+    params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
+      .map(function(_, i){
+
+        if (inst_axis === 'x'){
+          inst_index = i;
+          inst_direct = -1;
+          num_labels = num_col;
+        } else {
+          inst_index = i + 1;
+          inst_direct = 1;
+          num_labels = num_row;
+        }
+
+        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
+
+        return  inst_pos * inst_direct;
+      });
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/matrix_cells/calc_row_downsampled_mat.js":
 /*!******************************************************!*\
   !*** ./src/matrix_cells/calc_row_downsampled_mat.js ***!
@@ -24716,64 +24779,20 @@ module.exports = function make_opacity_arr(params){
   !*** ./src/matrix_cells/make_position_arr.js ***!
   \***********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var calc_mat_arr = __webpack_require__(/*! ./calc_mat_arr */ "./src/matrix_cells/calc_mat_arr.js");
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
-  var network = params.network;
   var num_row = params.labels.num_row;
   var num_col = params.labels.num_col;
 
-  // draw matrix cells
-  /////////////////////////////////////////
-
-  // generate x position array
-  params.node_canvas_pos = {};
-  var inst_pos;
-  var heat_size
-  var num_labels;
-  var inst_index;
-  var inst_direct;
-  var tri_width;
-  var heat_shift;
-
-  _.each(['x', 'y'], function(inst_axis){
-
-    if (inst_axis == 'x'){
-      num_labels = num_col;
-    } else {
-      num_labels = num_row;
-    }
-
-    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
-
-    heat_size = params.viz_dim.heat_size[inst_axis];
-    tri_width = heat_size/num_labels;
-
-    params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
-      .map(function(_, i){
-
-        if (inst_axis === 'x'){
-          inst_index = i;
-          inst_direct = -1;
-          num_labels = num_col;
-        } else {
-          inst_index = i + 1;
-          inst_direct = 1;
-          num_labels = num_row;
-        }
-
-        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
-
-        return  inst_pos * inst_direct;
-      });
-
-  });
+  calc_mat_arr(params);
 
   // pass along row and col node information
-  var row_nodes = network.row_nodes;
-  var col_nodes = network.col_nodes;
+  var row_nodes = params.network.row_nodes;
+  var col_nodes = params.network.col_nodes;
 
   /*
     working on saving actual row positions (downsampling)
@@ -24811,12 +24830,12 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
     }
 
-    var y = params.node_canvas_pos.y_arr[row_order_id];
-    var x = params.node_canvas_pos.x_arr[col_order_id];
+    var inst_y = params.node_canvas_pos.y_arr[row_order_id];
+    var inst_x = params.node_canvas_pos.x_arr[col_order_id];
 
-    params.row_positions[row_id] = y;
+    params.row_positions[row_id] = inst_y;
 
-    return [x, y];
+    return [inst_x, inst_y];
   }
 
   var position_arr = Array(num_row * num_col)
@@ -25590,6 +25609,7 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
 
     // shift the viz aid triangles because of smaller size of the heatmap
     tri_offset_array[i] = heat_size - heat_shift - 2 * tri_width * inst_index;
+
   }
 
   return tri_offset_array;

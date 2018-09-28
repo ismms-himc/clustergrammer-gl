@@ -7,7 +7,7 @@ module.exports = function calc_row_dendro_triangles(params){
   var row_nodes = params.network.row_nodes;
   // var row_nodes_names = params.network.row_nodes_names;
 
-  _.each(row_nodes, function(inst_node){
+  _.each(row_nodes, function(inst_node, inst_index){
 
     // console.log('row_node '+d.name)
 
@@ -17,7 +17,9 @@ module.exports = function calc_row_dendro_triangles(params){
     // var inst_top = params.viz.y_scale(inst_index);
     // var inst_bot = inst_top + params.viz.y_scale.rangeBand();
 
-    var inst_top = 1; // params.viz.y_scale(inst_index);
+    // console.log(inst_index);
+
+    var inst_top = 1; // params.node_canvas_pos.x_arr[inst_index];
     var inst_bot = 1; // inst_top + params.viz.y_scale.rangeBand();
 
     if ( _.has(triangle_info, inst_group) === false ){

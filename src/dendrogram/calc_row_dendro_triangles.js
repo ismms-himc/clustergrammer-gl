@@ -9,20 +9,23 @@ module.exports = function calc_row_dendro_triangles(params){
 
   var inst_axis = 'row';
 
+  var heat_size;
+  var tri_width;
+  // var heat_shift;
   var num_labels = params.labels['num_'+inst_axis];
   if (inst_axis === 'row'){
     heat_size = params.viz_dim.heat_size.y;
     tri_width = heat_size/num_labels;
-    heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
+    // heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else {
     heat_size = params.viz_dim.heat_size.x;
     tri_width  = heat_size/num_labels;
-    heat_shift = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
+    // heat_shift = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   var inst_order = params.order.inst[inst_axis];
 
-  _.each(row_nodes, function(inst_node, inst_index){
+  _.each(row_nodes, function(inst_node){
 
     // console.log('row_node '+d.name)
 

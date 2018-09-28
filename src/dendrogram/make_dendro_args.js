@@ -4,7 +4,6 @@ var make_dendro_arr = require('./make_dendro_arr');
 
 module.exports = function draw_mat_labels(regl, params, inst_axis){
 
-  var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
   var heat_size;
   var mat_size_offset;
@@ -25,10 +24,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var row_width = 0.025;
   var tri_width = heat_size/num_labels;
 
-  var zoom_function = function(context){
-    return context.view;
-  };
-
   var offset_array = [];
   var inst_offset;
   // width of the trapezoid
@@ -48,6 +43,10 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   console.log(offset_array)
 
+  var zoom_function = function(context){
+    return context.view;
+  };
+
   make_dendro_arr(params);
 
   const offset_buffer = regl.buffer({
@@ -61,6 +60,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var mat_scale = m3.scaling(1, 1);
 
   var mat_rotate = m3.rotation(rotation_radians);
+  var inst_rgba = color_to_rgba('#eee', 1.0);
 
   var args = {
 

@@ -22787,20 +22787,23 @@ module.exports = function calc_row_dendro_triangles(params){
 
   var inst_axis = 'row';
 
+  var heat_size;
+  var tri_width;
+  // var heat_shift;
   var num_labels = params.labels['num_'+inst_axis];
   if (inst_axis === 'row'){
     heat_size = params.viz_dim.heat_size.y;
     tri_width = heat_size/num_labels;
-    heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
+    // heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else {
     heat_size = params.viz_dim.heat_size.x;
     tri_width  = heat_size/num_labels;
-    heat_shift = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
+    // heat_shift = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   var inst_order = params.order.inst[inst_axis];
 
-  _.each(row_nodes, function(inst_node, inst_index){
+  _.each(row_nodes, function(inst_node){
 
     // console.log('row_node '+d.name)
 
@@ -22902,7 +22905,6 @@ var make_dendro_arr = __webpack_require__(/*! ./make_dendro_arr */ "./src/dendro
 
 module.exports = function draw_mat_labels(regl, params, inst_axis){
 
-  var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
   var heat_size;
   var mat_size_offset;
@@ -22923,10 +22925,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var row_width = 0.025;
   var tri_width = heat_size/num_labels;
 
-  var zoom_function = function(context){
-    return context.view;
-  };
-
   var offset_array = [];
   var inst_offset;
   // width of the trapezoid
@@ -22946,6 +22944,10 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
   console.log(offset_array)
 
+  var zoom_function = function(context){
+    return context.view;
+  };
+
   make_dendro_arr(params);
 
   const offset_buffer = regl.buffer({
@@ -22959,6 +22961,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var mat_scale = m3.scaling(1, 1);
 
   var mat_rotate = m3.rotation(rotation_radians);
+  var inst_rgba = color_to_rgba('#eee', 1.0);
 
   var args = {
 

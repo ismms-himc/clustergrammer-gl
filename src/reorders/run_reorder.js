@@ -12,7 +12,9 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   // toggle dendro sliders
   if (new_order != 'clust'){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
-  } else {
+  }
+
+  if (new_order === 'clust'){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
   }
 

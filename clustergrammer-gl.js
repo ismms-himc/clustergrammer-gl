@@ -22904,7 +22904,7 @@ module.exports = function (regl, params, inst_axis, slider_value) {
   // console.log(slider_value);
 
   // this can probably be improved
-  params.dendro.draw_dendro = true;
+  params.dendro.update_dendro = true;
 
   params.dendro.group_level[inst_axis] = slider_value;
   params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
@@ -23320,9 +23320,9 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   }
 
   // turn back off draw dendro
-  if (params.dendro.draw_dendro){
+  if (params.dendro.update_dendro){
     // console.log('drew dendro')
-    params.dendro.draw_dendro = false;
+    params.dendro.update_dendro = false;
   }
 
 };
@@ -23664,7 +23664,7 @@ module.exports = function run_viz(regl, network){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
-    } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.draw_dendro){
+    } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
       draw_labels_tooltips_or_dendro(regl, params);
     } else {
       // run background calculations
@@ -26138,7 +26138,7 @@ module.exports = function generate_dendro_params(regl, params){
 
   params.dendro.dendro_args = {};
   params.dendro.group_level = {};
-  params.dendro.draw_dendro = false;
+  params.dendro.update_dendro = false;
 
   params.dendro.group_info = {};
 
@@ -26588,7 +26588,9 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   // toggle dendro sliders
   if (new_order != 'clust'){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
-  } else {
+  }
+
+  if (new_order === 'clust'){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
   }
 

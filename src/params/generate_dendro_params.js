@@ -12,7 +12,7 @@ module.exports = function generate_dendro_params(regl, params){
 
   params.dendro.dendro_args = {};
   params.dendro.group_level = {};
-  params.dendro.draw_dendro = false;
+  params.dendro.update_dendro = false;
 
   params.dendro.group_info = {};
 

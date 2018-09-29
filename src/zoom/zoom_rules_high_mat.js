@@ -36,9 +36,9 @@ module.exports = function zoom_rules_high_mat(regl, params){
     }
 
   })
-  // .on('interactionend', function(ev){
+  .on('interactionend', function(ev){
 
-
-  // });
+    console.log('clicking')
+  });
 
 };

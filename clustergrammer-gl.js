@@ -22495,6 +22495,8 @@ module.exports = function build_control_panel(regl, cgm){
     reorder_buttons
       .classed(inst_axis + '-reorder-buttons', true);
 
+    var active_button_color = '#0000FF75';
+
     // generate single button
     var button_group = reorder_buttons
       .selectAll('g')
@@ -22521,7 +22523,7 @@ module.exports = function build_control_panel(regl, cgm){
 
           d3.select(this)
             .select('rect')
-            .style('stroke', 'red');
+            .style('stroke', active_button_color);
 
         }
       })
@@ -22536,7 +22538,7 @@ module.exports = function build_control_panel(regl, cgm){
       .style('stroke', function(d){
         var inst_color;
         if (cgm.params.order.inst[inst_axis] == d){
-          inst_color = 'red';
+          inst_color = active_button_color;
         } else {
           inst_color = button_color;
         }
@@ -27688,10 +27690,10 @@ module.exports = function zoom_rules_high_mat(regl, params){
     }
 
   })
-  // .on('interactionend', function(ev){
+  .on('interactionend', function(ev){
 
-
-  // });
+    console.log('clicking')
+  });
 
 };
 

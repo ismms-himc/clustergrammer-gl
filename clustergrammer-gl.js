@@ -23469,7 +23469,7 @@ module.exports = function draw_tooltip_components(regl, params){
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {
 
-    console.log('draw tooltip')
+    console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
     var inst_y = params.zoom_data.y.cursor_position;
     // testing out d3 svg tooltip
@@ -23826,6 +23826,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
   params.zoom_data.x.cursor_position = ev.x0;
   params.zoom_data.y.cursor_position = ev.y0;
 
+  var mouseover = params.interact.mouseover;
+
   // convert offcenter WebGl units to pixel units
   var offcenter = {};
   offcenter.x = (params.viz_dim.canvas.width * params.viz_dim.offcenter.x)/2;
@@ -23848,37 +23850,37 @@ module.exports = function find_mouseover_element(regl, params, ev){
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
 
-    params.interact.mouseover.row_name = params.labels.ordered_labels.rows[row_index];
-    params.interact.mouseover.col_name = params.labels.ordered_labels.cols[col_index];
+    mouseover.row_name = params.labels.ordered_labels.rows[row_index];
+    mouseover.col_name = params.labels.ordered_labels.cols[col_index];
 
-    if (params.interact.mouseover.row_name.includes(': ')){
-      params.interact.mouseover.row_name = params.interact.mouseover.row_name.split(': ')[1];
+    if (mouseover.row_name.includes(': ')){
+      mouseover.row_name = mouseover.row_name.split(': ')[1];
     }
 
-    if (params.interact.mouseover.col_name.includes(': ')){
-      params.interact.mouseover.col_name = params.interact.mouseover.col_name.split(': ')[1];
+    if (mouseover.col_name.includes(': ')){
+      mouseover.col_name = mouseover.col_name.split(': ')[1];
     }
 
     var mouseover_text;
     if (params.cat_data.cat_num.col == 0){
 
       // calculate text triangles, they require an offset element
-      mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
-      params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
+      mouseover_text = mouseover.row_name + ' and ' + mouseover.col_name;
+      mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      mouseover.text_triangles['line-1'].offset = [0,0];
 
     } else {
 
       // calculate text triangles, they require an offset element
-      mouseover_text = params.interact.mouseover.row_name + ' and ' + params.interact.mouseover.col_name;
-      params.interact.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.interact.mouseover.text_triangles['line-1'].offset = [0,0];
+      mouseover_text = mouseover.row_name + ' and ' + mouseover.col_name;
+      mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+      mouseover.text_triangles['line-1'].offset = [0,0];
 
-      params.interact.mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index];
+      mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index];
 
-      mouseover_text = params.interact.mouseover.col_cat;
-      params.interact.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.interact.mouseover.text_triangles['line-2'].offset = [0,0];
+      mouseover_text = mouseover.col_cat;
+      mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
+      mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
     params.tooltip.in_bounds_tooltip = true;
@@ -24362,7 +24364,7 @@ module.exports = function keep_track_of_mouseovers(params){
 
 module.exports = function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
 
-  cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
+  var cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
 
   if (cursor_rel_min < 0){
     cursor_rel_min = 0;

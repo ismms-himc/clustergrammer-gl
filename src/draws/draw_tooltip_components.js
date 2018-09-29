@@ -6,7 +6,7 @@ module.exports = function draw_tooltip_components(regl, params){
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {
 
-    console.log('draw tooltip')
+    console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
     var inst_y = params.zoom_data.y.cursor_position;
     // testing out d3 svg tooltip

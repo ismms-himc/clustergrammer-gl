@@ -6,6 +6,25 @@ module.exports = function draw_tooltip_components(regl, params){
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {
 
+    console.log('draw tooltip')
+
+    var inst_y = params.zoom_data.y.cursor_position;
+    // testing out d3 svg tooltip
+    var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
+      .append('svg')
+      .style('height', 50 + 'px')
+      .style('width', '50px')
+      .style('position', 'absolute')
+      .style('top', inst_y + 'px')
+      .style('left', params.zoom_data.x.cursor_position + 'px')
+      .attr('class', 'svg-tooltip')
+
+    svg_tooltip_container
+      .append('rect')
+      .style('height', 50 + 'px')
+      .style('width', '50px')
+      .style('fill', 'black');
+
     // var args = params.spillover_args.mat_corners;
     var args = params.tooltip.tooltip_args;
 

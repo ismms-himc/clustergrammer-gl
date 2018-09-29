@@ -26,6 +26,7 @@ function clustergrammer_gl(args){
   d3.select(container)
     .append('div')
     .attr('class', 'canvas-container')
+    .style('position', 'absolute')
     .style('cursor', 'default');
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];

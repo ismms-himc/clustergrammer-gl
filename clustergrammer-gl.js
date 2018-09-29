@@ -22604,14 +22604,15 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
-      inst_top = 290;
-      inst_left = cgm.params.viz_width - 10;
+      inst_top = 150;
+      inst_left = cgm.params.viz_width - 25 ;
     } else {
-      inst_top = cgm.params.viz_height + 50;
-      inst_left = 70;
+      inst_top = cgm.params.viz_height - 100;
+      inst_left = 50;
     }
 
-    axis_slider_container = d3.select(cgm.params.root + ' .control-container')
+    // axis_slider_container = d3.select(cgm.params.root + ' .control-container')
+    axis_slider_container = d3.select(cgm.params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
       .style('width', '40px')
@@ -23464,6 +23465,25 @@ module.exports = function draw_tooltip_components(regl, params){
 
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {
+
+    console.log('draw tooltip')
+
+    var inst_y = params.zoom_data.y.cursor_position;
+    // testing out d3 svg tooltip
+    var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
+      .append('svg')
+      .style('height', 50 + 'px')
+      .style('width', '50px')
+      .style('position', 'absolute')
+      .style('top', inst_y + 'px')
+      .style('left', params.zoom_data.x.cursor_position + 'px')
+      .attr('class', 'svg-tooltip')
+
+    svg_tooltip_container
+      .append('rect')
+      .style('height', 50 + 'px')
+      .style('width', '50px')
+      .style('fill', 'black');
 
     // var args = params.spillover_args.mat_corners;
     var args = params.tooltip.tooltip_args;
@@ -24490,6 +24510,7 @@ function clustergrammer_gl(args){
   d3.select(container)
     .append('div')
     .attr('class', 'canvas-container')
+    .style('position', 'absolute')
     .style('cursor', 'default');
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];

@@ -22599,6 +22599,7 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
   var axis_slider_container;
   var inst_top;
   var inst_left;
+  var inst_rotate;
 
   _.each(['row', 'col'], function(inst_axis){
 
@@ -22606,10 +22607,9 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
       inst_top = 325;
       inst_left = cgm.params.viz_width - 10;
     } else {
-      inst_top = 500;
-      inst_left = cgm.params.viz_width - 10;
+      inst_top = cgm.params.viz_height + 50;
+      inst_left = 70;
     }
-
 
     axis_slider_container = d3.select(cgm.params.root + ' .control-container')
       .append('svg')
@@ -22619,19 +22619,23 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
       .style('top', inst_top + 'px')
       .style('left', inst_left + 'px')
       .attr('class', inst_axis + '_dendro_slider_svg')
+      .attr('transform', function(){
+        if (inst_axis === 'row'){
+          inst_rotate = 0;
+        } else {
+          inst_rotate = -90;
+        }
+        return 'rotate('+ inst_rotate +')';
+      })
 
     axis_slider_container
       .append('rect')
       .style('height', slider_length + 'px')
-      .style('width', '30px')
+      .style('width', '25px')
       .style('fill', 'white');
 
     build_single_dendro_slider(regl, cgm, inst_axis);
   });
-
-
-
-
 
 }
 
@@ -26580,6 +26584,13 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
+
+  // toggle dendro sliders
+  if (new_order != 'clust'){
+    d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
+  } else {
+    d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
+  }
 
   params.animation.run_animation = true;
   params.order.new[inst_axis] = new_order;

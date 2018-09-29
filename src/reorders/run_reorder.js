@@ -9,6 +9,13 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
+  // toggle dendro sliders
+  if (new_order != 'clust'){
+    d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
+  } else {
+    d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
+  }
+
   params.animation.run_animation = true;
   params.order.new[inst_axis] = new_order;
 

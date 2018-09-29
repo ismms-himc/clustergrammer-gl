@@ -22768,10 +22768,10 @@ module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
 /***/ }),
 
-/***/ "./src/dendrogram/calc_row_dendro_triangles.js":
-/*!*****************************************************!*\
-  !*** ./src/dendrogram/calc_row_dendro_triangles.js ***!
-  \*****************************************************/
+/***/ "./src/dendrogram/calc_dendro_triangles.js":
+/*!*************************************************!*\
+  !*** ./src/dendrogram/calc_dendro_triangles.js ***!
+  \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -26103,7 +26103,7 @@ module.exports = function generate_cat_params(params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
-var calc_row_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_row_dendro_triangles */ "./src/dendrogram/calc_row_dendro_triangles.js");
+var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
 
 module.exports = function generate_dendro_params(regl, params){
 
@@ -26124,9 +26124,9 @@ module.exports = function generate_dendro_params(regl, params){
     params.dendro.group_level[inst_axis] = params.dendro.default_level;
 
     if (inst_axis === 'row'){
-      params.dendro.group_info.row = calc_row_dendro_triangles(params, 'row');
+      params.dendro.group_info.row = calc_dendro_triangles(params, 'row');
     } else {
-      params.dendro.group_info.col = calc_row_dendro_triangles(params, 'col');
+      params.dendro.group_info.col = calc_dendro_triangles(params, 'col');
     }
 
     params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);

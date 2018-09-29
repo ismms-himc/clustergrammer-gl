@@ -22600,13 +22600,13 @@ module.exports = function build_dendrogram_sliders(cgm){
     .style('width', '40px')
     .style('position', 'absolute')
     .style('top', 325 + 'px')
-    .style('left', cgm.params.viz_width - 20 + 'px')
+    .style('left', cgm.params.viz_width - 10 + 'px')
     .attr('class', 'dendro_slider_svg')
 
   col_slider_container
     .append('rect')
     .style('height', slider_length + 'px')
-    .style('width', '50px')
+    .style('width', '30px')
     .style('fill', 'white')
     .on('click', function(){
       // console.log('clicking the red slider')
@@ -22632,7 +22632,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
-  var rect_width = 30;
+  var rect_width = 20;
 
   var drag = d3.behavior.drag()
       .on('drag', dragging)
@@ -22645,7 +22645,6 @@ module.exports = function build_single_dendro_slider(cgm, inst_axis){
       .classed( inst_axis + '_slider_group', true)
       .attr('transform', function(){
         var inst_translation;
-
         inst_translation = 'translate(' + rect_width/2 + ', '+ rect_height/10 +')';
         return inst_translation;
       })
@@ -24485,7 +24484,7 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  // build_dendrogram_sliders(cgm);
+  build_dendrogram_sliders(cgm);
 
   build_control_panel(regl, cgm);
 

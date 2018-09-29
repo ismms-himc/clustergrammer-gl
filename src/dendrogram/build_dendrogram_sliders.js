@@ -12,13 +12,13 @@ module.exports = function build_dendrogram_sliders(cgm){
     .style('width', '40px')
     .style('position', 'absolute')
     .style('top', 325 + 'px')
-    .style('left', cgm.params.viz_width - 20 + 'px')
+    .style('left', cgm.params.viz_width - 10 + 'px')
     .attr('class', 'dendro_slider_svg')
 
   col_slider_container
     .append('rect')
     .style('height', slider_length + 'px')
-    .style('width', '50px')
+    .style('width', '30px')
     .style('fill', 'white')
     .on('click', function(){
       // console.log('clicking the red slider')

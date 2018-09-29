@@ -5,7 +5,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
-  var rect_width = 30;
+  var rect_width = 20;
 
   var drag = d3.behavior.drag()
       .on('drag', dragging)
@@ -18,7 +18,6 @@ module.exports = function build_single_dendro_slider(cgm, inst_axis){
       .classed( inst_axis + '_slider_group', true)
       .attr('transform', function(){
         var inst_translation;
-
         inst_translation = 'translate(' + rect_width/2 + ', '+ rect_height/10 +')';
         return inst_translation;
       })

@@ -8,7 +8,7 @@ module.exports = function draw_tooltip_components(regl, params){
 
     // console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
-    var inst_y = params.zoom_data.y.cursor_position - 50;
+    var inst_y = params.zoom_data.y.cursor_position - 75;
     // testing out d3 svg tooltip
     var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('svg')

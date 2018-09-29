@@ -20,6 +20,11 @@ module.exports = function run_viz(regl, network){
 
     params.animation.time = time;
 
+    if (params.interact.total > 1){
+      d3.selectAll(params.root + ' .svg-tooltip')
+        .remove();
+    }
+
     // prevent this from being negative, can happen when resetting zooo
     if (params.interact.total < 0){
       params.interact.total = 0;

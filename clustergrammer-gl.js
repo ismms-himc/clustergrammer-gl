@@ -23473,7 +23473,7 @@ module.exports = function draw_tooltip_components(regl, params){
 
     // console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
-    var inst_y = params.zoom_data.y.cursor_position - 50;
+    var inst_y = params.zoom_data.y.cursor_position - 75;
     // testing out d3 svg tooltip
     var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
@@ -23675,6 +23675,11 @@ module.exports = function run_viz(regl, network){
   regl.frame(function ({time}) {
 
     params.animation.time = time;
+
+    if (params.interact.total > 1){
+      d3.selectAll(params.root + ' .svg-tooltip')
+        .remove();
+    }
 
     // prevent this from being negative, can happen when resetting zooo
     if (params.interact.total < 0){

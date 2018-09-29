@@ -18,7 +18,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   }
 
   var num_labels = params.labels['num_' + inst_axis];
-  var dendro_width = 0.1;
+  var dendro_width = params.dendro.tri_height;
   var tri_width = heat_size/num_labels;
 
   var dendro_arr = make_dendro_arr(params, inst_axis);

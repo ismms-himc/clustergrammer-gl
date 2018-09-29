@@ -6,6 +6,8 @@ module.exports = function generate_dendro_params(regl, params){
   params.dendro = {};
 
   params.dendro.default_level = 5;
+  params.dendro.tri_height = 0.10;
+  params.dendro.trap_height = 0.025;
 
   params.dendro.dendro_args = {};
   params.dendro.group_level = {};

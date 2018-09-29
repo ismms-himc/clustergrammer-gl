@@ -148,6 +148,10 @@ module.exports = function calc_spillover_triangles(params){
              [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]
              ]},
 
+    // // right spillover rect
+    // {'pos': [[1, 1], [ini_mat.x + ofc.x, -1], [1.0, -1]]},
+    // {'pos': [[1, 1], [ini_mat.x + ofc.x,  1], [ini_mat.x + ofc.x, -1]]},
+
   ];
 
   return spillover_triangles;

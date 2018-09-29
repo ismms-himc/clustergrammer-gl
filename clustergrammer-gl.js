@@ -22919,7 +22919,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   }
 
   var num_labels = params.labels['num_' + inst_axis];
-  var dendro_width = 0.1;
+  var dendro_width = params.dendro.tri_height;
   var tri_width = heat_size/num_labels;
 
   var dendro_arr = make_dendro_arr(params, inst_axis);
@@ -23406,10 +23406,10 @@ module.exports = function draw_spillover_components(regl, params){
     var args = params.spillover_args;
     var triangles = params.spillover_triangles;
 
-    // spillover rects to hide matrix spillover
-    regl(args.mat_sides)(triangles.mat_sides);
-    regl(args.cats)(triangles.cats);
-    regl(args.mat_corners)(triangles.mat_corners);
+    // // spillover rects to hide matrix spillover
+    // regl(args.mat_sides)(triangles.mat_sides);
+    // regl(args.cats)(triangles.cats);
+    // regl(args.mat_corners)(triangles.mat_corners);
     regl(args.label_corners)(triangles.label_corners);
 
   });
@@ -26102,6 +26102,8 @@ module.exports = function generate_dendro_params(regl, params){
   params.dendro = {};
 
   params.dendro.default_level = 5;
+  params.dendro.tri_height = 0.10;
+  params.dendro.trap_height = 0.025;
 
   params.dendro.dendro_args = {};
   params.dendro.group_level = {};
@@ -26732,6 +26734,10 @@ module.exports = function calc_spillover_triangles(params){
              [ini_mat.x + ofc.x,  -1],
              [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]
              ]},
+
+    // // right spillover rect
+    // {'pos': [[1, 1], [ini_mat.x + ofc.x, -1], [1.0, -1]]},
+    // {'pos': [[1, 1], [ini_mat.x + ofc.x,  1], [ini_mat.x + ofc.x, -1]]},
 
   ];
 

@@ -102,17 +102,29 @@ module.exports = function calc_spillover_triangles(params){
              ]},
 
     // bottom-left spillover rect
-    {'pos': [[-1, -1], [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y], [-1.0, -scaled_mat.y - ofc.y]]},
-    {'pos': [[-1, -1], [-ini_mat.x + ofc.x,  -1], [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]]},
+    {'pos': [[-1,                 -1],
+             [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [-1.0,               -scaled_mat.y - ofc.y]]},
+    {'pos': [[-1,                 -1],
+             [-ini_mat.x + ofc.x, -1],
+             [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]]},
 
     // top-right spillover rect
     // mat corners
-    {'pos': [[1, 1], [ini_mat.x + ofc.x, scaled_mat.y - ofc.y], [1.0, scaled_mat.y - ofc.y]]},
-    {'pos': [[1, 1], [ini_mat.x + ofc.x,  1], [ini_mat.x + ofc.x, scaled_mat.y - ofc.y]]},
+    {'pos': [[1,                 1],
+             [ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
+             [1.0,               scaled_mat.y - ofc.y]]},
+    {'pos': [[1,                 1],
+             [ini_mat.x + ofc.x, 1],
+             [ini_mat.x + ofc.x, scaled_mat.y - ofc.y]]},
 
     // bottom-right spillover rect
-    {'pos': [[1, -1], [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y], [1.0, -scaled_mat.y - ofc.y]]},
-    {'pos': [[1, -1], [ini_mat.x + ofc.x,  -1], [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]]},
+    {'pos': [[1,                 -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [1,                 -scaled_mat.y - ofc.y]]},
+    {'pos': [[1,                 -1],
+             [ini_mat.x + ofc.x, -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]]},
 
   ];
 

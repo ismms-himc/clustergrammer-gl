@@ -59,7 +59,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
       void main () {
 
         // offset[1] will contain dendro width
-        // new_position = vec3(position[0] * dendro_att[1], position[1], 0);
         new_position = vec3(position[0], position[1]  * dendro_att[1], 0);
 
         // offset[0] contains the actual offset

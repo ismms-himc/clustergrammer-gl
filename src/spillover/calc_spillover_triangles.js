@@ -187,7 +187,7 @@ module.exports = function calc_spillover_triangles(params){
              [ini_mat.x + ofc.x + dendro_trap,  scaled_heat.y - inst_shift.y - ofc.y],
              [ini_mat.x + ofc.x + dendro_trap, -scaled_mat.y - ofc.y]]},
 
-    // bottom spillover rect
+    // col dendro trapezoids
     {'pos': [[-ini_heat.x + inst_shift.x + ofc.x, -1],
              [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y - dendro_trap],
              [ ini_mat.x + ofc.x,                 -1]]},

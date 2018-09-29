@@ -8,9 +8,9 @@ module.exports = function make_dendro_arr(params, inst_axis){
 
   var group_info;
   if (inst_axis === 'row'){
-    group_info = params.dendro.group_info.row
+    group_info = params.dendro.group_info.row;
   } else {
-    group_info = params.dendro.group_info.row
+    group_info = params.dendro.group_info.col;
   }
 
   var offset_array = [];

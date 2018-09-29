@@ -22782,7 +22782,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
     var slider_value = 10 - rel_pos/10;
 
-    change_groups(regl, cgm.parms, inst_axis, slider_value);
+    change_groups(regl, cgm.params, inst_axis, slider_value);
 
   }
 };

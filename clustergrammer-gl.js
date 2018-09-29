@@ -23401,7 +23401,10 @@ module.exports = function draw_mouseover(regl, params){
   ////////////////////////////////////
   /////////////////////////////////////
 
-  // console.log('draw_mouseover')
+  console.log('draw_mouseover')
+
+  d3.selectAll(params.root + ' .svg-tooltip')
+    .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
@@ -23477,7 +23480,7 @@ module.exports = function draw_tooltip_components(regl, params){
       .style('position', 'absolute')
       .style('top', inst_y + 'px')
       .style('left', params.zoom_data.x.cursor_position + 'px')
-      .attr('class', 'svg-tooltip')
+      .attr('class', 'svg-tooltip');
 
     svg_tooltip_container
       .append('rect')

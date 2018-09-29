@@ -17,7 +17,7 @@ module.exports = function draw_tooltip_components(regl, params){
       .style('position', 'absolute')
       .style('top', inst_y + 'px')
       .style('left', params.zoom_data.x.cursor_position + 'px')
-      .attr('class', 'svg-tooltip')
+      .attr('class', 'svg-tooltip');
 
     svg_tooltip_container
       .append('rect')

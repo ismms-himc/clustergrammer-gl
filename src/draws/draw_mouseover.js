@@ -10,7 +10,7 @@ module.exports = function draw_mouseover(regl, params){
   ////////////////////////////////////
   /////////////////////////////////////
 
-  console.log('draw_mouseover')
+  // console.log('draw_mouseover')
 
   d3.selectAll(params.root + ' .svg-tooltip')
     .remove();

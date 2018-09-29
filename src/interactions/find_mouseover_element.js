@@ -41,6 +41,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
   offcenter.y = (params.viz_dim.canvas.height * params.viz_dim.offcenter.y)/2;
 
   var cursor_rel_min = {};
+
   cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
   cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min - offcenter.y;
 
@@ -50,9 +51,12 @@ module.exports = function find_mouseover_element(regl, params, ev){
   cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
 
 
-  if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
+  if (cursor_rel_min.x > 0 &&
+      cursor_rel_min.x < viz_dim_heat.width &&
+      cursor_rel_min.y > 0 &&
+      cursor_rel_min.y < viz_dim_heat.height){
 
-    // console.log(ev)
+    // console.log('in bounds', cursor_rel_min.x, cursor_rel_min.y)
 
     var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
     var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);

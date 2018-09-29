@@ -22593,26 +22593,45 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
   // Add sliders on top of the canvas
   /////////////////////////////////////
   var slider_length = 130;
-  // var col_slider_container = d3.select(cgm.params.canvas_container)
-  var col_slider_container = d3.select(cgm.params.root + ' .control-container')
-    .append('svg')
-    .style('height', slider_length + 'px')
-    .style('width', '40px')
-    .style('position', 'absolute')
-    .style('top', 325 + 'px')
-    .style('left', cgm.params.viz_width - 10 + 'px')
-    .attr('class', 'dendro_slider_svg')
 
-  col_slider_container
-    .append('rect')
-    .style('height', slider_length + 'px')
-    .style('width', '30px')
-    .style('fill', 'white')
-    .on('click', function(){
-      // console.log('clicking the red slider')
-    })
+  // slider containers
 
-  build_single_dendro_slider(regl, cgm, 'row');
+  var axis_slider_container;
+  var inst_top;
+  var inst_left;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    if (inst_axis === 'row'){
+      inst_top = 325;
+      inst_left = cgm.params.viz_width - 10;
+    } else {
+      inst_top = 500;
+      inst_left = cgm.params.viz_width - 10;
+    }
+
+
+    axis_slider_container = d3.select(cgm.params.root + ' .control-container')
+      .append('svg')
+      .style('height', slider_length + 'px')
+      .style('width', '40px')
+      .style('position', 'absolute')
+      .style('top', inst_top + 'px')
+      .style('left', inst_left + 'px')
+      .attr('class', inst_axis + '_dendro_slider_svg')
+
+    axis_slider_container
+      .append('rect')
+      .style('height', slider_length + 'px')
+      .style('width', '30px')
+      .style('fill', 'white');
+
+    build_single_dendro_slider(regl, cgm, inst_axis);
+  });
+
+
+
+
 
 }
 
@@ -22640,7 +22659,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
         cgm.params.is_slider_drag = false;
       });
 
-  var slider_group = d3.select(cgm.params.root + ' .dendro_slider_svg')
+  var slider_group = d3.select(cgm.params.root + ' .'+ inst_axis +'_dendro_slider_svg')
       .append('g')
       .classed( inst_axis + '_slider_group', true)
       .attr('transform', function(){
@@ -22648,8 +22667,6 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
         inst_translation = 'translate(' + rect_width/2 + ', '+ rect_height/10 +')';
         return inst_translation;
       })
-
-  // position_dendro_slider(cgm, inst_axis);
 
   slider_group
     .append('rect')
@@ -22746,7 +22763,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(regl, cgm, inst_axis, slider_value);
+    change_groups(regl, cgm.params, inst_axis, slider_value);
 
   }
 
@@ -22761,7 +22778,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
     var slider_value = 10 - rel_pos/10;
 
-    change_groups(regl, cgm, inst_axis, slider_value);
+    change_groups(regl, cgm.parms, inst_axis, slider_value);
 
   }
 };
@@ -22869,9 +22886,7 @@ var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args 
 
 /* Changes the groupings (x- and y-axis color bars).
  */
-module.exports = function (regl, cgm, inst_axis, slider_value) {
-
-  var params = cgm.params;
+module.exports = function (regl, params, inst_axis, slider_value) {
 
   if (inst_axis==='row'){
     params.dendro.group_level.row = slider_value;
@@ -22885,12 +22900,11 @@ module.exports = function (regl, cgm, inst_axis, slider_value) {
   // console.log(slider_value);
 
   // this can probably be improved
-  // cgm.params.labels.draw_labels = true;
   params.dendro.draw_dendro = true;
 
-  cgm.params.dendro.group_level[inst_axis] = slider_value;
-  cgm.params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
-  cgm.params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+  params.dendro.group_level[inst_axis] = slider_value;
+  params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
+  params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
 
 };
 
@@ -23167,6 +23181,8 @@ var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label
 var drop_label_from_queue = __webpack_require__(/*! ./../matrix_labels/drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
 
 module.exports = function draw_background_calculations(regl, params){
+
+  // console.log('draw_background_calculations');
 
   /*
     Set up something to run background calculations if

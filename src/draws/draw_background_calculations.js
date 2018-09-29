@@ -3,6 +3,8 @@ var drop_label_from_queue = require('./../matrix_labels/drop_label_from_queue');
 
 module.exports = function draw_background_calculations(regl, params){
 
+  // console.log('draw_background_calculations');
+
   /*
     Set up something to run background calculations if
     necessary when the visualization is not being updated. For instance,

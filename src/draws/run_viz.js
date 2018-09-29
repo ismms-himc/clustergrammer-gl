@@ -5,7 +5,7 @@ var start_animation = require('./start_animation');
 var end_animation = require('./end_animation');
 var draw_interacting = require('./draw_interacting');
 var draw_mouseover = require('./draw_mouseover');
-var draw_labels_or_tooltips = require('./draw_labels_or_tooltips');
+var draw_labels_tooltips_or_dendro = require('./draw_labels_tooltips_or_dendro');
 var draw_background_calculations = require('./draw_background_calculations');
 
 module.exports = function run_viz(regl, network){
@@ -43,7 +43,7 @@ module.exports = function run_viz(regl, network){
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.draw_dendro){
-      draw_labels_or_tooltips(regl, params);
+      draw_labels_tooltips_or_dendro(regl, params);
     } else {
       // run background calculations
       draw_background_calculations(regl, params);

@@ -23276,16 +23276,16 @@ module.exports = function draw_interacting(regl, params){
 
 /***/ }),
 
-/***/ "./src/draws/draw_labels_or_tooltips.js":
-/*!**********************************************!*\
-  !*** ./src/draws/draw_labels_or_tooltips.js ***!
-  \**********************************************/
+/***/ "./src/draws/draw_labels_tooltips_or_dendro.js":
+/*!*****************************************************!*\
+  !*** ./src/draws/draw_labels_tooltips_or_dendro.js ***!
+  \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 
-module.exports = function draw_labels_or_tooltips(regl, params){
+module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   // turn back on draw_labels
   ///////////////////////////////
 
@@ -23607,7 +23607,7 @@ var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
 var draw_interacting = __webpack_require__(/*! ./draw_interacting */ "./src/draws/draw_interacting.js");
 var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/draw_mouseover.js");
-var draw_labels_or_tooltips = __webpack_require__(/*! ./draw_labels_or_tooltips */ "./src/draws/draw_labels_or_tooltips.js");
+var draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
 var draw_background_calculations = __webpack_require__(/*! ./draw_background_calculations */ "./src/draws/draw_background_calculations.js");
 
 module.exports = function run_viz(regl, network){
@@ -23645,7 +23645,7 @@ module.exports = function run_viz(regl, network){
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.draw_dendro){
-      draw_labels_or_tooltips(regl, params);
+      draw_labels_tooltips_or_dendro(regl, params);
     } else {
       // run background calculations
       draw_background_calculations(regl, params);

@@ -1,6 +1,6 @@
 var draw_commands = require('./draw_commands');
 
-module.exports = function draw_labels_or_tooltips(regl, params){
+module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   // turn back on draw_labels
   ///////////////////////////////
 

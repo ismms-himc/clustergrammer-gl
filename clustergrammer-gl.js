@@ -23473,7 +23473,7 @@ module.exports = function draw_tooltip_components(regl, params){
 
     // console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
-    var inst_y = params.zoom_data.y.cursor_position;
+    var inst_y = params.zoom_data.y.cursor_position - 50;
     // testing out d3 svg tooltip
     var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
@@ -23488,7 +23488,8 @@ module.exports = function draw_tooltip_components(regl, params){
       .append('rect')
       .style('height', 50 + 'px')
       .style('width', '50px')
-      .style('fill', 'black');
+      .style('fill', 'black')
+      .style('opacity', 0.75)
 
     // var args = params.spillover_args.mat_corners;
     var args = params.tooltip.tooltip_args;
@@ -27690,7 +27691,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     }
 
   })
-  .on('interactionend', function(ev){
+  .on('interactionend', function(){
 
     console.log('clicking')
   });

@@ -26740,7 +26740,7 @@ module.exports = function calc_spillover_triangles(params){
              [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]
              ]},
 
-    // right spillover rect
+    // row dendro trapezoids
     {'pos': [[1,                                              scaled_heat.y - inst_shift.y - ofc.y],
              [ini_mat.x + ofc.x + dendro_trap, -scaled_mat.y - ofc.y],
              [1.0,                                           -scaled_mat.y - ofc.y]]},
@@ -26748,6 +26748,15 @@ module.exports = function calc_spillover_triangles(params){
     {'pos': [[1,                                              scaled_heat.y - inst_shift.y - ofc.y],
              [ini_mat.x + ofc.x + dendro_trap,  scaled_heat.y - inst_shift.y - ofc.y],
              [ini_mat.x + ofc.x + dendro_trap, -scaled_mat.y - ofc.y]]},
+
+    // bottom spillover rect
+    {'pos': [[-ini_heat.x + inst_shift.x + ofc.x, -1],
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y - dendro_trap],
+             [ ini_mat.x + ofc.x,                 -1]]},
+
+    {'pos': [[ ini_mat.x + ofc.x, -1],
+             [ ini_mat.x + ofc.x, -scaled_mat.y - ofc.y - dendro_trap],
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y - dendro_trap]]},
 
   ];
 

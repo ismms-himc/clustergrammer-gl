@@ -42,7 +42,7 @@ module.exports = function run_viz(regl, network){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
-    } else if (params.labels.draw_labels || params.tooltip.show_tooltip){
+    } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.draw_dendro){
       draw_labels_or_tooltips(regl, params);
     } else {
       // run background calculations

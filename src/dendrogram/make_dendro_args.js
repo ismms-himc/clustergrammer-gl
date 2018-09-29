@@ -2,7 +2,7 @@ var m3 = require('./../draws/mat3_transform');
 var color_to_rgba = require('./../colors/color_to_rgba');
 var make_dendro_arr = require('./make_dendro_arr');
 
-module.exports = function draw_mat_labels(regl, params, inst_axis){
+module.exports = function make_dendro_args(regl, params, inst_axis){
 
   var rotation_radians;
   var heat_size;
@@ -26,7 +26,6 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var zoom_function = function(context){
     return context.view;
   };
-
 
   const dendro_buffer = regl.buffer({
     length: dendro_arr.length,

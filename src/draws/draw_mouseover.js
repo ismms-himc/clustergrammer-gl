@@ -10,6 +10,8 @@ module.exports = function draw_mouseover(regl, params){
   ////////////////////////////////////
   /////////////////////////////////////
 
+  // console.log('draw_mouseover')
+
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
   // remove old tooltip

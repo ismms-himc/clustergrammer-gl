@@ -14,5 +14,10 @@ module.exports = function draw_labels_or_tooltips(regl, params){
     // console.log('initialize remove_tooltip_frame')
   }
 
+  // turn back off draw dendro
+  if (params.dendro.draw_dendro){
+    // console.log('drew dendro')
+    params.dendro.draw_dendro = false;
+  }
 
 };

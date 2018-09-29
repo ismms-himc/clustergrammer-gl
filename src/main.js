@@ -59,7 +59,7 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  build_dendrogram_sliders(cgm);
+  build_dendrogram_sliders(regl, cgm);
 
   build_control_panel(regl, cgm);
 

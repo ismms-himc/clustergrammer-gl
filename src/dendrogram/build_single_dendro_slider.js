@@ -1,7 +1,7 @@
 var change_groups = require('./change_groups');
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(cgm, inst_axis){
+module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
@@ -119,7 +119,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(cgm, inst_axis, slider_value);
+    change_groups(regl, cgm, inst_axis, slider_value);
 
   }
 
@@ -134,7 +134,7 @@ module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
     var slider_value = 10 - rel_pos/10;
 
-    change_groups(cgm, inst_axis, slider_value);
+    change_groups(regl, cgm, inst_axis, slider_value);
 
   }
 };

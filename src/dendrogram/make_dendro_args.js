@@ -39,7 +39,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var mat_scale = m3.scaling(1, 1);
 
   var mat_rotate = m3.rotation(rotation_radians);
-  var inst_rgba = color_to_rgba('#eee', 1.0);
+  var inst_rgba = color_to_rgba('black', 0.35);
 
   var args = {
 
@@ -87,9 +87,9 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
     attributes: {
       position: [
-        [      0.0, 2*tri_width],
+        [      params.dendro.trap_float, 2*tri_width],
         [dendro_width, tri_width],
-        [      0.0, 0],
+        [      params.dendro.trap_float, 0],
       ],
       dendro_att: {
         buffer: dendro_buffer,

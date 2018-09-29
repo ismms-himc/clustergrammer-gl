@@ -22940,7 +22940,7 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
   var mat_scale = m3.scaling(1, 1);
 
   var mat_rotate = m3.rotation(rotation_radians);
-  var inst_rgba = color_to_rgba('#eee', 1.0);
+  var inst_rgba = color_to_rgba('black', 0.35);
 
   var args = {
 
@@ -22988,9 +22988,9 @@ module.exports = function draw_mat_labels(regl, params, inst_axis){
 
     attributes: {
       position: [
-        [      0.0, 2*tri_width],
+        [      params.dendro.trap_float, 2*tri_width],
         [dendro_width, tri_width],
-        [      0.0, 0],
+        [      params.dendro.trap_float, 0],
       ],
       dendro_att: {
         buffer: dendro_buffer,
@@ -23406,10 +23406,10 @@ module.exports = function draw_spillover_components(regl, params){
     var args = params.spillover_args;
     var triangles = params.spillover_triangles;
 
-    // // spillover rects to hide matrix spillover
-    // regl(args.mat_sides)(triangles.mat_sides);
-    // regl(args.cats)(triangles.cats);
-    // regl(args.mat_corners)(triangles.mat_corners);
+    // spillover rects to hide matrix spillover
+    regl(args.mat_sides)(triangles.mat_sides);
+    regl(args.cats)(triangles.cats);
+    regl(args.mat_corners)(triangles.mat_corners);
     regl(args.label_corners)(triangles.label_corners);
 
   });
@@ -26103,7 +26103,8 @@ module.exports = function generate_dendro_params(regl, params){
 
   params.dendro.default_level = 5;
   params.dendro.tri_height = 0.10;
-  params.dendro.trap_height = 0.025;
+  params.dendro.trap_height = 0.03;
+  params.dendro.trap_float = 0.005;
 
   params.dendro.dendro_args = {};
   params.dendro.group_level = {};
@@ -26242,8 +26243,8 @@ module.exports = function generate_spillover_params(regl, params){
   var spillover_args = {};
 
   // inst_depth is passed to spillover rects
-  var inst_color = [1, 0, 0, 1];
-  // var inst_color = [1, 1, 1, 1];
+  // var inst_color = [1, 0, 0, 1];
+  var inst_color = [1, 1, 1, 1];
 
   // lower depth can be thought of as closer to the screen/user, e.g. on top
   // of other elements
@@ -26421,7 +26422,6 @@ module.exports = function initialize_params(regl, network){
     calc_text_offsets(params, inst_axis);
   });
 
-  generate_spillover_params(regl, params);
 
   generate_tooltip_params(regl, params);
 
@@ -26455,6 +26455,10 @@ module.exports = function initialize_params(regl, network){
   params.matrix_args = make_matrix_args(regl, params);
 
   generate_dendro_params(regl, params);
+
+  // spillover params rely on dendro params
+  generate_spillover_params(regl, params);
+
 
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
@@ -26609,6 +26613,8 @@ module.exports = function calc_spillover_triangles(params){
 
   var spillover_triangles = {};
 
+  var dendro_trap = params.dendro.trap_height + params.dendro.trap_float;
+
   // trying to shift based on diff between mat and heat size
   var inst_shift = {}
   inst_shift.x = viz_dim.mat_size.x - viz_dim.heat_size.x;
@@ -26687,33 +26693,33 @@ module.exports = function calc_spillover_triangles(params){
 
   spillover_triangles.label_corners = [
 
-    // // top-left spillover rect
-    // {'pos': [[-1, 1],
-    //          [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y],
-    //          [-1.0, scaled_heat.y - inst_shift.y - ofc.y]]
-    //        },
-    // {'pos': [[-1, 1],
-    //          [-ini_heat.x + inst_shift.x + ofc.x,  1],
-    //          [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]
-    //          ]},
+    // top-left spillover rect
+    {'pos': [[-1, 1],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y],
+             [-1.0, scaled_heat.y - inst_shift.y - ofc.y]]
+           },
+    {'pos': [[-1, 1],
+             [-ini_heat.x + inst_shift.x + ofc.x,  1],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]
+             ]},
 
-    // // bottom-left spillover rect
-    // {'pos': [[-1, -1],
-    //          [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y],
-    //          [-1.0, -scaled_mat.y - ofc.y]
-    //          ]},
-    // {'pos': [[-1, -1],
-    //          [-ini_heat.x + inst_shift.x + ofc.x,  -1],
-    //          [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y]
-    //          ]},
+    // bottom-left spillover rect
+    {'pos': [[-1, -1],
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y],
+             [-1.0, -scaled_mat.y - ofc.y]
+             ]},
+    {'pos': [[-1, -1],
+             [-ini_heat.x + inst_shift.x + ofc.x,  -1],
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y]
+             ]},
 
-    // // top-right spillover rect (right angle triangle for slanted text only)
-    // {'pos': [
-    //          // [1, scaled_mat.y + 1 - ini_mat.x - ofc.y],
-    //          [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * ofc.x],
-    //          [ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
-    //          [1.0, scaled_mat.y - ofc.y]
-    //          ]},
+    // top-right spillover rect (right angle triangle for slanted text only)
+    {'pos': [
+             // [1, scaled_mat.y + 1 - ini_mat.x - ofc.y],
+             [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * ofc.x],
+             [ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
+             [1.0, scaled_mat.y - ofc.y]
+             ]},
 
     // area under slanted triangle
     {'pos': [[1.0, scaled_mat.y - ofc.y],
@@ -26725,21 +26731,24 @@ module.exports = function calc_spillover_triangles(params){
              [ini_mat.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]
              ]},
 
-    // // bottom-right spillover rect
-    // {'pos': [[1,                 -1],
-    //          [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
-    //          [1.0,               -scaled_mat.y - ofc.y]
-    //          ]},
-    // {'pos': [[1,                  -1],
-    //          [ini_mat.x + ofc.x,  -1],
-    //          [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]
-    //          ]},
+    // bottom-right spillover rect
+    {'pos': [[1,                 -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [1.0,               -scaled_mat.y - ofc.y]
+             ]},
+    {'pos': [[1,                  -1],
+             [ini_mat.x + ofc.x,  -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]
+             ]},
 
     // right spillover rect
-    {'pos': [[1,                  scaled_heat.y - inst_shift.y - ofc.y],
-             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
-             [1.0,               -scaled_mat.y - ofc.y]]},
-    // {'pos': [[1, 1], [ini_mat.x + ofc.x,  1], [ini_mat.x + ofc.x, -1]]},
+    {'pos': [[1,                                              scaled_heat.y - inst_shift.y - ofc.y],
+             [ini_mat.x + ofc.x + dendro_trap, -scaled_mat.y - ofc.y],
+             [1.0,                                           -scaled_mat.y - ofc.y]]},
+
+    {'pos': [[1,                                              scaled_heat.y - inst_shift.y - ofc.y],
+             [ini_mat.x + ofc.x + dendro_trap,  scaled_heat.y - inst_shift.y - ofc.y],
+             [ini_mat.x + ofc.x + dendro_trap, -scaled_mat.y - ofc.y]]},
 
   ];
 

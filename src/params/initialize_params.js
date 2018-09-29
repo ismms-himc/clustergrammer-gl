@@ -63,7 +63,6 @@ module.exports = function initialize_params(regl, network){
     calc_text_offsets(params, inst_axis);
   });
 
-  generate_spillover_params(regl, params);
 
   generate_tooltip_params(regl, params);
 
@@ -97,6 +96,10 @@ module.exports = function initialize_params(regl, network){
   params.matrix_args = make_matrix_args(regl, params);
 
   generate_dendro_params(regl, params);
+
+  // spillover params rely on dendro params
+  generate_spillover_params(regl, params);
+
 
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])

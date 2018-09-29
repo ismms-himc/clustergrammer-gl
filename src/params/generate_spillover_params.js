@@ -6,8 +6,8 @@ module.exports = function generate_spillover_params(regl, params){
   var spillover_args = {};
 
   // inst_depth is passed to spillover rects
-  var inst_color = [1, 0, 0, 1];
-  // var inst_color = [1, 1, 1, 1];
+  // var inst_color = [1, 0, 0, 1];
+  var inst_color = [1, 1, 1, 1];
 
   // lower depth can be thought of as closer to the screen/user, e.g. on top
   // of other elements

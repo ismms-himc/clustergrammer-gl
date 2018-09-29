@@ -32,7 +32,10 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       );
     });
 
-    regl(params.dendro.dendro_args[inst_axis])();
+    // only show the dendrogram if the current axis is in clust ordering
+    if (params.order.inst[inst_axis] === 'clust' && params.order.new[inst_axis] === 'clust'){
+      regl(params.dendro.dendro_args[inst_axis])();
+    }
 
     // make the arguments for the draw command
     var text_triangle_args

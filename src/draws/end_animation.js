@@ -33,6 +33,11 @@ module.exports = function end_animation(regl, params){
     // transfer new order to old order
     params.order.inst[inst_axis] = params.order.new[inst_axis]
 
+    // turn dendrogram slider back on if necessary
+    if (params.order.inst[inst_axis] === 'clust'){
+      d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
+    }
+
   });
 
   // transfer new order to text triangles

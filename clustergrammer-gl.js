@@ -22604,7 +22604,7 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
-      inst_top = 325;
+      inst_top = 290;
       inst_left = cgm.params.viz_width - 10;
     } else {
       inst_top = cgm.params.viz_height + 50;
@@ -23127,7 +23127,10 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       );
     });
 
-    regl(params.dendro.dendro_args[inst_axis])();
+    // only show the dendrogram if the current axis is in clust ordering
+    if (params.order.inst[inst_axis] === 'clust' && params.order.new[inst_axis] === 'clust'){
+      regl(params.dendro.dendro_args[inst_axis])();
+    }
 
     // make the arguments for the draw command
     var text_triangle_args
@@ -23538,6 +23541,11 @@ module.exports = function end_animation(regl, params){
 
     // transfer new order to old order
     params.order.inst[inst_axis] = params.order.new[inst_axis]
+
+    // turn dendrogram slider back on if necessary
+    if (params.order.inst[inst_axis] === 'clust'){
+      d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
+    }
 
   });
 
@@ -26585,13 +26593,9 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  // toggle dendro sliders
+  // toggle dendro sliders (will re-display at end of animation)
   if (new_order != 'clust'){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
-  }
-
-  if (new_order === 'clust'){
-    d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
   }
 
   params.animation.run_animation = true;

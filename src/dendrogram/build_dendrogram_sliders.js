@@ -16,7 +16,7 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
-      inst_top = 325;
+      inst_top = 290;
       inst_left = cgm.params.viz_width - 10;
     } else {
       inst_top = cgm.params.viz_height + 50;

@@ -23461,14 +23461,14 @@ module.exports = function draw_spillover_components(regl, params){
   !*** ./src/draws/draw_tooltip_components.js ***!
   \**********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-const make_tooltip_text_args = __webpack_require__(/*! ./../tooltip/make_tooltip_text_args */ "./src/tooltip/make_tooltip_text_args.js");
-var calc_tooltip_background_triangles = __webpack_require__(/*! ./../tooltip/calc_tooltip_background_triangles */ "./src/tooltip/calc_tooltip_background_triangles.js");
+// const make_tooltip_text_args = require('./../tooltip/make_tooltip_text_args');
+// var calc_tooltip_background_triangles = require('./../tooltip/calc_tooltip_background_triangles');
 
 module.exports = function draw_tooltip_components(regl, params){
 
-    tooltip_dim = {};
+    var tooltip_dim = {};
     tooltip_dim.height = 75;
     tooltip_dim.width = 150;
 
@@ -23837,23 +23837,30 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var viz_dim_heat = params.viz_dim.heat;
   var mouseover = params.interact.mouseover;
 
-  // try updating mouseover position
-  params.zoom_data.x.cursor_position = ev.x0;
-  params.zoom_data.y.cursor_position = ev.y0;
-
-  // convert offcenter WebGl units to pixel units
   var offcenter = {};
-  offcenter.x = (params.viz_dim.canvas.width * params.viz_dim.offcenter.x)/2;
-  offcenter.y = (params.viz_dim.canvas.height * params.viz_dim.offcenter.y)/2;
-
   var cursor_rel_min = {};
-  cursor_rel_min.x = params.zoom_data.x.cursor_position - viz_dim_heat.x.min - offcenter.x;
-  cursor_rel_min.y = params.zoom_data.y.cursor_position - viz_dim_heat.y.min - offcenter.y;
+  var dim_dict = {};
+  dim_dict.x = 'width';
+  dim_dict.y = 'height';
 
-  cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
-  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
+  _.each(['x', 'y'], function(inst_axis){
 
-  var in_boun
+    // try updating mouseover position
+    params.zoom_data[inst_axis].cursor_position = ev[inst_axis + '0'];
+
+    // convert offcenter WebGl units to pixel units
+    offcenter[inst_axis] = (params.viz_dim.canvas[dim_dict[inst_axis]] *
+                             params.viz_dim.offcenter[inst_axis])/2;
+
+    cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
+                                  viz_dim_heat[inst_axis].min - offcenter[inst_axis];
+
+    cursor_rel_min[inst_axis] = restrict_rel_min(cursor_rel_min[inst_axis],
+                                  viz_dim_heat[dim_dict[inst_axis]],
+                                  params.zoom_data[inst_axis]);
+
+  });
+
   if (cursor_rel_min.x > 0 &&
       cursor_rel_min.x < viz_dim_heat.width &&
       cursor_rel_min.y > 0 &&
@@ -23873,35 +23880,43 @@ module.exports = function find_mouseover_element(regl, params, ev){
     mouseover.row_name = params.labels.ordered_labels.rows[row_index];
     mouseover.col_name = params.labels.ordered_labels.cols[col_index];
 
-    if (mouseover.row_name.includes(': ')){
-      mouseover.row_name = mouseover.row_name.split(': ')[1];
-    }
+    _.each(params.cat_data.col, function(d, cat_index){
+      inst_cat = params.labels.ordered_labels['col_cats-' + cat_index][col_index];
+      console.log(inst_cat)
+    })
 
-    if (mouseover.col_name.includes(': ')){
-      mouseover.col_name = mouseover.col_name.split(': ')[1];
-    }
+      // mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index]
+      // console.log(mouseover.col_cat)
 
-    var mouseover_text;
-    if (params.cat_data.cat_num.col == 0){
+    // if (mouseover.row_name.includes(': ')){
+    //   mouseover.row_name = mouseover.row_name.split(': ')[1];
+    // }
 
-      // calculate text triangles, they require an offset element
-      mouseover_text = mouseover.row_name + ' and ' + mouseover.col_name;
-      mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      mouseover.text_triangles['line-1'].offset = [0,0];
+    // if (mouseover.col_name.includes(': ')){
+    //   mouseover.col_name = mouseover.col_name.split(': ')[1];
+    // }
 
-    } else {
+    // var mouseover_text;
+    // if (params.cat_data.cat_num.col == 0){
 
-      // calculate text triangles, they require an offset element
-      mouseover_text = mouseover.row_name + ' and ' + mouseover.col_name;
-      mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      mouseover.text_triangles['line-1'].offset = [0,0];
+    //   // calculate text triangles, they require an offset element
+    //   mouseover_text = mouseover.row_name + ' and ' + mouseover.col_name;
+    //   mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+    //   mouseover.text_triangles['line-1'].offset = [0,0];
 
-      mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index];
+    // } else {
 
-      mouseover_text = mouseover.col_cat;
-      mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
-      mouseover.text_triangles['line-2'].offset = [0,0];
-    }
+    //   // calculate text triangles, they require an offset element
+    //   mouseover_text = mouseover.row_name + ' and ' + mouseover.col_name;
+    //   mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
+    //   mouseover.text_triangles['line-1'].offset = [0,0];
+
+    //   mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index];
+
+    //   mouseover_text = mouseover.col_cat;
+    //   mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
+    //   mouseover.text_triangles['line-2'].offset = [0,0];
+    // }
 
   }
 };
@@ -26217,8 +26232,13 @@ module.exports = function generate_interact_params(params){
   params.interact.still_interacting = false;
   params.interact.still_mouseover = false;
   params.interact.mouseover = {};
-  params.interact.mouseover.row_name = null;
-  params.interact.mouseover.col_name = null;
+
+  _.each(['row', 'col'], function(inst_axis){
+    params.interact.mouseover[inst_axis] = {};
+    params.interact.mouseover[inst_axis].name = null;
+    params.interact.mouseover[inst_axis].cats = {};
+  })
+
   params.interact.mouseover.text_triangles = {};
   params.interact.enable_viz_interact = true;
 
@@ -26930,54 +26950,6 @@ module.exports = function make_spillover_args(regl, inst_depth,
 
 /***/ }),
 
-/***/ "./src/tooltip/calc_tooltip_background_triangles.js":
-/*!**********************************************************!*\
-  !*** ./src/tooltip/calc_tooltip_background_triangles.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/* eslint-disable */
-
-module.exports = function calc_background_tooltip_triangles(regl, params){
-
-  /*
-
-  Try to get background size to change with text size
-
-  */
-
-  var offset_x = 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
-  var offset_y = 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
-
-  // console.log('tooltip shift', offset_x, offset_y);
-
-  // // trying to shift based on diff between mat and heat size
-  // var inst_shift = {}
-  // inst_shift.x = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
-  // inst_shift.y = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
-
-  var tooltip_width = 0.5;
-  var tooltip_height = 0.1;
-
-  var background_triangles = [
-    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y],
-             [-1.0 + offset_x - tooltip_width, 1.0 - offset_y]
-             ]},
-    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y]
-             ]}
-
-  ];
-
-  return background_triangles;
-
-};
-
-/***/ }),
-
 /***/ "./src/tooltip/make_tooltip_background_args.js":
 /*!*****************************************************!*\
   !*** ./src/tooltip/make_tooltip_background_args.js ***!
@@ -27054,85 +27026,6 @@ module.exports = function make_tooltip_background_args(regl, params, inst_depth,
 
   return args;
 
-
-};
-
-/***/ }),
-
-/***/ "./src/tooltip/make_tooltip_text_args.js":
-/*!***********************************************!*\
-  !*** ./src/tooltip/make_tooltip_text_args.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
-
-  // smaller scale_text -> larger text
-  var inst_depth = 0.00001;
-
-  // this reduces the size of text, otherwise text will be on the order of the
-  // entire webgl canvas
-  var scale_text = 40;
-
-  var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
-  var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
-
-
-  var vert_arg = `
-      precision mediump float;
-      attribute vec2 position;
-      uniform float scale_text;
-      varying float x_position;
-      varying float y_position;
-      uniform float inst_depth;
-      uniform float offset_x;
-      uniform float offset_y;
-      uniform float line_offset;
-
-      void main () {
-
-        x_position =  (position.x - 1.0)/scale_text + offset_x;
-        y_position = -(position.y - line_offset)/scale_text + offset_y;
-
-        gl_Position =
-                      vec4(
-                           x_position,
-                           y_position,
-                           inst_depth,
-                           1.0);
-      }`;
-
-  var frag_arg =  `
-      precision mediump float;
-      void main () {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-      }`;
-
-  var args = {
-    vert: vert_arg,
-    frag: frag_arg,
-    attributes: {
-      position: regl.prop('positions')
-    },
-    elements: regl.prop('cells'),
-    uniforms: {
-      scale_text: scale_text,
-      inst_depth: inst_depth,
-      offset_x: offset_x,
-      offset_y: offset_y,
-      line_offset: line_offset
-    },
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
-  };
-
-  return args;
 
 };
 

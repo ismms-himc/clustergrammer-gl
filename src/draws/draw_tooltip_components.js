@@ -1,9 +1,9 @@
-const make_tooltip_text_args = require('./../tooltip/make_tooltip_text_args');
-var calc_tooltip_background_triangles = require('./../tooltip/calc_tooltip_background_triangles');
+// const make_tooltip_text_args = require('./../tooltip/make_tooltip_text_args');
+// var calc_tooltip_background_triangles = require('./../tooltip/calc_tooltip_background_triangles');
 
 module.exports = function draw_tooltip_components(regl, params){
 
-    tooltip_dim = {};
+    var tooltip_dim = {};
     tooltip_dim.height = 75;
     tooltip_dim.width = 150;
 

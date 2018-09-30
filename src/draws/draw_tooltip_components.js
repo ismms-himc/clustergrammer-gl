@@ -8,21 +8,30 @@ module.exports = function draw_tooltip_components(regl, params){
 
     // console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
-    var inst_y = params.zoom_data.y.cursor_position - 75;
-    // testing out d3 svg tooltip
+    tooltip_dim = {};
+    tooltip_dim.height = 75;
+    tooltip_dim.width = 150;
+
+    var tooltip_buffer = {};
+    tooltip_buffer.x = 2;
+    tooltip_buffer.y = 2;
+
+    var pos_y = params.zoom_data.y.cursor_position - tooltip_dim.height - tooltip_buffer.y;
+    var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
+
     var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
-      .style('height', 50 + 'px')
-      .style('width', '50px')
+      .style('height', tooltip_dim.height + 'px')
+      .style('width', tooltip_dim.width + 'px')
       .style('position', 'absolute')
-      .style('top', inst_y + 'px')
-      .style('left', params.zoom_data.x.cursor_position + 'px')
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
       .attr('class', 'svg-tooltip');
 
     svg_tooltip_container
       .append('rect')
-      .style('height', 50 + 'px')
-      .style('width', '50px')
+      .style('height', tooltip_dim.height + 'px')
+      .style('width', tooltip_dim.width + 'px')
       .style('fill', 'black')
       .style('opacity', 0.75)
 

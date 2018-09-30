@@ -23513,6 +23513,7 @@ module.exports = function draw_tooltip_components(regl, params){
       .attr('transform', 'translate(' + text_offset.x + ', '+ text_offset.y +')')
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight',  800)
+      .style('font-size', 15)
       .classed('tooltip-text', true)
       .text(function(){
         var inst_text = mouseover.row.name + ' and ' + mouseover.col.name;

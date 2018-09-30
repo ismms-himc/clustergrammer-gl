@@ -9,7 +9,7 @@ module.exports = function generate_interact_params(params){
   _.each(['row', 'col'], function(inst_axis){
     params.interact.mouseover[inst_axis] = {};
     params.interact.mouseover[inst_axis].name = null;
-    params.interact.mouseover[inst_axis].cats = {};
+    params.interact.mouseover[inst_axis].cats = [];
   })
 
   params.interact.mouseover.text_triangles = {};

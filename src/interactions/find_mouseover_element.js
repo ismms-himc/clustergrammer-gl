@@ -65,15 +65,25 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     // console.log('in bounds', cursor_rel_min.x, cursor_rel_min.y)
 
-    var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-    var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+    var axis_index;
 
-    mouseover.row_name = params.labels.ordered_labels.rows[row_index];
-    mouseover.col_name = params.labels.ordered_labels.cols[col_index];
+    _.each(['row', 'col'], function(inst_axis){
 
-    _.each(params.cat_data.col, function(d, cat_index){
-      inst_cat = params.labels.ordered_labels['col_cats-' + cat_index][col_index];
-      console.log(inst_cat)
+      if (inst_axis === 'row'){
+        axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
+      } else {
+        axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+      }
+
+      mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
+
+      console.log(mouseover[inst_axis].name)
+
+      // _.each(params.cat_data.col, function(d, cat_index){
+      //   inst_cat_name = params.labels.ordered_labels['col_cats-' + cat_index][col_index];
+
+      // });
+
     })
 
       // mouseover.col_cat = params.labels.ordered_labels['col_cats-0'][col_index]

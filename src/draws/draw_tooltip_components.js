@@ -11,6 +11,9 @@ module.exports = function draw_tooltip_components(regl, params){
     tooltip_buffer.x = 2;
     tooltip_buffer.y = 2;
 
+    var offset = {};
+    offset.x = 10;
+
     var pos_y = params.zoom_data.y.cursor_position - tooltip_dim.height - tooltip_buffer.y;
     var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
 
@@ -21,14 +24,34 @@ module.exports = function draw_tooltip_components(regl, params){
       .style('position', 'absolute')
       .style('top', pos_y + 'px')
       .style('left', pos_x + 'px')
-      .attr('class', 'svg-tooltip');
+      .classed('svg-tooltip', true);
 
-    svg_tooltip_container
+    var svg_tooltip_group = svg_tooltip_container
+      .append('g')
+      .classed('tooltip-group', true)
+
+    svg_tooltip_group
       .append('rect')
       .style('height', tooltip_dim.height + 'px')
       .style('width', tooltip_dim.width + 'px')
       .style('fill', 'black')
       .style('opacity', 0.75)
+
+    // console.log('here')
+    svg_tooltip_group
+      .append('text')
+      .text('something!!!!')
+      .style('fill', 'white')
+      .attr('transform', 'translate(' + offset.x + ', 50)')
+      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .style('font-weight',  800);
+      // .html(function(d) {
+      //   // var inst_name = d.name.replace(/_/g, ' ').split('#')[0];
+      //   var inst_name = 'Something';
+      //   return "<span>" + inst_name + "</span>";
+      // });
+
+  // debugger
 
   // // Spillover Components (may not need to redraw)
   // params.cameras.static.draw(() => {

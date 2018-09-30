@@ -1,4 +1,4 @@
-const vectorizeText = require('vectorize-text');
+// const vectorizeText = require('vectorize-text');
 var restrict_rel_min = require('./restrict_rel_min');
 
 module.exports = function find_mouseover_element(regl, params, ev){
@@ -17,18 +17,19 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   */
 
-  var vect_text_attrs = {
-    textAlign: 'right',
-    textBaseline: 'middle',
-    triangles:true,
-    size:params.labels.font_detail,
-    font:'"Open Sans", verdana, arial, sans-serif'
-  };
+  // var vect_text_attrs = {
+  //   textAlign: 'right',
+  //   textBaseline: 'middle',
+  //   triangles:true,
+  //   size:params.labels.font_detail,
+  //   font:'"Open Sans", verdana, arial, sans-serif'
+  // };
 
   var viz_dim_heat = params.viz_dim.heat;
   var mouseover = params.interact.mouseover;
 
   var offcenter = {};
+  var inst_cat_name;
   var cursor_rel_min = {};
   var dim_dict = {};
   dim_dict.x = 'width';
@@ -77,12 +78,12 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
       mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
 
-      console.log(mouseover[inst_axis].name)
-
-      // _.each(params.cat_data.col, function(d, cat_index){
-      //   inst_cat_name = params.labels.ordered_labels['col_cats-' + cat_index][col_index];
-
-      // });
+      // reset cat names
+      mouseover[inst_axis].cats = [];
+      _.each(params.cat_data[inst_axis], function(d, cat_index){
+        inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
+        mouseover[inst_axis].cats[cat_index] = inst_cat_name;
+      });
 
     })
 

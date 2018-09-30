@@ -3,11 +3,6 @@ var calc_tooltip_background_triangles = require('./../tooltip/calc_tooltip_backg
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  // Spillover Components (may not need to redraw)
-  params.cameras.static.draw(() => {
-
-    // console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
-
     tooltip_dim = {};
     tooltip_dim.height = 75;
     tooltip_dim.width = 150;
@@ -35,35 +30,39 @@ module.exports = function draw_tooltip_components(regl, params){
       .style('fill', 'black')
       .style('opacity', 0.75)
 
-    // var args = params.spillover_args.mat_corners;
-    var args = params.tooltip.tooltip_args;
+  // // Spillover Components (may not need to redraw)
+  // params.cameras.static.draw(() => {
 
-    // tooltip background
-    ////////////////////////////
-    var background_triangles = calc_tooltip_background_triangles(regl, params);
-    regl(args)(background_triangles);
+  //   // var args = params.spillover_args.mat_corners;
+  //   var args = params.tooltip.tooltip_args;
 
-    // tooltip text
-    //////////////////
-    // make the arguments for the draw command
-    var text_triangle_args;
-    var line_offset;
-    var inst_triangles
+  //   // tooltip background
+  //   ////////////////////////////
+  //   var background_triangles = calc_tooltip_background_triangles(regl, params);
+  //   regl(args)(background_triangles);
 
-    // draw row/col names
-    line_offset = 3.0;
-    text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-    inst_triangles = params.interact.mouseover.text_triangles['line-1'];
-    regl(text_triangle_args)(inst_triangles);
+  //   // tooltip text
+  //   //////////////////
+  //   // make the arguments for the draw command
+  //   var text_triangle_args;
+  //   var line_offset;
+  //   var inst_triangles
 
-    if (params.cat_data.cat_num.col > 0){
+  //   // draw row/col names
+  //   line_offset = 3.0;
+  //   text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
+  //   inst_triangles = params.interact.mouseover.text_triangles['line-1'];
+  //   regl(text_triangle_args)(inst_triangles);
 
-      line_offset = 1.5;
-      text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-      inst_triangles = params.interact.mouseover.text_triangles['line-2'];
-      regl(text_triangle_args)(inst_triangles);
+  //   if (params.cat_data.cat_num.col > 0){
 
-    }
+  //     line_offset = 1.5;
+  //     text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
+  //     inst_triangles = params.interact.mouseover.text_triangles['line-2'];
+  //     regl(text_triangle_args)(inst_triangles);
 
-  });
+  //   }
+
+  // });
+
 };

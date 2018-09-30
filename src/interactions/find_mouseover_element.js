@@ -3,8 +3,6 @@ var restrict_rel_min = require('./restrict_rel_min');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
-  // console.log('still_mouseover', params.interact.still_mouseover)
-
   /*
 
   Need to use
@@ -28,12 +26,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
   };
 
   var viz_dim_heat = params.viz_dim.heat;
+  var mouseover = params.interact.mouseover;
 
   // try updating mouseover position
   params.zoom_data.x.cursor_position = ev.x0;
   params.zoom_data.y.cursor_position = ev.y0;
-
-  var mouseover = params.interact.mouseover;
 
   // convert offcenter WebGl units to pixel units
   var offcenter = {};
@@ -41,20 +38,23 @@ module.exports = function find_mouseover_element(regl, params, ev){
   offcenter.y = (params.viz_dim.canvas.height * params.viz_dim.offcenter.y)/2;
 
   var cursor_rel_min = {};
-
-  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
-  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min - offcenter.y;
-
-  // console.log(cursor_rel_min.x, cursor_rel_min.y)
+  cursor_rel_min.x = params.zoom_data.x.cursor_position - viz_dim_heat.x.min - offcenter.x;
+  cursor_rel_min.y = params.zoom_data.y.cursor_position - viz_dim_heat.y.min - offcenter.y;
 
   cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
   cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
 
-
+  var in_boun
   if (cursor_rel_min.x > 0 &&
       cursor_rel_min.x < viz_dim_heat.width &&
       cursor_rel_min.y > 0 &&
       cursor_rel_min.y < viz_dim_heat.height){
+    params.tooltip.in_bounds_tooltip = true;
+  } else {
+    params.tooltip.in_bounds_tooltip = false;
+  }
+
+  if (params.tooltip.in_bounds_tooltip){
 
     // console.log('in bounds', cursor_rel_min.x, cursor_rel_min.y)
 
@@ -94,11 +94,5 @@ module.exports = function find_mouseover_element(regl, params, ev){
       mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-    params.tooltip.in_bounds_tooltip = true;
-
-  } else {
-    // console.log('OUTSIDE OF MATRIX')
-    params.tooltip.in_bounds_tooltip = false;
   }
-
 };

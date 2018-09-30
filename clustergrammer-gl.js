@@ -23255,7 +23255,7 @@ module.exports = function draw_commands(regl, params){
   draw_spillover_components(regl, params);
 
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
-    // console.log('draw tooltip component')
+    console.log('draw tooltip component')
     draw_tooltip_components(regl, params);
   }
 
@@ -23468,11 +23468,6 @@ var calc_tooltip_background_triangles = __webpack_require__(/*! ./../tooltip/cal
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  // Spillover Components (may not need to redraw)
-  params.cameras.static.draw(() => {
-
-    // console.log('draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
-
     tooltip_dim = {};
     tooltip_dim.height = 75;
     tooltip_dim.width = 150;
@@ -23500,37 +23495,41 @@ module.exports = function draw_tooltip_components(regl, params){
       .style('fill', 'black')
       .style('opacity', 0.75)
 
-    // var args = params.spillover_args.mat_corners;
-    var args = params.tooltip.tooltip_args;
+  // // Spillover Components (may not need to redraw)
+  // params.cameras.static.draw(() => {
 
-    // tooltip background
-    ////////////////////////////
-    var background_triangles = calc_tooltip_background_triangles(regl, params);
-    regl(args)(background_triangles);
+  //   // var args = params.spillover_args.mat_corners;
+  //   var args = params.tooltip.tooltip_args;
 
-    // tooltip text
-    //////////////////
-    // make the arguments for the draw command
-    var text_triangle_args;
-    var line_offset;
-    var inst_triangles
+  //   // tooltip background
+  //   ////////////////////////////
+  //   var background_triangles = calc_tooltip_background_triangles(regl, params);
+  //   regl(args)(background_triangles);
 
-    // draw row/col names
-    line_offset = 3.0;
-    text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-    inst_triangles = params.interact.mouseover.text_triangles['line-1'];
-    regl(text_triangle_args)(inst_triangles);
+  //   // tooltip text
+  //   //////////////////
+  //   // make the arguments for the draw command
+  //   var text_triangle_args;
+  //   var line_offset;
+  //   var inst_triangles
 
-    if (params.cat_data.cat_num.col > 0){
+  //   // draw row/col names
+  //   line_offset = 3.0;
+  //   text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
+  //   inst_triangles = params.interact.mouseover.text_triangles['line-1'];
+  //   regl(text_triangle_args)(inst_triangles);
 
-      line_offset = 1.5;
-      text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-      inst_triangles = params.interact.mouseover.text_triangles['line-2'];
-      regl(text_triangle_args)(inst_triangles);
+  //   if (params.cat_data.cat_num.col > 0){
 
-    }
+  //     line_offset = 1.5;
+  //     text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
+  //     inst_triangles = params.interact.mouseover.text_triangles['line-2'];
+  //     regl(text_triangle_args)(inst_triangles);
 
-  });
+  //   }
+
+  // });
+
 };
 
 /***/ }),
@@ -23813,8 +23812,6 @@ var restrict_rel_min = __webpack_require__(/*! ./restrict_rel_min */ "./src/inte
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
-  // console.log('still_mouseover', params.interact.still_mouseover)
-
   /*
 
   Need to use
@@ -23838,12 +23835,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
   };
 
   var viz_dim_heat = params.viz_dim.heat;
+  var mouseover = params.interact.mouseover;
 
   // try updating mouseover position
   params.zoom_data.x.cursor_position = ev.x0;
   params.zoom_data.y.cursor_position = ev.y0;
-
-  var mouseover = params.interact.mouseover;
 
   // convert offcenter WebGl units to pixel units
   var offcenter = {};
@@ -23851,20 +23847,23 @@ module.exports = function find_mouseover_element(regl, params, ev){
   offcenter.y = (params.viz_dim.canvas.height * params.viz_dim.offcenter.y)/2;
 
   var cursor_rel_min = {};
-
-  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
-  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min - offcenter.y;
-
-  // console.log(cursor_rel_min.x, cursor_rel_min.y)
+  cursor_rel_min.x = params.zoom_data.x.cursor_position - viz_dim_heat.x.min - offcenter.x;
+  cursor_rel_min.y = params.zoom_data.y.cursor_position - viz_dim_heat.y.min - offcenter.y;
 
   cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
   cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
 
-
+  var in_boun
   if (cursor_rel_min.x > 0 &&
       cursor_rel_min.x < viz_dim_heat.width &&
       cursor_rel_min.y > 0 &&
       cursor_rel_min.y < viz_dim_heat.height){
+    params.tooltip.in_bounds_tooltip = true;
+  } else {
+    params.tooltip.in_bounds_tooltip = false;
+  }
+
+  if (params.tooltip.in_bounds_tooltip){
 
     // console.log('in bounds', cursor_rel_min.x, cursor_rel_min.y)
 
@@ -23904,13 +23903,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
       mouseover.text_triangles['line-2'].offset = [0,0];
     }
 
-    params.tooltip.in_bounds_tooltip = true;
-
-  } else {
-    // console.log('OUTSIDE OF MATRIX')
-    params.tooltip.in_bounds_tooltip = false;
   }
-
 };
 
 /***/ }),

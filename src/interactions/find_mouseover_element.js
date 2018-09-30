@@ -78,6 +78,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
       mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
 
+      if (mouseover[inst_axis].name.includes(': ')){
+        mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
+      }
+
       // reset cat names
       mouseover[inst_axis].cats = [];
       _.each(params.cat_data[inst_axis], function(d, cat_index){

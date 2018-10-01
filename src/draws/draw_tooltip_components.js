@@ -43,9 +43,15 @@ module.exports = function draw_tooltip_components(regl, params){
 
     // console.log('here')
     svg_tooltip_group
+      .selectAll('text')
+      .data(['something', 'something'])
+      .enter()
       .append('text')
       .style('fill', 'white')
-      .attr('transform', 'translate(' + text_offset.x + ', '+ text_offset.y +')')
+      .attr('transform', function(d, inst_index){
+        console.log(d)
+        return 'translate(' + text_offset.x + ', '+ (inst_index +1)* text_offset.y +')';
+      })
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight',  800)
       .style('font-size', 15)

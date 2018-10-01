@@ -63,7 +63,7 @@ module.exports = function draw_tooltip_components(regl, params){
 
 
     // make sure background is large enough for text
-    text_width = d3.select('.tooltip-text').node().getBBox().width;
+    var text_width = d3.select('.tooltip-text').node().getBBox().width;
 
     console.log(text_width)
 
@@ -75,8 +75,8 @@ module.exports = function draw_tooltip_components(regl, params){
         return inst_width + 'px';
       })
       .style('left', function(){
-        var pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
-        return pos_x;
+        var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
+        return inst_pos_x;
       })
 
     d3.select(params.root + ' .tooltip-background')

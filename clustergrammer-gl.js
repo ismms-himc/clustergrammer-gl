@@ -22824,10 +22824,10 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
     var inst_top;
     if (inst_axis === 'row'){
-      inst_top = -params.node_canvas_pos.y_arr[order_index];
+      inst_top = -params.node_canvas_pos.y_arr[order_index] - 2*tri_width;
     } else {
       // emperical rule
-      inst_top = -params.node_canvas_pos.x_arr[order_index] - tri_width;
+      inst_top = -params.node_canvas_pos.x_arr[order_index] - 2*tri_width;
     }
 
     var inst_bot = inst_top + tri_width;

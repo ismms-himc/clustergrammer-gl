@@ -21733,9 +21733,7 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.labels.draw_labels = false;
-  // params.animation.first_frame = true;
   params.animation.initialize_viz = true;
-  // params.tooltip.show_tooltip = false;
   params.interact.total = 0
 
 };
@@ -23254,6 +23252,7 @@ module.exports = function draw_commands(regl, params){
   draw_axis_components(regl, params, 'col', params.labels.draw_labels);
   draw_spillover_components(regl, params);
 
+  // clean tooltip
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
     draw_tooltip_components(regl, params);
   }
@@ -23263,10 +23262,11 @@ module.exports = function draw_commands(regl, params){
     params.labels.draw_labels = false;
   }
 
-  if (params.tooltip.show_tooltip){
-    // console.log('----- turn off show tooltip ------')
-    params.tooltip.show_tooltip = false;
-  }
+  // clean_tooltip
+  // if (params.tooltip.show_tooltip){
+  //   // console.log('----- turn off show tooltip ------')
+  //   params.tooltip.show_tooltip = false;
+  // }
 
 };
 
@@ -23318,15 +23318,12 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   draw_commands(regl, params);
   params.tooltip.remove_tooltip_frame = true;
 
-  // set up extra frame specifically to remove old tooltip
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;
-    // console.log('initialize remove_tooltip_frame')
   }
 
   // turn back off draw dendro
   if (params.dendro.update_dendro){
-    // console.log('drew dendro')
     params.dendro.update_dendro = false;
   }
 
@@ -23409,14 +23406,12 @@ module.exports = function draw_mouseover(regl, params){
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-  // remove old tooltip
-  if (params.tooltip.remove_tooltip_frame){
-    // console.log('remove old tooltip ***********')
-    params.tooltip.show_tooltip = false;
-
-    // console.log('still mouseover')
-    draw_commands(regl, params);
-  }
+  // clean_tooltip
+  // // remove old tooltip
+  // if (params.tooltip.remove_tooltip_frame){
+  //   params.tooltip.show_tooltip = false;
+  //   draw_commands(regl, params);
+  // }
 
   if (params.tooltip.remove_tooltip_frame){
       // console.log('--- shut down remove_tooltip_frame')
@@ -23468,7 +23463,11 @@ var make_matrix_cell_tooltip = __webpack_require__(/*! ./../tooltip/make_matrix_
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  make_matrix_cell_tooltip(params);
+  if (params.tooltip.tooltip_type === 'matrix-cell'){
+    make_matrix_cell_tooltip(params);
+  }
+
+  // params.tooltip.show_tooltip = false;
 
 };
 
@@ -23769,6 +23768,14 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var viz_dim_heat = params.viz_dim.heat;
   var mouseover = params.interact.mouseover;
 
+  // reset mouseover params
+  _.each(['row', 'col'], function(inst_axis){
+    params.interact.mouseover[inst_axis] = {};
+    params.interact.mouseover[inst_axis].name = null;
+    params.interact.mouseover[inst_axis].cats = [];
+  });
+  params.interact.mouseover.value = null;
+
   var offcenter = {};
   var inst_cat_name;
   var cursor_rel_min = {};
@@ -23794,14 +23801,28 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   });
 
+  // console.log(cursor_rel_min)
+
+  // matrix cell
   if (cursor_rel_min.x > 0 &&
       cursor_rel_min.x < viz_dim_heat.width &&
       cursor_rel_min.y > 0 &&
       cursor_rel_min.y < viz_dim_heat.height){
     params.tooltip.in_bounds_tooltip = true;
-  } else {
+    params.tooltip.tooltip_type = 'matrix-cell';
+
+  // row label
+  } else if (cursor_rel_min.x < 0 &&
+             cursor_rel_min.y < viz_dim_heat.height){
+
+    console.log('row label')
+    params.tooltip.in_bounds_tooltip = false;
+
+  }else {
     params.tooltip.in_bounds_tooltip = false;
   }
+
+  // params.tooltip.in_bounds_tooltip = true;
 
   var axis_indices = {};
   if (params.tooltip.in_bounds_tooltip){
@@ -24313,11 +24334,12 @@ module.exports = function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
 
   cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
 
-  if (cursor_rel_min < 0){
-    cursor_rel_min = 0;
-  } else if (cursor_rel_min > max_pix){
-    cursor_rel_min = max_pix;
-  }
+  // if (cursor_rel_min < 0){
+  //   cursor_rel_min = 0;
+  // } else if (cursor_rel_min > max_pix){
+  //   cursor_rel_min = max_pix;
+  // }
+
   return cursor_rel_min;
 
 };
@@ -26161,7 +26183,7 @@ module.exports = function generate_interact_params(params){
     params.interact.mouseover[inst_axis] = {};
     params.interact.mouseover[inst_axis].name = null;
     params.interact.mouseover[inst_axis].cats = [];
-  })
+  });
 
   params.interact.mouseover.value = null;
 
@@ -26363,6 +26385,7 @@ module.exports = function generate_tooltip_params(regl, params){
   params.tooltip.remove_tooltip_frame = true;
   params.tooltip.in_bounds_tooltip = false;
   params.tooltip.background_opacity = 0.75;
+  params.tooltip.tooltip_type = null;
 
 }
 

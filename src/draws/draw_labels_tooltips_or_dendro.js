@@ -8,15 +8,12 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   draw_commands(regl, params);
   params.tooltip.remove_tooltip_frame = true;
 
-  // set up extra frame specifically to remove old tooltip
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;
-    // console.log('initialize remove_tooltip_frame')
   }
 
   // turn back off draw dendro
   if (params.dendro.update_dendro){
-    // console.log('drew dendro')
     params.dendro.update_dendro = false;
   }
 

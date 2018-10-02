@@ -10,7 +10,7 @@ module.exports = function generate_interact_params(params){
     params.interact.mouseover[inst_axis] = {};
     params.interact.mouseover[inst_axis].name = null;
     params.interact.mouseover[inst_axis].cats = [];
-  })
+  });
 
   params.interact.mouseover.value = null;
 

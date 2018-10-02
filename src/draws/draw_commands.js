@@ -19,6 +19,7 @@ module.exports = function draw_commands(regl, params){
   draw_axis_components(regl, params, 'col', params.labels.draw_labels);
   draw_spillover_components(regl, params);
 
+  // clean tooltip
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
     draw_tooltip_components(regl, params);
   }
@@ -28,9 +29,10 @@ module.exports = function draw_commands(regl, params){
     params.labels.draw_labels = false;
   }
 
-  if (params.tooltip.show_tooltip){
-    // console.log('----- turn off show tooltip ------')
-    params.tooltip.show_tooltip = false;
-  }
+  // clean_tooltip
+  // if (params.tooltip.show_tooltip){
+  //   // console.log('----- turn off show tooltip ------')
+  //   params.tooltip.show_tooltip = false;
+  // }
 
 };

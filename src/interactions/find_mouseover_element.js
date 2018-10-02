@@ -20,6 +20,14 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var viz_dim_heat = params.viz_dim.heat;
   var mouseover = params.interact.mouseover;
 
+  // reset mouseover params
+  _.each(['row', 'col'], function(inst_axis){
+    params.interact.mouseover[inst_axis] = {};
+    params.interact.mouseover[inst_axis].name = null;
+    params.interact.mouseover[inst_axis].cats = [];
+  });
+  params.interact.mouseover.value = null;
+
   var offcenter = {};
   var inst_cat_name;
   var cursor_rel_min = {};
@@ -45,14 +53,28 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   });
 
+  // console.log(cursor_rel_min)
+
+  // matrix cell
   if (cursor_rel_min.x > 0 &&
       cursor_rel_min.x < viz_dim_heat.width &&
       cursor_rel_min.y > 0 &&
       cursor_rel_min.y < viz_dim_heat.height){
     params.tooltip.in_bounds_tooltip = true;
-  } else {
+    params.tooltip.tooltip_type = 'matrix-cell';
+
+  // row label
+  } else if (cursor_rel_min.x < 0 &&
+             cursor_rel_min.y < viz_dim_heat.height){
+
+    console.log('row label')
+    params.tooltip.in_bounds_tooltip = false;
+
+  }else {
     params.tooltip.in_bounds_tooltip = false;
   }
+
+  // params.tooltip.in_bounds_tooltip = true;
 
   var axis_indices = {};
   if (params.tooltip.in_bounds_tooltip){

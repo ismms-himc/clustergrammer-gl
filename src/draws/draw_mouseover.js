@@ -17,14 +17,12 @@ module.exports = function draw_mouseover(regl, params){
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-  // remove old tooltip
-  if (params.tooltip.remove_tooltip_frame){
-    // console.log('remove old tooltip ***********')
-    params.tooltip.show_tooltip = false;
-
-    // console.log('still mouseover')
-    draw_commands(regl, params);
-  }
+  // clean_tooltip
+  // // remove old tooltip
+  // if (params.tooltip.remove_tooltip_frame){
+  //   params.tooltip.show_tooltip = false;
+  //   draw_commands(regl, params);
+  // }
 
   if (params.tooltip.remove_tooltip_frame){
       // console.log('--- shut down remove_tooltip_frame')

@@ -23338,7 +23338,6 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// var filter_visible_mat = require('./filter_visible_mat');
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function draw_matrix_components(regl, params){
@@ -23355,9 +23354,6 @@ module.exports = function draw_matrix_components(regl, params){
     /*
       Filter and regenerate args is slow
     */
-    // // Filter
-    // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
-
 
     /*
     Reordering Matrix Plan
@@ -23800,7 +23796,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   get_mouseover_type(params, cursor_rel_min);
 
-  console.log(params.tooltip.tooltip_type)
+  // console.log(params.tooltip.tooltip_type)
 
   // params.tooltip.in_bounds_tooltip = true;
 
@@ -23853,7 +23849,25 @@ module.exports = function get_mouseover_type(params, cursor_rel_min){
 
   // switch to using absolute cursor position to determine mouseover type
 
+
+  webgl_pos = {};
+  webgl_pos.x = params.pix_to_webgl.x(params.zoom_data.x.cursor_position);
+  webgl_pos.y = params.pix_to_webgl.y(params.zoom_data.y.cursor_position);
+
+  // emperically found pixel parameters
+  edim = {};
+  edim.x = {};
+  edim.x.mat_min = 125;
+  edim.x.dendro_start = 845;
+  edim.x.dendro_end = 860;
+
+  edim.y = {};
+  edim.y.mat_min = 125;
+  edim.y.dendro_start = 860;
+  edim.y.dendro_end = 860;
+
   console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
+  // console.log(webgl_pos.x, webgl_pos.y)
 
 
   var viz_dim_heat = params.viz_dim.heat;
@@ -26274,13 +26288,13 @@ module.exports = function generate_pix_to_webgl(params){
   pix_to_webgl.x
     .domain([0, params.viz_dim.heat.width])
     .range([-0.5, 0.5])
-    .clamp(true);
+    // .clamp(true);
 
   pix_to_webgl.y = d3.scale.linear();
   pix_to_webgl.y
     .domain([0, params.viz_dim.heat.height])
     .range([0.5, -0.5])
-    .clamp(true);
+    // .clamp(true);
 
   params.pix_to_webgl = pix_to_webgl;
 
@@ -26409,6 +26423,34 @@ module.exports = function generate_tooltip_params(regl, params){
 
 /***/ }),
 
+/***/ "./src/params/generate_webgl_to_pix.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_webgl_to_pix.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_webgl_to_pix(params){
+
+  var webgl_to_pix = {};
+  webgl_to_pix.x = d3.scale.linear();
+  webgl_to_pix.x
+    .domain([-0.5, 0.5])
+    .range([0, params.viz_dim.heat.width])
+    .clamp(true);
+
+  webgl_to_pix.y = d3.scale.linear();
+  webgl_to_pix.y
+    .domain([0.5, -0.5])
+    .range([0, params.viz_dim.heat.height])
+    .clamp(true);
+
+  params.webgl_to_pix = webgl_to_pix;
+
+};
+
+/***/ }),
+
 /***/ "./src/params/initialize_params.js":
 /*!*****************************************!*\
   !*** ./src/params/initialize_params.js ***!
@@ -26436,6 +26478,7 @@ var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "
 var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
 var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
 var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "./src/params/generate_pix_to_webgl.js");
+var generate_webgl_to_pix = __webpack_require__(/*! ./generate_webgl_to_pix */ "./src/params/generate_webgl_to_pix.js");
 var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
 var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
 var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
@@ -26488,6 +26531,7 @@ module.exports = function initialize_params(regl, network){
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
   generate_pix_to_webgl(params);
+  generate_webgl_to_pix(params);
   make_label_queue(params);
   generate_text_zoom_params(params);
   calc_viz_area(params);
@@ -26684,6 +26728,7 @@ module.exports = function calc_spillover_triangles(params){
   inst_shift.x = viz_dim.mat_size.x - viz_dim.heat_size.x;
   inst_shift.y = viz_dim.mat_size.y - viz_dim.heat_size.y;
 
+console.log('spillover right', ini_mat.x + ofc.x)
   spillover_triangles.mat_sides = [
 
     // left spillover rect
@@ -26701,6 +26746,8 @@ module.exports = function calc_spillover_triangles(params){
     {'pos': [[1,                  1],
              [ini_mat.x + ofc.x,  1],
              [ini_mat.x + ofc.x, -1]]},
+
+
 
     // // top spillover rect
     {'pos': [[-ini_mat.x + ofc.x, 1],

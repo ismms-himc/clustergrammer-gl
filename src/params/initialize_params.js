@@ -18,6 +18,7 @@ var generate_order_params = require('./generate_order_params');
 var generate_spillover_params = require('./generate_spillover_params');
 var generate_text_triangle_params = require('./generate_text_triangle_params');
 var generate_pix_to_webgl = require('./generate_pix_to_webgl');
+var generate_webgl_to_pix = require('./generate_webgl_to_pix');
 var generate_text_zoom_params = require('./generate_text_zoom_params');
 var generate_cat_args_arrs = require('./generate_cat_args_arrs');
 var generate_tooltip_params = require('./generate_tooltip_params');
@@ -70,6 +71,7 @@ module.exports = function initialize_params(regl, network){
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
   generate_pix_to_webgl(params);
+  generate_webgl_to_pix(params);
   make_label_queue(params);
   generate_text_zoom_params(params);
   calc_viz_area(params);

@@ -1,4 +1,3 @@
-// var filter_visible_mat = require('./filter_visible_mat');
 var interp_fun = require('./interp_fun');
 
 module.exports = function draw_matrix_components(regl, params){
@@ -15,9 +14,6 @@ module.exports = function draw_matrix_components(regl, params){
     /*
       Filter and regenerate args is slow
     */
-    // // Filter
-    // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
-
 
     /*
     Reordering Matrix Plan

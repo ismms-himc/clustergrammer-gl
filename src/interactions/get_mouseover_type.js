@@ -2,7 +2,25 @@ module.exports = function get_mouseover_type(params, cursor_rel_min){
 
   // switch to using absolute cursor position to determine mouseover type
 
+
+  webgl_pos = {};
+  webgl_pos.x = params.pix_to_webgl.x(params.zoom_data.x.cursor_position);
+  webgl_pos.y = params.pix_to_webgl.y(params.zoom_data.y.cursor_position);
+
+  // emperically found pixel parameters
+  edim = {};
+  edim.x = {};
+  edim.x.mat_min = 125;
+  edim.x.dendro_start = 845;
+  edim.x.dendro_end = 860;
+
+  edim.y = {};
+  edim.y.mat_min = 125;
+  edim.y.dendro_start = 860;
+  edim.y.dendro_end = 860;
+
   console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
+  // console.log(webgl_pos.x, webgl_pos.y)
 
 
   var viz_dim_heat = params.viz_dim.heat;

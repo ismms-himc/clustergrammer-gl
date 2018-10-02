@@ -52,7 +52,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   get_mouseover_type(params, cursor_rel_min);
 
-  console.log(params.tooltip.tooltip_type)
+  // console.log(params.tooltip.tooltip_type)
 
   // params.tooltip.in_bounds_tooltip = true;
 

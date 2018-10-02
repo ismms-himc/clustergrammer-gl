@@ -1,7 +1,8 @@
+calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown');
+
 module.exports = function make_matrix_cell_tooltip(params){
 
   // console.log('make_matrix_cell_tooltip')
-
     var tooltip_dim = {};
     tooltip_dim.height = 25;
     tooltip_dim.width = 150;
@@ -26,17 +27,20 @@ module.exports = function make_matrix_cell_tooltip(params){
       tooltip_lines[0] = mouseover.row.name;
       _.each(mouseover.row.cats, function(inst_cat){
         tooltip_lines.push(inst_cat);
-      })
+      });
     } else if (params.tooltip.tooltip_type.indexOf('col') >=0 && params.tooltip.tooltip_type != 'col-dendro'){
       tooltip_lines[0] = mouseover.col.name;
       _.each(mouseover.col.cats, function(inst_cat){
         tooltip_lines.push(inst_cat);
-      })
+      });
     } else if (params.tooltip.tooltip_type === 'row-dendro'){
       // tooltip_lines[0] = 'row-dendro';
       _.each(mouseover.row.dendro.all_names, function(inst_name){
         tooltip_lines.push(inst_name)
       });
+
+      calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';
       _.each(mouseover.col.dendro.all_names, function(inst_name){

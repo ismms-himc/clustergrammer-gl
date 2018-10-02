@@ -27,7 +27,7 @@ module.exports = function make_dendro_arr(params, inst_axis){
 
   // console.log('new', offset_array.length)
 
-  console.log(inst_axis, offset_array)
+  // console.log(inst_axis, offset_array)
 
   return offset_array;
 }

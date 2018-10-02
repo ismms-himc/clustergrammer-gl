@@ -5,6 +5,7 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
   var inst_level = params.dendro.group_level[inst_axis];
   var inst_nodes = params.network[inst_axis + '_nodes'];
 
+  var heat_shift;
   var heat_size;
   var tri_width;
   var num_labels = params.labels['num_'+inst_axis];

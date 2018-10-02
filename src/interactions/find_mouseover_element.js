@@ -107,7 +107,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
   }
 
   if (params.tooltip.tooltip_type.indexOf('dendro') >= 0){
-    console.log('looking for dendrogram group')
 
     if (params.tooltip.tooltip_type === 'row-dendro'){
       _.each(params.dendro.group_info.row, function(inst_group){

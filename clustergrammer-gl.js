@@ -23387,7 +23387,7 @@ module.exports = function draw_matrix_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
+// var draw_commands = require('./draw_commands');
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var wait_time_final_mouseover = 50;
 
@@ -23744,10 +23744,7 @@ module.exports = function final_mouseover_frame(regl, params){
   !*** ./src/interactions/find_mouseover_element.js ***!
   \****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// const vectorizeText = require('vectorize-text');
-var restrict_rel_min = __webpack_require__(/*! ./restrict_rel_min */ "./src/interactions/restrict_rel_min.js");
+/***/ (function(module, exports) {
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
@@ -23795,14 +23792,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
     cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
                                   viz_dim_heat[inst_axis].min - offcenter[inst_axis];
 
-    cursor_rel_min[inst_axis] = restrict_rel_min(cursor_rel_min[inst_axis],
-                                  viz_dim_heat[dim_dict[inst_axis]],
-                                  params.zoom_data[inst_axis]);
+    cursor_rel_min[inst_axis] = cursor_rel_min[inst_axis] / params.zoom_data[inst_axis].total_zoom - params.zoom_data[inst_axis].total_pan_min;
 
   });
 
-  // console.log(cursor_rel_min)
-
+  params.tooltip.in_bounds_tooltip = false;
   // matrix cell
   if (cursor_rel_min.x > 0 &&
       cursor_rel_min.x < viz_dim_heat.width &&
@@ -23815,12 +23809,16 @@ module.exports = function find_mouseover_element(regl, params, ev){
   } else if (cursor_rel_min.x < 0 &&
              cursor_rel_min.y < viz_dim_heat.height){
 
-    console.log('row label')
-    params.tooltip.in_bounds_tooltip = false;
+    params.tooltip.tooltip_type = 'row-label';
 
-  }else {
-    params.tooltip.in_bounds_tooltip = false;
+  } else if (cursor_rel_min.y < 0 &&
+             cursor_rel_min.x < viz_dim_heat.width){
+
+    params.tooltip.tooltip_type = 'col-label';
+
   }
+
+  console.log(params.tooltip.tooltip_type)
 
   // params.tooltip.in_bounds_tooltip = true;
 
@@ -24318,29 +24316,6 @@ module.exports = function keep_track_of_mouseovers(params){
     }, 1000);
 
   }
-
-};
-
-/***/ }),
-
-/***/ "./src/interactions/restrict_rel_min.js":
-/*!**********************************************!*\
-  !*** ./src/interactions/restrict_rel_min.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
-
-  cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
-
-  // if (cursor_rel_min < 0){
-  //   cursor_rel_min = 0;
-  // } else if (cursor_rel_min > max_pix){
-  //   cursor_rel_min = max_pix;
-  // }
-
-  return cursor_rel_min;
 
 };
 

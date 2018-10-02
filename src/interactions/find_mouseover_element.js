@@ -1,6 +1,3 @@
-// const vectorizeText = require('vectorize-text');
-var restrict_rel_min = require('./restrict_rel_min');
-
 module.exports = function find_mouseover_element(regl, params, ev){
 
   /*
@@ -47,14 +44,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
     cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
                                   viz_dim_heat[inst_axis].min - offcenter[inst_axis];
 
-    cursor_rel_min[inst_axis] = restrict_rel_min(cursor_rel_min[inst_axis],
-                                  viz_dim_heat[dim_dict[inst_axis]],
-                                  params.zoom_data[inst_axis]);
+    cursor_rel_min[inst_axis] = cursor_rel_min[inst_axis] / params.zoom_data[inst_axis].total_zoom - params.zoom_data[inst_axis].total_pan_min;
 
   });
 
-  // console.log(cursor_rel_min)
-
+  params.tooltip.in_bounds_tooltip = false;
   // matrix cell
   if (cursor_rel_min.x > 0 &&
       cursor_rel_min.x < viz_dim_heat.width &&
@@ -67,12 +61,16 @@ module.exports = function find_mouseover_element(regl, params, ev){
   } else if (cursor_rel_min.x < 0 &&
              cursor_rel_min.y < viz_dim_heat.height){
 
-    console.log('row label')
-    params.tooltip.in_bounds_tooltip = false;
+    params.tooltip.tooltip_type = 'row-label';
 
-  }else {
-    params.tooltip.in_bounds_tooltip = false;
+  } else if (cursor_rel_min.y < 0 &&
+             cursor_rel_min.x < viz_dim_heat.width){
+
+    params.tooltip.tooltip_type = 'col-label';
+
   }
+
+  console.log(params.tooltip.tooltip_type)
 
   // params.tooltip.in_bounds_tooltip = true;
 

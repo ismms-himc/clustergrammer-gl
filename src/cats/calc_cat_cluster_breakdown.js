@@ -1,7 +1,10 @@
 // var binom_test = require('./binom_test');
-var underscore = require('underscore');
+// var _ = require('_');
 
 module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc){
+
+
+  // console.log(inst_data)
 
   // Category-breakdown of dendrogram-clusters
   /////////////////////////////////////////////
@@ -28,9 +31,15 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
   var is_downsampled = false;
 
   var inst_name;
-  underscore.each(all_nodes, function(inst_node){
+  _.each(all_nodes, function(inst_node){
 
     inst_name = inst_node.name;
+
+    if (inst_name.indexOf(': ') >= 0){
+      inst_name = inst_name.split(': ')[1];
+    }
+
+    // console.log(inst_name)
 
     if(clust_names.indexOf(inst_name) >= 0){
       clust_nodes.push(inst_node);
@@ -48,7 +57,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
     var inst_cat_info = params.viz.cat_info[inst_rc];
 
     // tmp list of all categories
-    var tmp_types_index = underscore.keys(inst_cat_info);
+    var tmp_types_index = _.keys(inst_cat_info);
     // this will hold the indexes of string-type categories
     var cat_types_index = [];
 
@@ -107,7 +116,8 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
       // all rows/cols
       // params
 
-      underscore.each(cat_types_index, function(cat_index){
+      _.each(cat_types_index, function(cat_index){
+        // console.log('cat_types_index', cat_types_index)
 
         inst_index = cat_index.split('-')[1];
         type_name = cat_types_names[inst_index];
@@ -125,7 +135,9 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
         tmp_run_count[type_name] = {};
 
         // loop through the nodes and keep a running count of categories
-        underscore.each(clust_nodes, function (tmp_node){
+        // console.log('clust_nodes', clust_nodes)
+        _.each(clust_nodes, function (tmp_node){
+          // console.log(tmp_node)
 
           cat_name = tmp_node[cat_index];
 
@@ -162,10 +174,12 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
         var cat_title_and_name;
         var inst_run_count = tmp_run_count[type_name];
 
+        // console.log('inst_run_count', inst_run_count)
+
         for (var inst_cat in inst_run_count){
 
           var tot_num_cat = params.viz.cat_info[inst_rc][cat_index].cat_hist[inst_cat];
-          var total_nodes = params.network_data[inst_rc+'_nodes'].length;
+          var total_nodes = params.network[inst_rc+'_nodes'].length;
           var expect_prob = tot_num_cat / total_nodes;
 
           // if no cat-title given

@@ -39,13 +39,17 @@ module.exports = function make_matrix_cell_tooltip(params){
         tooltip_lines.push(inst_name)
       });
 
-      calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+      console.log(cat_breakdown)
 
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';
       _.each(mouseover.col.dendro.all_names, function(inst_name){
         tooltip_lines.push(inst_name)
       });
+
+      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
+      console.log(cat_breakdown)
     }
     // console.log(tooltip_lines)
 

@@ -6,13 +6,13 @@ module.exports = function get_mouseover_type(params){
   var cat_width = 12  ;
   var edim = {};
   edim.x = {};
-  edim.x.heat_min = 125 + cat_width * cgm.params.cat_data.row.length;
+  edim.x.heat_min = 125 + cat_width * params.cat_data.row.length;
   edim.x.dendro_start = 845;
   edim.x.dendro_end = 860;
 
   edim.y = {};
   // extra pixel prevents error *********** look into
-  edim.y.heat_min = 126 + cat_width * cgm.params.cat_data.col.length;
+  edim.y.heat_min = 126 + cat_width * params.cat_data.col.length;
   edim.y.dendro_start = 845;
   edim.y.dendro_end = 860;
 
@@ -47,12 +47,12 @@ module.exports = function get_mouseover_type(params){
              inst_pix.y < edim.y.dendro_start){
 
     params.tooltip.in_bounds_tooltip = true;
-    if (cgm.params.cat_data.row.length > 0){
+    if (params.cat_data.row.length > 0){
 
       cat_index = Math.floor( ((edim.x.heat_min - inst_pix.x)/cat_width) );
 
-      if (cat_index + 1 <= cgm.params.cat_data.row.length){
-        params.tooltip.tooltip_type = 'row-cat-' + String(cgm.params.cat_data.row.length - cat_index - 1);
+      if (cat_index + 1 <= params.cat_data.row.length){
+        params.tooltip.tooltip_type = 'row-cat-' + String(params.cat_data.row.length - cat_index - 1);
       } else {
         params.tooltip.tooltip_type = 'row-label';
       }
@@ -71,12 +71,12 @@ module.exports = function get_mouseover_type(params){
     // params.tooltip.tooltip_type = 'col-label';
 
     params.tooltip.in_bounds_tooltip = true;
-    if (cgm.params.cat_data.col.length > 0){
+    if (params.cat_data.col.length > 0){
 
       cat_index = Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) );
 
-      if (cat_index + 1 <= cgm.params.cat_data.col.length){
-        params.tooltip.tooltip_type = 'col-cat-' + String(cgm.params.cat_data.col.length - cat_index - 1);
+      if (cat_index + 1 <= params.cat_data.col.length){
+        params.tooltip.tooltip_type = 'col-cat-' + String(params.cat_data.col.length - cat_index - 1);
       } else {
         params.tooltip.tooltip_type = 'col-label';
       }

@@ -76,9 +76,9 @@ module.exports = function find_mouseover_element(regl, params, ev){
       var inst_pix_y = params.zoom_data.y.cursor_position
       var shift_col_label = y_heat_min - inst_pix_y;
       if (shift_col_label > 0){
-        cursor_rel_min.x = cursor_rel_min.x - shift_col_label;
+        cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
       }
-      console.log('shift-col: ', )
+      // console.log('shift-col: ', )
     }
 
     _.each(inst_dims, function(inst_axis){

@@ -33,7 +33,13 @@ module.exports = function make_matrix_cell_tooltip(params){
         tooltip_lines.push(inst_cat);
       })
     } else if (params.tooltip.tooltip_type === 'row-dendro'){
-      tooltip_lines[0] = 'row-dendro';
+      // tooltip_lines[0] = 'row-dendro';
+
+      // conso
+      _.each(mouseover.row.dendro.all_names, function(inst_name){
+        tooltip_lines.push(inst_name)
+      })
+
       // console.log('at row-dendro')
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';

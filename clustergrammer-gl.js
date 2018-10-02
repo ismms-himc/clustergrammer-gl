@@ -22824,7 +22824,7 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
     var inst_top;
     if (inst_axis === 'row'){
-      inst_top = params.node_canvas_pos.y_arr[order_index];
+      inst_top = -params.node_canvas_pos.y_arr[order_index];
     } else {
       // emperical rule
       inst_top = -params.node_canvas_pos.x_arr[order_index] - tri_width;
@@ -23081,6 +23081,8 @@ module.exports = function make_dendro_arr(params, inst_axis){
   });
 
   // console.log('new', offset_array.length)
+
+  console.log(inst_axis, offset_array)
 
   return offset_array;
 }
@@ -27074,7 +27076,13 @@ module.exports = function make_matrix_cell_tooltip(params){
         tooltip_lines.push(inst_cat);
       })
     } else if (params.tooltip.tooltip_type === 'row-dendro'){
-      tooltip_lines[0] = 'row-dendro';
+      // tooltip_lines[0] = 'row-dendro';
+
+      // conso
+      _.each(mouseover.row.dendro.all_names, function(inst_name){
+        tooltip_lines.push(inst_name)
+      })
+
       // console.log('at row-dendro')
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';

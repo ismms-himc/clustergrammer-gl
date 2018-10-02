@@ -2,19 +2,14 @@
 // var cat_breakdown_bars = require('./cat_breakdown_bars');
 // var cat_breakdown_values = require('./cat_breakdown_values');
 
-module.exports = function make_cat_breakdown_graph(params, inst_axis, inst_data, dendro_info, selector, tooltip=false){
+module.exports = function make_cat_breakdown_graph(params, inst_data, cat_breakdown, inst_axis){
 
-  // /*
-  // This function is used to make the category breakdown graphs for tooltips on
-  // dendrogram mousover and on dendrogram click modal popup.
-  // */
+  console.log('make_cat_breakdown_graph')
 
-  // // in case sim_mat
-  // if (inst_axis === 'both'){
-  //   inst_axis = 'row';
-  // }
-
-  // var cat_breakdown = calc_cat_cluster_breakdown(params, inst_data, inst_axis);
+  /*
+  This function is used to make the category breakdown graphs for tooltips on
+  dendrogram mousover and on dendrogram click modal popup.
+  */
 
   // if (cat_breakdown.length > 0){
 

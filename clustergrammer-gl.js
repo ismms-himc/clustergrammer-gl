@@ -22528,19 +22528,14 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 // var cat_breakdown_bars = require('./cat_breakdown_bars');
 // var cat_breakdown_values = require('./cat_breakdown_values');
 
-module.exports = function make_cat_breakdown_graph(params, inst_axis, inst_data, dendro_info, selector, tooltip=false){
+module.exports = function make_cat_breakdown_graph(params, inst_data, cat_breakdown, inst_axis){
 
-  // /*
-  // This function is used to make the category breakdown graphs for tooltips on
-  // dendrogram mousover and on dendrogram click modal popup.
-  // */
+  console.log('make_cat_breakdown_graph')
 
-  // // in case sim_mat
-  // if (inst_axis === 'both'){
-  //   inst_axis = 'row';
-  // }
-
-  // var cat_breakdown = calc_cat_cluster_breakdown(params, inst_data, inst_axis);
+  /*
+  This function is used to make the category breakdown graphs for tooltips on
+  dendrogram mousover and on dendrogram click modal popup.
+  */
 
   // if (cat_breakdown.length > 0){
 
@@ -27881,13 +27876,12 @@ module.exports = function make_matrix_cell_tooltip(params){
     if (params.tooltip.tooltip_type === 'row-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
       console.log(cat_breakdown)
+      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row')
     }
 
     // old
     // var cat_breakdown = calc_cat_cluster_breakdown(params, inst_data, inst_rc);
-
-    // cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
-    // make_cat_breakdown_graph(params)
+    //                     make_cat_breakdown_graph(  params, inst_rc, d, dendro_info[i], inst_selector);
 
   }
 

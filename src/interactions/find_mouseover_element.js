@@ -50,7 +50,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   });
 
-  get_mouseover_type(params, cursor_rel_min);
+  get_mouseover_type(params);
 
   console.log(params.tooltip.tooltip_type)
 

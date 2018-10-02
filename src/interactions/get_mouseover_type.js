@@ -1,16 +1,10 @@
-module.exports = function get_mouseover_type(params, cursor_rel_min){
+module.exports = function get_mouseover_type(params){
 
   // switch to using absolute cursor position to determine mouseover type
-
-
-  webgl_pos = {};
-  webgl_pos.x = params.pix_to_webgl.x(params.zoom_data.x.cursor_position);
-  webgl_pos.y = params.pix_to_webgl.y(params.zoom_data.y.cursor_position);
-
   // emperically found pixel parameters
   // cats are ~12px wide
   var cat_width = 11;
-  edim = {};
+  var edim = {};
   edim.x = {};
   edim.x.heat_min = 125 + cat_width * cgm.params.cat_data.row.length;
   edim.x.dendro_start = 845;

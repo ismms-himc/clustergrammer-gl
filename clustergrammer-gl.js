@@ -23874,7 +23874,7 @@ module.exports = function get_mouseover_type(params){
   inst_pix.x = params.zoom_data.x.cursor_position;
   inst_pix.y = params.zoom_data.y.cursor_position;
 
-  console.log(inst_pix.y)
+  // console.log(inst_pix.y)
 
   var viz_dim_heat = params.viz_dim.heat;
 
@@ -23903,7 +23903,7 @@ module.exports = function get_mouseover_type(params){
       cat_index = Math.floor( ((edim.x.heat_min - inst_pix.x)/cat_width) );
 
       if (cat_index + 1 <= cgm.params.cat_data.row.length){
-        params.tooltip.tooltip_type = 'row-cat-' + String(cat_index);
+        params.tooltip.tooltip_type = 'row-cat-' + String(cgm.params.cat_data.row.length - cat_index - 1);
       } else {
         params.tooltip.tooltip_type = 'row-label';
       }
@@ -23926,7 +23926,7 @@ module.exports = function get_mouseover_type(params){
       cat_index = Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) );
 
       if (cat_index + 1 <= cgm.params.cat_data.col.length){
-        params.tooltip.tooltip_type = 'col-cat-' + String(cat_index);
+        params.tooltip.tooltip_type = 'col-cat-' + String(cgm.params.cat_data.col.length - cat_index - 1);
       } else {
         params.tooltip.tooltip_type = 'col-label';
       }

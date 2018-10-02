@@ -1,5 +1,7 @@
 module.exports = function make_matrix_cell_tooltip(params){
 
+  console.log('make_matrix_cell_tooltip')
+
     var tooltip_dim = {};
     tooltip_dim.height = 25;
     tooltip_dim.width = 150;
@@ -74,14 +76,26 @@ module.exports = function make_matrix_cell_tooltip(params){
       .style('font-weight',  800)
       .style('font-size', 15)
       .classed('tooltip-text', true)
-      .text(function(d){
+      .text(function(d, inst_index){
+        d3.select(this).classed('tooltip-text-line-' + String(inst_index), true)
         return d;
       });
+
+    // debugger;
 
     // make sure background is large enough for text
     //////////////////////////////////////////////////
     var text_width = d3.select('.tooltip-text').node().getBBox().width;
-    var num_offsets = 2;
+
+    _.each(tooltip_lines, function(d, i){
+      inst_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
+      if (inst_width > text_width){
+        text_width = inst_width;
+        console.log('increased width')
+      }
+    })
+
+    var num_offsets = 4;
 
     if (text_width > tooltip_dim.width || params.tooltip.tooltip_type === 'row-label'){
 

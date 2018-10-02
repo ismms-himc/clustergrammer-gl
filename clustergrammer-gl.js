@@ -27041,20 +27041,28 @@ module.exports = function make_matrix_cell_tooltip(params){
     var mouseover = params.interact.mouseover;
     var tooltip_lines = [];
 
+    console.log(params.tooltip.tooltip_type)
+
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
       tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
-    }  else if (params.tooltip.tooltip_type.indexOf('row') >=0){
+    }  else if (params.tooltip.tooltip_type.indexOf('row') >=0 && params.tooltip.tooltip_type != 'row-dendro'){
       tooltip_lines[0] = mouseover.row.name;
       _.each(mouseover.row.cats, function(inst_cat){
         tooltip_lines.push(inst_cat);
       })
-    } else if (params.tooltip.tooltip_type.indexOf('col') >=0){
+    } else if (params.tooltip.tooltip_type.indexOf('col') >=0 && params.tooltip.tooltip_type != 'col-dendro'){
       tooltip_lines[0] = mouseover.col.name;
       _.each(mouseover.col.cats, function(inst_cat){
         tooltip_lines.push(inst_cat);
       })
+    } else if (params.tooltip.tooltip_type === 'row-dendro'){
+      tooltip_lines[0] = 'row-dendro';
+      console.log('at row-dendro')
+    } else if (params.tooltip.tooltip_type === 'col-dendro'){
+      tooltip_lines[0] = 'col-dendro';
     }
+    console.log(tooltip_lines)
 
     var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
     var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
@@ -27086,10 +27094,6 @@ module.exports = function make_matrix_cell_tooltip(params){
       .classed('tooltip-background', true)
       .style('opacity', 0.85)
 
-
-
-    console.log(tooltip_lines)
-
     svg_tooltip_group
       .selectAll('text')
       .data(tooltip_lines)
@@ -27110,14 +27114,16 @@ module.exports = function make_matrix_cell_tooltip(params){
 
     // debugger;
 
+    var inst_line_width;
+
     // make sure background is large enough for text
     //////////////////////////////////////////////////
     var text_width = d3.select('.tooltip-text').node().getBBox().width;
 
     _.each(tooltip_lines, function(d, i){
-      inst_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
-      if (inst_width > text_width){
-        text_width = inst_width;
+      inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
+      if (inst_line_width > text_width){
+        text_width = inst_line_width;
         console.log('increased width')
       }
     })
@@ -27128,8 +27134,8 @@ module.exports = function make_matrix_cell_tooltip(params){
 
       d3.select(params.root + ' .svg-tooltip')
         .style('width',function(){
-          var inst_width = text_width + num_offsets * text_offset.x;
-          return inst_width + 'px';
+          inst_line_width = text_width + num_offsets * text_offset.x;
+          return inst_line_width + 'px';
         })
         .style('left', function(){
           var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
@@ -27138,8 +27144,8 @@ module.exports = function make_matrix_cell_tooltip(params){
 
       d3.select(params.root + ' .tooltip-background')
         .style('width',function(){
-          var inst_width = text_width + num_offsets * text_offset.x;
-          return inst_width + 'px';
+          inst_line_width = text_width + num_offsets * text_offset.x;
+          return inst_line_width + 'px';
         });
 
     }

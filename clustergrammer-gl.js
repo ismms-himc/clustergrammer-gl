@@ -23744,7 +23744,9 @@ module.exports = function final_mouseover_frame(regl, params){
   !*** ./src/interactions/find_mouseover_element.js ***!
   \****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var get_mouseover_type = __webpack_require__(/*! ./get_mouseover_type */ "./src/interactions/get_mouseover_type.js");
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
@@ -23796,27 +23798,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   });
 
-  params.tooltip.in_bounds_tooltip = false;
-  // matrix cell
-  if (cursor_rel_min.x > 0 &&
-      cursor_rel_min.x < viz_dim_heat.width &&
-      cursor_rel_min.y > 0 &&
-      cursor_rel_min.y < viz_dim_heat.height){
-    params.tooltip.in_bounds_tooltip = true;
-    params.tooltip.tooltip_type = 'matrix-cell';
-
-  // row label
-  } else if (cursor_rel_min.x < 0 &&
-             cursor_rel_min.y < viz_dim_heat.height){
-
-    params.tooltip.tooltip_type = 'row-label';
-
-  } else if (cursor_rel_min.y < 0 &&
-             cursor_rel_min.x < viz_dim_heat.width){
-
-    params.tooltip.tooltip_type = 'col-label';
-
-  }
+  get_mouseover_type(params, cursor_rel_min);
 
   console.log(params.tooltip.tooltip_type)
 
@@ -23857,6 +23839,43 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   }
 };
+
+/***/ }),
+
+/***/ "./src/interactions/get_mouseover_type.js":
+/*!************************************************!*\
+  !*** ./src/interactions/get_mouseover_type.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function get_mouseover_type(params, cursor_rel_min){
+
+  var viz_dim_heat = params.viz_dim.heat;
+
+  params.tooltip.in_bounds_tooltip = false;
+  // matrix cell
+  if (cursor_rel_min.x > 0 &&
+      cursor_rel_min.x < viz_dim_heat.width &&
+      cursor_rel_min.y > 0 &&
+      cursor_rel_min.y < viz_dim_heat.height){
+    params.tooltip.in_bounds_tooltip = true;
+    params.tooltip.tooltip_type = 'matrix-cell';
+
+  // row label
+  } else if (cursor_rel_min.x < 0 &&
+             cursor_rel_min.y < viz_dim_heat.height){
+
+    params.tooltip.tooltip_type = 'row-label';
+
+  // row label
+  } else if (cursor_rel_min.y < 0 &&
+             cursor_rel_min.x < viz_dim_heat.width){
+
+    params.tooltip.tooltip_type = 'col-label';
+
+  }
+}
 
 /***/ }),
 

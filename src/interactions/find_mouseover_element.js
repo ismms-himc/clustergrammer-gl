@@ -1,3 +1,5 @@
+var get_mouseover_type = require('./get_mouseover_type');
+
 module.exports = function find_mouseover_element(regl, params, ev){
 
   /*
@@ -48,27 +50,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   });
 
-  params.tooltip.in_bounds_tooltip = false;
-  // matrix cell
-  if (cursor_rel_min.x > 0 &&
-      cursor_rel_min.x < viz_dim_heat.width &&
-      cursor_rel_min.y > 0 &&
-      cursor_rel_min.y < viz_dim_heat.height){
-    params.tooltip.in_bounds_tooltip = true;
-    params.tooltip.tooltip_type = 'matrix-cell';
-
-  // row label
-  } else if (cursor_rel_min.x < 0 &&
-             cursor_rel_min.y < viz_dim_heat.height){
-
-    params.tooltip.tooltip_type = 'row-label';
-
-  } else if (cursor_rel_min.y < 0 &&
-             cursor_rel_min.x < viz_dim_heat.width){
-
-    params.tooltip.tooltip_type = 'col-label';
-
-  }
+  get_mouseover_type(params, cursor_rel_min);
 
   console.log(params.tooltip.tooltip_type)
 

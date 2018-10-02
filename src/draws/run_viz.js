@@ -21,7 +21,7 @@ module.exports = function run_viz(regl, network){
     params.animation.time = time;
 
     if (params.interact.total > 1){
-      d3.selectAll(params.root + ' .svg-tooltip')
+      d3.selectAll(params.root + ' .group-svg-tooltip')
         .remove();
     }
 

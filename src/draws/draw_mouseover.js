@@ -12,7 +12,7 @@ module.exports = function draw_mouseover(regl, params){
 
   // console.log('draw_mouseover')
 
-  d3.selectAll(params.root + ' .svg-tooltip')
+  d3.selectAll(params.root + ' .group-svg-tooltip')
     .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;

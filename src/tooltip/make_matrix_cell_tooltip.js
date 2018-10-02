@@ -63,7 +63,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     .style('position', 'absolute')
     .style('top', pos_y + 'px')
     .style('left', pos_x + 'px')
-    .classed('group-tooltip', true);
+    .classed('group-svg-tooltip', true);
 
   var svg_tooltip_container = group_tooltip_container
     .append('svg')

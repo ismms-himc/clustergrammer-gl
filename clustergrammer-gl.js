@@ -24334,7 +24334,7 @@ module.exports = function draw_mouseover(regl, params){
 
   // console.log('draw_mouseover')
 
-  d3.selectAll(params.root + ' .svg-tooltip')
+  d3.selectAll(params.root + ' .group-svg-tooltip')
     .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
@@ -24560,7 +24560,7 @@ module.exports = function run_viz(regl, network){
     params.animation.time = time;
 
     if (params.interact.total > 1){
-      d3.selectAll(params.root + ' .svg-tooltip')
+      d3.selectAll(params.root + ' .group-svg-tooltip')
         .remove();
     }
 
@@ -28047,7 +28047,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     .style('position', 'absolute')
     .style('top', pos_y + 'px')
     .style('left', pos_x + 'px')
-    .classed('group-tooltip', true);
+    .classed('group-svg-tooltip', true);
 
   var svg_tooltip_container = group_tooltip_container
     .append('svg')

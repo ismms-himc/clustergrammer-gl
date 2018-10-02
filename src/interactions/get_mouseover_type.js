@@ -24,11 +24,6 @@ module.exports = function get_mouseover_type(params){
 
   // console.log(inst_pix.y)
 
-  var viz_dim_heat = params.viz_dim.heat;
-
-  var effective_max_width = viz_dim_heat.width + params.zoom_data.x.total_pan_min;
-  var effective_max_height = viz_dim_heat.height + params.zoom_data.y.total_pan_min
-
   var cat_index;
 
   params.tooltip.in_bounds_tooltip = false;

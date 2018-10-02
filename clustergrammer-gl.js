@@ -23799,18 +23799,17 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   get_mouseover_type(params);
 
-  console.log(params.tooltip.tooltip_type)
+  // console.log(params.tooltip.tooltip_type)
 
   // turned off lookup function
   //////////////////////////////////
 
   var axis_indices = {};
-  var inst_dim;
   if (params.tooltip.in_bounds_tooltip){
 
     var axis_index;
 
-    inst_dims = [];
+    var inst_dims = [];
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       inst_dims = ['row', 'col'];
     } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
@@ -23895,11 +23894,6 @@ module.exports = function get_mouseover_type(params){
   inst_pix.y = params.zoom_data.y.cursor_position;
 
   // console.log(inst_pix.y)
-
-  var viz_dim_heat = params.viz_dim.heat;
-
-  var effective_max_width = viz_dim_heat.width + params.zoom_data.x.total_pan_min;
-  var effective_max_height = viz_dim_heat.height + params.zoom_data.y.total_pan_min
 
   var cat_index;
 
@@ -26791,7 +26785,6 @@ module.exports = function calc_spillover_triangles(params){
   inst_shift.x = viz_dim.mat_size.x - viz_dim.heat_size.x;
   inst_shift.y = viz_dim.mat_size.y - viz_dim.heat_size.y;
 
-console.log('spillover right', ini_mat.x + ofc.x)
   spillover_triangles.mat_sides = [
 
     // left spillover rect
@@ -26809,8 +26802,6 @@ console.log('spillover right', ini_mat.x + ofc.x)
     {'pos': [[1,                  1],
              [ini_mat.x + ofc.x,  1],
              [ini_mat.x + ofc.x, -1]]},
-
-
 
     // // top spillover rect
     {'pos': [[-ini_mat.x + ofc.x, 1],
@@ -27034,7 +27025,7 @@ module.exports = function make_spillover_args(regl, inst_depth,
 module.exports = function make_matrix_cell_tooltip(params){
 
     var tooltip_dim = {};
-    tooltip_dim.height = 50;
+    tooltip_dim.height = 25;
     tooltip_dim.width = 150;
 
     var tooltip_buffer = {};
@@ -27045,12 +27036,30 @@ module.exports = function make_matrix_cell_tooltip(params){
     text_offset.x = 10;
     text_offset.y = 20;
 
-    var pos_y = params.zoom_data.y.cursor_position - tooltip_dim.height - tooltip_buffer.y;
+    var mouseover = params.interact.mouseover;
+    var tooltip_lines = [];
+
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
+      tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
+    }  else if (params.tooltip.tooltip_type === 'row-label'){
+      tooltip_lines[0] = mouseover.row.name;
+    } else if (params.tooltip.tooltip_type.indexOf('col') >=0){
+      tooltip_lines[0] = mouseover.col.name;
+      _.each(mouseover.col.cats, function(inst_cat){
+        tooltip_lines.push(inst_cat);
+      })
+    }
+
+    var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
     var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
 
     var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
-      .style('height', tooltip_dim.height + 'px')
+      .style('height', function(){
+        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
+        return  inst_height + 'px'
+      })
       .style('width', tooltip_dim.width + 'px')
       .style('position', 'absolute')
       .style('top', pos_y + 'px')
@@ -27063,24 +27072,16 @@ module.exports = function make_matrix_cell_tooltip(params){
 
     svg_tooltip_group
       .append('rect')
-      .style('height', tooltip_dim.height + 'px')
+      .style('height', function(){
+        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
+        return  inst_height + 'px'
+      })
       .style('width', tooltip_dim.width + 'px')
       .style('fill', 'black')
       .classed('tooltip-background', true)
       .style('opacity', 0.85)
 
-    var mouseover = params.interact.mouseover;
 
-    var tooltip_lines = [];
-
-    if (params.tooltip.tooltip_type === 'matrix-cell'){
-      tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
-      tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
-    }  else if (params.tooltip.tooltip_type === 'row-label'){
-      tooltip_lines[0] = mouseover.row.name;
-    } else if (params.tooltip.tooltip_type === 'col-label'){
-      tooltip_lines[0] = mouseover.col.name;
-    }
 
     console.log(tooltip_lines)
 
@@ -27106,21 +27107,28 @@ module.exports = function make_matrix_cell_tooltip(params){
     var text_width = d3.select('.tooltip-text').node().getBBox().width;
     var num_offsets = 2;
 
-    d3.select(params.root + ' .svg-tooltip')
-      .style('width',function(){
-        var inst_width = text_width + num_offsets * text_offset.x;
-        return inst_width + 'px';
-      })
-      .style('left', function(){
-        var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
-        return inst_pos_x;
-      })
+    if (text_width > tooltip_dim.width || params.tooltip.tooltip_type === 'row-label'){
 
-    d3.select(params.root + ' .tooltip-background')
-      .style('width',function(){
-        var inst_width = text_width + num_offsets * text_offset.x;
-        return inst_width + 'px';
-      });
+      d3.select(params.root + ' .svg-tooltip')
+        .style('width',function(){
+          var inst_width = text_width + num_offsets * text_offset.x;
+          return inst_width + 'px';
+        })
+        .style('left', function(){
+          var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
+          return inst_pos_x;
+        })
+
+      d3.select(params.root + ' .tooltip-background')
+        .style('width',function(){
+          var inst_width = text_width + num_offsets * text_offset.x;
+          return inst_width + 'px';
+        });
+
+    }
+
+
+    // make sure the height is sufficient
 
 };
 

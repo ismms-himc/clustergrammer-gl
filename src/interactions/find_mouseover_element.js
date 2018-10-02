@@ -52,18 +52,17 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   get_mouseover_type(params);
 
-  console.log(params.tooltip.tooltip_type)
+  // console.log(params.tooltip.tooltip_type)
 
   // turned off lookup function
   //////////////////////////////////
 
   var axis_indices = {};
-  var inst_dim;
   if (params.tooltip.in_bounds_tooltip){
 
     var axis_index;
 
-    inst_dims = [];
+    var inst_dims = [];
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       inst_dims = ['row', 'col'];
     } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){

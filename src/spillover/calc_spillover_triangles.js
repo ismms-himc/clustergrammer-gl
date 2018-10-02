@@ -29,7 +29,6 @@ module.exports = function calc_spillover_triangles(params){
   inst_shift.x = viz_dim.mat_size.x - viz_dim.heat_size.x;
   inst_shift.y = viz_dim.mat_size.y - viz_dim.heat_size.y;
 
-console.log('spillover right', ini_mat.x + ofc.x)
   spillover_triangles.mat_sides = [
 
     // left spillover rect
@@ -47,8 +46,6 @@ console.log('spillover right', ini_mat.x + ofc.x)
     {'pos': [[1,                  1],
              [ini_mat.x + ofc.x,  1],
              [ini_mat.x + ofc.x, -1]]},
-
-
 
     // // top spillover rect
     {'pos': [[-ini_mat.x + ofc.x, 1],

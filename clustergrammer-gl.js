@@ -23818,7 +23818,14 @@ module.exports = function find_mouseover_element(regl, params, ev){
       // console.log('found row')
     } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
       inst_dims = ['col'];
-      // console.log('found col')
+
+      var y_heat_min = 126;
+      var inst_pix_y = params.zoom_data.y.cursor_position
+      var shift_col_label = y_heat_min - inst_pix_y;
+      if (shift_col_label > 0){
+        cursor_rel_min.x = cursor_rel_min.x - shift_col_label;
+      }
+      console.log('shift-col: ', )
     }
 
     _.each(inst_dims, function(inst_axis){

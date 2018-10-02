@@ -23886,6 +23886,8 @@ module.exports = function get_mouseover_type(params, cursor_rel_min){
   var effective_max_width = viz_dim_heat.width + params.zoom_data.x.total_pan_min;
   var effective_max_height = viz_dim_heat.height + params.zoom_data.y.total_pan_min
 
+  var cat_index;
+
   params.tooltip.in_bounds_tooltip = false;
   params.tooltip.tooltip_type = null;
 
@@ -23901,15 +23903,42 @@ module.exports = function get_mouseover_type(params, cursor_rel_min){
              inst_pix.y > edim.y.heat_min &&
              inst_pix.y < edim.y.dendro_start){
 
-    console.log(edim.x.heat_min - inst_pix.x)
-    params.tooltip.tooltip_type = 'row-label';
+    if (cgm.params.cat_data.row.length > 0){
+
+      cat_index = Math.floor( ((edim.x.heat_min - inst_pix.x)/cat_width) );
+
+      if (cat_index + 1 <= cgm.params.cat_data.row.length){
+        params.tooltip.tooltip_type = 'row-cat-' + String(cat_index);
+      } else {
+        params.tooltip.tooltip_type = 'row-label';
+      }
+
+    } else {
+      params.tooltip.tooltip_type = 'row-label';
+    }
+
 
   } else if (inst_pix.y <= edim.y.heat_min &&
              inst_pix.x > edim.x.heat_min &&
              inst_pix.x < edim.x.dendro_start){
 
-    console.log(edim.y.heat_min - inst_pix.y)
-    params.tooltip.tooltip_type = 'col-label';
+    // // console.log(edim.y.heat_min - inst_pix.y)
+    // console.log( Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) ))
+    // params.tooltip.tooltip_type = 'col-label';
+
+    if (cgm.params.cat_data.col.length > 0){
+
+      cat_index = Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) );
+
+      if (cat_index + 1 <= cgm.params.cat_data.col.length){
+        params.tooltip.tooltip_type = 'col-cat-' + String(cat_index);
+      } else {
+        params.tooltip.tooltip_type = 'col-label';
+      }
+
+    } else {
+      params.tooltip.tooltip_type = 'col-label';
+    }
 
   } else if (inst_pix.x >= edim.x.dendro_start &&
              inst_pix.x < edim.x.dendro_end &&

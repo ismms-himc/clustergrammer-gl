@@ -2,7 +2,7 @@
 var cat_breakdown_bars = require('./cat_breakdown_bars');
 var cat_breakdown_values = require('./cat_breakdown_values');
 
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis){
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
 
   console.log('make_cat_breakdown_graph')
 
@@ -16,7 +16,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
     // var cluster_info_container = d3.select( selector + ' .cluster_info_container');
-    var cluster_info_container = d3.select( params.root + ' .svg-tooltip');
+
 
     // loop through cat_breakdown data
     var width = 370;
@@ -135,6 +135,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
           });
 
       cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
+
+      // debugger;
 
       // cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
 

@@ -21988,7 +21988,7 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
   var paragraph_string = '<p>';
   var super_string = ': ';
 
-  var bar_width = params.viz.cat_bar_width;
+  var bar_width  = params.viz.cat_bar_width;
   var bar_height = params.viz.cat_bar_height;
 
   var max_string_length = 25;
@@ -22011,8 +22011,6 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
     .text(inst_title)
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight',  800);
-
-
 
   var line_y = 4;
   cat_graph_group
@@ -22393,6 +22391,9 @@ module.exports = function generate_cat_info(params){
   viz.all_cats = {};
   viz.cat_names = {};
   viz.cat_info = {};
+
+  viz.cat_bar_width = 180;
+  viz.cat_bar_height = 20;
 
   // this will hold the information for calculating the opacity of the value
   // function
@@ -22782,7 +22783,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 var cat_breakdown_bars = __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js");
 var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js");
 
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis){
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
 
   console.log('make_cat_breakdown_graph')
 
@@ -22796,7 +22797,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
     // var cluster_info_container = d3.select( selector + ' .cluster_info_container');
-    var cluster_info_container = d3.select( params.root + ' .svg-tooltip');
+
 
     // loop through cat_breakdown data
     var width = 370;
@@ -22915,6 +22916,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
           });
 
       cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
+
+      // debugger;
 
       // cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
 
@@ -28038,16 +28041,21 @@ module.exports = function make_matrix_cell_tooltip(params){
   var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
   var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
 
-  var svg_tooltip_container = d3.select(params.root + ' .canvas-container')
+  console.log('making group to put svg into')
+  var group_tooltip_container = d3.select(params.root + ' .canvas-container')
+    .append('g')
+    .style('position', 'absolute')
+    .style('top', pos_y + 'px')
+    .style('left', pos_x + 'px')
+    .classed('group-tooltip', true);
+
+  var svg_tooltip_container = group_tooltip_container
     .append('svg')
     .style('height', function(){
       var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
       return  inst_height + 'px'
     })
     .style('width', tooltip_dim.width + 'px')
-    .style('position', 'absolute')
-    .style('top', pos_y + 'px')
-    .style('left', pos_x + 'px')
     .classed('svg-tooltip', true);
 
   var svg_tooltip_group = svg_tooltip_container
@@ -28134,8 +28142,12 @@ module.exports = function make_matrix_cell_tooltip(params){
 
     if (params.tooltip.tooltip_type === 'row-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
-      console.log(cat_breakdown)
-      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row')
+      // console.log(cat_breakdown)
+      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row', group_tooltip_container)
+    } else if (params.tooltip.tooltip_type === 'col-dendro'){
+      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
+      // console.log(cat_breakdown)
+      make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, 'col', group_tooltip_container)
     }
 
     // old

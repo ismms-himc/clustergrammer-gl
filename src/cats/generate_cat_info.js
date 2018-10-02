@@ -16,6 +16,9 @@ module.exports = function generate_cat_info(params){
   viz.cat_names = {};
   viz.cat_info = {};
 
+  viz.cat_bar_width = 180;
+  viz.cat_bar_height = 20;
+
   // this will hold the information for calculating the opacity of the value
   // function
   var ini_val_opacity = {};

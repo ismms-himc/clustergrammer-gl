@@ -3,7 +3,7 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
   var paragraph_string = '<p>';
   var super_string = ': ';
 
-  var bar_width = params.viz.cat_bar_width;
+  var bar_width  = params.viz.cat_bar_width;
   var bar_height = params.viz.cat_bar_height;
 
   var max_string_length = 25;
@@ -26,8 +26,6 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
     .text(inst_title)
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight',  800);
-
-
 
   var line_y = 4;
   cat_graph_group

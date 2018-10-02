@@ -27044,8 +27044,11 @@ module.exports = function make_matrix_cell_tooltip(params){
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
       tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
-    }  else if (params.tooltip.tooltip_type === 'row-label'){
+    }  else if (params.tooltip.tooltip_type.indexOf('row') >=0){
       tooltip_lines[0] = mouseover.row.name;
+      _.each(mouseover.row.cats, function(inst_cat){
+        tooltip_lines.push(inst_cat);
+      })
     } else if (params.tooltip.tooltip_type.indexOf('col') >=0){
       tooltip_lines[0] = mouseover.col.name;
       _.each(mouseover.col.cats, function(inst_cat){

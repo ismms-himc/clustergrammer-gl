@@ -52,42 +52,44 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   get_mouseover_type(params, cursor_rel_min);
 
-  // console.log(params.tooltip.tooltip_type)
+  console.log(params.tooltip.tooltip_type)
 
-  // params.tooltip.in_bounds_tooltip = true;
+  // turned off lookup function
+  //////////////////////////////////
 
-  var axis_indices = {};
-  if (params.tooltip.in_bounds_tooltip){
+  // var axis_indices = {};
+  // if (params.tooltip.in_bounds_tooltip){
 
-    var axis_index;
+  //   var axis_index;
 
-    _.each(['row', 'col'], function(inst_axis){
+  //   _.each(['row', 'col'], function(inst_axis){
 
-      if (inst_axis === 'row'){
-        axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
-      } else {
-        axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
-        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
-      }
+  //     if (inst_axis === 'row'){
+  //       axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
+  //       axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+  //     } else {
+  //       axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+  //       axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+  //     }
 
-      mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
+  //     mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
 
-      if (mouseover[inst_axis].name.includes(': ')){
-        mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
-      }
+  //     if (mouseover[inst_axis].name.includes(': ')){
+  //       mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
+  //     }
 
-      // reset cat names
-      mouseover[inst_axis].cats = [];
-      _.each(params.cat_data[inst_axis], function(d, cat_index){
-        inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
-        mouseover[inst_axis].cats[cat_index] = inst_cat_name;
-      });
+  //     // reset cat names
+  //     mouseover[inst_axis].cats = [];
+  //     _.each(params.cat_data[inst_axis], function(d, cat_index){
+  //       inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
+  //       mouseover[inst_axis].cats[cat_index] = inst_cat_name;
+  //     });
 
-    });
+  //   });
 
-    // debugger;
-    params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+  //   // debugger;
+  //   params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
 
-  }
+  // }
+
 };

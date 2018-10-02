@@ -8,20 +8,25 @@ module.exports = function get_mouseover_type(params, cursor_rel_min){
   webgl_pos.y = params.pix_to_webgl.y(params.zoom_data.y.cursor_position);
 
   // emperically found pixel parameters
+  // cats are ~12px wide
   edim = {};
   edim.x = {};
-  edim.x.mat_min = 125;
+  edim.x.heat_min = 125;
   edim.x.dendro_start = 845;
   edim.x.dendro_end = 860;
 
   edim.y = {};
-  edim.y.mat_min = 125;
+  edim.y.heat_min = 125;
   edim.y.dendro_start = 860;
   edim.y.dendro_end = 860;
 
-  console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
-  // console.log(webgl_pos.x, webgl_pos.y)
+  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
+  var inst_pix = {};
+  inst_pix.x = params.zoom_data.x.cursor_position;
+  inst_pix.y = params.zoom_data.y.cursor_position;
+
+  // console.log(inst_pix.x, inst_pix.y)
 
   var viz_dim_heat = params.viz_dim.heat;
 
@@ -29,40 +34,23 @@ module.exports = function get_mouseover_type(params, cursor_rel_min){
   var effective_max_height = viz_dim_heat.height + params.zoom_data.y.total_pan_min
 
   params.tooltip.in_bounds_tooltip = false;
+  params.tooltip.tooltip_type = null;
+
   // matrix cell
-  if (cursor_rel_min.x > 0 &&
-      cursor_rel_min.x < effective_max_width &&
-      cursor_rel_min.y > 0 &&
-      cursor_rel_min.y < effective_max_height){
+  if (inst_pix.x > edim.x.heat_min &&
+      inst_pix.x < edim.x.dendro_start &&
+      inst_pix.y > edim.y.heat_min &&
+      inst_pix.y < edim.y.dendro_start){
     params.tooltip.in_bounds_tooltip = true;
     params.tooltip.tooltip_type = 'matrix-cell';
 
   // row label
-  } else if (cursor_rel_min.x < 0 &&
-             cursor_rel_min.y < effective_max_height){
+  } else if (inst_pix.x < edim.x.heat_min
+             ){
 
     params.tooltip.tooltip_type = 'row-label';
 
   // col label
-  } else if (cursor_rel_min.y < 0 &&
-             cursor_rel_min.x < effective_max_width){
-
-    params.tooltip.tooltip_type = 'col-label';
-
-  // row dendro
-  } else if (cursor_rel_min.x > effective_max_width &&
-             cursor_rel_min.y > 0 &&
-             cursor_rel_min.y < effective_max_height){
-
-    params.tooltip.tooltip_type = 'row-dendro';
-
-  // col dendro
-  } else if (cursor_rel_min.y > effective_max_height &&
-             cursor_rel_min.x > 0 &&
-             cursor_rel_min.x < effective_max_width){
-
-    params.tooltip.tooltip_type = 'col-dendro';
-
   }
 
 

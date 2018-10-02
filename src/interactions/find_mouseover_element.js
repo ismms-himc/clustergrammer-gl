@@ -87,7 +87,5 @@ module.exports = function find_mouseover_element(regl, params, ev){
     // debugger;
     params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
 
-    console.log(axis_indices.row, axis_indices.col, params.interact.mouseover.value.toFixed(2))
-
   }
 };

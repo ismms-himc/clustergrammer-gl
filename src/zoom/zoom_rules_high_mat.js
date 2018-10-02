@@ -38,7 +38,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(){
 
-    console.log('clicking')
+    // console.log('clicking')
   });
 
 };

@@ -23463,7 +23463,7 @@ module.exports = function draw_tooltip_components(regl, params){
   turned off drawing tooltip
   */
   if (params.tooltip.tooltip_type === 'matrix-cell'){
-    // make_matrix_cell_tooltip(params);
+    make_matrix_cell_tooltip(params);
   }
 
   // params.tooltip.show_tooltip = false;
@@ -23801,43 +23801,43 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   console.log(params.tooltip.tooltip_type)
 
-  // // turned off lookup function
-  // //////////////////////////////////
+  // turned off lookup function
+  //////////////////////////////////
 
-  // var axis_indices = {};
-  // if (params.tooltip.in_bounds_tooltip){
+  var axis_indices = {};
+  if (params.tooltip.in_bounds_tooltip){
 
-  //   var axis_index;
+    var axis_index;
 
-  //   _.each(['row', 'col'], function(inst_axis){
+    _.each(['row', 'col'], function(inst_axis){
 
-  //     if (inst_axis === 'row'){
-  //       axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-  //       axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
-  //     } else {
-  //       axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
-  //       axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
-  //     }
+      if (inst_axis === 'row'){
+        axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+      } else {
+        axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+      }
 
-  //     mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
+      mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
 
-  //     if (mouseover[inst_axis].name.includes(': ')){
-  //       mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
-  //     }
+      if (mouseover[inst_axis].name.includes(': ')){
+        mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
+      }
 
-  //     // reset cat names
-  //     mouseover[inst_axis].cats = [];
-  //     _.each(params.cat_data[inst_axis], function(d, cat_index){
-  //       inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
-  //       mouseover[inst_axis].cats[cat_index] = inst_cat_name;
-  //     });
+      // reset cat names
+      mouseover[inst_axis].cats = [];
+      _.each(params.cat_data[inst_axis], function(d, cat_index){
+        inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
+        mouseover[inst_axis].cats[cat_index] = inst_cat_name;
+      });
 
-  //   });
+    });
 
-  //   // debugger;
-  //   params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+    // debugger;
+    params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
 
-  // }
+  }
 
 };
 
@@ -23855,7 +23855,7 @@ module.exports = function get_mouseover_type(params){
   // switch to using absolute cursor position to determine mouseover type
   // emperically found pixel parameters
   // cats are ~12px wide
-  var cat_width = 11;
+  var cat_width = 12  ;
   var edim = {};
   edim.x = {};
   edim.x.heat_min = 125 + cat_width * cgm.params.cat_data.row.length;
@@ -23863,7 +23863,8 @@ module.exports = function get_mouseover_type(params){
   edim.x.dendro_end = 860;
 
   edim.y = {};
-  edim.y.heat_min = 125 + cat_width * cgm.params.cat_data.col.length;
+  // extra pixel prevents error *********** look into
+  edim.y.heat_min = 126 + cat_width * cgm.params.cat_data.col.length;
   edim.y.dendro_start = 845;
   edim.y.dendro_end = 860;
 
@@ -23873,7 +23874,7 @@ module.exports = function get_mouseover_type(params){
   inst_pix.x = params.zoom_data.x.cursor_position;
   inst_pix.y = params.zoom_data.y.cursor_position;
 
-  // console.log(inst_pix.x, inst_pix.y)
+  console.log(inst_pix.y)
 
   var viz_dim_heat = params.viz_dim.heat;
 

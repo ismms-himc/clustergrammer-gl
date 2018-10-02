@@ -3,7 +3,7 @@ module.exports = function get_mouseover_type(params){
   // switch to using absolute cursor position to determine mouseover type
   // emperically found pixel parameters
   // cats are ~12px wide
-  var cat_width = 11;
+  var cat_width = 12  ;
   var edim = {};
   edim.x = {};
   edim.x.heat_min = 125 + cat_width * cgm.params.cat_data.row.length;
@@ -11,7 +11,8 @@ module.exports = function get_mouseover_type(params){
   edim.x.dendro_end = 860;
 
   edim.y = {};
-  edim.y.heat_min = 125 + cat_width * cgm.params.cat_data.col.length;
+  // extra pixel prevents error *********** look into
+  edim.y.heat_min = 126 + cat_width * cgm.params.cat_data.col.length;
   edim.y.dendro_start = 845;
   edim.y.dendro_end = 860;
 
@@ -21,7 +22,7 @@ module.exports = function get_mouseover_type(params){
   inst_pix.x = params.zoom_data.x.cursor_position;
   inst_pix.y = params.zoom_data.y.cursor_position;
 
-  // console.log(inst_pix.x, inst_pix.y)
+  console.log(inst_pix.y)
 
   var viz_dim_heat = params.viz_dim.heat;
 

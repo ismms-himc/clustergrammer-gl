@@ -23799,11 +23799,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   get_mouseover_type(params);
 
-  // console.log(params.tooltip.tooltip_type)
-
-  // turned off lookup function
-  //////////////////////////////////
-
   var axis_indices = {};
   if (params.tooltip.in_bounds_tooltip){
 
@@ -23855,6 +23850,28 @@ module.exports = function find_mouseover_element(regl, params, ev){
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
     }
+
+  }
+
+  if (params.tooltip.tooltip_type.indexOf('dendro') >= 0){
+    console.log('looking for dendrogram group')
+
+    if (params.tooltip.tooltip_type === 'row-dendro'){
+      _.each(params.dendro.group_info.row, function(inst_group){
+        if (inst_group.all_names.includes(mouseover.row.name)){
+          mouseover.row.dendro = inst_group;
+        }
+      });
+    }
+
+    if (params.tooltip.tooltip_type === 'col-dendro'){
+      _.each(params.dendro.group_info.col, function(inst_group){
+        if (inst_group.all_names.includes(mouseover.col.name)){
+          mouseover.col.dendro = inst_group;
+        }
+      });
+    }
+
 
   }
 
@@ -27024,7 +27041,7 @@ module.exports = function make_spillover_args(regl, inst_depth,
 
 module.exports = function make_matrix_cell_tooltip(params){
 
-  console.log('make_matrix_cell_tooltip')
+  // console.log('make_matrix_cell_tooltip')
 
     var tooltip_dim = {};
     tooltip_dim.height = 25;
@@ -27041,7 +27058,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     var mouseover = params.interact.mouseover;
     var tooltip_lines = [];
 
-    console.log(params.tooltip.tooltip_type)
+    // console.log(params.tooltip.tooltip_type)
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
@@ -27058,11 +27075,11 @@ module.exports = function make_matrix_cell_tooltip(params){
       })
     } else if (params.tooltip.tooltip_type === 'row-dendro'){
       tooltip_lines[0] = 'row-dendro';
-      console.log('at row-dendro')
+      // console.log('at row-dendro')
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';
     }
-    console.log(tooltip_lines)
+    // console.log(tooltip_lines)
 
     var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
     var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
@@ -27124,7 +27141,7 @@ module.exports = function make_matrix_cell_tooltip(params){
       inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
       if (inst_line_width > text_width){
         text_width = inst_line_width;
-        console.log('increased width')
+        // console.log('increased width')
       }
     })
 

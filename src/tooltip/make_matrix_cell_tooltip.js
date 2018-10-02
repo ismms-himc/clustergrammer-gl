@@ -1,6 +1,6 @@
 module.exports = function make_matrix_cell_tooltip(params){
 
-  console.log('make_matrix_cell_tooltip')
+  // console.log('make_matrix_cell_tooltip')
 
     var tooltip_dim = {};
     tooltip_dim.height = 25;
@@ -17,7 +17,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     var mouseover = params.interact.mouseover;
     var tooltip_lines = [];
 
-    console.log(params.tooltip.tooltip_type)
+    // console.log(params.tooltip.tooltip_type)
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
@@ -34,11 +34,11 @@ module.exports = function make_matrix_cell_tooltip(params){
       })
     } else if (params.tooltip.tooltip_type === 'row-dendro'){
       tooltip_lines[0] = 'row-dendro';
-      console.log('at row-dendro')
+      // console.log('at row-dendro')
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';
     }
-    console.log(tooltip_lines)
+    // console.log(tooltip_lines)
 
     var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
     var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
@@ -100,7 +100,7 @@ module.exports = function make_matrix_cell_tooltip(params){
       inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
       if (inst_line_width > text_width){
         text_width = inst_line_width;
-        console.log('increased width')
+        // console.log('increased width')
       }
     })
 

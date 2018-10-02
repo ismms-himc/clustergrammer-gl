@@ -61,6 +61,8 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
       cat_index = 'cat-' + String(i);
 
+      // debugger;
+
       if (params.viz.cat_info[inst_rc][cat_index].type === 'cat_strings'){
         type_name = params.viz.cat_names[inst_rc][cat_index];
         cat_types_names.push(type_name);

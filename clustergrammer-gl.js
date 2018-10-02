@@ -21810,6 +21810,8 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
       cat_index = 'cat-' + String(i);
 
+      // debugger;
+
       if (params.viz.cat_info[inst_rc][cat_index].type === 'cat_strings'){
         type_name = params.viz.cat_names[inst_rc][cat_index];
         cat_types_names.push(type_name);
@@ -21960,6 +21962,84 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
 /***/ }),
 
+/***/ "./src/cats/check_if_value_cats.js":
+/*!*****************************************!*\
+  !*** ./src/cats/check_if_value_cats.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function check_if_value_cats(cat_states){
+
+  var tmp_cat = cat_states[0];
+
+  var has_title = false;
+  var might_have_values = false;
+  var cat_types = 'cat_strings';
+  var max_abs_val = NaN;
+  var all_values = [];
+  var cat_scale = null;
+
+  var super_string = ': ';
+
+  if (typeof tmp_cat === 'string'){
+    if ( tmp_cat.indexOf(super_string) > -1 ){
+      has_title = true;
+      tmp_cat = tmp_cat.split(super_string)[1];
+    }
+  }
+
+  if ( isNaN(tmp_cat) == false ){
+    might_have_values = true;
+  }
+
+  // check each value for number
+  if (might_have_values){
+
+    // the default state is that all are now values, check each one
+    cat_types = 'cat_values';
+
+    _.each(cat_states, function(inst_cat){
+
+      if (has_title){
+        inst_cat = inst_cat.split(super_string)[1];
+      }
+
+      // checking whether inst_cat is 'not a number'
+      if ( isNaN(inst_cat) === true ){
+        cat_types = 'cat_strings';
+      } else {
+        inst_cat = parseFloat(inst_cat);
+        all_values.push(inst_cat);
+      }
+
+    });
+
+  }
+
+  if (cat_types === 'cat_values'){
+
+    // get absolute value
+    var max_value = _.max(all_values, function (d) {
+      return Math.abs(d);
+    });
+
+    max_abs_val = Math.abs(max_value);
+
+    cat_scale = d3.scale.linear().domain([0, max_abs_val]).range([0,1]);
+  }
+
+  var inst_info = {};
+  inst_info.type = cat_types;
+  inst_info.max_abs_val = max_abs_val;
+  inst_info.cat_scale = cat_scale;
+
+  return inst_info;
+
+};
+
+/***/ }),
+
 /***/ "./src/cats/generate_cat_array.js":
 /*!****************************************!*\
   !*** ./src/cats/generate_cat_array.js ***!
@@ -22026,7 +22106,9 @@ module.exports = function generate_cat_array(params, inst_axis){
   !*** ./src/cats/generate_cat_info.js ***!
   \***************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var check_if_value_cats = __webpack_require__(/*! ./check_if_value_cats */ "./src/cats/check_if_value_cats.js");
 
 module.exports = function generate_cat_info(params){
 
@@ -22072,7 +22154,7 @@ module.exports = function generate_cat_info(params){
 
     viz.cat_info[inst_rc] = null;
 
-    if (viz.show_categories[inst_rc]){
+    // if (viz.show_categories[inst_rc]){
 
       viz.cat_colors[inst_rc] = {};
       viz.cat_info[inst_rc] = {};
@@ -22111,19 +22193,19 @@ module.exports = function generate_cat_info(params){
           cat_instances.push(new_cat);
         });
 
-        // var cat_states = _.uniq( cat_instances_titles ).sort();
+        var cat_states = _.uniq( cat_instances_titles ).sort();
 
-        // // check whether all the categories are of value type
-        // inst_info = check_if_value_cats(cat_states);
+        // check whether all the categories are of value type
+        inst_info = check_if_value_cats(cat_states);
 
-        // // add histogram to inst_info
-        // if (inst_info.type === 'cat_strings'){
-        //   // remove titles from categories in hist
-        //   var cat_hist = _.countBy(cat_instances);
-        //   inst_info.cat_hist = cat_hist;
-        // } else {
-        //   inst_info.cat_hist = null;
-        // }
+        // add histogram to inst_info
+        if (inst_info.type === 'cat_strings'){
+          // remove titles from categories in hist
+          var cat_hist = _.countBy(cat_instances);
+          inst_info.cat_hist = cat_hist;
+        } else {
+          inst_info.cat_hist = null;
+        }
 
         // pass info_info object
         viz.cat_info[inst_rc][cat_title] = inst_info;
@@ -22149,16 +22231,16 @@ module.exports = function generate_cat_info(params){
 
       });
 
-    }
+    // }
 
     // if (_.has(params.network, 'cat_colors') && predefined_cat_colors === true){
       viz.cat_colors[inst_rc] = params.network.cat_colors[inst_rc];
     // }
 
-    if (params.sim_mat){
-      // sending row color info to columns since row color info can be updated
-      viz.cat_colors.col = viz.cat_colors.row;
-    }
+    // if (params.sim_mat){
+    //   // sending row color info to columns since row color info can be updated
+    //   viz.cat_colors.col = viz.cat_colors.row;
+    // }
 
   });
 
@@ -27465,7 +27547,7 @@ module.exports = function make_matrix_cell_tooltip(params){
         tooltip_lines.push(inst_name)
       });
 
-      // calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+      calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
 
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';

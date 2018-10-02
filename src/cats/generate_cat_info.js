@@ -1,3 +1,5 @@
+var check_if_value_cats = require('./check_if_value_cats');
+
 module.exports = function generate_cat_info(params){
 
   // in clustergrammer.js this is make_cat_params
@@ -42,7 +44,7 @@ module.exports = function generate_cat_info(params){
 
     viz.cat_info[inst_rc] = null;
 
-    if (viz.show_categories[inst_rc]){
+    // if (viz.show_categories[inst_rc]){
 
       viz.cat_colors[inst_rc] = {};
       viz.cat_info[inst_rc] = {};
@@ -81,19 +83,19 @@ module.exports = function generate_cat_info(params){
           cat_instances.push(new_cat);
         });
 
-        // var cat_states = _.uniq( cat_instances_titles ).sort();
+        var cat_states = _.uniq( cat_instances_titles ).sort();
 
-        // // check whether all the categories are of value type
-        // inst_info = check_if_value_cats(cat_states);
+        // check whether all the categories are of value type
+        inst_info = check_if_value_cats(cat_states);
 
-        // // add histogram to inst_info
-        // if (inst_info.type === 'cat_strings'){
-        //   // remove titles from categories in hist
-        //   var cat_hist = _.countBy(cat_instances);
-        //   inst_info.cat_hist = cat_hist;
-        // } else {
-        //   inst_info.cat_hist = null;
-        // }
+        // add histogram to inst_info
+        if (inst_info.type === 'cat_strings'){
+          // remove titles from categories in hist
+          var cat_hist = _.countBy(cat_instances);
+          inst_info.cat_hist = cat_hist;
+        } else {
+          inst_info.cat_hist = null;
+        }
 
         // pass info_info object
         viz.cat_info[inst_rc][cat_title] = inst_info;
@@ -119,16 +121,16 @@ module.exports = function generate_cat_info(params){
 
       });
 
-    }
+    // }
 
     // if (_.has(params.network, 'cat_colors') && predefined_cat_colors === true){
       viz.cat_colors[inst_rc] = params.network.cat_colors[inst_rc];
     // }
 
-    if (params.sim_mat){
-      // sending row color info to columns since row color info can be updated
-      viz.cat_colors.col = viz.cat_colors.row;
-    }
+    // if (params.sim_mat){
+    //   // sending row color info to columns since row color info can be updated
+    //   viz.cat_colors.col = viz.cat_colors.row;
+    // }
 
   });
 

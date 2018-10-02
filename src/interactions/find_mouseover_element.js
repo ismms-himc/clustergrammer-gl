@@ -54,8 +54,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   console.log(params.tooltip.tooltip_type)
 
-  // turned off lookup function
-  //////////////////////////////////
+  // // turned off lookup function
+  // //////////////////////////////////
 
   // var axis_indices = {};
   // if (params.tooltip.in_bounds_tooltip){

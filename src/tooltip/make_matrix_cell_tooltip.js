@@ -1,4 +1,5 @@
 var calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown');
+var make_cat_breakdown_graph = require('./../cats/make_cat_breakdown_graph');
 
 module.exports = function make_matrix_cell_tooltip(params){
 
@@ -35,13 +36,12 @@ module.exports = function make_matrix_cell_tooltip(params){
       tooltip_lines.push(inst_cat);
     });
   } else if (params.tooltip.tooltip_type === 'row-dendro'){
+
     // tooltip_lines[0] = 'row-dendro';
     _.each(mouseover.row.dendro.all_names, function(inst_name){
       tooltip_lines.push(inst_name)
     });
 
-    cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
-    console.log(cat_breakdown)
 
   } else if (params.tooltip.tooltip_type === 'col-dendro'){
     tooltip_lines[0] = 'col-dendro';
@@ -75,6 +75,8 @@ module.exports = function make_matrix_cell_tooltip(params){
 
   if (params.tooltip.tooltip_type.indexOf('dendro') < 0){
 
+    // Non-Dendrogram Tooltip
+    ////////////////////////////
 
     svg_tooltip_group
       .append('rect')
@@ -144,8 +146,20 @@ module.exports = function make_matrix_cell_tooltip(params){
     }
 
   } else {
+
+    // Dendrogram Tooltip
+    ////////////////////////////
     console.log('make dendrogram category breakdown instead')
 
+    if (params.tooltip.tooltip_type === 'row-dendro'){
+      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+      console.log(cat_breakdown)
+    }
+
+    // old
+    // var cat_breakdown = calc_cat_cluster_breakdown(params, inst_data, inst_rc);
+
+    // cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
     // make_cat_breakdown_graph(params)
 
   }

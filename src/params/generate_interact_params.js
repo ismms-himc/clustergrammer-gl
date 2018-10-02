@@ -12,7 +12,8 @@ module.exports = function generate_interact_params(params){
     params.interact.mouseover[inst_axis].cats = [];
   })
 
-  params.interact.mouseover.text_triangles = {};
+  params.interact.mouseover.value = null;
+
   params.interact.enable_viz_interact = true;
 
 };

@@ -4,7 +4,7 @@
 module.exports = function draw_tooltip_components(regl, params){
 
     var tooltip_dim = {};
-    tooltip_dim.height = 75;
+    tooltip_dim.height = 50;
     tooltip_dim.width = 150;
 
     var tooltip_buffer = {};
@@ -41,10 +41,14 @@ module.exports = function draw_tooltip_components(regl, params){
 
     var mouseover = params.interact.mouseover;
 
+    var tooltip_lines = [];
+    tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
+    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(2);
+
     // console.log('here')
     svg_tooltip_group
       .selectAll('text')
-      .data(['something', 'something'])
+      .data(tooltip_lines)
       .enter()
       .append('text')
       .style('fill', 'white')
@@ -56,17 +60,12 @@ module.exports = function draw_tooltip_components(regl, params){
       .style('font-weight',  800)
       .style('font-size', 15)
       .classed('tooltip-text', true)
-      .text(function(){
-        var inst_text = mouseover.row.name + ' and ' + mouseover.col.name;
-        return inst_text;
+      .text(function(d){
+        return d;
       });
-
 
     // make sure background is large enough for text
     var text_width = d3.select('.tooltip-text').node().getBBox().width;
-
-    console.log(text_width)
-
     var num_offsets = 2;
 
     d3.select(params.root + ' .svg-tooltip')
@@ -84,50 +83,5 @@ module.exports = function draw_tooltip_components(regl, params){
         var inst_width = text_width + num_offsets * text_offset.x;
         return inst_width + 'px';
       });
-
-    console.log(d3.select(params.root + ' .tooltip-background').style('width'));
-
-      // .html(function(d) {
-      //   // var inst_name = d.name.replace(/_/g, ' ').split('#')[0];
-      //   var inst_name = 'Something';
-      //   return "<span>" + inst_name + "</span>";
-      // });
-
-  // debugger
-
-  // // Spillover Components (may not need to redraw)
-  // params.cameras.static.draw(() => {
-
-  //   // var args = params.spillover_args.mat_corners;
-  //   var args = params.tooltip.tooltip_args;
-
-  //   // tooltip background
-  //   ////////////////////////////
-  //   var background_triangles = calc_tooltip_background_triangles(regl, params);
-  //   regl(args)(background_triangles);
-
-  //   // tooltip text
-  //   //////////////////
-  //   // make the arguments for the draw command
-  //   var text_triangle_args;
-  //   var line_text_offset;
-  //   var inst_triangles
-
-  //   // draw row/col names
-  //   line_text_offset = 3.0;
-  //   text_triangle_args = make_tooltip_text_args(regl, params, line_text_offset);
-  //   inst_triangles = params.interact.mouseover.text_triangles['line-1'];
-  //   regl(text_triangle_args)(inst_triangles);
-
-  //   if (params.cat_data.cat_num.col > 0){
-
-  //     line_text_offset = 1.5;
-  //     text_triangle_args = make_tooltip_text_args(regl, params, line_text_offset);
-  //     inst_triangles = params.interact.mouseover.text_triangles['line-2'];
-  //     regl(text_triangle_args)(inst_triangles);
-
-  //   }
-
-  // });
 
 };

@@ -86,14 +86,14 @@ module.exports = function generate_cat_info(params){
         // // check whether all the categories are of value type
         // inst_info = check_if_value_cats(cat_states);
 
-        // add histogram to inst_info
-        if (inst_info.type === 'cat_strings'){
-          // remove titles from categories in hist
-          var cat_hist = _.countBy(cat_instances);
-          inst_info.cat_hist = cat_hist;
-        } else {
-          inst_info.cat_hist = null;
-        }
+        // // add histogram to inst_info
+        // if (inst_info.type === 'cat_strings'){
+        //   // remove titles from categories in hist
+        //   var cat_hist = _.countBy(cat_instances);
+        //   inst_info.cat_hist = cat_hist;
+        // } else {
+        //   inst_info.cat_hist = null;
+        // }
 
         // pass info_info object
         viz.cat_info[inst_rc][cat_title] = inst_info;
@@ -136,6 +136,8 @@ module.exports = function generate_cat_info(params){
 
   viz.cat_colors.opacity = 0.6;
   viz.cat_colors.active_opacity = 0.9;
+
+  params.viz = viz;
 
   // viz = calc_cat_params(params, viz);
 

@@ -23462,9 +23462,9 @@ module.exports = function draw_tooltip_components(regl, params){
   /*
   turned off drawing tooltip
   */
-  if (params.tooltip.tooltip_type === 'matrix-cell'){
+  // if (params.tooltip.tooltip_type === 'matrix-cell'){
     make_matrix_cell_tooltip(params);
-  }
+  // }
 
   // params.tooltip.show_tooltip = false;
 
@@ -23805,11 +23805,23 @@ module.exports = function find_mouseover_element(regl, params, ev){
   //////////////////////////////////
 
   var axis_indices = {};
+  var inst_dim;
   if (params.tooltip.in_bounds_tooltip){
 
     var axis_index;
 
-    _.each(['row', 'col'], function(inst_axis){
+    inst_dims = [];
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      inst_dims = ['row', 'col'];
+    } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
+      inst_dims = ['row'];
+      // console.log('found row')
+    } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
+      inst_dims = ['col'];
+      // console.log('found col')
+    }
+
+    _.each(inst_dims, function(inst_axis){
 
       if (inst_axis === 'row'){
         axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
@@ -23834,8 +23846,9 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     });
 
-    // debugger;
-    params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+    }
 
   }
 
@@ -23898,6 +23911,7 @@ module.exports = function get_mouseover_type(params){
              inst_pix.y > edim.y.heat_min &&
              inst_pix.y < edim.y.dendro_start){
 
+    params.tooltip.in_bounds_tooltip = true;
     if (cgm.params.cat_data.row.length > 0){
 
       cat_index = Math.floor( ((edim.x.heat_min - inst_pix.x)/cat_width) );
@@ -23921,6 +23935,7 @@ module.exports = function get_mouseover_type(params){
     // console.log( Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) ))
     // params.tooltip.tooltip_type = 'col-label';
 
+    params.tooltip.in_bounds_tooltip = true;
     if (cgm.params.cat_data.col.length > 0){
 
       cat_index = Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) );
@@ -23941,6 +23956,7 @@ module.exports = function get_mouseover_type(params){
              inst_pix.y < edim.y.dendro_start){
 
     params.tooltip.tooltip_type = 'row-dendro';
+    params.tooltip.in_bounds_tooltip = true;
 
   } else if (inst_pix.y >= edim.y.dendro_start &&
              inst_pix.y < edim.y.dendro_end &&
@@ -23948,6 +23964,7 @@ module.exports = function get_mouseover_type(params){
              inst_pix.x < edim.x.dendro_start){
 
     params.tooltip.tooltip_type = 'col-dendro';
+    params.tooltip.in_bounds_tooltip = true;
 
   }
 
@@ -27048,8 +27065,17 @@ module.exports = function make_matrix_cell_tooltip(params){
     var mouseover = params.interact.mouseover;
 
     var tooltip_lines = [];
-    tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
-    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
+
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
+      tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
+    }  else if (params.tooltip.tooltip_type === 'row-label'){
+      tooltip_lines[0] = mouseover.row.name;
+    } else if (params.tooltip.tooltip_type === 'col-label'){
+      tooltip_lines[0] = mouseover.col.name;
+    }
+
+    console.log(tooltip_lines)
 
     svg_tooltip_group
       .selectAll('text')

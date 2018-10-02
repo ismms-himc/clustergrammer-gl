@@ -39,8 +39,17 @@ module.exports = function make_matrix_cell_tooltip(params){
     var mouseover = params.interact.mouseover;
 
     var tooltip_lines = [];
-    tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
-    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
+
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
+      tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
+    }  else if (params.tooltip.tooltip_type === 'row-label'){
+      tooltip_lines[0] = mouseover.row.name;
+    } else if (params.tooltip.tooltip_type === 'col-label'){
+      tooltip_lines[0] = mouseover.col.name;
+    }
+
+    console.log(tooltip_lines)
 
     svg_tooltip_group
       .selectAll('text')

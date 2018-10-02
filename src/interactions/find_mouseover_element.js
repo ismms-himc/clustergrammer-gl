@@ -58,11 +58,23 @@ module.exports = function find_mouseover_element(regl, params, ev){
   //////////////////////////////////
 
   var axis_indices = {};
+  var inst_dim;
   if (params.tooltip.in_bounds_tooltip){
 
     var axis_index;
 
-    _.each(['row', 'col'], function(inst_axis){
+    inst_dims = [];
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      inst_dims = ['row', 'col'];
+    } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
+      inst_dims = ['row'];
+      // console.log('found row')
+    } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
+      inst_dims = ['col'];
+      // console.log('found col')
+    }
+
+    _.each(inst_dims, function(inst_axis){
 
       if (inst_axis === 'row'){
         axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
@@ -87,8 +99,9 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     });
 
-    // debugger;
-    params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+    }
 
   }
 

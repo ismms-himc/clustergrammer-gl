@@ -7,9 +7,9 @@ module.exports = function draw_tooltip_components(regl, params){
   /*
   turned off drawing tooltip
   */
-  if (params.tooltip.tooltip_type === 'matrix-cell'){
+  // if (params.tooltip.tooltip_type === 'matrix-cell'){
     make_matrix_cell_tooltip(params);
-  }
+  // }
 
   // params.tooltip.show_tooltip = false;
 

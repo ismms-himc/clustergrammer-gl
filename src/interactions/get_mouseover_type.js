@@ -46,6 +46,7 @@ module.exports = function get_mouseover_type(params){
              inst_pix.y > edim.y.heat_min &&
              inst_pix.y < edim.y.dendro_start){
 
+    params.tooltip.in_bounds_tooltip = true;
     if (cgm.params.cat_data.row.length > 0){
 
       cat_index = Math.floor( ((edim.x.heat_min - inst_pix.x)/cat_width) );
@@ -69,6 +70,7 @@ module.exports = function get_mouseover_type(params){
     // console.log( Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) ))
     // params.tooltip.tooltip_type = 'col-label';
 
+    params.tooltip.in_bounds_tooltip = true;
     if (cgm.params.cat_data.col.length > 0){
 
       cat_index = Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) );
@@ -89,6 +91,7 @@ module.exports = function get_mouseover_type(params){
              inst_pix.y < edim.y.dendro_start){
 
     params.tooltip.tooltip_type = 'row-dendro';
+    params.tooltip.in_bounds_tooltip = true;
 
   } else if (inst_pix.y >= edim.y.dendro_start &&
              inst_pix.y < edim.y.dendro_end &&
@@ -96,6 +99,7 @@ module.exports = function get_mouseover_type(params){
              inst_pix.x < edim.x.dendro_start){
 
     params.tooltip.tooltip_type = 'col-dendro';
+    params.tooltip.in_bounds_tooltip = true;
 
   }
 

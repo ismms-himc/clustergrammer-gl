@@ -27541,6 +27541,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     var tooltip_lines = [];
 
     // console.log(params.tooltip.tooltip_type)
+    var cat_breakdown;
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
       tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
@@ -27594,73 +27595,79 @@ module.exports = function make_matrix_cell_tooltip(params){
       .append('g')
       .classed('tooltip-group', true)
 
-    svg_tooltip_group
-      .append('rect')
-      .style('height', function(){
-        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
-        return  inst_height + 'px'
-      })
-      .style('width', tooltip_dim.width + 'px')
-      .style('fill', 'black')
-      .classed('tooltip-background', true)
-      .style('opacity', 0.85)
+    if (params.tooltip.tooltip_type.indexOf('dendro') < 0){
 
-    svg_tooltip_group
-      .selectAll('text')
-      .data(tooltip_lines)
-      .enter()
-      .append('text')
-      .style('fill', 'white')
-      .attr('transform', function(d, inst_index){
-        return 'translate(' + text_offset.x + ', '+ (inst_index +1)* text_offset.y +')';
-      })
-      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-      .style('font-weight',  800)
-      .style('font-size', 15)
-      .classed('tooltip-text', true)
-      .text(function(d, inst_index){
-        d3.select(this).classed('tooltip-text-line-' + String(inst_index), true)
-        return d;
-      });
 
-    // debugger;
-
-    var inst_line_width;
-
-    // make sure background is large enough for text
-    //////////////////////////////////////////////////
-    var text_width = d3.select('.tooltip-text').node().getBBox().width;
-
-    _.each(tooltip_lines, function(d, i){
-      inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
-      if (inst_line_width > text_width){
-        text_width = inst_line_width;
-        // console.log('increased width')
-      }
-    })
-
-    var num_offsets = 4;
-
-    if (text_width > tooltip_dim.width || params.tooltip.tooltip_type === 'row-label'){
-
-      d3.select(params.root + ' .svg-tooltip')
-        .style('width',function(){
-          inst_line_width = text_width + num_offsets * text_offset.x;
-          return inst_line_width + 'px';
+      svg_tooltip_group
+        .append('rect')
+        .style('height', function(){
+          var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
+          return  inst_height + 'px'
         })
-        .style('left', function(){
-          var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
-          return inst_pos_x;
-        })
+        .style('width', tooltip_dim.width + 'px')
+        .style('fill', 'black')
+        .classed('tooltip-background', true)
+        .style('opacity', 0.85)
 
-      d3.select(params.root + ' .tooltip-background')
-        .style('width',function(){
-          inst_line_width = text_width + num_offsets * text_offset.x;
-          return inst_line_width + 'px';
+      svg_tooltip_group
+        .selectAll('text')
+        .data(tooltip_lines)
+        .enter()
+        .append('text')
+        .style('fill', 'white')
+        .attr('transform', function(d, inst_index){
+          return 'translate(' + text_offset.x + ', '+ (inst_index +1)* text_offset.y +')';
+        })
+        .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+        .style('font-weight',  800)
+        .style('font-size', 15)
+        .classed('tooltip-text', true)
+        .text(function(d, inst_index){
+          d3.select(this).classed('tooltip-text-line-' + String(inst_index), true)
+          return d;
         });
 
-    }
+      // debugger;
 
+      var inst_line_width;
+
+      // make sure background is large enough for text
+      //////////////////////////////////////////////////
+      var text_width = d3.select('.tooltip-text').node().getBBox().width;
+
+      _.each(tooltip_lines, function(d, i){
+        inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
+        if (inst_line_width > text_width){
+          text_width = inst_line_width;
+          // console.log('increased width')
+        }
+      })
+
+      var num_offsets = 4;
+
+      if (text_width > tooltip_dim.width || params.tooltip.tooltip_type === 'row-label'){
+
+        d3.select(params.root + ' .svg-tooltip')
+          .style('width',function(){
+            inst_line_width = text_width + num_offsets * text_offset.x;
+            return inst_line_width + 'px';
+          })
+          .style('left', function(){
+            var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
+            return inst_pos_x;
+          })
+
+        d3.select(params.root + ' .tooltip-background')
+          .style('width',function(){
+            inst_line_width = text_width + num_offsets * text_offset.x;
+            return inst_line_width + 'px';
+          });
+
+      }
+
+    } else {
+      console.log('make dendrogram category breakdown instead')
+    }
 
     // make sure the height is sufficient
 

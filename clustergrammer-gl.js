@@ -21976,6 +21976,260 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
 /***/ }),
 
+/***/ "./src/cats/cat_breakdown_bars.js":
+/*!****************************************!*\
+  !*** ./src/cats/cat_breakdown_bars.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups){
+
+  var paragraph_string = '<p>';
+  var super_string = ': ';
+
+  var bar_width = params.viz.cat_bar_width;
+  var bar_height = params.viz.cat_bar_height;
+
+  var max_string_length = 25;
+
+  var max_bar_value = cat_data.bar_data[0][bars_index];
+
+  // only keep the top max_bars categories
+  cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
+
+  var inst_title = cat_data.type_name;
+  // ensure that title is not too long
+  if (inst_title.length >= max_string_length){
+    inst_title = inst_title.slice(0, max_string_length) + '..';
+  }
+
+  // make title
+  cat_graph_group
+    .append('text')
+    .classed('cat_graph_title', true)
+    .text(inst_title)
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight',  800);
+
+
+
+  var line_y = 4;
+  cat_graph_group
+    .append('line')
+    .attr('x1', 0)
+    .attr('x2', bar_width)
+    .attr('y1', line_y)
+    .attr('y2', line_y)
+    .attr('stroke', 'blue')
+    .attr('stroke-width', 1)
+    .attr('opacity', 1.0);
+
+
+  // bar length is max when all nodes in cluster are of
+  // a single cat
+  var bar_scale = d3.scale.linear()
+                    .domain([0, max_bar_value])
+                    .range([0, bar_width]);
+
+  // make bars
+  cat_bar_groups
+    .append('rect')
+    .attr('height', bar_height+'px')
+    .attr('width', function(d){
+      var inst_width = bar_scale(d[bars_index]);
+      return inst_width +'px';
+    })
+    .attr('fill', function(d){
+      // cat color is stored in the third element
+      return d[3];
+    })
+    .attr('opacity', params.viz.cat_colors.opacity)
+    .attr('stroke', 'grey')
+    .attr('stroke-width', '0.5px');
+
+  // make bar labels
+  cat_bar_groups
+    .append('text')
+    .classed('bar_labels', true)
+    .text(function(d){
+      var inst_text = d[1];
+      if (inst_text.indexOf(super_string) > 0){
+        inst_text = inst_text.split(super_string)[1];
+      }
+      if (inst_text.indexOf(paragraph_string) > 0){
+        // required for Enrichr category names (needs improvements)
+        inst_text = inst_text.split(paragraph_string)[0];
+      }
+      // ensure that bar name is not too long
+      if (inst_text.length >= max_string_length){
+        inst_text = inst_text.slice(0,max_string_length) + '..';
+      }
+      return inst_text;
+    })
+    .attr('transform', function(){
+      return 'translate(5, ' + 0.75 * bar_height + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'right');
+
+};
+
+/***/ }),
+
+/***/ "./src/cats/cat_breakdown_values.js":
+/*!******************************************!*\
+  !*** ./src/cats/cat_breakdown_values.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total){
+
+
+  var bar_width = params.viz.cat_bar_width;
+  var bar_height = params.viz.cat_bar_height;
+  var offset_ds_count = 150;
+  var binom_pval_index = 6;
+
+
+  // Count Title
+  cat_graph_group
+    .append('text')
+    .text('Count')
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset;
+      var inst_translate = 'translate('+ inst_x +', 0)';
+      return inst_translate;
+    });
+
+  // Percentage Title
+  cat_graph_group
+    .append('text')
+    .text('Pct')
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + 60;
+      var inst_translate = 'translate('+ inst_x +', 0)';
+      return inst_translate;
+    });
+
+  // Percentage Title
+  cat_graph_group
+    .append('text')
+    .text('P-val')
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + 115;
+      var inst_translate = 'translate('+ inst_x +', 0)';
+      return inst_translate;
+    });
+
+  // Count Downsampled Title
+  if (is_downsampled){
+    cat_graph_group
+      .append('text')
+      .text('Clusters')
+      .attr('transform', function(){
+        var inst_x = bar_width + offset_ds_count ;
+        var inst_translate = 'translate('+ inst_x +', 0)';
+        return inst_translate;
+      });
+  }
+
+  // Counts
+  /////////////////////////////
+  var shift_count_num = 35;
+
+  cat_bar_groups
+    .append('text')
+    .classed('count_labels', true)
+    .text(function(d){
+      var inst_count = d[bars_index];
+      inst_count = inst_count.toLocaleString();
+      return String(inst_count);
+    })
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + shift_count_num;
+      var inst_y = 0.75 * bar_height;
+      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'end');
+
+
+  // Percentage
+  //////////////////////
+  cat_bar_groups
+    .append('text')
+    .classed('count_labels', true)
+    .text(function(d){
+      // calculate the percentage relative to the current cluster
+      var inst_count = d[bars_index] / cluster_total * 100;
+      inst_count = Math.round(inst_count * 10)/10;
+      inst_count = inst_count.toLocaleString();
+      return String(inst_count);
+    })
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + shift_count_num + 47;
+      var inst_y = 0.75 * bar_height;
+      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'end');
+
+  // Binomial Test Pvals
+  cat_bar_groups
+    .append('text')
+    .classed('count_labels', true)
+    .text(function(d){
+      // calculate the percentage relative to the current cluster
+      var inst_count = d[binom_pval_index];
+
+      if (inst_count<0.001){
+        inst_count = parseFloat(inst_count.toPrecision(3));
+        inst_count = inst_count.toExponential();
+      } else {
+        inst_count = parseFloat(inst_count.toPrecision(2));
+      }
+
+      // inst_count = inst_count.toLocaleString();
+      return inst_count;
+    })
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + shift_count_num + 112;
+      var inst_y = 0.75 * bar_height;
+      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'end');
+
+  if (is_downsampled){
+
+    cat_bar_groups
+      .append('text')
+      .classed('count_labels', true)
+      .text(function(d){
+        return String(d[num_nodes_index].toLocaleString());
+      })
+      .attr('transform', function(){
+        // downsampled cluster numbers are smaller and need less flexible offsetting
+        var inst_x = bar_width + shift_count_num + offset_ds_count  + 20;
+        var inst_y = 0.75 * bar_height;
+        return 'translate('+ inst_x +', ' + inst_y + ')' ;
+      })
+      .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .attr('font-weight', 400)
+      .attr('text-anchor', 'end');
+
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/cats/check_if_value_cats.js":
 /*!*****************************************!*\
   !*** ./src/cats/check_if_value_cats.js ***!
@@ -22522,11 +22776,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   !*** ./src/cats/make_cat_breakdown_graph.js ***!
   \**********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 // var calc_cat_cluster_breakdown = require('./calc_cat_cluster_breakdown');
-// var cat_breakdown_bars = require('./cat_breakdown_bars');
-// var cat_breakdown_values = require('./cat_breakdown_values');
+var cat_breakdown_bars = __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js");
+var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js");
 
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis){
 
@@ -22660,7 +22914,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
             return 'translate(0,'+ inst_y +')';
           });
 
-      // cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
+      cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
 
       // cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
 

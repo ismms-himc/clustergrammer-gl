@@ -1,6 +1,6 @@
 // var calc_cat_cluster_breakdown = require('./calc_cat_cluster_breakdown');
-// var cat_breakdown_bars = require('./cat_breakdown_bars');
-// var cat_breakdown_values = require('./cat_breakdown_values');
+var cat_breakdown_bars = require('./cat_breakdown_bars');
+var cat_breakdown_values = require('./cat_breakdown_values');
 
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis){
 
@@ -134,7 +134,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
             return 'translate(0,'+ inst_y +')';
           });
 
-      // cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
+      cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
 
       // cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
 

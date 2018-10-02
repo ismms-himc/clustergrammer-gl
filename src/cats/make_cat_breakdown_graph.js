@@ -15,7 +15,6 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
-    // var cluster_info_container = d3.select( selector + ' .cluster_info_container');
 
 
     // loop through cat_breakdown data
@@ -80,7 +79,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       .classed('cat_graph', true)
       .append('svg')
       .style('height', svg_height+'px')
-      .style('width', width+'px');
+      .style('width', width+'px')
+      // .style('left', '-270px')
 
     cluster_info_container
       .style('margin-bottom', '5px');
@@ -136,12 +136,18 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
       cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
 
-      // debugger;
-
-      // cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
+      cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
 
       // shift down based on number of bars
       shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
+
+      // reposition group
+    var pos_x = params.zoom_data.x.cursor_position - width;
+    var pos_y = params.zoom_data.y.cursor_position - svg_height;
+
+    cluster_info_container
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
 
     });
 

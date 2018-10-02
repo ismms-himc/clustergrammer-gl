@@ -22796,7 +22796,6 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
-    // var cluster_info_container = d3.select( selector + ' .cluster_info_container');
 
 
     // loop through cat_breakdown data
@@ -22861,7 +22860,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       .classed('cat_graph', true)
       .append('svg')
       .style('height', svg_height+'px')
-      .style('width', width+'px');
+      .style('width', width+'px')
+      // .style('left', '-270px')
 
     cluster_info_container
       .style('margin-bottom', '5px');
@@ -22917,12 +22917,18 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
       cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
 
-      // debugger;
-
-      // cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
+      cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
 
       // shift down based on number of bars
       shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
+
+      // reposition group
+    var pos_x = params.zoom_data.x.cursor_position - width;
+    var pos_y = params.zoom_data.y.cursor_position - svg_height;
+
+    cluster_info_container
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
 
     });
 
@@ -28038,31 +28044,32 @@ module.exports = function make_matrix_cell_tooltip(params){
   }
   // console.log(tooltip_lines)
 
-  var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
-  var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
-
-  console.log('making group to put svg into')
-  var group_tooltip_container = d3.select(params.root + ' .canvas-container')
-    .append('g')
-    .style('position', 'absolute')
-    .style('top', pos_y + 'px')
-    .style('left', pos_x + 'px')
-    .classed('group-svg-tooltip', true);
-
-  var svg_tooltip_container = group_tooltip_container
-    .append('svg')
-    .style('height', function(){
-      var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
-      return  inst_height + 'px'
-    })
-    .style('width', tooltip_dim.width + 'px')
-    .classed('svg-tooltip', true);
-
-  var svg_tooltip_group = svg_tooltip_container
-    .append('g')
-    .classed('tooltip-group', true)
 
   if (params.tooltip.tooltip_type.indexOf('dendro') < 0){
+
+    var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
+    var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
+
+    console.log('making group to put svg into')
+    var group_tooltip_container = d3.select(params.root + ' .canvas-container')
+      .append('g')
+      .style('position', 'absolute')
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
+      .classed('group-svg-tooltip', true);
+
+    var svg_tooltip_container = group_tooltip_container
+      .append('svg')
+      .style('height', function(){
+        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
+        return  inst_height + 'px'
+      })
+      .style('width', tooltip_dim.width + 'px')
+      .classed('svg-tooltip', true);
+
+    var svg_tooltip_group = svg_tooltip_container
+      .append('g')
+      .classed('tooltip-group', true)
 
     // Non-Dendrogram Tooltip
     ////////////////////////////
@@ -28139,6 +28146,17 @@ module.exports = function make_matrix_cell_tooltip(params){
     // Dendrogram Tooltip
     ////////////////////////////
     console.log('make dendrogram category breakdown instead')
+
+    var pos_x = params.zoom_data.x.cursor_position - 370;
+    var pos_y = params.zoom_data.y.cursor_position;
+
+    console.log('making group to put svg into')
+    var group_tooltip_container = d3.select(params.root + ' .canvas-container')
+      .append('g')
+      .style('position', 'absolute')
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
+      .classed('group-svg-tooltip', true);
 
     if (params.tooltip.tooltip_type === 'row-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');

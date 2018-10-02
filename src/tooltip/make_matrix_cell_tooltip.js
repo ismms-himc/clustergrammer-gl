@@ -1,4 +1,4 @@
-calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown');
+var calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown');
 
 module.exports = function make_matrix_cell_tooltip(params){
 
@@ -39,7 +39,7 @@ module.exports = function make_matrix_cell_tooltip(params){
         tooltip_lines.push(inst_name)
       });
 
-      calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+      // calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
 
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';

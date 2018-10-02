@@ -27267,7 +27267,7 @@ module.exports = function make_spillover_args(regl, inst_depth,
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
+var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
 
 module.exports = function make_matrix_cell_tooltip(params){
 
@@ -27308,7 +27308,7 @@ module.exports = function make_matrix_cell_tooltip(params){
         tooltip_lines.push(inst_name)
       });
 
-      calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+      // calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
 
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';

@@ -23977,16 +23977,20 @@ module.exports = function get_mouseover_type(params){
              inst_pix.y > edim.y.heat_min &&
              inst_pix.y < edim.y.dendro_start){
 
-    params.tooltip.tooltip_type = 'row-dendro';
-    params.tooltip.in_bounds_tooltip = true;
+    if (params.order.inst.row == 'clust'){
+      params.tooltip.tooltip_type = 'row-dendro';
+      params.tooltip.in_bounds_tooltip = true;
+    }
 
   } else if (inst_pix.y >= edim.y.dendro_start &&
              inst_pix.y < edim.y.dendro_end &&
              inst_pix.x > edim.x.heat_min &&
              inst_pix.x < edim.x.dendro_start){
 
-    params.tooltip.tooltip_type = 'col-dendro';
-    params.tooltip.in_bounds_tooltip = true;
+    if (params.order.inst.col == 'clust'){
+      params.tooltip.tooltip_type = 'col-dendro';
+      params.tooltip.in_bounds_tooltip = true;
+    }
 
   }
 
@@ -27079,15 +27083,14 @@ module.exports = function make_matrix_cell_tooltip(params){
       })
     } else if (params.tooltip.tooltip_type === 'row-dendro'){
       // tooltip_lines[0] = 'row-dendro';
-
-      // conso
       _.each(mouseover.row.dendro.all_names, function(inst_name){
         tooltip_lines.push(inst_name)
-      })
-
-      // console.log('at row-dendro')
+      });
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       tooltip_lines[0] = 'col-dendro';
+      _.each(mouseover.col.dendro.all_names, function(inst_name){
+        tooltip_lines.push(inst_name)
+      });
     }
     // console.log(tooltip_lines)
 

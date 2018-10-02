@@ -63,10 +63,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
       if (inst_axis === 'row'){
         axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-        axis_indices[inst_axis] = axis_index;
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
       } else {
         axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
-        axis_indices[inst_axis] = axis_index;
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
       }
 
       mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];

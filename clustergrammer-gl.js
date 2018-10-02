@@ -23508,7 +23508,7 @@ module.exports = function draw_tooltip_components(regl, params){
 
     var tooltip_lines = [];
     tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
-    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(2);
+    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
 
     // console.log('here')
     svg_tooltip_group
@@ -23891,10 +23891,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
       if (inst_axis === 'row'){
         axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-        axis_indices[inst_axis] = axis_index;
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
       } else {
         axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
-        axis_indices[inst_axis] = axis_index;
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
       }
 
       mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
@@ -25085,6 +25085,7 @@ module.exports = function generate_ordered_labels(params){
   _.each(['row', 'col'], function(inst_axis){
 
     ordered_labels[inst_axis + 's'] = [];
+    ordered_labels[inst_axis + '_indices'] = [];
 
     axis_nodes = params.network[inst_axis + '_nodes'];
 
@@ -25098,10 +25099,15 @@ module.exports = function generate_ordered_labels(params){
       found_axis_cat = true;
     }
 
-    _.each(axis_nodes, function(inst_node){
+    _.each(axis_nodes, function(inst_node, inst_index){
 
       inst_order = params.labels['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
+
+      // ordered names
       ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
+
+      // ordered indices (for value retrieval)
+      ordered_labels[inst_axis + '_indices'][inst_order] = inst_index;
 
       if (found_axis_cat){
 

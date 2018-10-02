@@ -43,7 +43,7 @@ module.exports = function draw_tooltip_components(regl, params){
 
     var tooltip_lines = [];
     tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
-    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(2);
+    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
 
     // console.log('here')
     svg_tooltip_group

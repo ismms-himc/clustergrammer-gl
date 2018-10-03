@@ -31017,7 +31017,7 @@ module.exports = function build_control_panel(regl, cgm){
   var col_cat_title_svg = col_cat_title_group
     .append('svg')
     .style('height', function(){
-      var svg_height = dim_y * params.cat_data.col.length + 3;
+      var svg_height = dim_y * params.cat_data.col.length + 5;
       return svg_height  + 'px'
     })
     .style('width', dim_x + 'px')
@@ -31045,7 +31045,7 @@ module.exports = function build_control_panel(regl, cgm){
     //   run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
     // })
     .attr('transform', function(d, i){
-      var y_trans = (dim_y + 2) * i + 10 ;
+      var y_trans = (dim_y + 1) * i + 10 ;
       return 'translate( 0, '+ y_trans +')';
     })
 

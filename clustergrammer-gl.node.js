@@ -87,17 +87,6 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ "./img/graham_cracker_144.png":
-/*!************************************!*\
-  !*** ./img/graham_cracker_144.png ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "401229782cf70826d5f0e68711a53a51.png";
-
-/***/ }),
-
 /***/ "./node_modules/base64-js/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
@@ -14249,6 +14238,5483 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 
+/***/ "./node_modules/mathjs/core.js":
+/*!*************************************!*\
+  !*** ./node_modules/mathjs/core.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./lib/core/core */ "./node_modules/mathjs/lib/core/core.js");
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/core.js":
+/*!**********************************************!*\
+  !*** ./node_modules/mathjs/lib/core/core.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isFactory = __webpack_require__(/*! ./../utils/object */ "./node_modules/mathjs/lib/utils/object.js").isFactory;
+var typedFactory = __webpack_require__(/*! ./typed */ "./node_modules/mathjs/lib/core/typed.js");
+var emitter = __webpack_require__(/*! ./../utils/emitter */ "./node_modules/mathjs/lib/utils/emitter.js");
+
+var importFactory = __webpack_require__(/*! ./function/import */ "./node_modules/mathjs/lib/core/function/import.js");
+var configFactory = __webpack_require__(/*! ./function/config */ "./node_modules/mathjs/lib/core/function/config.js");
+
+/**
+ * Math.js core. Creates a new, empty math.js instance
+ * @param {Object} [options] Available options:
+ *                            {number} epsilon
+ *                              Minimum relative difference between two
+ *                              compared values, used by all comparison functions.
+ *                            {string} matrix
+ *                              A string 'Matrix' (default) or 'Array'.
+ *                            {string} number
+ *                              A string 'number' (default), 'BigNumber', or 'Fraction'
+ *                            {number} precision
+ *                              The number of significant digits for BigNumbers.
+ *                              Not applicable for Numbers.
+ *                            {boolean} predictable
+ *                              Predictable output type of functions. When true,
+ *                              output type depends only on the input types. When
+ *                              false (default), output type can vary depending
+ *                              on input values. For example `math.sqrt(-4)`
+ *                              returns `complex('2i')` when predictable is false, and
+ *                              returns `NaN` when true.
+ *                            {string} randomSeed
+ *                              Random seed for seeded pseudo random number generator.
+ *                              Set to null to randomly seed.
+ * @returns {Object} Returns a bare-bone math.js instance containing
+ *                   functions:
+ *                   - `import` to add new functions
+ *                   - `config` to change configuration
+ *                   - `on`, `off`, `once`, `emit` for events
+ */
+exports.create = function create (options) {
+  // simple test for ES5 support
+  if (typeof Object.create !== 'function') {
+    throw new Error('ES5 not supported by this JavaScript engine. ' +
+    'Please load the es5-shim and es5-sham library for compatibility.');
+  }
+
+  // cached factories and instances
+  var factories = [];
+  var instances = [];
+
+  // create a namespace for the mathjs instance, and attach emitter functions
+  var math = emitter.mixin({});
+  math.type = {};
+  math.expression = {
+    transform: {},
+    mathWithTransform: {}
+  };
+
+  // create a new typed instance
+  math.typed = typedFactory.create(math.type);
+
+  // create configuration options. These are private
+  var _config = {
+    // minimum relative difference between two compared values,
+    // used by all comparison functions
+    epsilon: 1e-12,
+
+    // type of default matrix output. Choose 'matrix' (default) or 'array'
+    matrix: 'Matrix',
+
+    // type of default number output. Choose 'number' (default) 'BigNumber', or 'Fraction
+    number: 'number',
+
+    // number of significant digits in BigNumbers
+    precision: 64,
+
+    // predictable output type of functions. When true, output type depends only
+    // on the input types. When false (default), output type can vary depending
+    // on input values. For example `math.sqrt(-4)` returns `complex('2i')` when
+    // predictable is false, and returns `NaN` when true.
+    predictable: false,
+
+    // random seed for seeded pseudo random number generation
+    // null = randomly seed
+    randomSeed: null
+  };
+
+  /**
+   * Load a function or data type from a factory.
+   * If the function or data type already exists, the existing instance is
+   * returned.
+   * @param {{type: string, name: string, factory: Function}} factory
+   * @returns {*}
+   */
+  function load (factory) {
+    if (!isFactory(factory)) {
+      throw new Error('Factory object with properties `type`, `name`, and `factory` expected');
+    }
+
+    var index = factories.indexOf(factory);
+    var instance;
+    if (index === -1) {
+      // doesn't yet exist
+      if (factory.math === true) {
+        // pass with math namespace
+        instance = factory.factory(math.type, _config, load, math.typed, math);
+      }
+      else {
+        instance = factory.factory(math.type, _config, load, math.typed);
+      }
+
+      // append to the cache
+      factories.push(factory);
+      instances.push(instance);
+    }
+    else {
+      // already existing function, return the cached instance
+      instance = instances[index];
+    }
+
+    return instance;
+  }
+
+  // load the import and config functions
+  math['import'] = load(importFactory);
+  math['config'] = load(configFactory);
+  math.expression.mathWithTransform['config'] = math['config']
+
+  // apply options
+  if (options) {
+    math.config(options);
+  }
+
+  return math;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/function/config.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/core/function/config.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var object = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js");
+
+function factory (type, config, load, typed, math) {
+  var MATRIX = ['Matrix', 'Array'];                   // valid values for option matrix
+  var NUMBER = ['number', 'BigNumber', 'Fraction'];   // valid values for option number
+
+  /**
+   * Set configuration options for math.js, and get current options.
+   * Will emit a 'config' event, with arguments (curr, prev, changes).
+   *
+   * Syntax:
+   *
+   *     math.config(config: Object): Object
+   *
+   * Examples:
+   *
+   *     math.config().number;                // outputs 'number'
+   *     math.eval('0.4');                    // outputs number 0.4
+   *     math.config({number: 'Fraction'});
+   *     math.eval('0.4');                    // outputs Fraction 2/5
+   *
+   * @param {Object} [options] Available options:
+   *                            {number} epsilon
+   *                              Minimum relative difference between two
+   *                              compared values, used by all comparison functions.
+   *                            {string} matrix
+   *                              A string 'Matrix' (default) or 'Array'.
+   *                            {string} number
+   *                              A string 'number' (default), 'BigNumber', or 'Fraction'
+   *                            {number} precision
+   *                              The number of significant digits for BigNumbers.
+   *                              Not applicable for Numbers.
+   *                            {string} parenthesis
+   *                              How to display parentheses in LaTeX and string
+   *                              output.
+   *                            {string} randomSeed
+   *                              Random seed for seeded pseudo random number generator.
+   *                              Set to null to randomly seed.
+   * @return {Object} Returns the current configuration
+   */
+  function _config(options) {
+    if (options) {
+      var prev = object.map(config, object.clone);
+
+      // validate some of the options
+      validateOption(options, 'matrix', MATRIX);
+      validateOption(options, 'number', NUMBER);
+
+      // merge options
+      object.deepExtend(config, options);
+
+      var curr = object.map(config, object.clone);
+
+      var changes = object.map(options, object.clone);
+
+      // emit 'config' event
+      math.emit('config', curr, prev, changes);
+
+      return curr;
+    }
+    else {
+      return object.map(config, object.clone);
+    }
+  }
+
+  // attach the valid options to the function so they can be extended
+  _config.MATRIX = MATRIX;
+  _config.NUMBER = NUMBER;
+
+  return _config;
+}
+
+/**
+ * Test whether an Array contains a specific item.
+ * @param {Array.<string>} array
+ * @param {string} item
+ * @return {boolean}
+ */
+function contains (array, item) {
+  return array.indexOf(item) !== -1;
+}
+
+/**
+ * Find a string in an array. Case insensitive search
+ * @param {Array.<string>} array
+ * @param {string} item
+ * @return {number} Returns the index when found. Returns -1 when not found
+ */
+function findIndex (array, item) {
+  return array
+      .map(function (i) {
+        return i.toLowerCase();
+      })
+      .indexOf(item.toLowerCase());
+}
+
+/**
+ * Validate an option
+ * @param {Object} options         Object with options
+ * @param {string} name            Name of the option to validate
+ * @param {Array.<string>} values  Array with valid values for this option
+ */
+function validateOption(options, name, values) {
+  if (options[name] !== undefined && !contains(values, options[name])) {
+    var index = findIndex(values, options[name]);
+    if (index !== -1) {
+      // right value, wrong casing
+      // TODO: lower case values are deprecated since v3, remove this warning some day.
+      console.warn('Warning: Wrong casing for configuration option "' + name + '", should be "' + values[index] + '" instead of "' + options[name] + '".');
+
+      options[name] = values[index]; // change the option to the right casing
+    }
+    else {
+      // unknown value
+      console.warn('Warning: Unknown value "' + options[name] + '" for configuration option "' + name + '". Available options: ' + values.map(JSON.stringify).join(', ') + '.');
+    }
+  }
+}
+
+exports.name = 'config';
+exports.math = true; // request the math namespace as fifth argument
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/function/import.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/core/function/import.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var lazy = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").lazy;
+var isFactory = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").isFactory;
+var traverse = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").traverse;
+var ArgumentsError = __webpack_require__(/*! ../../error/ArgumentsError */ "./node_modules/mathjs/lib/error/ArgumentsError.js");
+
+function factory (type, config, load, typed, math) {
+  /**
+   * Import functions from an object or a module
+   *
+   * Syntax:
+   *
+   *    math.import(object)
+   *    math.import(object, options)
+   *
+   * Where:
+   *
+   * - `object: Object`
+   *   An object with functions to be imported.
+   * - `options: Object` An object with import options. Available options:
+   *   - `override: boolean`
+   *     If true, existing functions will be overwritten. False by default.
+   *   - `silent: boolean`
+   *     If true, the function will not throw errors on duplicates or invalid
+   *     types. False by default.
+   *   - `wrap: boolean`
+   *     If true, the functions will be wrapped in a wrapper function
+   *     which converts data types like Matrix to primitive data types like Array.
+   *     The wrapper is needed when extending math.js with libraries which do not
+   *     support these data type. False by default.
+   *
+   * Examples:
+   *
+   *    // define new functions and variables
+   *    math.import({
+   *      myvalue: 42,
+   *      hello: function (name) {
+   *        return 'hello, ' + name + '!';
+   *      }
+   *    });
+   *
+   *    // use the imported function and variable
+   *    math.myvalue * 2;               // 84
+   *    math.hello('user');             // 'hello, user!'
+   *
+   *    // import the npm module 'numbers'
+   *    // (must be installed first with `npm install numbers`)
+   *    math.import(require('numbers'), {wrap: true});
+   *
+   *    math.fibonacci(7); // returns 13
+   *
+   * @param {Object | Array} object   Object with functions to be imported.
+   * @param {Object} [options]        Import options.
+   */
+  function math_import(object, options) {
+    var num = arguments.length;
+    if (num !== 1 && num !== 2) {
+      throw new ArgumentsError('import', num, 1, 2);
+    }
+
+    if (!options) {
+      options = {};
+    }
+
+    if (isFactory(object)) {
+      _importFactory(object, options);
+    }
+    // TODO: allow a typed-function with name too
+    else if (Array.isArray(object)) {
+      object.forEach(function (entry) {
+        math_import(entry, options);
+      });
+    }
+    else if (typeof object === 'object') {
+      // a map with functions
+      for (var name in object) {
+        if (object.hasOwnProperty(name)) {
+          var value = object[name];
+          if (isSupportedType(value)) {
+            _import(name, value, options);
+          }
+          else if (isFactory(object)) {
+            _importFactory(object, options);
+          }
+          else {
+            math_import(value, options);
+          }
+        }
+      }
+    }
+    else {
+      if (!options.silent) {
+        throw new TypeError('Factory, Object, or Array expected');
+      }
+    }
+  }
+
+  /**
+   * Add a property to the math namespace and create a chain proxy for it.
+   * @param {string} name
+   * @param {*} value
+   * @param {Object} options  See import for a description of the options
+   * @private
+   */
+  function _import(name, value, options) {
+    // TODO: refactor this function, it's to complicated and contains duplicate code
+    if (options.wrap && typeof value === 'function') {
+      // create a wrapper around the function
+      value = _wrap(value);
+    }
+
+    if (isTypedFunction(math[name]) && isTypedFunction(value)) {
+      if (options.override) {
+        // give the typed function the right name
+        value = typed(name, value.signatures);
+      }
+      else {
+        // merge the existing and typed function
+        value = typed(math[name], value);
+      }
+
+      math[name] = value;
+      _importTransform(name, value);
+      math.emit('import', name, function resolver() {
+        return value;
+      });
+      return;
+    }
+
+    if (math[name] === undefined || options.override) {
+      math[name] = value;
+      _importTransform(name, value);
+      math.emit('import', name, function resolver() {
+        return value;
+      });
+      return;
+    }
+
+    if (!options.silent) {
+      throw new Error('Cannot import "' + name + '": already exists');
+    }
+  }
+
+  function _importTransform (name, value) {
+    if (value && typeof value.transform === 'function') {
+      math.expression.transform[name] = value.transform;
+      if (allowedInExpressions(name)) {
+        math.expression.mathWithTransform[name] = value.transform
+      }
+    }
+    else {
+      // remove existing transform
+      delete math.expression.transform[name]
+      if (allowedInExpressions(name)) {
+        math.expression.mathWithTransform[name] = value
+      }
+    }
+  }
+
+  /**
+   * Create a wrapper a round an function which converts the arguments
+   * to their primitive values (like convert a Matrix to Array)
+   * @param {Function} fn
+   * @return {Function} Returns the wrapped function
+   * @private
+   */
+  function _wrap (fn) {
+    var wrapper = function wrapper () {
+      var args = [];
+      for (var i = 0, len = arguments.length; i < len; i++) {
+        var arg = arguments[i];
+        args[i] = arg && arg.valueOf();
+      }
+      return fn.apply(math, args);
+    };
+
+    if (fn.transform) {
+      wrapper.transform = fn.transform;
+    }
+
+    return wrapper;
+  }
+
+  /**
+   * Import an instance of a factory into math.js
+   * @param {{factory: Function, name: string, path: string, math: boolean}} factory
+   * @param {Object} options  See import for a description of the options
+   * @private
+   */
+  function _importFactory(factory, options) {
+    if (typeof factory.name === 'string') {
+      var name = factory.name;
+      var existingTransform = name in math.expression.transform
+      var namespace = factory.path ? traverse(math, factory.path) : math;
+      var existing = namespace.hasOwnProperty(name) ? namespace[name] : undefined;
+
+      var resolver = function () {
+        var instance = load(factory);
+        if (instance && typeof instance.transform === 'function') {
+          throw new Error('Transforms cannot be attached to factory functions. ' +
+              'Please create a separate function for it with exports.path="expression.transform"');
+        }
+
+        if (isTypedFunction(existing) && isTypedFunction(instance)) {
+          if (options.override) {
+            // replace the existing typed function (nothing to do)
+          }
+          else {
+            // merge the existing and new typed function
+            instance = typed(existing, instance);
+          }
+
+          return instance;
+        }
+
+        if (existing === undefined || options.override) {
+          return instance;
+        }
+
+        if (!options.silent) {
+          throw new Error('Cannot import "' + name + '": already exists');
+        }
+      };
+
+      if (factory.lazy !== false) {
+        lazy(namespace, name, resolver);
+
+        if (!existingTransform) {
+          if (factory.path === 'expression.transform' || factoryAllowedInExpressions(factory)) {
+            lazy(math.expression.mathWithTransform, name, resolver);
+          }
+        }
+      }
+      else {
+        namespace[name] = resolver();
+
+        if (!existingTransform) {
+          if (factory.path === 'expression.transform' || factoryAllowedInExpressions(factory)) {
+            math.expression.mathWithTransform[name] = resolver();
+          }
+        }
+      }
+
+      math.emit('import', name, resolver, factory.path);
+    }
+    else {
+      // unnamed factory.
+      // no lazy loading
+      load(factory);
+    }
+  }
+
+  /**
+   * Check whether given object is a type which can be imported
+   * @param {Function | number | string | boolean | null | Unit | Complex} object
+   * @return {boolean}
+   * @private
+   */
+  function isSupportedType(object) {
+    return typeof object === 'function'
+        || typeof object === 'number'
+        || typeof object === 'string'
+        || typeof object === 'boolean'
+        || object === null
+        || (object && type.isUnit(object))
+        || (object && type.isComplex(object))
+        || (object && type.isBigNumber(object))
+        || (object && type.isFraction(object))
+        || (object && type.isMatrix(object))
+        || (object && Array.isArray(object))
+  }
+
+  /**
+   * Test whether a given thing is a typed-function
+   * @param {*} fn
+   * @return {boolean} Returns true when `fn` is a typed-function
+   */
+  function isTypedFunction (fn) {
+    return typeof fn === 'function' && typeof fn.signatures === 'object';
+  }
+
+  function allowedInExpressions (name) {
+    return !unsafe.hasOwnProperty(name);
+  }
+
+  function factoryAllowedInExpressions (factory) {
+    return factory.path === undefined && !unsafe.hasOwnProperty(factory.name);
+  }
+
+  // namespaces and functions not available in the parser for safety reasons
+  var unsafe = {
+    'expression': true,
+    'type': true,
+    'docs': true,
+    'error': true,
+    'json': true,
+    'chain': true // chain method not supported. Note that there is a unit chain too.
+  };
+
+  return math_import;
+}
+
+exports.math = true; // request access to the math namespace as 5th argument of the factory function
+exports.name = 'import';
+exports.factory = factory;
+exports.lazy = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/typed.js":
+/*!***********************************************!*\
+  !*** ./node_modules/mathjs/lib/core/typed.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var typedFunction = __webpack_require__(/*! typed-function */ "./node_modules/typed-function/typed-function.js");
+var digits = __webpack_require__(/*! ./../utils/number */ "./node_modules/mathjs/lib/utils/number.js").digits;
+var isBigNumber = __webpack_require__(/*! ./../utils/bignumber/isBigNumber */ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js");
+var isMatrix = __webpack_require__(/*! ./../utils/collection/isMatrix */ "./node_modules/mathjs/lib/utils/collection/isMatrix.js");
+
+// returns a new instance of typed-function
+var createTyped = function () {
+  // initially, return the original instance of typed-function
+  // consecutively, return a new instance from typed.create.
+  createTyped = typedFunction.create;
+  return typedFunction;
+};
+
+/**
+ * Factory function for creating a new typed instance
+ * @param {Object} type   Object with data types like Complex and BigNumber
+ * @returns {Function}
+ */
+exports.create = function create(type) {
+  // TODO: typed-function must be able to silently ignore signatures with unknown data types
+
+  // type checks for all known types
+  //
+  // note that:
+  //
+  // - check by duck-typing on a property like `isUnit`, instead of checking instanceof.
+  //   instanceof cannot be used because that would not allow to pass data from
+  //   one instance of math.js to another since each has it's own instance of Unit.
+  // - check the `isUnit` property via the constructor, so there will be no
+  //   matches for "fake" instances like plain objects with a property `isUnit`.
+  //   That is important for security reasons.
+  // - It must not be possible to override the type checks used internally,
+  //   for security reasons, so these functions are not exposed in the expression
+  //   parser.
+  type.isNumber = function (x) { return typeof x === 'number' };
+  type.isComplex = function (x) { return type.Complex && x instanceof type.Complex || false };
+  type.isBigNumber = isBigNumber;
+  type.isFraction = function (x) { return type.Fraction && x instanceof type.Fraction || false };
+  type.isUnit = function (x) { return x && x.constructor.prototype.isUnit || false };
+  type.isString = function (x) { return typeof x === 'string' };
+  type.isArray = Array.isArray;
+  type.isMatrix = isMatrix;
+  type.isDenseMatrix = function (x) { return x && x.isDenseMatrix && x.constructor.prototype.isMatrix || false };
+  type.isSparseMatrix = function (x) { return x && x.isSparseMatrix && x.constructor.prototype.isMatrix || false };
+  type.isRange = function (x) { return x && x.constructor.prototype.isRange || false };
+  type.isIndex = function (x) { return x && x.constructor.prototype.isIndex || false };
+  type.isBoolean = function (x) { return typeof x === 'boolean' };
+  type.isResultSet = function (x) { return x && x.constructor.prototype.isResultSet || false };
+  type.isHelp = function (x) { return x && x.constructor.prototype.isHelp || false };
+  type.isFunction = function (x) { return typeof x === 'function'};
+  type.isDate = function (x) { return x instanceof Date };
+  type.isRegExp = function (x) { return x instanceof RegExp };
+  type.isObject = function (x) { return typeof x === 'object' };
+  type.isNull = function (x) { return x === null };
+  type.isUndefined = function (x) { return x === undefined };
+
+  type.isAccessorNode = function (x) { return x && x.isAccessorNode && x.constructor.prototype.isNode || false };
+  type.isArrayNode = function (x) { return x && x.isArrayNode && x.constructor.prototype.isNode || false };
+  type.isAssignmentNode = function (x) { return x && x.isAssignmentNode && x.constructor.prototype.isNode || false };
+  type.isBlockNode = function (x) { return x && x.isBlockNode && x.constructor.prototype.isNode || false };
+  type.isConditionalNode = function (x) { return x && x.isConditionalNode && x.constructor.prototype.isNode || false };
+  type.isConstantNode = function (x) { return x && x.isConstantNode && x.constructor.prototype.isNode || false };
+  type.isFunctionAssignmentNode = function (x) { return x && x.isFunctionAssignmentNode && x.constructor.prototype.isNode || false };
+  type.isFunctionNode = function (x) { return x && x.isFunctionNode && x.constructor.prototype.isNode || false };
+  type.isIndexNode = function (x) { return x && x.isIndexNode && x.constructor.prototype.isNode || false };
+  type.isNode = function (x) { return x && x.isNode && x.constructor.prototype.isNode || false };
+  type.isObjectNode = function (x) { return x && x.isObjectNode && x.constructor.prototype.isNode || false };
+  type.isOperatorNode = function (x) { return x && x.isOperatorNode && x.constructor.prototype.isNode || false };
+  type.isParenthesisNode = function (x) { return x && x.isParenthesisNode && x.constructor.prototype.isNode || false };
+  type.isRangeNode = function (x) { return x && x.isRangeNode && x.constructor.prototype.isNode || false };
+  type.isSymbolNode = function (x) { return x && x.isSymbolNode && x.constructor.prototype.isNode || false };
+
+  type.isChain = function (x) { return x && x.constructor.prototype.isChain || false };
+
+  // get a new instance of typed-function
+  var typed = createTyped();
+
+  // define all types. The order of the types determines in which order function
+  // arguments are type-checked (so for performance it's important to put the
+  // most used types first).
+  typed.types = [
+    { name: 'number',          test: type.isNumber },
+    { name: 'Complex',         test: type.isComplex },
+    { name: 'BigNumber',       test: type.isBigNumber },
+    { name: 'Fraction',        test: type.isFraction },
+    { name: 'Unit',            test: type.isUnit },
+    { name: 'string',          test: type.isString },
+    { name: 'Array',           test: type.isArray },
+    { name: 'Matrix',          test: type.isMatrix },
+    { name: 'DenseMatrix',     test: type.isDenseMatrix },
+    { name: 'SparseMatrix',    test: type.isSparseMatrix },
+    { name: 'Range',           test: type.isRange },
+    { name: 'Index',           test: type.isIndex },
+    { name: 'boolean',         test: type.isBoolean },
+    { name: 'ResultSet',       test: type.isResultSet },
+    { name: 'Help',            test: type.isHelp },
+    { name: 'function',        test: type.isFunction },
+    { name: 'Date',            test: type.isDate },
+    { name: 'RegExp',          test: type.isRegExp },
+    { name: 'Object',          test: type.isObject },
+    { name: 'null',            test: type.isNull },
+    { name: 'undefined',       test: type.isUndefined },
+
+    { name: 'OperatorNode',    test: type.isOperatorNode },
+    { name: 'ConstantNode',    test: type.isConstantNode },
+    { name: 'SymbolNode',      test: type.isSymbolNode },
+    { name: 'ParenthesisNode', test: type.isParenthesisNode },
+    { name: 'FunctionNode',    test: type.isFunctionNode },
+    { name: 'FunctionAssignmentNode',    test: type.isFunctionAssignmentNode },
+    { name: 'ArrayNode',                 test: type.isArrayNode },
+    { name: 'AssignmentNode',            test: type.isAssignmentNode },
+    { name: 'BlockNode',                 test: type.isBlockNode },
+    { name: 'ConditionalNode',           test: type.isConditionalNode },
+    { name: 'IndexNode',                 test: type.isIndexNode },
+    { name: 'RangeNode',                 test: type.isRangeNode },
+    { name: 'Node',                      test: type.isNode }
+  ];
+
+  // TODO: add conversion from BigNumber to number?
+  typed.conversions = [
+    {
+      from: 'number',
+      to: 'BigNumber',
+      convert: function (x) {
+        // note: conversion from number to BigNumber can fail if x has >15 digits
+        if (digits(x) > 15) {
+          throw new TypeError('Cannot implicitly convert a number with >15 significant digits to BigNumber ' +
+          '(value: ' + x + '). ' +
+          'Use function bignumber(x) to convert to BigNumber.');
+        }
+        return new type.BigNumber(x);
+      }
+    }, {
+      from: 'number',
+      to: 'Complex',
+      convert: function (x) {
+        return new type.Complex(x, 0);
+      }
+    }, {
+      from: 'number',
+      to: 'string',
+      convert: function (x) {
+        return x + '';
+      }
+    }, {
+      from: 'BigNumber',
+      to: 'Complex',
+      convert: function (x) {
+        return new type.Complex(x.toNumber(), 0);
+      }
+    }, {
+      from: 'Fraction',
+      to: 'BigNumber',
+      convert: function (x) {
+        throw new TypeError('Cannot implicitly convert a Fraction to BigNumber or vice versa. ' +
+            'Use function bignumber(x) to convert to BigNumber or fraction(x) to convert to Fraction.');
+      }
+    }, {
+      from: 'Fraction',
+      to: 'Complex',
+      convert: function (x) {
+        return new type.Complex(x.valueOf(), 0);
+      }
+    }, {
+      from: 'number',
+      to: 'Fraction',
+      convert: function (x) {
+        var f = new type.Fraction(x);
+        if (f.valueOf() !== x) {
+          throw new TypeError('Cannot implicitly convert a number to a Fraction when there will be a loss of precision ' +
+              '(value: ' + x + '). ' +
+              'Use function fraction(x) to convert to Fraction.');
+        }
+        return new type.Fraction(x);
+      }
+    }, {
+    // FIXME: add conversion from Fraction to number, for example for `sqrt(fraction(1,3))`
+    //  from: 'Fraction',
+    //  to: 'number',
+    //  convert: function (x) {
+    //    return x.valueOf();
+    //  }
+    //}, {
+      from: 'string',
+      to: 'number',
+      convert: function (x) {
+        var n = Number(x);
+        if (isNaN(n)) {
+          throw new Error('Cannot convert "' + x + '" to a number');
+        }
+        return n;
+      }
+    }, {
+      from: 'string',
+      to: 'BigNumber',
+      convert: function (x) {
+        try {
+          return new type.BigNumber(x);
+        }
+        catch (err) {
+          throw new Error('Cannot convert "' + x + '" to BigNumber');
+        }
+      }
+    }, {
+      from: 'string',
+      to: 'Fraction',
+      convert: function (x) {
+        try {
+          return new type.Fraction(x);
+        }
+        catch (err) {
+          throw new Error('Cannot convert "' + x + '" to Fraction');
+        }
+      }
+    }, {
+      from: 'string',
+      to: 'Complex',
+      convert: function (x) {
+        try {
+          return new type.Complex(x);
+        }
+        catch (err) {
+          throw new Error('Cannot convert "' + x + '" to Complex');
+        }
+      }
+    }, {
+      from: 'boolean',
+      to: 'number',
+      convert: function (x) {
+        return +x;
+      }
+    }, {
+      from: 'boolean',
+      to: 'BigNumber',
+      convert: function (x) {
+        return new type.BigNumber(+x);
+      }
+    }, {
+      from: 'boolean',
+      to: 'Fraction',
+      convert: function (x) {
+        return new type.Fraction(+x);
+      }
+    }, {
+      from: 'boolean',
+      to: 'string',
+      convert: function (x) {
+        return +x;
+      }
+    }, {
+      from: 'null',
+      to: 'number',
+      convert: function () {
+        return 0;
+      }
+    }, {
+      from: 'null',
+      to: 'string',
+      convert: function () {
+        return 'null';
+      }
+    }, {
+      from: 'null',
+      to: 'BigNumber',
+      convert: function () {
+        return new type.BigNumber(0);
+      }
+    }, {
+      from: 'null',
+      to: 'Fraction',
+      convert: function () {
+        return new type.Fraction(0);
+      }
+    }, {
+      from: 'Array',
+      to: 'Matrix',
+      convert: function (array) {
+        // TODO: how to decide on the right type of matrix to create?
+        return new type.DenseMatrix(array);
+      }
+    }, {
+      from: 'Matrix',
+      to: 'Array',
+      convert: function (matrix) {
+        return matrix.valueOf();
+      }
+    }
+  ];
+
+  return typed;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/error/ArgumentsError.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/error/ArgumentsError.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Create a syntax error with the message:
+ *     'Wrong number of arguments in function <fn> (<count> provided, <min>-<max> expected)'
+ * @param {string} fn     Function name
+ * @param {number} count  Actual argument count
+ * @param {number} min    Minimum required argument count
+ * @param {number} [max]  Maximum required argument count
+ * @extends Error
+ */
+function ArgumentsError(fn, count, min, max) {
+  if (!(this instanceof ArgumentsError)) {
+    throw new SyntaxError('Constructor must be called with the new operator');
+  }
+
+  this.fn = fn;
+  this.count = count;
+  this.min = min;
+  this.max = max;
+
+  this.message = 'Wrong number of arguments in function ' + fn +
+      ' (' + count + ' provided, ' +
+      min + ((max != undefined) ? ('-' + max) : '') + ' expected)';
+
+  this.stack = (new Error()).stack;
+}
+
+ArgumentsError.prototype = new Error();
+ArgumentsError.prototype.constructor = Error;
+ArgumentsError.prototype.name = 'ArgumentsError';
+ArgumentsError.prototype.isArgumentsError = true;
+
+module.exports = ArgumentsError;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/error/DimensionError.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/error/DimensionError.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Create a range error with the message:
+ *     'Dimension mismatch (<actual size> != <expected size>)'
+ * @param {number | number[]} actual        The actual size
+ * @param {number | number[]} expected      The expected size
+ * @param {string} [relation='!=']          Optional relation between actual
+ *                                          and expected size: '!=', '<', etc.
+ * @extends RangeError
+ */
+function DimensionError(actual, expected, relation) {
+  if (!(this instanceof DimensionError)) {
+    throw new SyntaxError('Constructor must be called with the new operator');
+  }
+
+  this.actual   = actual;
+  this.expected = expected;
+  this.relation = relation;
+
+  this.message = 'Dimension mismatch (' +
+      (Array.isArray(actual) ? ('[' + actual.join(', ') + ']') : actual) +
+      ' ' + (this.relation || '!=') + ' ' +
+      (Array.isArray(expected) ? ('[' + expected.join(', ') + ']') : expected) +
+      ')';
+
+  this.stack = (new Error()).stack;
+}
+
+DimensionError.prototype = new RangeError();
+DimensionError.prototype.constructor = RangeError;
+DimensionError.prototype.name = 'DimensionError';
+DimensionError.prototype.isDimensionError = true;
+
+module.exports = DimensionError;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/error/IndexError.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/mathjs/lib/error/IndexError.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Create a range error with the message:
+ *     'Index out of range (index < min)'
+ *     'Index out of range (index < max)'
+ *
+ * @param {number} index     The actual index
+ * @param {number} [min=0]   Minimum index (included)
+ * @param {number} [max]     Maximum index (excluded)
+ * @extends RangeError
+ */
+function IndexError(index, min, max) {
+  if (!(this instanceof IndexError)) {
+    throw new SyntaxError('Constructor must be called with the new operator');
+  }
+
+  this.index = index;
+  if (arguments.length < 3) {
+    this.min = 0;
+    this.max = min;
+  }
+  else {
+    this.min = min;
+    this.max = max;
+  }
+
+  if (this.min !== undefined && this.index < this.min) {
+    this.message = 'Index out of range (' + this.index + ' < ' + this.min + ')';
+  }
+  else if (this.max !== undefined && this.index >= this.max) {
+    this.message = 'Index out of range (' + this.index + ' > ' + (this.max - 1) + ')';
+  }
+  else {
+    this.message = 'Index out of range (' + this.index + ')';
+  }
+
+  this.stack = (new Error()).stack;
+}
+
+IndexError.prototype = new RangeError();
+IndexError.prototype.constructor = RangeError;
+IndexError.prototype.name = 'IndexError';
+IndexError.prototype.isIndexError = true;
+
+module.exports = IndexError;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/addScalar.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/addScalar.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory(type, config, load, typed) {
+
+  /**
+   * Add two scalar values, `x + y`.
+   * This function is meant for internal use: it is used by the public function
+   * `add`
+   *
+   * This function does not support collections (Array or Matrix), and does
+   * not validate the number of of inputs.
+   *
+   * @param  {number | BigNumber | Fraction | Complex | Unit} x   First value to add
+   * @param  {number | BigNumber | Fraction | Complex} y          Second value to add
+   * @return {number | BigNumber | Fraction | Complex | Unit}                      Sum of `x` and `y`
+   * @private
+   */
+  var add = typed('add', {
+
+    'number, number': function (x, y) {
+      return x + y;
+    },
+
+    'Complex, Complex': function (x, y) {
+      return x.add(y);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      return x.plus(y);
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      return x.add(y);
+    },
+
+    'Unit, Unit': function (x, y) {
+      if (x.value == null) throw new Error('Parameter x contains a unit with undefined value');
+      if (y.value == null) throw new Error('Parameter y contains a unit with undefined value');
+      if (!x.equalBase(y)) throw new Error('Units do not match');
+
+      var res = x.clone();
+      res.value = add(res.value, y.value);
+      res.fixPrefix = false;
+      return res;
+    }
+  });
+
+  return add;
+}
+
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/multiply.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/multiply.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var extend = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").extend;
+var array = __webpack_require__(/*! ../../utils/array */ "./node_modules/mathjs/lib/utils/array.js");
+
+function factory (type, config, load, typed) {
+  var latex = __webpack_require__(/*! ../../utils/latex */ "./node_modules/mathjs/lib/utils/latex.js");
+
+  var matrix = load(__webpack_require__(/*! ../../type/matrix/function/matrix */ "./node_modules/mathjs/lib/type/matrix/function/matrix.js"));
+  var addScalar = load(__webpack_require__(/*! ./addScalar */ "./node_modules/mathjs/lib/function/arithmetic/addScalar.js"));
+  var multiplyScalar = load(__webpack_require__(/*! ./multiplyScalar */ "./node_modules/mathjs/lib/function/arithmetic/multiplyScalar.js"));
+  var equalScalar = load(__webpack_require__(/*! ../relational/equalScalar */ "./node_modules/mathjs/lib/function/relational/equalScalar.js"));
+
+  var algorithm11 = load(__webpack_require__(/*! ../../type/matrix/utils/algorithm11 */ "./node_modules/mathjs/lib/type/matrix/utils/algorithm11.js"));
+  var algorithm14 = load(__webpack_require__(/*! ../../type/matrix/utils/algorithm14 */ "./node_modules/mathjs/lib/type/matrix/utils/algorithm14.js"));
+  
+  var DenseMatrix = type.DenseMatrix;
+  var SparseMatrix = type.SparseMatrix;
+
+  /**
+   * Multiply two or more values, `x * y`.
+   * For matrices, the matrix product is calculated.
+   *
+   * Syntax:
+   *
+   *    math.multiply(x, y)
+   *    math.multiply(x, y, z, ...)
+   *
+   * Examples:
+   *
+   *    math.multiply(4, 5.2);        // returns number 20.8
+   *    math.multiply(2, 3, 4);       // returns number 24
+   *
+   *    var a = math.complex(2, 3);
+   *    var b = math.complex(4, 1);
+   *    math.multiply(a, b);          // returns Complex 5 + 14i
+   *
+   *    var c = [[1, 2], [4, 3]];
+   *    var d = [[1, 2, 3], [3, -4, 7]];
+   *    math.multiply(c, d);          // returns Array [[7, -6, 17], [13, -4, 33]]
+   *
+   *    var e = math.unit('2.1 km');
+   *    math.multiply(3, e);          // returns Unit 6.3 km
+   *
+   * See also:
+   *
+   *    divide, prod, cross, dot
+   *
+   * @param  {number | BigNumber | Fraction | Complex | Unit | Array | Matrix} x First value to multiply
+   * @param  {number | BigNumber | Fraction | Complex | Unit | Array | Matrix} y Second value to multiply
+   * @return {number | BigNumber | Fraction | Complex | Unit | Array | Matrix} Multiplication of `x` and `y`
+   */
+  var multiply = typed('multiply', extend({
+    // we extend the signatures of multiplyScalar with signatures dealing with matrices
+
+    'Array, Array': function (x, y) {
+      // check dimensions
+      _validateMatrixDimensions(array.size(x), array.size(y));
+
+      // use dense matrix implementation
+      var m = multiply(matrix(x), matrix(y));
+      // return array or scalar
+      return type.isMatrix(m) ? m.valueOf() : m;
+    },
+
+    'Matrix, Matrix': function (x, y) {
+      // dimensions
+      var xsize = x.size();
+      var ysize = y.size();
+
+      // check dimensions
+      _validateMatrixDimensions(xsize, ysize);
+
+      // process dimensions
+      if (xsize.length === 1) {
+        // process y dimensions
+        if (ysize.length === 1) {
+          // Vector * Vector
+          return _multiplyVectorVector(x, y, xsize[0]);
+        }
+        // Vector * Matrix
+        return _multiplyVectorMatrix(x, y);
+      }
+      // process y dimensions
+      if (ysize.length === 1) {
+        // Matrix * Vector
+        return _multiplyMatrixVector(x, y);
+      }
+      // Matrix * Matrix
+      return _multiplyMatrixMatrix(x, y);
+    },
+
+    'Matrix, Array': function (x, y) {
+      // use Matrix * Matrix implementation
+      return multiply(x, matrix(y));
+    },
+
+    'Array, Matrix': function (x, y) {
+      // use Matrix * Matrix implementation
+      return multiply(matrix(x, y.storage()), y);
+    },
+
+    'Matrix, any': function (x, y) {
+      // result
+      var c;
+      
+      // process storage format
+      switch (x.storage()) {
+        case 'sparse':
+          c = algorithm11(x, y, multiplyScalar, false);
+          break;
+        case 'dense':
+          c = algorithm14(x, y, multiplyScalar, false);
+          break;
+      }
+      return c;
+    },
+
+    'any, Matrix': function (x, y) {
+      // result
+      var c;
+      // check storage format
+      switch (y.storage()) {
+        case 'sparse':
+          c = algorithm11(y, x, multiplyScalar, true);
+          break;
+        case 'dense':
+          c = algorithm14(y, x, multiplyScalar, true);
+          break;
+      }
+      return c;
+    },
+
+    'Array, any': function (x, y) {
+      // use matrix implementation
+      return algorithm14(matrix(x), y, multiplyScalar, false).valueOf();
+    },
+
+    'any, Array': function (x, y) {
+      // use matrix implementation
+      return algorithm14(matrix(y), x, multiplyScalar, true).valueOf();
+    },
+
+    'any, any': multiplyScalar,
+
+    'Array | Matrix | any, Array | Matrix | any, ...any': function (x, y, rest) {
+      var result = multiply(x, y);
+
+      for (var i = 0; i < rest.length; i++) {
+        result = multiply(result, rest[i]);
+      }
+      
+      return result;
+    }
+  }, multiplyScalar.signatures));
+
+  var _validateMatrixDimensions = function (size1, size2) {
+    // check left operand dimensions
+    switch (size1.length) {
+      case 1:
+        // check size2
+        switch (size2.length) {
+          case 1:
+            // Vector x Vector
+            if (size1[0] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Vectors must have the same length');
+            }
+            break;
+          case 2:
+            // Vector x Matrix
+            if (size1[0] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Vector length (' + size1[0] + ') must match Matrix rows (' + size2[0] + ')');
+            }
+            break;
+          default:
+            throw new Error('Can only multiply a 1 or 2 dimensional matrix (Matrix B has ' + size2.length + ' dimensions)');
+        }
+        break;
+      case 2:
+        // check size2
+        switch (size2.length) {
+          case 1:
+            // Matrix x Vector
+            if (size1[1] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Matrix columns (' + size1[1] + ') must match Vector length (' + size2[0] + ')');
+            }
+            break;
+          case 2:
+            // Matrix x Matrix
+            if (size1[1] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Matrix A columns (' + size1[1] + ') must match Matrix B rows (' + size2[0] + ')');
+            }
+            break;
+          default:
+            throw new Error('Can only multiply a 1 or 2 dimensional matrix (Matrix B has ' + size2.length + ' dimensions)');
+        }
+        break;
+      default:
+        throw new Error('Can only multiply a 1 or 2 dimensional matrix (Matrix A has ' + size1.length + ' dimensions)');
+    }
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Dense Vector   (N)
+   * @param {Matrix} b            Dense Vector   (N)
+   *
+   * @return {number}             Scalar value
+   */
+  var _multiplyVectorVector = function (a, b, n) {
+    // check empty vector
+    if (n === 0)
+      throw new Error('Cannot multiply two empty vectors');
+
+    // a dense
+    var adata = a._data;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+    
+    // result (do not initialize it with zero)
+    var c = mf(adata[0], bdata[0]);
+    // loop data
+    for (var i = 1; i < n; i++) {
+      // multiply and accumulate
+      c = af(c, mf(adata[i], bdata[i]));
+    }
+    return c;
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Dense Vector   (M)
+   * @param {Matrix} b            Matrix         (MxN)
+   *
+   * @return {Matrix}             Dense Vector   (N)
+   */
+  var _multiplyVectorMatrix = function (a, b) {
+    // process storage
+    switch (b.storage()) {
+      case 'dense':
+        return _multiplyVectorDenseMatrix(a, b);
+    }
+    throw new Error('Not implemented');
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Dense Vector   (M)
+   * @param {Matrix} b            Dense Matrix   (MxN)
+   *
+   * @return {Matrix}             Dense Vector   (N)
+   */
+  var _multiplyVectorDenseMatrix = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bsize = b._size;
+    var bdt = b._datatype;
+    // rows & columns
+    var alength = asize[0];
+    var bcolumns = bsize[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+
+    // result
+    var c = [];
+
+    // loop matrix columns
+    for (var j = 0; j < bcolumns; j++) {
+      // sum (do not initialize it with zero)
+      var sum = mf(adata[0], bdata[0][j]);      
+      // loop vector
+      for (var i = 1; i < alength; i++) {
+        // multiply & accumulate
+        sum = af(sum, mf(adata[i], bdata[i][j]));
+      }
+      c[j] = sum;
+    }
+
+    // return matrix
+    return new DenseMatrix({
+      data: c,
+      size: [bcolumns],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Matrix         (MxN)
+   * @param {Matrix} b            Dense Vector   (N)
+   *
+   * @return {Matrix}             Dense Vector   (M)
+   */
+  var _multiplyMatrixVector = function (a, b) {
+    // process storage
+    switch (a.storage()) {
+      case 'dense':
+        return _multiplyDenseMatrixVector(a, b);
+      case 'sparse':
+        return _multiplySparseMatrixVector(a, b);
+    }
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Matrix         (MxN)
+   * @param {Matrix} b            Matrix         (NxC)
+   *
+   * @return {Matrix}             Matrix         (MxC)
+   */
+  var _multiplyMatrixMatrix = function (a, b) {
+    // process storage
+    switch (a.storage()) {
+      case 'dense':
+        // process storage
+        switch (b.storage()) {
+          case 'dense':
+            return _multiplyDenseMatrixDenseMatrix(a, b);
+          case 'sparse':
+            return _multiplyDenseMatrixSparseMatrix(a, b);
+        }
+        break;
+      case 'sparse':
+        // process storage
+        switch (b.storage()) {
+          case 'dense':
+            return _multiplySparseMatrixDenseMatrix(a, b);
+          case 'sparse':
+            return _multiplySparseMatrixSparseMatrix(a, b);
+        }
+        break;
+    }
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            DenseMatrix  (MxN)
+   * @param {Matrix} b            Dense Vector (N)
+   *
+   * @return {Matrix}             Dense Vector (M) 
+   */ 
+  var _multiplyDenseMatrixVector = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = asize[0];
+    var acolumns = asize[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+
+    // result
+    var c = [];
+
+    // loop matrix a rows
+    for (var i = 0; i < arows; i++) {
+      // current row
+      var row = adata[i];
+      // sum (do not initialize it with zero)
+      var sum = mf(row[0], bdata[0]);
+      // loop matrix a columns
+      for (var j = 1; j < acolumns; j++) {
+        // multiply & accumulate
+        sum = af(sum, mf(row[j], bdata[j]));
+      }
+      c[i] = sum;
+    }
+
+    // return matrix
+    return new DenseMatrix({
+      data: c,
+      size: [arows],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            DenseMatrix    (MxN)
+   * @param {Matrix} b            DenseMatrix    (NxC)
+   *
+   * @return {Matrix}             DenseMatrix    (MxC)
+   */
+  var _multiplyDenseMatrixDenseMatrix = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bsize = b._size;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = asize[0];
+    var acolumns = asize[1];
+    var bcolumns = bsize[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+    
+    // result
+    var c = [];
+
+    // loop matrix a rows
+    for (var i = 0; i < arows; i++) {
+      // current row
+      var row = adata[i];
+      // initialize row array
+      c[i] = [];
+      // loop matrix b columns
+      for (var j = 0; j < bcolumns; j++) {
+        // sum (avoid initializing sum to zero)
+        var sum = mf(row[0], bdata[0][j]);
+        // loop matrix a columns
+        for (var x = 1; x < acolumns; x++) {
+          // multiply & accumulate
+          sum = af(sum, mf(row[x], bdata[x][j]));
+        }
+        c[i][j] = sum;
+      }
+    }
+
+    // return matrix
+    return new DenseMatrix({
+      data: c,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            DenseMatrix    (MxN)
+   * @param {Matrix} b            SparseMatrix   (NxC)
+   *
+   * @return {Matrix}             SparseMatrix   (MxC)
+   */
+  var _multiplyDenseMatrixSparseMatrix = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b sparse
+    var bvalues = b._values;
+    var bindex = b._index;
+    var bptr = b._ptr;
+    var bsize = b._size;
+    var bdt = b._datatype;
+    // validate b matrix
+    if (!bvalues)
+      throw new Error('Cannot multiply Dense Matrix times Pattern only Matrix');
+    // rows & columns
+    var arows = asize[0];
+    var bcolumns = bsize[1];
+    
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+    // equalScalar signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+    }
+
+    // result
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    // c matrix
+    var c = new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+
+    // loop b columns
+    for (var jb = 0; jb < bcolumns; jb++) {
+      // update ptr
+      cptr[jb] = cindex.length;
+      // indeces in column jb
+      var kb0 = bptr[jb];
+      var kb1 = bptr[jb + 1];
+      // do not process column jb if no data exists
+      if (kb1 > kb0) {
+        // last row mark processed
+        var last = 0;
+        // loop a rows
+        for (var i = 0; i < arows; i++) {
+          // column mark
+          var mark = i + 1;
+          // C[i, jb]
+          var cij;
+          // values in b column j
+          for (var kb = kb0; kb < kb1; kb++) {
+            // row
+            var ib = bindex[kb];
+            // check value has been initialized
+            if (last !== mark) {
+              // first value in column jb
+              cij = mf(adata[i][ib], bvalues[kb]);
+              // update mark
+              last = mark;
+            }
+            else {
+              // accumulate value
+              cij = af(cij, mf(adata[i][ib], bvalues[kb]));
+            }
+          }
+          // check column has been processed and value != 0
+          if (last === mark && !eq(cij, zero)) {
+            // push row & value
+            cindex.push(i);
+            cvalues.push(cij);
+          }
+        }
+      }
+    }
+    // update ptr
+    cptr[bcolumns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            SparseMatrix    (MxN)
+   * @param {Matrix} b            Dense Vector (N)
+   *
+   * @return {Matrix}             SparseMatrix    (M, 1) 
+   */
+  var _multiplySparseMatrixVector = function (a, b) {
+    // a sparse
+    var avalues = a._values;
+    var aindex = a._index;
+    var aptr = a._ptr;
+    var adt = a._datatype;
+    // validate a matrix
+    if (!avalues)
+      throw new Error('Cannot multiply Pattern only Matrix times Dense Matrix');
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = a._size[0];
+    var brows = b._size[0];
+    // result
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+    // equalScalar signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+    }
+
+    // workspace
+    var x = [];
+    // vector with marks indicating a value x[i] exists in a given column
+    var w = [];
+
+    // update ptr
+    cptr[0] = 0;
+    // rows in b
+    for (var ib = 0; ib < brows; ib++) {
+      // b[ib]
+      var vbi = bdata[ib];
+      // check b[ib] != 0, avoid loops
+      if (!eq(vbi, zero)) {
+        // A values & index in ib column
+        for (var ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+          // a row
+          var ia = aindex[ka];
+          // check value exists in current j
+          if (!w[ia]) {
+            // ia is new entry in j
+            w[ia] = true;
+            // add i to pattern of C
+            cindex.push(ia);
+            // x(ia) = A
+            x[ia] = mf(vbi, avalues[ka]);
+          }
+          else {
+            // i exists in C already
+            x[ia] = af(x[ia], mf(vbi, avalues[ka]));
+          }
+        }
+      }
+    }
+    // copy values from x to column jb of c
+    for (var p1 = cindex.length, p = 0; p < p1; p++) {
+      // row
+      var ic = cindex[p];
+      // copy value
+      cvalues[p] = x[ic];
+    }
+    // update ptr
+    cptr[1] = cindex.length;
+
+    // return sparse matrix
+    return new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, 1],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            SparseMatrix      (MxN)
+   * @param {Matrix} b            DenseMatrix       (NxC)
+   *
+   * @return {Matrix}             SparseMatrix      (MxC)
+   */
+  var _multiplySparseMatrixDenseMatrix = function (a, b) {
+    // a sparse
+    var avalues = a._values;
+    var aindex = a._index;
+    var aptr = a._ptr;
+    var adt = a._datatype;
+    // validate a matrix
+    if (!avalues)
+      throw new Error('Cannot multiply Pattern only Matrix times Dense Matrix');
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = a._size[0];
+    var brows = b._size[0];
+    var bcolumns = b._size[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+    // equalScalar signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+    }
+
+    // result
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    // c matrix
+    var c = new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+
+    // workspace
+    var x = [];
+    // vector with marks indicating a value x[i] exists in a given column
+    var w = [];
+
+    // loop b columns
+    for (var jb = 0; jb < bcolumns; jb++) {
+      // update ptr
+      cptr[jb] = cindex.length;
+      // mark in workspace for current column
+      var mark = jb + 1;
+      // rows in jb
+      for (var ib = 0; ib < brows; ib++) {
+        // b[ib, jb]
+        var vbij = bdata[ib][jb];
+        // check b[ib, jb] != 0, avoid loops
+        if (!eq(vbij, zero)) {
+          // A values & index in ib column
+          for (var ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+            // a row
+            var ia = aindex[ka];
+            // check value exists in current j
+            if (w[ia] !== mark) {
+              // ia is new entry in j
+              w[ia] = mark;
+              // add i to pattern of C
+              cindex.push(ia);
+              // x(ia) = A
+              x[ia] = mf(vbij, avalues[ka]);
+            }
+            else {
+              // i exists in C already
+              x[ia] = af(x[ia], mf(vbij, avalues[ka]));
+            }
+          }
+        }
+      }
+      // copy values from x to column jb of c
+      for (var p0 = cptr[jb], p1 = cindex.length, p = p0; p < p1; p++) {
+        // row
+        var ic = cindex[p];
+        // copy value
+        cvalues[p] = x[ic];
+      }
+    }
+    // update ptr
+    cptr[bcolumns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            SparseMatrix      (MxN)
+   * @param {Matrix} b            SparseMatrix      (NxC)
+   *
+   * @return {Matrix}             SparseMatrix      (MxC)
+   */
+  var _multiplySparseMatrixSparseMatrix = function (a, b) {
+    // a sparse
+    var avalues = a._values;
+    var aindex = a._index;
+    var aptr = a._ptr;
+    var adt = a._datatype;
+    // b sparse
+    var bvalues = b._values;
+    var bindex = b._index;
+    var bptr = b._ptr;
+    var bdt = b._datatype;
+    
+    // rows & columns
+    var arows = a._size[0];
+    var bcolumns = b._size[1];
+    // flag indicating both matrices (a & b) contain data
+    var values = avalues && bvalues;
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+    
+    // result
+    var cvalues = values ? [] : undefined;
+    var cindex = [];
+    var cptr = [];
+    // c matrix
+    var c = new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+
+    // workspace
+    var x = values ? [] : undefined;
+    // vector with marks indicating a value x[i] exists in a given column
+    var w = [];
+    // variables
+    var ka, ka0, ka1, kb, kb0, kb1, ia, ib;
+    // loop b columns
+    for (var jb = 0; jb < bcolumns; jb++) {
+      // update ptr
+      cptr[jb] = cindex.length;
+      // mark in workspace for current column
+      var mark = jb + 1;
+      // B values & index in j
+      for (kb0 = bptr[jb], kb1 = bptr[jb + 1], kb = kb0; kb < kb1; kb++) {
+        // b row
+        ib = bindex[kb];
+        // check we need to process values
+        if (values) {
+          // loop values in a[:,ib]
+          for (ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+            // row
+            ia = aindex[ka];
+            // check value exists in current j
+            if (w[ia] !== mark) {
+              // ia is new entry in j
+              w[ia] = mark;
+              // add i to pattern of C
+              cindex.push(ia);
+              // x(ia) = A
+              x[ia] = mf(bvalues[kb], avalues[ka]);
+            }
+            else {
+              // i exists in C already
+              x[ia] = af(x[ia], mf(bvalues[kb], avalues[ka]));
+            }
+          }
+        }
+        else {
+          // loop values in a[:,ib]
+          for (ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+            // row
+            ia = aindex[ka];
+            // check value exists in current j
+            if (w[ia] !== mark) {
+              // ia is new entry in j
+              w[ia] = mark;
+              // add i to pattern of C
+              cindex.push(ia);
+            }
+          }
+        }
+      }
+      // check we need to process matrix values (pattern matrix)
+      if (values) {
+        // copy values from x to column jb of c
+        for (var p0 = cptr[jb], p1 = cindex.length, p = p0; p < p1; p++) {
+          // row
+          var ic = cindex[p];
+          // copy value
+          cvalues[p] = x[ic];
+        }
+      }
+    }
+    // update ptr
+    cptr[bcolumns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  multiply.toTex = {
+    2: '\\left(${args[0]}' + latex.operators['multiply'] + '${args[1]}\\right)'
+  };
+
+  return multiply;
+}
+
+exports.name = 'multiply';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/multiplyScalar.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/multiplyScalar.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory(type, config, load, typed) {
+  
+  /**
+   * Multiply two scalar values, `x * y`.
+   * This function is meant for internal use: it is used by the public function
+   * `multiply`
+   *
+   * This function does not support collections (Array or Matrix), and does
+   * not validate the number of of inputs.
+   *
+   * @param  {number | BigNumber | Fraction | Complex | Unit} x   First value to multiply
+   * @param  {number | BigNumber | Fraction | Complex} y          Second value to multiply
+   * @return {number | BigNumber | Fraction | Complex | Unit}                      Multiplication of `x` and `y`
+   * @private
+   */
+  var multiplyScalar = typed('multiplyScalar', {
+
+    'number, number': function (x, y) {
+      return x * y;
+    },
+
+    'Complex, Complex': function (x, y) {
+      return x.mul(y);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      return x.times(y);
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      return x.mul(y);
+    },
+
+    'number | Fraction | BigNumber | Complex, Unit': function (x, y) {
+      var res = y.clone();
+      res.value = (res.value === null) ? res._normalize(x) : multiplyScalar(res.value, x);
+      return res;
+    },
+
+    'Unit, number | Fraction | BigNumber | Complex': function (x, y) {
+      var res = x.clone();
+      res.value = (res.value === null) ? res._normalize(y) : multiplyScalar(res.value, y);
+      return res;
+    },
+
+    'Unit, Unit': function (x, y) {
+      return x.multiply(y);
+    }
+
+  });
+
+  return multiplyScalar;
+}
+
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/pow.js":
+/*!************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/pow.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isInteger = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").isInteger;
+var size = __webpack_require__(/*! ../../utils/array */ "./node_modules/mathjs/lib/utils/array.js").size;
+
+function factory (type, config, load, typed) {
+  var latex = __webpack_require__(/*! ../../utils/latex */ "./node_modules/mathjs/lib/utils/latex.js");
+  var eye = load(__webpack_require__(/*! ../matrix/eye */ "./node_modules/mathjs/lib/function/matrix/eye.js"));
+  var multiply = load(__webpack_require__(/*! ./multiply */ "./node_modules/mathjs/lib/function/arithmetic/multiply.js"));
+  var matrix = load(__webpack_require__(/*! ../../type/matrix/function/matrix */ "./node_modules/mathjs/lib/type/matrix/function/matrix.js"));
+  var fraction = load(__webpack_require__(/*! ../../type/fraction/function/fraction */ "./node_modules/mathjs/lib/type/fraction/function/fraction.js"));
+  var number = load(__webpack_require__(/*! ../../type/number */ "./node_modules/mathjs/lib/type/number.js"));
+
+  /**
+   * Calculates the power of x to y, `x ^ y`.
+   * Matrix exponentiation is supported for square matrices `x`, and positive
+   * integer exponents `y`.
+   *
+   * For cubic roots of negative numbers, the function returns the principal
+   * root by default. In order to let the function return the real root,
+   * math.js can be configured with `math.config({predictable: true})`.
+   * To retrieve all cubic roots of a value, use `math.cbrt(x, true)`.
+   *
+   * Syntax:
+   *
+   *    math.pow(x, y)
+   *
+   * Examples:
+   *
+   *    math.pow(2, 3);               // returns number 8
+   *
+   *    var a = math.complex(2, 3);
+   *    math.pow(a, 2)                // returns Complex -5 + 12i
+   *
+   *    var b = [[1, 2], [4, 3]];
+   *    math.pow(b, 2);               // returns Array [[9, 8], [16, 17]]
+   *
+   * See also:
+   *
+   *    multiply, sqrt, cbrt, nthRoot
+   *
+   * @param  {number | BigNumber | Complex | Array | Matrix} x  The base
+   * @param  {number | BigNumber | Complex} y                   The exponent
+   * @return {number | BigNumber | Complex | Array | Matrix} The value of `x` to the power `y`
+   */
+  var pow = typed('pow', {
+    'number, number': _pow,
+
+    'Complex, Complex': function (x, y) {
+      return x.pow(y);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      if (y.isInteger() || x >= 0 || config.predictable) {
+        return x.pow(y);
+      }
+      else {
+        return new type.Complex(x.toNumber(), 0).pow(y.toNumber(), 0);
+      }
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      if (y.d !== 1) {
+        if (config.predictable) {
+          throw new Error('Function pow does not support non-integer exponents for fractions.');
+        }
+        else {
+          return _pow(x.valueOf(), y.valueOf());
+        }
+      }
+      else {
+        return x.pow(y);
+     }
+    },
+
+    'Array, number': _powArray,
+
+    'Array, BigNumber': function (x, y) {
+      return _powArray(x, y.toNumber());
+    },
+
+    'Matrix, number': _powMatrix,
+
+    'Matrix, BigNumber': function (x, y) {
+      return _powMatrix(x, y.toNumber());
+    },
+
+    'Unit, number': function (x, y) {
+      return x.pow(y);
+    }
+
+  });
+
+  /**
+   * Calculates the power of x to y, x^y, for two numbers.
+   * @param {number} x
+   * @param {number} y
+   * @return {number | Complex} res
+   * @private
+   */
+  function _pow(x, y) {
+
+    // Alternatively could define a 'realmode' config option or something, but
+    // 'predictable' will work for now
+    if (config.predictable && !isInteger(y) && x < 0) {
+      // Check to see if y can be represented as a fraction
+      try {
+        var yFrac = fraction(y);
+        var yNum = number(yFrac);
+        if(y === yNum || Math.abs((y - yNum) / y) < 1e-14) {
+          if(yFrac.d % 2 === 1) {
+            return (yFrac.n % 2 === 0 ? 1 : -1) * Math.pow(-x, y);
+          }
+        }
+      }
+      catch (ex) {
+        // fraction() throws an error if y is Infinity, etc.
+      }
+
+      // Unable to express y as a fraction, so continue on
+    }
+
+
+    // x^Infinity === 0 if -1 < x < 1
+    // A real number 0 is returned instead of complex(0)
+    if ((x*x < 1 && y ===  Infinity) ||
+        (x*x > 1 && y === -Infinity)) {
+      return 0;
+    }
+
+    // **for predictable mode** x^Infinity === NaN if x < -1
+    // N.B. this behavour is different from `Math.pow` which gives
+    // (-2)^Infinity === Infinity
+    if (config.predictable &&
+        ((x < -1 &&          y ===  Infinity) ||
+         (x > -1 && x < 0 && y === -Infinity))) {
+      return NaN;
+    }
+
+    if (isInteger(y) || x >= 0 || config.predictable) {
+      return Math.pow(x, y);
+    }
+    else {
+      return new type.Complex(x, 0).pow(y, 0);
+    }
+  }
+
+  /**
+   * Calculate the power of a 2d array
+   * @param {Array} x     must be a 2 dimensional, square matrix
+   * @param {number} y    a positive, integer value
+   * @returns {Array}
+   * @private
+   */
+  function _powArray(x, y) {
+    if (!isInteger(y) || y < 0) {
+      throw new TypeError('For A^b, b must be a positive integer (value is ' + y + ')');
+    }
+    // verify that A is a 2 dimensional square matrix
+    var s = size(x);
+    if (s.length != 2) {
+      throw new Error('For A^b, A must be 2 dimensional (A has ' + s.length + ' dimensions)');
+    }
+    if (s[0] != s[1]) {
+      throw new Error('For A^b, A must be square (size is ' + s[0] + 'x' + s[1] + ')');
+    }
+
+    var res = eye(s[0]).valueOf();
+    var px = x;
+    while (y >= 1) {
+      if ((y & 1) == 1) {
+        res = multiply(px, res);
+      }
+      y >>= 1;
+      px = multiply(px, px);
+    }
+    return res;
+  }
+
+  /**
+   * Calculate the power of a 2d matrix
+   * @param {Matrix} x     must be a 2 dimensional, square matrix
+   * @param {number} y    a positive, integer value
+   * @returns {Matrix}
+   * @private
+   */
+  function _powMatrix (x, y) {
+    return matrix(_powArray(x.valueOf(), y));
+  }
+
+
+
+  pow.toTex = {
+    2: '\\left(${args[0]}\\right)' + latex.operators['pow'] + '{${args[1]}}'
+  };
+
+  return pow;
+}
+
+exports.name = 'pow';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/matrix/eye.js":
+/*!********************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/matrix/eye.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var array = __webpack_require__(/*! ../../utils/array */ "./node_modules/mathjs/lib/utils/array.js");
+var isInteger = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").isInteger;
+
+function factory (type, config, load, typed) {
+  
+  var matrix = load(__webpack_require__(/*! ../../type/matrix/function/matrix */ "./node_modules/mathjs/lib/type/matrix/function/matrix.js"));
+  
+  /**
+   * Create a 2-dimensional identity matrix with size m x n or n x n.
+   * The matrix has ones on the diagonal and zeros elsewhere.
+   *
+   * Syntax:
+   *
+   *    math.eye(n)
+   *    math.eye(n, format)
+   *    math.eye(m, n)
+   *    math.eye(m, n, format)
+   *    math.eye([m, n])
+   *    math.eye([m, n], format)
+   *
+   * Examples:
+   *
+   *    math.eye(3);                    // returns [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+   *    math.eye(3, 2);                 // returns [[1, 0], [0, 1], [0, 0]]
+   *
+   *    var A = [[1, 2, 3], [4, 5, 6]];
+   *    math.eye(math.size(A));         // returns [[1, 0, 0], [0, 1, 0]]
+   *
+   * See also:
+   *
+   *    diag, ones, zeros, size, range
+   *
+   * @param {...number | Matrix | Array} size   The size for the matrix
+   * @param {string} [format]                   The Matrix storage format
+   *
+   * @return {Matrix | Array | number} A matrix with ones on the diagonal.
+   */
+  var eye = typed('eye', {
+    '': function () {
+      return (config.matrix === 'Matrix') ? matrix([]) : [];
+    },
+
+    'string': function (format) {
+      return matrix(format);
+    },
+
+    'number | BigNumber': function (rows) {
+      return _eye(rows, rows, config.matrix === 'Matrix' ? 'default' : undefined);
+    },
+    
+    'number | BigNumber, string': function (rows, format) {
+      return _eye(rows, rows, format);
+    },
+
+    'number | BigNumber, number | BigNumber': function (rows, cols) {
+      return _eye(rows, cols, config.matrix === 'Matrix' ? 'default' : undefined);
+    },
+    
+    'number | BigNumber, number | BigNumber, string': function (rows, cols, format) {
+      return _eye(rows, cols, format);
+    },
+
+    'Array':  function (size) {
+      return _eyeVector(size);
+    },
+    
+    'Array, string':  function (size, format) {
+      return _eyeVector(size, format);
+    },
+
+    'Matrix': function (size) {
+      return _eyeVector(size.valueOf(), size.storage());
+    },
+    
+    'Matrix, string': function (size, format) {
+      return _eyeVector(size.valueOf(), format);
+    }
+  });
+
+  eye.toTex = undefined; // use default template
+
+  return eye;
+
+  function _eyeVector (size, format) {
+    switch (size.length) {
+      case 0: return format ? matrix(format) : [];
+      case 1: return _eye(size[0], size[0], format);
+      case 2: return _eye(size[0], size[1], format);
+      default: throw new Error('Vector containing two values expected');
+    }
+  }
+
+  /**
+   * Create an identity matrix
+   * @param {number | BigNumber} rows
+   * @param {number | BigNumber} cols
+   * @param {string} [format]
+   * @returns {Matrix}
+   * @private
+   */
+  function _eye (rows, cols, format) {
+    // BigNumber constructor with the right precision
+    var Big = (type.isBigNumber(rows) || type.isBigNumber(cols))
+            ? type.BigNumber
+            : null;
+
+    if (type.isBigNumber(rows)) rows = rows.toNumber();
+    if (type.isBigNumber(cols)) cols = cols.toNumber();
+
+    if (!isInteger(rows) || rows < 1) {
+      throw new Error('Parameters in function eye must be positive integers');
+    }
+    if (!isInteger(cols) || cols < 1) {
+      throw new Error('Parameters in function eye must be positive integers');
+    }
+    
+    var one = Big ? new type.BigNumber(1) : 1;
+    var defaultValue = Big ? new Big(0) : 0;
+    var size = [rows, cols];
+    
+    // check we need to return a matrix
+    if (format) {
+      // get matrix storage constructor
+      var F = type.Matrix.storage(format);
+      // create diagonal matrix (use optimized implementation for storage format)
+      return F.diagonal(size, one, 0, defaultValue);
+    }
+    
+    // create and resize array
+    var res = array.resize([], size, defaultValue);
+    // fill in ones on the diagonal
+    var minimum = rows < cols ? rows : cols;
+    // fill diagonal
+    for (var d = 0; d < minimum; d++) {
+      res[d][d] = one;
+    }
+    return res;
+  }
+}
+
+exports.name = 'eye';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/probability/factorial.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/probability/factorial.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ../../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+
+function factory (type, config, load, typed) {
+  var gamma = load(__webpack_require__(/*! ./gamma */ "./node_modules/mathjs/lib/function/probability/gamma.js"));
+  var latex = __webpack_require__(/*! ../../utils/latex */ "./node_modules/mathjs/lib/utils/latex.js");
+
+  /**
+   * Compute the factorial of a value
+   *
+   * Factorial only supports an integer value as argument.
+   * For matrices, the function is evaluated element wise.
+   *
+   * Syntax:
+   *
+   *    math.factorial(n)
+   *
+   * Examples:
+   *
+   *    math.factorial(5);    // returns 120
+   *    math.factorial(3);    // returns 6
+   *
+   * See also:
+   *
+   *    combinations, gamma, permutations
+   *
+   * @param {number | BigNumber | Array | Matrix} n   An integer number
+   * @return {number | BigNumber | Array | Matrix}    The factorial of `n`
+   */
+  var factorial = typed('factorial', {
+    'number': function (n) {
+      if (n < 0) {
+        throw new Error('Value must be non-negative');
+      }
+
+      return gamma(n + 1);
+    },
+
+    'BigNumber': function (n) {
+      if (n.isNegative()) {
+        throw new Error('Value must be non-negative');
+      }
+
+      return gamma(n.plus(1));
+    },
+
+    'Array | Matrix': function (n) {
+      return deepMap(n, factorial);
+    }
+  });
+
+  factorial.toTex = {
+    1: '\\left(${args[0]}\\right)' + latex.operators['factorial']
+  };
+
+  return factorial;
+}
+
+exports.name = 'factorial';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/probability/gamma.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/probability/gamma.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ../../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+var isInteger = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").isInteger;
+
+function factory (type, config, load, typed) {
+  var multiply = load(__webpack_require__(/*! ../arithmetic/multiply */ "./node_modules/mathjs/lib/function/arithmetic/multiply.js"));
+  var pow = load(__webpack_require__(/*! ../arithmetic/pow */ "./node_modules/mathjs/lib/function/arithmetic/pow.js"));
+
+  /**
+   * Compute the gamma function of a value using Lanczos approximation for
+   * small values, and an extended Stirling approximation for large values.
+   *
+   * For matrices, the function is evaluated element wise.
+   *
+   * Syntax:
+   *
+   *    math.gamma(n)
+   *
+   * Examples:
+   *
+   *    math.gamma(5);       // returns 24
+   *    math.gamma(-0.5);    // returns -3.5449077018110335
+   *    math.gamma(math.i);  // returns -0.15494982830180973 - 0.49801566811835596i
+   *
+   * See also:
+   *
+   *    combinations, factorial, permutations
+   *
+   * @param {number | Array | Matrix} n   A real or complex number
+   * @return {number | Array | Matrix}    The gamma of `n`
+   */
+  var gamma = typed('gamma', {
+    'number': function (n) {
+      var t, x;
+
+      if (isInteger(n)) {
+        if (n <= 0) {
+          return isFinite(n) ? Infinity : NaN;
+        }
+
+        if (n > 171) {
+          return Infinity;                  // Will overflow
+        }
+
+        var value = n - 2;
+        var res = n - 1;
+        while (value > 1) {
+          res *= value;
+          value--;
+        }
+
+        if (res == 0) {
+          res = 1;                          // 0! is per definition 1
+        }
+
+        return res;
+      }
+
+      if (n < 0.5) {
+        return Math.PI / (Math.sin(Math.PI * n) * gamma(1-n));
+      }
+
+      if (n >= 171.35) {
+        return Infinity;                    // will overflow
+      }
+
+      if (n > 85.0) {                       // Extended Stirling Approx
+        var twoN = n*n;
+        var threeN = twoN*n;
+        var fourN = threeN*n;
+        var fiveN = fourN*n;
+        return Math.sqrt(2*Math.PI/n) * Math.pow((n/Math.E), n) *
+            (1 + 1/(12*n) + 1/(288*twoN) - 139/(51840*threeN) -
+            571/(2488320*fourN) + 163879/(209018880*fiveN) +
+            5246819/(75246796800*fiveN*n));
+      }
+
+      --n;
+      x = p[0];
+      for (var i = 1; i < p.length; ++i) {
+        x += p[i] / (n+i);
+      }
+
+      t = n + g + 0.5;
+      return Math.sqrt(2*Math.PI) * Math.pow(t, n+0.5) * Math.exp(-t) * x;
+    },
+
+    'Complex': function (n) {
+      var t, x;
+
+      if (n.im == 0) {
+        return gamma(n.re);
+      }
+
+      n = new type.Complex(n.re - 1, n.im);
+      x = new type.Complex(p[0], 0);
+      for (var i = 1; i < p.length; ++i) {
+        var real = n.re + i;                // x += p[i]/(n+i)
+        var den = real*real + n.im*n.im;
+        if (den != 0) {
+          x.re += p[i] * real / den;
+          x.im += -(p[i] * n.im) / den;
+        } else {
+          x.re = p[i] < 0
+              ? -Infinity
+              :  Infinity;
+        }
+      }
+
+      t = new type.Complex(n.re + g + 0.5, n.im);
+      var twoPiSqrt = Math.sqrt(2*Math.PI);
+
+      n.re += 0.5;
+      var result = pow(t, n);
+      if (result.im == 0) {                 // sqrt(2*PI)*result
+        result.re *= twoPiSqrt;
+      } else if (result.re == 0) {
+        result.im *= twoPiSqrt;
+      } else {
+        result.re *= twoPiSqrt;
+        result.im *= twoPiSqrt;
+      }
+
+      var r = Math.exp(-t.re);              // exp(-t)
+      t.re = r * Math.cos(-t.im);
+      t.im = r * Math.sin(-t.im);
+
+      return multiply(multiply(result, t), x);
+    },
+
+    'BigNumber': function (n) {
+      if (n.isInteger()) {
+        return (n.isNegative() || n.isZero())
+            ? new type.BigNumber(Infinity)
+            : bigFactorial(n.minus(1));
+      }
+
+      if (!n.isFinite()) {
+        return new type.BigNumber(n.isNegative() ? NaN : Infinity);
+      }
+
+      throw new Error('Integer BigNumber expected');
+    },
+
+    'Array | Matrix': function (n) {
+      return deepMap(n, gamma);
+    }
+  });
+
+  /**
+   * Calculate factorial for a BigNumber
+   * @param {BigNumber} n
+   * @returns {BigNumber} Returns the factorial of n
+   */
+  function bigFactorial(n) {
+    if (n.isZero()) {
+      return new type.BigNumber(1); // 0! is per definition 1
+    }
+
+    var precision = config.precision + (Math.log(n.toNumber()) | 0);
+    var Big = type.BigNumber.clone({precision: precision});
+
+    var res = new Big(n);
+    var value = n.toNumber() - 1; // number
+    while (value > 1) {
+      res = res.times(value);
+      value--;
+    }
+
+    return new type.BigNumber(res.toPrecision(type.BigNumber.precision));
+  }
+
+  gamma.toTex = {1: '\\Gamma\\left(${args[0]}\\right)'};
+
+  return gamma;
+}
+
+// TODO: comment on the variables g and p
+
+var g = 4.7421875;
+
+var p = [
+  0.99999999999999709182,
+  57.156235665862923517,
+  -59.597960355475491248,
+  14.136097974741747174,
+  -0.49191381609762019978,
+  0.33994649984811888699e-4,
+  0.46523628927048575665e-4,
+  -0.98374475304879564677e-4,
+  0.15808870322491248884e-3,
+  -0.21026444172410488319e-3,
+  0.21743961811521264320e-3,
+  -0.16431810653676389022e-3,
+  0.84418223983852743293e-4,
+  -0.26190838401581408670e-4,
+  0.36899182659531622704e-5
+];
+
+exports.name = 'gamma';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/relational/equalScalar.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/relational/equalScalar.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var nearlyEqual = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").nearlyEqual;
+var bigNearlyEqual = __webpack_require__(/*! ../../utils/bignumber/nearlyEqual */ "./node_modules/mathjs/lib/utils/bignumber/nearlyEqual.js");
+
+function factory (type, config, load, typed) {
+  
+  /**
+   * Test whether two values are equal.
+   *
+   * @param  {number | BigNumber | Fraction | boolean | Complex | Unit} x   First value to compare
+   * @param  {number | BigNumber | Fraction | boolean | Complex} y          Second value to compare
+   * @return {boolean}                                                  Returns true when the compared values are equal, else returns false
+   * @private
+   */
+  var equalScalar = typed('equalScalar', {
+
+    'boolean, boolean': function (x, y) {
+      return x === y;
+    },
+
+    'number, number': function (x, y) {
+      return x === y || nearlyEqual(x, y, config.epsilon);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      return x.eq(y) || bigNearlyEqual(x, y, config.epsilon);
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      return x.equals(y);
+    },
+
+    'Complex, Complex': function (x, y) {
+      return x.equals(y);
+    },
+
+    'Unit, Unit': function (x, y) {
+      if (!x.equalBase(y)) {
+        throw new Error('Cannot compare units with different base');
+      }
+      return equalScalar(x.value, y.value);
+    },
+
+    'string, string': function (x, y) {
+      return x === y;
+    }
+  });
+  
+  return equalScalar;
+}
+
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/fraction/function/fraction.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/fraction/function/fraction.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ../../../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+
+function factory (type, config, load, typed) {
+  /**
+   * Create a fraction convert a value to a fraction.
+   *
+   * Syntax:
+   *     math.fraction(numerator, denominator)
+   *     math.fraction({n: numerator, d: denominator})
+   *     math.fraction(matrix: Array | Matrix)         Turn all matrix entries
+   *                                                   into fractions
+   *
+   * Examples:
+   *
+   *     math.fraction(1, 3);
+   *     math.fraction('2/3');
+   *     math.fraction({n: 2, d: 3});
+   *     math.fraction([0.2, 0.25, 1.25]);
+   *
+   * See also:
+   *
+   *    bignumber, number, string, unit
+   *
+   * @param {number | string | Fraction | BigNumber | Array | Matrix} [args]
+   *            Arguments specifying the numerator and denominator of
+   *            the fraction
+   * @return {Fraction | Array | Matrix} Returns a fraction
+   */
+  var fraction = typed('fraction', {
+    'number': function (x) {
+      if (!isFinite(x) || isNaN(x)) {
+        throw new Error(x + ' cannot be represented as a fraction');
+      }
+
+      return new type.Fraction(x);
+    },
+
+    'string': function (x) {
+      return new type.Fraction(x);
+    },
+
+    'number, number': function (numerator, denominator) {
+      return new type.Fraction(numerator, denominator);
+    },
+
+    'BigNumber': function (x) {
+      return new type.Fraction(x.toString());
+    },
+
+    'Fraction': function (x) {
+      return x; // fractions are immutable
+    },
+
+    'Object': function (x) {
+      return new type.Fraction(x);
+    },
+
+    'Array | Matrix': function (x) {
+      return deepMap(x, fraction);
+    }
+  });
+
+  return fraction;
+}
+
+exports.name = 'fraction';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/matrix/function/matrix.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/matrix/function/matrix.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory (type, config, load, typed) {
+  /**
+   * Create a Matrix. The function creates a new `math.type.Matrix` object from
+   * an `Array`. A Matrix has utility functions to manipulate the data in the
+   * matrix, like getting the size and getting or setting values in the matrix.
+   * Supported storage formats are 'dense' and 'sparse'.
+   *
+   * Syntax:
+   *
+   *    math.matrix()                         // creates an empty matrix using default storage format (dense).
+   *    math.matrix(data)                     // creates a matrix with initial data using default storage format (dense).
+   *    math.matrix('dense')                  // creates an empty matrix using the given storage format.
+   *    math.matrix(data, 'dense')            // creates a matrix with initial data using the given storage format.
+   *    math.matrix(data, 'sparse')           // creates a sparse matrix with initial data.
+   *    math.matrix(data, 'sparse', 'number') // creates a sparse matrix with initial data, number data type.
+   *
+   * Examples:
+   *
+   *    var m = math.matrix([[1, 2], [3, 4]]);
+   *    m.size();                        // Array [2, 2]
+   *    m.resize([3, 2], 5);
+   *    m.valueOf();                     // Array [[1, 2], [3, 4], [5, 5]]
+   *    m.get([1, 0])                    // number 3
+   *
+   * See also:
+   *
+   *    bignumber, boolean, complex, index, number, string, unit, sparse
+   *
+   * @param {Array | Matrix} [data]    A multi dimensional array
+   * @param {string} [format]          The Matrix storage format
+   *
+   * @return {Matrix} The created matrix
+   */
+  var matrix = typed('matrix', {
+    '': function () {
+      return _create([]);
+    },
+
+    'string': function (format) {
+      return _create([], format);
+    },
+    
+    'string, string': function (format, datatype) {
+      return _create([], format, datatype);
+    },
+
+    'Array': function (data) {
+      return _create(data);
+    },
+      
+    'Matrix': function (data) {
+      return _create(data, data.storage());
+    },
+    
+    'Array | Matrix, string': _create,
+    
+    'Array | Matrix, string, string': _create
+  });
+
+  matrix.toTex = {
+    0: '\\begin{bmatrix}\\end{bmatrix}',
+    1: '\\left(${args[0]}\\right)',
+    2: '\\left(${args[0]}\\right)'
+  };
+
+  return matrix;
+
+  /**
+   * Create a new Matrix with given storage format
+   * @param {Array} data
+   * @param {string} [format]
+   * @param {string} [datatype]
+   * @returns {Matrix} Returns a new Matrix
+   * @private
+   */
+  function _create(data, format, datatype) {
+    // get storage format constructor
+    var M = type.Matrix.storage(format || 'default');
+
+    // create instance
+    return new M(data, datatype);
+  }
+}
+
+exports.name = 'matrix';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/matrix/utils/algorithm11.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/matrix/utils/algorithm11.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory (type, config, load, typed) {
+
+  var equalScalar = load(__webpack_require__(/*! ../../../function/relational/equalScalar */ "./node_modules/mathjs/lib/function/relational/equalScalar.js"));
+
+  var SparseMatrix = type.SparseMatrix;
+
+  /**
+   * Iterates over SparseMatrix S nonzero items and invokes the callback function f(Sij, b). 
+   * Callback function invoked NZ times (number of nonzero items in S).
+   *
+   *
+   *          ┌  f(Sij, b)  ; S(i,j) !== 0
+   * C(i,j) = ┤  
+   *          └  0          ; otherwise
+   *
+   *
+   * @param {Matrix}   s                 The SparseMatrix instance (S)
+   * @param {Scalar}   b                 The Scalar value
+   * @param {Function} callback          The f(Aij,b) operation to invoke
+   * @param {boolean}  inverse           A true value indicates callback should be invoked f(b,Sij)
+   *
+   * @return {Matrix}                    SparseMatrix (C)
+   *
+   * https://github.com/josdejong/mathjs/pull/346#issuecomment-97626813
+   */
+  var algorithm11 = function (s, b, callback, inverse) {
+    // sparse matrix arrays
+    var avalues = s._values;
+    var aindex = s._index;
+    var aptr = s._ptr;
+    var asize = s._size;
+    var adt = s._datatype;
+
+    // sparse matrix cannot be a Pattern matrix
+    if (!avalues)
+      throw new Error('Cannot perform operation on Pattern Sparse Matrix and Scalar value');
+
+    // rows & columns
+    var rows = asize[0];
+    var columns = asize[1];
+
+    // datatype
+    var dt;
+    // equal signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+    // callback signature to use
+    var cf = callback;
+
+    // process data types
+    if (typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signature that matches (dt, dt)
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+      // convert b to the same datatype
+      b = typed.convert(b, dt);
+      // callback
+      cf = typed.find(callback, [dt, dt]);
+    }
+
+    // result arrays
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    // matrix
+    var c = new SparseMatrix({
+      values: cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [rows, columns],
+      datatype: dt
+    });
+
+    // loop columns
+    for (var j = 0; j < columns; j++) {
+      // initialize ptr
+      cptr[j] = cindex.length;
+      // values in j
+      for (var k0 = aptr[j], k1 = aptr[j + 1], k = k0; k < k1; k++) {
+        // row
+        var i = aindex[k];
+        // invoke callback
+        var v = inverse ? cf(b, avalues[k]) : cf(avalues[k], b);
+        // check value is zero
+        if (!eq(v, zero)) {
+          // push index & value
+          cindex.push(i);
+          cvalues.push(v);
+        }
+      }
+    }
+    // update ptr
+    cptr[columns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  return algorithm11;
+}
+
+exports.name = 'algorithm11';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/matrix/utils/algorithm14.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/matrix/utils/algorithm14.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var clone = __webpack_require__(/*! ../../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").clone;
+
+function factory (type, config, load, typed) {
+
+  var DenseMatrix = type.DenseMatrix;
+
+  /**
+   * Iterates over DenseMatrix items and invokes the callback function f(Aij..z, b). 
+   * Callback function invoked MxN times.
+   *
+   * C(i,j,...z) = f(Aij..z, b)
+   *
+   * @param {Matrix}   a                 The DenseMatrix instance (A)
+   * @param {Scalar}   b                 The Scalar value
+   * @param {Function} callback          The f(Aij..z,b) operation to invoke
+   * @param {boolean}  inverse           A true value indicates callback should be invoked f(b,Aij..z)
+   *
+   * @return {Matrix}                    DenseMatrix (C)
+   *
+   * https://github.com/josdejong/mathjs/pull/346#issuecomment-97659042
+   */
+  var algorithm14 = function (a, b, callback, inverse) {
+    // a arrays
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    
+    // datatype
+    var dt;
+    // callback signature to use
+    var cf = callback;
+
+    // process data types
+    if (typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // convert b to the same datatype
+      b = typed.convert(b, dt);
+      // callback
+      cf = typed.find(callback, [dt, dt]);
+    }
+    
+    // populate cdata, iterate through dimensions
+    var cdata = asize.length > 0 ? _iterate(cf, 0, asize, asize[0], adata, b, inverse) : [];
+
+    // c matrix
+    return new DenseMatrix({
+      data: cdata,
+      size: clone(asize),
+      datatype: dt
+    });
+  };
+  
+  // recursive function
+  var _iterate = function (f, level, s, n, av, bv, inverse) {
+    // initialize array for this level
+    var cv = [];
+    // check we reach the last level
+    if (level === s.length - 1) {
+      // loop arrays in last level
+      for (var i = 0; i < n; i++) {
+        // invoke callback and store value
+        cv[i] = inverse ? f(bv, av[i]) : f(av[i], bv);
+      }
+    }
+    else {
+      // iterate current level
+      for (var j = 0; j < n; j++) {
+        // iterate next level
+        cv[j] = _iterate(f, level + 1, s, s[level + 1], av[j], bv, inverse);
+      }
+    }
+    return cv;
+  };
+
+  return algorithm14;
+}
+
+exports.name = 'algorithm14';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/number.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/number.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ./../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+
+function factory (type, config, load, typed) {
+  /**
+   * Create a number or convert a string, boolean, or unit to a number.
+   * When value is a matrix, all elements will be converted to number.
+   *
+   * Syntax:
+   *
+   *    math.number(value)
+   *    math.number(unit, valuelessUnit)
+   *
+   * Examples:
+   *
+   *    math.number(2);                         // returns number 2
+   *    math.number('7.2');                     // returns number 7.2
+   *    math.number(true);                      // returns number 1
+   *    math.number([true, false, true, true]); // returns [1, 0, 1, 1]
+   *    math.number(math.unit('52cm'), 'm');    // returns 0.52
+   *
+   * See also:
+   *
+   *    bignumber, boolean, complex, index, matrix, string, unit
+   *
+   * @param {string | number | BigNumber | Fraction | boolean | Array | Matrix | Unit | null} [value]  Value to be converted
+   * @param {Unit | string} [valuelessUnit] A valueless unit, used to convert a unit to a number
+   * @return {number | Array | Matrix} The created number
+   */
+  var number = typed('number', {
+    '': function () {
+      return 0;
+    },
+
+    'number': function (x) {
+      return x;
+    },
+
+    'string': function (x) {
+      var num = Number(x);
+      if (isNaN(num)) {
+        throw new SyntaxError('String "' + x + '" is no valid number');
+      }
+      return num;
+    },
+
+    'BigNumber': function (x) {
+      return x.toNumber();
+    },
+
+    'Fraction': function (x) {
+      return x.valueOf();
+    },
+
+    'Unit': function (x) {
+      throw new Error('Second argument with valueless unit expected');
+    },
+
+    'Unit, string | Unit': function (unit, valuelessUnit) {
+      return unit.toNumber(valuelessUnit);
+    },
+
+    'Array | Matrix': function (x) {
+      return deepMap(x, number);
+    }
+  });
+
+  number.toTex = {
+    0: '0',
+    1: '\\left(${args[0]}\\right)',
+    2: '\\left(\\left(${args[0]}\\right)${args[1]}\\right)'
+  };
+
+  return number;
+}
+
+exports.name = 'number';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/array.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/array.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var number = __webpack_require__(/*! ./number */ "./node_modules/mathjs/lib/utils/number.js");
+var string = __webpack_require__(/*! ./string */ "./node_modules/mathjs/lib/utils/string.js");
+var object = __webpack_require__(/*! ./object */ "./node_modules/mathjs/lib/utils/object.js");
+var types = __webpack_require__(/*! ./types */ "./node_modules/mathjs/lib/utils/types.js");
+
+var DimensionError = __webpack_require__(/*! ../error/DimensionError */ "./node_modules/mathjs/lib/error/DimensionError.js");
+var IndexError = __webpack_require__(/*! ../error/IndexError */ "./node_modules/mathjs/lib/error/IndexError.js");
+
+/**
+ * Calculate the size of a multi dimensional array.
+ * This function checks the size of the first entry, it does not validate
+ * whether all dimensions match. (use function `validate` for that)
+ * @param {Array} x
+ * @Return {Number[]} size
+ */
+exports.size = function (x) {
+  var s = [];
+
+  while (Array.isArray(x)) {
+    s.push(x.length);
+    x = x[0];
+  }
+
+  return s;
+};
+
+/**
+ * Recursively validate whether each element in a multi dimensional array
+ * has a size corresponding to the provided size array.
+ * @param {Array} array    Array to be validated
+ * @param {number[]} size  Array with the size of each dimension
+ * @param {number} dim   Current dimension
+ * @throws DimensionError
+ * @private
+ */
+function _validate(array, size, dim) {
+  var i;
+  var len = array.length;
+
+  if (len != size[dim]) {
+    throw new DimensionError(len, size[dim]);
+  }
+
+  if (dim < size.length - 1) {
+    // recursively validate each child array
+    var dimNext = dim + 1;
+    for (i = 0; i < len; i++) {
+      var child = array[i];
+      if (!Array.isArray(child)) {
+        throw new DimensionError(size.length - 1, size.length, '<');
+      }
+      _validate(array[i], size, dimNext);
+    }
+  }
+  else {
+    // last dimension. none of the childs may be an array
+    for (i = 0; i < len; i++) {
+      if (Array.isArray(array[i])) {
+        throw new DimensionError(size.length + 1, size.length, '>');
+      }
+    }
+  }
+}
+
+/**
+ * Validate whether each element in a multi dimensional array has
+ * a size corresponding to the provided size array.
+ * @param {Array} array    Array to be validated
+ * @param {number[]} size  Array with the size of each dimension
+ * @throws DimensionError
+ */
+exports.validate = function(array, size) {
+  var isScalar = (size.length == 0);
+  if (isScalar) {
+    // scalar
+    if (Array.isArray(array)) {
+      throw new DimensionError(array.length, 0);
+    }
+  }
+  else {
+    // array
+    _validate(array, size, 0);
+  }
+};
+
+/**
+ * Test whether index is an integer number with index >= 0 and index < length
+ * when length is provided
+ * @param {number} index    Zero-based index
+ * @param {number} [length] Length of the array
+ */
+exports.validateIndex = function(index, length) {
+  if (!number.isNumber(index) || !number.isInteger(index)) {
+    throw new TypeError('Index must be an integer (value: ' + index + ')');
+  }
+  if (index < 0 || (typeof length === 'number' && index >= length)) {
+    throw new IndexError(index, length);
+  }
+};
+
+// a constant used to specify an undefined defaultValue
+exports.UNINITIALIZED = {};
+
+/**
+ * Resize a multi dimensional array. The resized array is returned.
+ * @param {Array} array         Array to be resized
+ * @param {Array.<number>} size Array with the size of each dimension
+ * @param {*} [defaultValue=0]  Value to be filled in in new entries,
+ *                              zero by default. To leave new entries undefined,
+ *                              specify array.UNINITIALIZED as defaultValue
+ * @return {Array} array         The resized array
+ */
+exports.resize = function(array, size, defaultValue) {
+  // TODO: add support for scalars, having size=[] ?
+
+  // check the type of the arguments
+  if (!Array.isArray(array) || !Array.isArray(size)) {
+    throw new TypeError('Array expected');
+  }
+  if (size.length === 0) {
+    throw new Error('Resizing to scalar is not supported');
+  }
+
+  // check whether size contains positive integers
+  size.forEach(function (value) {
+    if (!number.isNumber(value) || !number.isInteger(value) || value < 0) {
+      throw new TypeError('Invalid size, must contain positive integers ' +
+          '(size: ' + string.format(size) + ')');
+    }
+  });
+
+  // recursively resize the array
+  var _defaultValue = (defaultValue !== undefined) ? defaultValue : 0;
+  _resize(array, size, 0, _defaultValue);
+
+  return array;
+};
+
+/**
+ * Recursively resize a multi dimensional array
+ * @param {Array} array         Array to be resized
+ * @param {number[]} size       Array with the size of each dimension
+ * @param {number} dim          Current dimension
+ * @param {*} [defaultValue]    Value to be filled in in new entries,
+ *                              undefined by default.
+ * @private
+ */
+function _resize (array, size, dim, defaultValue) {
+  var i;
+  var elem;
+  var oldLen = array.length;
+  var newLen = size[dim];
+  var minLen = Math.min(oldLen, newLen);
+
+  // apply new length
+  array.length = newLen;
+
+  if (dim < size.length - 1) {
+    // non-last dimension
+    var dimNext = dim + 1;
+
+    // resize existing child arrays
+    for (i = 0; i < minLen; i++) {
+      // resize child array
+      elem = array[i];
+      if (!Array.isArray(elem)) {
+        elem = [elem]; // add a dimension
+        array[i] = elem;
+      }
+      _resize(elem, size, dimNext, defaultValue);
+    }
+
+    // create new child arrays
+    for (i = minLen; i < newLen; i++) {
+      // get child array
+      elem = [];
+      array[i] = elem;
+
+      // resize new child array
+      _resize(elem, size, dimNext, defaultValue);
+    }
+  }
+  else {
+    // last dimension
+
+    // remove dimensions of existing values
+    for (i = 0; i < minLen; i++) {
+      while (Array.isArray(array[i])) {
+        array[i] = array[i][0];
+      }
+    }
+
+    if(defaultValue !== exports.UNINITIALIZED) {
+      // fill new elements with the default value
+      for (i = minLen; i < newLen; i++) {
+        array[i] = defaultValue;
+      }
+    }
+  }
+}
+
+/**
+ * Re-shape a multi dimensional array to fit the specified dimensions
+ * @param {Array} array           Array to be reshaped
+ * @param {Array.<number>} sizes  List of sizes for each dimension
+ * @returns {Array}               Array whose data has been formatted to fit the
+ *                                specified dimensions
+ *
+ * @throws {DimensionError}       If the product of the new dimension sizes does
+ *                                not equal that of the old ones
+ */
+exports.reshape = function(array, sizes) {
+  var flatArray = exports.flatten(array);
+  var newArray;
+
+  var product = function (arr) {
+    return arr.reduce(function (prev, curr) {
+      return prev * curr;
+    });
+  };
+
+  if (!Array.isArray(array) || !Array.isArray(sizes)) {
+    throw new TypeError('Array expected');
+  }
+
+  if (sizes.length === 0) {
+    throw new DimensionError(0, product(exports.size(array)), '!=');
+  }
+
+  try {
+    newArray  = _reshape(flatArray, sizes);
+  } catch (e) {
+    if (e instanceof DimensionError) {
+      throw new DimensionError(
+        product(sizes),
+        product(exports.size(array)),
+        '!='
+      );
+    }
+    throw e;
+  }
+
+  if (flatArray.length > 0) {
+    throw new DimensionError(
+      product(sizes),
+      product(exports.size(array)),
+      '!='
+    );
+  }
+
+  return newArray;
+};
+
+/**
+ * Recursively re-shape a multi dimensional array to fit the specified dimensions
+ * @param {Array} array           Array to be reshaped
+ * @param {Array.<number>} sizes  List of sizes for each dimension
+ * @returns {Array}               Array whose data has been formatted to fit the
+ *                                specified dimensions
+ *
+ * @throws {DimensionError}       If the product of the new dimension sizes does
+ *                                not equal that of the old ones
+ */
+function _reshape(array, sizes) {
+  var accumulator = [];
+  var i;
+
+  if (sizes.length === 0) {
+    if (array.length === 0) {
+      throw new DimensionError(null, null, '!=');
+    }
+    return array.shift();
+  }
+  for (i = 0; i < sizes[0]; i += 1) {
+    accumulator.push(_reshape(array, sizes.slice(1)));
+  }
+  return accumulator;
+}
+
+
+/**
+ * Squeeze a multi dimensional array
+ * @param {Array} array
+ * @param {Array} [size]
+ * @returns {Array} returns the array itself
+ */
+exports.squeeze = function(array, size) {
+  var s = size || exports.size(array);
+
+  // squeeze outer dimensions
+  while (Array.isArray(array) && array.length === 1) {
+    array = array[0];
+    s.shift();
+  }
+
+  // find the first dimension to be squeezed
+  var dims = s.length;
+  while (s[dims - 1] === 1) {
+    dims--;
+  }
+
+  // squeeze inner dimensions
+  if (dims < s.length) {
+    array = _squeeze(array, dims, 0);
+    s.length = dims;
+  }
+
+  return array;
+};
+
+/**
+ * Recursively squeeze a multi dimensional array
+ * @param {Array} array
+ * @param {number} dims Required number of dimensions
+ * @param {number} dim  Current dimension
+ * @returns {Array | *} Returns the squeezed array
+ * @private
+ */
+function _squeeze (array, dims, dim) {
+  var i, ii;
+
+  if (dim < dims) {
+    var next = dim + 1;
+    for (i = 0, ii = array.length; i < ii; i++) {
+      array[i] = _squeeze(array[i], dims, next);
+    }
+  }
+  else {
+    while (Array.isArray(array)) {
+      array = array[0];
+    }
+  }
+
+  return array;
+}
+
+/**
+ * Unsqueeze a multi dimensional array: add dimensions when missing
+ * 
+ * Paramter `size` will be mutated to match the new, unqueezed matrix size.
+ * 
+ * @param {Array} array
+ * @param {number} dims     Desired number of dimensions of the array
+ * @param {number} [outer]  Number of outer dimensions to be added
+ * @param {Array} [size]    Current size of array.
+ * @returns {Array} returns the array itself
+ * @private
+ */
+exports.unsqueeze = function(array, dims, outer, size) {
+  var s = size || exports.size(array);
+
+  // unsqueeze outer dimensions
+  if (outer) {
+    for (var i = 0; i < outer; i++) {
+      array = [array];
+      s.unshift(1);
+    }
+  }
+
+  // unsqueeze inner dimensions
+  array = _unsqueeze(array, dims, 0);
+  while (s.length < dims) {
+    s.push(1);
+  }
+
+  return array;
+};
+
+/**
+ * Recursively unsqueeze a multi dimensional array
+ * @param {Array} array
+ * @param {number} dims Required number of dimensions
+ * @param {number} dim  Current dimension
+ * @returns {Array | *} Returns the squeezed array
+ * @private
+ */
+function _unsqueeze (array, dims, dim) {
+  var i, ii;
+
+  if (Array.isArray(array)) {
+    var next = dim + 1;
+    for (i = 0, ii = array.length; i < ii; i++) {
+      array[i] = _unsqueeze(array[i], dims, next);
+    }
+  }
+  else {
+    for (var d = dim; d < dims; d++) {
+      array = [array];
+    }
+  }
+
+  return array;
+}
+/**
+ * Flatten a multi dimensional array, put all elements in a one dimensional
+ * array
+ * @param {Array} array   A multi dimensional array
+ * @return {Array}        The flattened array (1 dimensional)
+ */
+exports.flatten = function(array) {
+  if (!Array.isArray(array)) {
+    //if not an array, return as is
+    return array;
+  }
+  var flat = [];
+
+  array.forEach(function callback(value) {
+    if (Array.isArray(value)) {
+      value.forEach(callback);  //traverse through sub-arrays recursively
+    }
+    else {
+      flat.push(value);
+    }
+  });
+
+  return flat;
+};
+
+/**
+ * A safe map
+ * @param {Array} array
+ * @param {function} callback
+ */
+exports.map = function (array, callback) {
+  return Array.prototype.map.call(array, callback);
+}
+
+/**
+ * A safe forEach
+ * @param {Array} array
+ * @param {function} callback
+ */
+exports.forEach = function (array, callback) {
+  Array.prototype.forEach.call(array, callback);
+}
+
+/**
+ * A safe filter
+ * @param {Array} array
+ * @param {function} callback
+ */
+exports.filter = function (array, callback) {
+  if (exports.size(array).length !== 1) {
+    throw new Error('Only one dimensional matrices supported');
+  }
+
+  return Array.prototype.filter.call(array, callback);
+}
+
+/**
+ * Filter values in a callback given a regular expression
+ * @param {Array} array
+ * @param {RegExp} regexp
+ * @return {Array} Returns the filtered array
+ * @private
+ */
+exports.filterRegExp = function (array, regexp) {
+  if (exports.size(array).length !== 1) {
+    throw new Error('Only one dimensional matrices supported');
+  }
+
+  return Array.prototype.filter.call(array, function (entry) {
+    return regexp.test(entry);
+  });
+}
+
+/**
+ * A safe join
+ * @param {Array} array
+ * @param {string} separator
+ */
+exports.join = function (array, separator) {
+  return Array.prototype.join.call(array, separator);
+}
+
+/**
+ * Assign a numeric identifier to every element of a sorted array
+ * @param {Array}	a  An array
+ * @return {Array}	An array of objects containing the original value and its identifier
+ */
+exports.identify = function(a) {
+  if (!Array.isArray(a)) {
+	throw new TypeError('Array input expected');
+  }
+	
+  if (a.length === 0) {
+	return a;
+  }
+	
+  var b = [];
+  var count = 0;
+  b[0] = {value: a[0], identifier: 0};
+  for (var i=1; i<a.length; i++) {
+    if (a[i] === a[i-1]) {
+  	count++;
+    }
+    else {
+      count = 0;
+    }
+    b.push({value: a[i], identifier: count});
+  }
+  return b;
+}
+
+/**
+ * Remove the numeric identifier from the elements
+ * @param	a  An array
+ * @return	An array of values without identifiers
+ */
+exports.generalize = function(a) {
+  if (!Array.isArray(a)) {
+	throw new TypeError('Array input expected');
+  }
+	
+  if (a.length === 0) {
+	return a;
+  }
+	
+  var b = [];
+  for (var i=0; i<a.length; i++) {
+    b.push(a[i].value);
+  }
+  return b;
+}
+
+/**
+ * Test whether an object is an array
+ * @param {*} value
+ * @return {boolean} isArray
+ */
+exports.isArray = Array.isArray;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/bignumber/formatter.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/bignumber/formatter.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Convert a BigNumber to a formatted string representation.
+ *
+ * Syntax:
+ *
+ *    format(value)
+ *    format(value, options)
+ *    format(value, precision)
+ *    format(value, fn)
+ *
+ * Where:
+ *
+ *    {number} value   The value to be formatted
+ *    {Object} options An object with formatting options. Available options:
+ *                     {string} notation
+ *                         Number notation. Choose from:
+ *                         'fixed'          Always use regular number notation.
+ *                                          For example '123.40' and '14000000'
+ *                         'exponential'    Always use exponential notation.
+ *                                          For example '1.234e+2' and '1.4e+7'
+ *                         'auto' (default) Regular number notation for numbers
+ *                                          having an absolute value between
+ *                                          `lower` and `upper` bounds, and uses
+ *                                          exponential notation elsewhere.
+ *                                          Lower bound is included, upper bound
+ *                                          is excluded.
+ *                                          For example '123.4' and '1.4e7'.
+ *                     {number} precision   A number between 0 and 16 to round
+ *                                          the digits of the number.
+ *                                          In case of notations 'exponential' and
+ *                                          'auto', `precision` defines the total
+ *                                          number of significant digits returned
+ *                                          and is undefined by default.
+ *                                          In case of notation 'fixed',
+ *                                          `precision` defines the number of
+ *                                          significant digits after the decimal
+ *                                          point, and is 0 by default.
+ *                     {Object} exponential An object containing two parameters,
+ *                                          {number} lower and {number} upper,
+ *                                          used by notation 'auto' to determine
+ *                                          when to return exponential notation.
+ *                                          Default values are `lower=1e-3` and
+ *                                          `upper=1e5`.
+ *                                          Only applicable for notation `auto`.
+ *    {Function} fn    A custom formatting function. Can be used to override the
+ *                     built-in notations. Function `fn` is called with `value` as
+ *                     parameter and must return a string. Is useful for example to
+ *                     format all values inside a matrix in a particular way.
+ *
+ * Examples:
+ *
+ *    format(6.4);                                        // '6.4'
+ *    format(1240000);                                    // '1.24e6'
+ *    format(1/3);                                        // '0.3333333333333333'
+ *    format(1/3, 3);                                     // '0.333'
+ *    format(21385, 2);                                   // '21000'
+ *    format(12.071, {notation: 'fixed'});                // '12'
+ *    format(2.3,    {notation: 'fixed', precision: 2});  // '2.30'
+ *    format(52.8,   {notation: 'exponential'});          // '5.28e+1'
+ *
+ * @param {BigNumber} value
+ * @param {Object | Function | number} [options]
+ * @return {string} str The formatted value
+ */
+exports.format = function (value, options) {
+  if (typeof options === 'function') {
+    // handle format(value, fn)
+    return options(value);
+  }
+
+  // handle special cases
+  if (!value.isFinite()) {
+    return value.isNaN() ? 'NaN' : (value.gt(0) ? 'Infinity' : '-Infinity');
+  }
+
+  // default values for options
+  var notation = 'auto';
+  var precision = undefined;
+
+  if (options !== undefined) {
+    // determine notation from options
+    if (options.notation) {
+      notation = options.notation;
+    }
+
+    // determine precision from options
+    if (typeof options === 'number') {
+      precision = options;
+    }
+    else if (options.precision) {
+      precision = options.precision;
+    }
+  }
+
+  // handle the various notations
+  switch (notation) {
+    case 'fixed':
+      return exports.toFixed(value, precision);
+
+    case 'exponential':
+      return exports.toExponential(value, precision);
+
+    case 'auto':
+      // determine lower and upper bound for exponential notation.
+      // TODO: implement support for upper and lower to be BigNumbers themselves
+      var lower = 1e-3;
+      var upper = 1e5;
+      if (options && options.exponential) {
+        if (options.exponential.lower !== undefined) {
+          lower = options.exponential.lower;
+        }
+        if (options.exponential.upper !== undefined) {
+          upper = options.exponential.upper;
+        }
+      }
+
+      // adjust the configuration of the BigNumber constructor (yeah, this is quite tricky...)
+      var oldConfig = {
+        toExpNeg: value.constructor.toExpNeg,
+        toExpPos: value.constructor.toExpPos
+      };
+
+      value.constructor.config({
+        toExpNeg: Math.round(Math.log(lower) / Math.LN10),
+        toExpPos: Math.round(Math.log(upper) / Math.LN10)
+      });
+
+      // handle special case zero
+      if (value.isZero()) return '0';
+
+      // determine whether or not to output exponential notation
+      var str;
+      var abs = value.abs();
+      if (abs.gte(lower) && abs.lt(upper)) {
+        // normal number notation
+        str = value.toSignificantDigits(precision).toFixed();
+      }
+      else {
+        // exponential notation
+        str = exports.toExponential(value, precision);
+      }
+
+      // remove trailing zeros after the decimal point
+      return str.replace(/((\.\d*?)(0+))($|e)/, function () {
+        var digits = arguments[2];
+        var e = arguments[4];
+        return (digits !== '.') ? digits + e : e;
+      });
+
+    default:
+      throw new Error('Unknown notation "' + notation + '". ' +
+          'Choose "auto", "exponential", or "fixed".');
+  }
+};
+
+/**
+ * Format a number in exponential notation. Like '1.23e+5', '2.3e+0', '3.500e-3'
+ * @param {BigNumber} value
+ * @param {number} [precision]  Number of digits in formatted output.
+ *                              If not provided, the maximum available digits
+ *                              is used.
+ * @returns {string} str
+ */
+exports.toExponential = function (value, precision) {
+  if (precision !== undefined) {
+    return value.toExponential(precision - 1); // Note the offset of one
+  }
+  else {
+    return value.toExponential();
+  }
+};
+
+/**
+ * Format a number with fixed notation.
+ * @param {BigNumber} value
+ * @param {number} [precision=0]        Optional number of decimals after the
+ *                                      decimal point. Zero by default.
+ */
+exports.toFixed = function (value, precision) {
+  return value.toFixed(precision || 0);
+  // Note: the (precision || 0) is needed as the toFixed of BigNumber has an
+  // undefined default precision instead of 0.
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Test whether a value is a BigNumber
+ * @param {*} x
+ * @return {boolean}
+ */
+module.exports = function isBigNumber(x) {
+  return x && x.constructor.prototype.isBigNumber || false
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/bignumber/nearlyEqual.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/bignumber/nearlyEqual.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Compares two BigNumbers.
+ * @param {BigNumber} x       First value to compare
+ * @param {BigNumber} y       Second value to compare
+ * @param {number} [epsilon]  The maximum relative difference between x and y
+ *                            If epsilon is undefined or null, the function will
+ *                            test whether x and y are exactly equal.
+ * @return {boolean} whether the two numbers are nearly equal
+ */
+module.exports = function nearlyEqual(x, y, epsilon) {
+  // if epsilon is null or undefined, test whether x and y are exactly equal
+  if (epsilon == null) {
+    return x.eq(y);
+  }
+
+
+  // use "==" operator, handles infinities
+  if (x.eq(y)) {
+    return true;
+  }
+
+  // NaN
+  if (x.isNaN() || y.isNaN()) {
+    return false;
+  }
+
+  // at this point x and y should be finite
+  if(x.isFinite() && y.isFinite()) {
+    // check numbers are very close, needed when comparing numbers near zero
+    var diff = x.minus(y).abs();
+    if (diff.isZero()) {
+      return true;
+    }
+    else {
+      // use relative error
+      var max = x.constructor.max(x.abs(), y.abs());
+      return diff.lte(max.times(epsilon));
+    }
+  }
+
+  // Infinite and Number or negative Infinite and positive Infinite cases
+  return false;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/collection/deepMap.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/collection/deepMap.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Execute the callback function element wise for each element in array and any
+ * nested array
+ * Returns an array with the results
+ * @param {Array | Matrix} array
+ * @param {Function} callback   The callback is called with two parameters:
+ *                              value1 and value2, which contain the current
+ *                              element of both arrays.
+ * @param {boolean} [skipZeros] Invoke callback function for non-zero values only.
+ *
+ * @return {Array | Matrix} res
+ */
+module.exports = function deepMap(array, callback, skipZeros) {
+  if (array && (typeof array.map === 'function')) {
+    // TODO: replace array.map with a for loop to improve performance
+    return array.map(function (x) {
+      return deepMap(x, callback, skipZeros);
+    });
+  }
+  else {
+    return callback(array);
+  }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/collection/isMatrix.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/collection/isMatrix.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Test whether a value is a Matrix
+ * @param {*} x
+ * @returns {boolean} returns true with input is a Matrix
+ *                    (like a DenseMatrix or SparseMatrix)
+ */
+module.exports = function isMatrix (x) {
+  return x && x.constructor.prototype.isMatrix || false;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/emitter.js":
+/*!**************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/emitter.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Emitter = __webpack_require__(/*! tiny-emitter */ "./node_modules/tiny-emitter/index.js");
+
+/**
+ * Extend given object with emitter functions `on`, `off`, `once`, `emit`
+ * @param {Object} obj
+ * @return {Object} obj
+ */
+exports.mixin = function (obj) {
+  // create event emitter
+  var emitter = new Emitter();
+
+  // bind methods to obj (we don't want to expose the emitter.e Array...)
+  obj.on   = emitter.on.bind(emitter);
+  obj.off  = emitter.off.bind(emitter);
+  obj.once = emitter.once.bind(emitter);
+  obj.emit = emitter.emit.bind(emitter);
+
+  return obj;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/latex.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/latex.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.symbols = {
+  // GREEK LETTERS
+  Alpha: 'A',     alpha: '\\alpha',
+  Beta: 'B',      beta: '\\beta',
+  Gamma: '\\Gamma',    gamma: '\\gamma',
+  Delta: '\\Delta',    delta: '\\delta',
+  Epsilon: 'E',   epsilon: '\\epsilon',  varepsilon: '\\varepsilon',
+  Zeta: 'Z',      zeta: '\\zeta',
+  Eta: 'H',       eta: '\\eta',
+  Theta: '\\Theta',    theta: '\\theta',    vartheta: '\\vartheta',
+  Iota: 'I',      iota: '\\iota',
+  Kappa: 'K',     kappa: '\\kappa',    varkappa: '\\varkappa',
+  Lambda: '\\Lambda',   lambda: '\\lambda',
+  Mu: 'M',        mu: '\\mu',
+  Nu: 'N',        nu: '\\nu',
+  Xi: '\\Xi',       xi: '\\xi',
+  Omicron: 'O',   omicron: 'o',
+  Pi: '\\Pi',       pi: '\\pi',       varpi: '\\varpi',
+  Rho: 'P',       rho: '\\rho',      varrho: '\\varrho',
+  Sigma: '\\Sigma',    sigma: '\\sigma',    varsigma: '\\varsigma',
+  Tau: 'T',       tau: '\\tau',
+  Upsilon: '\\Upsilon',  upsilon: '\\upsilon',
+  Phi: '\\Phi',      phi: '\\phi',      varphi: '\\varphi',
+  Chi: 'X',       chi: '\\chi',
+  Psi: '\\Psi',      psi: '\\psi',
+  Omega: '\\Omega',    omega: '\\omega',
+  //logic
+  'true': '\\mathrm{True}',
+  'false': '\\mathrm{False}',
+  //other
+  i: 'i', //TODO use \i ??
+  inf: '\\infty',
+  Inf: '\\infty',
+  infinity: '\\infty',
+  Infinity: '\\infty',
+  oo: '\\infty',
+  lim: '\\lim',
+  'undefined': '\\mathbf{?}'
+};
+
+exports.operators = {
+  'transpose': '^\\top',
+  'factorial': '!',
+  'pow': '^',
+  'dotPow': '.^\\wedge', //TODO find ideal solution
+  'unaryPlus': '+',
+  'unaryMinus': '-',
+  'bitNot': '~', //TODO find ideal solution
+  'not': '\\neg',
+  'multiply': '\\cdot',
+  'divide': '\\frac', //TODO how to handle that properly?
+  'dotMultiply': '.\\cdot', //TODO find ideal solution
+  'dotDivide': '.:', //TODO find ideal solution
+  'mod': '\\mod',
+  'add': '+',
+  'subtract': '-',
+  'to': '\\rightarrow',
+  'leftShift': '<<',
+  'rightArithShift': '>>',
+  'rightLogShift': '>>>',
+  'equal': '=',
+  'unequal': '\\neq',
+  'smaller': '<',
+  'larger': '>',
+  'smallerEq': '\\leq',
+  'largerEq': '\\geq',
+  'bitAnd': '\\&',
+  'bitXor': '\\underline{|}',
+  'bitOr': '|',
+  'and': '\\wedge',
+  'xor': '\\veebar',
+  'or': '\\vee'
+};
+
+exports.defaultTemplate = '\\mathrm{${name}}\\left(${args}\\right)';
+
+var units = {
+  deg: '^\\circ'
+};
+
+//@param {string} name
+//@param {boolean} isUnit
+exports.toSymbol = function (name, isUnit) {
+  isUnit = typeof isUnit === 'undefined' ? false : isUnit;
+  if (isUnit) {
+    if (units.hasOwnProperty(name)) {
+      return units[name];
+    }
+    return '\\mathrm{' + name + '}';
+  }
+
+  if (exports.symbols.hasOwnProperty(name)) {
+    return exports.symbols[name];
+  }
+  else if (name.indexOf('_') !== -1) {
+    //symbol with index (eg. alpha_1)
+    var index = name.indexOf('_');
+    return exports.toSymbol(name.substring(0, index)) + '_{'
+      + exports.toSymbol(name.substring(index + 1)) + '}';
+  }
+  return name;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/number.js":
+/*!*************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/number.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * @typedef {{sign: '+' | '-' | '', coefficients: number[], exponent: number}} SplitValue
+ */
+
+/**
+ * Test whether value is a number
+ * @param {*} value
+ * @return {boolean} isNumber
+ */
+exports.isNumber = function(value) {
+  return typeof value === 'number';
+};
+
+/**
+ * Check if a number is integer
+ * @param {number | boolean} value
+ * @return {boolean} isInteger
+ */
+exports.isInteger = function(value) {
+  return isFinite(value)
+      ? (value == Math.round(value))
+      : false;
+  // Note: we use ==, not ===, as we can have Booleans as well
+};
+
+/**
+ * Calculate the sign of a number
+ * @param {number} x
+ * @returns {*}
+ */
+exports.sign = Math.sign || function(x) {
+  if (x > 0) {
+    return 1;
+  }
+  else if (x < 0) {
+    return -1;
+  }
+  else {
+    return 0;
+  }
+};
+
+/**
+ * Convert a number to a formatted string representation.
+ *
+ * Syntax:
+ *
+ *    format(value)
+ *    format(value, options)
+ *    format(value, precision)
+ *    format(value, fn)
+ *
+ * Where:
+ *
+ *    {number} value   The value to be formatted
+ *    {Object} options An object with formatting options. Available options:
+ *                     {string} notation
+ *                         Number notation. Choose from:
+ *                         'fixed'          Always use regular number notation.
+ *                                          For example '123.40' and '14000000'
+ *                         'exponential'    Always use exponential notation.
+ *                                          For example '1.234e+2' and '1.4e+7'
+ *                         'engineering'    Always use engineering notation.
+ *                                          For example '123.4e+0' and '14.0e+6'
+ *                         'auto' (default) Regular number notation for numbers
+ *                                          having an absolute value between
+ *                                          `lower` and `upper` bounds, and uses
+ *                                          exponential notation elsewhere.
+ *                                          Lower bound is included, upper bound
+ *                                          is excluded.
+ *                                          For example '123.4' and '1.4e7'.
+ *                     {number} precision   A number between 0 and 16 to round
+ *                                          the digits of the number.
+ *                                          In case of notations 'exponential' and
+ *                                          'auto', `precision` defines the total
+ *                                          number of significant digits returned
+ *                                          and is undefined by default.
+ *                                          In case of notation 'fixed',
+ *                                          `precision` defines the number of
+ *                                          significant digits after the decimal
+ *                                          point, and is 0 by default.
+ *                     {Object} exponential An object containing two parameters,
+ *                                          {number} lower and {number} upper,
+ *                                          used by notation 'auto' to determine
+ *                                          when to return exponential notation.
+ *                                          Default values are `lower=1e-3` and
+ *                                          `upper=1e5`.
+ *                                          Only applicable for notation `auto`.
+ *    {Function} fn    A custom formatting function. Can be used to override the
+ *                     built-in notations. Function `fn` is called with `value` as
+ *                     parameter and must return a string. Is useful for example to
+ *                     format all values inside a matrix in a particular way.
+ *
+ * Examples:
+ *
+ *    format(6.4);                                        // '6.4'
+ *    format(1240000);                                    // '1.24e6'
+ *    format(1/3);                                        // '0.3333333333333333'
+ *    format(1/3, 3);                                     // '0.333'
+ *    format(21385, 2);                                   // '21000'
+ *    format(12.071, {notation: 'fixed'});                // '12'
+ *    format(2.3,    {notation: 'fixed', precision: 2});  // '2.30'
+ *    format(52.8,   {notation: 'exponential'});          // '5.28e+1'
+ *    format(12345678, {notation: 'engineering'});        // '12.345678e+6'
+ *
+ * @param {number} value
+ * @param {Object | Function | number} [options]
+ * @return {string} str The formatted value
+ */
+exports.format = function(value, options) {
+  if (typeof options === 'function') {
+    // handle format(value, fn)
+    return options(value);
+  }
+
+  // handle special cases
+  if (value === Infinity) {
+    return 'Infinity';
+  }
+  else if (value === -Infinity) {
+    return '-Infinity';
+  }
+  else if (isNaN(value)) {
+    return 'NaN';
+  }
+
+  // default values for options
+  var notation = 'auto';
+  var precision = undefined;
+
+  if (options) {
+    // determine notation from options
+    if (options.notation) {
+      notation = options.notation;
+    }
+
+    // determine precision from options
+    if (exports.isNumber(options)) {
+      precision = options;
+    }
+    else if (options.precision) {
+      precision = options.precision;
+    }
+  }
+
+  // handle the various notations
+  switch (notation) {
+    case 'fixed':
+      return exports.toFixed(value, precision);
+
+    case 'exponential':
+      return exports.toExponential(value, precision);
+
+    case 'engineering':
+      return exports.toEngineering(value, precision);
+
+    case 'auto':
+      return exports
+          .toPrecision(value, precision, options && options.exponential)
+
+          // remove trailing zeros after the decimal point
+          .replace(/((\.\d*?)(0+))($|e)/, function () {
+            var digits = arguments[2];
+            var e = arguments[4];
+            return (digits !== '.') ? digits + e : e;
+          });
+
+    default:
+      throw new Error('Unknown notation "' + notation + '". ' +
+          'Choose "auto", "exponential", or "fixed".');
+  }
+};
+
+/**
+ * Split a number into sign, coefficients, and exponent
+ * @param {number | string} value
+ * @return {SplitValue}
+ *              Returns an object containing sign, coefficients, and exponent
+ */
+exports.splitNumber = function (value) {
+  // parse the input value
+  var match = String(value).toLowerCase().match(/^0*?(-?)(\d+\.?\d*)(e([+-]?\d+))?$/);
+  if (!match) {
+    throw new SyntaxError('Invalid number ' + value);
+  }
+
+  var sign         = match[1];
+  var digits       = match[2];
+  var exponent     = parseFloat(match[4] || '0');
+
+  var dot = digits.indexOf('.');
+  exponent += (dot !== -1) ? (dot - 1) : (digits.length - 1);
+
+  var coefficients = digits
+      .replace('.', '')  // remove the dot (must be removed before removing leading zeros)
+      .replace(/^0*/, function (zeros) {
+        // remove leading zeros, add their count to the exponent
+        exponent -= zeros.length;
+        return '';
+      })
+      .replace(/0*$/, '') // remove trailing zeros
+      .split('')
+      .map(function (d) {
+        return parseInt(d);
+      });
+
+  if (coefficients.length === 0) {
+    coefficients.push(0);
+    exponent++;
+  }
+
+  return {
+    sign: sign,
+    coefficients: coefficients,
+    exponent: exponent
+  };
+};
+
+
+/**
+ * Format a number in engineering notation. Like '1.23e+6', '2.3e+0', '3.500e-3'
+ * @param {number | string} value
+ * @param {number} [precision=0]        Optional number of decimals after the
+ *                                      decimal point. Zero by default.
+ */
+exports.toEngineering = function (value, precision) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+  
+  var rounded = exports.roundDigits(exports.splitNumber(value), precision);
+
+  var e = rounded.exponent;
+  var c = rounded.coefficients;
+
+  // find nearest lower multiple of 3 for exponent
+  var newExp = e % 3 === 0 ? e : (e < 0 ? (e - 3) - (e % 3) : e - (e % 3));
+
+  // concatenate coefficients with necessary zeros
+  var significandsDiff = e >= 0 ? e : Math.abs(newExp);
+
+  // add zeros if necessary (for ex: 1e+8)
+  if (c.length - 1 < significandsDiff) c = c.concat(zeros(significandsDiff - (c.length - 1)));
+
+  // find difference in exponents
+  var expDiff = Math.abs(e - newExp);
+
+  var decimalIdx = 1;
+
+  // push decimal index over by expDiff times
+  while (--expDiff >= 0) decimalIdx++;
+
+  // if all coefficient values are zero after the decimal point, don't add a decimal value.
+  // otherwise concat with the rest of the coefficients
+  var decimals = c.slice(decimalIdx).join('');
+  var decimalVal = decimals.match(/[1-9]/) ? ('.' + decimals) : '';
+
+  var str = c.slice(0, decimalIdx).join('') +
+      decimalVal +
+      'e' + (e >= 0 ? '+' : '') + newExp.toString();
+  return rounded.sign + str;
+};
+
+/**
+ * Format a number with fixed notation.
+ * @param {number | string} value
+ * @param {number} [precision=0]        Optional number of decimals after the
+ *                                      decimal point. Zero by default.
+ */
+exports.toFixed = function (value, precision) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+
+  var splitValue = exports.splitNumber(value)
+  var rounded = exports.roundDigits(splitValue, splitValue.exponent + 1 + (precision || 0));
+  var c = rounded.coefficients;
+  var p = rounded.exponent + 1; // exponent may have changed
+
+  // append zeros if needed
+  var pp = p + (precision || 0);
+  if (c.length < pp) {
+    c = c.concat(zeros(pp - c.length));
+  }
+
+  // prepend zeros if needed
+  if (p < 0) {
+    c = zeros(-p + 1).concat(c);
+    p = 1;
+  }
+
+  // insert a dot if needed
+  if (precision) {
+    c.splice(p, 0, (p === 0) ? '0.' : '.');
+  }
+
+  return rounded.sign + c.join('');
+};
+
+/**
+ * Format a number in exponential notation. Like '1.23e+5', '2.3e+0', '3.500e-3'
+ * @param {number | string} value
+ * @param {number} [precision]  Number of digits in formatted output.
+ *                              If not provided, the maximum available digits
+ *                              is used.
+ */
+exports.toExponential = function (value, precision) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+
+  // round if needed, else create a clone
+  var split = exports.splitNumber(value)
+  var rounded = precision ? exports.roundDigits(split, precision) : split;
+  var c = rounded.coefficients;
+  var e = rounded.exponent;
+
+  // append zeros if needed
+  if (c.length < precision) {
+    c = c.concat(zeros(precision - c.length));
+  }
+
+  // format as `C.CCCe+EEE` or `C.CCCe-EEE`
+  var first = c.shift();
+  return rounded.sign + first + (c.length > 0 ? ('.' + c.join('')) : '') +
+      'e' + (e >= 0 ? '+' : '') + e;
+}
+
+/**
+ * Format a number with a certain precision
+ * @param {number | string} value
+ * @param {number} [precision=undefined] Optional number of digits.
+ * @param {{lower: number | undefined, upper: number | undefined}} [options]
+ *                                       By default:
+ *                                         lower = 1e-3 (excl)
+ *                                         upper = 1e+5 (incl)
+ * @return {string}
+ */
+exports.toPrecision = function (value, precision, options) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+
+  // determine lower and upper bound for exponential notation.
+  var lower = (options && options.lower !== undefined) ? options.lower : 1e-3;
+  var upper = (options && options.upper !== undefined) ? options.upper : 1e+5;
+
+  var split = exports.splitNumber(value)
+  var abs = Math.abs(Math.pow(10, split.exponent));
+  if (abs < lower || abs >= upper) {
+    // exponential notation
+    return exports.toExponential(value, precision);
+  }
+  else {
+    var rounded = precision ? exports.roundDigits(split, precision) : split;
+    var c = rounded.coefficients;
+    var e = rounded.exponent;
+
+    // append trailing zeros
+    if (c.length < precision) {
+      c = c.concat(zeros(precision - c.length));
+    }
+
+    // append trailing zeros
+    // TODO: simplify the next statement
+    c = c.concat(zeros(e - c.length + 1 +
+        (c.length < precision ? precision - c.length : 0)));
+
+    // prepend zeros
+    c = zeros(-e).concat(c);
+
+    var dot = e > 0 ? e : 0;
+    if (dot < c.length - 1) {
+      c.splice(dot + 1, 0, '.');
+    }
+
+    return rounded.sign + c.join('');
+  }
+}
+
+/**
+ * Round the number of digits of a number *
+ * @param {SplitValue} split       A value split with .splitNumber(value)
+ * @param {number} precision  A positive integer
+ * @return {SplitValue}
+ *              Returns an object containing sign, coefficients, and exponent
+ *              with rounded digits
+ */
+exports.roundDigits = function (split, precision) {
+  // create a clone
+  var rounded = {
+    sign: split.sign,
+    coefficients: split.coefficients,
+    exponent: split.exponent
+  }
+  var c = rounded.coefficients;
+
+  // prepend zeros if needed
+  while (precision <= 0) {
+    c.unshift(0);
+    rounded.exponent++;
+    precision++;
+  }
+
+  if (c.length > precision) {
+    var removed = c.splice(precision, c.length - precision);
+
+    if (removed[0] >= 5) {
+      var i = precision - 1;
+      c[i]++;
+      while (c[i] === 10) {
+        c.pop();
+        if (i === 0) {
+          c.unshift(0);
+          rounded.exponent++;
+          i++;
+        }
+        i--;
+        c[i]++;
+      }
+    }
+  }
+
+  return rounded;
+};
+
+/**
+ * Create an array filled with zeros.
+ * @param {number} length
+ * @return {Array}
+ */
+function zeros(length) {
+  var arr = [];
+  for (var i = 0; i < length; i++) {
+    arr.push(0);
+  }
+  return arr;
+}
+
+/**
+ * Count the number of significant digits of a number.
+ *
+ * For example:
+ *   2.34 returns 3
+ *   0.0034 returns 2
+ *   120.5e+30 returns 4
+ *
+ * @param {number} value
+ * @return {number} digits   Number of significant digits
+ */
+exports.digits = function(value) {
+  return value
+      .toExponential()
+      .replace(/e.*$/, '')          // remove exponential notation
+      .replace( /^0\.?0*|\./, '')   // remove decimal point and leading zeros
+      .length
+};
+
+/**
+ * Minimum number added to one that makes the result different than one
+ */
+exports.DBL_EPSILON = Number.EPSILON || 2.2204460492503130808472633361816E-16;
+
+/**
+ * Compares two floating point numbers.
+ * @param {number} x          First value to compare
+ * @param {number} y          Second value to compare
+ * @param {number} [epsilon]  The maximum relative difference between x and y
+ *                            If epsilon is undefined or null, the function will
+ *                            test whether x and y are exactly equal.
+ * @return {boolean} whether the two numbers are nearly equal
+*/
+exports.nearlyEqual = function(x, y, epsilon) {
+  // if epsilon is null or undefined, test whether x and y are exactly equal
+  if (epsilon == null) {
+    return x == y;
+  }
+
+  // use "==" operator, handles infinities
+  if (x == y) {
+    return true;
+  }
+
+  // NaN
+  if (isNaN(x) || isNaN(y)) {
+    return false;
+  }
+
+  // at this point x and y should be finite
+  if(isFinite(x) && isFinite(y)) {
+    // check numbers are very close, needed when comparing numbers near zero
+    var diff = Math.abs(x - y);
+    if (diff < exports.DBL_EPSILON) {
+      return true;
+    }
+    else {
+      // use relative error
+      return diff <= Math.max(Math.abs(x), Math.abs(y)) * epsilon;
+    }
+  }
+
+  // Infinite and Number or negative Infinite and positive Infinite cases
+  return false;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/object.js":
+/*!*************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/object.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isBigNumber = __webpack_require__(/*! ./bignumber/isBigNumber */ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js");
+
+/**
+ * Clone an object
+ *
+ *     clone(x)
+ *
+ * Can clone any primitive type, array, and object.
+ * If x has a function clone, this function will be invoked to clone the object.
+ *
+ * @param {*} x
+ * @return {*} clone
+ */
+exports.clone = function clone(x) {
+  var type = typeof x;
+
+  // immutable primitive types
+  if (type === 'number' || type === 'string' || type === 'boolean' ||
+      x === null || x === undefined) {
+    return x;
+  }
+
+  // use clone function of the object when available
+  if (typeof x.clone === 'function') {
+    return x.clone();
+  }
+
+  // array
+  if (Array.isArray(x)) {
+    return x.map(function (value) {
+      return clone(value);
+    });
+  }
+
+  if (x instanceof Number)    return new Number(x.valueOf());
+  if (x instanceof String)    return new String(x.valueOf());
+  if (x instanceof Boolean)   return new Boolean(x.valueOf());
+  if (x instanceof Date)      return new Date(x.valueOf());
+  if (isBigNumber(x))         return x; // bignumbers are immutable
+  if (x instanceof RegExp)  throw new TypeError('Cannot clone ' + x);  // TODO: clone a RegExp
+
+  // object
+  return exports.map(x, clone);
+};
+
+/**
+ * Apply map to all properties of an object
+ * @param {Object} object
+ * @param {function} callback
+ * @return {Object} Returns a copy of the object with mapped properties
+ */
+exports.map = function(object, callback) {
+  var clone = {};
+
+  for (var key in object) {
+    if (exports.hasOwnProperty(object, key)) {
+      clone[key] = callback(object[key]);
+    }
+  }
+
+  return clone;
+}
+
+/**
+ * Extend object a with the properties of object b
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object} a
+ */
+exports.extend = function(a, b) {
+  for (var prop in b) {
+    if (exports.hasOwnProperty(b, prop)) {
+      a[prop] = b[prop];
+    }
+  }
+  return a;
+};
+
+/**
+ * Deep extend an object a with the properties of object b
+ * @param {Object} a
+ * @param {Object} b
+ * @returns {Object}
+ */
+exports.deepExtend = function deepExtend (a, b) {
+  // TODO: add support for Arrays to deepExtend
+  if (Array.isArray(b)) {
+    throw new TypeError('Arrays are not supported by deepExtend');
+  }
+
+  for (var prop in b) {
+    if (exports.hasOwnProperty(b, prop)) {
+      if (b[prop] && b[prop].constructor === Object) {
+        if (a[prop] === undefined) {
+          a[prop] = {};
+        }
+        if (a[prop].constructor === Object) {
+          deepExtend(a[prop], b[prop]);
+        }
+        else {
+          a[prop] = b[prop];
+        }
+      } else if (Array.isArray(b[prop])) {
+        throw new TypeError('Arrays are not supported by deepExtend');
+      } else {
+        a[prop] = b[prop];
+      }
+    }
+  }
+  return a;
+};
+
+/**
+ * Deep test equality of all fields in two pairs of arrays or objects.
+ * @param {Array | Object} a
+ * @param {Array | Object} b
+ * @returns {boolean}
+ */
+exports.deepEqual = function deepEqual (a, b) {
+  var prop, i, len;
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b)) {
+      return false;
+    }
+
+    if (a.length != b.length) {
+      return false;
+    }
+
+    for (i = 0, len = a.length; i < len; i++) {
+      if (!exports.deepEqual(a[i], b[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  else if (a instanceof Object) {
+    if (Array.isArray(b) || !(b instanceof Object)) {
+      return false;
+    }
+
+    for (prop in a) {
+      //noinspection JSUnfilteredForInLoop
+      if (!exports.deepEqual(a[prop], b[prop])) {
+        return false;
+      }
+    }
+    for (prop in b) {
+      //noinspection JSUnfilteredForInLoop
+      if (!exports.deepEqual(a[prop], b[prop])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  else {
+    return (typeof a === typeof b) && (a == b);
+  }
+};
+
+/**
+ * Test whether the current JavaScript engine supports Object.defineProperty
+ * @returns {boolean} returns true if supported
+ */
+exports.canDefineProperty = function () {
+  // test needed for broken IE8 implementation
+  try {
+    if (Object.defineProperty) {
+      Object.defineProperty({}, 'x', { get: function () {} });
+      return true;
+    }
+  } catch (e) {}
+
+  return false;
+};
+
+/**
+ * Attach a lazy loading property to a constant.
+ * The given function `fn` is called once when the property is first requested.
+ * On older browsers (<IE8), the function will fall back to direct evaluation
+ * of the properties value.
+ * @param {Object} object   Object where to add the property
+ * @param {string} prop     Property name
+ * @param {Function} fn     Function returning the property value. Called
+ *                          without arguments.
+ */
+exports.lazy = function (object, prop, fn) {
+  if (exports.canDefineProperty()) {
+    var _uninitialized = true;
+    var _value;
+    Object.defineProperty(object, prop, {
+      get: function () {
+        if (_uninitialized) {
+          _value = fn();
+          _uninitialized = false;
+        }
+        return _value;
+      },
+
+      set: function (value) {
+        _value = value;
+        _uninitialized = false;
+      },
+
+      configurable: true,
+      enumerable: true
+    });
+  }
+  else {
+    // fall back to immediate evaluation
+    object[prop] = fn();
+  }
+};
+
+/**
+ * Traverse a path into an object.
+ * When a namespace is missing, it will be created
+ * @param {Object} object
+ * @param {string} path   A dot separated string like 'name.space'
+ * @return {Object} Returns the object at the end of the path
+ */
+exports.traverse = function(object, path) {
+  var obj = object;
+
+  if (path) {
+    var names = path.split('.');
+    for (var i = 0; i < names.length; i++) {
+      var name = names[i];
+      if (!(name in obj)) {
+        obj[name] = {};
+      }
+      obj = obj[name];
+    }
+  }
+
+  return obj;
+};
+
+/**
+ * A safe hasOwnProperty
+ * @param {Object} object
+ * @param {string} property
+ */
+exports.hasOwnProperty = function (object, property) {
+  return object && Object.hasOwnProperty.call(object, property);
+}
+
+/**
+ * Test whether an object is a factory. a factory has fields:
+ *
+ * - factory: function (type: Object, config: Object, load: function, typed: function [, math: Object])   (required)
+ * - name: string (optional)
+ * - path: string    A dot separated path (optional)
+ * - math: boolean   If true (false by default), the math namespace is passed
+ *                   as fifth argument of the factory function
+ *
+ * @param {*} object
+ * @returns {boolean}
+ */
+exports.isFactory = function (object) {
+  return object && typeof object.factory === 'function';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/string.js":
+/*!*************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/string.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var formatNumber = __webpack_require__(/*! ./number */ "./node_modules/mathjs/lib/utils/number.js").format;
+var formatBigNumber = __webpack_require__(/*! ./bignumber/formatter */ "./node_modules/mathjs/lib/utils/bignumber/formatter.js").format;
+var isBigNumber = __webpack_require__(/*! ./bignumber/isBigNumber */ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js");
+
+/**
+ * Test whether value is a string
+ * @param {*} value
+ * @return {boolean} isString
+ */
+exports.isString = function(value) {
+  return typeof value === 'string';
+};
+
+/**
+ * Check if a text ends with a certain string.
+ * @param {string} text
+ * @param {string} search
+ */
+exports.endsWith = function(text, search) {
+  var start = text.length - search.length;
+  var end = text.length;
+  return (text.substring(start, end) === search);
+};
+
+/**
+ * Format a value of any type into a string.
+ *
+ * Usage:
+ *     math.format(value)
+ *     math.format(value, precision)
+ *
+ * When value is a function:
+ *
+ * - When the function has a property `syntax`, it returns this
+ *   syntax description.
+ * - In other cases, a string `'function'` is returned.
+ *
+ * When `value` is an Object:
+ *
+ * - When the object contains a property `format` being a function, this
+ *   function is invoked as `value.format(options)` and the result is returned.
+ * - When the object has its own `toString` method, this method is invoked
+ *   and the result is returned.
+ * - In other cases the function will loop over all object properties and
+ *   return JSON object notation like '{"a": 2, "b": 3}'.
+ *
+ * Example usage:
+ *     math.format(2/7);                // '0.2857142857142857'
+ *     math.format(math.pi, 3);         // '3.14'
+ *     math.format(new Complex(2, 3));  // '2 + 3i'
+ *     math.format('hello');            // '"hello"'
+ *
+ * @param {*} value             Value to be stringified
+ * @param {Object | number | Function} [options]  Formatting options. See
+ *                                                lib/utils/number:format for a
+ *                                                description of the available
+ *                                                options.
+ * @return {string} str
+ */
+exports.format = function(value, options) {
+  if (typeof value === 'number') {
+    return formatNumber(value, options);
+  }
+
+  if (isBigNumber(value)) {
+    return formatBigNumber(value, options);
+  }
+
+  // note: we use unsafe duck-typing here to check for Fractions, this is
+  // ok here since we're only invoking toString or concatenating its values
+  if (looksLikeFraction(value)) {
+    if (!options || options.fraction !== 'decimal') {
+      // output as ratio, like '1/3'
+      return (value.s * value.n) + '/' + value.d;
+    }
+    else {
+      // output as decimal, like '0.(3)'
+      return value.toString();
+    }
+  }
+
+  if (Array.isArray(value)) {
+    return formatArray(value, options);
+  }
+
+  if (exports.isString(value)) {
+    return '"' + value + '"';
+  }
+
+  if (typeof value === 'function') {
+    return value.syntax ? String(value.syntax) : 'function';
+  }
+
+  if (value && typeof value === 'object') {
+    if (typeof value.format === 'function') {
+      return value.format(options);
+    }
+    else if (value && value.toString() !== {}.toString()) {
+      // this object has a non-native toString method, use that one
+      return value.toString();
+    }
+    else {
+      var entries = [];
+
+      for (var key in value) {
+        if (value.hasOwnProperty(key)) {
+          entries.push('"' + key + '": ' + exports.format(value[key], options));
+        }
+      }
+
+      return '{' + entries.join(', ') + '}';
+    }
+  }
+
+  return String(value);
+};
+
+/**
+ * Stringify a value into a string enclosed in double quotes.
+ * Unescaped double quotes and backslashes inside the value are escaped.
+ * @param {*} value
+ * @return {string}
+ */
+exports.stringify = function (value) {
+  var text = String(value);
+  var escaped = '';
+  var i = 0;
+  while (i < text.length) {
+    var c = text.charAt(i);
+
+    if (c === '\\') {
+      escaped += c;
+      i++;
+
+      c = text.charAt(i);
+      if (c === '' || '"\\/bfnrtu'.indexOf(c) === -1) {
+        escaped += '\\';  // no valid escape character -> escape it
+      }
+      escaped += c;
+    }
+    else if (c === '"') {
+      escaped += '\\"';
+    }
+    else {
+      escaped += c;
+    }
+    i++;
+  }
+
+  return '"' + escaped + '"';
+}
+
+/**
+ * Escape special HTML characters
+ * @param {*} value
+ * @return {string}
+ */
+exports.escape = function (value) {
+  var text = String(value);
+  text = text.replace(/&/g, '&amp;')
+			 .replace(/"/g, '&quot;')
+			 .replace(/'/g, '&#39;')
+			 .replace(/</g, '&lt;')
+			 .replace(/>/g, '&gt;');
+  
+  return text;
+}
+
+/**
+ * Recursively format an n-dimensional matrix
+ * Example output: "[[1, 2], [3, 4]]"
+ * @param {Array} array
+ * @param {Object | number | Function} [options]  Formatting options. See
+ *                                                lib/utils/number:format for a
+ *                                                description of the available
+ *                                                options.
+ * @returns {string} str
+ */
+function formatArray (array, options) {
+  if (Array.isArray(array)) {
+    var str = '[';
+    var len = array.length;
+    for (var i = 0; i < len; i++) {
+      if (i != 0) {
+        str += ', ';
+      }
+      str += formatArray(array[i], options);
+    }
+    str += ']';
+    return str;
+  }
+  else {
+    return exports.format(array, options);
+  }
+}
+
+/**
+ * Check whether a value looks like a Fraction (unsafe duck-type check)
+ * @param {*} value
+ * @return {boolean}
+ */
+function looksLikeFraction (value) {
+  return (value &&
+      typeof value === 'object' &&
+      typeof value.s === 'number' &&
+      typeof value.n === 'number' &&
+      typeof value.d === 'number') || false;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/types.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/types.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determine the type of a variable
+ *
+ *     type(x)
+ *
+ * The following types are recognized:
+ *
+ *     'undefined'
+ *     'null'
+ *     'boolean'
+ *     'number'
+ *     'string'
+ *     'Array'
+ *     'Function'
+ *     'Date'
+ *     'RegExp'
+ *     'Object'
+ *
+ * @param {*} x
+ * @return {string} Returns the name of the type. Primitive types are lower case,
+ *                  non-primitive types are upper-camel-case.
+ *                  For example 'number', 'string', 'Array', 'Date'.
+ */
+exports.type = function(x) {
+  var type = typeof x;
+
+  if (type === 'object') {
+    if (x === null)           return 'null';
+    if (Array.isArray(x))     return 'Array';
+    if (x instanceof Date)    return 'Date';
+    if (x instanceof RegExp)  return 'RegExp';
+    if (x instanceof Boolean) return 'boolean';
+    if (x instanceof Number)  return 'number';
+    if (x instanceof String)  return 'string';
+
+    return 'Object';
+  }
+
+  if (type === 'function')    return 'Function';
+
+  return type;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/mouse-change/mouse-listen.js":
 /*!***************************************************!*\
   !*** ./node_modules/mouse-change/mouse-listen.js ***!
@@ -18915,6 +24381,83 @@ function surfaceNets(array,level) {
 
 /***/ }),
 
+/***/ "./node_modules/tiny-emitter/index.js":
+/*!********************************************!*\
+  !*** ./node_modules/tiny-emitter/index.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function E () {
+  // Keep this empty so it's easier to inherit from
+  // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+}
+
+E.prototype = {
+  on: function (name, callback, ctx) {
+    var e = this.e || (this.e = {});
+
+    (e[name] || (e[name] = [])).push({
+      fn: callback,
+      ctx: ctx
+    });
+
+    return this;
+  },
+
+  once: function (name, callback, ctx) {
+    var self = this;
+    function listener () {
+      self.off(name, listener);
+      callback.apply(ctx, arguments);
+    };
+
+    listener._ = callback
+    return this.on(name, listener, ctx);
+  },
+
+  emit: function (name) {
+    var data = [].slice.call(arguments, 1);
+    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+    var i = 0;
+    var len = evtArr.length;
+
+    for (i; i < len; i++) {
+      evtArr[i].fn.apply(evtArr[i].ctx, data);
+    }
+
+    return this;
+  },
+
+  off: function (name, callback) {
+    var e = this.e || (this.e = {});
+    var evts = e[name];
+    var liveEvents = [];
+
+    if (evts && callback) {
+      for (var i = 0, len = evts.length; i < len; i++) {
+        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+          liveEvents.push(evts[i]);
+      }
+    }
+
+    // Remove event from queue to prevent memory leak
+    // Suggested by https://github.com/lazd
+    // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+
+    (liveEvents.length)
+      ? e[name] = liveEvents
+      : delete e[name];
+
+    return this;
+  }
+};
+
+module.exports = E;
+
+
+/***/ }),
+
 /***/ "./node_modules/triangulate-hypercube/triangulate-cube.js":
 /*!****************************************************************!*\
   !*** ./node_modules/triangulate-hypercube/triangulate-cube.js ***!
@@ -19028,6 +24571,1403 @@ function fastTwoSum(a, b, result) {
 	}
 	return [ar+br, x]
 }
+
+/***/ }),
+
+/***/ "./node_modules/typed-function/typed-function.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/typed-function/typed-function.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * typed-function
+ *
+ * Type checking for JavaScript functions
+ *
+ * https://github.com/josdejong/typed-function
+ */
+
+
+(function (root, factory) {
+  if (true) {
+    // AMD. Register as an anonymous module.
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+}(this, function () {
+  // factory function to create a new instance of typed-function
+  // TODO: allow passing configuration, types, tests via the factory function
+  function create() {
+    /**
+     * Get a type test function for a specific data type
+     * @param {string} name                   Name of a data type like 'number' or 'string'
+     * @returns {Function(obj: *) : boolean}  Returns a type testing function.
+     *                                        Throws an error for an unknown type.
+     */
+    function getTypeTest(name) {
+      var test;
+      for (var i = 0; i < typed.types.length; i++) {
+        var entry = typed.types[i];
+        if (entry.name === name) {
+          test = entry.test;
+          break;
+        }
+      }
+
+      if (!test) {
+        var hint;
+        for (i = 0; i < typed.types.length; i++) {
+          entry = typed.types[i];
+          if (entry.name.toLowerCase() == name.toLowerCase()) {
+            hint = entry.name;
+            break;
+          }
+        }
+
+        throw new Error('Unknown type "' + name + '"' +
+            (hint ? ('. Did you mean "' + hint + '"?') : ''));
+      }
+      return test;
+    }
+
+    /**
+     * Retrieve the function name from a set of functions, and check
+     * whether the name of all functions match (if given)
+     * @param {Array.<function>} fns
+     */
+    function getName (fns) {
+      var name = '';
+
+      for (var i = 0; i < fns.length; i++) {
+        var fn = fns[i];
+
+        // merge function name when this is a typed function
+        if (fn.signatures && fn.name != '') {
+          if (name == '') {
+            name = fn.name;
+          }
+          else if (name != fn.name) {
+            var err = new Error('Function names do not match (expected: ' + name + ', actual: ' + fn.name + ')');
+            err.data = {
+              actual: fn.name,
+              expected: name
+            };
+            throw err;
+          }
+        }
+      }
+
+      return name;
+    }
+
+    /**
+     * Create an ArgumentsError. Creates messages like:
+     *
+     *   Unexpected type of argument (expected: ..., actual: ..., index: ...)
+     *   Too few arguments (expected: ..., index: ...)
+     *   Too many arguments (expected: ..., actual: ...)
+     *
+     * @param {String} fn         Function name
+     * @param {number} argCount   Number of arguments
+     * @param {Number} index      Current argument index
+     * @param {*} actual          Current argument
+     * @param {string} [expected] An optional, comma separated string with
+     *                            expected types on given index
+     * @extends Error
+     */
+    function createError(fn, argCount, index, actual, expected) {
+      var actualType = getTypeOf(actual);
+      var _expected = expected ? expected.split(',') : null;
+      var _fn = (fn || 'unnamed');
+      var anyType = _expected && contains(_expected, 'any');
+      var message;
+      var data = {
+        fn: fn,
+        index: index,
+        actual: actual,
+        expected: _expected
+      };
+
+      if (_expected) {
+        if (argCount > index && !anyType) {
+          // unexpected type
+          message = 'Unexpected type of argument in function ' + _fn +
+              ' (expected: ' + _expected.join(' or ') + ', actual: ' + actualType + ', index: ' + index + ')';
+        }
+        else {
+          // too few arguments
+          message = 'Too few arguments in function ' + _fn +
+              ' (expected: ' + _expected.join(' or ') + ', index: ' + index + ')';
+        }
+      }
+      else {
+        // too many arguments
+        message = 'Too many arguments in function ' + _fn +
+            ' (expected: ' + index + ', actual: ' + argCount + ')'
+      }
+
+      var err = new TypeError(message);
+      err.data = data;
+      return err;
+    }
+
+    /**
+     * Collection with function references (local shortcuts to functions)
+     * @constructor
+     * @param {string} [name='refs']  Optional name for the refs, used to generate
+     *                                JavaScript code
+     */
+    function Refs(name) {
+      this.name = name || 'refs';
+      this.categories = {};
+    }
+
+    /**
+     * Add a function reference.
+     * @param {Function} fn
+     * @param {string} [category='fn']    A function category, like 'fn' or 'signature'
+     * @returns {string} Returns the function name, for example 'fn0' or 'signature2'
+     */
+    Refs.prototype.add = function (fn, category) {
+      var cat = category || 'fn';
+      if (!this.categories[cat]) this.categories[cat] = [];
+
+      var index = this.categories[cat].indexOf(fn);
+      if (index == -1) {
+        index = this.categories[cat].length;
+        this.categories[cat].push(fn);
+      }
+
+      return cat + index;
+    };
+
+    /**
+     * Create code lines for all function references
+     * @returns {string} Returns the code containing all function references
+     */
+    Refs.prototype.toCode = function () {
+      var code = [];
+      var path = this.name + '.categories';
+      var categories = this.categories;
+
+      for (var cat in categories) {
+        if (categories.hasOwnProperty(cat)) {
+          var category = categories[cat];
+
+          for (var i = 0; i < category.length; i++) {
+            code.push('var ' + cat + i + ' = ' + path + '[\'' + cat + '\'][' + i + '];');
+          }
+        }
+      }
+
+      return code.join('\n');
+    };
+
+    /**
+     * A function parameter
+     * @param {string | string[] | Param} types    A parameter type like 'string',
+     *                                             'number | boolean'
+     * @param {boolean} [varArgs=false]            Variable arguments if true
+     * @constructor
+     */
+    function Param(types, varArgs) {
+      // parse the types, can be a string with types separated by pipe characters |
+      if (typeof types === 'string') {
+        // parse variable arguments operator (ellipses '...number')
+        var _types = types.trim();
+        var _varArgs = _types.substr(0, 3) === '...';
+        if (_varArgs) {
+          _types = _types.substr(3);
+        }
+        if (_types === '') {
+          this.types = ['any'];
+        }
+        else {
+          this.types = _types.split('|');
+          for (var i = 0; i < this.types.length; i++) {
+            this.types[i] = this.types[i].trim();
+          }
+        }
+      }
+      else if (Array.isArray(types)) {
+        this.types = types;
+      }
+      else if (types instanceof Param) {
+        return types.clone();
+      }
+      else {
+        throw new Error('String or Array expected');
+      }
+
+      // can hold a type to which to convert when handling this parameter
+      this.conversions = [];
+      // TODO: implement better API for conversions, be able to add conversions via constructor (support a new type Object?)
+
+      // variable arguments
+      this.varArgs = _varArgs || varArgs || false;
+
+      // check for any type arguments
+      this.anyType = this.types.indexOf('any') !== -1;
+    }
+
+    /**
+     * Order Params
+     * any type ('any') will be ordered last, and object as second last (as other
+     * types may be an object as well, like Array).
+     *
+     * @param {Param} a
+     * @param {Param} b
+     * @returns {number} Returns 1 if a > b, -1 if a < b, and else 0.
+     */
+    Param.compare = function (a, b) {
+      // TODO: simplify parameter comparison, it's a mess
+      if (a.anyType) return 1;
+      if (b.anyType) return -1;
+
+      if (contains(a.types, 'Object')) return 1;
+      if (contains(b.types, 'Object')) return -1;
+
+      if (a.hasConversions()) {
+        if (b.hasConversions()) {
+          var i, ac, bc;
+
+          for (i = 0; i < a.conversions.length; i++) {
+            if (a.conversions[i] !== undefined) {
+              ac = a.conversions[i];
+              break;
+            }
+          }
+
+          for (i = 0; i < b.conversions.length; i++) {
+            if (b.conversions[i] !== undefined) {
+              bc = b.conversions[i];
+              break;
+            }
+          }
+
+          return typed.conversions.indexOf(ac) - typed.conversions.indexOf(bc);
+        }
+        else {
+          return 1;
+        }
+      }
+      else {
+        if (b.hasConversions()) {
+          return -1;
+        }
+        else {
+          // both params have no conversions
+          var ai, bi;
+
+          for (i = 0; i < typed.types.length; i++) {
+            if (typed.types[i].name === a.types[0]) {
+              ai = i;
+              break;
+            }
+          }
+
+          for (i = 0; i < typed.types.length; i++) {
+            if (typed.types[i].name === b.types[0]) {
+              bi = i;
+              break;
+            }
+          }
+
+          return ai - bi;
+        }
+      }
+    };
+
+    /**
+     * Test whether this parameters types overlap an other parameters types.
+     * Will not match ['any'] with ['number']
+     * @param {Param} other
+     * @return {boolean} Returns true when there are overlapping types
+     */
+    Param.prototype.overlapping = function (other) {
+      for (var i = 0; i < this.types.length; i++) {
+        if (contains(other.types, this.types[i])) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    /**
+     * Test whether this parameters types matches an other parameters types.
+     * When any of the two parameters contains `any`, true is returned
+     * @param {Param} other
+     * @return {boolean} Returns true when there are matching types
+     */
+    Param.prototype.matches = function (other) {
+      return this.anyType || other.anyType || this.overlapping(other);
+    };
+
+    /**
+     * Create a clone of this param
+     * @returns {Param} Returns a cloned version of this param
+     */
+    Param.prototype.clone = function () {
+      var param = new Param(this.types.slice(), this.varArgs);
+      param.conversions = this.conversions.slice();
+      return param;
+    };
+
+    /**
+     * Test whether this parameter contains conversions
+     * @returns {boolean} Returns true if the parameter contains one or
+     *                    multiple conversions.
+     */
+    Param.prototype.hasConversions = function () {
+      return this.conversions.length > 0;
+    };
+
+    /**
+     * Tests whether this parameters contains any of the provided types
+     * @param {Object} types  A Map with types, like {'number': true}
+     * @returns {boolean}     Returns true when the parameter contains any
+     *                        of the provided types
+     */
+    Param.prototype.contains = function (types) {
+      for (var i = 0; i < this.types.length; i++) {
+        if (types[this.types[i]]) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    /**
+     * Return a string representation of this params types, like 'string' or
+     * 'number | boolean' or '...number'
+     * @param {boolean} [toConversion]   If true, the returned types string
+     *                                   contains the types where the parameter
+     *                                   will convert to. If false (default)
+     *                                   the "from" types are returned
+     * @returns {string}
+     */
+    Param.prototype.toString = function (toConversion) {
+      var types = [];
+      var keys = {};
+
+      for (var i = 0; i < this.types.length; i++) {
+        var conversion = this.conversions[i];
+        var type = toConversion && conversion ? conversion.to : this.types[i];
+        if (!(type in keys)) {
+          keys[type] = true;
+          types.push(type);
+        }
+      }
+
+      return (this.varArgs ? '...' : '') + types.join('|');
+    };
+
+    /**
+     * A function signature
+     * @param {string | string[] | Param[]} params
+     *                         Array with the type(s) of each parameter,
+     *                         or a comma separated string with types
+     * @param {Function} fn    The actual function
+     * @constructor
+     */
+    function Signature(params, fn) {
+      var _params;
+      if (typeof params === 'string') {
+        _params = (params !== '') ? params.split(',') : [];
+      }
+      else if (Array.isArray(params)) {
+        _params = params;
+      }
+      else {
+        throw new Error('string or Array expected');
+      }
+
+      this.params = new Array(_params.length);
+      this.anyType = false;
+      this.varArgs = false;
+      for (var i = 0; i < _params.length; i++) {
+        var param = new Param(_params[i]);
+        this.params[i] = param;
+        if (param.anyType) {
+          this.anyType = true;
+        }
+        if (i === _params.length - 1) {
+          // the last argument
+          this.varArgs = param.varArgs;
+        }
+        else {
+          // non-last argument
+          if (param.varArgs) {
+            throw new SyntaxError('Unexpected variable arguments operator "..."');
+          }
+        }
+      }
+
+      this.fn = fn;
+    }
+
+    /**
+     * Create a clone of this signature
+     * @returns {Signature} Returns a cloned version of this signature
+     */
+    Signature.prototype.clone = function () {
+      return new Signature(this.params.slice(), this.fn);
+    };
+
+    /**
+     * Expand a signature: split params with union types in separate signatures
+     * For example split a Signature "string | number" into two signatures.
+     * @return {Signature[]} Returns an array with signatures (at least one)
+     */
+    Signature.prototype.expand = function () {
+      var signatures = [];
+
+      function recurse(signature, path) {
+        if (path.length < signature.params.length) {
+          var i, newParam, conversion;
+
+          var param = signature.params[path.length];
+          if (param.varArgs) {
+            // a variable argument. do not split the types in the parameter
+            newParam = param.clone();
+
+            // add conversions to the parameter
+            // recurse for all conversions
+            for (i = 0; i < typed.conversions.length; i++) {
+              conversion = typed.conversions[i];
+              if (!contains(param.types, conversion.from) && contains(param.types, conversion.to)) {
+                var j = newParam.types.length;
+                newParam.types[j] = conversion.from;
+                newParam.conversions[j] = conversion;
+              }
+            }
+
+            recurse(signature, path.concat(newParam));
+          }
+          else {
+            // split each type in the parameter
+            for (i = 0; i < param.types.length; i++) {
+              recurse(signature, path.concat(new Param(param.types[i])));
+            }
+
+            // recurse for all conversions
+            for (i = 0; i < typed.conversions.length; i++) {
+              conversion = typed.conversions[i];
+              if (!contains(param.types, conversion.from) && contains(param.types, conversion.to)) {
+                newParam = new Param(conversion.from);
+                newParam.conversions[0] = conversion;
+                recurse(signature, path.concat(newParam));
+              }
+            }
+          }
+        }
+        else {
+          signatures.push(new Signature(path, signature.fn));
+        }
+      }
+
+      recurse(this, []);
+
+      return signatures;
+    };
+
+    /**
+     * Compare two signatures.
+     *
+     * When two params are equal and contain conversions, they will be sorted
+     * by lowest index of the first conversions.
+     *
+     * @param {Signature} a
+     * @param {Signature} b
+     * @returns {number} Returns 1 if a > b, -1 if a < b, and else 0.
+     */
+    Signature.compare = function (a, b) {
+      if (a.params.length > b.params.length) return 1;
+      if (a.params.length < b.params.length) return -1;
+
+      // count the number of conversions
+      var i;
+      var len = a.params.length; // a and b have equal amount of params
+      var ac = 0;
+      var bc = 0;
+      for (i = 0; i < len; i++) {
+        if (a.params[i].hasConversions()) ac++;
+        if (b.params[i].hasConversions()) bc++;
+      }
+
+      if (ac > bc) return 1;
+      if (ac < bc) return -1;
+
+      // compare the order per parameter
+      for (i = 0; i < a.params.length; i++) {
+        var cmp = Param.compare(a.params[i], b.params[i]);
+        if (cmp !== 0) {
+          return cmp;
+        }
+      }
+
+      return 0;
+    };
+
+    /**
+     * Test whether any of the signatures parameters has conversions
+     * @return {boolean} Returns true when any of the parameters contains
+     *                   conversions.
+     */
+    Signature.prototype.hasConversions = function () {
+      for (var i = 0; i < this.params.length; i++) {
+        if (this.params[i].hasConversions()) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    /**
+     * Test whether this signature should be ignored.
+     * Checks whether any of the parameters contains a type listed in
+     * typed.ignore
+     * @return {boolean} Returns true when the signature should be ignored
+     */
+    Signature.prototype.ignore = function () {
+      // create a map with ignored types
+      var types = {};
+      for (var i = 0; i < typed.ignore.length; i++) {
+        types[typed.ignore[i]] = true;
+      }
+
+      // test whether any of the parameters contains this type
+      for (i = 0; i < this.params.length; i++) {
+        if (this.params[i].contains(types)) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    /**
+     * Test whether the path of this signature matches a given path.
+     * @param {Param[]} params
+     */
+    Signature.prototype.paramsStartWith = function (params) {
+      if (params.length === 0) {
+        return true;
+      }
+
+      var aLast = last(this.params);
+      var bLast = last(params);
+
+      for (var i = 0; i < params.length; i++) {
+        var a = this.params[i] || (aLast.varArgs ? aLast: null);
+        var b = params[i]      || (bLast.varArgs ? bLast: null);
+
+        if (!a ||  !b || !a.matches(b)) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    /**
+     * Generate the code to invoke this signature
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns code
+     */
+    Signature.prototype.toCode = function (refs, prefix) {
+      var code = [];
+
+      var args = new Array(this.params.length);
+      for (var i = 0; i < this.params.length; i++) {
+        var param = this.params[i];
+        var conversion = param.conversions[0];
+        if (param.varArgs) {
+          args[i] = 'varArgs';
+        }
+        else if (conversion) {
+          args[i] = refs.add(conversion.convert, 'convert') + '(arg' + i + ')';
+        }
+        else {
+          args[i] = 'arg' + i;
+        }
+      }
+
+      var ref = this.fn ? refs.add(this.fn, 'signature') : undefined;
+      if (ref) {
+        return prefix + 'return ' + ref + '(' + args.join(', ') + '); // signature: ' + this.params.join(', ');
+      }
+
+      return code.join('\n');
+    };
+
+    /**
+     * Return a string representation of the signature
+     * @returns {string}
+     */
+    Signature.prototype.toString = function () {
+      return this.params.join(', ');
+    };
+
+    /**
+     * A group of signatures with the same parameter on given index
+     * @param {Param[]} path
+     * @param {Signature} [signature]
+     * @param {Node[]} childs
+     * @param {boolean} [fallThrough=false]
+     * @constructor
+     */
+    function Node(path, signature, childs, fallThrough) {
+      this.path = path || [];
+      this.param = path[path.length - 1] || null;
+      this.signature = signature || null;
+      this.childs = childs || [];
+      this.fallThrough = fallThrough || false;
+    }
+
+    /**
+     * Generate code for this group of signatures
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns the code as string
+     */
+    Node.prototype.toCode = function (refs, prefix) {
+      // TODO: split this function in multiple functions, it's too large
+      var code = [];
+
+      if (this.param) {
+        var index = this.path.length - 1;
+        var conversion = this.param.conversions[0];
+        var comment = '// type: ' + (conversion ?
+                (conversion.from + ' (convert to ' + conversion.to + ')') :
+                this.param);
+
+        // non-root node (path is non-empty)
+        if (this.param.varArgs) {
+          if (this.param.anyType) {
+            // variable arguments with any type
+            code.push(prefix + 'if (arguments.length > ' + index + ') {');
+            code.push(prefix + '  var varArgs = [];');
+            code.push(prefix + '  for (var i = ' + index + '; i < arguments.length; i++) {');
+            code.push(prefix + '    varArgs.push(arguments[i]);');
+            code.push(prefix + '  }');
+            code.push(this.signature.toCode(refs, prefix + '  '));
+            code.push(prefix + '}');
+          }
+          else {
+            // variable arguments with a fixed type
+            var getTests = function (types, arg) {
+              var tests = [];
+              for (var i = 0; i < types.length; i++) {
+                tests[i] = refs.add(getTypeTest(types[i]), 'test') + '(' + arg + ')';
+              }
+              return tests.join(' || ');
+            }.bind(this);
+
+            var allTypes = this.param.types;
+            var exactTypes = [];
+            for (var i = 0; i < allTypes.length; i++) {
+              if (this.param.conversions[i] === undefined) {
+                exactTypes.push(allTypes[i]);
+              }
+            }
+
+            code.push(prefix + 'if (' + getTests(allTypes, 'arg' + index) + ') { ' + comment);
+            code.push(prefix + '  var varArgs = [arg' + index + '];');
+            code.push(prefix + '  for (var i = ' + (index + 1) + '; i < arguments.length; i++) {');
+            code.push(prefix + '    if (' + getTests(exactTypes, 'arguments[i]') + ') {');
+            code.push(prefix + '      varArgs.push(arguments[i]);');
+
+            for (var i = 0; i < allTypes.length; i++) {
+              var conversion_i = this.param.conversions[i];
+              if (conversion_i) {
+                var test = refs.add(getTypeTest(allTypes[i]), 'test');
+                var convert = refs.add(conversion_i.convert, 'convert');
+                code.push(prefix + '    }');
+                code.push(prefix + '    else if (' + test + '(arguments[i])) {');
+                code.push(prefix + '      varArgs.push(' + convert + '(arguments[i]));');
+              }
+            }
+            code.push(prefix + '    } else {');
+            code.push(prefix + '      throw createError(name, arguments.length, i, arguments[i], \'' + exactTypes.join(',') + '\');');
+            code.push(prefix + '    }');
+            code.push(prefix + '  }');
+            code.push(this.signature.toCode(refs, prefix + '  '));
+            code.push(prefix + '}');
+          }
+        }
+        else {
+          if (this.param.anyType) {
+            // any type
+            code.push(prefix + '// type: any');
+            code.push(this._innerCode(refs, prefix));
+          }
+          else {
+            // regular type
+            var type = this.param.types[0];
+            var test = type !== 'any' ? refs.add(getTypeTest(type), 'test') : null;
+
+            code.push(prefix + 'if (' + test + '(arg' + index + ')) { ' + comment);
+            code.push(this._innerCode(refs, prefix + '  '));
+            code.push(prefix + '}');
+          }
+        }
+      }
+      else {
+        // root node (path is empty)
+        code.push(this._innerCode(refs, prefix));
+      }
+
+      return code.join('\n');
+    };
+
+    /**
+     * Generate inner code for this group of signatures.
+     * This is a helper function of Node.prototype.toCode
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns the inner code as string
+     * @private
+     */
+    Node.prototype._innerCode = function (refs, prefix) {
+      var code = [];
+      var i;
+
+      if (this.signature) {
+        code.push(prefix + 'if (arguments.length === ' + this.path.length + ') {');
+        code.push(this.signature.toCode(refs, prefix + '  '));
+        code.push(prefix + '}');
+      }
+
+      for (i = 0; i < this.childs.length; i++) {
+        code.push(this.childs[i].toCode(refs, prefix));
+      }
+
+      // TODO: shouldn't the this.param.anyType check be redundant
+      if (!this.fallThrough || (this.param && this.param.anyType)) {
+        var exceptions = this._exceptions(refs, prefix);
+        if (exceptions) {
+          code.push(exceptions);
+        }
+      }
+
+      return code.join('\n');
+    };
+
+
+    /**
+     * Generate code to throw exceptions
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns the inner code as string
+     * @private
+     */
+    Node.prototype._exceptions = function (refs, prefix) {
+      var index = this.path.length;
+
+      if (this.childs.length === 0) {
+        // TODO: can this condition be simplified? (we have a fall-through here)
+        return [
+          prefix + 'if (arguments.length > ' + index + ') {',
+          prefix + '  throw createError(name, arguments.length, ' + index + ', arguments[' + index + ']);',
+          prefix + '}'
+        ].join('\n');
+      }
+      else {
+        var keys = {};
+        var types = [];
+
+        for (var i = 0; i < this.childs.length; i++) {
+          var node = this.childs[i];
+          if (node.param) {
+            for (var j = 0; j < node.param.types.length; j++) {
+              var type = node.param.types[j];
+              if (!(type in keys) && !node.param.conversions[j]) {
+                keys[type] = true;
+                types.push(type);
+              }
+            }
+          }
+        }
+
+        return prefix + 'throw createError(name, arguments.length, ' + index + ', arguments[' + index + '], \'' + types.join(',') + '\');';
+      }
+    };
+
+    /**
+     * Split all raw signatures into an array with expanded Signatures
+     * @param {Object.<string, Function>} rawSignatures
+     * @return {Signature[]} Returns an array with expanded signatures
+     */
+    function parseSignatures(rawSignatures) {
+      // FIXME: need to have deterministic ordering of signatures, do not create via object
+      var signature;
+      var keys = {};
+      var signatures = [];
+      var i;
+
+      for (var types in rawSignatures) {
+        if (rawSignatures.hasOwnProperty(types)) {
+          var fn = rawSignatures[types];
+          signature = new Signature(types, fn);
+
+          if (signature.ignore()) {
+            continue;
+          }
+
+          var expanded = signature.expand();
+
+          for (i = 0; i < expanded.length; i++) {
+            var signature_i = expanded[i];
+            var key = signature_i.toString();
+            var existing = keys[key];
+            if (!existing) {
+              keys[key] = signature_i;
+            }
+            else {
+              var cmp = Signature.compare(signature_i, existing);
+              if (cmp < 0) {
+                // override if sorted first
+                keys[key] = signature_i;
+              }
+              else if (cmp === 0) {
+                throw new Error('Signature "' + key + '" is defined twice');
+              }
+              // else: just ignore
+            }
+          }
+        }
+      }
+
+      // convert from map to array
+      for (key in keys) {
+        if (keys.hasOwnProperty(key)) {
+          signatures.push(keys[key]);
+        }
+      }
+
+      // order the signatures
+      signatures.sort(function (a, b) {
+        return Signature.compare(a, b);
+      });
+
+      // filter redundant conversions from signatures with varArgs
+      // TODO: simplify this loop or move it to a separate function
+      for (i = 0; i < signatures.length; i++) {
+        signature = signatures[i];
+
+        if (signature.varArgs) {
+          var index = signature.params.length - 1;
+          var param = signature.params[index];
+
+          var t = 0;
+          while (t < param.types.length) {
+            if (param.conversions[t]) {
+              var type = param.types[t];
+
+              for (var j = 0; j < signatures.length; j++) {
+                var other = signatures[j];
+                var p = other.params[index];
+
+                if (other !== signature &&
+                    p &&
+                    contains(p.types, type) && !p.conversions[index]) {
+                  // this (conversion) type already exists, remove it
+                  param.types.splice(t, 1);
+                  param.conversions.splice(t, 1);
+                  t--;
+                  break;
+                }
+              }
+            }
+            t++;
+          }
+        }
+      }
+
+      return signatures;
+    }
+
+    /**
+     * Filter all any type signatures
+     * @param {Signature[]} signatures
+     * @return {Signature[]} Returns only any type signatures
+     */
+    function filterAnyTypeSignatures (signatures) {
+      var filtered = [];
+
+      for (var i = 0; i < signatures.length; i++) {
+        if (signatures[i].anyType) {
+          filtered.push(signatures[i]);
+        }
+      }
+
+      return filtered;
+    }
+
+    /**
+     * create a map with normalized signatures as key and the function as value
+     * @param {Signature[]} signatures   An array with split signatures
+     * @return {Object.<string, Function>} Returns a map with normalized
+     *                                     signatures as key, and the function
+     *                                     as value.
+     */
+    function mapSignatures(signatures) {
+      var normalized = {};
+
+      for (var i = 0; i < signatures.length; i++) {
+        var signature = signatures[i];
+        if (signature.fn && !signature.hasConversions()) {
+          var params = signature.params.join(',');
+          normalized[params] = signature.fn;
+        }
+      }
+
+      return normalized;
+    }
+
+    /**
+     * Parse signatures recursively in a node tree.
+     * @param {Signature[]} signatures  Array with expanded signatures
+     * @param {Param[]} path            Traversed path of parameter types
+     * @param {Signature[]} anys
+     * @return {Node}                   Returns a node tree
+     */
+    function parseTree(signatures, path, anys) {
+      var i, signature;
+      var index = path.length;
+      var nodeSignature;
+
+      var filtered = [];
+      for (i = 0; i < signatures.length; i++) {
+        signature = signatures[i];
+
+        // filter the first signature with the correct number of params
+        if (signature.params.length === index && !nodeSignature) {
+          nodeSignature = signature;
+        }
+
+        if (signature.params[index] != undefined) {
+          filtered.push(signature);
+        }
+      }
+
+      // sort the filtered signatures by param
+      filtered.sort(function (a, b) {
+        return Param.compare(a.params[index], b.params[index]);
+      });
+
+      // recurse over the signatures
+      var entries = [];
+      for (i = 0; i < filtered.length; i++) {
+        signature = filtered[i];
+        // group signatures with the same param at current index
+        var param = signature.params[index];
+
+        // TODO: replace the next filter loop
+        var existing = entries.filter(function (entry) {
+          return entry.param.overlapping(param);
+        })[0];
+
+        //var existing;
+        //for (var j = 0; j < entries.length; j++) {
+        //  if (entries[j].param.overlapping(param)) {
+        //    existing = entries[j];
+        //    break;
+        //  }
+        //}
+
+        if (existing) {
+          if (existing.param.varArgs) {
+            throw new Error('Conflicting types "' + existing.param + '" and "' + param + '"');
+          }
+          existing.signatures.push(signature);
+        }
+        else {
+          entries.push({
+            param: param,
+            signatures: [signature]
+          });
+        }
+      }
+
+      // find all any type signature that can still match our current path
+      var matchingAnys = [];
+      for (i = 0; i < anys.length; i++) {
+        if (anys[i].paramsStartWith(path)) {
+          matchingAnys.push(anys[i]);
+        }
+      }
+
+      // see if there are any type signatures that don't match any of the
+      // signatures that we have in our tree, i.e. we have alternative
+      // matching signature(s) outside of our current tree and we should
+      // fall through to them instead of throwing an exception
+      var fallThrough = false;
+      for (i = 0; i < matchingAnys.length; i++) {
+        if (!contains(signatures, matchingAnys[i])) {
+          fallThrough = true;
+          break;
+        }
+      }
+
+      // parse the childs
+      var childs = new Array(entries.length);
+      for (i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        childs[i] = parseTree(entry.signatures, path.concat(entry.param), matchingAnys)
+      }
+
+      return new Node(path, nodeSignature, childs, fallThrough);
+    }
+
+    /**
+     * Generate an array like ['arg0', 'arg1', 'arg2']
+     * @param {number} count Number of arguments to generate
+     * @returns {Array} Returns an array with argument names
+     */
+    function getArgs(count) {
+      // create an array with all argument names
+      var args = [];
+      for (var i = 0; i < count; i++) {
+        args[i] = 'arg' + i;
+      }
+
+      return args;
+    }
+
+    /**
+     * Compose a function from sub-functions each handling a single type signature.
+     * Signatures:
+     *   typed(signature: string, fn: function)
+     *   typed(name: string, signature: string, fn: function)
+     *   typed(signatures: Object.<string, function>)
+     *   typed(name: string, signatures: Object.<string, function>)
+     *
+     * @param {string | null} name
+     * @param {Object.<string, Function>} signatures
+     * @return {Function} Returns the typed function
+     * @private
+     */
+    function _typed(name, signatures) {
+      var refs = new Refs();
+
+      // parse signatures, expand them
+      var _signatures = parseSignatures(signatures);
+      if (_signatures.length == 0) {
+        throw new Error('No signatures provided');
+      }
+
+      // filter all any type signatures
+      var anys = filterAnyTypeSignatures(_signatures);
+
+      // parse signatures into a node tree
+      var node = parseTree(_signatures, [], anys);
+
+      //var util = require('util');
+      //console.log('ROOT');
+      //console.log(util.inspect(node, { depth: null }));
+
+      // generate code for the typed function
+      // safeName is a conservative replacement of characters 
+      // to prevend being able to inject JS code at the place of the function name 
+      // the name is useful for stack trackes therefore we want have it there
+      var code = [];
+      var safeName = (name || '').replace(/[^a-zA-Z0-9_$]/g, '_')
+      var args = getArgs(maxParams(_signatures));
+      code.push('function ' + safeName + '(' + args.join(', ') + ') {');
+      code.push('  "use strict";');
+      code.push('  var name = ' + JSON.stringify(name || '') + ';');
+      code.push(node.toCode(refs, '  ', false));
+      code.push('}');
+
+      // generate body for the factory function
+      var body = [
+        refs.toCode(),
+        'return ' + code.join('\n')
+      ].join('\n');
+
+      // evaluate the JavaScript code and attach function references
+      var factory = (new Function(refs.name, 'createError', body));
+      var fn = factory(refs, createError);
+
+      //console.log('FN\n' + fn.toString()); // TODO: cleanup
+
+      // attach the signatures with sub-functions to the constructed function
+      fn.signatures = mapSignatures(_signatures);
+
+      return fn;
+    }
+
+    /**
+     * Calculate the maximum number of parameters in givens signatures
+     * @param {Signature[]} signatures
+     * @returns {number} The maximum number of parameters
+     */
+    function maxParams(signatures) {
+      var max = 0;
+
+      for (var i = 0; i < signatures.length; i++) {
+        var len = signatures[i].params.length;
+        if (len > max) {
+          max = len;
+        }
+      }
+
+      return max;
+    }
+
+    /**
+     * Get the type of a value
+     * @param {*} x
+     * @returns {string} Returns a string with the type of value
+     */
+    function getTypeOf(x) {
+      var obj;
+
+      for (var i = 0; i < typed.types.length; i++) {
+        var entry = typed.types[i];
+
+        if (entry.name === 'Object') {
+          // Array and Date are also Object, so test for Object afterwards
+          obj = entry;
+        }
+        else {
+          if (entry.test(x)) return entry.name;
+        }
+      }
+
+      // at last, test whether an object
+      if (obj && obj.test(x)) return obj.name;
+
+      return 'unknown';
+    }
+
+    /**
+     * Test whether an array contains some item
+     * @param {Array} array
+     * @param {*} item
+     * @return {boolean} Returns true if array contains item, false if not.
+     */
+    function contains(array, item) {
+      return array.indexOf(item) !== -1;
+    }
+
+    /**
+     * Returns the last item in the array
+     * @param {Array} array
+     * @return {*} item
+     */
+    function last (array) {
+      return array[array.length - 1];
+    }
+
+    // data type tests
+    var types = [
+      { name: 'number',    test: function (x) { return typeof x === 'number' } },
+      { name: 'string',    test: function (x) { return typeof x === 'string' } },
+      { name: 'boolean',   test: function (x) { return typeof x === 'boolean' } },
+      { name: 'Function',  test: function (x) { return typeof x === 'function'} },
+      { name: 'Array',     test: Array.isArray },
+      { name: 'Date',      test: function (x) { return x instanceof Date } },
+      { name: 'RegExp',    test: function (x) { return x instanceof RegExp } },
+      { name: 'Object',    test: function (x) { return typeof x === 'object' } },
+      { name: 'null',      test: function (x) { return x === null } },
+      { name: 'undefined', test: function (x) { return x === undefined } }
+    ];
+
+    // configuration
+    var config = {};
+
+    // type conversions. Order is important
+    var conversions = [];
+
+    // types to be ignored
+    var ignore = [];
+
+    // temporary object for holding types and conversions, for constructing
+    // the `typed` function itself
+    // TODO: find a more elegant solution for this
+    var typed = {
+      config: config,
+      types: types,
+      conversions: conversions,
+      ignore: ignore
+    };
+
+    /**
+     * Construct the typed function itself with various signatures
+     *
+     * Signatures:
+     *
+     *   typed(signatures: Object.<string, function>)
+     *   typed(name: string, signatures: Object.<string, function>)
+     */
+    typed = _typed('typed', {
+      'Object': function (signatures) {
+        var fns = [];
+        for (var signature in signatures) {
+          if (signatures.hasOwnProperty(signature)) {
+            fns.push(signatures[signature]);
+          }
+        }
+        var name = getName(fns);
+
+        return _typed(name, signatures);
+      },
+      'string, Object': _typed,
+      // TODO: add a signature 'Array.<function>'
+      '...Function': function (fns) {
+        var err;
+        var name = getName(fns);
+        var signatures = {};
+
+        for (var i = 0; i < fns.length; i++) {
+          var fn = fns[i];
+
+          // test whether this is a typed-function
+          if (!(typeof fn.signatures === 'object')) {
+            err = new TypeError('Function is no typed-function (index: ' + i + ')');
+            err.data = {index: i};
+            throw err;
+          }
+
+          // merge the signatures
+          for (var signature in fn.signatures) {
+            if (fn.signatures.hasOwnProperty(signature)) {
+              if (signatures.hasOwnProperty(signature)) {
+                if (fn.signatures[signature] !== signatures[signature]) {
+                  err = new Error('Signature "' + signature + '" is defined twice');
+                  err.data = {signature: signature};
+                  throw err;
+                }
+                // else: both signatures point to the same function, that's fine
+              }
+              else {
+                signatures[signature] = fn.signatures[signature];
+              }
+            }
+          }
+        }
+
+        return _typed(name, signatures);
+      }
+    });
+
+    /**
+     * Find a specific signature from a (composed) typed function, for
+     * example:
+     *
+     *   typed.find(fn, ['number', 'string'])
+     *   typed.find(fn, 'number, string')
+     *
+     * Function find only only works for exact matches.
+     *
+     * @param {Function} fn                   A typed-function
+     * @param {string | string[]} signature   Signature to be found, can be
+     *                                        an array or a comma separated string.
+     * @return {Function}                     Returns the matching signature, or
+     *                                        throws an errror when no signature
+     *                                        is found.
+     */
+    function find (fn, signature) {
+      if (!fn.signatures) {
+        throw new TypeError('Function is no typed-function');
+      }
+
+      // normalize input
+      var arr;
+      if (typeof signature === 'string') {
+        arr = signature.split(',');
+        for (var i = 0; i < arr.length; i++) {
+          arr[i] = arr[i].trim();
+        }
+      }
+      else if (Array.isArray(signature)) {
+        arr = signature;
+      }
+      else {
+        throw new TypeError('String array or a comma separated string expected');
+      }
+
+      var str = arr.join(',');
+
+      // find an exact match
+      var match = fn.signatures[str];
+      if (match) {
+        return match;
+      }
+
+      // TODO: extend find to match non-exact signatures
+
+      throw new TypeError('Signature not found (signature: ' + (fn.name || 'unnamed') + '(' + arr.join(', ') + '))');
+    }
+
+    /**
+     * Convert a given value to another data type.
+     * @param {*} value
+     * @param {string} type
+     */
+    function convert (value, type) {
+      var from = getTypeOf(value);
+
+      // check conversion is needed
+      if (type === from) {
+        return value;
+      }
+
+      for (var i = 0; i < typed.conversions.length; i++) {
+        var conversion = typed.conversions[i];
+        if (conversion.from === from && conversion.to === type) {
+          return conversion.convert(value);
+        }
+      }
+
+      throw new Error('Cannot convert from ' + from + ' to ' + type);
+    }
+
+    // attach types and conversions to the final `typed` function
+    typed.config = config;
+    typed.types = types;
+    typed.conversions = conversions;
+    typed.ignore = ignore;
+    typed.create = create;
+    typed.find = find;
+    typed.convert = convert;
+
+    // add a type
+    typed.addType = function (type) {
+      if (!type || typeof type.name !== 'string' || typeof type.test !== 'function') {
+        throw new TypeError('Object with properties {name: string, test: function} expected');
+      }
+
+      typed.types.push(type);
+    };
+
+    // add a conversion
+    typed.addConversion = function (conversion) {
+      if (!conversion
+          || typeof conversion.from !== 'string'
+          || typeof conversion.to !== 'string'
+          || typeof conversion.convert !== 'function') {
+        throw new TypeError('Object with properties {from: string, to: string, convert: function} expected');
+      }
+
+      typed.conversions.push(conversion);
+    };
+
+    return typed;
+  }
+
+  return create();
+}));
+
 
 /***/ }),
 
@@ -21590,8 +28530,8 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var width = getWidth();
   var height = getHeight();
 
-  var xcen = 0.5 * (xrange[1] + xrange[0]) + params.shift_camera.x;
-  var ycen = 0.5 * (yrange[1] + yrange[0]) + params.shift_camera.y;
+  var xcen = 0.5 * (xrange[1] + xrange[0]) + params.viz_dim.shift_camera.x;
+  var ycen = 0.5 * (yrange[1] + yrange[0]) + params.viz_dim.shift_camera.y;
   var xrng = 0.5 * (xrange[1] - xrange[0]);
   var yrng = xrng / aspectRatio / width * height;
 
@@ -21628,7 +28568,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-    if (params.viz_interact){
+    if (params.interact.enable_viz_interact){
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
@@ -21642,7 +28582,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   // })
   // .on('wheel', function (ev) {
   //   console.log('norm interact: camera');
-  //   if (params.viz_interact){
+  //   if (params.interact.enable_viz_interact){
   //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
   //                        emitter, dViewport, mViewport);
   //   }
@@ -21719,20 +28659,1126 @@ module.exports = function make_cameras(regl, params){
 
   cameras.static = custom_camera_2d(regl, params, zoom_range, zoom_data, 'static');
 
-  return cameras;
+  params.cameras = cameras;
 
 };
 
 /***/ }),
 
-/***/ "./src/cats/generate_cat_data.js":
-/*!***************************************!*\
-  !*** ./src/cats/generate_cat_data.js ***!
-  \***************************************/
+/***/ "./src/cameras/reset_cameras.js":
+/*!**************************************!*\
+  !*** ./src/cameras/reset_cameras.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
+var make_cameras = __webpack_require__(/*! ./make_cameras */ "./src/cameras/make_cameras.js");
+
+module.exports = function reset_cameras(regl, params){
+
+  // console.log('reset_cameras\n-------------------')
+  params.reset_cameras = false;
+
+  params.zoom_data = ini_zoom_data();
+  make_cameras(regl, params);
+
+  params.labels.draw_labels = false;
+  params.animation.initialize_viz = true;
+  params.interact.total = 0
+
+};
+
+/***/ }),
+
+/***/ "./src/cats/binom_prop_pval_lookup.js":
+/*!********************************************!*\
+  !*** ./src/cats/binom_prop_pval_lookup.js ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function generate_cat_data(params, inst_axis){
+/* eslint-disable*/
+module.exports = {
+  "p": [
+    0.5,
+    0.48006119416162751,
+    0.46017216272297101,
+    0.4403823076297575,
+    0.42074029056089696,
+    0.4012936743170763,
+    0.38208857781104733,
+    0.3631693488243809,
+    0.34457825838967582,
+    0.32635522028791997,
+    0.30853753872598688,
+    0.29115968678834636,
+    0.27425311775007355,
+    0.25784611080586473,
+    0.24196365222307303,
+    0.22662735237686821,
+    0.21185539858339669,
+    0.19766254312269238,
+    0.18406012534675947,
+    0.17105612630848183,
+    0.15865525393145707,
+    0.14685905637589591,
+    0.13566606094638267,
+    0.12507193563715024,
+    0.11506967022170828,
+    0.10564977366685535,
+    0.096800484585610358,
+    0.088507991437401956,
+    0.080756659233771066,
+    0.073529259609648304,
+    0.066807201268858071,
+    0.060570758002059008,
+    0.054799291699557974,
+    0.049471468033648075,
+    0.044565462758543006,
+    0.040059156863817086,
+    0.035930319112925789,
+    0.032156774795613713,
+    0.028716559816001783,
+    0.025588059521638611,
+    0.022750131948179195,
+    0.020182215405704383,
+    0.017864420562816542,
+    0.015777607391090499,
+    0.013903447513498595,
+    0.012224472655044696,
+    0.010724110021675795,
+    0.0093867055348385662,
+    0.0081975359245961138,
+    0.0071428107352714152,
+    0.0062096653257761323,
+    0.0053861459540666843,
+    0.0046611880237187467,
+    0.0040245885427583027,
+    0.0034669738030406647,
+    0.0029797632350545551,
+    0.002555130330427929,
+    0.0021859614549132405,
+    0.0018658133003840339,
+    0.0015888696473648667,
+    0.0013498980316300933,
+    0.0011442068310226977,
+    0.00096760321321835631,
+    0.00081635231282856037,
+    0.00068713793791584708,
+    0.00057702504239076592,
+    0.00048342414238377663,
+    0.0004040578018640207,
+    0.00033692926567687988,
+    0.00028029327681617744,
+    0.00023262907903552502,
+    0.00019261557563563279,
+    0.00015910859015753364,
+    0.00013112015442048433,
+    0.00010779973347738823,
+    8.8417285200803773e-05,
+    7.2348043925119787e-05,
+    5.9058912418922374e-05,
+    4.8096344017602614e-05,
+    3.9075596597787456e-05,
+    3.1671241833119863e-05,
+    2.5608816474041489e-05,
+    2.0657506912546683e-05,
+    1.6623763729652213e-05,
+    1.334574901590631e-05,
+    1.0688525774934402e-05,
+    8.5399054709917942e-06,
+    6.8068765993340312e-06,
+    5.4125439077038407e-06,
+    4.293514469971858e-06,
+    3.3976731247300535e-06,
+    2.6822957796388472e-06,
+    2.1124547025028419e-06,
+    1.6596751443714555e-06,
+    1.3008074539172771e-06,
+    1.0170832425687032e-06,
+    7.9332815197558919e-07,
+    6.1730737200919249e-07,
+    4.7918327659031855e-07,
+    3.7106740796333271e-07,
+    2.8665157187919333e-07,
+    2.2090503226954194e-07,
+    1.6982674071475937e-07,
+    1.3024322953320117e-07,
+    9.9644263169334701e-08,
+    7.6049605164887e-08,
+    5.7901340399645569e-08,
+    4.3977115940058689e-08,
+    3.3320448485428448e-08,
+    2.518491005446105e-08,
+    1.8989562465887681e-08,
+    1.4283479893922661e-08,
+    1.0717590258310852e-08,
+    8.0223918506634739e-09,
+    5.9903714010635304e-09,
+    4.4621724539016108e-09,
+    3.3157459783261365e-09,
+    2.4578650618080152e-09,
+    1.8175078630994235e-09,
+    1.3407124440918662e-09,
+    9.8658764503769458e-10,
+    7.2422917051376055e-10,
+    5.303423262948808e-10,
+    3.8741473466756636e-10,
+    2.8231580370432682e-10,
+    2.0522634252189396e-10,
+    1.4882282217622966e-10,
+    1.0765746385121517e-10,
+    7.7688475817097756e-11,
+    5.592507575942645e-11,
+    4.0160005838590881e-11,
+    2.8768541736043109e-11,
+    2.055788909399508e-11,
+    1.4654650977302715e-11,
+    1.0420976987965154e-11,
+    7.3922577780177942e-12,
+    5.2309575441445253e-12,
+    3.6924994272355614e-12,
+    2.600126965638173e-12,
+    1.8264310619769611e-12,
+    1.279812543885835e-12,
+    8.9458895587698439e-13,
+    6.23784446333152e-13,
+    4.3388950271780343e-13,
+    3.0106279811174218e-13,
+    2.0838581586720548e-13,
+    1.4388386381575764e-13,
+    9.9103427495475088e-14,
+    6.8092248906200155e-14,
+    4.6670115887190274e-14,
+    3.1908916729108844e-14,
+    2.1762912097085575e-14,
+    1.4806537490047908e-14,
+    1.0048965656526223e-14,
+    6.8033115407739012e-15,
+    4.5946274357785623e-15,
+    3.095358771958668e-15,
+    2.0801863521393674e-15,
+    1.394517146659261e-15,
+    9.3255757716812045e-16,
+    6.2209605742717405e-16,
+    4.1397018162731219e-16,
+    2.7479593923982212e-16,
+    1.8196213635266084e-16,
+    1.2019351542735647e-16,
+    7.9197263146424757e-17,
+    5.2055697448902465e-17,
+    3.4131483264581459e-17,
+    2.232393197288031e-17,
+    1.456514112590909e-17,
+    9.4795348222032499e-18,
+    6.1544255908503949e-18,
+    3.985804962848151e-18,
+    2.5749715380118873e-18,
+    1.6594208699647519e-18,
+    1.0667637375474856e-18,
+    6.840807685935497e-19,
+    4.3759647993090167e-19,
+    2.7923343749396233e-19,
+    1.7774117841455144e-19,
+    1.1285884059538324e-19,
+    7.1484170112696837e-20,
+    4.516591491435403e-20,
+    2.8466774084602088e-20,
+    1.7897488120140146e-20,
+    1.1224633591327901e-20,
+    7.0222842404415411e-21,
+    4.3823862990664603e-21,
+    2.7281535713460872e-21,
+    1.6941535024881097e-21,
+    1.0494515075362604e-21,
+    6.4848144530772079e-22,
+    3.9972212057261192e-22,
+    2.4577864834723153e-22,
+    1.5074931688101589e-22,
+    9.2234135249393526e-23,
+    5.6292823113765143e-23,
+    3.4271987941135974e-23,
+    2.0813752194932085e-23,
+    1.2609160670206559e-23
+  ],
+  "z": [
+    0.0,
+    0.050000000000000003,
+    0.10000000000000001,
+    0.15000000000000002,
+    0.20000000000000001,
+    0.25,
+    0.30000000000000004,
+    0.35000000000000003,
+    0.40000000000000002,
+    0.45000000000000001,
+    0.5,
+    0.55000000000000004,
+    0.60000000000000009,
+    0.65000000000000002,
+    0.70000000000000007,
+    0.75,
+    0.80000000000000004,
+    0.85000000000000009,
+    0.90000000000000002,
+    0.95000000000000007,
+    1.0,
+    1.05,
+    1.1000000000000001,
+    1.1500000000000001,
+    1.2000000000000002,
+    1.25,
+    1.3,
+    1.3500000000000001,
+    1.4000000000000001,
+    1.4500000000000002,
+    1.5,
+    1.55,
+    1.6000000000000001,
+    1.6500000000000001,
+    1.7000000000000002,
+    1.75,
+    1.8,
+    1.8500000000000001,
+    1.9000000000000001,
+    1.9500000000000002,
+    2.0,
+    2.0500000000000003,
+    2.1000000000000001,
+    2.1499999999999999,
+    2.2000000000000002,
+    2.25,
+    2.3000000000000003,
+    2.3500000000000001,
+    2.4000000000000004,
+    2.4500000000000002,
+    2.5,
+    2.5500000000000003,
+    2.6000000000000001,
+    2.6500000000000004,
+    2.7000000000000002,
+    2.75,
+    2.8000000000000003,
+    2.8500000000000001,
+    2.9000000000000004,
+    2.9500000000000002,
+    3.0,
+    3.0500000000000003,
+    3.1000000000000001,
+    3.1500000000000004,
+    3.2000000000000002,
+    3.25,
+    3.3000000000000003,
+    3.3500000000000001,
+    3.4000000000000004,
+    3.4500000000000002,
+    3.5,
+    3.5500000000000003,
+    3.6000000000000001,
+    3.6500000000000004,
+    3.7000000000000002,
+    3.75,
+    3.8000000000000003,
+    3.8500000000000001,
+    3.9000000000000004,
+    3.9500000000000002,
+    4.0,
+    4.0499999999999998,
+    4.1000000000000005,
+    4.1500000000000004,
+    4.2000000000000002,
+    4.25,
+    4.2999999999999998,
+    4.3500000000000005,
+    4.4000000000000004,
+    4.4500000000000002,
+    4.5,
+    4.5499999999999998,
+    4.6000000000000005,
+    4.6500000000000004,
+    4.7000000000000002,
+    4.75,
+    4.8000000000000007,
+    4.8500000000000005,
+    4.9000000000000004,
+    4.9500000000000002,
+    5.0,
+    5.0500000000000007,
+    5.1000000000000005,
+    5.1500000000000004,
+    5.2000000000000002,
+    5.25,
+    5.3000000000000007,
+    5.3500000000000005,
+    5.4000000000000004,
+    5.4500000000000002,
+    5.5,
+    5.5500000000000007,
+    5.6000000000000005,
+    5.6500000000000004,
+    5.7000000000000002,
+    5.75,
+    5.8000000000000007,
+    5.8500000000000005,
+    5.9000000000000004,
+    5.9500000000000002,
+    6.0,
+    6.0500000000000007,
+    6.1000000000000005,
+    6.1500000000000004,
+    6.2000000000000002,
+    6.25,
+    6.3000000000000007,
+    6.3500000000000005,
+    6.4000000000000004,
+    6.4500000000000002,
+    6.5,
+    6.5500000000000007,
+    6.6000000000000005,
+    6.6500000000000004,
+    6.7000000000000002,
+    6.75,
+    6.8000000000000007,
+    6.8500000000000005,
+    6.9000000000000004,
+    6.9500000000000002,
+    7.0,
+    7.0500000000000007,
+    7.1000000000000005,
+    7.1500000000000004,
+    7.2000000000000002,
+    7.25,
+    7.3000000000000007,
+    7.3500000000000005,
+    7.4000000000000004,
+    7.4500000000000002,
+    7.5,
+    7.5500000000000007,
+    7.6000000000000005,
+    7.6500000000000004,
+    7.7000000000000002,
+    7.75,
+    7.8000000000000007,
+    7.8500000000000005,
+    7.9000000000000004,
+    7.9500000000000002,
+    8.0,
+    8.0500000000000007,
+    8.0999999999999996,
+    8.1500000000000004,
+    8.2000000000000011,
+    8.25,
+    8.3000000000000007,
+    8.3499999999999996,
+    8.4000000000000004,
+    8.4500000000000011,
+    8.5,
+    8.5500000000000007,
+    8.5999999999999996,
+    8.6500000000000004,
+    8.7000000000000011,
+    8.75,
+    8.8000000000000007,
+    8.8499999999999996,
+    8.9000000000000004,
+    8.9500000000000011,
+    9.0,
+    9.0500000000000007,
+    9.0999999999999996,
+    9.1500000000000004,
+    9.2000000000000011,
+    9.25,
+    9.3000000000000007,
+    9.3499999999999996,
+    9.4000000000000004,
+    9.4500000000000011,
+    9.5,
+    9.5500000000000007,
+    9.6000000000000014,
+    9.6500000000000004,
+    9.7000000000000011,
+    9.75,
+    9.8000000000000007,
+    9.8500000000000014,
+    9.9000000000000004,
+    9.9500000000000011
+  ]
+};
+
+/***/ }),
+
+/***/ "./src/cats/binom_test.js":
+/*!********************************!*\
+  !*** ./src/cats/binom_test.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable*/
+
+// Load the math.js core
+// Create a new, empty math.js instance
+// It will only contain methods `import` and `config`
+// math.import(require('mathjs/lib/type/fraction'));
+var p_dict = __webpack_require__(/*! ./binom_prop_pval_lookup */ "./src/cats/binom_prop_pval_lookup.js");
+var core = __webpack_require__(/*! mathjs/core */ "./node_modules/mathjs/core.js");
+var math = core.create();
+
+math.import(__webpack_require__(/*! mathjs/lib/function/probability/factorial */ "./node_modules/mathjs/lib/function/probability/factorial.js"));
+
+module.exports = function binom_test(actual_k, n, p){
+
+  var fact = math.factorial;
+  var pval;
+
+  function binom_dist(k, n, p){
+    var bin_coeff = (fact(n))/( fact(k) * fact(n-k) );
+    p = bin_coeff * (Math.pow(p, k) * Math.pow((1 - p), (n-k)) );
+    return p;
+  }
+
+  function my_binom_test_2(actual_k, n, p){
+    var cp = 0;
+    var k;
+    var dp;
+    for (var inst_k=actual_k; inst_k < n+1; inst_k++ ){
+      k = inst_k;
+      dp = binom_dist(k, n, p);
+      cp = cp + dp;
+    }
+
+    return cp;
+
+  }
+
+  // look up p-value from z-score using table
+  function binom_prop_table(actual_k, n, p){
+
+    // expected average number of successes
+    var mu = n * p;
+
+    // standard deviation
+    var sigma = Math.sqrt(n * p * (1 - p));
+
+    // how many standard deviations is the actual_k away
+    // from the expected value
+    var z = (actual_k - mu)/sigma;
+
+    var z_vals = p_dict.z;
+    var p_vals = p_dict.p;
+
+    var found_index = -1;
+    var found = false;
+
+    for (var index=0; index < z_vals.length; index++){
+      var inst_z = z_vals[index];
+
+      // increasing inst_z until z is less than inst_z
+      if (z < inst_z && found === false){
+        found_index = index;
+        found = true;
+      }
+    }
+
+    // give it the smallest p-val if the z-score was larger than
+    // any in the table
+    if (found_index === -1){
+      found_index = z_vals.length - 1;
+    }
+    pval = p_vals[found_index];
+
+    return pval;
+
+  }
+
+  // calculate pval
+  pval = my_binom_test_2(actual_k, n, p);
+  if ( isNaN(pval) ){
+    pval = binom_prop_table(actual_k, n, p);
+  }
+
+  return pval;
+
+};
+
+/***/ }),
+
+/***/ "./src/cats/calc_cat_cluster_breakdown.js":
+/*!************************************************!*\
+  !*** ./src/cats/calc_cat_cluster_breakdown.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable guard-for-in */
+
+var binom_test = __webpack_require__(/*! ./binom_test */ "./src/cats/binom_test.js");
+
+module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc){
+
+
+  // console.log(inst_data)
+
+  // Category-breakdown of dendrogram-clusters
+  /////////////////////////////////////////////
+  /*
+  1. get information for nodes in cluster
+  2. find category-types that are string-type
+  3. count instances of each category name for each category-type
+  */
+
+  // in case sim_mat
+  if (inst_rc === 'both'){
+    inst_rc = 'row';
+  }
+
+  // 1: get information for nodes in cluster
+  ///////////////////////////////////////////
+
+  // names of nodes in cluster
+  var clust_names = inst_data.all_names;
+  // array of nodes in the cluster
+  var clust_nodes = [];
+  var all_nodes = params.network[inst_rc+'_nodes'];
+  var num_in_clust_index = null;
+  var is_downsampled = false;
+
+  var inst_name;
+  _.each(all_nodes, function(inst_node){
+
+    inst_name = inst_node.name;
+
+    if (inst_name.indexOf(': ') >= 0){
+      inst_name = inst_name.split(': ')[1];
+    }
+
+    // console.log(inst_name)
+
+    if(clust_names.indexOf(inst_name) >= 0){
+      clust_nodes.push(inst_node);
+    }
+
+  });
+
+  // 2: find category-types that are string-type
+  ///////////////////////////////////////////////
+
+  var cat_breakdown = [];
+
+  if ( params.viz.cat_info[inst_rc] !== null ){
+
+    var inst_cat_info = params.viz.cat_info[inst_rc];
+
+    // tmp list of all categories
+    var tmp_types_index = _.keys(inst_cat_info);
+    // this will hold the indexes of string-type categories
+    var cat_types_index = [];
+
+    // get category names (only include string-type categories)
+    var cat_types_names = [];
+    var type_name;
+    var inst_index;
+    var cat_index;
+    for (var i = 0; i < tmp_types_index.length; i++) {
+
+      cat_index = 'cat-' + String(i);
+
+      // debugger;
+
+      if (params.viz.cat_info[inst_rc][cat_index].type === 'cat_strings'){
+        type_name = params.viz.cat_names[inst_rc][cat_index];
+        cat_types_names.push(type_name);
+        cat_types_index.push(cat_index);
+      } else {
+
+        // save number in clust category index if found
+        if (params.viz.cat_names[inst_rc][cat_index] === 'number in clust'){
+          num_in_clust_index = cat_index;
+          is_downsampled = true;
+        }
+
+      }
+
+    }
+
+    var tmp_run_count = {};
+    var inst_breakdown = {};
+    var bar_data;
+    var radix_param = 10;
+
+    // sort by actual counts (rather than cluster counts)
+    var sorting_index = 4;
+    if (is_downsampled){
+      sorting_index = 5;
+    }
+
+    var no_title_given;
+    if (type_name === cat_index){
+      no_title_given = true;
+    } else {
+      no_title_given = false;
+    }
+
+    if (cat_types_names.length > 0){
+
+      // 3: count instances of each category name for each category-type
+      var cat_name;
+      var num_in_clust = clust_names.length;
+
+      // use the cat_hist to get the number of instances of this category in
+      // all rows/cols
+      // params
+
+      _.each(cat_types_index, function(tmp_cat_index){
+        // console.log('cat_types_index', cat_types_index)
+
+        inst_index = tmp_cat_index.split('-')[1];
+        type_name = cat_types_names[inst_index];
+
+        if (no_title_given){
+          if (tmp_cat_index.indexOf('-') >=0){
+            var tmp_num = parseInt( tmp_cat_index.split('-')[1], radix_param) + 1;
+            type_name = 'Category ' + String(tmp_num);
+          } else {
+            // backup behavior
+            type_name = 'Category';
+          }
+        }
+
+        tmp_run_count[type_name] = {};
+
+        // loop through the nodes and keep a running count of categories
+        // console.log('clust_nodes', clust_nodes)
+        _.each(clust_nodes, function (tmp_node){
+          // console.log(tmp_node)
+
+          cat_name = tmp_node[tmp_cat_index];
+
+          if (cat_name.indexOf(': ') >=0){
+            cat_name = cat_name.split(': ')[1];
+          }
+
+          if (cat_name in tmp_run_count[type_name]){
+            tmp_run_count[type_name][cat_name].num_nodes = tmp_run_count[type_name][cat_name].num_nodes + 1;
+
+            if (num_in_clust_index !== null){
+              tmp_run_count[type_name][cat_name].num_nodes_ds = tmp_run_count[type_name][cat_name].num_nodes_ds + parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
+            }
+
+          } else {
+
+            tmp_run_count[type_name][cat_name] = {};
+            tmp_run_count[type_name][cat_name].num_nodes = 1;
+            if (num_in_clust_index !== null){
+              tmp_run_count[type_name][cat_name].num_nodes_ds = parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
+            }
+
+          }
+
+        });
+
+        inst_breakdown = {};
+        inst_breakdown.type_name = type_name;
+        inst_breakdown.num_in_clust = num_in_clust;
+
+        // sort cat info in cat_breakdown
+        bar_data = [];
+        var bar_color;
+        var cat_title_and_name;
+        var inst_run_count = tmp_run_count[type_name];
+
+        // console.log('inst_run_count', inst_run_count)
+
+        for (var inst_cat in inst_run_count){
+
+          var tot_num_cat = params.viz.cat_info[inst_rc][tmp_cat_index].cat_hist[inst_cat];
+          var total_nodes = params.network[inst_rc+'_nodes'].length;
+          var expect_prob = tot_num_cat / total_nodes;
+
+          // if no cat-title given
+          if (no_title_given){
+            cat_title_and_name = inst_cat;
+          } else {
+            cat_title_and_name = type_name + ': ' + inst_cat;
+          }
+
+          // num_nodes: number of cat-nodes drawn in cluster
+          var num_nodes = inst_run_count[inst_cat].num_nodes;
+
+          var actual_k  = num_nodes;
+          var pval = binom_test(actual_k, num_in_clust, expect_prob);
+          // var pval = 0.05; // binom_test(actual_k, num_in_clust, expect_prob);
+
+          // working on tracking the 'real' number of nodes, which is only different
+          // if downsampling has been done
+          if (_.has(inst_run_count[inst_cat], 'num_nodes_ds')){
+            var num_nodes_ds = inst_run_count[inst_cat].num_nodes_ds;
+          } else {
+            num_nodes_ds = null;
+          }
+
+          bar_color = params.viz.cat_colors[inst_rc][tmp_cat_index][cat_title_and_name];
+
+          bar_data.push([ tmp_cat_index, cat_title_and_name, inst_run_count[inst_cat], bar_color, num_nodes, num_nodes_ds, pval]);
+        }
+
+        bar_data.sort(function(a, b) {
+            return b[sorting_index] - a[sorting_index];
+        });
+
+        inst_breakdown.bar_data = bar_data;
+
+        cat_breakdown.push(inst_breakdown);
+
+      });
+
+    }
+  }
+
+  return cat_breakdown;
+};
+
+/***/ }),
+
+/***/ "./src/cats/cat_breakdown_bars.js":
+/*!****************************************!*\
+  !*** ./src/cats/cat_breakdown_bars.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups){
+
+  var paragraph_string = '<p>';
+  var super_string = ': ';
+
+  var bar_width  = params.viz.cat_bar_width;
+  var bar_height = params.viz.cat_bar_height;
+
+  var max_string_length = 25;
+
+  var max_bar_value = cat_data.bar_data[0][bars_index];
+
+  // only keep the top max_bars categories
+  cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
+
+  var inst_title = cat_data.type_name;
+  // ensure that title is not too long
+  if (inst_title.length >= max_string_length){
+    inst_title = inst_title.slice(0, max_string_length) + '..';
+  }
+
+  // make title
+  cat_graph_group
+    .append('text')
+    .classed('cat_graph_title', true)
+    .text(inst_title)
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight',  800);
+
+  var line_y = 4;
+  cat_graph_group
+    .append('line')
+    .attr('x1', 0)
+    .attr('x2', bar_width)
+    .attr('y1', line_y)
+    .attr('y2', line_y)
+    .attr('stroke', 'blue')
+    .attr('stroke-width', 1)
+    .attr('opacity', 1.0);
+
+
+  // bar length is max when all nodes in cluster are of
+  // a single cat
+  var bar_scale = d3.scale.linear()
+                    .domain([0, max_bar_value])
+                    .range([0, bar_width]);
+
+  // make bars
+  cat_bar_groups
+    .append('rect')
+    .attr('height', bar_height+'px')
+    .attr('width', function(d){
+      var inst_width = bar_scale(d[bars_index]);
+      return inst_width +'px';
+    })
+    .attr('fill', function(d){
+      // cat color is stored in the third element
+      return d[3];
+    })
+    .attr('opacity', params.viz.cat_colors.opacity)
+    .attr('stroke', 'grey')
+    .attr('stroke-width', '0.5px');
+
+  // make bar labels
+  cat_bar_groups
+    .append('text')
+    .classed('bar_labels', true)
+    .text(function(d){
+      var inst_text = d[1];
+      if (inst_text.indexOf(super_string) > 0){
+        inst_text = inst_text.split(super_string)[1];
+      }
+      if (inst_text.indexOf(paragraph_string) > 0){
+        // required for Enrichr category names (needs improvements)
+        inst_text = inst_text.split(paragraph_string)[0];
+      }
+      // ensure that bar name is not too long
+      if (inst_text.length >= max_string_length){
+        inst_text = inst_text.slice(0,max_string_length) + '..';
+      }
+      return inst_text;
+    })
+    .attr('transform', function(){
+      return 'translate(5, ' + 0.75 * bar_height + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'right');
+
+};
+
+/***/ }),
+
+/***/ "./src/cats/cat_breakdown_values.js":
+/*!******************************************!*\
+  !*** ./src/cats/cat_breakdown_values.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total){
+
+
+  var bar_width = params.viz.cat_bar_width;
+  var bar_height = params.viz.cat_bar_height;
+  var offset_ds_count = 150;
+  var binom_pval_index = 6;
+
+
+  // Count Title
+  cat_graph_group
+    .append('text')
+    .text('Count')
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset;
+      var inst_translate = 'translate('+ inst_x +', 0)';
+      return inst_translate;
+    });
+
+  // Percentage Title
+  cat_graph_group
+    .append('text')
+    .text('Pct')
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + 60;
+      var inst_translate = 'translate('+ inst_x +', 0)';
+      return inst_translate;
+    });
+
+  // Percentage Title
+  cat_graph_group
+    .append('text')
+    .text('P-val')
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + 115;
+      var inst_translate = 'translate('+ inst_x +', 0)';
+      return inst_translate;
+    });
+
+  // Count Downsampled Title
+  if (is_downsampled){
+    cat_graph_group
+      .append('text')
+      .text('Clusters')
+      .attr('transform', function(){
+        var inst_x = bar_width + offset_ds_count ;
+        var inst_translate = 'translate('+ inst_x +', 0)';
+        return inst_translate;
+      });
+  }
+
+  // Counts
+  /////////////////////////////
+  var shift_count_num = 35;
+
+  cat_bar_groups
+    .append('text')
+    .classed('count_labels', true)
+    .text(function(d){
+      var inst_count = d[bars_index];
+      inst_count = inst_count.toLocaleString();
+      return String(inst_count);
+    })
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + shift_count_num;
+      var inst_y = 0.75 * bar_height;
+      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'end');
+
+
+  // Percentage
+  //////////////////////
+  cat_bar_groups
+    .append('text')
+    .classed('count_labels', true)
+    .text(function(d){
+      // calculate the percentage relative to the current cluster
+      var inst_count = d[bars_index] / cluster_total * 100;
+      inst_count = Math.round(inst_count * 10)/10;
+      inst_count = inst_count.toLocaleString();
+      return String(inst_count);
+    })
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + shift_count_num + 47;
+      var inst_y = 0.75 * bar_height;
+      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'end');
+
+  // Binomial Test Pvals
+  cat_bar_groups
+    .append('text')
+    .classed('count_labels', true)
+    .text(function(d){
+      // calculate the percentage relative to the current cluster
+      var inst_count = d[binom_pval_index];
+
+      if (inst_count<0.001){
+        inst_count = parseFloat(inst_count.toPrecision(3));
+        inst_count = inst_count.toExponential();
+      } else {
+        inst_count = parseFloat(inst_count.toPrecision(2));
+      }
+
+      // inst_count = inst_count.toLocaleString();
+      return inst_count;
+    })
+    .attr('transform', function(){
+      var inst_x = bar_width + count_offset + shift_count_num + 112;
+      var inst_y = 0.75 * bar_height;
+      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+    })
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('text-anchor', 'end');
+
+  if (is_downsampled){
+
+    cat_bar_groups
+      .append('text')
+      .classed('count_labels', true)
+      .text(function(d){
+        return String(d[num_nodes_index].toLocaleString());
+      })
+      .attr('transform', function(){
+        // downsampled cluster numbers are smaller and need less flexible offsetting
+        var inst_x = bar_width + shift_count_num + offset_ds_count  + 20;
+        var inst_y = 0.75 * bar_height;
+        return 'translate('+ inst_x +', ' + inst_y + ')' ;
+      })
+      .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .attr('font-weight', 400)
+      .attr('text-anchor', 'end');
+
+  }
+
+};
+
+/***/ }),
+
+/***/ "./src/cats/check_if_value_cats.js":
+/*!*****************************************!*\
+  !*** ./src/cats/check_if_value_cats.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function check_if_value_cats(cat_states){
+
+  var tmp_cat = cat_states[0];
+
+  var has_title = false;
+  var might_have_values = false;
+  var cat_types = 'cat_strings';
+  var max_abs_val = NaN;
+  var all_values = [];
+  var cat_scale = null;
+
+  var super_string = ': ';
+
+  if (typeof tmp_cat === 'string'){
+    if ( tmp_cat.indexOf(super_string) > -1 ){
+      has_title = true;
+      tmp_cat = tmp_cat.split(super_string)[1];
+    }
+  }
+
+  if ( isNaN(tmp_cat) == false ){
+    might_have_values = true;
+  }
+
+  // check each value for number
+  if (might_have_values){
+
+    // the default state is that all are now values, check each one
+    cat_types = 'cat_values';
+
+    _.each(cat_states, function(inst_cat){
+
+      if (has_title){
+        inst_cat = inst_cat.split(super_string)[1];
+      }
+
+      // checking whether inst_cat is 'not a number'
+      if ( isNaN(inst_cat) === true ){
+        cat_types = 'cat_strings';
+      } else {
+        inst_cat = parseFloat(inst_cat);
+        all_values.push(inst_cat);
+      }
+
+    });
+
+  }
+
+  if (cat_types === 'cat_values'){
+
+    // get absolute value
+    var max_value = _.max(all_values, function (d) {
+      return Math.abs(d);
+    });
+
+    max_abs_val = Math.abs(max_value);
+
+    cat_scale = d3.scale.linear().domain([0, max_abs_val]).range([0,1]);
+  }
+
+  var inst_info = {};
+  inst_info.type = cat_types;
+  inst_info.max_abs_val = max_abs_val;
+  inst_info.cat_scale = cat_scale;
+
+  return inst_info;
+
+};
+
+/***/ }),
+
+/***/ "./src/cats/generate_cat_array.js":
+/*!****************************************!*\
+  !*** ./src/cats/generate_cat_array.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_cat_array(params, inst_axis){
 
   var title_sep = ': ';
   current_cats = {};
@@ -21786,6 +29832,165 @@ module.exports = function generate_cat_data(params, inst_axis){
 
 /***/ }),
 
+/***/ "./src/cats/generate_cat_info.js":
+/*!***************************************!*\
+  !*** ./src/cats/generate_cat_info.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var check_if_value_cats = __webpack_require__(/*! ./check_if_value_cats */ "./src/cats/check_if_value_cats.js");
+
+module.exports = function generate_cat_info(params){
+
+  // in clustergrammer.js this is make_cat_params
+
+  var viz = {}
+
+  var super_string = ': ';
+  var tmp_super;
+  var inst_info;
+  // var inst_color;
+
+  viz.show_categories = {};
+  viz.all_cats = {};
+  viz.cat_names = {};
+  viz.cat_info = {};
+
+  viz.cat_bar_width = 180;
+  viz.cat_bar_height = 20;
+
+  // this will hold the information for calculating the opacity of the value
+  // function
+  var ini_val_opacity = {};
+  ini_val_opacity.row = null;
+  ini_val_opacity.col = null;
+
+  viz.cat_colors = {};
+  viz.cat_colors.value_opacity = ini_val_opacity;
+
+  // var num_colors = 0;
+  _.each(['row','col'], function(inst_rc){
+
+    viz.show_categories[inst_rc] = false;
+
+    viz.all_cats[inst_rc] = [];
+    var tmp_keys = _.keys(params.network[inst_rc+'_nodes'][0]);
+
+    tmp_keys = tmp_keys.sort();
+
+    _.each( tmp_keys, function(d){
+      if (d.indexOf('cat-') >= 0){
+        viz.show_categories[inst_rc] = true;
+        viz.all_cats[inst_rc].push(d);
+      }
+    });
+
+    viz.cat_info[inst_rc] = null;
+
+    // if (viz.show_categories[inst_rc]){
+
+      viz.cat_colors[inst_rc] = {};
+      viz.cat_info[inst_rc] = {};
+      viz.cat_names[inst_rc] = {};
+
+      _.each( viz.all_cats[inst_rc], function(cat_title){
+
+        var inst_node = params.network[inst_rc+'_nodes'][0];
+
+        // look for title of category in category name
+        if (typeof inst_node[cat_title] === 'string' ){
+
+          if (inst_node[cat_title].indexOf(super_string) > 0){
+            tmp_super = inst_node[cat_title].split(super_string)[0];
+            viz.cat_names[inst_rc][cat_title] = tmp_super;
+          } else {
+            viz.cat_names[inst_rc][cat_title] = cat_title;
+          }
+
+        } else {
+          viz.cat_names[inst_rc][cat_title] = cat_title;
+        }
+
+        var cat_instances_titles = _.pluck(params.network[inst_rc+'_nodes'], cat_title);
+        var cat_instances = [];
+
+        _.each(cat_instances_titles, function(inst_cat){
+
+          var new_cat;
+          if (inst_cat.indexOf(': ') >0){
+            new_cat = inst_cat.split(': ')[1];
+          } else {
+            new_cat = inst_cat;
+          }
+
+          cat_instances.push(new_cat);
+        });
+
+        var cat_states = _.uniq( cat_instances_titles ).sort();
+
+        // check whether all the categories are of value type
+        inst_info = check_if_value_cats(cat_states);
+
+        // add histogram to inst_info
+        if (inst_info.type === 'cat_strings'){
+          // remove titles from categories in hist
+          var cat_hist = _.countBy(cat_instances);
+          inst_info.cat_hist = cat_hist;
+        } else {
+          inst_info.cat_hist = null;
+        }
+
+        // pass info_info object
+        viz.cat_info[inst_rc][cat_title] = inst_info;
+
+        viz.cat_colors[inst_rc][cat_title] = {};
+
+        // _.each(cat_states, function(cat_tmp, inst_index){
+
+          // inst_color = colors.get_random_color(inst_index + num_colors);
+
+          // viz.cat_colors[inst_rc][cat_title][cat_tmp] = inst_color;
+
+          // // hack to get 'Not' categories to not be dark colored
+          // // also doing this for false
+          // if (typeof cat_tmp === 'string'){
+          //   if (cat_tmp.indexOf('Not ') >= 0 || cat_tmp.indexOf(': false') > 0){
+          //     viz.cat_colors[inst_rc][cat_title][cat_tmp] = '#eee';
+          //   }
+          // }
+
+          // num_colors = num_colors + 1;
+        // });
+
+      });
+
+    // }
+
+    // if (_.has(params.network, 'cat_colors') && predefined_cat_colors === true){
+      viz.cat_colors[inst_rc] = params.network.cat_colors[inst_rc];
+    // }
+
+    // if (params.sim_mat){
+    //   // sending row color info to columns since row color info can be updated
+    //   viz.cat_colors.col = viz.cat_colors.row;
+    // }
+
+  });
+
+  // viz.cat_colors = viz.cat_colors;
+
+  viz.cat_colors.opacity = 0.6;
+  viz.cat_colors.active_opacity = 0.9;
+
+  params.viz = viz;
+
+  // viz = calc_cat_params(params, viz);
+
+}
+
+/***/ }),
+
 /***/ "./src/cats/make_cat_args.js":
 /*!***********************************!*\
   !*** ./src/cats/make_cat_args.js ***!
@@ -21812,10 +30017,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   // var inst_rgba = color_to_rgba('#ff0000', 0.5);
   var inst_rgba = color_to_rgba('purple', 0.95);
-
-  // var color_names = _.keys(olor_table);
-
-  var num_labels = params['num_'+inst_axis];
+  var num_labels = params.labels['num_'+inst_axis];
 
   // category tiles have fixed heights
   var cat_height;
@@ -21825,14 +30027,14 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var top_shift_triangles;
   cat_height = 0.04;
   if (inst_axis === 'col'){
-    mat_size = params.heat_size.x;
-    top_shift_triangles = params.mat_size.y;
+    mat_size = params.viz_dim.heat_size.x;
+    top_shift_triangles = params.viz_dim.mat_size.y;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
-    mat_size = params.heat_size.y;
-    top_shift_triangles = params.mat_size.x;
-    cat_width = (params.heat_size.y/0.5)/num_labels;
+    mat_size = params.viz_dim.heat_size.y;
+    top_shift_triangles = params.viz_dim.mat_size.x;
+    cat_width = (params.viz_dim.heat_size.y/0.5)/num_labels;
   }
 
   var zoom_function = function(context){
@@ -22035,6 +30237,217 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
 /***/ }),
 
+/***/ "./src/cats/make_cat_breakdown_graph.js":
+/*!**********************************************!*\
+  !*** ./src/cats/make_cat_breakdown_graph.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// var calc_cat_cluster_breakdown = require('./calc_cat_cluster_breakdown');
+var cat_breakdown_bars = __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js");
+var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js");
+
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
+
+  /*
+  This function is used to make the category breakdown graphs for tooltips on
+  dendrogram mousover and on dendrogram click modal popup.
+  */
+
+  if (cat_breakdown.length > 0){
+
+    // put cluster information in dendro_tip
+    ///////////////////////////////////////////
+
+
+    // loop through cat_breakdown data
+    var width = 370;
+    var title_height = 27;
+    // var shift_tooltip_left = 177;
+    var bar_offset = 23;
+
+    // these are the indexes where the number-of-nodes and the number of downsampled
+    // nodes are stored
+    var num_nodes_index = 4;
+    var num_nodes_ds_index = 5;
+    // var offset_ds_count = 150;
+
+    var is_downsampled = false;
+    if (cat_breakdown[0].bar_data[0][num_nodes_ds_index] !== null){
+      width = width + 100;
+      // shift_tooltip_left = shift_tooltip_left + offset_ds_count - 47;
+      is_downsampled = true;
+    }
+
+    // the index that will be used to generate the bars (will be different if
+    // downsampled)
+    var cluster_total = dendro_info.all_names.length;
+    var bars_index = num_nodes_index;
+    if (is_downsampled){
+      bars_index = num_nodes_ds_index;
+
+      // calculate the total number of nodes in downsampled case
+      var inst_bar_data = cat_breakdown[0].bar_data;
+      cluster_total = 0;
+      _.each(inst_bar_data, function(tmp_data){
+        cluster_total = cluster_total + tmp_data[num_nodes_ds_index];
+      });
+    }
+
+    // limit on the number of category types shown
+    var max_cats = 3;
+    // limit the number of bars shown
+    var max_bars = 25;
+
+    // calculate height needed for svg based on cat_breakdown data
+    var svg_height = 20;
+    _.each(cat_breakdown.slice(0,max_cats), function(tmp_break){
+      var num_bars = tmp_break.bar_data.length;
+      if (num_bars > max_bars){
+        num_bars = max_bars;
+      }
+      svg_height = svg_height + title_height * (num_bars + 1);
+    });
+
+    // // Cluster Information Title (for tooltip only not modal)
+    // if (tooltip){
+    //   cluster_info_container
+    //     .append('text')
+    //     .text('Cluster Information');
+    // }
+
+    var main_dendro_svg = cluster_info_container
+      .append('div')
+      .style('margin-top','5px')
+      .classed('cat_graph', true)
+      .append('svg')
+      .style('height', svg_height+'px')
+      .style('width', width+'px')
+      // .style('left', '-270px')
+
+    cluster_info_container
+      .style('margin-bottom', '5px');
+
+
+    // make background
+    main_dendro_svg
+      .append('rect')
+      .classed('cat_background', true)
+      .attr('height', svg_height+'px')
+      .attr('width', width+'px')
+      .attr('fill', 'white')
+      .attr('opacity', 1);
+
+
+    // limit the category-types
+    cat_breakdown = cat_breakdown.slice(0, max_cats);
+
+    // shift the position of the numbers based on the size of the number
+    // offset the count column based on how large the counts are
+    var digit_offset_scale = d3.scale.linear()
+                               .domain([0,100000]).range([20, 30]);
+
+    // the total amout to shift down the next category
+    var shift_down = title_height;
+
+    _.each(cat_breakdown, function(cat_data){
+
+      var max_bar_value = cat_data.bar_data[0][bars_index];
+
+      var count_offset = digit_offset_scale(max_bar_value);
+
+      var cat_graph_group = main_dendro_svg
+        .append('g')
+        .classed('cat_graph_group', true)
+        .attr('transform', 'translate(10, '+ shift_down + ')');
+
+        var cat_bar_container = cat_graph_group
+          .append('g')
+          .classed('cat_bar_container', true)
+          .attr('transform', 'translate(0, 10)');
+
+        // make bar groups (hold bar and text)
+        var cat_bar_groups = cat_bar_container
+          .selectAll('g')
+          .data(cat_data.bar_data)
+          .enter()
+          .append('g')
+          .attr('transform', function(d, i){
+            var inst_y = i * bar_offset;
+            return 'translate(0,'+ inst_y +')';
+          });
+
+      cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
+
+      cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
+
+      // shift down based on number of bars
+      shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
+
+      // reposition group
+    var pos_x = params.zoom_data.x.cursor_position - width;
+    var pos_y = params.zoom_data.y.cursor_position - svg_height;
+
+    cluster_info_container
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
+
+    });
+
+  /*
+    Not Needed, since I'm not using a modal
+  */
+  //   // reposition tooltip
+  //   /////////////////////////////////////////////////
+  //   if (tooltip){
+
+  //     var dendro_tip = d3.select(selector);
+  //     var old_top = dendro_tip.style('top').split('.px')[0];
+  //     var old_left = dendro_tip.style('left').split('.px')[0];
+  //     var shift_top = 0;
+  //     var shift_left = 0;
+
+  //     // shifting
+  //     if (inst_axis === 'row'){
+
+  //       // rows
+  //       //////////////
+  //       shift_top = 0;
+  //       shift_left = shift_tooltip_left;
+
+  //       // // prevent graph from being too high
+  //       // if (dendro_info.pos_top < svg_height){
+  //       //   // do not shift position of category breakdown graph
+  //       //   // shift_top = -(svg_height + (dendro_info.pos_mid - dendro_info.pos_top)/2) ;
+  //       // }
+
+  //     } else {
+
+  //       // columns
+  //       //////////////
+  //       shift_top = svg_height + 32;
+  //       shift_left = 30;
+  //     }
+
+  //     dendro_tip
+  //       .style('top', function(){
+  //         var new_top = String(parseInt( old_top,10) - shift_top) + 'px';
+  //         return new_top;
+  //       })
+  //       .style('left', function(){
+  //         var new_left = String(parseInt( old_left,10) - shift_left) + 'px';
+  //         return new_left;
+  //       });
+
+  //   }
+
+  }
+
+};
+
+/***/ }),
+
 /***/ "./src/cats/make_cat_position_array.js":
 /*!*********************************************!*\
   !*** ./src/cats/make_cat_position_array.js ***!
@@ -22044,18 +30457,18 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
 module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
 
-  var num_labels = params['num_'+inst_axis];
+  var num_labels = params.labels['num_'+inst_axis];
   // category tiles have fixed heights
   // category widths depend on the number of labels
   var cat_width;
   var mat_size;
   if (inst_axis === 'col'){
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     cat_width = (mat_size/0.5)/num_labels;
 
   } else {
-    mat_size = params.heat_size.y;
-    cat_width = (params.heat_size.y/0.5)/num_labels;
+    mat_size = params.viz_dim.heat_size.y;
+    cat_width = (params.viz_dim.heat_size.y/0.5)/num_labels;
   }
 
   /////////////////////////////////
@@ -22075,10 +30488,10 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     if (inst_axis == 'row'){
       order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
       // vertical shift
-      shift_mat_heat = -(params.mat_size.y - params.heat_size.y)
+      shift_mat_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y)
     } else {
       order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x
+      shift_mat_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x
     }
 
     /* need to position based on clustering order */
@@ -22335,7 +30748,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /***/ (function(module, exports, __webpack_require__) {
 
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
-var img = __webpack_require__(/*! ./../../img/graham_cracker_144.png */ "./img/graham_cracker_144.png");
+// var img = require('./../../img/graham_cracker_144.png');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -22389,7 +30802,7 @@ module.exports = function build_control_panel(regl, cgm){
     .attr('transform', function(){
       var y_trans = inst_height - border_height;
       return 'translate( 0, '+ y_trans +')';
-    })
+    });
 
   var button_dim = {};
   button_dim.height = 32;
@@ -22481,6 +30894,8 @@ module.exports = function build_control_panel(regl, cgm){
     reorder_buttons
       .classed(inst_axis + '-reorder-buttons', true);
 
+    var active_button_color = '#0000FF75';
+
     // generate single button
     var button_group = reorder_buttons
       .selectAll('g')
@@ -22497,8 +30912,10 @@ module.exports = function build_control_panel(regl, cgm){
                            .replace('var', 'rankvar')
 
         // tmp preventing dispersion reordering from working
-        if (cgm.params.inst_order[inst_axis] != clean_order && clean_order != 'disp'){
+        if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
 
+          /* category order is already calculated */
+          // d = d.replace('alpha', 'cat_1_index')
           run_reorder(regl, cgm, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
@@ -22507,7 +30924,7 @@ module.exports = function build_control_panel(regl, cgm){
 
           d3.select(this)
             .select('rect')
-            .style('stroke', 'red');
+            .style('stroke', active_button_color);
 
         }
       })
@@ -22521,8 +30938,8 @@ module.exports = function build_control_panel(regl, cgm){
       .style('ry', 10)
       .style('stroke', function(d){
         var inst_color;
-        if (cgm.params.inst_order[inst_axis] == d){
-          inst_color = 'red';
+        if (cgm.params.order.inst[inst_axis] == d){
+          inst_color = active_button_color;
         } else {
           inst_color = button_color;
         }
@@ -22561,7 +30978,447 @@ module.exports = function build_control_panel(regl, cgm){
   // //   console.log('clicking logo')
   // // });
 
+  /*
+  Make Column Reorder titles
+      d3.select(viz.viz_svg)
+      .selectAll()
+      .data(viz.all_cats.col)
+      .enter()
+      .append('text')
+      .classed('col_cat_super', true)
+      .style('font-size', cat_text_size+'px')
+      .style('opacity', cat_super_opacity)
+      .style('cursor','default')
+      .attr('transform', function(d){
+        var inst_cat = parseInt( d.split('-')[1], 10);
+        var inst_y = y_offset + extra_y_room * viz.cat_room.symbol_width
+          * inst_cat;
+        return 'translate('+x_offset+','+inst_y+')';
+      })
+      .text(function(d){
+        return get_cat_title(viz, d, 'col');
+      });
+  */
+
+  var params = cgm.params;
+
+  var pos_x = 845;
+  var pos_y = 125;
+  var col_cat_title_group = d3.select(params.root + ' .canvas-container')
+    .append('g')
+    .style('position', 'absolute')
+    .style('top', pos_y + 'px')
+    .style('left', pos_x + 'px')
+    .classed('col-cat-title-group', true);
+
+  var dim_x = 55;
+  var dim_y = 10;
+
+  var col_cat_title_svg = col_cat_title_group
+    .append('svg')
+    .style('height', function(){
+      var svg_height = dim_y * params.cat_data.col.length + 5;
+      return svg_height  + 'px'
+    })
+    .style('width', dim_x + 'px')
+    .classed('col-cat-title-svg', true);
+
+  var col_cat_reorder_group = col_cat_title_svg
+    .append('g')
+    .classed('col-cat-reorder-group', true);
+
+  col_cat_reorder_group
+    .selectAll('rect')
+    .data(params.cat_data.col)
+    .enter()
+    .append('text')
+    .text(function(d){
+      return d.cat_title;
+    })
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight',  800)
+    .style('font-size', 12)
+    // .style('width', dim_x + 'px')
+    // .style('height', dim_y + 'px')
+    // .style('fill', 'black')
+    // .on('dblclick', function(d, i){
+    //   run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
+    // })
+    .attr('transform', function(d, i){
+      var y_trans = (dim_y + 1) * i + 10 ;
+      return 'translate( 0, '+ y_trans +')';
+    })
+
+  col_cat_reorder_group
+    .selectAll('rect')
+    .data(params.cat_data.col)
+    .enter()
+    .append('rect')
+    .style('width', dim_x + 'px')
+    .style('height', function(){
+      var rect_height = dim_y + 2;
+      return rect_height + 'px'
+    })
+    .style('fill', 'white')
+    .style('opacity', 0.0)
+    .on('dblclick', function(d, i){
+
+      run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
+
+      cgm.params.order.inst.col = 'cat_' + String(i) + '_index';
+
+      d3.select(cgm.params.root + ' .col-reorder-buttons')
+        .selectAll('rect')
+        .style('stroke', button_color);
+
+    })
+    .attr('transform', function(d, i){
+      var y_trans = (dim_y + 2)* i ;
+      return 'translate( 0, '+ y_trans +')';
+    })
+    .style('user-select', 'none');
+
 };
+
+/***/ }),
+
+/***/ "./src/dendrogram/build_dendrogram_sliders.js":
+/*!****************************************************!*\
+  !*** ./src/dendrogram/build_dendrogram_sliders.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/dendrogram/build_single_dendro_slider.js");
+
+module.exports = function build_dendrogram_sliders(regl, cgm){
+
+  // Add sliders on top of the canvas
+  /////////////////////////////////////
+  var slider_length = 130;
+
+  // slider containers
+
+  var axis_slider_container;
+  var inst_top;
+  var inst_left;
+  var inst_rotate;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    if (inst_axis === 'row'){
+      inst_top = 150;
+      inst_left = cgm.params.viz_width - 25 ;
+    } else {
+      inst_top = cgm.params.viz_height - 100;
+      inst_left = 50;
+    }
+
+    // axis_slider_container = d3.select(cgm.params.root + ' .control-container')
+    axis_slider_container = d3.select(cgm.params.root + ' .canvas-container')
+      .append('svg')
+      .style('height', slider_length + 'px')
+      .style('width', '40px')
+      .style('position', 'absolute')
+      .style('top', inst_top + 'px')
+      .style('left', inst_left + 'px')
+      .attr('class', inst_axis + '_dendro_slider_svg')
+      .attr('transform', function(){
+        if (inst_axis === 'row'){
+          inst_rotate = 0;
+        } else {
+          inst_rotate = -90;
+        }
+        return 'rotate('+ inst_rotate +')';
+      })
+
+    axis_slider_container
+      .append('rect')
+      .style('height', slider_length + 'px')
+      .style('width', '25px')
+      .style('fill', 'white');
+
+    build_single_dendro_slider(regl, cgm, inst_axis);
+  });
+
+}
+
+/***/ }),
+
+/***/ "./src/dendrogram/build_single_dendro_slider.js":
+/*!******************************************************!*\
+  !*** ./src/dendrogram/build_single_dendro_slider.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var change_groups = __webpack_require__(/*! ./change_groups */ "./src/dendrogram/change_groups.js");
+// var position_dendro_slider = require('./position_dendro_slider');
+
+module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
+
+  var slider_length = 100;
+  var rect_height = slider_length + 20;
+  var rect_width = 20;
+
+  var drag = d3.behavior.drag()
+      .on('drag', dragging)
+      .on('dragend', function(){
+        cgm.params.is_slider_drag = false;
+      });
+
+  var slider_group = d3.select(cgm.params.root + ' .'+ inst_axis +'_dendro_slider_svg')
+      .append('g')
+      .classed( inst_axis + '_slider_group', true)
+      .attr('transform', function(){
+        var inst_translation;
+        inst_translation = 'translate(' + rect_width/2 + ', '+ rect_height/10 +')';
+        return inst_translation;
+      })
+
+  slider_group
+    .append('rect')
+    .classed(inst_axis+'_slider_background', true)
+    .attr('height', rect_height+'px')
+    .attr('width', rect_width+'px')
+    .attr('fill', 'red')
+    .attr('transform', function(){
+      var translate_string = 'translate(-10, -5)';
+      return translate_string;
+    })
+    .style('opacity', 0);
+
+  slider_group
+    .append('line')
+    .style('stroke-width', slider_length/7+'px')
+    .style('stroke', 'black')
+    .style('stroke-linecap', 'round')
+    .style('opacity', 0.0)
+    .attr('y1', 0)
+    .attr('y2', function(){
+      return slider_length-2;
+    })
+    .on('click', click_dendro_slider);
+
+  var offset_triangle = -slider_length/40;
+  slider_group
+    .append('path')
+    .style('fill', 'black')
+    .attr('transform', 'translate('+offset_triangle+', 0)')
+    .attr('d', function() {
+
+      // up triangle
+      var start_x = 0 ;
+      var start_y = 0;
+
+      var mid_x = 0;
+      var mid_y = slider_length;
+
+      var final_x = slider_length/10;
+      var final_y = 0;
+
+      var output_string = 'M' + start_x + ',' + start_y + ' L' +
+      mid_x + ', ' + mid_y + ' L' +
+      final_x + ','+ final_y +' Z';
+
+      return output_string;
+    })
+    .style('opacity', 0.35)
+    .on('click', click_dendro_slider);
+
+
+  var default_opacity = 0.35;
+  var high_opacity = 0.6;
+  slider_group
+    .append('circle')
+    .classed(inst_axis+'_group_circle', true)
+    .attr('r', slider_length * 0.08)
+    .attr('transform', function(){
+      return 'translate(0, '+slider_length/2+')';
+    })
+    .style('fill', 'blue')
+    .style('opacity', default_opacity)
+    .on('mouseover', function(){
+      d3.select(this).style('opacity', high_opacity);
+    })
+    .on('mouseout', function(){
+      d3.select(this).style('opacity', default_opacity);
+    })
+    .call(drag);
+
+  function dragging() {
+
+    cgm.params.is_slider_drag = true;
+
+    // d[0] = d3.event.x;
+    var slider_pos = d3.event.y;
+
+    if (slider_pos < 0){
+      slider_pos = 0;
+    }
+
+    if (slider_pos > slider_length){
+      slider_pos = slider_length;
+    }
+
+    if (this.nextSibling) {
+      this.parentNode.appendChild(this);
+    }
+
+    slider_pos = d3.round(slider_pos, -1);
+
+    var slider_value = 10 - slider_pos/10;
+
+    d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
+
+    change_groups(regl, cgm.params, inst_axis, slider_value);
+
+  }
+
+  function click_dendro_slider(){
+
+    var clicked_line_position = d3.mouse(this);
+
+    var rel_pos = d3.round(clicked_line_position[1], -1);
+
+    d3.select(cgm.params.root+ ' .'+inst_axis+'_group_circle')
+      .attr('transform', 'translate(0, '+ rel_pos + ')');
+
+    var slider_value = 10 - rel_pos/10;
+
+    change_groups(regl, cgm.params, inst_axis, slider_value);
+
+  }
+};
+
+/***/ }),
+
+/***/ "./src/dendrogram/calc_dendro_triangles.js":
+/*!*************************************************!*\
+  !*** ./src/dendrogram/calc_dendro_triangles.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_dendro_triangles(params, inst_axis){
+
+  var triangle_info = {};
+
+  var inst_level = params.dendro.group_level[inst_axis];
+  var inst_nodes = params.network[inst_axis + '_nodes'];
+
+  var heat_shift;
+  var heat_size;
+  var tri_width;
+  var num_labels = params.labels['num_'+inst_axis];
+  if (inst_axis === 'row'){
+    heat_size = params.viz_dim.heat_size.y;
+    tri_width = heat_size/num_labels;
+  } else {
+    heat_size = params.viz_dim.heat_size.x;
+    tri_width  = heat_size/num_labels;
+  }
+
+  var inst_order = params.order.inst[inst_axis];
+
+  _.each(inst_nodes, function(inst_node){
+
+    var order_index = inst_node[inst_order];
+    var inst_group = inst_node.group[inst_level];
+
+    var inst_top;
+    if (inst_axis === 'row'){
+      heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
+      inst_top = -params.node_canvas_pos.y_arr[order_index] - 2*tri_width - 2 * heat_shift;
+    } else {
+      // emperical rule
+      heat_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
+      inst_top = -params.node_canvas_pos.x_arr[order_index] - 2*tri_width + 2 * heat_shift;
+    }
+
+    var inst_bot = inst_top + tri_width;
+
+    var inst_name = inst_node.name;
+
+    if (inst_name.indexOf(': ') >= 0){
+      inst_name = inst_name.split(': ')[1];
+    }
+
+    if ( _.has(triangle_info, inst_group) === false ){
+      triangle_info[inst_group] = {};
+      triangle_info[inst_group].name_top = inst_name;
+      triangle_info[inst_group].name_bot = inst_name;
+      triangle_info[inst_group].pos_top = inst_top;
+      triangle_info[inst_group].pos_bot = inst_bot;
+      triangle_info[inst_group].pos_mid = (inst_top + inst_bot)/2;
+      triangle_info[inst_group].name = inst_group;
+      triangle_info[inst_group].all_names = [];
+      triangle_info[inst_group].inst_axis = inst_axis;
+    }
+
+    triangle_info[inst_group].all_names.push(inst_name);
+
+    if (inst_top < triangle_info[inst_group].pos_top){
+      triangle_info[inst_group].name_top = inst_name;
+      triangle_info[inst_group].pos_top = inst_top;
+      triangle_info[inst_group].pos_mid = (inst_top + triangle_info[inst_group].pos_bot)/2;
+    }
+
+    if (inst_bot > triangle_info[inst_group].pos_bot){
+      triangle_info[inst_group].name_bot = inst_name;
+      triangle_info[inst_group].pos_bot = inst_bot;
+      triangle_info[inst_group].pos_mid = (triangle_info[inst_group].pos_top + inst_bot)/2;
+    }
+
+  });
+
+  var group_info = [];
+
+  _.each(triangle_info, function(inst_triangle){
+    group_info.push(inst_triangle);
+  });
+
+  return group_info;
+
+};
+
+/***/ }),
+
+/***/ "./src/dendrogram/change_groups.js":
+/*!*****************************************!*\
+  !*** ./src/dendrogram/change_groups.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
+var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+// var make_dendro_triangles = require('./make_dendro_triangles');
+
+/* Changes the groupings (x- and y-axis color bars).
+ */
+module.exports = function (regl, params, inst_axis, slider_value) {
+
+  if (inst_axis==='row'){
+    params.dendro.group_level.row = slider_value;
+  } else if (inst_axis==='col'){
+    params.dendro.group_level.col = slider_value;
+  }
+
+  // var is_change_group = true;
+  // make_dendro_triangles(cgm, inst_axis, is_change_group);
+
+  // console.log(slider_value);
+
+  // this can probably be improved
+  params.dendro.update_dendro = true;
+
+  params.dendro.group_level[inst_axis] = slider_value;
+  params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
+  params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+
+};
+
 
 /***/ }),
 
@@ -22574,85 +31431,72 @@ module.exports = function build_control_panel(regl, cgm){
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
+var make_dendro_arr = __webpack_require__(/*! ./make_dendro_arr */ "./src/dendrogram/make_dendro_arr.js");
 
-module.exports = function draw_mat_labels(regl, params, inst_rc){
+module.exports = function make_dendro_args(regl, params, inst_axis){
 
-  var inst_rgba = color_to_rgba('#eee', 1.0);
   var rotation_radians;
-  var mat_size;
+  var heat_size;
   var mat_size_offset;
-  var y_shift;
-  if (inst_rc === 'row'){
+  if (inst_axis === 'row'){
     rotation_radians = 0;
-    mat_size = params.heat_size.y;
-    mat_size_offset = params.mat_size.x;
-    y_shift = -(params.mat_size.y - params.heat_size.y);
-  } else if (inst_rc === 'col'){
+    heat_size = params.viz_dim.heat_size.y;
+    mat_size_offset = params.viz_dim.mat_size.x;
+  } else if (inst_axis === 'col'){
     rotation_radians = Math.PI/2;
-    mat_size = params.heat_size.x;
-    mat_size_offset = params.mat_size.y;
-    y_shift = params.mat_size.x - params.heat_size.x;
+    heat_size = params.viz_dim.heat_size.x;
+    mat_size_offset = params.viz_dim.mat_size.y;
   }
 
-  var num_labels = params['num_' + inst_rc];
+  var num_labels = params.labels['num_' + inst_axis];
+  var dendro_width = params.dendro.tri_height;
+  var tri_width = heat_size/num_labels;
 
-  var row_width = 0.025;
-  var tile_height = (1/num_labels) * (mat_size/0.5);
+  var dendro_arr = make_dendro_arr(params, inst_axis);
 
   var zoom_function = function(context){
     return context.view;
   };
 
-  /////////////////////////////////
-  // make buffer for row offsets
-  /////////////////////////////////
-
-  var x_offset = 0.5 * (mat_size_offset/0.5) ; // row_width;
-
-  var y_offset_array = [];
-  for (var i = 0; i < num_labels; i++){
-    y_offset_array[i] = mat_size - tile_height/2 - i * tile_height;
-  }
-
-  const y_offset_buffer = regl.buffer({
-    length: num_labels,
+  const dendro_buffer = regl.buffer({
+    length: dendro_arr.length,
     type: 'float',
     usage: 'dynamic'
   });
 
-  y_offset_buffer(y_offset_array);
+  dendro_buffer(dendro_arr);
 
   var mat_scale = m3.scaling(1, 1);
 
-
   var mat_rotate = m3.rotation(rotation_radians);
+  var inst_rgba = color_to_rgba('black', 0.35);
 
   var args = {
 
     vert: `
       precision highp float;
       attribute vec2 position;
-      attribute float y_offset_att;
+      attribute vec2 dendro_att;
 
       uniform mat3 mat_rotate;
       uniform mat3 mat_scale;
       uniform mat4 zoom;
-      uniform float x_offset;
-      uniform float y_shift;
+      uniform float mat_size_offset;
 
       varying vec3 new_position;
       varying vec3 vec_translate;
 
       void main () {
 
-        new_position = vec3(position, 0);
+        // offset[1] will contain dendro width
+        new_position = vec3(position[0], position[1]  * dendro_att[1], 0);
 
-        vec_translate = vec3(x_offset, y_offset_att + y_shift, 0);
+        // offset[0] contains the actual offset
+        vec_translate = vec3(mat_size_offset, dendro_att[0], 0);
 
-        // new_position = mat_rotate * mat_scale * new_position + vec_translate;
         new_position = mat_rotate * ( mat_scale * new_position + vec_translate ) ;
 
-        // depth is being set to 0.45
+        // depth is being set to 0.40
         gl_Position = zoom * vec4(new_position[0], new_position[1], 0.40, 1);
 
       }
@@ -22665,7 +31509,6 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
       // color triangle red
       void main () {
-        // gl_FragColor = vec4(0.0, 1, 0.0, 1);
         gl_FragColor = triangle_color;
       }
 
@@ -22673,12 +31516,12 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
     attributes: {
       position: [
-        [0.0,  tile_height/2],
-        [row_width/2,  0.0],
-        [0.0, -tile_height/2],
+        [      params.dendro.trap_float, 2*tri_width],
+        [dendro_width, tri_width],
+        [      params.dendro.trap_float, 0],
       ],
-      y_offset_att: {
-        buffer: y_offset_buffer,
+      dendro_att: {
+        buffer: dendro_buffer,
         divisor: 1
       }
     },
@@ -22687,13 +31530,12 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
       zoom: zoom_function,
       mat_rotate: mat_rotate,
       mat_scale: mat_scale,
-      x_offset: x_offset,
-      y_shift: y_shift,
+      mat_size_offset: mat_size_offset,
       triangle_color: inst_rgba
     },
 
     count: 3,
-    instances: num_labels,
+    instances: dendro_arr.length,
     depth: {
       enable: true,
       mask: true,
@@ -22710,6 +31552,49 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 
 /***/ }),
 
+/***/ "./src/dendrogram/make_dendro_arr.js":
+/*!*******************************************!*\
+  !*** ./src/dendrogram/make_dendro_arr.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_dendro_arr(params, inst_axis){
+
+  var inst_trap;
+
+  // console.log('make_dendro_arr')
+
+  // console.log(params.dendro.group_info.row)
+
+  var group_info;
+  if (inst_axis === 'row'){
+    group_info = params.dendro.group_info.row;
+  } else {
+    group_info = params.dendro.group_info.col;
+  }
+
+  var offset_array = [];
+  var num_in_group;
+  _.each(group_info, function(inst_group){
+    // console.log(inst_group.pos_top)
+
+    num_in_group = inst_group.all_names.length;
+    inst_trap = [inst_group.pos_top, num_in_group];
+
+    offset_array.push(inst_trap);
+
+  });
+
+  // console.log('new', offset_array.length)
+
+  // console.log(inst_axis, offset_array)
+
+  return offset_array;
+}
+
+/***/ }),
+
 /***/ "./src/draws/draw_axis_components.js":
 /*!*******************************************!*\
   !*** ./src/draws/draw_axis_components.js ***!
@@ -22720,7 +31605,7 @@ module.exports = function draw_mat_labels(regl, params, inst_rc){
 var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
 var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
 var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
+var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
 var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
@@ -22751,27 +31636,32 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       );
     });
 
-    regl(params.dendro_args[inst_axis])();
+    // only show the dendrogram if the current axis is in clust ordering
+    if (params.order.inst[inst_axis] === 'clust' && params.order.new[inst_axis] === 'clust'){
+      regl(params.dendro.dendro_args[inst_axis])();
+    }
 
     // make the arguments for the draw command
     var text_triangle_args
     if (inst_axis === 'col'){
-      text_triangle_args = make_col_text_args(regl, params, params.zoom_function);
+      text_triangle_args = make_col_text_args(regl, params, params.zoom_data.zoom_function);
     } else {
-      text_triangle_args = make_row_text_args(regl, params, params.zoom_function);
+      text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
     }
 
     if (calc_text_tri){
 
-      var num_viz_labels = params['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
+      var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
       if (num_viz_labels < params.max_num_text){
 
         calc_viz_area(params);
 
-        // draw using text_triangle_args and axis triangles
-        if (params['num_' + inst_axis] > params.max_num_text){
-          params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
+        // only regather if there are more labels than can be shown at once
+        if (params.labels['num_' + inst_axis] > params.max_num_text){
+
+          gather_text_triangles(params, inst_axis);
+
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
@@ -22796,6 +31686,52 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
 /***/ }),
 
+/***/ "./src/draws/draw_background_calculations.js":
+/*!***************************************************!*\
+  !*** ./src/draws/draw_background_calculations.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
+var drop_label_from_queue = __webpack_require__(/*! ./../matrix_labels/drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
+
+module.exports = function draw_background_calculations(regl, params){
+
+  // console.log('draw_background_calculations');
+
+  /*
+    Set up something to run background calculations if
+    necessary when the visualization is not being updated. For instance,
+    we could calculate the text triangles of all rows a little at a time
+    in the background.
+  */
+
+  // var updated_labels = false;
+  _.each(['row', 'col'], function(inst_axis){
+
+    // low priority queue
+    if (params.labels.queue.low[inst_axis].length > 0){
+
+      var inst_name = params.labels.queue.low[inst_axis][0];
+
+      // add to text_triangles pre-calc
+      var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+      params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+
+      drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+
+      // console.log(params.labels.queue.low[inst_axis].length)
+      // params.labels.draw_labels = true;
+
+    }
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/draws/draw_commands.js":
 /*!************************************!*\
   !*** ./src/draws/draw_commands.js ***!
@@ -22810,9 +31746,9 @@ var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_compone
 
 module.exports = function draw_commands(regl, params){
 
-  // if (params.slow_draw){
+  // if (params.labels.draw_labels){
   //   console.log('\n***************');
-  //   console.log('** slow draw **');
+  //   console.log('** draw_labels **');
   //   console.log('***************');
   // }
 
@@ -22820,23 +31756,83 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.slow_draw);
-  draw_axis_components(regl, params, 'col', params.slow_draw);
+  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
+  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
   draw_spillover_components(regl, params);
 
-  if (params.show_tooltip && params.in_bounds_tooltip){
-    // console.log('draw tooltip component')
+  // clean tooltip
+  if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
     draw_tooltip_components(regl, params);
   }
 
-  if (params.slow_draw){
-    // console.log('----- turn off slow draw -----')
-    params.slow_draw = false;
+  if (params.labels.draw_labels){
+    // console.log('----- turn off draw_labels -----')
+    params.labels.draw_labels = false;
   }
 
-  if (params.show_tooltip){
-    // console.log('----- turn off show tooltip ------')
-    params.show_tooltip = false;
+  // clean_tooltip
+  // if (params.tooltip.show_tooltip){
+  //   // console.log('----- turn off show tooltip ------')
+  //   params.tooltip.show_tooltip = false;
+  // }
+
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_interacting.js":
+/*!***************************************!*\
+  !*** ./src/draws/draw_interacting.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
+var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
+
+module.exports = function draw_interacting(regl, params){
+
+  var wait_time_final_interact = 50;
+
+  params.interact.total = params.interact.total + 1;
+
+  draw_commands(regl, params);
+
+  setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
+
+  params.animation.initialize_viz = false;
+
+  if (params.animation.time_remain > 0){
+    params.animation.time_remain = params.animation.time_remain - 1;
+  }
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_labels_tooltips_or_dendro.js":
+/*!*****************************************************!*\
+  !*** ./src/draws/draw_labels_tooltips_or_dendro.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
+
+module.exports = function draw_labels_tooltips_or_dendro(regl, params){
+  // turn back on draw_labels
+  ///////////////////////////////
+
+  // console.log('slow_draw or show_tooltip');
+  draw_commands(regl, params);
+  params.tooltip.remove_tooltip_frame = true;
+
+  if (params.tooltip.show_tooltip){
+    params.tooltip.show_tooltip = false;
+  }
+
+  // turn back off draw dendro
+  if (params.dendro.update_dendro){
+    params.dendro.update_dendro = false;
   }
 
 };
@@ -22850,7 +31846,6 @@ module.exports = function draw_commands(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// var filter_visible_mat = require('./filter_visible_mat');
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
 
 module.exports = function draw_matrix_components(regl, params){
@@ -22867,9 +31862,6 @@ module.exports = function draw_matrix_components(regl, params){
     /*
       Filter and regenerate args is slow
     */
-    // // Filter
-    // params.arrs_filt = filter_visible_mat(params.arrs, params.zoom_data);
-
 
     /*
     Reordering Matrix Plan
@@ -22888,6 +31880,50 @@ module.exports = function draw_matrix_components(regl, params){
 
   });
 
+};
+
+/***/ }),
+
+/***/ "./src/draws/draw_mouseover.js":
+/*!*************************************!*\
+  !*** ./src/draws/draw_mouseover.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// var draw_commands = require('./draw_commands');
+var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
+var wait_time_final_mouseover = 50;
+
+module.exports = function draw_mouseover(regl, params){
+
+  /////////////////////////////////////
+  /////////////////////////////////////
+  // mouseover draw is causing some flashing after animation, clean up later
+  ////////////////////////////////////
+  /////////////////////////////////////
+
+  // console.log('draw_mouseover')
+
+  d3.selectAll(params.root + ' .group-svg-tooltip')
+    .remove();
+
+  params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
+
+  // clean_tooltip
+  // // remove old tooltip
+  // if (params.tooltip.remove_tooltip_frame){
+  //   params.tooltip.show_tooltip = false;
+  //   draw_commands(regl, params);
+  // }
+
+  if (params.tooltip.remove_tooltip_frame){
+      // console.log('--- shut down remove_tooltip_frame')
+    params.tooltip.remove_tooltip_frame = false;
+  }
+
+  // wait_time_final_mouseover = 0;
+  setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 };
 
 /***/ }),
@@ -22925,45 +31961,85 @@ module.exports = function draw_spillover_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-const make_tooltip_text_args = __webpack_require__(/*! ./../tooltip/make_tooltip_text_args */ "./src/tooltip/make_tooltip_text_args.js");
-var calc_tooltip_background_triangles = __webpack_require__(/*! ./../tooltip/calc_tooltip_background_triangles */ "./src/tooltip/calc_tooltip_background_triangles.js");
+// const make_tooltip_text_args = require('./../tooltip/make_tooltip_text_args');
+// var calc_tooltip_background_triangles = require('./../tooltip/calc_tooltip_background_triangles');
+var make_matrix_cell_tooltip = __webpack_require__(/*! ./../tooltip/make_matrix_cell_tooltip */ "./src/tooltip/make_matrix_cell_tooltip.js");
 
 module.exports = function draw_tooltip_components(regl, params){
 
-  // Spillover Components (may not need to redraw)
-  params.cameras.static.draw(() => {
+  /*
+  turned off drawing tooltip
+  */
+  // if (params.tooltip.tooltip_type === 'matrix-cell'){
+    make_matrix_cell_tooltip(params);
+  // }
 
-    // var args = params.spillover_args.mat_corners;
-    var args = params.tooltip_args;
+  // params.tooltip.show_tooltip = false;
 
-    // tooltip background
-    ////////////////////////////
-    var background_triangles = calc_tooltip_background_triangles(regl, params);
-    regl(args)(background_triangles);
+};
 
-    // tooltip text
-    //////////////////
-    // make the arguments for the draw command
-    var text_triangle_args;
-    var line_offset;
-    var inst_triangles
+/***/ }),
 
-    // draw row/col names
-    line_offset = 3.0;
-    text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-    inst_triangles = params.mouseover.text_triangles['line-1'];
-    regl(text_triangle_args)(inst_triangles);
+/***/ "./src/draws/end_animation.js":
+/*!************************************!*\
+  !*** ./src/draws/end_animation.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-    if (params.cat_num.col > 0){
+var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
+var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
+var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
 
-      line_offset = 1.5;
-      text_triangle_args = make_tooltip_text_args(regl, params, line_offset);
-      inst_triangles = params.mouseover.text_triangles['line-2'];
-      regl(text_triangle_args)(inst_triangles);
+module.exports = function end_animation(regl, params){
 
+  // console.log('end_animation')
+
+  ///////////////////////////////////////
+  // The animation has finished
+  ///////////////////////////////////////
+
+  params.animation.running = false;
+  params.animation.run_animation = false;
+
+  // transfer the new positions to the matrix args attributes
+  params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
+        buffer: regl.buffer(params.arrs.position_arr.new),
+        divisor: 1
+      };
+
+  // transfer the new category positions to the cat args attributes
+  _.each(['row', 'col'], function(inst_axis){
+
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
+      // update the attribute
+      params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
+          buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
+          divisor: 1
+      };
+    }
+
+    // transfer new order to old order
+    params.order.inst[inst_axis] = params.order.new[inst_axis]
+
+    // turn dendrogram slider back on if necessary
+    if (params.order.inst[inst_axis] === 'clust'){
+      d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
     }
 
   });
+
+  // transfer new order to text triangles
+  _.each(['row', 'col'], function(inst_axis){
+    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+
+    // need to update text positions after animation
+    calc_text_offsets(params, inst_axis);
+  });
+
+  // update ordered_labels
+  generate_ordered_labels(params);
+
 };
 
 /***/ }),
@@ -22978,8 +32054,8 @@ module.exports = function draw_tooltip_components(regl, params){
 const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
 
 module.exports = function interp_fun(params){
-  var inst_ease = ease((params.time - params.animation.last_switch_time) /
-              params.animation.switch_duration);
+  var inst_ease = ease((params.animation.time - params.animation.last_switch_time) /
+              params.animation.ani_duration);
 
   // console.log(inst_ease)
   return inst_ease;
@@ -23033,159 +32109,85 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
-var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
-var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
-var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
-var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
+var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
+var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
+var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
+var draw_interacting = __webpack_require__(/*! ./draw_interacting */ "./src/draws/draw_interacting.js");
+var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/draw_mouseover.js");
+var draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
+var draw_background_calculations = __webpack_require__(/*! ./draw_background_calculations */ "./src/draws/draw_background_calculations.js");
 
 module.exports = function run_viz(regl, network){
 
   // global params
   var params = initialize_params(regl, network);
 
-  params.first_frame = true;
-  var wait_time_final_interact = 100;
-  var wait_time_final_mouseover = 100;
+  params.animation.first_frame = true;
 
 
   regl.frame(function ({time}) {
 
-    params.time = time;
-    params.animation.loop = 0 ;
+    params.animation.time = time;
 
-    if (params.animation.run_switch){
-
-      // console.log('turn switch off')
-      params.animation.run_switch = false;
-      params.animation.last_switch_time = time
-      params.animation.running = true;
-
-    } else if (params.time > params.animation.last_switch_time + params.animation.switch_duration && params.animation.running === true){
-
-      ///////////////////////////////////////
-      // The transition has finished
-      ///////////////////////////////////////
-
-      params.animation.running = false;
-      params.animation.run_switch = false;
-
-      // transfer the new positions to the matrix args attributes
-      params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
-            buffer: regl.buffer(params.arrs.position_arr.new),
-            divisor: 1
-          };
-
-      // transfer the new category positions to the cat args attributes
-      _.each(['row', 'col'], function(inst_axis){
-
-        for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
-          // update the attribute
-          params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
-              buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
-              divisor: 1
-          };
-        }
-
-        // transfer new order to old order
-        params.inst_order[inst_axis] = params.new_order[inst_axis]
-
-      });
-
-      // transfer new order to text triangles
-      _.each(['row', 'col'], function(inst_axis){
-        params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
-      });
-
-      // update ordered_labels
-      get_ordered_labels(params);
-
+    if (params.interact.total > 1){
+      d3.selectAll(params.root + ' .group-svg-tooltip')
+        .remove();
     }
 
-    // run draw command
-    if (params.still_interacting == true || params.initialize_viz == true ||
-        // params.animation.running || params.show_tooltip){
-        params.animation.running){
-
-      params.zoom_data.x.total_int = params.zoom_data.x.total_int + 1;
-
-      draw_commands(regl, params);
-
-      setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
-
-      params.initialize_viz = false;
-
-      if (params.animation.time_remain > 0){
-        params.animation.time_remain = params.animation.time_remain - 1;
-      }
-
-      // // set up extra frame specifically to remove old tooltip
-      // if (params.show_tooltip){
-      //   params.show_tooltip = false;
-      //   console.log('initialize remove_tooltip_frame')
-      //   params.remove_tooltip_frame = true;
-      // }
-
+    // prevent this from being negative, can happen when resetting zooo
+    if (params.interact.total < 0){
+      params.interact.total = 0;
     }
 
-    // mouseover may result in draw command
-    else if (params.still_mouseover == true){
+    if (params.reset_cameras){
+      reset_cameras(regl, params);
+    }
 
-      // console.log('still_mouseover', params.remove_tooltip_frame)
+    if (params.animation.run_animation){
+      start_animation(params);
+    } else if (params.animation.time > params.animation.duration_end && params.animation.running === true){
+      end_animation(regl, params);
+    }
 
-      /////////////////////////////////////
-      /////////////////////////////////////
-      // mouseover draw is causing some flashing after animation, clean up later
-      ////////////////////////////////////
-      /////////////////////////////////////
-
-      params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
-
-      // remove old tooltip
-      if (params.remove_tooltip_frame){
-        // console.log('remove old tooltip ***********')
-        params.show_tooltip = false;
-        draw_commands(regl, params);
-      }
-
-      if (params.remove_tooltip_frame){
-          // console.log('--- shut down remove_tooltip_frame')
-        params.remove_tooltip_frame = false;
-      }
-
-      // wait_time_final_mouseover = 0;
-      setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
-
-    } else if (params.slow_draw || params.show_tooltip){
-
-      // console.log('SLOW DRAW!!!!!!!!!!!!!!')
-      draw_commands(regl, params);
-      params.remove_tooltip_frame = true;
-
-      // set up extra frame specifically to remove old tooltip
-      if (params.show_tooltip){
-        params.show_tooltip = false;
-        // console.log('initialize remove_tooltip_frame')
-      }
-
+    if (params.interact.still_interacting == true || params.animation.initialize_viz == true || params.animation.running){
+      draw_interacting(regl, params);
+    }
+    else if (params.interact.still_mouseover == true){
+      // mouseover may result in draw command
+      draw_mouseover(regl, params);
+      draw_background_calculations(regl, params);
+    } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
+      draw_labels_tooltips_or_dendro(regl, params);
     } else {
-
-      /*
-
-        Set up something to run background calculations if
-        necessary when the visualization is not being updated. For instance,
-        we could calculate the text triangles of all rows a little at a time
-        in the background.
-
-      */
-
+      // run background calculations
+      draw_background_calculations(regl, params);
     }
 
   });
 
   return params;
 
+};
+
+/***/ }),
+
+/***/ "./src/draws/start_animation.js":
+/*!**************************************!*\
+  !*** ./src/draws/start_animation.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function start_animation(params){
+
+  // console.log('start_animation')
+  params.animation.run_animation = false;
+  params.animation.last_switch_time = params.animation.time
+  params.animation.running = true;
+
+
+  params.animation.duration_end = params.animation.last_switch_time + params.animation.ani_duration;
 };
 
 /***/ }),
@@ -23200,29 +32202,27 @@ module.exports = function run_viz(regl, network){
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
-  params.zoom_data.x.total_int = params.zoom_data.x.total_int - 1;
+  params.interact.total = params.interact.total - 1;
 
-  if (params.zoom_data.x.total_int == 0 && params.initialize_viz == false){
+  if (params.interact.total == 0 && params.animation.initialize_viz == false){
 
     // preventing from running on first frame
-    if (params.first_frame == false){
-
-      // console.log('\n------------------\nFINAL INTERACTION');
-      // console.log('final interaction', params.mouseover.row_name, params.mouseover.col_name);
+    if (params.animation.first_frame == false){
 
       // run draw commands
-      params.slow_draw = true;
+      params.labels.draw_labels = true;
 
       if (params.zoom_data.x.total_mouseover == 0){
         // console.log('SLOW_DRAW')
       }
 
     } else {
-      params.first_frame = false;
+
+      params.animation.first_frame = false;
     }
   }
 
-}
+};
 
 /***/ }),
 
@@ -23238,17 +32238,8 @@ module.exports = function final_mouseover_frame(regl, params){
   // reduce the number of mouseovers
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
-  // console.log('check  ', params.zoom_data.x.total_mouseover)
-  if (params.zoom_data.x.total_mouseover == 0 && params.still_mouseover == false){
-    // console.log('final mouseover', params.mouseover.row_name, params.mouseover.col_name);
-
-    // run draw commands
-    // var slow_draw = true;
-    params.show_tooltip = true;
-
-    // if (params.zoom_data.x.total_int == 0 && params.in_bounds_tooltip){
-    //   // console.log('final_mouseover_frame', params.show_tooltip)
-    // }
+  if (params.zoom_data.x.total_mouseover == 0 && params.interact.still_mouseover == false){
+    params.tooltip.show_tooltip = true;
   }
 
 };
@@ -23262,12 +32253,9 @@ module.exports = function final_mouseover_frame(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
-var restrict_rel_min = __webpack_require__(/*! ./restrict_rel_min */ "./src/interactions/restrict_rel_min.js");
+var get_mouseover_type = __webpack_require__(/*! ./get_mouseover_type */ "./src/interactions/get_mouseover_type.js");
 
 module.exports = function find_mouseover_element(regl, params, ev){
-
-  // console.log('still_mouseover', params.still_mouseover)
 
   /*
 
@@ -23283,78 +32271,234 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   */
 
-  var vect_text_attrs = {
-    textAlign: 'right',
-    textBaseline: 'middle',
-    triangles:true,
-    size:params.font_detail,
-    font:'"Open Sans", verdana, arial, sans-serif'
-  };
-
   var viz_dim_heat = params.viz_dim.heat;
+  var mouseover = params.interact.mouseover;
 
-  // try updating mouseover position
-  params.zoom_data.x.cursor_position = ev.x0;
-  params.zoom_data.y.cursor_position = ev.y0;
+  // reset mouseover params
+  _.each(['row', 'col'], function(inst_axis){
+    params.interact.mouseover[inst_axis] = {};
+    params.interact.mouseover[inst_axis].name = null;
+    params.interact.mouseover[inst_axis].cats = [];
+  });
+  params.interact.mouseover.value = null;
 
-  // convert offcenter WebGl units to pixel units
   var offcenter = {};
-  offcenter.x = (params.viz_dim.canvas.width * params.offcenter.x)/2;
-  offcenter.y = (params.viz_dim.canvas.height * params.offcenter.y)/2;
-
+  var inst_cat_name;
   var cursor_rel_min = {};
-  cursor_rel_min.x = ev.x0 - viz_dim_heat.x.min - offcenter.x;
-  cursor_rel_min.y = ev.y0 - viz_dim_heat.y.min - offcenter.y;
+  var dim_dict = {};
+  dim_dict.x = 'width';
+  dim_dict.y = 'height';
 
-  // console.log(cursor_rel_min.x, cursor_rel_min.y)
+  _.each(['x', 'y'], function(inst_axis){
 
-  cursor_rel_min.x = restrict_rel_min(cursor_rel_min.x, viz_dim_heat.width, params.zoom_data.x);
-  cursor_rel_min.y = restrict_rel_min(cursor_rel_min.y, viz_dim_heat.height, params.zoom_data.y);
+    // try updating mouseover position
+    params.zoom_data[inst_axis].cursor_position = ev[inst_axis + '0'];
 
+    // convert offcenter WebGl units to pixel units
+    offcenter[inst_axis] = (params.viz_dim.canvas[dim_dict[inst_axis]] *
+                             params.viz_dim.offcenter[inst_axis])/2;
 
-  if (cursor_rel_min.x < viz_dim_heat.width && cursor_rel_min.y < viz_dim_heat.height){
+    cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
+                                  viz_dim_heat[inst_axis].min - offcenter[inst_axis];
 
-    // console.log(ev)
+    cursor_rel_min[inst_axis] = cursor_rel_min[inst_axis] / params.zoom_data[inst_axis].total_zoom - params.zoom_data[inst_axis].total_pan_min;
 
-    var row_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-    var col_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+  });
 
-    params.mouseover.row_name = params.ordered_labels.rows[row_index];
-    params.mouseover.col_name = params.ordered_labels.cols[col_index];
+  get_mouseover_type(params);
 
-    if (params.mouseover.row_name.includes(': ')){
-      params.mouseover.row_name = params.mouseover.row_name.split(': ')[1];
+  var axis_indices = {};
+  if (params.tooltip.in_bounds_tooltip){
+
+    var axis_index;
+
+    var inst_dims = [];
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      inst_dims = ['row', 'col'];
+    } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
+      inst_dims = ['row'];
+      // console.log('found row')
+    } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
+      inst_dims = ['col'];
+
+      var y_heat_min = 126;
+      var inst_pix_y = params.zoom_data.y.cursor_position
+      var shift_col_label = y_heat_min - inst_pix_y;
+      if (shift_col_label > 0){
+        cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
+      }
+      // console.log('shift-col: ', )
     }
 
-    if (params.mouseover.col_name.includes(': ')){
-      params.mouseover.col_name = params.mouseover.col_name.split(': ')[1];
+    _.each(inst_dims, function(inst_axis){
+
+      if (inst_axis === 'row'){
+        axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+      } else {
+        axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+      }
+
+      mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
+
+      if (mouseover[inst_axis].name.includes(': ')){
+        mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
+      }
+
+      // reset cat names
+      mouseover[inst_axis].cats = [];
+      _.each(params.cat_data[inst_axis], function(d, cat_index){
+        inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
+        mouseover[inst_axis].cats[cat_index] = inst_cat_name;
+      });
+
+    });
+
+    if (params.tooltip.tooltip_type === 'matrix-cell'){
+      params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
     }
 
-    var mouseover_text;
-    if (params.cat_num.col == 0){
-      // calculate text triangles, they require an offset element
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
-      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-1'].offset = [0,0];
-    } else {
-      // calculate text triangles, they require an offset element
-      mouseover_text = params.mouseover.row_name + ' and ' + params.mouseover.col_name;
-      params.mouseover.text_triangles['line-1'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-1'].offset = [0,0];
+  }
 
-      params.mouseover.col_cat = params.ordered_labels.col_cats[col_index];
-      mouseover_text = params.mouseover.col_cat;
-      params.mouseover.text_triangles['line-2'] = vectorizeText(mouseover_text, vect_text_attrs);
-      params.mouseover.text_triangles['line-2'].offset = [0,0];
+  if (params.tooltip.tooltip_type.indexOf('dendro') >= 0){
+
+    if (params.tooltip.tooltip_type === 'row-dendro'){
+      _.each(params.dendro.group_info.row, function(inst_group){
+        if (inst_group.all_names.includes(mouseover.row.name)){
+          mouseover.row.dendro = inst_group;
+        }
+      });
     }
 
-    params.in_bounds_tooltip = true;
-  } else {
-    // console.log('OUTSIDE OF MATRIX')
-    params.in_bounds_tooltip = false;
+    if (params.tooltip.tooltip_type === 'col-dendro'){
+      _.each(params.dendro.group_info.col, function(inst_group){
+        if (inst_group.all_names.includes(mouseover.col.name)){
+          mouseover.col.dendro = inst_group;
+        }
+      });
+    }
+
+
   }
 
 };
+
+/***/ }),
+
+/***/ "./src/interactions/get_mouseover_type.js":
+/*!************************************************!*\
+  !*** ./src/interactions/get_mouseover_type.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function get_mouseover_type(params){
+
+  // switch to using absolute cursor position to determine mouseover type
+  // emperically found pixel parameters
+  // cats are ~12px wide
+  var cat_width = 12  ;
+  var edim = {};
+  edim.x = {};
+  edim.x.heat_min = 125 + cat_width * params.cat_data.row.length;
+  edim.x.dendro_start = 845;
+  edim.x.dendro_end = 860;
+
+  edim.y = {};
+  // extra pixel prevents error *********** look into
+  edim.y.heat_min = 126 + cat_width * params.cat_data.col.length;
+  edim.y.dendro_start = 845;
+  edim.y.dendro_end = 860;
+
+  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
+
+  var inst_pix = {};
+  inst_pix.x = params.zoom_data.x.cursor_position;
+  inst_pix.y = params.zoom_data.y.cursor_position;
+
+  // console.log(inst_pix.y)
+
+  var cat_index;
+
+  params.tooltip.in_bounds_tooltip = false;
+  params.tooltip.tooltip_type = null;
+
+  if (inst_pix.x > edim.x.heat_min &&
+      inst_pix.x < edim.x.dendro_start &&
+      inst_pix.y > edim.y.heat_min &&
+      inst_pix.y < edim.y.dendro_start){
+
+    params.tooltip.in_bounds_tooltip = true;
+    params.tooltip.tooltip_type = 'matrix-cell';
+
+  } else if (inst_pix.x <= edim.x.heat_min &&
+             inst_pix.y > edim.y.heat_min &&
+             inst_pix.y < edim.y.dendro_start){
+
+    params.tooltip.in_bounds_tooltip = true;
+    if (params.cat_data.row.length > 0){
+
+      cat_index = Math.floor( ((edim.x.heat_min - inst_pix.x)/cat_width) );
+
+      if (cat_index + 1 <= params.cat_data.row.length){
+        params.tooltip.tooltip_type = 'row-cat-' + String(params.cat_data.row.length - cat_index - 1);
+      } else {
+        params.tooltip.tooltip_type = 'row-label';
+      }
+
+    } else {
+      params.tooltip.tooltip_type = 'row-label';
+    }
+
+
+  } else if (inst_pix.y <= edim.y.heat_min &&
+             inst_pix.x > edim.x.heat_min &&
+             inst_pix.x < edim.x.dendro_start){
+
+    // // console.log(edim.y.heat_min - inst_pix.y)
+    // console.log( Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) ))
+    // params.tooltip.tooltip_type = 'col-label';
+
+    params.tooltip.in_bounds_tooltip = true;
+    if (params.cat_data.col.length > 0){
+
+      cat_index = Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) );
+
+      if (cat_index + 1 <= params.cat_data.col.length){
+        params.tooltip.tooltip_type = 'col-cat-' + String(params.cat_data.col.length - cat_index - 1);
+      } else {
+        params.tooltip.tooltip_type = 'col-label';
+      }
+
+    } else {
+      params.tooltip.tooltip_type = 'col-label';
+    }
+
+  } else if (inst_pix.x >= edim.x.dendro_start &&
+             inst_pix.x < edim.x.dendro_end &&
+             inst_pix.y > edim.y.heat_min &&
+             inst_pix.y < edim.y.dendro_start){
+
+    if (params.order.inst.row == 'clust'){
+      params.tooltip.tooltip_type = 'row-dendro';
+      params.tooltip.in_bounds_tooltip = true;
+    }
+
+  } else if (inst_pix.y >= edim.y.dendro_start &&
+             inst_pix.y < edim.y.dendro_end &&
+             inst_pix.x > edim.x.heat_min &&
+             inst_pix.x < edim.x.dendro_start){
+
+    if (params.order.inst.col == 'clust'){
+      params.tooltip.tooltip_type = 'col-dendro';
+      params.tooltip.in_bounds_tooltip = true;
+    }
+
+  }
+
+
+}
 
 /***/ }),
 
@@ -23776,15 +32920,17 @@ function interactionEvents (opts) {
 
 module.exports = function keep_track_of_interactions(params){
 
-  // keep track of interactions
-  if (params.still_interacting == false){
+  var wait_time_final_interact = 100;
 
-    params.still_interacting = true;
+  // keep track of interactions
+  if (params.interact.still_interacting == false){
+
+    params.interact.still_interacting = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.still_interacting = false;
-    }, 1000);
+      params.interact.still_interacting = false;
+    }, wait_time_final_interact);
 
   }
 
@@ -23802,38 +32948,16 @@ module.exports = function keep_track_of_interactions(params){
 module.exports = function keep_track_of_mouseovers(params){
 
   // keep track of mouseovers
-  if (params.still_mouseover == false){
+  if (params.interact.still_mouseover == false){
 
-    params.still_mouseover = true;
+    params.interact.still_mouseover = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.still_mouseover = false;
+      params.interact.still_mouseover = false;
     }, 1000);
 
   }
-
-};
-
-/***/ }),
-
-/***/ "./src/interactions/restrict_rel_min.js":
-/*!**********************************************!*\
-  !*** ./src/interactions/restrict_rel_min.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function restrict_rel_min(cursor_rel_min, max_pix, zoom_data){
-
-  cursor_rel_min = cursor_rel_min / zoom_data.total_zoom - zoom_data.total_pan_min;
-
-  if (cursor_rel_min < 0){
-    cursor_rel_min = 0;
-  } else if (cursor_rel_min > max_pix){
-    cursor_rel_min = max_pix;
-  }
-  return cursor_rel_min;
 
 };
 
@@ -23895,6 +33019,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       if (potential_zoom > zoom_restrict.y.ratio){
 
         // bump x inst_zoom
+        // console.log('tall: bump x inst_zoom')
         zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
 
       }
@@ -23912,7 +33037,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
       if (potential_zoom > zoom_restrict.x.ratio){
 
         // bump x inst_zoom
-        zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
+        // console.log('wide: bump y inst_zoom')
+        zoom_data.y.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
 
       }
 
@@ -23955,7 +33081,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 var run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
 var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
-// var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
+var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
 
 function clustergrammer_gl(args){
 
@@ -23975,6 +33101,7 @@ function clustergrammer_gl(args){
   d3.select(container)
     .append('div')
     .attr('class', 'canvas-container')
+    .style('position', 'absolute')
     .style('cursor', 'default');
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];
@@ -24008,7 +33135,7 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  // build_dendrogram_sliders(cgm);
+  build_dendrogram_sliders(regl, cgm);
 
   build_control_panel(regl, cgm);
 
@@ -24106,21 +33233,20 @@ module.exports = function make_matrix_args(regl, params){
   params.arrs.position_arr = {};
 
   params.arrs.position_arr.ini = make_position_arr(params,
-                                               params.inst_order.row,
-                                               params.inst_order.col);
+                                               params.order.inst.row,
+                                               params.order.inst.col);
 
   params.arrs.position_arr.new = make_position_arr(params,
-                                               params.new_order.row,
-                                               params.new_order.col);
-
+                                               params.order.new.row,
+                                               params.order.new.col);
 
   var opacity_buffer = regl.buffer({
     type: 'float',
     usage: 'dynamic'
   })(params.arrs.opacity_arr);
 
-  var tile_width = params.tile_width;
-  var tile_height = params.tile_height;
+  var tile_width = params.viz_dim.tile_width;
+  var tile_height = params.viz_dim.tile_height;
 
   var triangle_verts = [
     [tile_width, 0.0 ],
@@ -24182,7 +33308,7 @@ module.exports = function make_matrix_args(regl, params){
     }`;
 
   var num_instances = params.arrs.position_arr.ini.length;
-  var zoom_function = params.zoom_function;
+  var zoom_function = params.zoom_data.zoom_function;
 
   var inst_properties = {
     vert: vert_string,
@@ -24233,7 +33359,6 @@ module.exports = function make_matrix_args(regl, params){
   var matrix_args = {};
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
-
 
   return matrix_args;
 
@@ -24288,51 +33413,24 @@ module.exports = function make_opacity_arr(params){
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
-  var network = params.network;
-  var num_row = params.mat_data.length;
-  var num_col = params.mat_data[0].length;
-
-  // draw matrix cells
-  /////////////////////////////////////////
-  // set up offset array for buffer
-  var offset = {};
-  offset.x = params.mat_size.x ;//+ params.offcenter.x;
-  offset.y = params.mat_size.y ;//+ params.offcenter.y;
-
-  // generate x position array
-  var x_arr = Array(num_col).fill()
-    .map(function(_, i){
-      return i/num_col * (params.heat_size.x/0.5) -  (offset.x - 2*(offset.x - params.heat_size.x) );
-    });
-
-  var y_arr = Array(num_row).fill()
-    .map(function(_, i){
-
-      // updated to take into consideration params.heat_size.x
-      return -i/num_row * (params.heat_size.y/0.5) + offset.y -  1/num_row /(0.5/params.heat_size.y) - 2*(offset.y - params.heat_size.y) ;
-    });
-
-  var node_canvas_pos = {};
-  node_canvas_pos.x_arr = x_arr;
-  node_canvas_pos.y_arr = y_arr;
-
-  // var canvas_pos = params.canvas_pos;
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
 
   // pass along row and col node information
-  var row_nodes = network.row_nodes;
-  var col_nodes = network.col_nodes;
+  var row_nodes = params.network.row_nodes;
+  var col_nodes = params.network.col_nodes;
 
   /*
     working on saving actual row positions (downsampling)
   */
-  params.row_positions = _.range(row_nodes.length);
+  params.row_positions = _.range(num_row);
 
   var row_order_id;
   var col_order_id;
 
   // generate x and y positions
   ////////////////////////////////
-  function position_function(_, i){
+  function position_function(d, i){
 
     // looking up x and y position
     var col_id = i % num_col;
@@ -24358,15 +33456,12 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
     }
 
-    var y = node_canvas_pos.y_arr[row_order_id];
-    var x = node_canvas_pos.x_arr[col_order_id];
+    var inst_y = params.node_canvas_pos.y_arr[row_order_id];
+    var inst_x = params.node_canvas_pos.x_arr[col_order_id];
 
-    // var y = canvas_pos.y_arr[row_order_id];
-    // var x = canvas_pos.x_arr[col_order_id];
+    params.row_positions[row_id] = inst_y;
 
-    params.row_positions[row_id] = y;
-
-    return [x, y];
+    return [inst_x, inst_y];
   }
 
   var position_arr = Array(num_row * num_col)
@@ -24379,75 +33474,34 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
 /***/ }),
 
-/***/ "./src/matrix_labels/calc_text_triangles.js":
-/*!**************************************************!*\
-  !*** ./src/matrix_labels/calc_text_triangles.js ***!
-  \**************************************************/
+/***/ "./src/matrix_labels/calc_text_offsets.js":
+/*!************************************************!*\
+  !*** ./src/matrix_labels/calc_text_offsets.js ***!
+  \************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-const vectorizeText = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+module.exports = function calc_text_offsets(params, inst_axis){
 
-module.exports = function calc_text_triangles(params, inst_axis){
+  params.labels.offset_dict[inst_axis] = {};
 
-  /*
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label, inst_id){
 
-  // Make dictionary of text triangles
-  //////////////////////////////////////
-  1. Save all calculated text triangles in a dictionary for re-use. We can
-  construct the text triangle array when necessary by gathering the pre-
-  calculated text triangles and calculating any new text triangles (as well as
-  storing them back in the dictionary).
+    var offsets = {};
+    var order_id;
+    var order_state;
 
-  2. Try calculating text triangles in the background, e.g. when not interacting,
-  and save these to the text triangle dictionary.
+    var inst_dim;
+    if (inst_axis === 'col'){
+      inst_dim = 'x';
+    } else {
+      inst_dim = 'y';
+    }
 
-  3. Try combining text triangles, for instance title and category.
-
-  */
-
-  var inst_order = params.inst_order[inst_axis];
-  var new_order = params.new_order[inst_axis];
-
-  var inst_labels = params.network[inst_axis + '_nodes'];
-  var num_labels = params['num_' + inst_axis];
-
-  var vect_text_attrs = {
-    textAlign: 'left',
-    // textBaseline: 'bottom',
-    triangles: true,
-    size: params.font_detail,
-    font: '"Open Sans", verdana, arial, sans-serif'
-  };
-
-  var inst_dim;
-  if (inst_axis === 'col'){
-    inst_dim = 'x';
-    vect_text_attrs.textAlign = 'left';
-    vect_text_attrs.textBaseline = 'bottom';
-  } else {
-    inst_dim = 'y';
-    vect_text_attrs.textAlign = 'right';
-    vect_text_attrs.textBaseline = 'middle';
-  }
-
-  // draw matrix cells
-  /////////////////////////////////////////
-  var axis_arr = params.canvas_pos[inst_dim + '_arr'];
-
-  // generating array with text triangles and y-offsets
-  var text_triangles = [];
-
-
-  var viz_area = params.viz_area;
-
-  var order_id;
-  var order_state;
-  var offsets = {};
-
-  // only calculating the text-triangles for labels that are within the visible
-  // area
-  _.each(inst_labels, function(inst_label, inst_id){
+    var axis_arr = params.canvas_pos[inst_dim + '_arr'];
+    var inst_order = params.order.inst[inst_axis];
+    var new_order = params.order.new[inst_axis];
+    var num_labels = params.labels['num_' + inst_axis];
 
     // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
@@ -24465,84 +33519,169 @@ module.exports = function calc_text_triangles(params, inst_axis){
         order_id = num_labels - 1 - params.network[inst_axis + '_nodes'][inst_id][order_state];
         offsets[inst_state] = axis_arr[ order_id ] + 0.5/num_labels;
       }
+
     });
 
-    if (offsets.inst > viz_area[inst_dim + '_min'] && offsets.inst < viz_area[inst_dim + '_max']){
+    inst_label.offsets = offsets;
 
-      var inst_name = inst_label.name;
+    // will use for lookup of text offsets outside of using network_data
 
-      if (inst_name.indexOf(': ') >= 0){
-          inst_name = inst_label.name.split(': ')[1];
-      }
-
-      var tmp_text_vect;
-      if (inst_name in params.text_triangles[inst_axis]){
-        tmp_text_vect = params.text_triangles[inst_axis][inst_name];
-      } else {
-        // console.log('vectorizeText')
-        tmp_text_vect = vectorizeText(inst_name, vect_text_attrs);
-        params.text_triangles[inst_axis][inst_name] = tmp_text_vect;
-      }
-
-      tmp_text_vect.inst_offset = [0, offsets.inst];
-      tmp_text_vect.new_offset = [0, offsets.new];
-      text_triangles.push(tmp_text_vect);
-
-      var inst_data = {};
-      inst_data.y = offsets.inst;
-      inst_data.name = inst_name;
+    var inst_name = inst_label.name;
+    if (inst_name.indexOf(': ') >= 0){
+      inst_name = inst_label.name.split(': ')[1];
     }
 
-  });
+    params.labels.offset_dict[inst_axis][inst_name] = offsets;
 
-  return text_triangles;
+  });
 
 };
 
 /***/ }),
 
-/***/ "./src/matrix_labels/get_ordered_labels.js":
-/*!*************************************************!*\
-  !*** ./src/matrix_labels/get_ordered_labels.js ***!
-  \*************************************************/
+/***/ "./src/matrix_labels/drop_label_from_queue.js":
+/*!****************************************************!*\
+  !*** ./src/matrix_labels/drop_label_from_queue.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function get_ordered_labels(params){
+module.exports = function drop_label_from_queue(inst_queue, inst_axis, inst_name){
 
-  var ordered_labels = {};
-
-  var row_nodes = params.network.row_nodes;
-  var col_nodes = params.network.col_nodes;
-  ordered_labels.rows = [];
-  ordered_labels.cols = [];
-
-  // only showing col cat in mouseover for now
-  ordered_labels.col_cats = [];
-
-  var inst_order;
-  _.each(row_nodes, function(inst_node){
-    inst_order = params.num_row - 1 - inst_node[params.inst_order.row];
-    ordered_labels.rows[inst_order] = inst_node.name;
-  });
-
-  var found_col_cat = false;
-  if (params.cat_num.col > 0){
-    found_col_cat = true;
+  var index = inst_queue.indexOf(inst_name);
+  if (index > -1) {
+    inst_queue.splice(index, 1);
   }
 
-  _.each(col_nodes, function(inst_node){
-    inst_order = params.num_col- 1 - inst_node[params.inst_order.col];
+};
 
-    ordered_labels.cols[inst_order] = inst_node.name;
+/***/ }),
 
-    if (found_col_cat){
-      ordered_labels.col_cats[inst_order] = inst_node['cat-0'];
+/***/ "./src/matrix_labels/gather_text_triangles.js":
+/*!****************************************************!*\
+  !*** ./src/matrix_labels/gather_text_triangles.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix_labels/vectorize_label.js")
+
+module.exports = function gather_text_triangles(params, inst_axis){
+
+  var inst_dim;
+  if (inst_axis === 'col'){
+    inst_dim = 'x';
+  } else {
+    inst_dim = 'y';
+  }
+
+  // generating array with text triangles and y-offsets
+  params.text_triangles.draw[inst_axis] = [];
+  var viz_area = params.viz_area;
+
+  var min_viz = viz_area[inst_dim + '_min'];
+  var max_viz = viz_area[inst_dim + '_max'];
+
+  _.each(params.network[inst_axis + '_nodes'], function(inst_label){
+
+    if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
+
+      var inst_name = inst_label.name;
+
+      if (inst_name.indexOf(': ') >= 0){
+        inst_name = inst_label.name.split(': ')[1];
+      }
+
+      var inst_text_vect;
+      if (inst_name in params.text_triangles[inst_axis]){
+
+        // add to text_triangles.draw if pre-calculated
+        inst_text_vect = params.text_triangles[inst_axis][inst_name];
+        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        params.text_triangles.draw[inst_axis].push(inst_text_vect);
+
+      } else {
+
+        // calculate text vector
+        inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+
+        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        params.text_triangles.draw[inst_axis].push(inst_text_vect);
+
+      }
+
     }
 
   });
 
-  params.ordered_labels = ordered_labels;
+};
+
+/***/ }),
+
+/***/ "./src/matrix_labels/generate_ordered_labels.js":
+/*!******************************************************!*\
+  !*** ./src/matrix_labels/generate_ordered_labels.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_ordered_labels(params){
+
+  /*
+    Generate lists of ordered label and category names for mouseover
+  */
+
+  var inst_order;
+  var ordered_labels = {};
+
+  var axis_nodes;
+  var i;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    ordered_labels[inst_axis + 's'] = [];
+    ordered_labels[inst_axis + '_indices'] = [];
+
+    axis_nodes = params.network[inst_axis + '_nodes'];
+
+    var found_axis_cat = false;
+
+    for (i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+      ordered_labels[inst_axis + '_cats-' + String(i)] = [];
+    }
+
+    if (params.cat_data.cat_num[inst_axis] > 0){
+      found_axis_cat = true;
+    }
+
+    _.each(axis_nodes, function(inst_node, inst_index){
+
+      inst_order = params.labels['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
+
+      // ordered names
+      ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
+
+      // ordered indices (for value retrieval)
+      ordered_labels[inst_axis + '_indices'][inst_order] = inst_index;
+
+      if (found_axis_cat){
+
+        for (i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
+
+          ordered_labels[inst_axis + '_cats-' + String(i)][inst_order] = inst_node['cat-' + String(i)];
+
+        }
+      }
+
+    });
+
+  });
+
+  params.labels.ordered_labels = ordered_labels;
+
 };
 
 /***/ }),
@@ -24559,21 +33698,24 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_col_text_args(regl, params, zoom_function){
 
-  var col_width = params.heat_size.x/params.num_col;
+  var inst_axis = 'col';
+  var num_col = params.labels['num_' + inst_axis];
+
+  var col_width = params.viz_dim.heat_size.x/num_col;
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
       .range([1, 10/params.allowable_zoom_factor.col]);
 
   // 17.5, lowering makes larger text
-  var final_increase_font_size = params.num_col/5.0;
+  var final_increase_font_size = num_col/5.0;
   params.text_scale.col = d3.scale.linear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
 
-  var scale_text = params.num_col ;
+  var scale_text = num_col ;
 
-  var webgl_fs = (1/params.num_col) * params.zoom_data.x.total_zoom;
+  var webgl_fs = (1/num_col) * params.zoom_data.x.total_zoom;
 
   var max_webgl_fs = params.text_zoom.col.max_webgl_fs;
 
@@ -24679,9 +33821,9 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       inst_offset: regl.prop('inst_offset'),
       new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
-      y_offset: params.mat_size.y,
-      heat_size: params.heat_size.x,
-      shift_heat: params.mat_size.x - params.heat_size.x,
+      y_offset: params.viz_dim.mat_size.y,
+      heat_size: params.viz_dim.heat_size.x,
+      shift_heat: params.viz_dim.mat_size.x - params.viz_dim.heat_size.x,
       shift_text_right: shift_text_right,
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,
@@ -24707,6 +33849,49 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
 /***/ }),
 
+/***/ "./src/matrix_labels/make_label_queue.js":
+/*!***********************************************!*\
+  !*** ./src/matrix_labels/make_label_queue.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_inst_queue(params){
+
+  params.labels.queue = {}
+  params.labels.queue.low = {}
+  params.labels.queue.high = {}
+
+  var inst_queue;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    // the high priority queue is empty initially
+    params.labels.queue.high[inst_axis] = [];
+
+    // the low priority queue
+    inst_queue = [];
+
+    var inst_labels = params.labels.ordered_labels[inst_axis + 's'];
+
+    _.each(inst_labels, function(inst_label){
+
+      if (inst_label.indexOf(': ') >= 0){
+          inst_label = inst_label.split(': ')[1];
+      }
+
+      inst_queue.push(inst_label);
+
+    });
+
+    params.labels.queue.low[inst_axis] = inst_queue;
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/matrix_labels/make_row_text_args.js":
 /*!*************************************************!*\
   !*** ./src/matrix_labels/make_row_text_args.js ***!
@@ -24719,10 +33904,12 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_row_text_args(regl, params, zoom_function){
 
+  var inst_axis = 'row';
+  var num_row = params.labels['num_' + inst_axis];
 
-  var scale_text = params.num_row;
+  var scale_text = num_row;
 
-  var webgl_fs = (1/params.num_row) * params.zoom_data.y.total_zoom;
+  var webgl_fs = (1/num_row) * params.zoom_data.y.total_zoom;
 
   var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
 
@@ -24734,7 +33921,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
 
   var mat_rotate = m3.rotation(Math.PI/2);
 
-  var x_offset = params.mat_size.x + 0.02;
+  var x_offset = params.viz_dim.mat_size.x + 0.02;
 
   var vert_arg = `
       precision mediump float;
@@ -24810,8 +33997,8 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       new_offset: regl.prop('new_offset'),
       scale_text: scale_text,
       x_offset: x_offset,
-      heat_size: params.heat_size.y,
-      shift_heat: params.mat_size.y - params.heat_size.y,
+      heat_size: params.viz_dim.heat_size.y,
+      shift_heat: params.viz_dim.mat_size.y - params.viz_dim.heat_size.y,
       total_zoom: params.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
@@ -24848,7 +34035,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   var inst_rgba = color_to_rgba('#eee', 1.0);
   // var inst_rgba = color_to_rgba('red', 1.0);
-  var num_labels = params['num_' + inst_axis];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var tri_height;
   var tri_width;
@@ -24857,7 +34044,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   if (inst_axis === 'col'){
 
-    mat_size = params.heat_size.x;
+    mat_size = params.viz_dim.heat_size.x;
     // keep positioned at matrix not heatmap (make room for categories)
     // making triangle smaller
     var reduce_height = params.zoom_data.x.total_zoom;
@@ -24865,15 +34052,15 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     tri_width  = mat_size/num_labels;
 
     // original top_offset calc (undercorrects)
-    top_offset = -params.mat_size.y - tri_height;
+    top_offset = -params.viz_dim.mat_size.y - tri_height;
 
   } else {
 
     // rows have fixed viz aid triangle 'heights'
-    mat_size = params.heat_size.y;
+    mat_size = params.viz_dim.heat_size.y;
     tri_height = 0.0125;
     tri_width = mat_size/num_labels;
-    top_offset = -params.mat_size.x - tri_height;
+    top_offset = -params.viz_dim.mat_size.x - tri_height;
 
   }
 
@@ -24881,8 +34068,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     return context.view;
   };
 
-  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(params, inst_axis, params.inst_order[inst_axis]);
-  var tri_offset_array_new = make_viz_aid_tri_pos_arr(params, inst_axis, params.new_order[inst_axis]);
+  var tri_offset_array_inst = make_viz_aid_tri_pos_arr(params, inst_axis, params.order.inst[inst_axis]);
+  var tri_offset_array_new = make_viz_aid_tri_pos_arr(params, inst_axis, params.order.new[inst_axis]);
 
   /////////////////////////////////
   // Rotation and Scaling
@@ -24935,7 +34122,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
         vec_translate = vec3(top_offset, viz_aid_pos);
 
         // rotate translated triangles
-        new_position = mat_rotate * ( new_position + vec_translate ) ;
+        new_position = mat_rotate * ( new_position + vec_translate );
 
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
@@ -24961,9 +34148,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [tri_height,    tri_width],
-        [    0,  0.0],
-        [tri_height,   -tri_width],
+        [tri_height, 0],
+        [         0, -tri_width],
+        [tri_height, -2 * tri_width],
       ],
 
       // pass tri_offset_att_inst buffer
@@ -25019,56 +34206,42 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
 module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order){
 
-
-  var num_labels = params['num_'+inst_axis];
-  var mat_size;
-  // var tri_height;
+  var num_labels = params.labels['num_'+inst_axis];
+  var heat_size;
   var tri_width;
+  var heat_shift;
 
-  if (inst_axis === 'col'){
-
-    mat_size = params.heat_size.x;
-    // keep positioned at matrix not heatmap (make room for categories)
-    // making triangle smaller
-    // var reduce_height = params.zoom_data.x.total_zoom;
-    // tri_height = mat_size/num_labels * reduce_height;
-    tri_width  = mat_size/num_labels;
-
-    // // original top_offset calc (undercorrects)
-    // top_offset = -params.mat_size.y - tri_height;
-
+  // keep positioned at matrix not heatmap (make room for categories)
+  // making triangle smaller
+  if (inst_axis === 'row'){
+    heat_size = params.viz_dim.heat_size.y;
+    tri_width = heat_size/num_labels;
+    heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
   } else {
-
-    // rows have fixed viz aid triangle 'heights'
-    mat_size = params.heat_size.y;
-    // tri_height = 0.0125;
-    tri_width = mat_size/num_labels;
-    // top_offset = -params.mat_size.x - tri_height;
-
+    heat_size = params.viz_dim.heat_size.x;
+    tri_width  = heat_size/num_labels;
+    heat_shift = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
 
   // make viz_aid triangle array
   /////////////////////////////////
   var tri_offset_array = [];
   var i;
+  var inst_index;
+  var order_index;
   for (i = 0; i < num_labels; i++){
 
-    // emperically found rules
-    var order_id;
-    var shift_mat_heat;
+    order_index = params.network[inst_axis + '_nodes'][i][inst_order];
+
     if (inst_axis == 'row'){
-      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
-      shift_mat_heat = -(params.mat_size.y - params.heat_size.y);
+      inst_index = num_labels - order_index - 1;
     } else {
-      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.mat_size.x - params.heat_size.x;
+      inst_index = order_index ;
     }
 
-    /* need to position based on clustering order */
-    // the last part is necessary to shfit the viz aid triangles down to make up
-    // for the smaller size of the heatmap vs the general matrix area
+    // shift the viz aid triangles because of smaller size of the heatmap
+    tri_offset_array[i] = heat_size - heat_shift - 2 * tri_width * inst_index;
 
-    tri_offset_array[i] = mat_size - tri_width - order_id * 2 * tri_width + shift_mat_heat;
   }
 
   return tri_offset_array;
@@ -25086,11 +34259,15 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
 
 module.exports = function update_text_triangle_order(params, inst_axis){
 
-  var inst_order = params.inst_order[inst_axis];
-  var new_order = params.new_order[inst_axis];
+  // Here we are updating the positions of the existing text triangles that
+  // we have already pre-calculated. This needs to be better harmonized with
+  // the update_text_offsets function that works directly on the network_data
 
-  var inst_labels = params.text_triangles.draw[inst_axis];
-  var num_labels = params['num_' + inst_axis];
+  var inst_order = params.order.inst[inst_axis];
+  var new_order = params.order.new[inst_axis];
+
+  var inst_text_triangles = params.text_triangles.draw[inst_axis];
+  var num_labels = params.labels['num_' + inst_axis];
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -25105,8 +34282,7 @@ module.exports = function update_text_triangle_order(params, inst_axis){
 
   var axis_arr = params.canvas_pos[inst_dim + '_arr'];
 
-  _.each(inst_labels, function(inst_label, inst_id){
-
+  _.each(inst_text_triangles, function(inst_label, inst_id){
 
     // calculate inst and new offsets
     _.each(['inst', 'new'], function(inst_state){
@@ -25129,12 +34305,47 @@ module.exports = function update_text_triangle_order(params, inst_axis){
     inst_label.inst_offset = [0, offsets.inst];
     inst_label.new_offset = [0, offsets.new];
 
-
   });
 
-  return inst_labels;
+
+  return inst_text_triangles;
 
 }
+
+/***/ }),
+
+/***/ "./src/matrix_labels/vectorize_label.js":
+/*!**********************************************!*\
+  !*** ./src/matrix_labels/vectorize_label.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules/vectorize-text/index.js");
+var drop_label_from_queue = __webpack_require__(/*! ./drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
+
+module.exports = function vectorize_label(params, inst_axis, inst_name){
+
+  var vect_text_attrs = {
+    textAlign: 'left',
+    triangles: true,
+    size: params.labels.font_detail,
+    font: '"Open Sans", verdana, arial, sans-serif'
+  };
+
+  if (inst_axis === 'col'){
+    vect_text_attrs.textAlign = 'left';
+    vect_text_attrs.textBaseline = 'bottom';
+  } else {
+    vect_text_attrs.textAlign = 'right';
+    vect_text_attrs.textBaseline = 'middle';
+  }
+
+  drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+
+  return vectorize_text(inst_name, vect_text_attrs);
+
+};
 
 /***/ }),
 
@@ -25146,7 +34357,9 @@ module.exports = function update_text_triangle_order(params, inst_axis){
 /***/ (function(module, exports, __webpack_require__) {
 
 var utils = __webpack_require__(/*! ./../utils/utils_clust */ "./src/utils/utils_clust.js");
-module.exports = function calc_alpha_order(network){
+module.exports = function calc_alpha_order(params){
+
+  var network = params.network
 
   var node_names;
   var tmp_names;
@@ -25159,12 +34372,6 @@ module.exports = function calc_alpha_order(network){
 
     tmp_names = node_names.sort();
 
-    // console.log(tmp_names)
-    // console.log('node names\n------------')
-    // console.log(node_names);
-    // console.log('tmp names\n------------')
-    // console.log(tmp_names);
-
     _.map(inst_nodes, function(inst_node){
 
       var inst_alpha = node_names.length -  tmp_names.indexOf(inst_node.name) - 1;
@@ -25175,8 +34382,68 @@ module.exports = function calc_alpha_order(network){
 
   });
 
-  return network;
-}
+};
+
+/***/ }),
+
+/***/ "./src/params/calc_mat_arr.js":
+/*!************************************!*\
+  !*** ./src/params/calc_mat_arr.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_mat_arr(params){
+
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
+
+  // draw matrix cells
+  /////////////////////////////////////////
+  // generate x position array
+  params.node_canvas_pos = {};
+  var inst_pos;
+  var heat_size
+  var num_labels;
+  var inst_index;
+  var inst_direct;
+  var tri_width;
+  var heat_shift;
+
+  _.each(['x', 'y'], function(inst_axis){
+
+    if (inst_axis == 'x'){
+      num_labels = num_col;
+    } else {
+      num_labels = num_row;
+    }
+
+    heat_shift = params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
+
+    heat_size = params.viz_dim.heat_size[inst_axis];
+    tri_width = heat_size/num_labels;
+
+    params.node_canvas_pos[inst_axis + '_arr'] = Array(num_labels).fill()
+      .map(function(_, i){
+
+        if (inst_axis === 'x'){
+          inst_index = i;
+          inst_direct = -1;
+          num_labels = num_col;
+        } else {
+          inst_index = i + 1;
+          inst_direct = 1;
+          num_labels = num_row;
+        }
+
+        inst_pos =  heat_size - heat_shift - 2 * tri_width * inst_index;
+
+        return  inst_pos * inst_direct;
+      });
+
+  });
+
+};
 
 /***/ }),
 
@@ -25189,15 +34456,17 @@ module.exports = function calc_alpha_order(network){
 
 module.exports = function calc_row_and_col_canvas_positions(params){
 
-  var num_col = params.num_col;
-  var num_row = params.num_row;
+  var inst_axis = 'row';
+  var num_row = params.labels['num_' + inst_axis];
+  inst_axis = 'col';
+  var num_col = params.labels['num_' + inst_axis];
 
   // draw matrix cells
   /////////////////////////////////////////
   // set up offset array for buffer
   var offset = {};
-  offset.x = params.center.x;
-  offset.y = params.center.y;
+  offset.x = params.viz_dim.center.x;
+  offset.y = params.viz_dim.center.y;
 
   // generate x position array
   var x_arr = Array(num_col).fill()
@@ -25264,7 +34533,7 @@ module.exports = function calc_viz_area(params){
   experimenting with viz_area calc
   */
 
-   // - params.offcenter.y/2
+   // - params.viz_dim.offcenter.y/2
 
   viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
   // minus offset not necessary
@@ -25290,6 +34559,16 @@ var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/muta
 
 module.exports = function calc_viz_dim(regl, params){
 
+  var viz_dim = {};
+
+  viz_dim.mat_size = {};
+  viz_dim.mat_size.x = 0.80;
+  viz_dim.mat_size.y = 0.80;
+
+  viz_dim.heat_size = {};
+  viz_dim.heat_size.x = viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  viz_dim.heat_size.y = viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
+
   // Set up viz_dim
   ///////////////////////
   var opts = opts || {};
@@ -25299,7 +34578,6 @@ module.exports = function calc_viz_dim(regl, params){
 
   var element = options.element;
 
-  var viz_dim = {};
   viz_dim.canvas = {};
 
   _.each(['width', 'height'], function(inst_dim){
@@ -25307,14 +34585,13 @@ module.exports = function calc_viz_dim(regl, params){
       .style(inst_dim).replace('px', ''));
   });
 
-
   // Matrix Dimensions
   /////////////////////////////
   viz_dim.mat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.mat.width  = params.mat_size.x * viz_dim.canvas.width;
-  viz_dim.mat.height = params.mat_size.y * viz_dim.canvas.height;
+  viz_dim.mat.width  = viz_dim.mat_size.x * viz_dim.canvas.width;
+  viz_dim.mat.height = viz_dim.mat_size.y * viz_dim.canvas.height;
 
   // min and max position of matrix
   viz_dim.mat.x = {};
@@ -25325,14 +34602,13 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.mat.y.min = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
   viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
 
-
   // Heatmap Dimensions
   //////////////////////////////
   viz_dim.heat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.heat.width  = params.heat_size.x * viz_dim.canvas.width;
-  viz_dim.heat.height = params.heat_size.y * viz_dim.canvas.height;
+  viz_dim.heat.width  = viz_dim.heat_size.x * viz_dim.canvas.width;
+  viz_dim.heat.height = viz_dim.heat_size.y * viz_dim.canvas.height;
 
   var offset_heat = {};
 
@@ -25347,7 +34623,417 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
   viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
 
-  return viz_dim;
+  viz_dim.center = {};
+  viz_dim.center.x = 0.5;
+  viz_dim.center.y = 0.5;
+
+  params.viz_dim = viz_dim;
+
+  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
+  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
+
+  // will set up global offset later
+  params.viz_dim.offcenter = {};
+  var offcenter_magnitude_x = 0.075;
+  var offcenter_magnitude_y = 0.075;
+  params.viz_dim.offcenter.x = offcenter_magnitude_x;
+  params.viz_dim.offcenter.y = offcenter_magnitude_y;
+
+  params.viz_dim.shift_camera = {};
+  params.viz_dim.shift_camera.x = -offcenter_magnitude_x;
+  params.viz_dim.shift_camera.y = offcenter_magnitude_y;
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_animation_params.js":
+/*!*************************************************!*\
+  !*** ./src/params/generate_animation_params.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_animation_params(params){
+
+  // animation params
+  params.animation = {};
+  params.animation.time_remain = 0;
+
+  params.animation.running = false;
+  params.animation.run_animation = false;
+
+  params.animation.last_switch_time = 0;
+  params.animation.ani_duration = 3;
+  params.animation.duration_end = 0;
+
+  params.animation.time = 0;
+  params.animation.first_frame = true;
+  params.animation.initialize_viz = true;
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_cat_args_arrs.js":
+/*!**********************************************!*\
+  !*** ./src/params/generate_cat_args_arrs.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
+var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
+
+/* eslint-disable no-loop-func */
+
+module.exports = function generate_cat_args_arrs_params(regl, params){
+
+  params.cat_args = {};
+  params.cat_args.row = [];
+  params.cat_args.col = [];
+
+  params.cat_arrs = {};
+
+  _.each(['inst', 'new'], function(inst_state){
+    params.cat_arrs[inst_state] = {}
+    params.cat_arrs[inst_state].row = {};
+    params.cat_arrs[inst_state].col = {};
+  });
+
+  _.each(['row', 'col'], function(inst_axis){
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
+      _.each(['inst', 'new'], function(inst_state){
+        params.cat_arrs[inst_state][inst_axis][cat_index] = make_cat_position_array(
+          params, inst_axis, cat_index, params.order[inst_state][inst_axis]
+        );
+      });
+      params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
+    }
+  });
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_cat_params.js":
+/*!*******************************************!*\
+  !*** ./src/params/generate_cat_params.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var generate_cat_array = __webpack_require__(/*! ./../cats/generate_cat_array */ "./src/cats/generate_cat_array.js");
+var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "./src/cats/generate_cat_info.js");
+
+module.exports = function generate_cat_params(params){
+
+  params.cat_data = {};
+  params.cat_data.row = generate_cat_array(params, 'row');
+  params.cat_data.col = generate_cat_array(params, 'col');
+
+  params.cat_data.cat_num = {};
+  params.cat_data.cat_num.row = params.cat_data.row.length;
+  params.cat_data.cat_num.col = params.cat_data.col.length;
+
+  params.cat_data.cat_room = {};
+  params.cat_data.cat_room.x = 0.015;
+  params.cat_data.cat_room.y = 0.015;
+
+  generate_cat_info(params);
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_dendro_params.js":
+/*!**********************************************!*\
+  !*** ./src/params/generate_dendro_params.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
+var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+
+module.exports = function generate_dendro_params(regl, params){
+
+  params.dendro = {};
+
+  params.dendro.default_level = 5;
+  params.dendro.tri_height = 0.10;
+  params.dendro.trap_height = 0.03;
+  params.dendro.trap_float = 0.005;
+
+  params.dendro.dendro_args = {};
+  params.dendro.group_level = {};
+  params.dendro.update_dendro = false;
+
+  params.dendro.group_info = {};
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    params.dendro.group_level[inst_axis] = params.dendro.default_level;
+
+    params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
+    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+
+  });
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_interact_params.js":
+/*!************************************************!*\
+  !*** ./src/params/generate_interact_params.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_interact_params(params){
+
+  params.interact = {};
+  params.interact.total = 0;
+  params.interact.still_interacting = false;
+  params.interact.still_mouseover = false;
+  params.interact.mouseover = {};
+
+  _.each(['row', 'col'], function(inst_axis){
+    params.interact.mouseover[inst_axis] = {};
+    params.interact.mouseover[inst_axis].name = null;
+    params.interact.mouseover[inst_axis].cats = [];
+  });
+
+  params.interact.mouseover.value = null;
+
+  params.interact.enable_viz_interact = true;
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_label_params.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_label_params.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
+module.exports = function generate_label_params(params){
+
+  params.labels = {};
+  params.labels.num_row = params.mat_data.length;
+  params.labels.num_col = params.mat_data[0].length;
+
+  params.labels.offset_dict = {};
+  params.labels.draw_labels = false;
+
+  // font_detail range: min ~12 max ~200
+  // usable range: 14-30 (was using 25)
+  params.labels.font_detail = 20;
+
+  generate_ordered_labels(params);
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_order_params.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_order_params.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_order_params(params){
+
+  params.order = {};
+  _.each(['inst', 'new'], function(inst_state){
+
+    params.order[inst_state] = {};
+    params.order[inst_state].row = 'clust';
+    params.order[inst_state].col = 'clust';
+
+  });
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_pix_to_webgl.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_pix_to_webgl.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_pix_to_webgl(params){
+
+  var pix_to_webgl = {};
+  pix_to_webgl.x = d3.scale.linear();
+  pix_to_webgl.x
+    .domain([0, params.viz_dim.heat.width])
+    .range([-0.5, 0.5])
+    // .clamp(true);
+
+  pix_to_webgl.y = d3.scale.linear();
+  pix_to_webgl.y
+    .domain([0, params.viz_dim.heat.height])
+    .range([0.5, -0.5])
+    // .clamp(true);
+
+  params.pix_to_webgl = pix_to_webgl;
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_spillover_params.js":
+/*!*************************************************!*\
+  !*** ./src/params/generate_spillover_params.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
+var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
+
+module.exports = function generate_spillover_params(regl, params){
+
+  var spillover_args = {};
+
+  // inst_depth is passed to spillover rects
+  // var inst_color = [1, 0, 0, 1];
+  var inst_color = [1, 1, 1, 1];
+
+  // lower depth can be thought of as closer to the screen/user, e.g. on top
+  // of other elements
+  params.spill_depth = {};
+  params.spill_depth.mat_sides = 0.5;
+  params.spill_depth.cats = 0.5;
+  params.spill_depth.mat_corners = 0.2;
+  params.spill_depth.label_corners = 0.001;
+
+  var spillover_elements = ['mat_sides', 'cats', 'mat_corners', 'label_corners'];
+
+  _.each(spillover_elements, function(inst_element){
+    spillover_args[inst_element] = make_spillover_args(
+                                     regl,
+                                     params.spill_depth[inst_element],
+                                     inst_color
+                                   );
+  });
+
+  params.spillover_args = spillover_args;
+  params.spillover_triangles = calc_spillover_triangles(params);
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_text_triangle_params.js":
+/*!*****************************************************!*\
+  !*** ./src/params/generate_text_triangle_params.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
+module.exports = function generate_text_triangle_params(params){
+
+  // save text triangles for later use
+  params.text_triangles = {};
+  params.text_triangles.row = {};
+  params.text_triangles.col = {};
+
+  params.max_num_text = 200;
+
+  params.text_triangles.draw = {};
+
+  _.each(['row', 'col'], function(inst_axis){
+    if (params.labels['num_' + inst_axis] > params.max_num_text){
+      params.text_triangles.draw[inst_axis] = false;
+    } else {
+      gather_text_triangles(params, inst_axis);
+    }
+  });
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_text_zoom_params.js":
+/*!*************************************************!*\
+  !*** ./src/params/generate_text_zoom_params.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_text_zoom_params(params){
+
+  params.text_zoom = {};
+
+  // text zooming info
+  params.text_zoom.row = {};
+  params.text_zoom.row.scaled_num = params.labels.num_row;
+  params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
+  params.text_zoom.row.factor = 1;
+  params.text_zoom.row.max_webgl_fs = 0.05;
+
+  params.text_zoom.col = {};
+  params.text_zoom.col.scaled_num = params.labels.num_col;
+  params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
+  params.text_zoom.col.factor = 1;
+  params.text_zoom.col.max_webgl_fs = 0.06;
+
+};
+
+/***/ }),
+
+/***/ "./src/params/generate_tooltip_params.js":
+/*!***********************************************!*\
+  !*** ./src/params/generate_tooltip_params.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_tooltip_params(regl, params){
+
+  params.tooltip = {};
+  params.tooltip.show_tooltip = false;
+  params.tooltip.remove_tooltip_frame = true;
+  params.tooltip.in_bounds_tooltip = false;
+  params.tooltip.background_opacity = 0.75;
+  params.tooltip.tooltip_type = null;
+
+}
+
+/***/ }),
+
+/***/ "./src/params/generate_webgl_to_pix.js":
+/*!*********************************************!*\
+  !*** ./src/params/generate_webgl_to_pix.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function generate_webgl_to_pix(params){
+
+  var webgl_to_pix = {};
+  webgl_to_pix.x = d3.scale.linear();
+  webgl_to_pix.x
+    .domain([-0.5, 0.5])
+    .range([0, params.viz_dim.heat.width])
+    .clamp(true);
+
+  webgl_to_pix.y = d3.scale.linear();
+  webgl_to_pix.y
+    .domain([0.5, -0.5])
+    .range([0, params.viz_dim.heat.height])
+    .clamp(true);
+
+  params.webgl_to_pix = webgl_to_pix;
 
 };
 
@@ -25361,292 +35047,89 @@ module.exports = function calc_viz_dim(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js");
-var calc_text_triangles = __webpack_require__(/*! ./../matrix_labels/calc_text_triangles */ "./src/matrix_labels/calc_text_triangles.js");
 var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
 var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
 var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
 var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
-var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
-var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
-var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
 var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
-var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
-var generate_cat_data = __webpack_require__(/*! ./../cats/generate_cat_data */ "./src/cats/generate_cat_data.js");
-var get_ordered_labels = __webpack_require__(/*! ./../matrix_labels/get_ordered_labels */ "./src/matrix_labels/get_ordered_labels.js");
-var make_tooltip_background_args = __webpack_require__(/*! ./../tooltip/make_tooltip_background_args */ "./src/tooltip/make_tooltip_background_args.js");
-var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
+var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
+var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
+var generate_animation_params = __webpack_require__(/*! ./generate_animation_params */ "./src/params/generate_animation_params.js");
+var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
+var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
+var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
+var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
+var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
+var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
+var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "./src/params/generate_pix_to_webgl.js");
+var generate_webgl_to_pix = __webpack_require__(/*! ./generate_webgl_to_pix */ "./src/params/generate_webgl_to_pix.js");
+var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
+var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
+var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
+var generate_dendro_params = __webpack_require__(/*! ./generate_dendro_params */ "./src/params/generate_dendro_params.js");
+var calc_mat_arr = __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js");
 
 // /*
 //   Working on using subset of math.js for matrix splicing
 // */
 // var core = require('mathjs/core');
 // var math = core.create();
-
 // math.import(require('mathjs/lib/function/probability/factorial'));
-
-// console.log(math)
 
 module.exports = function initialize_params(regl, network){
 
   var params = {};
-
-  params.time = 0;
-  params.viz_interact = true;
-
-  // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
-  params.animation.loop = params.time % 5
-
-  params.animation.running = false;
-  params.animation.run_switch = false;
-
-  params.animation.last_switch_time = 0;
-  params.animation.switch_duration = 3;
-
-  params.initialize_viz = true;
-  params.first_frame = true;
-
-  // debugger;
-
-  network = calc_alpha_order(network)
-
-  // debugger;
-
-  // use data from network
-  //////////////////////////
   params.network = network;
 
-  var zoom_function = function(context){
-    return context.view;
-  };
+  generate_animation_params(params);
+  calc_alpha_order(params)
+  generate_interact_params(params);
 
-  params.zoom_function = zoom_function;
-  params.still_interacting = false;
-  params.still_mouseover = false;
-  params.mat_data = network.mat;
+  params.mat_data = params.network.mat;
 
-  /*
-  Working on resizing the matrix, need to have separte x and y sizes
-  */
-  params.mat_size = {};
-  params.mat_size.x = 0.80;
-  params.mat_size.y = 0.80;
-
-  params.cat_data = {};
-  params.cat_data.row = generate_cat_data(params, 'row');
-  params.cat_data.col = generate_cat_data(params, 'col');
-
-
-  params.cat_num = {};
-  params.cat_num.row = params.cat_data.row.length;
-  params.cat_num.col = params.cat_data.col.length;
-
-  params.cat_room = {};
-  params.cat_room.x = 0.015;
-  params.cat_room.y = 0.015;
-
-  params.heat_size = {};
-  params.heat_size.x = params.mat_size.x - params.cat_room.x * params.cat_num.row;
-  params.heat_size.y = params.mat_size.y - params.cat_room.y * params.cat_num.col;
-
-  params.num_row = params.mat_data.length;
-  params.num_col = params.mat_data[0].length;
-
-  params.tile_width = (params.heat_size.x/0.5)/params.num_col;
-  params.tile_height = (params.heat_size.y/0.5)/params.num_row;
-
-  params.center = {};
-  params.center.x = 0.5;
-  params.center.y = 0.5;
-
-  // will set up global offset later
-  params.offcenter = {};
-  var offcenter_magnitude_x = 0.075;
-  var offcenter_magnitude_y = 0.075;
-  params.offcenter.x = offcenter_magnitude_x;
-  params.offcenter.y = offcenter_magnitude_y;
-
-  params.shift_camera = {};
-  params.shift_camera.x = -offcenter_magnitude_x;
-  params.shift_camera.y = offcenter_magnitude_y;
-
-  params.slow_draw = false;
-
+  generate_cat_params(params);
+  generate_order_params(params);
+  generate_label_params(params);
+  calc_viz_dim(regl, params);
+  generate_cat_args_arrs(regl, params);
   params.zoom_data = ini_zoom_data();
 
   // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
-
-  // save text triangles for later use
-  params.text_triangles = {};
-  params.text_triangles.row = {};
-  params.text_triangles.col = {};
 
   // calc row-downsampled matrix
   var run_downsampling = false;
   params.is_downsampled = false;
   calc_row_downsampled_mat(params, run_downsampling);
 
-  params.inst_order = {};
-  params.inst_order.row = 'clust';
-  params.inst_order.col = 'clust';
-
-  params.new_order = {};
-  params.new_order.row = 'clust';
-  params.new_order.col = 'clust';
-
   params.viz_aid_tri_args = {};
 
-  params.cat_args = {};
-  params.cat_args.row = [];
-  params.cat_args.col = [];
-
-  // array positions of categories inst and new
-  params.cat_arrs = {};
-
-  params.cat_arrs.inst = {}
-  params.cat_arrs.inst.row = {};
-  params.cat_arrs.inst.col = {};
-
-  params.cat_arrs.new = {}
-  params.cat_arrs.new.row = {};
-  params.cat_arrs.new.col = {};
-
   _.each(['row', 'col'], function(inst_axis){
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
-      params.cat_arrs.inst[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.inst_order[inst_axis]);
-      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
-      params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
-    }
+    calc_text_offsets(params, inst_axis);
   });
 
-  params.dendro_args = {};
-  params.dendro_args.row = make_dendro_args(regl, params, 'row');
-  params.dendro_args.col = make_dendro_args(regl, params, 'col');
 
-  var spillover_args = {};
+  generate_tooltip_params(regl, params);
 
-  // inst_depth is passed to spillover rects
-  // var inst_color = [0, 0, 0, 0.02];
-  var inst_color = [1, 1, 1, 1];
+  params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
+  params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
-  params.spill_depth = {};
-  params.spill_depth.mat_sides = 0.5;
-  spillover_args.mat_sides = make_spillover_args(regl,
-                                                 params.spill_depth.mat_sides,
-                                                 inst_color);
-
-  params.spill_depth.cats = 0.5;
-  spillover_args.cats = make_spillover_args(regl,
-                                                 params.spill_depth.cats,
-                                                 inst_color);
-
-  params.spill_depth.mat_corners = 0.2;
-  spillover_args.mat_corners = make_spillover_args(regl,
-                                                   params.spill_depth.mat_corners,
-                                                   inst_color);
-  params.spill_depth.label_corners = 0.001;
-  spillover_args.label_corners = make_spillover_args(regl,
-                                                     params.spill_depth.label_corners,
-                                                     inst_color);
-
-  params.spillover_args = spillover_args;
-
-  params.show_tooltip = false;
-
-  // the default is to remove the tooltip
-  params.remove_tooltip_frame = true;
-
-  params.in_bounds_tooltip = false;
-  params.tooltip = {};
-  params.tooltip.background_opacity = 0.75;
-  // make tooltip args
-  params.tooltip_args = make_tooltip_background_args(regl, params, 0.0001, [0, 0, 0, params.tooltip.background_opacity]);
-
-  params.viz_dim = calc_viz_dim(regl, params);
-
-  var pix_to_webgl = {};
-
-  var mat_width = params.viz_dim.heat.width;
-  var mat_height = params.viz_dim.heat.height;
-
-  params.tile_pix_width = params.viz_dim.heat.width/params.num_col;
-  params.tile_pix_height = params.viz_dim.heat.height/params.num_row;
-
-  pix_to_webgl.x = d3.scale.linear();
-  pix_to_webgl.x
-    .domain([0, mat_width])
-    .range([-0.5, 0.5])
-    .clamp(true);
-
-  pix_to_webgl.y = d3.scale.linear();
-  pix_to_webgl.y
-    .domain([0, mat_height])
-    .range([0.5, -0.5])
-    .clamp(true);
-
-  get_ordered_labels(params);
-
-  params.mouseover = {};
-  params.mouseover.row_name = null;
-  params.mouseover.col_name = null;
-
-  params.mouseover.text_triangles = {};
-
-  params.pix_to_webgl = pix_to_webgl;
-
-
-  params.text_zoom = {};
-
-  // text zooming info
-  params.text_zoom.row = {};
-  params.text_zoom.row.scaled_num = params.num_row;
-  params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
-  params.text_zoom.row.factor = 1;
-  params.text_zoom.row.max_webgl_fs = 0.05;
-
-  params.text_zoom.col = {};
-  params.text_zoom.col.scaled_num = params.num_col;
-  params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
-  params.text_zoom.col.factor = 1;
-  params.text_zoom.col.max_webgl_fs = 0.06;
-
-  // font_detail range: min ~12 max ~200
-  ////////////////////////////////////////
-  // usable range: 14-30 (was using 25)
-  params.font_detail = 20;
-
+  generate_pix_to_webgl(params);
+  generate_webgl_to_pix(params);
+  make_label_queue(params);
+  generate_text_zoom_params(params);
   calc_viz_area(params);
-
-  params.max_num_text = 75;
-
-  params.text_triangles.draw = {};
-
-  _.each(['row', 'col'], function(inst_axis){
-    if (params['num_' + inst_axis] > params.max_num_text){
-      params.text_triangles.draw[inst_axis] = false;
-    } else {
-      params.text_triangles.draw[inst_axis] = calc_text_triangles(params, inst_axis);
-    }
-  });
-
-
-  // console.log('row_text_triangles in initialize_params')
-  // console.log(params.row_text_triangles)
-
-  // have max zoom restricted by column number in a similar manner to
-  // how col viz aid triangle restricted zooming in previous version
+  generate_text_triangle_params(params);
 
   var min_dim;
-  if (params.num_col < params.num_row){
-    min_dim = params.num_col;
+  if (params.labels.num_col < params.labels.num_row){
+    min_dim = params.labels.num_col;
   } else {
-    min_dim = params.num_row;
+    min_dim = params.labels.num_row;
   }
 
   params.max_zoom = min_dim/4.0;
@@ -25654,27 +35137,27 @@ module.exports = function initialize_params(regl, network){
 
   // update zoom_data
   zoom_rules_high_mat(regl, params);
+  make_cameras(regl, params);
 
-  params.cameras = make_cameras(regl, params);
-
-  params.spillover_triangles = calc_spillover_triangles(params);
-
-  window.addEventListener('resize', params.cameras.mat.resize);
-  window.addEventListener('resize', params.cameras['row-labels'].resize);
+  // calc offsets used for matrix
+  calc_mat_arr(params);
 
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
 
-  // 1 no zooming allowed, 3 is good value, 10 allows zooming
-  // rc_two_cats: 3
-  // mnist: 7
+  generate_dendro_params(regl, params);
+
+  // spillover params rely on dendro params
+  generate_spillover_params(regl, params);
+
+
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
     .range([2, 30]);
 
   params.allowable_zoom_factor = {};
-  params.allowable_zoom_factor.col = allow_factor(params.num_col);
-  params.allowable_zoom_factor.row = allow_factor(params.num_col);
+  params.allowable_zoom_factor.col = allow_factor(params.labels.num_col);
+  params.allowable_zoom_factor.row = allow_factor(params.labels.num_col);
 
   params.text_scale = {};
 
@@ -25705,9 +35188,9 @@ module.exports = function reorder_cat_args(regl, cgm){
   _.each(['row', 'col'], function(inst_axis){
 
     // update cat position arrays
-    for (var cat_index = 0; cat_index < params.cat_num[inst_axis]; cat_index++) {
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
 
-      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.new_order[inst_axis]);
+      params.cat_arrs.new[inst_axis][cat_index] = make_cat_position_array(params, inst_axis, cat_index, params.order.new[inst_axis]);
 
       // update the attribute
       params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_new = {
@@ -25737,8 +35220,8 @@ module.exports = function reorder_matrix_args(regl, cgm){
 
   // calculate new ordering
   params.arrs.position_arr.new = make_position_arr(params,
-                                  params.new_order.row,
-                                  params.new_order.col);
+                                  params.order.new.row,
+                                  params.order.new.col);
 
   params.matrix_args.regl_props.rects.attributes.pos_att_new = {
         buffer: regl.buffer(params.arrs.position_arr.new),
@@ -25757,7 +35240,6 @@ module.exports = function reorder_matrix_args(regl, cgm){
 
 var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
 var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
-// var calc_text_triangles = require('./../matrix_labels/calc_text_triangles');
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 
 module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
@@ -25767,8 +35249,13 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  params.animation.run_switch = true;
-  params.new_order[inst_axis] = new_order;
+  // toggle dendro sliders (will re-display at end of animation)
+  if (new_order != 'clust'){
+    d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
+  }
+
+  params.animation.run_animation = true;
+  params.order.new[inst_axis] = new_order;
 
   reorder_matrix_args(regl, cgm);
   reorder_cat_args(regl, cgm);
@@ -25776,7 +35263,12 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   // preventing tmp reordering bug that happens when pre-calculated labels are
   // incorrectly animated on reordering. The bug seems to occur only when the
   // number of pre-calculated (drawn) rows is less than the total number of rows
-  if (cgm.params.text_triangles.draw[inst_axis] != false && params['num_' + inst_axis] < params.max_num_text){
+  /*
+  No need to run calc_text_offset (in network_data) during a reorder event
+  */
+
+  // either update the existing draw text_triangles or trash them
+  if (cgm.params.text_triangles.draw[inst_axis] != false && params.labels['num_' + inst_axis] <= params.max_num_text){
     params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;
@@ -25793,14 +35285,17 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-/* eslint-disable */
+/* eslint-disable array-bracket-newline */
+/* eslint-disable object-curly-newline */
 
 module.exports = function calc_spillover_triangles(params){
 
   var viz_dim = params.viz_dim;
+  var ofc = viz_dim.offcenter;
 
-  var ini_mat = params.mat_size;
-  var ini_heat = params.heat_size;
+
+  var ini_mat = viz_dim.mat_size;
+  var ini_heat = viz_dim.heat_size;
 
   var height_to_width = viz_dim.canvas.height/viz_dim.canvas.width;
 
@@ -25814,51 +35309,69 @@ module.exports = function calc_spillover_triangles(params){
 
   var spillover_triangles = {};
 
+  var dendro_trap = params.dendro.trap_height + params.dendro.trap_float;
+
   // trying to shift based on diff between mat and heat size
   var inst_shift = {}
-  inst_shift.x = params.mat_size.x - params.heat_size.x;
-  inst_shift.y = params.mat_size.y - params.heat_size.y;
+  inst_shift.x = viz_dim.mat_size.x - viz_dim.heat_size.x;
+  inst_shift.y = viz_dim.mat_size.y - viz_dim.heat_size.y;
 
   spillover_triangles.mat_sides = [
 
     // left spillover rect
-    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x, -1], [-1.0, -1]]},
-    {'pos': [[-1, 1], [-ini_mat.x + params.offcenter.x,  1], [-ini_mat.x + params.offcenter.x, -1]]},
+    {'pos': [[-1,                  1],
+             [-ini_mat.x + ofc.x, -1],
+            [-1.0,                -1]]},
+    {'pos': [[-1,                  1],
+             [-ini_mat.x + ofc.x,  1],
+             [-ini_mat.x + ofc.x, -1]]},
 
     // right spillover rect
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x, -1], [1.0, -1]]},
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x,  1], [ini_mat.x + params.offcenter.x, -1]]},
+    {'pos': [[1,                  1],
+             [ini_mat.x + ofc.x, -1],
+             [1.0,               -1]]},
+    {'pos': [[1,                  1],
+             [ini_mat.x + ofc.x,  1],
+             [ini_mat.x + ofc.x, -1]]},
 
     // // top spillover rect
-    {'pos': [[-ini_mat.x + params.offcenter.x, 1], [-ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, 1]]},
-    {'pos': [[ ini_mat.x + params.offcenter.x, 1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[-ini_mat.x + ofc.x, 1],
+             [-ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
+             [ ini_mat.x + ofc.x, 1]]},
+    {'pos': [[ ini_mat.x + ofc.x, 1],
+             [ ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
+             [-ini_mat.x + ofc.x, scaled_mat.y - ofc.y]]},
 
     // // bottom spillover rect
-    {'pos': [[-ini_mat.x + params.offcenter.x, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [ini_mat.x + params.offcenter.x, -1]]},
-    {'pos': [[ ini_mat.x + params.offcenter.x, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[-ini_mat.x + ofc.x, -1],
+             [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [ ini_mat.x + ofc.x, -1]]},
+    {'pos': [[ ini_mat.x + ofc.x, -1],
+             [ ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]]},
 
   ];
 
   spillover_triangles.cats = [
 
     // col spillover rect
-    {'pos': [[ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [ini_heat.x  + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[ ini_heat.x + inst_shift.x + ofc.x, scaled_mat.y - ofc.y],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y],
+             [ ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]]
            },
-    {'pos': [[-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [ ini_mat.x + params.offcenter.x,  scaled_mat.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[-ini_heat.x + inst_shift.x + ofc.x, scaled_mat.y - ofc.y],
+             [ ini_mat.x + ofc.x,                 scaled_mat.y - ofc.y],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]]
            },
 
     // col spillover rect
-    {'pos': [[-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
-             [-ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[-ini_mat.x  + ofc.x,               -scaled_mat.y - ofc.y],
+             [-ini_mat.x  + ofc.x,                scaled_heat.y - inst_shift.y - ofc.y],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]]
            },
-    {'pos': [[-ini_mat.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
-             [ -ini_heat.x + inst_shift.x + params.offcenter.x,  -scaled_mat.y - params.offcenter.y],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+    {'pos': [[-ini_mat.x  + ofc.x,  -scaled_mat.y - ofc.y],
+             [-ini_heat.x + inst_shift.x + ofc.x,  -scaled_mat.y - ofc.y],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]]
            },
 
   ];
@@ -25867,26 +35380,38 @@ module.exports = function calc_spillover_triangles(params){
 
     // top-left spillover rect
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [-1.0 , scaled_heat.y - inst_shift.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y],
+             [-1.0 , scaled_heat.y - inst_shift.y - ofc.y]
              ]},
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x,  1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + ofc.x,  1],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]
              ]},
 
     // bottom-left spillover rect
-    {'pos': [[-1, -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [-1.0, -scaled_mat.y - params.offcenter.y]]},
-    {'pos': [[-1, -1], [-ini_mat.x + params.offcenter.x,  -1], [-ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[-1,                 -1],
+             [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [-1.0,               -scaled_mat.y - ofc.y]]},
+    {'pos': [[-1,                 -1],
+             [-ini_mat.x + ofc.x, -1],
+             [-ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]]},
 
     // top-right spillover rect
     // mat corners
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y], [1.0, scaled_mat.y - params.offcenter.y]]},
-    {'pos': [[1, 1], [ini_mat.x + params.offcenter.x,  1], [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[1,                 1],
+             [ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
+             [1.0,               scaled_mat.y - ofc.y]]},
+    {'pos': [[1,                 1],
+             [ini_mat.x + ofc.x, 1],
+             [ini_mat.x + ofc.x, scaled_mat.y - ofc.y]]},
 
     // bottom-right spillover rect
-    {'pos': [[1, -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y], [1.0, -scaled_mat.y - params.offcenter.y]]},
-    {'pos': [[1, -1], [ini_mat.x + params.offcenter.x,  -1], [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]]},
+    {'pos': [[1,                 -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [1,                 -scaled_mat.y - ofc.y]]},
+    {'pos': [[1,                 -1],
+             [ini_mat.x + ofc.x, -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]]},
 
   ];
 
@@ -25894,51 +35419,69 @@ module.exports = function calc_spillover_triangles(params){
 
     // top-left spillover rect
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [-1.0, scaled_heat.y - inst_shift.y - params.offcenter.y]]
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y],
+             [-1.0, scaled_heat.y - inst_shift.y - ofc.y]]
            },
     {'pos': [[-1, 1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x,  1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + ofc.x,  1],
+             [-ini_heat.x + inst_shift.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]
              ]},
 
     // bottom-left spillover rect
     {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
-             [-1.0, -scaled_mat.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y],
+             [-1.0, -scaled_mat.y - ofc.y]
              ]},
     {'pos': [[-1, -1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x,  -1],
-             [-ini_heat.x + inst_shift.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]
+             [-ini_heat.x + inst_shift.x + ofc.x,  -1],
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y]
              ]},
 
     // top-right spillover rect (right angle triangle for slanted text only)
     {'pos': [
-             // [1, scaled_mat.y + 1 - ini_mat.x - params.offcenter.y],
-             [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * params.offcenter.x],
-             [ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [1.0, scaled_mat.y - params.offcenter.y]
+             // [1, scaled_mat.y + 1 - ini_mat.x - ofc.y],
+             [1, scaled_mat.y + 1 - ini_mat.y - 2.0 * ofc.x],
+             [ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
+             [1.0, scaled_mat.y - ofc.y]
              ]},
 
     // area under slanted triangle
-    {'pos': [[1.0, scaled_mat.y - params.offcenter.y],
-             [ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y],
-             [1.0, scaled_heat.y - inst_shift.y - params.offcenter.y]
+    {'pos': [[1.0, scaled_mat.y - ofc.y],
+             [ini_mat.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y],
+             [1.0, scaled_heat.y - inst_shift.y - ofc.y]
              ]},
-    {'pos': [[ini_mat.x + params.offcenter.x, scaled_mat.y - params.offcenter.y],
-             [1.0,  scaled_mat.y - params.offcenter.y],
-             [ini_mat.x + params.offcenter.x, scaled_heat.y - inst_shift.y - params.offcenter.y]
+    {'pos': [[ini_mat.x + ofc.x, scaled_mat.y - ofc.y],
+             [1.0,               scaled_mat.y - ofc.y],
+             [ini_mat.x + ofc.x, scaled_heat.y - inst_shift.y - ofc.y]
              ]},
 
     // bottom-right spillover rect
-    {'pos': [[1, -1],
-             [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y],
-             [1.0, -scaled_mat.y - params.offcenter.y]
+    {'pos': [[1,                 -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y],
+             [1.0,               -scaled_mat.y - ofc.y]
              ]},
-    {'pos': [[1, -1],
-             [ini_mat.x + params.offcenter.x,  -1],
-             [ini_mat.x + params.offcenter.x, -scaled_mat.y - params.offcenter.y]
+    {'pos': [[1,                  -1],
+             [ini_mat.x + ofc.x,  -1],
+             [ini_mat.x + ofc.x, -scaled_mat.y - ofc.y]
              ]},
+
+    // row dendro trapezoids
+    {'pos': [[1,                                              scaled_heat.y - inst_shift.y - ofc.y],
+             [ini_mat.x + ofc.x + dendro_trap, -scaled_mat.y - ofc.y],
+             [1.0,                                           -scaled_mat.y - ofc.y]]},
+
+    {'pos': [[1,                                              scaled_heat.y - inst_shift.y - ofc.y],
+             [ini_mat.x + ofc.x + dendro_trap,  scaled_heat.y - inst_shift.y - ofc.y],
+             [ini_mat.x + ofc.x + dendro_trap, -scaled_mat.y - ofc.y]]},
+
+    // col dendro trapezoids
+    {'pos': [[-ini_heat.x + inst_shift.x + ofc.x, -1],
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y - dendro_trap],
+             [ ini_mat.x + ofc.x,                 -1]]},
+
+    {'pos': [[ ini_mat.x + ofc.x, -1],
+             [ ini_mat.x + ofc.x, -scaled_mat.y - ofc.y - dendro_trap],
+             [-ini_heat.x + inst_shift.x + ofc.x, -scaled_mat.y - ofc.y - dendro_trap]]},
 
   ];
 
@@ -26003,209 +35546,193 @@ module.exports = function make_spillover_args(regl, inst_depth,
 
 /***/ }),
 
-/***/ "./src/tooltip/calc_tooltip_background_triangles.js":
-/*!**********************************************************!*\
-  !*** ./src/tooltip/calc_tooltip_background_triangles.js ***!
-  \**********************************************************/
+/***/ "./src/tooltip/make_matrix_cell_tooltip.js":
+/*!*************************************************!*\
+  !*** ./src/tooltip/make_matrix_cell_tooltip.js ***!
+  \*************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-/* eslint-disable */
+var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
+var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakdown_graph */ "./src/cats/make_cat_breakdown_graph.js");
 
-module.exports = function calc_background_tooltip_triangles(regl, params){
+module.exports = function make_matrix_cell_tooltip(params){
 
-  /*
+  var tooltip_dim = {};
+  tooltip_dim.height = 25;
+  tooltip_dim.width = 150;
 
-  Try to get background size to change with text size
+  var tooltip_buffer = {};
+  tooltip_buffer.x = 2;
+  tooltip_buffer.y = 2;
 
-  */
+  var text_offset = {};
+  text_offset.x = 10;
+  text_offset.y = 20;
 
-  var offset_x = 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
-  var offset_y = 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
+  var mouseover = params.interact.mouseover;
+  var tooltip_lines = [];
 
-  // console.log('tooltip shift', offset_x, offset_y);
+  var cat_breakdown;
 
-  // // trying to shift based on diff between mat and heat size
-  // var inst_shift = {}
-  // inst_shift.x = params.mat_size.x - params.heat_size.x;
-  // inst_shift.y = params.mat_size.y - params.heat_size.y;
+  if (params.tooltip.tooltip_type === 'matrix-cell'){
+    tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
+    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
+  }  else if (params.tooltip.tooltip_type.indexOf('row') >=0 && params.tooltip.tooltip_type != 'row-dendro'){
+    tooltip_lines[0] = mouseover.row.name;
+    _.each(mouseover.row.cats, function(inst_cat){
+      tooltip_lines.push(inst_cat);
+    });
+  } else if (params.tooltip.tooltip_type.indexOf('col') >=0 && params.tooltip.tooltip_type != 'col-dendro'){
+    tooltip_lines[0] = mouseover.col.name;
+    _.each(mouseover.col.cats, function(inst_cat){
+      tooltip_lines.push(inst_cat);
+    });
+  } else if (params.tooltip.tooltip_type === 'row-dendro'){
 
-  var tooltip_width = 0.5;
-  var tooltip_height = 0.1;
-
-  var background_triangles = [
-    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y],
-             [-1.0 + offset_x - tooltip_width, 1.0 - offset_y]
-             ]},
-    {'pos': [[-1.0 + offset_x - tooltip_width, 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y + tooltip_height],
-             [-1.0 + offset_x,                 1.0 - offset_y]
-             ]}
-
-  ];
-
-  return background_triangles;
-
-};
-
-/***/ }),
-
-/***/ "./src/tooltip/make_tooltip_background_args.js":
-/*!*****************************************************!*\
-  !*** ./src/tooltip/make_tooltip_background_args.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function make_tooltip_background_args(regl, params, inst_depth, inst_color){
-
-  // console.log('rel min', params.mouseover.row_name, params.mouseover.col_name);
-
-  /*
-
-  Need to calculate the arguments and triangles for the tooltip draw command,
-  which depending on the mouseover statis will or will not draw a tooltip in the
-  larger draw commands function. We do not want to run any draw commands later
-  since they will re-draw only a subset of the visualization.
-
-  */
-
-    // Spillover Arguments
-  ///////////////////////////////
-  var args = {
-    // In a draw call, we can pass the shader source code to regl
-    frag: `
-    precision mediump float;
-    uniform vec4 color;
-    void main () {
-      gl_FragColor = color;
-    }`,
-
-    vert: `
-    precision mediump float;
-    attribute vec2 position;
-    uniform float inst_depth;
-    void main () {
-      // positioned further up (matrix is lower at 0.)
-      gl_Position = vec4(position, inst_depth, 1);
-    }`,
-
-    attributes: {
-      position: regl.prop('pos')
-    },
-
-    uniforms: {
-      color: inst_color,
-      inst_depth: inst_depth
-    },
-
-    blend: {
-        enable: true,
-        func: {
-          srcRGB: 'src alpha',
-          srcAlpha: 1,
-          dstRGB: 'one minus src alpha',
-          dstAlpha: 1
-        },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
-        color: [0, 0, 0, 0]
-      },
-
-    count: 3,
-    // depth: {
-    //   enable: true,
-    //   mask: true,
-    //   func: 'less',
-    //   // func: 'greater',
-    //   range: [0, 1]
-    // },
-  };
-
-  return args;
+    // tooltip_lines[0] = 'row-dendro';
+    _.each(mouseover.row.dendro.all_names, function(inst_name){
+      tooltip_lines.push(inst_name)
+    });
 
 
-};
+  } else if (params.tooltip.tooltip_type === 'col-dendro'){
+    tooltip_lines[0] = 'col-dendro';
+    _.each(mouseover.col.dendro.all_names, function(inst_name){
+      tooltip_lines.push(inst_name)
+    });
 
-/***/ }),
+    cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
+  }
 
-/***/ "./src/tooltip/make_tooltip_text_args.js":
-/*!***********************************************!*\
-  !*** ./src/tooltip/make_tooltip_text_args.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+  var pos_x;
+  var pos_y;
+  var group_tooltip_container
 
-module.exports = function make_tooltip_text_args(regl, params, line_offset = 2.5){
+  if (params.tooltip.tooltip_type.indexOf('dendro') < 0){
 
-  // smaller scale_text -> larger text
-  var inst_depth = 0.00001;
+    pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
+    pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
 
-  // this reduces the size of text, otherwise text will be on the order of the
-  // entire webgl canvas
-  var scale_text = 40;
+    // console.log('making group to put svg into')
+    group_tooltip_container = d3.select(params.root + ' .canvas-container')
+      .append('g')
+      .style('position', 'absolute')
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
+      .classed('group-svg-tooltip', true);
 
-  var offset_x = -1.0 + 2.0*(params.zoom_data.x.cursor_position/params.viz_dim.canvas.width);
-  var offset_y =  1.0 - 2.0*(params.zoom_data.y.cursor_position/params.viz_dim.canvas.height);
+    var svg_tooltip_container = group_tooltip_container
+      .append('svg')
+      .style('height', function(){
+        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
+        return  inst_height + 'px'
+      })
+      .style('width', tooltip_dim.width + 'px')
+      .classed('svg-tooltip', true);
 
+    var svg_tooltip_group = svg_tooltip_container
+      .append('g')
+      .classed('tooltip-group', true)
 
-  var vert_arg = `
-      precision mediump float;
-      attribute vec2 position;
-      uniform float scale_text;
-      varying float x_position;
-      varying float y_position;
-      uniform float inst_depth;
-      uniform float offset_x;
-      uniform float offset_y;
-      uniform float line_offset;
+    // Non-Dendrogram Tooltip
+    ////////////////////////////
 
-      void main () {
+    svg_tooltip_group
+      .append('rect')
+      .style('height', function(){
+        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
+        return  inst_height + 'px'
+      })
+      .style('width', tooltip_dim.width + 'px')
+      .style('fill', 'black')
+      .classed('tooltip-background', true)
+      .style('opacity', 0.85)
 
-        x_position =  (position.x - 1.0)/scale_text + offset_x;
-        y_position = -(position.y - line_offset)/scale_text + offset_y;
+    svg_tooltip_group
+      .selectAll('text')
+      .data(tooltip_lines)
+      .enter()
+      .append('text')
+      .style('fill', 'white')
+      .attr('transform', function(d, inst_index){
+        return 'translate(' + text_offset.x + ', '+ (inst_index +1)* text_offset.y +')';
+      })
+      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .style('font-weight',  800)
+      .style('font-size', 15)
+      .classed('tooltip-text', true)
+      .text(function(d, inst_index){
+        d3.select(this).classed('tooltip-text-line-' + String(inst_index), true)
+        return d;
+      });
 
-        gl_Position =
-                      vec4(
-                           x_position,
-                           y_position,
-                           inst_depth,
-                           1.0);
-      }`;
+    // debugger;
 
-  var frag_arg =  `
-      precision mediump float;
-      void main () {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-      }`;
+    var inst_line_width;
 
-  var args = {
-    vert: vert_arg,
-    frag: frag_arg,
-    attributes: {
-      position: regl.prop('positions')
-    },
-    elements: regl.prop('cells'),
-    uniforms: {
-      scale_text: scale_text,
-      inst_depth: inst_depth,
-      offset_x: offset_x,
-      offset_y: offset_y,
-      line_offset: line_offset
-    },
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      // func: 'greater',
-      range: [0, 1]
-    },
-  };
+    // make sure background is large enough for text
+    //////////////////////////////////////////////////
+    var text_width = d3.select('.tooltip-text').node().getBBox().width;
 
-  return args;
+    _.each(tooltip_lines, function(d, i){
+      inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
+      if (inst_line_width > text_width){
+        text_width = inst_line_width;
+      }
+    })
+
+    var num_offsets = 4;
+
+    if (text_width > tooltip_dim.width || params.tooltip.tooltip_type === 'row-label'){
+
+      d3.select(params.root + ' .svg-tooltip')
+        .style('width',function(){
+          inst_line_width = text_width + num_offsets * text_offset.x;
+          return inst_line_width + 'px';
+        })
+        .style('left', function(){
+          var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
+          return inst_pos_x;
+        })
+
+      d3.select(params.root + ' .tooltip-background')
+        .style('width',function(){
+          inst_line_width = text_width + num_offsets * text_offset.x;
+          return inst_line_width + 'px';
+        });
+
+    }
+
+  } else {
+
+    // Dendrogram Tooltip
+    ////////////////////////////
+    // console.log('make dendrogram category breakdown instead')
+
+    pos_x = params.zoom_data.x.cursor_position - 370;
+    pos_y = params.zoom_data.y.cursor_position;
+
+    group_tooltip_container = d3.select(params.root + ' .canvas-container')
+      .append('g')
+      .style('position', 'absolute')
+      .style('top', pos_y + 'px')
+      .style('left', pos_x + 'px')
+      .classed('group-svg-tooltip', true);
+
+    if (params.tooltip.tooltip_type === 'row-dendro'){
+      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row', group_tooltip_container)
+    } else if (params.tooltip.tooltip_type === 'col-dendro'){
+      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
+      make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, 'col', group_tooltip_container)
+    }
+
+    // old
+    // var cat_breakdown = calc_cat_cluster_breakdown(params, inst_data, inst_rc);
+    //                     make_cat_breakdown_graph(  params, inst_rc, d, dendro_info[i], inst_selector);
+
+  }
 
 };
 
@@ -26289,6 +35816,101 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./src/zoom/calc_cursor_relative.js":
+/*!******************************************!*\
+  !*** ./src/zoom/calc_cursor_relative.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_cursor_relative(zd, viz_dim_heat){
+
+  var cursor_relative = {};
+
+  // tracking cursor position relative to the minimum
+  cursor_relative.min = zd.cursor_position - viz_dim_heat.min - zd.viz_offcenter;
+
+  /* Cursor restriction does not seem to be doing anything */
+
+  // restrict cursor_relative.min
+  if (cursor_relative.min < 0){
+    cursor_relative.min = 0;
+    // console.log('LOWER than min ############################')
+  } else if (cursor_relative.min > viz_dim_heat.max){
+    cursor_relative.min = viz_dim_heat.max;
+    // console.log('HIGHER than min ############################')
+  }
+
+  // tracking cursor position relative to the maximum
+  /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
+  cursor_relative.max = viz_dim_heat.max + zd.heat_offset - zd.cursor_position +  zd.viz_offcenter;
+
+  // restrict cursor_relative.max
+  if (cursor_relative.max < 0){
+    cursor_relative.max = 0;
+    // console.log('LOWER than max ############################')
+  } else if (cursor_relative.max > viz_dim_heat.max + zd.heat_offset){
+    cursor_relative.max = viz_dim_heat.max + zd.heat_offset;
+    // console.log('HIGHER than max ############################')
+  }
+
+  return cursor_relative;
+
+}
+
+/***/ }),
+
+/***/ "./src/zoom/calc_pan_by_zoom.js":
+/*!**************************************!*\
+  !*** ./src/zoom/calc_pan_by_zoom.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_pan_by_zoom(zd, cursor_relative){
+
+  // pan_by_zoom relative to matrix max and min
+  // zooming in causes negative panning
+  // net positive panning is not allowed
+  zd.inst_eff_zoom = zd.inst_zoom - 1;
+  zd.pbz_relative_min = -zd.inst_eff_zoom * cursor_relative.min;
+  zd.pbz_relative_max = -zd.inst_eff_zoom * cursor_relative.max;
+
+  // if (axis === 'x'){
+  //   console.log(cursor_relative.min, cursor_relative.max, zd.pbz_relative_min, zd.pbz_relative_max);
+  // }
+
+};
+
+/***/ }),
+
+/***/ "./src/zoom/calc_potential_total_pan.js":
+/*!**********************************************!*\
+  !*** ./src/zoom/calc_potential_total_pan.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_potential_total_pan(zoom_data){
+
+  // calculate unsanitized versions of the ptp (potential-total-pan)
+  var ptp = {};
+  ptp.min = zoom_data.total_pan_min +
+                 zoom_data.pan_by_drag / zoom_data.total_zoom  +
+                 zoom_data.pbz_relative_min / zoom_data.total_zoom ;
+
+
+  // panning by drag has the opposite effect relative to the max/right side
+  ptp.max = zoom_data.total_pan_max +
+                 -zoom_data.pan_by_drag / zoom_data.total_zoom  +
+                 zoom_data.pbz_relative_max / zoom_data.total_zoom ;
+
+  return ptp;
+
+};
+
+/***/ }),
+
 /***/ "./src/zoom/ini_zoom_data.js":
 /*!***********************************!*\
   !*** ./src/zoom/ini_zoom_data.js ***!
@@ -26298,9 +35920,17 @@ module.exports = {
 
 module.exports = function ini_zoom_data(){
 
+  var zoom_function = function(context){
+    return context.view;
+  };
+
   // organize zoom rules into x and y components
   var zoom_data = {};
+
+  zoom_data.zoom_function = zoom_function;
+
   _.each(['x', 'y'], function(inst_dim){
+
     var inst_data = {};
     // total zooming (formerly tsx)
     inst_data.total_zoom = 1;
@@ -26331,10 +35961,6 @@ module.exports = function ini_zoom_data(){
     // keep track of when zooming stops
     inst_data.still_zooming = false;
 
-    // keep a running total of the number of interactions (zoom/pan)
-    // this is used to keep track of the final interaction
-    inst_data.total_int = 0;
-
     // keep a running total of the number of mouseovers
     // this is used to keep track of the final mouseover
     inst_data.total_mouseover = 0;
@@ -26358,8 +35984,10 @@ module.exports = function ini_zoom_data(){
 
 module.exports = function ini_zoom_restrict(params){
 
-  var num_row = params.num_row;
-  var num_col = params.num_col;
+  var inst_axis = 'row';
+  var num_row = params.labels['num_' + inst_axis];
+  inst_axis = 'col';
+  var num_col = params.labels['num_' + inst_axis];
 
   // working on improved matrix zooming
   var max_zoom = params.max_zoom;
@@ -26379,14 +36007,247 @@ module.exports = function ini_zoom_restrict(params){
 
   // increase max zoom in y or x direction
   if (num_row > num_col){
+    // console.log('more rows than cols')
     zoom_restrict.y.max = zoom_restrict.y.max * ( 1/col_vs_row_space );
     zoom_restrict.y.ratio = 1/col_vs_row_space;
-  } else if (num_col > num_row) {
+  } else {
+    // console.log('more cols than rows')
     zoom_restrict.x.max = zoom_restrict.x.max * col_vs_row_space;
     zoom_restrict.x.ratio = col_vs_row_space;
   }
 
   return zoom_restrict;
+
+};
+
+/***/ }),
+
+/***/ "./src/zoom/pan_by_drag_rules.js":
+/*!***************************************!*\
+  !*** ./src/zoom/pan_by_drag_rules.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function pan_by_drag_rules(zoom_data, viz_dim_heat){
+
+  // do not allow simultaneous panning and zooming
+  if (zoom_data.inst_zoom > 1){
+    zoom_data.pan_by_drag = 0;
+  }
+
+  // restrict min pan_by_drag if necessary
+  if (zoom_data.pan_by_drag > 0){
+    if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
+      // push to edge
+      zoom_data.pan_by_drag = -zoom_data.total_pan_min;
+    }
+  }
+
+  // restrict max pan_by_drag if necessary
+  if (zoom_data.pan_by_drag < 0){
+    if (zoom_data.total_pan_max - zoom_data.pan_by_drag >= 0){
+      // push to edge
+      zoom_data.pan_by_drag = zoom_data.total_pan_max;
+    }
+  }
+
+  // restrict effective position of mouse
+  if (zoom_data.cursor_position < viz_dim_heat.min + zoom_data.viz_offcenter){
+    zoom_data.cursor_position = viz_dim_heat.min + zoom_data.viz_offcenter;
+  } else if (zoom_data.cursor_position > viz_dim_heat.max + zoom_data.heat_offset  + zoom_data.viz_offcenter){
+    zoom_data.cursor_position = viz_dim_heat.max + zoom_data.heat_offset + zoom_data.viz_offcenter;
+  }
+
+};
+
+/***/ }),
+
+/***/ "./src/zoom/run_zoom_restrictions.js":
+/*!*******************************************!*\
+  !*** ./src/zoom/run_zoom_restrictions.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function run_zoom_restrictions(zd, ptp, viz_dim_heat, axis, zd_copy){
+
+  /*
+    Sequential if statements
+  */
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Prepare Restrictions
+  //////////////////////////////////////////////////////////////////////////////
+  var zero_threshold = 0.0001;
+
+  zd.fully_zoomed_out = false;
+  if (zd.total_pan_min >= 0 && zd.total_pan_max >= 0){
+    zd.fully_zoomed_out = true;
+
+  }
+
+  var double_restrict = false;
+  if (ptp.min > zero_threshold && ptp.max > zero_threshold ) {
+    double_restrict = true;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Panning in bounds
+  //////////////////////////////////////////////////////////////////////////////
+  if (ptp.min <= zero_threshold && ptp.max <= zero_threshold){
+    zd.pan_by_zoom = -zd.inst_eff_zoom * zd.cursor_position;
+    zd.total_pan_min = ptp.min;
+    zd.total_pan_max = ptp.max;
+    zd.prev_restrict = false;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Restrict total pan min
+  //////////////////////////////////////////////////////////////////////////////
+
+  if (ptp.min > zero_threshold) {
+
+    // pin to min matrix, and 2) push right (positive) by total remaining pan
+    zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.min + zd.viz_offcenter) - zd.total_pan_min * zd.total_zoom;
+
+    // set total_pan_min to 0, no panning room remaining after being pushed right
+    zd.total_pan_min = 0;
+
+    // the cursor is effectively locked on the min (left) side of the matrix
+    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + zd.viz_offcenter;
+    var new_pbz_relative_max = -zd.inst_eff_zoom * new_cursor_relative_max;
+    zd.total_pan_max = zd.total_pan_max + new_pbz_relative_max / zd.total_zoom;
+
+    // prevent push if fully zoomed out (&& zd.inst_eff_zoom <=0)
+    if (zd.fully_zoomed_out == true){
+      zd.pan_by_zoom = 0;
+      zd.total_pan_max = 0;
+    }
+
+    zd.prev_restrict = 'min';
+
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Restrict total pan max
+  //////////////////////////////////////////////////////////////////////////////
+
+  if (ptp.max > zero_threshold) {
+
+    // pin to max matrix, and 2) push left (negative) by total remaining pan
+    zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.max + zd.heat_offset + zd.viz_offcenter) + zd.total_pan_max * zd.total_zoom;
+
+    // set total_pan_max to 0, no panning room remaining after being pushed left
+    zd.total_pan_max = 0 ;
+
+    // the cursor is effectively locked on the max (right) side of the matrix
+    var new_cursor_relative_min = viz_dim_heat.max + zd.heat_offset - viz_dim_heat.min + zd.viz_offcenter;
+    var new_pbz_relative_min = -zd.inst_eff_zoom * new_cursor_relative_min;
+    zd.total_pan_min = zd.total_pan_min + new_pbz_relative_min / zd.total_zoom;
+
+    // prevent push if fully zoomed out
+    if (zd.fully_zoomed_out == true){
+      zd.pan_by_zoom = 0;
+      zd.total_pan_min = 0;
+    }
+
+    zd.prev_restrict = 'max';
+
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Double Restriction
+  //////////////////////////////////////////////////////////////////////////////
+
+  // if double restrict, pin to side that was previously pinned
+  if (double_restrict){
+
+    // pin the matrix to either side
+    // no need to push it to the edge since it was previously pushed to the edge
+    if (zd_copy.prev_restrict === 'min') {
+
+      zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.min + zd.viz_offcenter);
+
+    } else if (zd_copy.prev_restrict === 'max'){
+
+      zd.pan_by_zoom = -zd.inst_eff_zoom * (viz_dim_heat.max + zd.heat_offset + zd.viz_offcenter);
+
+    }
+
+  }
+
+};
+
+/***/ }),
+
+/***/ "./src/zoom/sanitize_inst_zoom.js":
+/*!****************************************!*\
+  !*** ./src/zoom/sanitize_inst_zoom.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function sanitize_inst_zoom(params, zd){
+
+  // first sanitize zooming out if already completely zoomed out
+  if (zd.total_zoom == 1 && zd.inst_zoom < 1){
+    zd.inst_zoom = 1;
+
+    // reset zoom
+    params.reset_cameras = true;
+
+  }
+
+};
+
+
+/***/ }),
+
+/***/ "./src/zoom/sanitize_potential_zoom.js":
+/*!*********************************************!*\
+  !*** ./src/zoom/sanitize_potential_zoom.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function sanitize_potential_zoom(zd, zoom_restrict){
+
+  var max_zoom = zoom_restrict.max;
+  var min_zoom = zoom_restrict.min;
+
+  // calc unsanitized ptz (potential-total-zoom)
+  // checking this prevents the real total_zoom from going out of bounds
+  var ptz = zd.total_zoom * zd.inst_zoom;
+
+  // zooming within allowed range
+  if (ptz < max_zoom && ptz > min_zoom){
+    zd.total_zoom = ptz;
+  }
+
+  // Zoom above max
+  else if (ptz >= max_zoom) {
+    if (zd.inst_zoom < 1){
+      zd.total_zoom = zd.total_zoom * zd.inst_zoom;
+    } else {
+      // bump zoom up to max
+      zd.inst_zoom = max_zoom/zd.total_zoom;
+      // set zoom to max
+      zd.total_zoom = max_zoom;
+    }
+  }
+  // Zoom below min
+  else if (ptz <= min_zoom){
+    if (zd.inst_zoom > 1){
+      zd.total_zoom = zd.total_zoom * zd.inst_zoom;
+    } else {
+
+      // bump zoom down to min
+      zd.inst_zoom =  min_zoom/zd.total_zoom;
+      // set zoom to min
+      zd.total_zoom = min_zoom;
+    }
+  }
 
 };
 
@@ -26423,7 +36284,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     // working on toggling tracking for cases when we need to ignore
     // (e.g. moving a slider)
-    if (params.viz_interact){
+    if (params.interact.enable_viz_interact){
       track_interaction_zoom_data(regl, params, ev);
     } else {
 
@@ -26437,10 +36298,10 @@ module.exports = function zoom_rules_high_mat(regl, params){
     }
 
   })
-  // .on('interactionend', function(ev){
+  .on('interactionend', function(){
 
-
-  // });
+    // console.log('clicking')
+  });
 
 };
 
@@ -26451,288 +36312,54 @@ module.exports = function zoom_rules_high_mat(regl, params){
   !*** ./src/zoom/zoom_rules_low_mat.js ***!
   \****************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var sanitize_inst_zoom = __webpack_require__(/*! ./sanitize_inst_zoom */ "./src/zoom/sanitize_inst_zoom.js");
+var sanitize_potential_zoom = __webpack_require__(/*! ./sanitize_potential_zoom */ "./src/zoom/sanitize_potential_zoom.js");
+var pan_by_drag_rules = __webpack_require__(/*! ./pan_by_drag_rules */ "./src/zoom/pan_by_drag_rules.js");
+var calc_cursor_relative = __webpack_require__(/*! ./calc_cursor_relative */ "./src/zoom/calc_cursor_relative.js");
+var calc_pan_by_zoom = __webpack_require__(/*! ./calc_pan_by_zoom */ "./src/zoom/calc_pan_by_zoom.js");
+var calc_potential_total_pan = __webpack_require__(/*! ./calc_potential_total_pan */ "./src/zoom/calc_potential_total_pan.js");
+var run_zoom_restrictions = __webpack_require__(/*! ./run_zoom_restrictions */ "./src/zoom/run_zoom_restrictions.js");
 
 module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
                                              viz_dim_heat, viz_dim_mat, axis){
 
-
   // convert offcenter WebGl units to pixel units
-  var offcenter;
   var canvas_dim;
   if (axis === 'x'){
-    // offcenter = (params.viz_dim.canvas.width * params.offcenter[axis])/2;
     canvas_dim = 'width';
   } else {
     canvas_dim = 'height';
   }
-  offcenter = (params.viz_dim.canvas[canvas_dim] * params.offcenter[axis])/2;
+  zoom_data.viz_offcenter = (params.viz_dim.canvas[canvas_dim] * params.viz_dim.offcenter[axis])/2;
 
   // make a copy of zoom_data for later use (not a reference)
   var zoom_data_copy = _.clone(zoom_data);
 
   //////////////////////////////////////////////////////////////////////////////
-  // Zooming Rules
+  // Sanitize Zoom
   //////////////////////////////////////////////////////////////////////////////
-
-  var max_zoom = zoom_restrict.max;
-  var min_zoom = zoom_restrict.min;
-
-  // first sanitize zooming out if already completely zoomed out
-  if (zoom_data.total_zoom == 1 && zoom_data.inst_zoom < 1){
-    zoom_data.inst_zoom = 1;
-  }
-
-  // calc unsanitized potential_total_zoom
-  // checking this prevents the real total_zoom from going out of bounds
-  var potential_total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
-
-  // var zooming_below_one = false;
-
-  // zooming within allowed range
-  if (potential_total_zoom < max_zoom && potential_total_zoom > min_zoom){
-    zoom_data.total_zoom = potential_total_zoom;
-  }
-
-  // Zoom above max
-  else if (potential_total_zoom >= max_zoom) {
-    if (zoom_data.inst_zoom < 1){
-      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
-    } else {
-      // bump zoom up to max
-      zoom_data.inst_zoom = max_zoom/zoom_data.total_zoom;
-      // set zoom to max
-      zoom_data.total_zoom = max_zoom;
-    }
-  }
-  // Zoom below min
-  else if (potential_total_zoom <= min_zoom){
-    if (zoom_data.inst_zoom > 1){
-      zoom_data.total_zoom = zoom_data.total_zoom * zoom_data.inst_zoom;
-    } else {
-
-      // bump zoom down to min
-      zoom_data.inst_zoom =  min_zoom/zoom_data.total_zoom;
-      // set zoom to min
-      zoom_data.total_zoom = min_zoom;
-    }
-  }
-
-  // working on fixing zoom restrict when cursor is outside of matrix
-  var inst_offset = viz_dim_mat.max - viz_dim_heat.max;
+  sanitize_inst_zoom(params, zoom_data);
+  sanitize_potential_zoom(zoom_data, zoom_restrict);
+  zoom_data.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
   //////////////////////////////////////////////////////////////////////////////
-
-  // do not allow simultaneous panning and zooming
-  if (zoom_data.inst_zoom > 1){
-    zoom_data.pan_by_drag = 0;
-  }
-
-  // restrict min pan_by_drag if necessary
-  if (zoom_data.pan_by_drag > 0){
-    if (zoom_data.total_pan_min + zoom_data.pan_by_drag >= 0){
-      // push to edge
-      zoom_data.pan_by_drag = -zoom_data.total_pan_min;
-    }
-  }
-
-  // restrict max pan_by_drag if necessary
-  if (zoom_data.pan_by_drag < 0){
-    if (zoom_data.total_pan_max - zoom_data.pan_by_drag >= 0){
-      // push to edge
-      zoom_data.pan_by_drag = zoom_data.total_pan_max;
-    }
-  }
-
-
-  // if (axis === 'x'){
-  //   console.log(zoom_data.cursor_position, viz_dim_heat.min, offcenter, viz_dim_heat.min + offcenter)
-  // }
-
-  // restrict effective position of mouse
-  if (zoom_data.cursor_position < viz_dim_heat.min + offcenter){
-    zoom_data.cursor_position = viz_dim_heat.min + offcenter;
-    // if (axis === 'x'){
-    //   console.log(axis, 'less than min cursor position', viz_dim_heat.min + offcenter);
-    // }
-  } else if (zoom_data.cursor_position > viz_dim_heat.max + inst_offset  + offcenter){
-
-    zoom_data.cursor_position = viz_dim_heat.max + inst_offset + offcenter;
-
-  }
-
-  // tracking cursor position relative to the minimum
-  var cursor_relative_min = zoom_data.cursor_position - viz_dim_heat.min - offcenter;
-
-  /* Cursor restriction does not seem to be doing anything */
-
-  // restrict cursor_relative_min
-  if (cursor_relative_min < 0){
-    cursor_relative_min = 0;
-    // console.log('LOWER than min ############################')
-  } else if (cursor_relative_min > viz_dim_heat.max){
-    cursor_relative_min = viz_dim_heat.max;
-    // console.log('HIGHER than min ############################')
-  }
-
-  // tracking cursor position relative to the maximum
-  /* trying to fix zoom in outside of matrix and zoom out inside of matrix bugn */
-  var cursor_relative_max = viz_dim_heat.max + inst_offset - zoom_data.cursor_position +  offcenter;
-
-  // restrict cursor_relative_max
-  if (cursor_relative_max < 0){
-    cursor_relative_max = 0;
-    // console.log('LOWER than max ############################')
-  } else if (cursor_relative_max > viz_dim_heat.max + inst_offset){
-    cursor_relative_max = viz_dim_heat.max + inst_offset;
-    // console.log('HIGHER than max ############################')
-  }
+  pan_by_drag_rules(zoom_data, viz_dim_heat);
+  var cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat);
 
   //////////////////////////////////////////////////////////////////////////////
   // Pan by Zoom Rules
   //////////////////////////////////////////////////////////////////////////////
-
-  // pan_by_zoom relative to matrix max and min
-  // zooming in causes negative panning
-  // net positive panning is not allowed
-  var inst_eff_zoom = zoom_data.inst_zoom - 1;
-  zoom_data.pbz_relative_min = -inst_eff_zoom * cursor_relative_min;
-  zoom_data.pbz_relative_max = -inst_eff_zoom * cursor_relative_max;
-
-  // if (axis === 'x'){
-  //   console.log(cursor_relative_min, cursor_relative_max, zoom_data.pbz_relative_min, zoom_data.pbz_relative_max);
-  // }
-
-  // calculate unsanitized versions of total pan values
-  var potential_total_pan_min = zoom_data.total_pan_min +
-                 zoom_data.pan_by_drag / zoom_data.total_zoom  +
-                 zoom_data.pbz_relative_min / zoom_data.total_zoom ;
-
-
-  // panning by drag has the opposite effect relative to the max/right side
-  var potential_total_pan_max = zoom_data.total_pan_max +
-                 -zoom_data.pan_by_drag / zoom_data.total_zoom  +
-                 zoom_data.pbz_relative_max / zoom_data.total_zoom ;
-
-  var zero_threshold = 0.0001;
-
-  var fully_zoomed_out = false;
-  if (zoom_data.total_pan_min >= 0 && zoom_data.total_pan_max >= 0){
-    fully_zoomed_out = true;
-  }
-
-  var double_restrict = false;
-  if (potential_total_pan_min > zero_threshold && potential_total_pan_max > zero_threshold ) {
-
-    double_restrict = true;
-
-    // has_been_both = true;
-  }
-
-  // Panning in bounds
-  if (potential_total_pan_min <= zero_threshold && potential_total_pan_max <= zero_threshold){
-
-    zoom_data.pan_by_zoom = -inst_eff_zoom * zoom_data.cursor_position;
-    zoom_data.total_pan_min = potential_total_pan_min;
-    zoom_data.total_pan_max = potential_total_pan_max;
-
-    zoom_data.prev_restrict = false;
-
-  }
-
-  if (potential_total_pan_min > zero_threshold) {
-
-    // push over by total_pan (negative value) times total zoom applied
-    // need to push more when matrix has been effectively increased in size
-    // steps: 1) pin to min matrix, and 2) push right (positive) by total remaining pan
-    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.min + offcenter) - zoom_data.total_pan_min * zoom_data.total_zoom;
-
-    // set total_pan_min to 0, no panning room remaining after being pushed right
-    zoom_data.total_pan_min = 0;
-
-    // the cursor is effectively locked on the min (left) side of the matrix
-    var new_cursor_relative_max = viz_dim_heat.max - viz_dim_heat.min + offcenter;
-    var new_pbz_relative_max = -inst_eff_zoom * new_cursor_relative_max;
-    zoom_data.total_pan_max = zoom_data.total_pan_max + new_pbz_relative_max / zoom_data.total_zoom;
-
-    // prevent push if fully zoomed out (&& inst_eff_zoom <=0)
-    if (fully_zoomed_out == true){
-      if (axis === 'x'){
-        // console.log('<<<<<<<<<< Min prevent push');
-      }
-      zoom_data.pan_by_zoom = 0;
-      zoom_data.total_pan_max = 0;
-    }
-
-    // if (axis === 'x' && has_been_both === true){
-    //   // debugger
-    // }
-
-    zoom_data.prev_restrict = 'min';
-
-  }
-
-  if (potential_total_pan_max > zero_threshold) {
-
-    // console.log('PAN BY ZOOM GREATER THAN ZERO THRESHOLD')
-
-    // zoom_data.pan_by_zoom = - inst_eff_zoom * zoom_data.cursor_position;
-    // steps: 1) pin to max matrix, and 2) push left (negative) by total remaining pan
-    // total_pan_max
-    // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max + zoom_data.total_pan_max * zoom_data.total_zoom;
-    // zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset) + zoom_data.total_pan_max * zoom_data.total_zoom;
-    zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter) + zoom_data.total_pan_max * zoom_data.total_zoom;
-
-    // set total_pan_max to 0, no panning room remaining after being pushed left
-    zoom_data.total_pan_max = 0 ;
-
-    // the cursor is effectively locked on the max (right) side of the matrix
-    // var new_cursor_relative_min = viz_dim_heat.max - viz_dim_heat.min;
-    var new_cursor_relative_min = viz_dim_heat.max + inst_offset - viz_dim_heat.min + offcenter;
-    var new_pbz_relative_min = -inst_eff_zoom * new_cursor_relative_min;
-    zoom_data.total_pan_min = zoom_data.total_pan_min + new_pbz_relative_min / zoom_data.total_zoom;
-
-    // prevent push if fully zoomed out
-    if (fully_zoomed_out == true){
-      if (axis === 'x'){
-        // console.log('>>>>>>>>>>>>> Max prevent push');
-      }
-      zoom_data.pan_by_zoom = 0;
-      zoom_data.total_pan_min = 0;
-    }
-
-    zoom_data.prev_restrict = 'max';
-
-  }
+  calc_pan_by_zoom(zoom_data, cursor_relative);
 
   //////////////////////////////////////////////////////////////////////////////
-  // Double Restriction
+  // Potential Total Pan
   //////////////////////////////////////////////////////////////////////////////
-
-  // if double restrict, pin to side that was previously pinned
-  if (double_restrict){
-
-    // console.log('\n\nAbout to pin matrix after double restriction \n----------------------------------------');
-    // console.log('prev_restrict', zoom_data_copy.prev_restrict);
-
-    // pin the matrix to either side
-    // no need to push it to the edge since it was previously pushed to the edge
-    if (zoom_data_copy.prev_restrict === 'min') {
-
-      zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.min + offcenter);
-
-    } else if (zoom_data_copy.prev_restrict === 'max'){
-
-      // zoom_data.pan_by_zoom = -inst_eff_zoom * viz_dim_heat.max;
-      // zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
-      zoom_data.pan_by_zoom = -inst_eff_zoom * (viz_dim_heat.max + inst_offset + offcenter);
-
-    }
-
-  }
+  var ptp = calc_potential_total_pan(zoom_data);
+  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, axis, zoom_data_copy);
 
   return zoom_data;
 

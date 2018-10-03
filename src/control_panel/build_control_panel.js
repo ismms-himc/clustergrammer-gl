@@ -313,12 +313,20 @@ module.exports = function build_control_panel(regl, cgm){
     .style('fill', 'white')
     .style('opacity', 0.0)
     .on('dblclick', function(d, i){
+
       run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
+
+      cgm.params.order.inst.col = 'cat_' + String(i) + '_index';
+
+      d3.select(cgm.params.root + ' .col-reorder-buttons')
+        .selectAll('rect')
+        .style('stroke', button_color);
+
     })
     .attr('transform', function(d, i){
       var y_trans = (dim_y + 2)* i ;
       return 'translate( 0, '+ y_trans +')';
     })
-    .style('user-select', none);
+    .style('user-select', 'none');
 
 };

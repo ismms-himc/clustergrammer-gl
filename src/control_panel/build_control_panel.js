@@ -262,8 +262,7 @@ module.exports = function build_control_panel(regl, cgm){
     .style('left', pos_x + 'px')
     .classed('col-cat-title-group', true);
 
-
-  var dim_x = 100;
+  var dim_x = 55;
   var dim_y = 22;
 
   var col_cat_title_svg = col_cat_title_group

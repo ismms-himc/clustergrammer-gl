@@ -33086,7 +33086,7 @@ var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendro
 function clustergrammer_gl(args){
 
   // console.log('################################');
-  // console.log('clustergrammer-gl version 0.5.5');
+  // console.log('clustergrammer-gl version 0.6.0');
   // console.log('################################');
 
   var network = args.network;

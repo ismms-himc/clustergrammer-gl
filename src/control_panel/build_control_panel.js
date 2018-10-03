@@ -165,6 +165,8 @@ module.exports = function build_control_panel(regl, cgm){
         // tmp preventing dispersion reordering from working
         if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
 
+          /* category order is already calculated */
+          // d = d.replace('alpha', 'cat_1_index')
           run_reorder(regl, cgm, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
@@ -226,5 +228,60 @@ module.exports = function build_control_panel(regl, cgm){
   // // .on('click', function(){
   // //   console.log('clicking logo')
   // // });
+
+  /*
+  Make Column Reorder titles
+      d3.select(viz.viz_svg)
+      .selectAll()
+      .data(viz.all_cats.col)
+      .enter()
+      .append('text')
+      .classed('col_cat_super', true)
+      .style('font-size', cat_text_size+'px')
+      .style('opacity', cat_super_opacity)
+      .style('cursor','default')
+      .attr('transform', function(d){
+        var inst_cat = parseInt( d.split('-')[1], 10);
+        var inst_y = y_offset + extra_y_room * viz.cat_room.symbol_width
+          * inst_cat;
+        return 'translate('+x_offset+','+inst_y+')';
+      })
+      .text(function(d){
+        return get_cat_title(viz, d, 'col');
+      });
+  */
+
+  var params = cgm.params;
+
+  var pos_x = 845;
+  var pos_y = 125;
+  var col_cat_title_group = d3.select(params.root + ' .canvas-container')
+    .append('g')
+    .style('position', 'absolute')
+    .style('top', pos_y + 'px')
+    .style('left', pos_x + 'px')
+    .classed('col-cat-title-group', true);
+
+
+  var dim_x = 100;
+  var dim_y = 22;
+
+  var col_cat_title_svg = col_cat_title_group
+    .append('svg')
+    .style('height', function(){
+      return  dim_y + 'px'
+    })
+    .style('width', dim_x + 'px')
+    .classed('col-cat-title-svg', true);
+
+  var col_cat_reorder_group = col_cat_title_svg
+    .append('g')
+    .classed('col-cat-reorder-group', true);
+
+  col_cat_reorder_group
+    .append('rect')
+    .style('width', dim_x + 'px')
+    .style('height', dim_y + 'px')
+    .style('fill', 'black')
 
 };

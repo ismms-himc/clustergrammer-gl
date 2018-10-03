@@ -35618,8 +35618,14 @@ module.exports = function make_matrix_cell_tooltip(params){
     group_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('g')
       .style('position', 'absolute')
-      .style('top', pos_y + 'px')
-      .style('left', pos_x + 'px')
+      .style('top', function(){
+        var tmp_offset = pos_y - 20;
+        return tmp_offset + 'px'
+      })
+      .style('left', function(){
+        var tmp_offset = pos_x - 20;
+        return tmp_offset + 'px'
+      })
       .classed('group-svg-tooltip', true);
 
     var svg_tooltip_container = group_tooltip_container
@@ -35716,7 +35722,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     group_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('g')
         .style('position', 'absolute')
-        .style('margin-top',  '-10px')
+        .style('margin-top',  '-30px')
         // .attr('transform', function(d, inst_index){
         //   return 'translate(' + 100 + ', '+ 0 +')';
         // })

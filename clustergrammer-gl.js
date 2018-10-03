@@ -29328,15 +29328,20 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
       // all rows/cols
       // params
 
-      _.each(cat_types_index, function(cat_index){
+
+
+
+
+
+      _.each(cat_types_index, function(tmp_cat_index){
         // console.log('cat_types_index', cat_types_index)
 
-        inst_index = cat_index.split('-')[1];
+        inst_index = tmp_cat_index.split('-')[1];
         type_name = cat_types_names[inst_index];
 
         if (no_title_given){
-          if (cat_index.indexOf('-') >=0){
-            var tmp_num = parseInt( cat_index.split('-')[1], radix_param) + 1;
+          if (tmp_cat_index.indexOf('-') >=0){
+            var tmp_num = parseInt( tmp_cat_index.split('-')[1], radix_param) + 1;
             type_name = 'Category ' + String(tmp_num);
           } else {
             // backup behavior
@@ -29351,7 +29356,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
         _.each(clust_nodes, function (tmp_node){
           // console.log(tmp_node)
 
-          cat_name = tmp_node[cat_index];
+          cat_name = tmp_node[tmp_cat_index];
 
           if (cat_name.indexOf(': ') >=0){
             cat_name = cat_name.split(': ')[1];
@@ -29390,7 +29395,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
         for (var inst_cat in inst_run_count){
 
-          var tot_num_cat = params.viz.cat_info[inst_rc][cat_index].cat_hist[inst_cat];
+          var tot_num_cat = params.viz.cat_info[inst_rc][tmp_cat_index].cat_hist[inst_cat];
           var total_nodes = params.network[inst_rc+'_nodes'].length;
           var expect_prob = tot_num_cat / total_nodes;
 
@@ -29416,9 +29421,9 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
             num_nodes_ds = null;
           }
 
-          bar_color = params.viz.cat_colors[inst_rc][cat_index][cat_title_and_name];
+          bar_color = params.viz.cat_colors[inst_rc][tmp_cat_index][cat_title_and_name];
 
-          bar_data.push([ cat_index, cat_title_and_name, inst_run_count[inst_cat], bar_color, num_nodes, num_nodes_ds, pval]);
+          bar_data.push([ tmp_cat_index, cat_title_and_name, inst_run_count[inst_cat], bar_color, num_nodes, num_nodes_ds, pval]);
         }
 
         bar_data.sort(function(a, b) {

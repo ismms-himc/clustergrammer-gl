@@ -30802,7 +30802,7 @@ module.exports = function build_control_panel(regl, cgm){
     .attr('transform', function(){
       var y_trans = inst_height - border_height;
       return 'translate( 0, '+ y_trans +')';
-    })
+    });
 
   var button_dim = {};
   button_dim.height = 32;
@@ -31012,12 +31012,13 @@ module.exports = function build_control_panel(regl, cgm){
     .classed('col-cat-title-group', true);
 
   var dim_x = 55;
-  var dim_y = 22;
+  var dim_y = 10;
 
   var col_cat_title_svg = col_cat_title_group
     .append('svg')
     .style('height', function(){
-      return  dim_y + 'px'
+      var svg_height = dim_y * params.cat_data.col.length + 3;
+      return svg_height  + 'px'
     })
     .style('width', dim_x + 'px')
     .classed('col-cat-title-svg', true);
@@ -31027,10 +31028,21 @@ module.exports = function build_control_panel(regl, cgm){
     .classed('col-cat-reorder-group', true);
 
   col_cat_reorder_group
+    .selectAll('rect')
+    .data(params.cat_data.col)
+    .enter()
     .append('rect')
     .style('width', dim_x + 'px')
     .style('height', dim_y + 'px')
     .style('fill', 'black')
+    .on('dblclick', function(d, i){
+
+      run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
+    })
+    .attr('transform', function(d, i){
+      var y_trans = (dim_y + 2)* i ;
+      return 'translate( 0, '+ y_trans +')';
+    })
 
 };
 

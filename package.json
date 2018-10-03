@@ -41,6 +41,7 @@
     "underscore": "1.8.3",
     "util-extend": "1.0.3",
     "vectorize-text": "^3.0.2",
+    "mathjs": "3.17.0",
     "xtend": "^4.0.1"
   }
 }

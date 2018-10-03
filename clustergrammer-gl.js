@@ -14238,6 +14238,5483 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 
+/***/ "./node_modules/mathjs/core.js":
+/*!*************************************!*\
+  !*** ./node_modules/mathjs/core.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./lib/core/core */ "./node_modules/mathjs/lib/core/core.js");
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/core.js":
+/*!**********************************************!*\
+  !*** ./node_modules/mathjs/lib/core/core.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isFactory = __webpack_require__(/*! ./../utils/object */ "./node_modules/mathjs/lib/utils/object.js").isFactory;
+var typedFactory = __webpack_require__(/*! ./typed */ "./node_modules/mathjs/lib/core/typed.js");
+var emitter = __webpack_require__(/*! ./../utils/emitter */ "./node_modules/mathjs/lib/utils/emitter.js");
+
+var importFactory = __webpack_require__(/*! ./function/import */ "./node_modules/mathjs/lib/core/function/import.js");
+var configFactory = __webpack_require__(/*! ./function/config */ "./node_modules/mathjs/lib/core/function/config.js");
+
+/**
+ * Math.js core. Creates a new, empty math.js instance
+ * @param {Object} [options] Available options:
+ *                            {number} epsilon
+ *                              Minimum relative difference between two
+ *                              compared values, used by all comparison functions.
+ *                            {string} matrix
+ *                              A string 'Matrix' (default) or 'Array'.
+ *                            {string} number
+ *                              A string 'number' (default), 'BigNumber', or 'Fraction'
+ *                            {number} precision
+ *                              The number of significant digits for BigNumbers.
+ *                              Not applicable for Numbers.
+ *                            {boolean} predictable
+ *                              Predictable output type of functions. When true,
+ *                              output type depends only on the input types. When
+ *                              false (default), output type can vary depending
+ *                              on input values. For example `math.sqrt(-4)`
+ *                              returns `complex('2i')` when predictable is false, and
+ *                              returns `NaN` when true.
+ *                            {string} randomSeed
+ *                              Random seed for seeded pseudo random number generator.
+ *                              Set to null to randomly seed.
+ * @returns {Object} Returns a bare-bone math.js instance containing
+ *                   functions:
+ *                   - `import` to add new functions
+ *                   - `config` to change configuration
+ *                   - `on`, `off`, `once`, `emit` for events
+ */
+exports.create = function create (options) {
+  // simple test for ES5 support
+  if (typeof Object.create !== 'function') {
+    throw new Error('ES5 not supported by this JavaScript engine. ' +
+    'Please load the es5-shim and es5-sham library for compatibility.');
+  }
+
+  // cached factories and instances
+  var factories = [];
+  var instances = [];
+
+  // create a namespace for the mathjs instance, and attach emitter functions
+  var math = emitter.mixin({});
+  math.type = {};
+  math.expression = {
+    transform: {},
+    mathWithTransform: {}
+  };
+
+  // create a new typed instance
+  math.typed = typedFactory.create(math.type);
+
+  // create configuration options. These are private
+  var _config = {
+    // minimum relative difference between two compared values,
+    // used by all comparison functions
+    epsilon: 1e-12,
+
+    // type of default matrix output. Choose 'matrix' (default) or 'array'
+    matrix: 'Matrix',
+
+    // type of default number output. Choose 'number' (default) 'BigNumber', or 'Fraction
+    number: 'number',
+
+    // number of significant digits in BigNumbers
+    precision: 64,
+
+    // predictable output type of functions. When true, output type depends only
+    // on the input types. When false (default), output type can vary depending
+    // on input values. For example `math.sqrt(-4)` returns `complex('2i')` when
+    // predictable is false, and returns `NaN` when true.
+    predictable: false,
+
+    // random seed for seeded pseudo random number generation
+    // null = randomly seed
+    randomSeed: null
+  };
+
+  /**
+   * Load a function or data type from a factory.
+   * If the function or data type already exists, the existing instance is
+   * returned.
+   * @param {{type: string, name: string, factory: Function}} factory
+   * @returns {*}
+   */
+  function load (factory) {
+    if (!isFactory(factory)) {
+      throw new Error('Factory object with properties `type`, `name`, and `factory` expected');
+    }
+
+    var index = factories.indexOf(factory);
+    var instance;
+    if (index === -1) {
+      // doesn't yet exist
+      if (factory.math === true) {
+        // pass with math namespace
+        instance = factory.factory(math.type, _config, load, math.typed, math);
+      }
+      else {
+        instance = factory.factory(math.type, _config, load, math.typed);
+      }
+
+      // append to the cache
+      factories.push(factory);
+      instances.push(instance);
+    }
+    else {
+      // already existing function, return the cached instance
+      instance = instances[index];
+    }
+
+    return instance;
+  }
+
+  // load the import and config functions
+  math['import'] = load(importFactory);
+  math['config'] = load(configFactory);
+  math.expression.mathWithTransform['config'] = math['config']
+
+  // apply options
+  if (options) {
+    math.config(options);
+  }
+
+  return math;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/function/config.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/core/function/config.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var object = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js");
+
+function factory (type, config, load, typed, math) {
+  var MATRIX = ['Matrix', 'Array'];                   // valid values for option matrix
+  var NUMBER = ['number', 'BigNumber', 'Fraction'];   // valid values for option number
+
+  /**
+   * Set configuration options for math.js, and get current options.
+   * Will emit a 'config' event, with arguments (curr, prev, changes).
+   *
+   * Syntax:
+   *
+   *     math.config(config: Object): Object
+   *
+   * Examples:
+   *
+   *     math.config().number;                // outputs 'number'
+   *     math.eval('0.4');                    // outputs number 0.4
+   *     math.config({number: 'Fraction'});
+   *     math.eval('0.4');                    // outputs Fraction 2/5
+   *
+   * @param {Object} [options] Available options:
+   *                            {number} epsilon
+   *                              Minimum relative difference between two
+   *                              compared values, used by all comparison functions.
+   *                            {string} matrix
+   *                              A string 'Matrix' (default) or 'Array'.
+   *                            {string} number
+   *                              A string 'number' (default), 'BigNumber', or 'Fraction'
+   *                            {number} precision
+   *                              The number of significant digits for BigNumbers.
+   *                              Not applicable for Numbers.
+   *                            {string} parenthesis
+   *                              How to display parentheses in LaTeX and string
+   *                              output.
+   *                            {string} randomSeed
+   *                              Random seed for seeded pseudo random number generator.
+   *                              Set to null to randomly seed.
+   * @return {Object} Returns the current configuration
+   */
+  function _config(options) {
+    if (options) {
+      var prev = object.map(config, object.clone);
+
+      // validate some of the options
+      validateOption(options, 'matrix', MATRIX);
+      validateOption(options, 'number', NUMBER);
+
+      // merge options
+      object.deepExtend(config, options);
+
+      var curr = object.map(config, object.clone);
+
+      var changes = object.map(options, object.clone);
+
+      // emit 'config' event
+      math.emit('config', curr, prev, changes);
+
+      return curr;
+    }
+    else {
+      return object.map(config, object.clone);
+    }
+  }
+
+  // attach the valid options to the function so they can be extended
+  _config.MATRIX = MATRIX;
+  _config.NUMBER = NUMBER;
+
+  return _config;
+}
+
+/**
+ * Test whether an Array contains a specific item.
+ * @param {Array.<string>} array
+ * @param {string} item
+ * @return {boolean}
+ */
+function contains (array, item) {
+  return array.indexOf(item) !== -1;
+}
+
+/**
+ * Find a string in an array. Case insensitive search
+ * @param {Array.<string>} array
+ * @param {string} item
+ * @return {number} Returns the index when found. Returns -1 when not found
+ */
+function findIndex (array, item) {
+  return array
+      .map(function (i) {
+        return i.toLowerCase();
+      })
+      .indexOf(item.toLowerCase());
+}
+
+/**
+ * Validate an option
+ * @param {Object} options         Object with options
+ * @param {string} name            Name of the option to validate
+ * @param {Array.<string>} values  Array with valid values for this option
+ */
+function validateOption(options, name, values) {
+  if (options[name] !== undefined && !contains(values, options[name])) {
+    var index = findIndex(values, options[name]);
+    if (index !== -1) {
+      // right value, wrong casing
+      // TODO: lower case values are deprecated since v3, remove this warning some day.
+      console.warn('Warning: Wrong casing for configuration option "' + name + '", should be "' + values[index] + '" instead of "' + options[name] + '".');
+
+      options[name] = values[index]; // change the option to the right casing
+    }
+    else {
+      // unknown value
+      console.warn('Warning: Unknown value "' + options[name] + '" for configuration option "' + name + '". Available options: ' + values.map(JSON.stringify).join(', ') + '.');
+    }
+  }
+}
+
+exports.name = 'config';
+exports.math = true; // request the math namespace as fifth argument
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/function/import.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/core/function/import.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var lazy = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").lazy;
+var isFactory = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").isFactory;
+var traverse = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").traverse;
+var ArgumentsError = __webpack_require__(/*! ../../error/ArgumentsError */ "./node_modules/mathjs/lib/error/ArgumentsError.js");
+
+function factory (type, config, load, typed, math) {
+  /**
+   * Import functions from an object or a module
+   *
+   * Syntax:
+   *
+   *    math.import(object)
+   *    math.import(object, options)
+   *
+   * Where:
+   *
+   * - `object: Object`
+   *   An object with functions to be imported.
+   * - `options: Object` An object with import options. Available options:
+   *   - `override: boolean`
+   *     If true, existing functions will be overwritten. False by default.
+   *   - `silent: boolean`
+   *     If true, the function will not throw errors on duplicates or invalid
+   *     types. False by default.
+   *   - `wrap: boolean`
+   *     If true, the functions will be wrapped in a wrapper function
+   *     which converts data types like Matrix to primitive data types like Array.
+   *     The wrapper is needed when extending math.js with libraries which do not
+   *     support these data type. False by default.
+   *
+   * Examples:
+   *
+   *    // define new functions and variables
+   *    math.import({
+   *      myvalue: 42,
+   *      hello: function (name) {
+   *        return 'hello, ' + name + '!';
+   *      }
+   *    });
+   *
+   *    // use the imported function and variable
+   *    math.myvalue * 2;               // 84
+   *    math.hello('user');             // 'hello, user!'
+   *
+   *    // import the npm module 'numbers'
+   *    // (must be installed first with `npm install numbers`)
+   *    math.import(require('numbers'), {wrap: true});
+   *
+   *    math.fibonacci(7); // returns 13
+   *
+   * @param {Object | Array} object   Object with functions to be imported.
+   * @param {Object} [options]        Import options.
+   */
+  function math_import(object, options) {
+    var num = arguments.length;
+    if (num !== 1 && num !== 2) {
+      throw new ArgumentsError('import', num, 1, 2);
+    }
+
+    if (!options) {
+      options = {};
+    }
+
+    if (isFactory(object)) {
+      _importFactory(object, options);
+    }
+    // TODO: allow a typed-function with name too
+    else if (Array.isArray(object)) {
+      object.forEach(function (entry) {
+        math_import(entry, options);
+      });
+    }
+    else if (typeof object === 'object') {
+      // a map with functions
+      for (var name in object) {
+        if (object.hasOwnProperty(name)) {
+          var value = object[name];
+          if (isSupportedType(value)) {
+            _import(name, value, options);
+          }
+          else if (isFactory(object)) {
+            _importFactory(object, options);
+          }
+          else {
+            math_import(value, options);
+          }
+        }
+      }
+    }
+    else {
+      if (!options.silent) {
+        throw new TypeError('Factory, Object, or Array expected');
+      }
+    }
+  }
+
+  /**
+   * Add a property to the math namespace and create a chain proxy for it.
+   * @param {string} name
+   * @param {*} value
+   * @param {Object} options  See import for a description of the options
+   * @private
+   */
+  function _import(name, value, options) {
+    // TODO: refactor this function, it's to complicated and contains duplicate code
+    if (options.wrap && typeof value === 'function') {
+      // create a wrapper around the function
+      value = _wrap(value);
+    }
+
+    if (isTypedFunction(math[name]) && isTypedFunction(value)) {
+      if (options.override) {
+        // give the typed function the right name
+        value = typed(name, value.signatures);
+      }
+      else {
+        // merge the existing and typed function
+        value = typed(math[name], value);
+      }
+
+      math[name] = value;
+      _importTransform(name, value);
+      math.emit('import', name, function resolver() {
+        return value;
+      });
+      return;
+    }
+
+    if (math[name] === undefined || options.override) {
+      math[name] = value;
+      _importTransform(name, value);
+      math.emit('import', name, function resolver() {
+        return value;
+      });
+      return;
+    }
+
+    if (!options.silent) {
+      throw new Error('Cannot import "' + name + '": already exists');
+    }
+  }
+
+  function _importTransform (name, value) {
+    if (value && typeof value.transform === 'function') {
+      math.expression.transform[name] = value.transform;
+      if (allowedInExpressions(name)) {
+        math.expression.mathWithTransform[name] = value.transform
+      }
+    }
+    else {
+      // remove existing transform
+      delete math.expression.transform[name]
+      if (allowedInExpressions(name)) {
+        math.expression.mathWithTransform[name] = value
+      }
+    }
+  }
+
+  /**
+   * Create a wrapper a round an function which converts the arguments
+   * to their primitive values (like convert a Matrix to Array)
+   * @param {Function} fn
+   * @return {Function} Returns the wrapped function
+   * @private
+   */
+  function _wrap (fn) {
+    var wrapper = function wrapper () {
+      var args = [];
+      for (var i = 0, len = arguments.length; i < len; i++) {
+        var arg = arguments[i];
+        args[i] = arg && arg.valueOf();
+      }
+      return fn.apply(math, args);
+    };
+
+    if (fn.transform) {
+      wrapper.transform = fn.transform;
+    }
+
+    return wrapper;
+  }
+
+  /**
+   * Import an instance of a factory into math.js
+   * @param {{factory: Function, name: string, path: string, math: boolean}} factory
+   * @param {Object} options  See import for a description of the options
+   * @private
+   */
+  function _importFactory(factory, options) {
+    if (typeof factory.name === 'string') {
+      var name = factory.name;
+      var existingTransform = name in math.expression.transform
+      var namespace = factory.path ? traverse(math, factory.path) : math;
+      var existing = namespace.hasOwnProperty(name) ? namespace[name] : undefined;
+
+      var resolver = function () {
+        var instance = load(factory);
+        if (instance && typeof instance.transform === 'function') {
+          throw new Error('Transforms cannot be attached to factory functions. ' +
+              'Please create a separate function for it with exports.path="expression.transform"');
+        }
+
+        if (isTypedFunction(existing) && isTypedFunction(instance)) {
+          if (options.override) {
+            // replace the existing typed function (nothing to do)
+          }
+          else {
+            // merge the existing and new typed function
+            instance = typed(existing, instance);
+          }
+
+          return instance;
+        }
+
+        if (existing === undefined || options.override) {
+          return instance;
+        }
+
+        if (!options.silent) {
+          throw new Error('Cannot import "' + name + '": already exists');
+        }
+      };
+
+      if (factory.lazy !== false) {
+        lazy(namespace, name, resolver);
+
+        if (!existingTransform) {
+          if (factory.path === 'expression.transform' || factoryAllowedInExpressions(factory)) {
+            lazy(math.expression.mathWithTransform, name, resolver);
+          }
+        }
+      }
+      else {
+        namespace[name] = resolver();
+
+        if (!existingTransform) {
+          if (factory.path === 'expression.transform' || factoryAllowedInExpressions(factory)) {
+            math.expression.mathWithTransform[name] = resolver();
+          }
+        }
+      }
+
+      math.emit('import', name, resolver, factory.path);
+    }
+    else {
+      // unnamed factory.
+      // no lazy loading
+      load(factory);
+    }
+  }
+
+  /**
+   * Check whether given object is a type which can be imported
+   * @param {Function | number | string | boolean | null | Unit | Complex} object
+   * @return {boolean}
+   * @private
+   */
+  function isSupportedType(object) {
+    return typeof object === 'function'
+        || typeof object === 'number'
+        || typeof object === 'string'
+        || typeof object === 'boolean'
+        || object === null
+        || (object && type.isUnit(object))
+        || (object && type.isComplex(object))
+        || (object && type.isBigNumber(object))
+        || (object && type.isFraction(object))
+        || (object && type.isMatrix(object))
+        || (object && Array.isArray(object))
+  }
+
+  /**
+   * Test whether a given thing is a typed-function
+   * @param {*} fn
+   * @return {boolean} Returns true when `fn` is a typed-function
+   */
+  function isTypedFunction (fn) {
+    return typeof fn === 'function' && typeof fn.signatures === 'object';
+  }
+
+  function allowedInExpressions (name) {
+    return !unsafe.hasOwnProperty(name);
+  }
+
+  function factoryAllowedInExpressions (factory) {
+    return factory.path === undefined && !unsafe.hasOwnProperty(factory.name);
+  }
+
+  // namespaces and functions not available in the parser for safety reasons
+  var unsafe = {
+    'expression': true,
+    'type': true,
+    'docs': true,
+    'error': true,
+    'json': true,
+    'chain': true // chain method not supported. Note that there is a unit chain too.
+  };
+
+  return math_import;
+}
+
+exports.math = true; // request access to the math namespace as 5th argument of the factory function
+exports.name = 'import';
+exports.factory = factory;
+exports.lazy = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/core/typed.js":
+/*!***********************************************!*\
+  !*** ./node_modules/mathjs/lib/core/typed.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var typedFunction = __webpack_require__(/*! typed-function */ "./node_modules/typed-function/typed-function.js");
+var digits = __webpack_require__(/*! ./../utils/number */ "./node_modules/mathjs/lib/utils/number.js").digits;
+var isBigNumber = __webpack_require__(/*! ./../utils/bignumber/isBigNumber */ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js");
+var isMatrix = __webpack_require__(/*! ./../utils/collection/isMatrix */ "./node_modules/mathjs/lib/utils/collection/isMatrix.js");
+
+// returns a new instance of typed-function
+var createTyped = function () {
+  // initially, return the original instance of typed-function
+  // consecutively, return a new instance from typed.create.
+  createTyped = typedFunction.create;
+  return typedFunction;
+};
+
+/**
+ * Factory function for creating a new typed instance
+ * @param {Object} type   Object with data types like Complex and BigNumber
+ * @returns {Function}
+ */
+exports.create = function create(type) {
+  // TODO: typed-function must be able to silently ignore signatures with unknown data types
+
+  // type checks for all known types
+  //
+  // note that:
+  //
+  // - check by duck-typing on a property like `isUnit`, instead of checking instanceof.
+  //   instanceof cannot be used because that would not allow to pass data from
+  //   one instance of math.js to another since each has it's own instance of Unit.
+  // - check the `isUnit` property via the constructor, so there will be no
+  //   matches for "fake" instances like plain objects with a property `isUnit`.
+  //   That is important for security reasons.
+  // - It must not be possible to override the type checks used internally,
+  //   for security reasons, so these functions are not exposed in the expression
+  //   parser.
+  type.isNumber = function (x) { return typeof x === 'number' };
+  type.isComplex = function (x) { return type.Complex && x instanceof type.Complex || false };
+  type.isBigNumber = isBigNumber;
+  type.isFraction = function (x) { return type.Fraction && x instanceof type.Fraction || false };
+  type.isUnit = function (x) { return x && x.constructor.prototype.isUnit || false };
+  type.isString = function (x) { return typeof x === 'string' };
+  type.isArray = Array.isArray;
+  type.isMatrix = isMatrix;
+  type.isDenseMatrix = function (x) { return x && x.isDenseMatrix && x.constructor.prototype.isMatrix || false };
+  type.isSparseMatrix = function (x) { return x && x.isSparseMatrix && x.constructor.prototype.isMatrix || false };
+  type.isRange = function (x) { return x && x.constructor.prototype.isRange || false };
+  type.isIndex = function (x) { return x && x.constructor.prototype.isIndex || false };
+  type.isBoolean = function (x) { return typeof x === 'boolean' };
+  type.isResultSet = function (x) { return x && x.constructor.prototype.isResultSet || false };
+  type.isHelp = function (x) { return x && x.constructor.prototype.isHelp || false };
+  type.isFunction = function (x) { return typeof x === 'function'};
+  type.isDate = function (x) { return x instanceof Date };
+  type.isRegExp = function (x) { return x instanceof RegExp };
+  type.isObject = function (x) { return typeof x === 'object' };
+  type.isNull = function (x) { return x === null };
+  type.isUndefined = function (x) { return x === undefined };
+
+  type.isAccessorNode = function (x) { return x && x.isAccessorNode && x.constructor.prototype.isNode || false };
+  type.isArrayNode = function (x) { return x && x.isArrayNode && x.constructor.prototype.isNode || false };
+  type.isAssignmentNode = function (x) { return x && x.isAssignmentNode && x.constructor.prototype.isNode || false };
+  type.isBlockNode = function (x) { return x && x.isBlockNode && x.constructor.prototype.isNode || false };
+  type.isConditionalNode = function (x) { return x && x.isConditionalNode && x.constructor.prototype.isNode || false };
+  type.isConstantNode = function (x) { return x && x.isConstantNode && x.constructor.prototype.isNode || false };
+  type.isFunctionAssignmentNode = function (x) { return x && x.isFunctionAssignmentNode && x.constructor.prototype.isNode || false };
+  type.isFunctionNode = function (x) { return x && x.isFunctionNode && x.constructor.prototype.isNode || false };
+  type.isIndexNode = function (x) { return x && x.isIndexNode && x.constructor.prototype.isNode || false };
+  type.isNode = function (x) { return x && x.isNode && x.constructor.prototype.isNode || false };
+  type.isObjectNode = function (x) { return x && x.isObjectNode && x.constructor.prototype.isNode || false };
+  type.isOperatorNode = function (x) { return x && x.isOperatorNode && x.constructor.prototype.isNode || false };
+  type.isParenthesisNode = function (x) { return x && x.isParenthesisNode && x.constructor.prototype.isNode || false };
+  type.isRangeNode = function (x) { return x && x.isRangeNode && x.constructor.prototype.isNode || false };
+  type.isSymbolNode = function (x) { return x && x.isSymbolNode && x.constructor.prototype.isNode || false };
+
+  type.isChain = function (x) { return x && x.constructor.prototype.isChain || false };
+
+  // get a new instance of typed-function
+  var typed = createTyped();
+
+  // define all types. The order of the types determines in which order function
+  // arguments are type-checked (so for performance it's important to put the
+  // most used types first).
+  typed.types = [
+    { name: 'number',          test: type.isNumber },
+    { name: 'Complex',         test: type.isComplex },
+    { name: 'BigNumber',       test: type.isBigNumber },
+    { name: 'Fraction',        test: type.isFraction },
+    { name: 'Unit',            test: type.isUnit },
+    { name: 'string',          test: type.isString },
+    { name: 'Array',           test: type.isArray },
+    { name: 'Matrix',          test: type.isMatrix },
+    { name: 'DenseMatrix',     test: type.isDenseMatrix },
+    { name: 'SparseMatrix',    test: type.isSparseMatrix },
+    { name: 'Range',           test: type.isRange },
+    { name: 'Index',           test: type.isIndex },
+    { name: 'boolean',         test: type.isBoolean },
+    { name: 'ResultSet',       test: type.isResultSet },
+    { name: 'Help',            test: type.isHelp },
+    { name: 'function',        test: type.isFunction },
+    { name: 'Date',            test: type.isDate },
+    { name: 'RegExp',          test: type.isRegExp },
+    { name: 'Object',          test: type.isObject },
+    { name: 'null',            test: type.isNull },
+    { name: 'undefined',       test: type.isUndefined },
+
+    { name: 'OperatorNode',    test: type.isOperatorNode },
+    { name: 'ConstantNode',    test: type.isConstantNode },
+    { name: 'SymbolNode',      test: type.isSymbolNode },
+    { name: 'ParenthesisNode', test: type.isParenthesisNode },
+    { name: 'FunctionNode',    test: type.isFunctionNode },
+    { name: 'FunctionAssignmentNode',    test: type.isFunctionAssignmentNode },
+    { name: 'ArrayNode',                 test: type.isArrayNode },
+    { name: 'AssignmentNode',            test: type.isAssignmentNode },
+    { name: 'BlockNode',                 test: type.isBlockNode },
+    { name: 'ConditionalNode',           test: type.isConditionalNode },
+    { name: 'IndexNode',                 test: type.isIndexNode },
+    { name: 'RangeNode',                 test: type.isRangeNode },
+    { name: 'Node',                      test: type.isNode }
+  ];
+
+  // TODO: add conversion from BigNumber to number?
+  typed.conversions = [
+    {
+      from: 'number',
+      to: 'BigNumber',
+      convert: function (x) {
+        // note: conversion from number to BigNumber can fail if x has >15 digits
+        if (digits(x) > 15) {
+          throw new TypeError('Cannot implicitly convert a number with >15 significant digits to BigNumber ' +
+          '(value: ' + x + '). ' +
+          'Use function bignumber(x) to convert to BigNumber.');
+        }
+        return new type.BigNumber(x);
+      }
+    }, {
+      from: 'number',
+      to: 'Complex',
+      convert: function (x) {
+        return new type.Complex(x, 0);
+      }
+    }, {
+      from: 'number',
+      to: 'string',
+      convert: function (x) {
+        return x + '';
+      }
+    }, {
+      from: 'BigNumber',
+      to: 'Complex',
+      convert: function (x) {
+        return new type.Complex(x.toNumber(), 0);
+      }
+    }, {
+      from: 'Fraction',
+      to: 'BigNumber',
+      convert: function (x) {
+        throw new TypeError('Cannot implicitly convert a Fraction to BigNumber or vice versa. ' +
+            'Use function bignumber(x) to convert to BigNumber or fraction(x) to convert to Fraction.');
+      }
+    }, {
+      from: 'Fraction',
+      to: 'Complex',
+      convert: function (x) {
+        return new type.Complex(x.valueOf(), 0);
+      }
+    }, {
+      from: 'number',
+      to: 'Fraction',
+      convert: function (x) {
+        var f = new type.Fraction(x);
+        if (f.valueOf() !== x) {
+          throw new TypeError('Cannot implicitly convert a number to a Fraction when there will be a loss of precision ' +
+              '(value: ' + x + '). ' +
+              'Use function fraction(x) to convert to Fraction.');
+        }
+        return new type.Fraction(x);
+      }
+    }, {
+    // FIXME: add conversion from Fraction to number, for example for `sqrt(fraction(1,3))`
+    //  from: 'Fraction',
+    //  to: 'number',
+    //  convert: function (x) {
+    //    return x.valueOf();
+    //  }
+    //}, {
+      from: 'string',
+      to: 'number',
+      convert: function (x) {
+        var n = Number(x);
+        if (isNaN(n)) {
+          throw new Error('Cannot convert "' + x + '" to a number');
+        }
+        return n;
+      }
+    }, {
+      from: 'string',
+      to: 'BigNumber',
+      convert: function (x) {
+        try {
+          return new type.BigNumber(x);
+        }
+        catch (err) {
+          throw new Error('Cannot convert "' + x + '" to BigNumber');
+        }
+      }
+    }, {
+      from: 'string',
+      to: 'Fraction',
+      convert: function (x) {
+        try {
+          return new type.Fraction(x);
+        }
+        catch (err) {
+          throw new Error('Cannot convert "' + x + '" to Fraction');
+        }
+      }
+    }, {
+      from: 'string',
+      to: 'Complex',
+      convert: function (x) {
+        try {
+          return new type.Complex(x);
+        }
+        catch (err) {
+          throw new Error('Cannot convert "' + x + '" to Complex');
+        }
+      }
+    }, {
+      from: 'boolean',
+      to: 'number',
+      convert: function (x) {
+        return +x;
+      }
+    }, {
+      from: 'boolean',
+      to: 'BigNumber',
+      convert: function (x) {
+        return new type.BigNumber(+x);
+      }
+    }, {
+      from: 'boolean',
+      to: 'Fraction',
+      convert: function (x) {
+        return new type.Fraction(+x);
+      }
+    }, {
+      from: 'boolean',
+      to: 'string',
+      convert: function (x) {
+        return +x;
+      }
+    }, {
+      from: 'null',
+      to: 'number',
+      convert: function () {
+        return 0;
+      }
+    }, {
+      from: 'null',
+      to: 'string',
+      convert: function () {
+        return 'null';
+      }
+    }, {
+      from: 'null',
+      to: 'BigNumber',
+      convert: function () {
+        return new type.BigNumber(0);
+      }
+    }, {
+      from: 'null',
+      to: 'Fraction',
+      convert: function () {
+        return new type.Fraction(0);
+      }
+    }, {
+      from: 'Array',
+      to: 'Matrix',
+      convert: function (array) {
+        // TODO: how to decide on the right type of matrix to create?
+        return new type.DenseMatrix(array);
+      }
+    }, {
+      from: 'Matrix',
+      to: 'Array',
+      convert: function (matrix) {
+        return matrix.valueOf();
+      }
+    }
+  ];
+
+  return typed;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/error/ArgumentsError.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/error/ArgumentsError.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Create a syntax error with the message:
+ *     'Wrong number of arguments in function <fn> (<count> provided, <min>-<max> expected)'
+ * @param {string} fn     Function name
+ * @param {number} count  Actual argument count
+ * @param {number} min    Minimum required argument count
+ * @param {number} [max]  Maximum required argument count
+ * @extends Error
+ */
+function ArgumentsError(fn, count, min, max) {
+  if (!(this instanceof ArgumentsError)) {
+    throw new SyntaxError('Constructor must be called with the new operator');
+  }
+
+  this.fn = fn;
+  this.count = count;
+  this.min = min;
+  this.max = max;
+
+  this.message = 'Wrong number of arguments in function ' + fn +
+      ' (' + count + ' provided, ' +
+      min + ((max != undefined) ? ('-' + max) : '') + ' expected)';
+
+  this.stack = (new Error()).stack;
+}
+
+ArgumentsError.prototype = new Error();
+ArgumentsError.prototype.constructor = Error;
+ArgumentsError.prototype.name = 'ArgumentsError';
+ArgumentsError.prototype.isArgumentsError = true;
+
+module.exports = ArgumentsError;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/error/DimensionError.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/mathjs/lib/error/DimensionError.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Create a range error with the message:
+ *     'Dimension mismatch (<actual size> != <expected size>)'
+ * @param {number | number[]} actual        The actual size
+ * @param {number | number[]} expected      The expected size
+ * @param {string} [relation='!=']          Optional relation between actual
+ *                                          and expected size: '!=', '<', etc.
+ * @extends RangeError
+ */
+function DimensionError(actual, expected, relation) {
+  if (!(this instanceof DimensionError)) {
+    throw new SyntaxError('Constructor must be called with the new operator');
+  }
+
+  this.actual   = actual;
+  this.expected = expected;
+  this.relation = relation;
+
+  this.message = 'Dimension mismatch (' +
+      (Array.isArray(actual) ? ('[' + actual.join(', ') + ']') : actual) +
+      ' ' + (this.relation || '!=') + ' ' +
+      (Array.isArray(expected) ? ('[' + expected.join(', ') + ']') : expected) +
+      ')';
+
+  this.stack = (new Error()).stack;
+}
+
+DimensionError.prototype = new RangeError();
+DimensionError.prototype.constructor = RangeError;
+DimensionError.prototype.name = 'DimensionError';
+DimensionError.prototype.isDimensionError = true;
+
+module.exports = DimensionError;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/error/IndexError.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/mathjs/lib/error/IndexError.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Create a range error with the message:
+ *     'Index out of range (index < min)'
+ *     'Index out of range (index < max)'
+ *
+ * @param {number} index     The actual index
+ * @param {number} [min=0]   Minimum index (included)
+ * @param {number} [max]     Maximum index (excluded)
+ * @extends RangeError
+ */
+function IndexError(index, min, max) {
+  if (!(this instanceof IndexError)) {
+    throw new SyntaxError('Constructor must be called with the new operator');
+  }
+
+  this.index = index;
+  if (arguments.length < 3) {
+    this.min = 0;
+    this.max = min;
+  }
+  else {
+    this.min = min;
+    this.max = max;
+  }
+
+  if (this.min !== undefined && this.index < this.min) {
+    this.message = 'Index out of range (' + this.index + ' < ' + this.min + ')';
+  }
+  else if (this.max !== undefined && this.index >= this.max) {
+    this.message = 'Index out of range (' + this.index + ' > ' + (this.max - 1) + ')';
+  }
+  else {
+    this.message = 'Index out of range (' + this.index + ')';
+  }
+
+  this.stack = (new Error()).stack;
+}
+
+IndexError.prototype = new RangeError();
+IndexError.prototype.constructor = RangeError;
+IndexError.prototype.name = 'IndexError';
+IndexError.prototype.isIndexError = true;
+
+module.exports = IndexError;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/addScalar.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/addScalar.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory(type, config, load, typed) {
+
+  /**
+   * Add two scalar values, `x + y`.
+   * This function is meant for internal use: it is used by the public function
+   * `add`
+   *
+   * This function does not support collections (Array or Matrix), and does
+   * not validate the number of of inputs.
+   *
+   * @param  {number | BigNumber | Fraction | Complex | Unit} x   First value to add
+   * @param  {number | BigNumber | Fraction | Complex} y          Second value to add
+   * @return {number | BigNumber | Fraction | Complex | Unit}                      Sum of `x` and `y`
+   * @private
+   */
+  var add = typed('add', {
+
+    'number, number': function (x, y) {
+      return x + y;
+    },
+
+    'Complex, Complex': function (x, y) {
+      return x.add(y);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      return x.plus(y);
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      return x.add(y);
+    },
+
+    'Unit, Unit': function (x, y) {
+      if (x.value == null) throw new Error('Parameter x contains a unit with undefined value');
+      if (y.value == null) throw new Error('Parameter y contains a unit with undefined value');
+      if (!x.equalBase(y)) throw new Error('Units do not match');
+
+      var res = x.clone();
+      res.value = add(res.value, y.value);
+      res.fixPrefix = false;
+      return res;
+    }
+  });
+
+  return add;
+}
+
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/multiply.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/multiply.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var extend = __webpack_require__(/*! ../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").extend;
+var array = __webpack_require__(/*! ../../utils/array */ "./node_modules/mathjs/lib/utils/array.js");
+
+function factory (type, config, load, typed) {
+  var latex = __webpack_require__(/*! ../../utils/latex */ "./node_modules/mathjs/lib/utils/latex.js");
+
+  var matrix = load(__webpack_require__(/*! ../../type/matrix/function/matrix */ "./node_modules/mathjs/lib/type/matrix/function/matrix.js"));
+  var addScalar = load(__webpack_require__(/*! ./addScalar */ "./node_modules/mathjs/lib/function/arithmetic/addScalar.js"));
+  var multiplyScalar = load(__webpack_require__(/*! ./multiplyScalar */ "./node_modules/mathjs/lib/function/arithmetic/multiplyScalar.js"));
+  var equalScalar = load(__webpack_require__(/*! ../relational/equalScalar */ "./node_modules/mathjs/lib/function/relational/equalScalar.js"));
+
+  var algorithm11 = load(__webpack_require__(/*! ../../type/matrix/utils/algorithm11 */ "./node_modules/mathjs/lib/type/matrix/utils/algorithm11.js"));
+  var algorithm14 = load(__webpack_require__(/*! ../../type/matrix/utils/algorithm14 */ "./node_modules/mathjs/lib/type/matrix/utils/algorithm14.js"));
+  
+  var DenseMatrix = type.DenseMatrix;
+  var SparseMatrix = type.SparseMatrix;
+
+  /**
+   * Multiply two or more values, `x * y`.
+   * For matrices, the matrix product is calculated.
+   *
+   * Syntax:
+   *
+   *    math.multiply(x, y)
+   *    math.multiply(x, y, z, ...)
+   *
+   * Examples:
+   *
+   *    math.multiply(4, 5.2);        // returns number 20.8
+   *    math.multiply(2, 3, 4);       // returns number 24
+   *
+   *    var a = math.complex(2, 3);
+   *    var b = math.complex(4, 1);
+   *    math.multiply(a, b);          // returns Complex 5 + 14i
+   *
+   *    var c = [[1, 2], [4, 3]];
+   *    var d = [[1, 2, 3], [3, -4, 7]];
+   *    math.multiply(c, d);          // returns Array [[7, -6, 17], [13, -4, 33]]
+   *
+   *    var e = math.unit('2.1 km');
+   *    math.multiply(3, e);          // returns Unit 6.3 km
+   *
+   * See also:
+   *
+   *    divide, prod, cross, dot
+   *
+   * @param  {number | BigNumber | Fraction | Complex | Unit | Array | Matrix} x First value to multiply
+   * @param  {number | BigNumber | Fraction | Complex | Unit | Array | Matrix} y Second value to multiply
+   * @return {number | BigNumber | Fraction | Complex | Unit | Array | Matrix} Multiplication of `x` and `y`
+   */
+  var multiply = typed('multiply', extend({
+    // we extend the signatures of multiplyScalar with signatures dealing with matrices
+
+    'Array, Array': function (x, y) {
+      // check dimensions
+      _validateMatrixDimensions(array.size(x), array.size(y));
+
+      // use dense matrix implementation
+      var m = multiply(matrix(x), matrix(y));
+      // return array or scalar
+      return type.isMatrix(m) ? m.valueOf() : m;
+    },
+
+    'Matrix, Matrix': function (x, y) {
+      // dimensions
+      var xsize = x.size();
+      var ysize = y.size();
+
+      // check dimensions
+      _validateMatrixDimensions(xsize, ysize);
+
+      // process dimensions
+      if (xsize.length === 1) {
+        // process y dimensions
+        if (ysize.length === 1) {
+          // Vector * Vector
+          return _multiplyVectorVector(x, y, xsize[0]);
+        }
+        // Vector * Matrix
+        return _multiplyVectorMatrix(x, y);
+      }
+      // process y dimensions
+      if (ysize.length === 1) {
+        // Matrix * Vector
+        return _multiplyMatrixVector(x, y);
+      }
+      // Matrix * Matrix
+      return _multiplyMatrixMatrix(x, y);
+    },
+
+    'Matrix, Array': function (x, y) {
+      // use Matrix * Matrix implementation
+      return multiply(x, matrix(y));
+    },
+
+    'Array, Matrix': function (x, y) {
+      // use Matrix * Matrix implementation
+      return multiply(matrix(x, y.storage()), y);
+    },
+
+    'Matrix, any': function (x, y) {
+      // result
+      var c;
+      
+      // process storage format
+      switch (x.storage()) {
+        case 'sparse':
+          c = algorithm11(x, y, multiplyScalar, false);
+          break;
+        case 'dense':
+          c = algorithm14(x, y, multiplyScalar, false);
+          break;
+      }
+      return c;
+    },
+
+    'any, Matrix': function (x, y) {
+      // result
+      var c;
+      // check storage format
+      switch (y.storage()) {
+        case 'sparse':
+          c = algorithm11(y, x, multiplyScalar, true);
+          break;
+        case 'dense':
+          c = algorithm14(y, x, multiplyScalar, true);
+          break;
+      }
+      return c;
+    },
+
+    'Array, any': function (x, y) {
+      // use matrix implementation
+      return algorithm14(matrix(x), y, multiplyScalar, false).valueOf();
+    },
+
+    'any, Array': function (x, y) {
+      // use matrix implementation
+      return algorithm14(matrix(y), x, multiplyScalar, true).valueOf();
+    },
+
+    'any, any': multiplyScalar,
+
+    'Array | Matrix | any, Array | Matrix | any, ...any': function (x, y, rest) {
+      var result = multiply(x, y);
+
+      for (var i = 0; i < rest.length; i++) {
+        result = multiply(result, rest[i]);
+      }
+      
+      return result;
+    }
+  }, multiplyScalar.signatures));
+
+  var _validateMatrixDimensions = function (size1, size2) {
+    // check left operand dimensions
+    switch (size1.length) {
+      case 1:
+        // check size2
+        switch (size2.length) {
+          case 1:
+            // Vector x Vector
+            if (size1[0] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Vectors must have the same length');
+            }
+            break;
+          case 2:
+            // Vector x Matrix
+            if (size1[0] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Vector length (' + size1[0] + ') must match Matrix rows (' + size2[0] + ')');
+            }
+            break;
+          default:
+            throw new Error('Can only multiply a 1 or 2 dimensional matrix (Matrix B has ' + size2.length + ' dimensions)');
+        }
+        break;
+      case 2:
+        // check size2
+        switch (size2.length) {
+          case 1:
+            // Matrix x Vector
+            if (size1[1] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Matrix columns (' + size1[1] + ') must match Vector length (' + size2[0] + ')');
+            }
+            break;
+          case 2:
+            // Matrix x Matrix
+            if (size1[1] !== size2[0]) {
+              // throw error
+              throw new RangeError('Dimension mismatch in multiplication. Matrix A columns (' + size1[1] + ') must match Matrix B rows (' + size2[0] + ')');
+            }
+            break;
+          default:
+            throw new Error('Can only multiply a 1 or 2 dimensional matrix (Matrix B has ' + size2.length + ' dimensions)');
+        }
+        break;
+      default:
+        throw new Error('Can only multiply a 1 or 2 dimensional matrix (Matrix A has ' + size1.length + ' dimensions)');
+    }
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Dense Vector   (N)
+   * @param {Matrix} b            Dense Vector   (N)
+   *
+   * @return {number}             Scalar value
+   */
+  var _multiplyVectorVector = function (a, b, n) {
+    // check empty vector
+    if (n === 0)
+      throw new Error('Cannot multiply two empty vectors');
+
+    // a dense
+    var adata = a._data;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+    
+    // result (do not initialize it with zero)
+    var c = mf(adata[0], bdata[0]);
+    // loop data
+    for (var i = 1; i < n; i++) {
+      // multiply and accumulate
+      c = af(c, mf(adata[i], bdata[i]));
+    }
+    return c;
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Dense Vector   (M)
+   * @param {Matrix} b            Matrix         (MxN)
+   *
+   * @return {Matrix}             Dense Vector   (N)
+   */
+  var _multiplyVectorMatrix = function (a, b) {
+    // process storage
+    switch (b.storage()) {
+      case 'dense':
+        return _multiplyVectorDenseMatrix(a, b);
+    }
+    throw new Error('Not implemented');
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Dense Vector   (M)
+   * @param {Matrix} b            Dense Matrix   (MxN)
+   *
+   * @return {Matrix}             Dense Vector   (N)
+   */
+  var _multiplyVectorDenseMatrix = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bsize = b._size;
+    var bdt = b._datatype;
+    // rows & columns
+    var alength = asize[0];
+    var bcolumns = bsize[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+
+    // result
+    var c = [];
+
+    // loop matrix columns
+    for (var j = 0; j < bcolumns; j++) {
+      // sum (do not initialize it with zero)
+      var sum = mf(adata[0], bdata[0][j]);      
+      // loop vector
+      for (var i = 1; i < alength; i++) {
+        // multiply & accumulate
+        sum = af(sum, mf(adata[i], bdata[i][j]));
+      }
+      c[j] = sum;
+    }
+
+    // return matrix
+    return new DenseMatrix({
+      data: c,
+      size: [bcolumns],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Matrix         (MxN)
+   * @param {Matrix} b            Dense Vector   (N)
+   *
+   * @return {Matrix}             Dense Vector   (M)
+   */
+  var _multiplyMatrixVector = function (a, b) {
+    // process storage
+    switch (a.storage()) {
+      case 'dense':
+        return _multiplyDenseMatrixVector(a, b);
+      case 'sparse':
+        return _multiplySparseMatrixVector(a, b);
+    }
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            Matrix         (MxN)
+   * @param {Matrix} b            Matrix         (NxC)
+   *
+   * @return {Matrix}             Matrix         (MxC)
+   */
+  var _multiplyMatrixMatrix = function (a, b) {
+    // process storage
+    switch (a.storage()) {
+      case 'dense':
+        // process storage
+        switch (b.storage()) {
+          case 'dense':
+            return _multiplyDenseMatrixDenseMatrix(a, b);
+          case 'sparse':
+            return _multiplyDenseMatrixSparseMatrix(a, b);
+        }
+        break;
+      case 'sparse':
+        // process storage
+        switch (b.storage()) {
+          case 'dense':
+            return _multiplySparseMatrixDenseMatrix(a, b);
+          case 'sparse':
+            return _multiplySparseMatrixSparseMatrix(a, b);
+        }
+        break;
+    }
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            DenseMatrix  (MxN)
+   * @param {Matrix} b            Dense Vector (N)
+   *
+   * @return {Matrix}             Dense Vector (M) 
+   */ 
+  var _multiplyDenseMatrixVector = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = asize[0];
+    var acolumns = asize[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+
+    // result
+    var c = [];
+
+    // loop matrix a rows
+    for (var i = 0; i < arows; i++) {
+      // current row
+      var row = adata[i];
+      // sum (do not initialize it with zero)
+      var sum = mf(row[0], bdata[0]);
+      // loop matrix a columns
+      for (var j = 1; j < acolumns; j++) {
+        // multiply & accumulate
+        sum = af(sum, mf(row[j], bdata[j]));
+      }
+      c[i] = sum;
+    }
+
+    // return matrix
+    return new DenseMatrix({
+      data: c,
+      size: [arows],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            DenseMatrix    (MxN)
+   * @param {Matrix} b            DenseMatrix    (NxC)
+   *
+   * @return {Matrix}             DenseMatrix    (MxC)
+   */
+  var _multiplyDenseMatrixDenseMatrix = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b dense
+    var bdata = b._data;
+    var bsize = b._size;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = asize[0];
+    var acolumns = asize[1];
+    var bcolumns = bsize[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+    
+    // result
+    var c = [];
+
+    // loop matrix a rows
+    for (var i = 0; i < arows; i++) {
+      // current row
+      var row = adata[i];
+      // initialize row array
+      c[i] = [];
+      // loop matrix b columns
+      for (var j = 0; j < bcolumns; j++) {
+        // sum (avoid initializing sum to zero)
+        var sum = mf(row[0], bdata[0][j]);
+        // loop matrix a columns
+        for (var x = 1; x < acolumns; x++) {
+          // multiply & accumulate
+          sum = af(sum, mf(row[x], bdata[x][j]));
+        }
+        c[i][j] = sum;
+      }
+    }
+
+    // return matrix
+    return new DenseMatrix({
+      data: c,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            DenseMatrix    (MxN)
+   * @param {Matrix} b            SparseMatrix   (NxC)
+   *
+   * @return {Matrix}             SparseMatrix   (MxC)
+   */
+  var _multiplyDenseMatrixSparseMatrix = function (a, b) {
+    // a dense
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    // b sparse
+    var bvalues = b._values;
+    var bindex = b._index;
+    var bptr = b._ptr;
+    var bsize = b._size;
+    var bdt = b._datatype;
+    // validate b matrix
+    if (!bvalues)
+      throw new Error('Cannot multiply Dense Matrix times Pattern only Matrix');
+    // rows & columns
+    var arows = asize[0];
+    var bcolumns = bsize[1];
+    
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+    // equalScalar signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+    }
+
+    // result
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    // c matrix
+    var c = new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+
+    // loop b columns
+    for (var jb = 0; jb < bcolumns; jb++) {
+      // update ptr
+      cptr[jb] = cindex.length;
+      // indeces in column jb
+      var kb0 = bptr[jb];
+      var kb1 = bptr[jb + 1];
+      // do not process column jb if no data exists
+      if (kb1 > kb0) {
+        // last row mark processed
+        var last = 0;
+        // loop a rows
+        for (var i = 0; i < arows; i++) {
+          // column mark
+          var mark = i + 1;
+          // C[i, jb]
+          var cij;
+          // values in b column j
+          for (var kb = kb0; kb < kb1; kb++) {
+            // row
+            var ib = bindex[kb];
+            // check value has been initialized
+            if (last !== mark) {
+              // first value in column jb
+              cij = mf(adata[i][ib], bvalues[kb]);
+              // update mark
+              last = mark;
+            }
+            else {
+              // accumulate value
+              cij = af(cij, mf(adata[i][ib], bvalues[kb]));
+            }
+          }
+          // check column has been processed and value != 0
+          if (last === mark && !eq(cij, zero)) {
+            // push row & value
+            cindex.push(i);
+            cvalues.push(cij);
+          }
+        }
+      }
+    }
+    // update ptr
+    cptr[bcolumns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            SparseMatrix    (MxN)
+   * @param {Matrix} b            Dense Vector (N)
+   *
+   * @return {Matrix}             SparseMatrix    (M, 1) 
+   */
+  var _multiplySparseMatrixVector = function (a, b) {
+    // a sparse
+    var avalues = a._values;
+    var aindex = a._index;
+    var aptr = a._ptr;
+    var adt = a._datatype;
+    // validate a matrix
+    if (!avalues)
+      throw new Error('Cannot multiply Pattern only Matrix times Dense Matrix');
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = a._size[0];
+    var brows = b._size[0];
+    // result
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+    // equalScalar signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+    }
+
+    // workspace
+    var x = [];
+    // vector with marks indicating a value x[i] exists in a given column
+    var w = [];
+
+    // update ptr
+    cptr[0] = 0;
+    // rows in b
+    for (var ib = 0; ib < brows; ib++) {
+      // b[ib]
+      var vbi = bdata[ib];
+      // check b[ib] != 0, avoid loops
+      if (!eq(vbi, zero)) {
+        // A values & index in ib column
+        for (var ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+          // a row
+          var ia = aindex[ka];
+          // check value exists in current j
+          if (!w[ia]) {
+            // ia is new entry in j
+            w[ia] = true;
+            // add i to pattern of C
+            cindex.push(ia);
+            // x(ia) = A
+            x[ia] = mf(vbi, avalues[ka]);
+          }
+          else {
+            // i exists in C already
+            x[ia] = af(x[ia], mf(vbi, avalues[ka]));
+          }
+        }
+      }
+    }
+    // copy values from x to column jb of c
+    for (var p1 = cindex.length, p = 0; p < p1; p++) {
+      // row
+      var ic = cindex[p];
+      // copy value
+      cvalues[p] = x[ic];
+    }
+    // update ptr
+    cptr[1] = cindex.length;
+
+    // return sparse matrix
+    return new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, 1],
+      datatype: dt
+    });
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            SparseMatrix      (MxN)
+   * @param {Matrix} b            DenseMatrix       (NxC)
+   *
+   * @return {Matrix}             SparseMatrix      (MxC)
+   */
+  var _multiplySparseMatrixDenseMatrix = function (a, b) {
+    // a sparse
+    var avalues = a._values;
+    var aindex = a._index;
+    var aptr = a._ptr;
+    var adt = a._datatype;
+    // validate a matrix
+    if (!avalues)
+      throw new Error('Cannot multiply Pattern only Matrix times Dense Matrix');
+    // b dense
+    var bdata = b._data;
+    var bdt = b._datatype;
+    // rows & columns
+    var arows = a._size[0];
+    var brows = b._size[0];
+    var bcolumns = b._size[1];
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+    // equalScalar signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+    }
+
+    // result
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    // c matrix
+    var c = new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+
+    // workspace
+    var x = [];
+    // vector with marks indicating a value x[i] exists in a given column
+    var w = [];
+
+    // loop b columns
+    for (var jb = 0; jb < bcolumns; jb++) {
+      // update ptr
+      cptr[jb] = cindex.length;
+      // mark in workspace for current column
+      var mark = jb + 1;
+      // rows in jb
+      for (var ib = 0; ib < brows; ib++) {
+        // b[ib, jb]
+        var vbij = bdata[ib][jb];
+        // check b[ib, jb] != 0, avoid loops
+        if (!eq(vbij, zero)) {
+          // A values & index in ib column
+          for (var ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+            // a row
+            var ia = aindex[ka];
+            // check value exists in current j
+            if (w[ia] !== mark) {
+              // ia is new entry in j
+              w[ia] = mark;
+              // add i to pattern of C
+              cindex.push(ia);
+              // x(ia) = A
+              x[ia] = mf(vbij, avalues[ka]);
+            }
+            else {
+              // i exists in C already
+              x[ia] = af(x[ia], mf(vbij, avalues[ka]));
+            }
+          }
+        }
+      }
+      // copy values from x to column jb of c
+      for (var p0 = cptr[jb], p1 = cindex.length, p = p0; p < p1; p++) {
+        // row
+        var ic = cindex[p];
+        // copy value
+        cvalues[p] = x[ic];
+      }
+    }
+    // update ptr
+    cptr[bcolumns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  /**
+   * C = A * B
+   *
+   * @param {Matrix} a            SparseMatrix      (MxN)
+   * @param {Matrix} b            SparseMatrix      (NxC)
+   *
+   * @return {Matrix}             SparseMatrix      (MxC)
+   */
+  var _multiplySparseMatrixSparseMatrix = function (a, b) {
+    // a sparse
+    var avalues = a._values;
+    var aindex = a._index;
+    var aptr = a._ptr;
+    var adt = a._datatype;
+    // b sparse
+    var bvalues = b._values;
+    var bindex = b._index;
+    var bptr = b._ptr;
+    var bdt = b._datatype;
+    
+    // rows & columns
+    var arows = a._size[0];
+    var bcolumns = b._size[1];
+    // flag indicating both matrices (a & b) contain data
+    var values = avalues && bvalues;
+
+    // datatype
+    var dt;
+    // addScalar signature to use
+    var af = addScalar;
+    // multiplyScalar signature to use
+    var mf = multiplyScalar;
+
+    // process data types
+    if (adt && bdt && adt === bdt && typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signatures that matches (dt, dt)
+      af = typed.find(addScalar, [dt, dt]);
+      mf = typed.find(multiplyScalar, [dt, dt]);
+    }
+    
+    // result
+    var cvalues = values ? [] : undefined;
+    var cindex = [];
+    var cptr = [];
+    // c matrix
+    var c = new SparseMatrix({
+      values : cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [arows, bcolumns],
+      datatype: dt
+    });
+
+    // workspace
+    var x = values ? [] : undefined;
+    // vector with marks indicating a value x[i] exists in a given column
+    var w = [];
+    // variables
+    var ka, ka0, ka1, kb, kb0, kb1, ia, ib;
+    // loop b columns
+    for (var jb = 0; jb < bcolumns; jb++) {
+      // update ptr
+      cptr[jb] = cindex.length;
+      // mark in workspace for current column
+      var mark = jb + 1;
+      // B values & index in j
+      for (kb0 = bptr[jb], kb1 = bptr[jb + 1], kb = kb0; kb < kb1; kb++) {
+        // b row
+        ib = bindex[kb];
+        // check we need to process values
+        if (values) {
+          // loop values in a[:,ib]
+          for (ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+            // row
+            ia = aindex[ka];
+            // check value exists in current j
+            if (w[ia] !== mark) {
+              // ia is new entry in j
+              w[ia] = mark;
+              // add i to pattern of C
+              cindex.push(ia);
+              // x(ia) = A
+              x[ia] = mf(bvalues[kb], avalues[ka]);
+            }
+            else {
+              // i exists in C already
+              x[ia] = af(x[ia], mf(bvalues[kb], avalues[ka]));
+            }
+          }
+        }
+        else {
+          // loop values in a[:,ib]
+          for (ka0 = aptr[ib], ka1 = aptr[ib + 1], ka = ka0; ka < ka1; ka++) {
+            // row
+            ia = aindex[ka];
+            // check value exists in current j
+            if (w[ia] !== mark) {
+              // ia is new entry in j
+              w[ia] = mark;
+              // add i to pattern of C
+              cindex.push(ia);
+            }
+          }
+        }
+      }
+      // check we need to process matrix values (pattern matrix)
+      if (values) {
+        // copy values from x to column jb of c
+        for (var p0 = cptr[jb], p1 = cindex.length, p = p0; p < p1; p++) {
+          // row
+          var ic = cindex[p];
+          // copy value
+          cvalues[p] = x[ic];
+        }
+      }
+    }
+    // update ptr
+    cptr[bcolumns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  multiply.toTex = {
+    2: '\\left(${args[0]}' + latex.operators['multiply'] + '${args[1]}\\right)'
+  };
+
+  return multiply;
+}
+
+exports.name = 'multiply';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/multiplyScalar.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/multiplyScalar.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory(type, config, load, typed) {
+  
+  /**
+   * Multiply two scalar values, `x * y`.
+   * This function is meant for internal use: it is used by the public function
+   * `multiply`
+   *
+   * This function does not support collections (Array or Matrix), and does
+   * not validate the number of of inputs.
+   *
+   * @param  {number | BigNumber | Fraction | Complex | Unit} x   First value to multiply
+   * @param  {number | BigNumber | Fraction | Complex} y          Second value to multiply
+   * @return {number | BigNumber | Fraction | Complex | Unit}                      Multiplication of `x` and `y`
+   * @private
+   */
+  var multiplyScalar = typed('multiplyScalar', {
+
+    'number, number': function (x, y) {
+      return x * y;
+    },
+
+    'Complex, Complex': function (x, y) {
+      return x.mul(y);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      return x.times(y);
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      return x.mul(y);
+    },
+
+    'number | Fraction | BigNumber | Complex, Unit': function (x, y) {
+      var res = y.clone();
+      res.value = (res.value === null) ? res._normalize(x) : multiplyScalar(res.value, x);
+      return res;
+    },
+
+    'Unit, number | Fraction | BigNumber | Complex': function (x, y) {
+      var res = x.clone();
+      res.value = (res.value === null) ? res._normalize(y) : multiplyScalar(res.value, y);
+      return res;
+    },
+
+    'Unit, Unit': function (x, y) {
+      return x.multiply(y);
+    }
+
+  });
+
+  return multiplyScalar;
+}
+
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/arithmetic/pow.js":
+/*!************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/arithmetic/pow.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isInteger = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").isInteger;
+var size = __webpack_require__(/*! ../../utils/array */ "./node_modules/mathjs/lib/utils/array.js").size;
+
+function factory (type, config, load, typed) {
+  var latex = __webpack_require__(/*! ../../utils/latex */ "./node_modules/mathjs/lib/utils/latex.js");
+  var eye = load(__webpack_require__(/*! ../matrix/eye */ "./node_modules/mathjs/lib/function/matrix/eye.js"));
+  var multiply = load(__webpack_require__(/*! ./multiply */ "./node_modules/mathjs/lib/function/arithmetic/multiply.js"));
+  var matrix = load(__webpack_require__(/*! ../../type/matrix/function/matrix */ "./node_modules/mathjs/lib/type/matrix/function/matrix.js"));
+  var fraction = load(__webpack_require__(/*! ../../type/fraction/function/fraction */ "./node_modules/mathjs/lib/type/fraction/function/fraction.js"));
+  var number = load(__webpack_require__(/*! ../../type/number */ "./node_modules/mathjs/lib/type/number.js"));
+
+  /**
+   * Calculates the power of x to y, `x ^ y`.
+   * Matrix exponentiation is supported for square matrices `x`, and positive
+   * integer exponents `y`.
+   *
+   * For cubic roots of negative numbers, the function returns the principal
+   * root by default. In order to let the function return the real root,
+   * math.js can be configured with `math.config({predictable: true})`.
+   * To retrieve all cubic roots of a value, use `math.cbrt(x, true)`.
+   *
+   * Syntax:
+   *
+   *    math.pow(x, y)
+   *
+   * Examples:
+   *
+   *    math.pow(2, 3);               // returns number 8
+   *
+   *    var a = math.complex(2, 3);
+   *    math.pow(a, 2)                // returns Complex -5 + 12i
+   *
+   *    var b = [[1, 2], [4, 3]];
+   *    math.pow(b, 2);               // returns Array [[9, 8], [16, 17]]
+   *
+   * See also:
+   *
+   *    multiply, sqrt, cbrt, nthRoot
+   *
+   * @param  {number | BigNumber | Complex | Array | Matrix} x  The base
+   * @param  {number | BigNumber | Complex} y                   The exponent
+   * @return {number | BigNumber | Complex | Array | Matrix} The value of `x` to the power `y`
+   */
+  var pow = typed('pow', {
+    'number, number': _pow,
+
+    'Complex, Complex': function (x, y) {
+      return x.pow(y);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      if (y.isInteger() || x >= 0 || config.predictable) {
+        return x.pow(y);
+      }
+      else {
+        return new type.Complex(x.toNumber(), 0).pow(y.toNumber(), 0);
+      }
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      if (y.d !== 1) {
+        if (config.predictable) {
+          throw new Error('Function pow does not support non-integer exponents for fractions.');
+        }
+        else {
+          return _pow(x.valueOf(), y.valueOf());
+        }
+      }
+      else {
+        return x.pow(y);
+     }
+    },
+
+    'Array, number': _powArray,
+
+    'Array, BigNumber': function (x, y) {
+      return _powArray(x, y.toNumber());
+    },
+
+    'Matrix, number': _powMatrix,
+
+    'Matrix, BigNumber': function (x, y) {
+      return _powMatrix(x, y.toNumber());
+    },
+
+    'Unit, number': function (x, y) {
+      return x.pow(y);
+    }
+
+  });
+
+  /**
+   * Calculates the power of x to y, x^y, for two numbers.
+   * @param {number} x
+   * @param {number} y
+   * @return {number | Complex} res
+   * @private
+   */
+  function _pow(x, y) {
+
+    // Alternatively could define a 'realmode' config option or something, but
+    // 'predictable' will work for now
+    if (config.predictable && !isInteger(y) && x < 0) {
+      // Check to see if y can be represented as a fraction
+      try {
+        var yFrac = fraction(y);
+        var yNum = number(yFrac);
+        if(y === yNum || Math.abs((y - yNum) / y) < 1e-14) {
+          if(yFrac.d % 2 === 1) {
+            return (yFrac.n % 2 === 0 ? 1 : -1) * Math.pow(-x, y);
+          }
+        }
+      }
+      catch (ex) {
+        // fraction() throws an error if y is Infinity, etc.
+      }
+
+      // Unable to express y as a fraction, so continue on
+    }
+
+
+    // x^Infinity === 0 if -1 < x < 1
+    // A real number 0 is returned instead of complex(0)
+    if ((x*x < 1 && y ===  Infinity) ||
+        (x*x > 1 && y === -Infinity)) {
+      return 0;
+    }
+
+    // **for predictable mode** x^Infinity === NaN if x < -1
+    // N.B. this behavour is different from `Math.pow` which gives
+    // (-2)^Infinity === Infinity
+    if (config.predictable &&
+        ((x < -1 &&          y ===  Infinity) ||
+         (x > -1 && x < 0 && y === -Infinity))) {
+      return NaN;
+    }
+
+    if (isInteger(y) || x >= 0 || config.predictable) {
+      return Math.pow(x, y);
+    }
+    else {
+      return new type.Complex(x, 0).pow(y, 0);
+    }
+  }
+
+  /**
+   * Calculate the power of a 2d array
+   * @param {Array} x     must be a 2 dimensional, square matrix
+   * @param {number} y    a positive, integer value
+   * @returns {Array}
+   * @private
+   */
+  function _powArray(x, y) {
+    if (!isInteger(y) || y < 0) {
+      throw new TypeError('For A^b, b must be a positive integer (value is ' + y + ')');
+    }
+    // verify that A is a 2 dimensional square matrix
+    var s = size(x);
+    if (s.length != 2) {
+      throw new Error('For A^b, A must be 2 dimensional (A has ' + s.length + ' dimensions)');
+    }
+    if (s[0] != s[1]) {
+      throw new Error('For A^b, A must be square (size is ' + s[0] + 'x' + s[1] + ')');
+    }
+
+    var res = eye(s[0]).valueOf();
+    var px = x;
+    while (y >= 1) {
+      if ((y & 1) == 1) {
+        res = multiply(px, res);
+      }
+      y >>= 1;
+      px = multiply(px, px);
+    }
+    return res;
+  }
+
+  /**
+   * Calculate the power of a 2d matrix
+   * @param {Matrix} x     must be a 2 dimensional, square matrix
+   * @param {number} y    a positive, integer value
+   * @returns {Matrix}
+   * @private
+   */
+  function _powMatrix (x, y) {
+    return matrix(_powArray(x.valueOf(), y));
+  }
+
+
+
+  pow.toTex = {
+    2: '\\left(${args[0]}\\right)' + latex.operators['pow'] + '{${args[1]}}'
+  };
+
+  return pow;
+}
+
+exports.name = 'pow';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/matrix/eye.js":
+/*!********************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/matrix/eye.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var array = __webpack_require__(/*! ../../utils/array */ "./node_modules/mathjs/lib/utils/array.js");
+var isInteger = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").isInteger;
+
+function factory (type, config, load, typed) {
+  
+  var matrix = load(__webpack_require__(/*! ../../type/matrix/function/matrix */ "./node_modules/mathjs/lib/type/matrix/function/matrix.js"));
+  
+  /**
+   * Create a 2-dimensional identity matrix with size m x n or n x n.
+   * The matrix has ones on the diagonal and zeros elsewhere.
+   *
+   * Syntax:
+   *
+   *    math.eye(n)
+   *    math.eye(n, format)
+   *    math.eye(m, n)
+   *    math.eye(m, n, format)
+   *    math.eye([m, n])
+   *    math.eye([m, n], format)
+   *
+   * Examples:
+   *
+   *    math.eye(3);                    // returns [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+   *    math.eye(3, 2);                 // returns [[1, 0], [0, 1], [0, 0]]
+   *
+   *    var A = [[1, 2, 3], [4, 5, 6]];
+   *    math.eye(math.size(A));         // returns [[1, 0, 0], [0, 1, 0]]
+   *
+   * See also:
+   *
+   *    diag, ones, zeros, size, range
+   *
+   * @param {...number | Matrix | Array} size   The size for the matrix
+   * @param {string} [format]                   The Matrix storage format
+   *
+   * @return {Matrix | Array | number} A matrix with ones on the diagonal.
+   */
+  var eye = typed('eye', {
+    '': function () {
+      return (config.matrix === 'Matrix') ? matrix([]) : [];
+    },
+
+    'string': function (format) {
+      return matrix(format);
+    },
+
+    'number | BigNumber': function (rows) {
+      return _eye(rows, rows, config.matrix === 'Matrix' ? 'default' : undefined);
+    },
+    
+    'number | BigNumber, string': function (rows, format) {
+      return _eye(rows, rows, format);
+    },
+
+    'number | BigNumber, number | BigNumber': function (rows, cols) {
+      return _eye(rows, cols, config.matrix === 'Matrix' ? 'default' : undefined);
+    },
+    
+    'number | BigNumber, number | BigNumber, string': function (rows, cols, format) {
+      return _eye(rows, cols, format);
+    },
+
+    'Array':  function (size) {
+      return _eyeVector(size);
+    },
+    
+    'Array, string':  function (size, format) {
+      return _eyeVector(size, format);
+    },
+
+    'Matrix': function (size) {
+      return _eyeVector(size.valueOf(), size.storage());
+    },
+    
+    'Matrix, string': function (size, format) {
+      return _eyeVector(size.valueOf(), format);
+    }
+  });
+
+  eye.toTex = undefined; // use default template
+
+  return eye;
+
+  function _eyeVector (size, format) {
+    switch (size.length) {
+      case 0: return format ? matrix(format) : [];
+      case 1: return _eye(size[0], size[0], format);
+      case 2: return _eye(size[0], size[1], format);
+      default: throw new Error('Vector containing two values expected');
+    }
+  }
+
+  /**
+   * Create an identity matrix
+   * @param {number | BigNumber} rows
+   * @param {number | BigNumber} cols
+   * @param {string} [format]
+   * @returns {Matrix}
+   * @private
+   */
+  function _eye (rows, cols, format) {
+    // BigNumber constructor with the right precision
+    var Big = (type.isBigNumber(rows) || type.isBigNumber(cols))
+            ? type.BigNumber
+            : null;
+
+    if (type.isBigNumber(rows)) rows = rows.toNumber();
+    if (type.isBigNumber(cols)) cols = cols.toNumber();
+
+    if (!isInteger(rows) || rows < 1) {
+      throw new Error('Parameters in function eye must be positive integers');
+    }
+    if (!isInteger(cols) || cols < 1) {
+      throw new Error('Parameters in function eye must be positive integers');
+    }
+    
+    var one = Big ? new type.BigNumber(1) : 1;
+    var defaultValue = Big ? new Big(0) : 0;
+    var size = [rows, cols];
+    
+    // check we need to return a matrix
+    if (format) {
+      // get matrix storage constructor
+      var F = type.Matrix.storage(format);
+      // create diagonal matrix (use optimized implementation for storage format)
+      return F.diagonal(size, one, 0, defaultValue);
+    }
+    
+    // create and resize array
+    var res = array.resize([], size, defaultValue);
+    // fill in ones on the diagonal
+    var minimum = rows < cols ? rows : cols;
+    // fill diagonal
+    for (var d = 0; d < minimum; d++) {
+      res[d][d] = one;
+    }
+    return res;
+  }
+}
+
+exports.name = 'eye';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/probability/factorial.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/probability/factorial.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ../../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+
+function factory (type, config, load, typed) {
+  var gamma = load(__webpack_require__(/*! ./gamma */ "./node_modules/mathjs/lib/function/probability/gamma.js"));
+  var latex = __webpack_require__(/*! ../../utils/latex */ "./node_modules/mathjs/lib/utils/latex.js");
+
+  /**
+   * Compute the factorial of a value
+   *
+   * Factorial only supports an integer value as argument.
+   * For matrices, the function is evaluated element wise.
+   *
+   * Syntax:
+   *
+   *    math.factorial(n)
+   *
+   * Examples:
+   *
+   *    math.factorial(5);    // returns 120
+   *    math.factorial(3);    // returns 6
+   *
+   * See also:
+   *
+   *    combinations, gamma, permutations
+   *
+   * @param {number | BigNumber | Array | Matrix} n   An integer number
+   * @return {number | BigNumber | Array | Matrix}    The factorial of `n`
+   */
+  var factorial = typed('factorial', {
+    'number': function (n) {
+      if (n < 0) {
+        throw new Error('Value must be non-negative');
+      }
+
+      return gamma(n + 1);
+    },
+
+    'BigNumber': function (n) {
+      if (n.isNegative()) {
+        throw new Error('Value must be non-negative');
+      }
+
+      return gamma(n.plus(1));
+    },
+
+    'Array | Matrix': function (n) {
+      return deepMap(n, factorial);
+    }
+  });
+
+  factorial.toTex = {
+    1: '\\left(${args[0]}\\right)' + latex.operators['factorial']
+  };
+
+  return factorial;
+}
+
+exports.name = 'factorial';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/probability/gamma.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/probability/gamma.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ../../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+var isInteger = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").isInteger;
+
+function factory (type, config, load, typed) {
+  var multiply = load(__webpack_require__(/*! ../arithmetic/multiply */ "./node_modules/mathjs/lib/function/arithmetic/multiply.js"));
+  var pow = load(__webpack_require__(/*! ../arithmetic/pow */ "./node_modules/mathjs/lib/function/arithmetic/pow.js"));
+
+  /**
+   * Compute the gamma function of a value using Lanczos approximation for
+   * small values, and an extended Stirling approximation for large values.
+   *
+   * For matrices, the function is evaluated element wise.
+   *
+   * Syntax:
+   *
+   *    math.gamma(n)
+   *
+   * Examples:
+   *
+   *    math.gamma(5);       // returns 24
+   *    math.gamma(-0.5);    // returns -3.5449077018110335
+   *    math.gamma(math.i);  // returns -0.15494982830180973 - 0.49801566811835596i
+   *
+   * See also:
+   *
+   *    combinations, factorial, permutations
+   *
+   * @param {number | Array | Matrix} n   A real or complex number
+   * @return {number | Array | Matrix}    The gamma of `n`
+   */
+  var gamma = typed('gamma', {
+    'number': function (n) {
+      var t, x;
+
+      if (isInteger(n)) {
+        if (n <= 0) {
+          return isFinite(n) ? Infinity : NaN;
+        }
+
+        if (n > 171) {
+          return Infinity;                  // Will overflow
+        }
+
+        var value = n - 2;
+        var res = n - 1;
+        while (value > 1) {
+          res *= value;
+          value--;
+        }
+
+        if (res == 0) {
+          res = 1;                          // 0! is per definition 1
+        }
+
+        return res;
+      }
+
+      if (n < 0.5) {
+        return Math.PI / (Math.sin(Math.PI * n) * gamma(1-n));
+      }
+
+      if (n >= 171.35) {
+        return Infinity;                    // will overflow
+      }
+
+      if (n > 85.0) {                       // Extended Stirling Approx
+        var twoN = n*n;
+        var threeN = twoN*n;
+        var fourN = threeN*n;
+        var fiveN = fourN*n;
+        return Math.sqrt(2*Math.PI/n) * Math.pow((n/Math.E), n) *
+            (1 + 1/(12*n) + 1/(288*twoN) - 139/(51840*threeN) -
+            571/(2488320*fourN) + 163879/(209018880*fiveN) +
+            5246819/(75246796800*fiveN*n));
+      }
+
+      --n;
+      x = p[0];
+      for (var i = 1; i < p.length; ++i) {
+        x += p[i] / (n+i);
+      }
+
+      t = n + g + 0.5;
+      return Math.sqrt(2*Math.PI) * Math.pow(t, n+0.5) * Math.exp(-t) * x;
+    },
+
+    'Complex': function (n) {
+      var t, x;
+
+      if (n.im == 0) {
+        return gamma(n.re);
+      }
+
+      n = new type.Complex(n.re - 1, n.im);
+      x = new type.Complex(p[0], 0);
+      for (var i = 1; i < p.length; ++i) {
+        var real = n.re + i;                // x += p[i]/(n+i)
+        var den = real*real + n.im*n.im;
+        if (den != 0) {
+          x.re += p[i] * real / den;
+          x.im += -(p[i] * n.im) / den;
+        } else {
+          x.re = p[i] < 0
+              ? -Infinity
+              :  Infinity;
+        }
+      }
+
+      t = new type.Complex(n.re + g + 0.5, n.im);
+      var twoPiSqrt = Math.sqrt(2*Math.PI);
+
+      n.re += 0.5;
+      var result = pow(t, n);
+      if (result.im == 0) {                 // sqrt(2*PI)*result
+        result.re *= twoPiSqrt;
+      } else if (result.re == 0) {
+        result.im *= twoPiSqrt;
+      } else {
+        result.re *= twoPiSqrt;
+        result.im *= twoPiSqrt;
+      }
+
+      var r = Math.exp(-t.re);              // exp(-t)
+      t.re = r * Math.cos(-t.im);
+      t.im = r * Math.sin(-t.im);
+
+      return multiply(multiply(result, t), x);
+    },
+
+    'BigNumber': function (n) {
+      if (n.isInteger()) {
+        return (n.isNegative() || n.isZero())
+            ? new type.BigNumber(Infinity)
+            : bigFactorial(n.minus(1));
+      }
+
+      if (!n.isFinite()) {
+        return new type.BigNumber(n.isNegative() ? NaN : Infinity);
+      }
+
+      throw new Error('Integer BigNumber expected');
+    },
+
+    'Array | Matrix': function (n) {
+      return deepMap(n, gamma);
+    }
+  });
+
+  /**
+   * Calculate factorial for a BigNumber
+   * @param {BigNumber} n
+   * @returns {BigNumber} Returns the factorial of n
+   */
+  function bigFactorial(n) {
+    if (n.isZero()) {
+      return new type.BigNumber(1); // 0! is per definition 1
+    }
+
+    var precision = config.precision + (Math.log(n.toNumber()) | 0);
+    var Big = type.BigNumber.clone({precision: precision});
+
+    var res = new Big(n);
+    var value = n.toNumber() - 1; // number
+    while (value > 1) {
+      res = res.times(value);
+      value--;
+    }
+
+    return new type.BigNumber(res.toPrecision(type.BigNumber.precision));
+  }
+
+  gamma.toTex = {1: '\\Gamma\\left(${args[0]}\\right)'};
+
+  return gamma;
+}
+
+// TODO: comment on the variables g and p
+
+var g = 4.7421875;
+
+var p = [
+  0.99999999999999709182,
+  57.156235665862923517,
+  -59.597960355475491248,
+  14.136097974741747174,
+  -0.49191381609762019978,
+  0.33994649984811888699e-4,
+  0.46523628927048575665e-4,
+  -0.98374475304879564677e-4,
+  0.15808870322491248884e-3,
+  -0.21026444172410488319e-3,
+  0.21743961811521264320e-3,
+  -0.16431810653676389022e-3,
+  0.84418223983852743293e-4,
+  -0.26190838401581408670e-4,
+  0.36899182659531622704e-5
+];
+
+exports.name = 'gamma';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/function/relational/equalScalar.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/mathjs/lib/function/relational/equalScalar.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var nearlyEqual = __webpack_require__(/*! ../../utils/number */ "./node_modules/mathjs/lib/utils/number.js").nearlyEqual;
+var bigNearlyEqual = __webpack_require__(/*! ../../utils/bignumber/nearlyEqual */ "./node_modules/mathjs/lib/utils/bignumber/nearlyEqual.js");
+
+function factory (type, config, load, typed) {
+  
+  /**
+   * Test whether two values are equal.
+   *
+   * @param  {number | BigNumber | Fraction | boolean | Complex | Unit} x   First value to compare
+   * @param  {number | BigNumber | Fraction | boolean | Complex} y          Second value to compare
+   * @return {boolean}                                                  Returns true when the compared values are equal, else returns false
+   * @private
+   */
+  var equalScalar = typed('equalScalar', {
+
+    'boolean, boolean': function (x, y) {
+      return x === y;
+    },
+
+    'number, number': function (x, y) {
+      return x === y || nearlyEqual(x, y, config.epsilon);
+    },
+
+    'BigNumber, BigNumber': function (x, y) {
+      return x.eq(y) || bigNearlyEqual(x, y, config.epsilon);
+    },
+
+    'Fraction, Fraction': function (x, y) {
+      return x.equals(y);
+    },
+
+    'Complex, Complex': function (x, y) {
+      return x.equals(y);
+    },
+
+    'Unit, Unit': function (x, y) {
+      if (!x.equalBase(y)) {
+        throw new Error('Cannot compare units with different base');
+      }
+      return equalScalar(x.value, y.value);
+    },
+
+    'string, string': function (x, y) {
+      return x === y;
+    }
+  });
+  
+  return equalScalar;
+}
+
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/fraction/function/fraction.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/fraction/function/fraction.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ../../../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+
+function factory (type, config, load, typed) {
+  /**
+   * Create a fraction convert a value to a fraction.
+   *
+   * Syntax:
+   *     math.fraction(numerator, denominator)
+   *     math.fraction({n: numerator, d: denominator})
+   *     math.fraction(matrix: Array | Matrix)         Turn all matrix entries
+   *                                                   into fractions
+   *
+   * Examples:
+   *
+   *     math.fraction(1, 3);
+   *     math.fraction('2/3');
+   *     math.fraction({n: 2, d: 3});
+   *     math.fraction([0.2, 0.25, 1.25]);
+   *
+   * See also:
+   *
+   *    bignumber, number, string, unit
+   *
+   * @param {number | string | Fraction | BigNumber | Array | Matrix} [args]
+   *            Arguments specifying the numerator and denominator of
+   *            the fraction
+   * @return {Fraction | Array | Matrix} Returns a fraction
+   */
+  var fraction = typed('fraction', {
+    'number': function (x) {
+      if (!isFinite(x) || isNaN(x)) {
+        throw new Error(x + ' cannot be represented as a fraction');
+      }
+
+      return new type.Fraction(x);
+    },
+
+    'string': function (x) {
+      return new type.Fraction(x);
+    },
+
+    'number, number': function (numerator, denominator) {
+      return new type.Fraction(numerator, denominator);
+    },
+
+    'BigNumber': function (x) {
+      return new type.Fraction(x.toString());
+    },
+
+    'Fraction': function (x) {
+      return x; // fractions are immutable
+    },
+
+    'Object': function (x) {
+      return new type.Fraction(x);
+    },
+
+    'Array | Matrix': function (x) {
+      return deepMap(x, fraction);
+    }
+  });
+
+  return fraction;
+}
+
+exports.name = 'fraction';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/matrix/function/matrix.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/matrix/function/matrix.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory (type, config, load, typed) {
+  /**
+   * Create a Matrix. The function creates a new `math.type.Matrix` object from
+   * an `Array`. A Matrix has utility functions to manipulate the data in the
+   * matrix, like getting the size and getting or setting values in the matrix.
+   * Supported storage formats are 'dense' and 'sparse'.
+   *
+   * Syntax:
+   *
+   *    math.matrix()                         // creates an empty matrix using default storage format (dense).
+   *    math.matrix(data)                     // creates a matrix with initial data using default storage format (dense).
+   *    math.matrix('dense')                  // creates an empty matrix using the given storage format.
+   *    math.matrix(data, 'dense')            // creates a matrix with initial data using the given storage format.
+   *    math.matrix(data, 'sparse')           // creates a sparse matrix with initial data.
+   *    math.matrix(data, 'sparse', 'number') // creates a sparse matrix with initial data, number data type.
+   *
+   * Examples:
+   *
+   *    var m = math.matrix([[1, 2], [3, 4]]);
+   *    m.size();                        // Array [2, 2]
+   *    m.resize([3, 2], 5);
+   *    m.valueOf();                     // Array [[1, 2], [3, 4], [5, 5]]
+   *    m.get([1, 0])                    // number 3
+   *
+   * See also:
+   *
+   *    bignumber, boolean, complex, index, number, string, unit, sparse
+   *
+   * @param {Array | Matrix} [data]    A multi dimensional array
+   * @param {string} [format]          The Matrix storage format
+   *
+   * @return {Matrix} The created matrix
+   */
+  var matrix = typed('matrix', {
+    '': function () {
+      return _create([]);
+    },
+
+    'string': function (format) {
+      return _create([], format);
+    },
+    
+    'string, string': function (format, datatype) {
+      return _create([], format, datatype);
+    },
+
+    'Array': function (data) {
+      return _create(data);
+    },
+      
+    'Matrix': function (data) {
+      return _create(data, data.storage());
+    },
+    
+    'Array | Matrix, string': _create,
+    
+    'Array | Matrix, string, string': _create
+  });
+
+  matrix.toTex = {
+    0: '\\begin{bmatrix}\\end{bmatrix}',
+    1: '\\left(${args[0]}\\right)',
+    2: '\\left(${args[0]}\\right)'
+  };
+
+  return matrix;
+
+  /**
+   * Create a new Matrix with given storage format
+   * @param {Array} data
+   * @param {string} [format]
+   * @param {string} [datatype]
+   * @returns {Matrix} Returns a new Matrix
+   * @private
+   */
+  function _create(data, format, datatype) {
+    // get storage format constructor
+    var M = type.Matrix.storage(format || 'default');
+
+    // create instance
+    return new M(data, datatype);
+  }
+}
+
+exports.name = 'matrix';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/matrix/utils/algorithm11.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/matrix/utils/algorithm11.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function factory (type, config, load, typed) {
+
+  var equalScalar = load(__webpack_require__(/*! ../../../function/relational/equalScalar */ "./node_modules/mathjs/lib/function/relational/equalScalar.js"));
+
+  var SparseMatrix = type.SparseMatrix;
+
+  /**
+   * Iterates over SparseMatrix S nonzero items and invokes the callback function f(Sij, b). 
+   * Callback function invoked NZ times (number of nonzero items in S).
+   *
+   *
+   *          ┌  f(Sij, b)  ; S(i,j) !== 0
+   * C(i,j) = ┤  
+   *          └  0          ; otherwise
+   *
+   *
+   * @param {Matrix}   s                 The SparseMatrix instance (S)
+   * @param {Scalar}   b                 The Scalar value
+   * @param {Function} callback          The f(Aij,b) operation to invoke
+   * @param {boolean}  inverse           A true value indicates callback should be invoked f(b,Sij)
+   *
+   * @return {Matrix}                    SparseMatrix (C)
+   *
+   * https://github.com/josdejong/mathjs/pull/346#issuecomment-97626813
+   */
+  var algorithm11 = function (s, b, callback, inverse) {
+    // sparse matrix arrays
+    var avalues = s._values;
+    var aindex = s._index;
+    var aptr = s._ptr;
+    var asize = s._size;
+    var adt = s._datatype;
+
+    // sparse matrix cannot be a Pattern matrix
+    if (!avalues)
+      throw new Error('Cannot perform operation on Pattern Sparse Matrix and Scalar value');
+
+    // rows & columns
+    var rows = asize[0];
+    var columns = asize[1];
+
+    // datatype
+    var dt;
+    // equal signature to use
+    var eq = equalScalar;
+    // zero value
+    var zero = 0;
+    // callback signature to use
+    var cf = callback;
+
+    // process data types
+    if (typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // find signature that matches (dt, dt)
+      eq = typed.find(equalScalar, [dt, dt]);
+      // convert 0 to the same datatype
+      zero = typed.convert(0, dt);
+      // convert b to the same datatype
+      b = typed.convert(b, dt);
+      // callback
+      cf = typed.find(callback, [dt, dt]);
+    }
+
+    // result arrays
+    var cvalues = [];
+    var cindex = [];
+    var cptr = [];
+    // matrix
+    var c = new SparseMatrix({
+      values: cvalues,
+      index: cindex,
+      ptr: cptr,
+      size: [rows, columns],
+      datatype: dt
+    });
+
+    // loop columns
+    for (var j = 0; j < columns; j++) {
+      // initialize ptr
+      cptr[j] = cindex.length;
+      // values in j
+      for (var k0 = aptr[j], k1 = aptr[j + 1], k = k0; k < k1; k++) {
+        // row
+        var i = aindex[k];
+        // invoke callback
+        var v = inverse ? cf(b, avalues[k]) : cf(avalues[k], b);
+        // check value is zero
+        if (!eq(v, zero)) {
+          // push index & value
+          cindex.push(i);
+          cvalues.push(v);
+        }
+      }
+    }
+    // update ptr
+    cptr[columns] = cindex.length;
+
+    // return sparse matrix
+    return c;
+  };
+
+  return algorithm11;
+}
+
+exports.name = 'algorithm11';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/matrix/utils/algorithm14.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/matrix/utils/algorithm14.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var clone = __webpack_require__(/*! ../../../utils/object */ "./node_modules/mathjs/lib/utils/object.js").clone;
+
+function factory (type, config, load, typed) {
+
+  var DenseMatrix = type.DenseMatrix;
+
+  /**
+   * Iterates over DenseMatrix items and invokes the callback function f(Aij..z, b). 
+   * Callback function invoked MxN times.
+   *
+   * C(i,j,...z) = f(Aij..z, b)
+   *
+   * @param {Matrix}   a                 The DenseMatrix instance (A)
+   * @param {Scalar}   b                 The Scalar value
+   * @param {Function} callback          The f(Aij..z,b) operation to invoke
+   * @param {boolean}  inverse           A true value indicates callback should be invoked f(b,Aij..z)
+   *
+   * @return {Matrix}                    DenseMatrix (C)
+   *
+   * https://github.com/josdejong/mathjs/pull/346#issuecomment-97659042
+   */
+  var algorithm14 = function (a, b, callback, inverse) {
+    // a arrays
+    var adata = a._data;
+    var asize = a._size;
+    var adt = a._datatype;
+    
+    // datatype
+    var dt;
+    // callback signature to use
+    var cf = callback;
+
+    // process data types
+    if (typeof adt === 'string') {
+      // datatype
+      dt = adt;
+      // convert b to the same datatype
+      b = typed.convert(b, dt);
+      // callback
+      cf = typed.find(callback, [dt, dt]);
+    }
+    
+    // populate cdata, iterate through dimensions
+    var cdata = asize.length > 0 ? _iterate(cf, 0, asize, asize[0], adata, b, inverse) : [];
+
+    // c matrix
+    return new DenseMatrix({
+      data: cdata,
+      size: clone(asize),
+      datatype: dt
+    });
+  };
+  
+  // recursive function
+  var _iterate = function (f, level, s, n, av, bv, inverse) {
+    // initialize array for this level
+    var cv = [];
+    // check we reach the last level
+    if (level === s.length - 1) {
+      // loop arrays in last level
+      for (var i = 0; i < n; i++) {
+        // invoke callback and store value
+        cv[i] = inverse ? f(bv, av[i]) : f(av[i], bv);
+      }
+    }
+    else {
+      // iterate current level
+      for (var j = 0; j < n; j++) {
+        // iterate next level
+        cv[j] = _iterate(f, level + 1, s, s[level + 1], av[j], bv, inverse);
+      }
+    }
+    return cv;
+  };
+
+  return algorithm14;
+}
+
+exports.name = 'algorithm14';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/type/number.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/type/number.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deepMap = __webpack_require__(/*! ./../utils/collection/deepMap */ "./node_modules/mathjs/lib/utils/collection/deepMap.js");
+
+function factory (type, config, load, typed) {
+  /**
+   * Create a number or convert a string, boolean, or unit to a number.
+   * When value is a matrix, all elements will be converted to number.
+   *
+   * Syntax:
+   *
+   *    math.number(value)
+   *    math.number(unit, valuelessUnit)
+   *
+   * Examples:
+   *
+   *    math.number(2);                         // returns number 2
+   *    math.number('7.2');                     // returns number 7.2
+   *    math.number(true);                      // returns number 1
+   *    math.number([true, false, true, true]); // returns [1, 0, 1, 1]
+   *    math.number(math.unit('52cm'), 'm');    // returns 0.52
+   *
+   * See also:
+   *
+   *    bignumber, boolean, complex, index, matrix, string, unit
+   *
+   * @param {string | number | BigNumber | Fraction | boolean | Array | Matrix | Unit | null} [value]  Value to be converted
+   * @param {Unit | string} [valuelessUnit] A valueless unit, used to convert a unit to a number
+   * @return {number | Array | Matrix} The created number
+   */
+  var number = typed('number', {
+    '': function () {
+      return 0;
+    },
+
+    'number': function (x) {
+      return x;
+    },
+
+    'string': function (x) {
+      var num = Number(x);
+      if (isNaN(num)) {
+        throw new SyntaxError('String "' + x + '" is no valid number');
+      }
+      return num;
+    },
+
+    'BigNumber': function (x) {
+      return x.toNumber();
+    },
+
+    'Fraction': function (x) {
+      return x.valueOf();
+    },
+
+    'Unit': function (x) {
+      throw new Error('Second argument with valueless unit expected');
+    },
+
+    'Unit, string | Unit': function (unit, valuelessUnit) {
+      return unit.toNumber(valuelessUnit);
+    },
+
+    'Array | Matrix': function (x) {
+      return deepMap(x, number);
+    }
+  });
+
+  number.toTex = {
+    0: '0',
+    1: '\\left(${args[0]}\\right)',
+    2: '\\left(\\left(${args[0]}\\right)${args[1]}\\right)'
+  };
+
+  return number;
+}
+
+exports.name = 'number';
+exports.factory = factory;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/array.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/array.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var number = __webpack_require__(/*! ./number */ "./node_modules/mathjs/lib/utils/number.js");
+var string = __webpack_require__(/*! ./string */ "./node_modules/mathjs/lib/utils/string.js");
+var object = __webpack_require__(/*! ./object */ "./node_modules/mathjs/lib/utils/object.js");
+var types = __webpack_require__(/*! ./types */ "./node_modules/mathjs/lib/utils/types.js");
+
+var DimensionError = __webpack_require__(/*! ../error/DimensionError */ "./node_modules/mathjs/lib/error/DimensionError.js");
+var IndexError = __webpack_require__(/*! ../error/IndexError */ "./node_modules/mathjs/lib/error/IndexError.js");
+
+/**
+ * Calculate the size of a multi dimensional array.
+ * This function checks the size of the first entry, it does not validate
+ * whether all dimensions match. (use function `validate` for that)
+ * @param {Array} x
+ * @Return {Number[]} size
+ */
+exports.size = function (x) {
+  var s = [];
+
+  while (Array.isArray(x)) {
+    s.push(x.length);
+    x = x[0];
+  }
+
+  return s;
+};
+
+/**
+ * Recursively validate whether each element in a multi dimensional array
+ * has a size corresponding to the provided size array.
+ * @param {Array} array    Array to be validated
+ * @param {number[]} size  Array with the size of each dimension
+ * @param {number} dim   Current dimension
+ * @throws DimensionError
+ * @private
+ */
+function _validate(array, size, dim) {
+  var i;
+  var len = array.length;
+
+  if (len != size[dim]) {
+    throw new DimensionError(len, size[dim]);
+  }
+
+  if (dim < size.length - 1) {
+    // recursively validate each child array
+    var dimNext = dim + 1;
+    for (i = 0; i < len; i++) {
+      var child = array[i];
+      if (!Array.isArray(child)) {
+        throw new DimensionError(size.length - 1, size.length, '<');
+      }
+      _validate(array[i], size, dimNext);
+    }
+  }
+  else {
+    // last dimension. none of the childs may be an array
+    for (i = 0; i < len; i++) {
+      if (Array.isArray(array[i])) {
+        throw new DimensionError(size.length + 1, size.length, '>');
+      }
+    }
+  }
+}
+
+/**
+ * Validate whether each element in a multi dimensional array has
+ * a size corresponding to the provided size array.
+ * @param {Array} array    Array to be validated
+ * @param {number[]} size  Array with the size of each dimension
+ * @throws DimensionError
+ */
+exports.validate = function(array, size) {
+  var isScalar = (size.length == 0);
+  if (isScalar) {
+    // scalar
+    if (Array.isArray(array)) {
+      throw new DimensionError(array.length, 0);
+    }
+  }
+  else {
+    // array
+    _validate(array, size, 0);
+  }
+};
+
+/**
+ * Test whether index is an integer number with index >= 0 and index < length
+ * when length is provided
+ * @param {number} index    Zero-based index
+ * @param {number} [length] Length of the array
+ */
+exports.validateIndex = function(index, length) {
+  if (!number.isNumber(index) || !number.isInteger(index)) {
+    throw new TypeError('Index must be an integer (value: ' + index + ')');
+  }
+  if (index < 0 || (typeof length === 'number' && index >= length)) {
+    throw new IndexError(index, length);
+  }
+};
+
+// a constant used to specify an undefined defaultValue
+exports.UNINITIALIZED = {};
+
+/**
+ * Resize a multi dimensional array. The resized array is returned.
+ * @param {Array} array         Array to be resized
+ * @param {Array.<number>} size Array with the size of each dimension
+ * @param {*} [defaultValue=0]  Value to be filled in in new entries,
+ *                              zero by default. To leave new entries undefined,
+ *                              specify array.UNINITIALIZED as defaultValue
+ * @return {Array} array         The resized array
+ */
+exports.resize = function(array, size, defaultValue) {
+  // TODO: add support for scalars, having size=[] ?
+
+  // check the type of the arguments
+  if (!Array.isArray(array) || !Array.isArray(size)) {
+    throw new TypeError('Array expected');
+  }
+  if (size.length === 0) {
+    throw new Error('Resizing to scalar is not supported');
+  }
+
+  // check whether size contains positive integers
+  size.forEach(function (value) {
+    if (!number.isNumber(value) || !number.isInteger(value) || value < 0) {
+      throw new TypeError('Invalid size, must contain positive integers ' +
+          '(size: ' + string.format(size) + ')');
+    }
+  });
+
+  // recursively resize the array
+  var _defaultValue = (defaultValue !== undefined) ? defaultValue : 0;
+  _resize(array, size, 0, _defaultValue);
+
+  return array;
+};
+
+/**
+ * Recursively resize a multi dimensional array
+ * @param {Array} array         Array to be resized
+ * @param {number[]} size       Array with the size of each dimension
+ * @param {number} dim          Current dimension
+ * @param {*} [defaultValue]    Value to be filled in in new entries,
+ *                              undefined by default.
+ * @private
+ */
+function _resize (array, size, dim, defaultValue) {
+  var i;
+  var elem;
+  var oldLen = array.length;
+  var newLen = size[dim];
+  var minLen = Math.min(oldLen, newLen);
+
+  // apply new length
+  array.length = newLen;
+
+  if (dim < size.length - 1) {
+    // non-last dimension
+    var dimNext = dim + 1;
+
+    // resize existing child arrays
+    for (i = 0; i < minLen; i++) {
+      // resize child array
+      elem = array[i];
+      if (!Array.isArray(elem)) {
+        elem = [elem]; // add a dimension
+        array[i] = elem;
+      }
+      _resize(elem, size, dimNext, defaultValue);
+    }
+
+    // create new child arrays
+    for (i = minLen; i < newLen; i++) {
+      // get child array
+      elem = [];
+      array[i] = elem;
+
+      // resize new child array
+      _resize(elem, size, dimNext, defaultValue);
+    }
+  }
+  else {
+    // last dimension
+
+    // remove dimensions of existing values
+    for (i = 0; i < minLen; i++) {
+      while (Array.isArray(array[i])) {
+        array[i] = array[i][0];
+      }
+    }
+
+    if(defaultValue !== exports.UNINITIALIZED) {
+      // fill new elements with the default value
+      for (i = minLen; i < newLen; i++) {
+        array[i] = defaultValue;
+      }
+    }
+  }
+}
+
+/**
+ * Re-shape a multi dimensional array to fit the specified dimensions
+ * @param {Array} array           Array to be reshaped
+ * @param {Array.<number>} sizes  List of sizes for each dimension
+ * @returns {Array}               Array whose data has been formatted to fit the
+ *                                specified dimensions
+ *
+ * @throws {DimensionError}       If the product of the new dimension sizes does
+ *                                not equal that of the old ones
+ */
+exports.reshape = function(array, sizes) {
+  var flatArray = exports.flatten(array);
+  var newArray;
+
+  var product = function (arr) {
+    return arr.reduce(function (prev, curr) {
+      return prev * curr;
+    });
+  };
+
+  if (!Array.isArray(array) || !Array.isArray(sizes)) {
+    throw new TypeError('Array expected');
+  }
+
+  if (sizes.length === 0) {
+    throw new DimensionError(0, product(exports.size(array)), '!=');
+  }
+
+  try {
+    newArray  = _reshape(flatArray, sizes);
+  } catch (e) {
+    if (e instanceof DimensionError) {
+      throw new DimensionError(
+        product(sizes),
+        product(exports.size(array)),
+        '!='
+      );
+    }
+    throw e;
+  }
+
+  if (flatArray.length > 0) {
+    throw new DimensionError(
+      product(sizes),
+      product(exports.size(array)),
+      '!='
+    );
+  }
+
+  return newArray;
+};
+
+/**
+ * Recursively re-shape a multi dimensional array to fit the specified dimensions
+ * @param {Array} array           Array to be reshaped
+ * @param {Array.<number>} sizes  List of sizes for each dimension
+ * @returns {Array}               Array whose data has been formatted to fit the
+ *                                specified dimensions
+ *
+ * @throws {DimensionError}       If the product of the new dimension sizes does
+ *                                not equal that of the old ones
+ */
+function _reshape(array, sizes) {
+  var accumulator = [];
+  var i;
+
+  if (sizes.length === 0) {
+    if (array.length === 0) {
+      throw new DimensionError(null, null, '!=');
+    }
+    return array.shift();
+  }
+  for (i = 0; i < sizes[0]; i += 1) {
+    accumulator.push(_reshape(array, sizes.slice(1)));
+  }
+  return accumulator;
+}
+
+
+/**
+ * Squeeze a multi dimensional array
+ * @param {Array} array
+ * @param {Array} [size]
+ * @returns {Array} returns the array itself
+ */
+exports.squeeze = function(array, size) {
+  var s = size || exports.size(array);
+
+  // squeeze outer dimensions
+  while (Array.isArray(array) && array.length === 1) {
+    array = array[0];
+    s.shift();
+  }
+
+  // find the first dimension to be squeezed
+  var dims = s.length;
+  while (s[dims - 1] === 1) {
+    dims--;
+  }
+
+  // squeeze inner dimensions
+  if (dims < s.length) {
+    array = _squeeze(array, dims, 0);
+    s.length = dims;
+  }
+
+  return array;
+};
+
+/**
+ * Recursively squeeze a multi dimensional array
+ * @param {Array} array
+ * @param {number} dims Required number of dimensions
+ * @param {number} dim  Current dimension
+ * @returns {Array | *} Returns the squeezed array
+ * @private
+ */
+function _squeeze (array, dims, dim) {
+  var i, ii;
+
+  if (dim < dims) {
+    var next = dim + 1;
+    for (i = 0, ii = array.length; i < ii; i++) {
+      array[i] = _squeeze(array[i], dims, next);
+    }
+  }
+  else {
+    while (Array.isArray(array)) {
+      array = array[0];
+    }
+  }
+
+  return array;
+}
+
+/**
+ * Unsqueeze a multi dimensional array: add dimensions when missing
+ * 
+ * Paramter `size` will be mutated to match the new, unqueezed matrix size.
+ * 
+ * @param {Array} array
+ * @param {number} dims     Desired number of dimensions of the array
+ * @param {number} [outer]  Number of outer dimensions to be added
+ * @param {Array} [size]    Current size of array.
+ * @returns {Array} returns the array itself
+ * @private
+ */
+exports.unsqueeze = function(array, dims, outer, size) {
+  var s = size || exports.size(array);
+
+  // unsqueeze outer dimensions
+  if (outer) {
+    for (var i = 0; i < outer; i++) {
+      array = [array];
+      s.unshift(1);
+    }
+  }
+
+  // unsqueeze inner dimensions
+  array = _unsqueeze(array, dims, 0);
+  while (s.length < dims) {
+    s.push(1);
+  }
+
+  return array;
+};
+
+/**
+ * Recursively unsqueeze a multi dimensional array
+ * @param {Array} array
+ * @param {number} dims Required number of dimensions
+ * @param {number} dim  Current dimension
+ * @returns {Array | *} Returns the squeezed array
+ * @private
+ */
+function _unsqueeze (array, dims, dim) {
+  var i, ii;
+
+  if (Array.isArray(array)) {
+    var next = dim + 1;
+    for (i = 0, ii = array.length; i < ii; i++) {
+      array[i] = _unsqueeze(array[i], dims, next);
+    }
+  }
+  else {
+    for (var d = dim; d < dims; d++) {
+      array = [array];
+    }
+  }
+
+  return array;
+}
+/**
+ * Flatten a multi dimensional array, put all elements in a one dimensional
+ * array
+ * @param {Array} array   A multi dimensional array
+ * @return {Array}        The flattened array (1 dimensional)
+ */
+exports.flatten = function(array) {
+  if (!Array.isArray(array)) {
+    //if not an array, return as is
+    return array;
+  }
+  var flat = [];
+
+  array.forEach(function callback(value) {
+    if (Array.isArray(value)) {
+      value.forEach(callback);  //traverse through sub-arrays recursively
+    }
+    else {
+      flat.push(value);
+    }
+  });
+
+  return flat;
+};
+
+/**
+ * A safe map
+ * @param {Array} array
+ * @param {function} callback
+ */
+exports.map = function (array, callback) {
+  return Array.prototype.map.call(array, callback);
+}
+
+/**
+ * A safe forEach
+ * @param {Array} array
+ * @param {function} callback
+ */
+exports.forEach = function (array, callback) {
+  Array.prototype.forEach.call(array, callback);
+}
+
+/**
+ * A safe filter
+ * @param {Array} array
+ * @param {function} callback
+ */
+exports.filter = function (array, callback) {
+  if (exports.size(array).length !== 1) {
+    throw new Error('Only one dimensional matrices supported');
+  }
+
+  return Array.prototype.filter.call(array, callback);
+}
+
+/**
+ * Filter values in a callback given a regular expression
+ * @param {Array} array
+ * @param {RegExp} regexp
+ * @return {Array} Returns the filtered array
+ * @private
+ */
+exports.filterRegExp = function (array, regexp) {
+  if (exports.size(array).length !== 1) {
+    throw new Error('Only one dimensional matrices supported');
+  }
+
+  return Array.prototype.filter.call(array, function (entry) {
+    return regexp.test(entry);
+  });
+}
+
+/**
+ * A safe join
+ * @param {Array} array
+ * @param {string} separator
+ */
+exports.join = function (array, separator) {
+  return Array.prototype.join.call(array, separator);
+}
+
+/**
+ * Assign a numeric identifier to every element of a sorted array
+ * @param {Array}	a  An array
+ * @return {Array}	An array of objects containing the original value and its identifier
+ */
+exports.identify = function(a) {
+  if (!Array.isArray(a)) {
+	throw new TypeError('Array input expected');
+  }
+	
+  if (a.length === 0) {
+	return a;
+  }
+	
+  var b = [];
+  var count = 0;
+  b[0] = {value: a[0], identifier: 0};
+  for (var i=1; i<a.length; i++) {
+    if (a[i] === a[i-1]) {
+  	count++;
+    }
+    else {
+      count = 0;
+    }
+    b.push({value: a[i], identifier: count});
+  }
+  return b;
+}
+
+/**
+ * Remove the numeric identifier from the elements
+ * @param	a  An array
+ * @return	An array of values without identifiers
+ */
+exports.generalize = function(a) {
+  if (!Array.isArray(a)) {
+	throw new TypeError('Array input expected');
+  }
+	
+  if (a.length === 0) {
+	return a;
+  }
+	
+  var b = [];
+  for (var i=0; i<a.length; i++) {
+    b.push(a[i].value);
+  }
+  return b;
+}
+
+/**
+ * Test whether an object is an array
+ * @param {*} value
+ * @return {boolean} isArray
+ */
+exports.isArray = Array.isArray;
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/bignumber/formatter.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/bignumber/formatter.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Convert a BigNumber to a formatted string representation.
+ *
+ * Syntax:
+ *
+ *    format(value)
+ *    format(value, options)
+ *    format(value, precision)
+ *    format(value, fn)
+ *
+ * Where:
+ *
+ *    {number} value   The value to be formatted
+ *    {Object} options An object with formatting options. Available options:
+ *                     {string} notation
+ *                         Number notation. Choose from:
+ *                         'fixed'          Always use regular number notation.
+ *                                          For example '123.40' and '14000000'
+ *                         'exponential'    Always use exponential notation.
+ *                                          For example '1.234e+2' and '1.4e+7'
+ *                         'auto' (default) Regular number notation for numbers
+ *                                          having an absolute value between
+ *                                          `lower` and `upper` bounds, and uses
+ *                                          exponential notation elsewhere.
+ *                                          Lower bound is included, upper bound
+ *                                          is excluded.
+ *                                          For example '123.4' and '1.4e7'.
+ *                     {number} precision   A number between 0 and 16 to round
+ *                                          the digits of the number.
+ *                                          In case of notations 'exponential' and
+ *                                          'auto', `precision` defines the total
+ *                                          number of significant digits returned
+ *                                          and is undefined by default.
+ *                                          In case of notation 'fixed',
+ *                                          `precision` defines the number of
+ *                                          significant digits after the decimal
+ *                                          point, and is 0 by default.
+ *                     {Object} exponential An object containing two parameters,
+ *                                          {number} lower and {number} upper,
+ *                                          used by notation 'auto' to determine
+ *                                          when to return exponential notation.
+ *                                          Default values are `lower=1e-3` and
+ *                                          `upper=1e5`.
+ *                                          Only applicable for notation `auto`.
+ *    {Function} fn    A custom formatting function. Can be used to override the
+ *                     built-in notations. Function `fn` is called with `value` as
+ *                     parameter and must return a string. Is useful for example to
+ *                     format all values inside a matrix in a particular way.
+ *
+ * Examples:
+ *
+ *    format(6.4);                                        // '6.4'
+ *    format(1240000);                                    // '1.24e6'
+ *    format(1/3);                                        // '0.3333333333333333'
+ *    format(1/3, 3);                                     // '0.333'
+ *    format(21385, 2);                                   // '21000'
+ *    format(12.071, {notation: 'fixed'});                // '12'
+ *    format(2.3,    {notation: 'fixed', precision: 2});  // '2.30'
+ *    format(52.8,   {notation: 'exponential'});          // '5.28e+1'
+ *
+ * @param {BigNumber} value
+ * @param {Object | Function | number} [options]
+ * @return {string} str The formatted value
+ */
+exports.format = function (value, options) {
+  if (typeof options === 'function') {
+    // handle format(value, fn)
+    return options(value);
+  }
+
+  // handle special cases
+  if (!value.isFinite()) {
+    return value.isNaN() ? 'NaN' : (value.gt(0) ? 'Infinity' : '-Infinity');
+  }
+
+  // default values for options
+  var notation = 'auto';
+  var precision = undefined;
+
+  if (options !== undefined) {
+    // determine notation from options
+    if (options.notation) {
+      notation = options.notation;
+    }
+
+    // determine precision from options
+    if (typeof options === 'number') {
+      precision = options;
+    }
+    else if (options.precision) {
+      precision = options.precision;
+    }
+  }
+
+  // handle the various notations
+  switch (notation) {
+    case 'fixed':
+      return exports.toFixed(value, precision);
+
+    case 'exponential':
+      return exports.toExponential(value, precision);
+
+    case 'auto':
+      // determine lower and upper bound for exponential notation.
+      // TODO: implement support for upper and lower to be BigNumbers themselves
+      var lower = 1e-3;
+      var upper = 1e5;
+      if (options && options.exponential) {
+        if (options.exponential.lower !== undefined) {
+          lower = options.exponential.lower;
+        }
+        if (options.exponential.upper !== undefined) {
+          upper = options.exponential.upper;
+        }
+      }
+
+      // adjust the configuration of the BigNumber constructor (yeah, this is quite tricky...)
+      var oldConfig = {
+        toExpNeg: value.constructor.toExpNeg,
+        toExpPos: value.constructor.toExpPos
+      };
+
+      value.constructor.config({
+        toExpNeg: Math.round(Math.log(lower) / Math.LN10),
+        toExpPos: Math.round(Math.log(upper) / Math.LN10)
+      });
+
+      // handle special case zero
+      if (value.isZero()) return '0';
+
+      // determine whether or not to output exponential notation
+      var str;
+      var abs = value.abs();
+      if (abs.gte(lower) && abs.lt(upper)) {
+        // normal number notation
+        str = value.toSignificantDigits(precision).toFixed();
+      }
+      else {
+        // exponential notation
+        str = exports.toExponential(value, precision);
+      }
+
+      // remove trailing zeros after the decimal point
+      return str.replace(/((\.\d*?)(0+))($|e)/, function () {
+        var digits = arguments[2];
+        var e = arguments[4];
+        return (digits !== '.') ? digits + e : e;
+      });
+
+    default:
+      throw new Error('Unknown notation "' + notation + '". ' +
+          'Choose "auto", "exponential", or "fixed".');
+  }
+};
+
+/**
+ * Format a number in exponential notation. Like '1.23e+5', '2.3e+0', '3.500e-3'
+ * @param {BigNumber} value
+ * @param {number} [precision]  Number of digits in formatted output.
+ *                              If not provided, the maximum available digits
+ *                              is used.
+ * @returns {string} str
+ */
+exports.toExponential = function (value, precision) {
+  if (precision !== undefined) {
+    return value.toExponential(precision - 1); // Note the offset of one
+  }
+  else {
+    return value.toExponential();
+  }
+};
+
+/**
+ * Format a number with fixed notation.
+ * @param {BigNumber} value
+ * @param {number} [precision=0]        Optional number of decimals after the
+ *                                      decimal point. Zero by default.
+ */
+exports.toFixed = function (value, precision) {
+  return value.toFixed(precision || 0);
+  // Note: the (precision || 0) is needed as the toFixed of BigNumber has an
+  // undefined default precision instead of 0.
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Test whether a value is a BigNumber
+ * @param {*} x
+ * @return {boolean}
+ */
+module.exports = function isBigNumber(x) {
+  return x && x.constructor.prototype.isBigNumber || false
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/bignumber/nearlyEqual.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/bignumber/nearlyEqual.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Compares two BigNumbers.
+ * @param {BigNumber} x       First value to compare
+ * @param {BigNumber} y       Second value to compare
+ * @param {number} [epsilon]  The maximum relative difference between x and y
+ *                            If epsilon is undefined or null, the function will
+ *                            test whether x and y are exactly equal.
+ * @return {boolean} whether the two numbers are nearly equal
+ */
+module.exports = function nearlyEqual(x, y, epsilon) {
+  // if epsilon is null or undefined, test whether x and y are exactly equal
+  if (epsilon == null) {
+    return x.eq(y);
+  }
+
+
+  // use "==" operator, handles infinities
+  if (x.eq(y)) {
+    return true;
+  }
+
+  // NaN
+  if (x.isNaN() || y.isNaN()) {
+    return false;
+  }
+
+  // at this point x and y should be finite
+  if(x.isFinite() && y.isFinite()) {
+    // check numbers are very close, needed when comparing numbers near zero
+    var diff = x.minus(y).abs();
+    if (diff.isZero()) {
+      return true;
+    }
+    else {
+      // use relative error
+      var max = x.constructor.max(x.abs(), y.abs());
+      return diff.lte(max.times(epsilon));
+    }
+  }
+
+  // Infinite and Number or negative Infinite and positive Infinite cases
+  return false;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/collection/deepMap.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/collection/deepMap.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Execute the callback function element wise for each element in array and any
+ * nested array
+ * Returns an array with the results
+ * @param {Array | Matrix} array
+ * @param {Function} callback   The callback is called with two parameters:
+ *                              value1 and value2, which contain the current
+ *                              element of both arrays.
+ * @param {boolean} [skipZeros] Invoke callback function for non-zero values only.
+ *
+ * @return {Array | Matrix} res
+ */
+module.exports = function deepMap(array, callback, skipZeros) {
+  if (array && (typeof array.map === 'function')) {
+    // TODO: replace array.map with a for loop to improve performance
+    return array.map(function (x) {
+      return deepMap(x, callback, skipZeros);
+    });
+  }
+  else {
+    return callback(array);
+  }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/collection/isMatrix.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/collection/isMatrix.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Test whether a value is a Matrix
+ * @param {*} x
+ * @returns {boolean} returns true with input is a Matrix
+ *                    (like a DenseMatrix or SparseMatrix)
+ */
+module.exports = function isMatrix (x) {
+  return x && x.constructor.prototype.isMatrix || false;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/emitter.js":
+/*!**************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/emitter.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Emitter = __webpack_require__(/*! tiny-emitter */ "./node_modules/tiny-emitter/index.js");
+
+/**
+ * Extend given object with emitter functions `on`, `off`, `once`, `emit`
+ * @param {Object} obj
+ * @return {Object} obj
+ */
+exports.mixin = function (obj) {
+  // create event emitter
+  var emitter = new Emitter();
+
+  // bind methods to obj (we don't want to expose the emitter.e Array...)
+  obj.on   = emitter.on.bind(emitter);
+  obj.off  = emitter.off.bind(emitter);
+  obj.once = emitter.once.bind(emitter);
+  obj.emit = emitter.emit.bind(emitter);
+
+  return obj;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/latex.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/latex.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.symbols = {
+  // GREEK LETTERS
+  Alpha: 'A',     alpha: '\\alpha',
+  Beta: 'B',      beta: '\\beta',
+  Gamma: '\\Gamma',    gamma: '\\gamma',
+  Delta: '\\Delta',    delta: '\\delta',
+  Epsilon: 'E',   epsilon: '\\epsilon',  varepsilon: '\\varepsilon',
+  Zeta: 'Z',      zeta: '\\zeta',
+  Eta: 'H',       eta: '\\eta',
+  Theta: '\\Theta',    theta: '\\theta',    vartheta: '\\vartheta',
+  Iota: 'I',      iota: '\\iota',
+  Kappa: 'K',     kappa: '\\kappa',    varkappa: '\\varkappa',
+  Lambda: '\\Lambda',   lambda: '\\lambda',
+  Mu: 'M',        mu: '\\mu',
+  Nu: 'N',        nu: '\\nu',
+  Xi: '\\Xi',       xi: '\\xi',
+  Omicron: 'O',   omicron: 'o',
+  Pi: '\\Pi',       pi: '\\pi',       varpi: '\\varpi',
+  Rho: 'P',       rho: '\\rho',      varrho: '\\varrho',
+  Sigma: '\\Sigma',    sigma: '\\sigma',    varsigma: '\\varsigma',
+  Tau: 'T',       tau: '\\tau',
+  Upsilon: '\\Upsilon',  upsilon: '\\upsilon',
+  Phi: '\\Phi',      phi: '\\phi',      varphi: '\\varphi',
+  Chi: 'X',       chi: '\\chi',
+  Psi: '\\Psi',      psi: '\\psi',
+  Omega: '\\Omega',    omega: '\\omega',
+  //logic
+  'true': '\\mathrm{True}',
+  'false': '\\mathrm{False}',
+  //other
+  i: 'i', //TODO use \i ??
+  inf: '\\infty',
+  Inf: '\\infty',
+  infinity: '\\infty',
+  Infinity: '\\infty',
+  oo: '\\infty',
+  lim: '\\lim',
+  'undefined': '\\mathbf{?}'
+};
+
+exports.operators = {
+  'transpose': '^\\top',
+  'factorial': '!',
+  'pow': '^',
+  'dotPow': '.^\\wedge', //TODO find ideal solution
+  'unaryPlus': '+',
+  'unaryMinus': '-',
+  'bitNot': '~', //TODO find ideal solution
+  'not': '\\neg',
+  'multiply': '\\cdot',
+  'divide': '\\frac', //TODO how to handle that properly?
+  'dotMultiply': '.\\cdot', //TODO find ideal solution
+  'dotDivide': '.:', //TODO find ideal solution
+  'mod': '\\mod',
+  'add': '+',
+  'subtract': '-',
+  'to': '\\rightarrow',
+  'leftShift': '<<',
+  'rightArithShift': '>>',
+  'rightLogShift': '>>>',
+  'equal': '=',
+  'unequal': '\\neq',
+  'smaller': '<',
+  'larger': '>',
+  'smallerEq': '\\leq',
+  'largerEq': '\\geq',
+  'bitAnd': '\\&',
+  'bitXor': '\\underline{|}',
+  'bitOr': '|',
+  'and': '\\wedge',
+  'xor': '\\veebar',
+  'or': '\\vee'
+};
+
+exports.defaultTemplate = '\\mathrm{${name}}\\left(${args}\\right)';
+
+var units = {
+  deg: '^\\circ'
+};
+
+//@param {string} name
+//@param {boolean} isUnit
+exports.toSymbol = function (name, isUnit) {
+  isUnit = typeof isUnit === 'undefined' ? false : isUnit;
+  if (isUnit) {
+    if (units.hasOwnProperty(name)) {
+      return units[name];
+    }
+    return '\\mathrm{' + name + '}';
+  }
+
+  if (exports.symbols.hasOwnProperty(name)) {
+    return exports.symbols[name];
+  }
+  else if (name.indexOf('_') !== -1) {
+    //symbol with index (eg. alpha_1)
+    var index = name.indexOf('_');
+    return exports.toSymbol(name.substring(0, index)) + '_{'
+      + exports.toSymbol(name.substring(index + 1)) + '}';
+  }
+  return name;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/number.js":
+/*!*************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/number.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * @typedef {{sign: '+' | '-' | '', coefficients: number[], exponent: number}} SplitValue
+ */
+
+/**
+ * Test whether value is a number
+ * @param {*} value
+ * @return {boolean} isNumber
+ */
+exports.isNumber = function(value) {
+  return typeof value === 'number';
+};
+
+/**
+ * Check if a number is integer
+ * @param {number | boolean} value
+ * @return {boolean} isInteger
+ */
+exports.isInteger = function(value) {
+  return isFinite(value)
+      ? (value == Math.round(value))
+      : false;
+  // Note: we use ==, not ===, as we can have Booleans as well
+};
+
+/**
+ * Calculate the sign of a number
+ * @param {number} x
+ * @returns {*}
+ */
+exports.sign = Math.sign || function(x) {
+  if (x > 0) {
+    return 1;
+  }
+  else if (x < 0) {
+    return -1;
+  }
+  else {
+    return 0;
+  }
+};
+
+/**
+ * Convert a number to a formatted string representation.
+ *
+ * Syntax:
+ *
+ *    format(value)
+ *    format(value, options)
+ *    format(value, precision)
+ *    format(value, fn)
+ *
+ * Where:
+ *
+ *    {number} value   The value to be formatted
+ *    {Object} options An object with formatting options. Available options:
+ *                     {string} notation
+ *                         Number notation. Choose from:
+ *                         'fixed'          Always use regular number notation.
+ *                                          For example '123.40' and '14000000'
+ *                         'exponential'    Always use exponential notation.
+ *                                          For example '1.234e+2' and '1.4e+7'
+ *                         'engineering'    Always use engineering notation.
+ *                                          For example '123.4e+0' and '14.0e+6'
+ *                         'auto' (default) Regular number notation for numbers
+ *                                          having an absolute value between
+ *                                          `lower` and `upper` bounds, and uses
+ *                                          exponential notation elsewhere.
+ *                                          Lower bound is included, upper bound
+ *                                          is excluded.
+ *                                          For example '123.4' and '1.4e7'.
+ *                     {number} precision   A number between 0 and 16 to round
+ *                                          the digits of the number.
+ *                                          In case of notations 'exponential' and
+ *                                          'auto', `precision` defines the total
+ *                                          number of significant digits returned
+ *                                          and is undefined by default.
+ *                                          In case of notation 'fixed',
+ *                                          `precision` defines the number of
+ *                                          significant digits after the decimal
+ *                                          point, and is 0 by default.
+ *                     {Object} exponential An object containing two parameters,
+ *                                          {number} lower and {number} upper,
+ *                                          used by notation 'auto' to determine
+ *                                          when to return exponential notation.
+ *                                          Default values are `lower=1e-3` and
+ *                                          `upper=1e5`.
+ *                                          Only applicable for notation `auto`.
+ *    {Function} fn    A custom formatting function. Can be used to override the
+ *                     built-in notations. Function `fn` is called with `value` as
+ *                     parameter and must return a string. Is useful for example to
+ *                     format all values inside a matrix in a particular way.
+ *
+ * Examples:
+ *
+ *    format(6.4);                                        // '6.4'
+ *    format(1240000);                                    // '1.24e6'
+ *    format(1/3);                                        // '0.3333333333333333'
+ *    format(1/3, 3);                                     // '0.333'
+ *    format(21385, 2);                                   // '21000'
+ *    format(12.071, {notation: 'fixed'});                // '12'
+ *    format(2.3,    {notation: 'fixed', precision: 2});  // '2.30'
+ *    format(52.8,   {notation: 'exponential'});          // '5.28e+1'
+ *    format(12345678, {notation: 'engineering'});        // '12.345678e+6'
+ *
+ * @param {number} value
+ * @param {Object | Function | number} [options]
+ * @return {string} str The formatted value
+ */
+exports.format = function(value, options) {
+  if (typeof options === 'function') {
+    // handle format(value, fn)
+    return options(value);
+  }
+
+  // handle special cases
+  if (value === Infinity) {
+    return 'Infinity';
+  }
+  else if (value === -Infinity) {
+    return '-Infinity';
+  }
+  else if (isNaN(value)) {
+    return 'NaN';
+  }
+
+  // default values for options
+  var notation = 'auto';
+  var precision = undefined;
+
+  if (options) {
+    // determine notation from options
+    if (options.notation) {
+      notation = options.notation;
+    }
+
+    // determine precision from options
+    if (exports.isNumber(options)) {
+      precision = options;
+    }
+    else if (options.precision) {
+      precision = options.precision;
+    }
+  }
+
+  // handle the various notations
+  switch (notation) {
+    case 'fixed':
+      return exports.toFixed(value, precision);
+
+    case 'exponential':
+      return exports.toExponential(value, precision);
+
+    case 'engineering':
+      return exports.toEngineering(value, precision);
+
+    case 'auto':
+      return exports
+          .toPrecision(value, precision, options && options.exponential)
+
+          // remove trailing zeros after the decimal point
+          .replace(/((\.\d*?)(0+))($|e)/, function () {
+            var digits = arguments[2];
+            var e = arguments[4];
+            return (digits !== '.') ? digits + e : e;
+          });
+
+    default:
+      throw new Error('Unknown notation "' + notation + '". ' +
+          'Choose "auto", "exponential", or "fixed".');
+  }
+};
+
+/**
+ * Split a number into sign, coefficients, and exponent
+ * @param {number | string} value
+ * @return {SplitValue}
+ *              Returns an object containing sign, coefficients, and exponent
+ */
+exports.splitNumber = function (value) {
+  // parse the input value
+  var match = String(value).toLowerCase().match(/^0*?(-?)(\d+\.?\d*)(e([+-]?\d+))?$/);
+  if (!match) {
+    throw new SyntaxError('Invalid number ' + value);
+  }
+
+  var sign         = match[1];
+  var digits       = match[2];
+  var exponent     = parseFloat(match[4] || '0');
+
+  var dot = digits.indexOf('.');
+  exponent += (dot !== -1) ? (dot - 1) : (digits.length - 1);
+
+  var coefficients = digits
+      .replace('.', '')  // remove the dot (must be removed before removing leading zeros)
+      .replace(/^0*/, function (zeros) {
+        // remove leading zeros, add their count to the exponent
+        exponent -= zeros.length;
+        return '';
+      })
+      .replace(/0*$/, '') // remove trailing zeros
+      .split('')
+      .map(function (d) {
+        return parseInt(d);
+      });
+
+  if (coefficients.length === 0) {
+    coefficients.push(0);
+    exponent++;
+  }
+
+  return {
+    sign: sign,
+    coefficients: coefficients,
+    exponent: exponent
+  };
+};
+
+
+/**
+ * Format a number in engineering notation. Like '1.23e+6', '2.3e+0', '3.500e-3'
+ * @param {number | string} value
+ * @param {number} [precision=0]        Optional number of decimals after the
+ *                                      decimal point. Zero by default.
+ */
+exports.toEngineering = function (value, precision) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+  
+  var rounded = exports.roundDigits(exports.splitNumber(value), precision);
+
+  var e = rounded.exponent;
+  var c = rounded.coefficients;
+
+  // find nearest lower multiple of 3 for exponent
+  var newExp = e % 3 === 0 ? e : (e < 0 ? (e - 3) - (e % 3) : e - (e % 3));
+
+  // concatenate coefficients with necessary zeros
+  var significandsDiff = e >= 0 ? e : Math.abs(newExp);
+
+  // add zeros if necessary (for ex: 1e+8)
+  if (c.length - 1 < significandsDiff) c = c.concat(zeros(significandsDiff - (c.length - 1)));
+
+  // find difference in exponents
+  var expDiff = Math.abs(e - newExp);
+
+  var decimalIdx = 1;
+
+  // push decimal index over by expDiff times
+  while (--expDiff >= 0) decimalIdx++;
+
+  // if all coefficient values are zero after the decimal point, don't add a decimal value.
+  // otherwise concat with the rest of the coefficients
+  var decimals = c.slice(decimalIdx).join('');
+  var decimalVal = decimals.match(/[1-9]/) ? ('.' + decimals) : '';
+
+  var str = c.slice(0, decimalIdx).join('') +
+      decimalVal +
+      'e' + (e >= 0 ? '+' : '') + newExp.toString();
+  return rounded.sign + str;
+};
+
+/**
+ * Format a number with fixed notation.
+ * @param {number | string} value
+ * @param {number} [precision=0]        Optional number of decimals after the
+ *                                      decimal point. Zero by default.
+ */
+exports.toFixed = function (value, precision) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+
+  var splitValue = exports.splitNumber(value)
+  var rounded = exports.roundDigits(splitValue, splitValue.exponent + 1 + (precision || 0));
+  var c = rounded.coefficients;
+  var p = rounded.exponent + 1; // exponent may have changed
+
+  // append zeros if needed
+  var pp = p + (precision || 0);
+  if (c.length < pp) {
+    c = c.concat(zeros(pp - c.length));
+  }
+
+  // prepend zeros if needed
+  if (p < 0) {
+    c = zeros(-p + 1).concat(c);
+    p = 1;
+  }
+
+  // insert a dot if needed
+  if (precision) {
+    c.splice(p, 0, (p === 0) ? '0.' : '.');
+  }
+
+  return rounded.sign + c.join('');
+};
+
+/**
+ * Format a number in exponential notation. Like '1.23e+5', '2.3e+0', '3.500e-3'
+ * @param {number | string} value
+ * @param {number} [precision]  Number of digits in formatted output.
+ *                              If not provided, the maximum available digits
+ *                              is used.
+ */
+exports.toExponential = function (value, precision) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+
+  // round if needed, else create a clone
+  var split = exports.splitNumber(value)
+  var rounded = precision ? exports.roundDigits(split, precision) : split;
+  var c = rounded.coefficients;
+  var e = rounded.exponent;
+
+  // append zeros if needed
+  if (c.length < precision) {
+    c = c.concat(zeros(precision - c.length));
+  }
+
+  // format as `C.CCCe+EEE` or `C.CCCe-EEE`
+  var first = c.shift();
+  return rounded.sign + first + (c.length > 0 ? ('.' + c.join('')) : '') +
+      'e' + (e >= 0 ? '+' : '') + e;
+}
+
+/**
+ * Format a number with a certain precision
+ * @param {number | string} value
+ * @param {number} [precision=undefined] Optional number of digits.
+ * @param {{lower: number | undefined, upper: number | undefined}} [options]
+ *                                       By default:
+ *                                         lower = 1e-3 (excl)
+ *                                         upper = 1e+5 (incl)
+ * @return {string}
+ */
+exports.toPrecision = function (value, precision, options) {
+  if (isNaN(value) || !isFinite(value)) {
+    return String(value);
+  }
+
+  // determine lower and upper bound for exponential notation.
+  var lower = (options && options.lower !== undefined) ? options.lower : 1e-3;
+  var upper = (options && options.upper !== undefined) ? options.upper : 1e+5;
+
+  var split = exports.splitNumber(value)
+  var abs = Math.abs(Math.pow(10, split.exponent));
+  if (abs < lower || abs >= upper) {
+    // exponential notation
+    return exports.toExponential(value, precision);
+  }
+  else {
+    var rounded = precision ? exports.roundDigits(split, precision) : split;
+    var c = rounded.coefficients;
+    var e = rounded.exponent;
+
+    // append trailing zeros
+    if (c.length < precision) {
+      c = c.concat(zeros(precision - c.length));
+    }
+
+    // append trailing zeros
+    // TODO: simplify the next statement
+    c = c.concat(zeros(e - c.length + 1 +
+        (c.length < precision ? precision - c.length : 0)));
+
+    // prepend zeros
+    c = zeros(-e).concat(c);
+
+    var dot = e > 0 ? e : 0;
+    if (dot < c.length - 1) {
+      c.splice(dot + 1, 0, '.');
+    }
+
+    return rounded.sign + c.join('');
+  }
+}
+
+/**
+ * Round the number of digits of a number *
+ * @param {SplitValue} split       A value split with .splitNumber(value)
+ * @param {number} precision  A positive integer
+ * @return {SplitValue}
+ *              Returns an object containing sign, coefficients, and exponent
+ *              with rounded digits
+ */
+exports.roundDigits = function (split, precision) {
+  // create a clone
+  var rounded = {
+    sign: split.sign,
+    coefficients: split.coefficients,
+    exponent: split.exponent
+  }
+  var c = rounded.coefficients;
+
+  // prepend zeros if needed
+  while (precision <= 0) {
+    c.unshift(0);
+    rounded.exponent++;
+    precision++;
+  }
+
+  if (c.length > precision) {
+    var removed = c.splice(precision, c.length - precision);
+
+    if (removed[0] >= 5) {
+      var i = precision - 1;
+      c[i]++;
+      while (c[i] === 10) {
+        c.pop();
+        if (i === 0) {
+          c.unshift(0);
+          rounded.exponent++;
+          i++;
+        }
+        i--;
+        c[i]++;
+      }
+    }
+  }
+
+  return rounded;
+};
+
+/**
+ * Create an array filled with zeros.
+ * @param {number} length
+ * @return {Array}
+ */
+function zeros(length) {
+  var arr = [];
+  for (var i = 0; i < length; i++) {
+    arr.push(0);
+  }
+  return arr;
+}
+
+/**
+ * Count the number of significant digits of a number.
+ *
+ * For example:
+ *   2.34 returns 3
+ *   0.0034 returns 2
+ *   120.5e+30 returns 4
+ *
+ * @param {number} value
+ * @return {number} digits   Number of significant digits
+ */
+exports.digits = function(value) {
+  return value
+      .toExponential()
+      .replace(/e.*$/, '')          // remove exponential notation
+      .replace( /^0\.?0*|\./, '')   // remove decimal point and leading zeros
+      .length
+};
+
+/**
+ * Minimum number added to one that makes the result different than one
+ */
+exports.DBL_EPSILON = Number.EPSILON || 2.2204460492503130808472633361816E-16;
+
+/**
+ * Compares two floating point numbers.
+ * @param {number} x          First value to compare
+ * @param {number} y          Second value to compare
+ * @param {number} [epsilon]  The maximum relative difference between x and y
+ *                            If epsilon is undefined or null, the function will
+ *                            test whether x and y are exactly equal.
+ * @return {boolean} whether the two numbers are nearly equal
+*/
+exports.nearlyEqual = function(x, y, epsilon) {
+  // if epsilon is null or undefined, test whether x and y are exactly equal
+  if (epsilon == null) {
+    return x == y;
+  }
+
+  // use "==" operator, handles infinities
+  if (x == y) {
+    return true;
+  }
+
+  // NaN
+  if (isNaN(x) || isNaN(y)) {
+    return false;
+  }
+
+  // at this point x and y should be finite
+  if(isFinite(x) && isFinite(y)) {
+    // check numbers are very close, needed when comparing numbers near zero
+    var diff = Math.abs(x - y);
+    if (diff < exports.DBL_EPSILON) {
+      return true;
+    }
+    else {
+      // use relative error
+      return diff <= Math.max(Math.abs(x), Math.abs(y)) * epsilon;
+    }
+  }
+
+  // Infinite and Number or negative Infinite and positive Infinite cases
+  return false;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/object.js":
+/*!*************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/object.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isBigNumber = __webpack_require__(/*! ./bignumber/isBigNumber */ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js");
+
+/**
+ * Clone an object
+ *
+ *     clone(x)
+ *
+ * Can clone any primitive type, array, and object.
+ * If x has a function clone, this function will be invoked to clone the object.
+ *
+ * @param {*} x
+ * @return {*} clone
+ */
+exports.clone = function clone(x) {
+  var type = typeof x;
+
+  // immutable primitive types
+  if (type === 'number' || type === 'string' || type === 'boolean' ||
+      x === null || x === undefined) {
+    return x;
+  }
+
+  // use clone function of the object when available
+  if (typeof x.clone === 'function') {
+    return x.clone();
+  }
+
+  // array
+  if (Array.isArray(x)) {
+    return x.map(function (value) {
+      return clone(value);
+    });
+  }
+
+  if (x instanceof Number)    return new Number(x.valueOf());
+  if (x instanceof String)    return new String(x.valueOf());
+  if (x instanceof Boolean)   return new Boolean(x.valueOf());
+  if (x instanceof Date)      return new Date(x.valueOf());
+  if (isBigNumber(x))         return x; // bignumbers are immutable
+  if (x instanceof RegExp)  throw new TypeError('Cannot clone ' + x);  // TODO: clone a RegExp
+
+  // object
+  return exports.map(x, clone);
+};
+
+/**
+ * Apply map to all properties of an object
+ * @param {Object} object
+ * @param {function} callback
+ * @return {Object} Returns a copy of the object with mapped properties
+ */
+exports.map = function(object, callback) {
+  var clone = {};
+
+  for (var key in object) {
+    if (exports.hasOwnProperty(object, key)) {
+      clone[key] = callback(object[key]);
+    }
+  }
+
+  return clone;
+}
+
+/**
+ * Extend object a with the properties of object b
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object} a
+ */
+exports.extend = function(a, b) {
+  for (var prop in b) {
+    if (exports.hasOwnProperty(b, prop)) {
+      a[prop] = b[prop];
+    }
+  }
+  return a;
+};
+
+/**
+ * Deep extend an object a with the properties of object b
+ * @param {Object} a
+ * @param {Object} b
+ * @returns {Object}
+ */
+exports.deepExtend = function deepExtend (a, b) {
+  // TODO: add support for Arrays to deepExtend
+  if (Array.isArray(b)) {
+    throw new TypeError('Arrays are not supported by deepExtend');
+  }
+
+  for (var prop in b) {
+    if (exports.hasOwnProperty(b, prop)) {
+      if (b[prop] && b[prop].constructor === Object) {
+        if (a[prop] === undefined) {
+          a[prop] = {};
+        }
+        if (a[prop].constructor === Object) {
+          deepExtend(a[prop], b[prop]);
+        }
+        else {
+          a[prop] = b[prop];
+        }
+      } else if (Array.isArray(b[prop])) {
+        throw new TypeError('Arrays are not supported by deepExtend');
+      } else {
+        a[prop] = b[prop];
+      }
+    }
+  }
+  return a;
+};
+
+/**
+ * Deep test equality of all fields in two pairs of arrays or objects.
+ * @param {Array | Object} a
+ * @param {Array | Object} b
+ * @returns {boolean}
+ */
+exports.deepEqual = function deepEqual (a, b) {
+  var prop, i, len;
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b)) {
+      return false;
+    }
+
+    if (a.length != b.length) {
+      return false;
+    }
+
+    for (i = 0, len = a.length; i < len; i++) {
+      if (!exports.deepEqual(a[i], b[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  else if (a instanceof Object) {
+    if (Array.isArray(b) || !(b instanceof Object)) {
+      return false;
+    }
+
+    for (prop in a) {
+      //noinspection JSUnfilteredForInLoop
+      if (!exports.deepEqual(a[prop], b[prop])) {
+        return false;
+      }
+    }
+    for (prop in b) {
+      //noinspection JSUnfilteredForInLoop
+      if (!exports.deepEqual(a[prop], b[prop])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  else {
+    return (typeof a === typeof b) && (a == b);
+  }
+};
+
+/**
+ * Test whether the current JavaScript engine supports Object.defineProperty
+ * @returns {boolean} returns true if supported
+ */
+exports.canDefineProperty = function () {
+  // test needed for broken IE8 implementation
+  try {
+    if (Object.defineProperty) {
+      Object.defineProperty({}, 'x', { get: function () {} });
+      return true;
+    }
+  } catch (e) {}
+
+  return false;
+};
+
+/**
+ * Attach a lazy loading property to a constant.
+ * The given function `fn` is called once when the property is first requested.
+ * On older browsers (<IE8), the function will fall back to direct evaluation
+ * of the properties value.
+ * @param {Object} object   Object where to add the property
+ * @param {string} prop     Property name
+ * @param {Function} fn     Function returning the property value. Called
+ *                          without arguments.
+ */
+exports.lazy = function (object, prop, fn) {
+  if (exports.canDefineProperty()) {
+    var _uninitialized = true;
+    var _value;
+    Object.defineProperty(object, prop, {
+      get: function () {
+        if (_uninitialized) {
+          _value = fn();
+          _uninitialized = false;
+        }
+        return _value;
+      },
+
+      set: function (value) {
+        _value = value;
+        _uninitialized = false;
+      },
+
+      configurable: true,
+      enumerable: true
+    });
+  }
+  else {
+    // fall back to immediate evaluation
+    object[prop] = fn();
+  }
+};
+
+/**
+ * Traverse a path into an object.
+ * When a namespace is missing, it will be created
+ * @param {Object} object
+ * @param {string} path   A dot separated string like 'name.space'
+ * @return {Object} Returns the object at the end of the path
+ */
+exports.traverse = function(object, path) {
+  var obj = object;
+
+  if (path) {
+    var names = path.split('.');
+    for (var i = 0; i < names.length; i++) {
+      var name = names[i];
+      if (!(name in obj)) {
+        obj[name] = {};
+      }
+      obj = obj[name];
+    }
+  }
+
+  return obj;
+};
+
+/**
+ * A safe hasOwnProperty
+ * @param {Object} object
+ * @param {string} property
+ */
+exports.hasOwnProperty = function (object, property) {
+  return object && Object.hasOwnProperty.call(object, property);
+}
+
+/**
+ * Test whether an object is a factory. a factory has fields:
+ *
+ * - factory: function (type: Object, config: Object, load: function, typed: function [, math: Object])   (required)
+ * - name: string (optional)
+ * - path: string    A dot separated path (optional)
+ * - math: boolean   If true (false by default), the math namespace is passed
+ *                   as fifth argument of the factory function
+ *
+ * @param {*} object
+ * @returns {boolean}
+ */
+exports.isFactory = function (object) {
+  return object && typeof object.factory === 'function';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/string.js":
+/*!*************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/string.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var formatNumber = __webpack_require__(/*! ./number */ "./node_modules/mathjs/lib/utils/number.js").format;
+var formatBigNumber = __webpack_require__(/*! ./bignumber/formatter */ "./node_modules/mathjs/lib/utils/bignumber/formatter.js").format;
+var isBigNumber = __webpack_require__(/*! ./bignumber/isBigNumber */ "./node_modules/mathjs/lib/utils/bignumber/isBigNumber.js");
+
+/**
+ * Test whether value is a string
+ * @param {*} value
+ * @return {boolean} isString
+ */
+exports.isString = function(value) {
+  return typeof value === 'string';
+};
+
+/**
+ * Check if a text ends with a certain string.
+ * @param {string} text
+ * @param {string} search
+ */
+exports.endsWith = function(text, search) {
+  var start = text.length - search.length;
+  var end = text.length;
+  return (text.substring(start, end) === search);
+};
+
+/**
+ * Format a value of any type into a string.
+ *
+ * Usage:
+ *     math.format(value)
+ *     math.format(value, precision)
+ *
+ * When value is a function:
+ *
+ * - When the function has a property `syntax`, it returns this
+ *   syntax description.
+ * - In other cases, a string `'function'` is returned.
+ *
+ * When `value` is an Object:
+ *
+ * - When the object contains a property `format` being a function, this
+ *   function is invoked as `value.format(options)` and the result is returned.
+ * - When the object has its own `toString` method, this method is invoked
+ *   and the result is returned.
+ * - In other cases the function will loop over all object properties and
+ *   return JSON object notation like '{"a": 2, "b": 3}'.
+ *
+ * Example usage:
+ *     math.format(2/7);                // '0.2857142857142857'
+ *     math.format(math.pi, 3);         // '3.14'
+ *     math.format(new Complex(2, 3));  // '2 + 3i'
+ *     math.format('hello');            // '"hello"'
+ *
+ * @param {*} value             Value to be stringified
+ * @param {Object | number | Function} [options]  Formatting options. See
+ *                                                lib/utils/number:format for a
+ *                                                description of the available
+ *                                                options.
+ * @return {string} str
+ */
+exports.format = function(value, options) {
+  if (typeof value === 'number') {
+    return formatNumber(value, options);
+  }
+
+  if (isBigNumber(value)) {
+    return formatBigNumber(value, options);
+  }
+
+  // note: we use unsafe duck-typing here to check for Fractions, this is
+  // ok here since we're only invoking toString or concatenating its values
+  if (looksLikeFraction(value)) {
+    if (!options || options.fraction !== 'decimal') {
+      // output as ratio, like '1/3'
+      return (value.s * value.n) + '/' + value.d;
+    }
+    else {
+      // output as decimal, like '0.(3)'
+      return value.toString();
+    }
+  }
+
+  if (Array.isArray(value)) {
+    return formatArray(value, options);
+  }
+
+  if (exports.isString(value)) {
+    return '"' + value + '"';
+  }
+
+  if (typeof value === 'function') {
+    return value.syntax ? String(value.syntax) : 'function';
+  }
+
+  if (value && typeof value === 'object') {
+    if (typeof value.format === 'function') {
+      return value.format(options);
+    }
+    else if (value && value.toString() !== {}.toString()) {
+      // this object has a non-native toString method, use that one
+      return value.toString();
+    }
+    else {
+      var entries = [];
+
+      for (var key in value) {
+        if (value.hasOwnProperty(key)) {
+          entries.push('"' + key + '": ' + exports.format(value[key], options));
+        }
+      }
+
+      return '{' + entries.join(', ') + '}';
+    }
+  }
+
+  return String(value);
+};
+
+/**
+ * Stringify a value into a string enclosed in double quotes.
+ * Unescaped double quotes and backslashes inside the value are escaped.
+ * @param {*} value
+ * @return {string}
+ */
+exports.stringify = function (value) {
+  var text = String(value);
+  var escaped = '';
+  var i = 0;
+  while (i < text.length) {
+    var c = text.charAt(i);
+
+    if (c === '\\') {
+      escaped += c;
+      i++;
+
+      c = text.charAt(i);
+      if (c === '' || '"\\/bfnrtu'.indexOf(c) === -1) {
+        escaped += '\\';  // no valid escape character -> escape it
+      }
+      escaped += c;
+    }
+    else if (c === '"') {
+      escaped += '\\"';
+    }
+    else {
+      escaped += c;
+    }
+    i++;
+  }
+
+  return '"' + escaped + '"';
+}
+
+/**
+ * Escape special HTML characters
+ * @param {*} value
+ * @return {string}
+ */
+exports.escape = function (value) {
+  var text = String(value);
+  text = text.replace(/&/g, '&amp;')
+			 .replace(/"/g, '&quot;')
+			 .replace(/'/g, '&#39;')
+			 .replace(/</g, '&lt;')
+			 .replace(/>/g, '&gt;');
+  
+  return text;
+}
+
+/**
+ * Recursively format an n-dimensional matrix
+ * Example output: "[[1, 2], [3, 4]]"
+ * @param {Array} array
+ * @param {Object | number | Function} [options]  Formatting options. See
+ *                                                lib/utils/number:format for a
+ *                                                description of the available
+ *                                                options.
+ * @returns {string} str
+ */
+function formatArray (array, options) {
+  if (Array.isArray(array)) {
+    var str = '[';
+    var len = array.length;
+    for (var i = 0; i < len; i++) {
+      if (i != 0) {
+        str += ', ';
+      }
+      str += formatArray(array[i], options);
+    }
+    str += ']';
+    return str;
+  }
+  else {
+    return exports.format(array, options);
+  }
+}
+
+/**
+ * Check whether a value looks like a Fraction (unsafe duck-type check)
+ * @param {*} value
+ * @return {boolean}
+ */
+function looksLikeFraction (value) {
+  return (value &&
+      typeof value === 'object' &&
+      typeof value.s === 'number' &&
+      typeof value.n === 'number' &&
+      typeof value.d === 'number') || false;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/mathjs/lib/utils/types.js":
+/*!************************************************!*\
+  !*** ./node_modules/mathjs/lib/utils/types.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determine the type of a variable
+ *
+ *     type(x)
+ *
+ * The following types are recognized:
+ *
+ *     'undefined'
+ *     'null'
+ *     'boolean'
+ *     'number'
+ *     'string'
+ *     'Array'
+ *     'Function'
+ *     'Date'
+ *     'RegExp'
+ *     'Object'
+ *
+ * @param {*} x
+ * @return {string} Returns the name of the type. Primitive types are lower case,
+ *                  non-primitive types are upper-camel-case.
+ *                  For example 'number', 'string', 'Array', 'Date'.
+ */
+exports.type = function(x) {
+  var type = typeof x;
+
+  if (type === 'object') {
+    if (x === null)           return 'null';
+    if (Array.isArray(x))     return 'Array';
+    if (x instanceof Date)    return 'Date';
+    if (x instanceof RegExp)  return 'RegExp';
+    if (x instanceof Boolean) return 'boolean';
+    if (x instanceof Number)  return 'number';
+    if (x instanceof String)  return 'string';
+
+    return 'Object';
+  }
+
+  if (type === 'function')    return 'Function';
+
+  return type;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/mouse-change/mouse-listen.js":
 /*!***************************************************!*\
   !*** ./node_modules/mouse-change/mouse-listen.js ***!
@@ -18904,6 +24381,83 @@ function surfaceNets(array,level) {
 
 /***/ }),
 
+/***/ "./node_modules/tiny-emitter/index.js":
+/*!********************************************!*\
+  !*** ./node_modules/tiny-emitter/index.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function E () {
+  // Keep this empty so it's easier to inherit from
+  // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+}
+
+E.prototype = {
+  on: function (name, callback, ctx) {
+    var e = this.e || (this.e = {});
+
+    (e[name] || (e[name] = [])).push({
+      fn: callback,
+      ctx: ctx
+    });
+
+    return this;
+  },
+
+  once: function (name, callback, ctx) {
+    var self = this;
+    function listener () {
+      self.off(name, listener);
+      callback.apply(ctx, arguments);
+    };
+
+    listener._ = callback
+    return this.on(name, listener, ctx);
+  },
+
+  emit: function (name) {
+    var data = [].slice.call(arguments, 1);
+    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+    var i = 0;
+    var len = evtArr.length;
+
+    for (i; i < len; i++) {
+      evtArr[i].fn.apply(evtArr[i].ctx, data);
+    }
+
+    return this;
+  },
+
+  off: function (name, callback) {
+    var e = this.e || (this.e = {});
+    var evts = e[name];
+    var liveEvents = [];
+
+    if (evts && callback) {
+      for (var i = 0, len = evts.length; i < len; i++) {
+        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+          liveEvents.push(evts[i]);
+      }
+    }
+
+    // Remove event from queue to prevent memory leak
+    // Suggested by https://github.com/lazd
+    // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+
+    (liveEvents.length)
+      ? e[name] = liveEvents
+      : delete e[name];
+
+    return this;
+  }
+};
+
+module.exports = E;
+
+
+/***/ }),
+
 /***/ "./node_modules/triangulate-hypercube/triangulate-cube.js":
 /*!****************************************************************!*\
   !*** ./node_modules/triangulate-hypercube/triangulate-cube.js ***!
@@ -19017,6 +24571,1403 @@ function fastTwoSum(a, b, result) {
 	}
 	return [ar+br, x]
 }
+
+/***/ }),
+
+/***/ "./node_modules/typed-function/typed-function.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/typed-function/typed-function.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * typed-function
+ *
+ * Type checking for JavaScript functions
+ *
+ * https://github.com/josdejong/typed-function
+ */
+
+
+(function (root, factory) {
+  if (true) {
+    // AMD. Register as an anonymous module.
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+}(this, function () {
+  // factory function to create a new instance of typed-function
+  // TODO: allow passing configuration, types, tests via the factory function
+  function create() {
+    /**
+     * Get a type test function for a specific data type
+     * @param {string} name                   Name of a data type like 'number' or 'string'
+     * @returns {Function(obj: *) : boolean}  Returns a type testing function.
+     *                                        Throws an error for an unknown type.
+     */
+    function getTypeTest(name) {
+      var test;
+      for (var i = 0; i < typed.types.length; i++) {
+        var entry = typed.types[i];
+        if (entry.name === name) {
+          test = entry.test;
+          break;
+        }
+      }
+
+      if (!test) {
+        var hint;
+        for (i = 0; i < typed.types.length; i++) {
+          entry = typed.types[i];
+          if (entry.name.toLowerCase() == name.toLowerCase()) {
+            hint = entry.name;
+            break;
+          }
+        }
+
+        throw new Error('Unknown type "' + name + '"' +
+            (hint ? ('. Did you mean "' + hint + '"?') : ''));
+      }
+      return test;
+    }
+
+    /**
+     * Retrieve the function name from a set of functions, and check
+     * whether the name of all functions match (if given)
+     * @param {Array.<function>} fns
+     */
+    function getName (fns) {
+      var name = '';
+
+      for (var i = 0; i < fns.length; i++) {
+        var fn = fns[i];
+
+        // merge function name when this is a typed function
+        if (fn.signatures && fn.name != '') {
+          if (name == '') {
+            name = fn.name;
+          }
+          else if (name != fn.name) {
+            var err = new Error('Function names do not match (expected: ' + name + ', actual: ' + fn.name + ')');
+            err.data = {
+              actual: fn.name,
+              expected: name
+            };
+            throw err;
+          }
+        }
+      }
+
+      return name;
+    }
+
+    /**
+     * Create an ArgumentsError. Creates messages like:
+     *
+     *   Unexpected type of argument (expected: ..., actual: ..., index: ...)
+     *   Too few arguments (expected: ..., index: ...)
+     *   Too many arguments (expected: ..., actual: ...)
+     *
+     * @param {String} fn         Function name
+     * @param {number} argCount   Number of arguments
+     * @param {Number} index      Current argument index
+     * @param {*} actual          Current argument
+     * @param {string} [expected] An optional, comma separated string with
+     *                            expected types on given index
+     * @extends Error
+     */
+    function createError(fn, argCount, index, actual, expected) {
+      var actualType = getTypeOf(actual);
+      var _expected = expected ? expected.split(',') : null;
+      var _fn = (fn || 'unnamed');
+      var anyType = _expected && contains(_expected, 'any');
+      var message;
+      var data = {
+        fn: fn,
+        index: index,
+        actual: actual,
+        expected: _expected
+      };
+
+      if (_expected) {
+        if (argCount > index && !anyType) {
+          // unexpected type
+          message = 'Unexpected type of argument in function ' + _fn +
+              ' (expected: ' + _expected.join(' or ') + ', actual: ' + actualType + ', index: ' + index + ')';
+        }
+        else {
+          // too few arguments
+          message = 'Too few arguments in function ' + _fn +
+              ' (expected: ' + _expected.join(' or ') + ', index: ' + index + ')';
+        }
+      }
+      else {
+        // too many arguments
+        message = 'Too many arguments in function ' + _fn +
+            ' (expected: ' + index + ', actual: ' + argCount + ')'
+      }
+
+      var err = new TypeError(message);
+      err.data = data;
+      return err;
+    }
+
+    /**
+     * Collection with function references (local shortcuts to functions)
+     * @constructor
+     * @param {string} [name='refs']  Optional name for the refs, used to generate
+     *                                JavaScript code
+     */
+    function Refs(name) {
+      this.name = name || 'refs';
+      this.categories = {};
+    }
+
+    /**
+     * Add a function reference.
+     * @param {Function} fn
+     * @param {string} [category='fn']    A function category, like 'fn' or 'signature'
+     * @returns {string} Returns the function name, for example 'fn0' or 'signature2'
+     */
+    Refs.prototype.add = function (fn, category) {
+      var cat = category || 'fn';
+      if (!this.categories[cat]) this.categories[cat] = [];
+
+      var index = this.categories[cat].indexOf(fn);
+      if (index == -1) {
+        index = this.categories[cat].length;
+        this.categories[cat].push(fn);
+      }
+
+      return cat + index;
+    };
+
+    /**
+     * Create code lines for all function references
+     * @returns {string} Returns the code containing all function references
+     */
+    Refs.prototype.toCode = function () {
+      var code = [];
+      var path = this.name + '.categories';
+      var categories = this.categories;
+
+      for (var cat in categories) {
+        if (categories.hasOwnProperty(cat)) {
+          var category = categories[cat];
+
+          for (var i = 0; i < category.length; i++) {
+            code.push('var ' + cat + i + ' = ' + path + '[\'' + cat + '\'][' + i + '];');
+          }
+        }
+      }
+
+      return code.join('\n');
+    };
+
+    /**
+     * A function parameter
+     * @param {string | string[] | Param} types    A parameter type like 'string',
+     *                                             'number | boolean'
+     * @param {boolean} [varArgs=false]            Variable arguments if true
+     * @constructor
+     */
+    function Param(types, varArgs) {
+      // parse the types, can be a string with types separated by pipe characters |
+      if (typeof types === 'string') {
+        // parse variable arguments operator (ellipses '...number')
+        var _types = types.trim();
+        var _varArgs = _types.substr(0, 3) === '...';
+        if (_varArgs) {
+          _types = _types.substr(3);
+        }
+        if (_types === '') {
+          this.types = ['any'];
+        }
+        else {
+          this.types = _types.split('|');
+          for (var i = 0; i < this.types.length; i++) {
+            this.types[i] = this.types[i].trim();
+          }
+        }
+      }
+      else if (Array.isArray(types)) {
+        this.types = types;
+      }
+      else if (types instanceof Param) {
+        return types.clone();
+      }
+      else {
+        throw new Error('String or Array expected');
+      }
+
+      // can hold a type to which to convert when handling this parameter
+      this.conversions = [];
+      // TODO: implement better API for conversions, be able to add conversions via constructor (support a new type Object?)
+
+      // variable arguments
+      this.varArgs = _varArgs || varArgs || false;
+
+      // check for any type arguments
+      this.anyType = this.types.indexOf('any') !== -1;
+    }
+
+    /**
+     * Order Params
+     * any type ('any') will be ordered last, and object as second last (as other
+     * types may be an object as well, like Array).
+     *
+     * @param {Param} a
+     * @param {Param} b
+     * @returns {number} Returns 1 if a > b, -1 if a < b, and else 0.
+     */
+    Param.compare = function (a, b) {
+      // TODO: simplify parameter comparison, it's a mess
+      if (a.anyType) return 1;
+      if (b.anyType) return -1;
+
+      if (contains(a.types, 'Object')) return 1;
+      if (contains(b.types, 'Object')) return -1;
+
+      if (a.hasConversions()) {
+        if (b.hasConversions()) {
+          var i, ac, bc;
+
+          for (i = 0; i < a.conversions.length; i++) {
+            if (a.conversions[i] !== undefined) {
+              ac = a.conversions[i];
+              break;
+            }
+          }
+
+          for (i = 0; i < b.conversions.length; i++) {
+            if (b.conversions[i] !== undefined) {
+              bc = b.conversions[i];
+              break;
+            }
+          }
+
+          return typed.conversions.indexOf(ac) - typed.conversions.indexOf(bc);
+        }
+        else {
+          return 1;
+        }
+      }
+      else {
+        if (b.hasConversions()) {
+          return -1;
+        }
+        else {
+          // both params have no conversions
+          var ai, bi;
+
+          for (i = 0; i < typed.types.length; i++) {
+            if (typed.types[i].name === a.types[0]) {
+              ai = i;
+              break;
+            }
+          }
+
+          for (i = 0; i < typed.types.length; i++) {
+            if (typed.types[i].name === b.types[0]) {
+              bi = i;
+              break;
+            }
+          }
+
+          return ai - bi;
+        }
+      }
+    };
+
+    /**
+     * Test whether this parameters types overlap an other parameters types.
+     * Will not match ['any'] with ['number']
+     * @param {Param} other
+     * @return {boolean} Returns true when there are overlapping types
+     */
+    Param.prototype.overlapping = function (other) {
+      for (var i = 0; i < this.types.length; i++) {
+        if (contains(other.types, this.types[i])) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    /**
+     * Test whether this parameters types matches an other parameters types.
+     * When any of the two parameters contains `any`, true is returned
+     * @param {Param} other
+     * @return {boolean} Returns true when there are matching types
+     */
+    Param.prototype.matches = function (other) {
+      return this.anyType || other.anyType || this.overlapping(other);
+    };
+
+    /**
+     * Create a clone of this param
+     * @returns {Param} Returns a cloned version of this param
+     */
+    Param.prototype.clone = function () {
+      var param = new Param(this.types.slice(), this.varArgs);
+      param.conversions = this.conversions.slice();
+      return param;
+    };
+
+    /**
+     * Test whether this parameter contains conversions
+     * @returns {boolean} Returns true if the parameter contains one or
+     *                    multiple conversions.
+     */
+    Param.prototype.hasConversions = function () {
+      return this.conversions.length > 0;
+    };
+
+    /**
+     * Tests whether this parameters contains any of the provided types
+     * @param {Object} types  A Map with types, like {'number': true}
+     * @returns {boolean}     Returns true when the parameter contains any
+     *                        of the provided types
+     */
+    Param.prototype.contains = function (types) {
+      for (var i = 0; i < this.types.length; i++) {
+        if (types[this.types[i]]) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    /**
+     * Return a string representation of this params types, like 'string' or
+     * 'number | boolean' or '...number'
+     * @param {boolean} [toConversion]   If true, the returned types string
+     *                                   contains the types where the parameter
+     *                                   will convert to. If false (default)
+     *                                   the "from" types are returned
+     * @returns {string}
+     */
+    Param.prototype.toString = function (toConversion) {
+      var types = [];
+      var keys = {};
+
+      for (var i = 0; i < this.types.length; i++) {
+        var conversion = this.conversions[i];
+        var type = toConversion && conversion ? conversion.to : this.types[i];
+        if (!(type in keys)) {
+          keys[type] = true;
+          types.push(type);
+        }
+      }
+
+      return (this.varArgs ? '...' : '') + types.join('|');
+    };
+
+    /**
+     * A function signature
+     * @param {string | string[] | Param[]} params
+     *                         Array with the type(s) of each parameter,
+     *                         or a comma separated string with types
+     * @param {Function} fn    The actual function
+     * @constructor
+     */
+    function Signature(params, fn) {
+      var _params;
+      if (typeof params === 'string') {
+        _params = (params !== '') ? params.split(',') : [];
+      }
+      else if (Array.isArray(params)) {
+        _params = params;
+      }
+      else {
+        throw new Error('string or Array expected');
+      }
+
+      this.params = new Array(_params.length);
+      this.anyType = false;
+      this.varArgs = false;
+      for (var i = 0; i < _params.length; i++) {
+        var param = new Param(_params[i]);
+        this.params[i] = param;
+        if (param.anyType) {
+          this.anyType = true;
+        }
+        if (i === _params.length - 1) {
+          // the last argument
+          this.varArgs = param.varArgs;
+        }
+        else {
+          // non-last argument
+          if (param.varArgs) {
+            throw new SyntaxError('Unexpected variable arguments operator "..."');
+          }
+        }
+      }
+
+      this.fn = fn;
+    }
+
+    /**
+     * Create a clone of this signature
+     * @returns {Signature} Returns a cloned version of this signature
+     */
+    Signature.prototype.clone = function () {
+      return new Signature(this.params.slice(), this.fn);
+    };
+
+    /**
+     * Expand a signature: split params with union types in separate signatures
+     * For example split a Signature "string | number" into two signatures.
+     * @return {Signature[]} Returns an array with signatures (at least one)
+     */
+    Signature.prototype.expand = function () {
+      var signatures = [];
+
+      function recurse(signature, path) {
+        if (path.length < signature.params.length) {
+          var i, newParam, conversion;
+
+          var param = signature.params[path.length];
+          if (param.varArgs) {
+            // a variable argument. do not split the types in the parameter
+            newParam = param.clone();
+
+            // add conversions to the parameter
+            // recurse for all conversions
+            for (i = 0; i < typed.conversions.length; i++) {
+              conversion = typed.conversions[i];
+              if (!contains(param.types, conversion.from) && contains(param.types, conversion.to)) {
+                var j = newParam.types.length;
+                newParam.types[j] = conversion.from;
+                newParam.conversions[j] = conversion;
+              }
+            }
+
+            recurse(signature, path.concat(newParam));
+          }
+          else {
+            // split each type in the parameter
+            for (i = 0; i < param.types.length; i++) {
+              recurse(signature, path.concat(new Param(param.types[i])));
+            }
+
+            // recurse for all conversions
+            for (i = 0; i < typed.conversions.length; i++) {
+              conversion = typed.conversions[i];
+              if (!contains(param.types, conversion.from) && contains(param.types, conversion.to)) {
+                newParam = new Param(conversion.from);
+                newParam.conversions[0] = conversion;
+                recurse(signature, path.concat(newParam));
+              }
+            }
+          }
+        }
+        else {
+          signatures.push(new Signature(path, signature.fn));
+        }
+      }
+
+      recurse(this, []);
+
+      return signatures;
+    };
+
+    /**
+     * Compare two signatures.
+     *
+     * When two params are equal and contain conversions, they will be sorted
+     * by lowest index of the first conversions.
+     *
+     * @param {Signature} a
+     * @param {Signature} b
+     * @returns {number} Returns 1 if a > b, -1 if a < b, and else 0.
+     */
+    Signature.compare = function (a, b) {
+      if (a.params.length > b.params.length) return 1;
+      if (a.params.length < b.params.length) return -1;
+
+      // count the number of conversions
+      var i;
+      var len = a.params.length; // a and b have equal amount of params
+      var ac = 0;
+      var bc = 0;
+      for (i = 0; i < len; i++) {
+        if (a.params[i].hasConversions()) ac++;
+        if (b.params[i].hasConversions()) bc++;
+      }
+
+      if (ac > bc) return 1;
+      if (ac < bc) return -1;
+
+      // compare the order per parameter
+      for (i = 0; i < a.params.length; i++) {
+        var cmp = Param.compare(a.params[i], b.params[i]);
+        if (cmp !== 0) {
+          return cmp;
+        }
+      }
+
+      return 0;
+    };
+
+    /**
+     * Test whether any of the signatures parameters has conversions
+     * @return {boolean} Returns true when any of the parameters contains
+     *                   conversions.
+     */
+    Signature.prototype.hasConversions = function () {
+      for (var i = 0; i < this.params.length; i++) {
+        if (this.params[i].hasConversions()) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    /**
+     * Test whether this signature should be ignored.
+     * Checks whether any of the parameters contains a type listed in
+     * typed.ignore
+     * @return {boolean} Returns true when the signature should be ignored
+     */
+    Signature.prototype.ignore = function () {
+      // create a map with ignored types
+      var types = {};
+      for (var i = 0; i < typed.ignore.length; i++) {
+        types[typed.ignore[i]] = true;
+      }
+
+      // test whether any of the parameters contains this type
+      for (i = 0; i < this.params.length; i++) {
+        if (this.params[i].contains(types)) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    /**
+     * Test whether the path of this signature matches a given path.
+     * @param {Param[]} params
+     */
+    Signature.prototype.paramsStartWith = function (params) {
+      if (params.length === 0) {
+        return true;
+      }
+
+      var aLast = last(this.params);
+      var bLast = last(params);
+
+      for (var i = 0; i < params.length; i++) {
+        var a = this.params[i] || (aLast.varArgs ? aLast: null);
+        var b = params[i]      || (bLast.varArgs ? bLast: null);
+
+        if (!a ||  !b || !a.matches(b)) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    /**
+     * Generate the code to invoke this signature
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns code
+     */
+    Signature.prototype.toCode = function (refs, prefix) {
+      var code = [];
+
+      var args = new Array(this.params.length);
+      for (var i = 0; i < this.params.length; i++) {
+        var param = this.params[i];
+        var conversion = param.conversions[0];
+        if (param.varArgs) {
+          args[i] = 'varArgs';
+        }
+        else if (conversion) {
+          args[i] = refs.add(conversion.convert, 'convert') + '(arg' + i + ')';
+        }
+        else {
+          args[i] = 'arg' + i;
+        }
+      }
+
+      var ref = this.fn ? refs.add(this.fn, 'signature') : undefined;
+      if (ref) {
+        return prefix + 'return ' + ref + '(' + args.join(', ') + '); // signature: ' + this.params.join(', ');
+      }
+
+      return code.join('\n');
+    };
+
+    /**
+     * Return a string representation of the signature
+     * @returns {string}
+     */
+    Signature.prototype.toString = function () {
+      return this.params.join(', ');
+    };
+
+    /**
+     * A group of signatures with the same parameter on given index
+     * @param {Param[]} path
+     * @param {Signature} [signature]
+     * @param {Node[]} childs
+     * @param {boolean} [fallThrough=false]
+     * @constructor
+     */
+    function Node(path, signature, childs, fallThrough) {
+      this.path = path || [];
+      this.param = path[path.length - 1] || null;
+      this.signature = signature || null;
+      this.childs = childs || [];
+      this.fallThrough = fallThrough || false;
+    }
+
+    /**
+     * Generate code for this group of signatures
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns the code as string
+     */
+    Node.prototype.toCode = function (refs, prefix) {
+      // TODO: split this function in multiple functions, it's too large
+      var code = [];
+
+      if (this.param) {
+        var index = this.path.length - 1;
+        var conversion = this.param.conversions[0];
+        var comment = '// type: ' + (conversion ?
+                (conversion.from + ' (convert to ' + conversion.to + ')') :
+                this.param);
+
+        // non-root node (path is non-empty)
+        if (this.param.varArgs) {
+          if (this.param.anyType) {
+            // variable arguments with any type
+            code.push(prefix + 'if (arguments.length > ' + index + ') {');
+            code.push(prefix + '  var varArgs = [];');
+            code.push(prefix + '  for (var i = ' + index + '; i < arguments.length; i++) {');
+            code.push(prefix + '    varArgs.push(arguments[i]);');
+            code.push(prefix + '  }');
+            code.push(this.signature.toCode(refs, prefix + '  '));
+            code.push(prefix + '}');
+          }
+          else {
+            // variable arguments with a fixed type
+            var getTests = function (types, arg) {
+              var tests = [];
+              for (var i = 0; i < types.length; i++) {
+                tests[i] = refs.add(getTypeTest(types[i]), 'test') + '(' + arg + ')';
+              }
+              return tests.join(' || ');
+            }.bind(this);
+
+            var allTypes = this.param.types;
+            var exactTypes = [];
+            for (var i = 0; i < allTypes.length; i++) {
+              if (this.param.conversions[i] === undefined) {
+                exactTypes.push(allTypes[i]);
+              }
+            }
+
+            code.push(prefix + 'if (' + getTests(allTypes, 'arg' + index) + ') { ' + comment);
+            code.push(prefix + '  var varArgs = [arg' + index + '];');
+            code.push(prefix + '  for (var i = ' + (index + 1) + '; i < arguments.length; i++) {');
+            code.push(prefix + '    if (' + getTests(exactTypes, 'arguments[i]') + ') {');
+            code.push(prefix + '      varArgs.push(arguments[i]);');
+
+            for (var i = 0; i < allTypes.length; i++) {
+              var conversion_i = this.param.conversions[i];
+              if (conversion_i) {
+                var test = refs.add(getTypeTest(allTypes[i]), 'test');
+                var convert = refs.add(conversion_i.convert, 'convert');
+                code.push(prefix + '    }');
+                code.push(prefix + '    else if (' + test + '(arguments[i])) {');
+                code.push(prefix + '      varArgs.push(' + convert + '(arguments[i]));');
+              }
+            }
+            code.push(prefix + '    } else {');
+            code.push(prefix + '      throw createError(name, arguments.length, i, arguments[i], \'' + exactTypes.join(',') + '\');');
+            code.push(prefix + '    }');
+            code.push(prefix + '  }');
+            code.push(this.signature.toCode(refs, prefix + '  '));
+            code.push(prefix + '}');
+          }
+        }
+        else {
+          if (this.param.anyType) {
+            // any type
+            code.push(prefix + '// type: any');
+            code.push(this._innerCode(refs, prefix));
+          }
+          else {
+            // regular type
+            var type = this.param.types[0];
+            var test = type !== 'any' ? refs.add(getTypeTest(type), 'test') : null;
+
+            code.push(prefix + 'if (' + test + '(arg' + index + ')) { ' + comment);
+            code.push(this._innerCode(refs, prefix + '  '));
+            code.push(prefix + '}');
+          }
+        }
+      }
+      else {
+        // root node (path is empty)
+        code.push(this._innerCode(refs, prefix));
+      }
+
+      return code.join('\n');
+    };
+
+    /**
+     * Generate inner code for this group of signatures.
+     * This is a helper function of Node.prototype.toCode
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns the inner code as string
+     * @private
+     */
+    Node.prototype._innerCode = function (refs, prefix) {
+      var code = [];
+      var i;
+
+      if (this.signature) {
+        code.push(prefix + 'if (arguments.length === ' + this.path.length + ') {');
+        code.push(this.signature.toCode(refs, prefix + '  '));
+        code.push(prefix + '}');
+      }
+
+      for (i = 0; i < this.childs.length; i++) {
+        code.push(this.childs[i].toCode(refs, prefix));
+      }
+
+      // TODO: shouldn't the this.param.anyType check be redundant
+      if (!this.fallThrough || (this.param && this.param.anyType)) {
+        var exceptions = this._exceptions(refs, prefix);
+        if (exceptions) {
+          code.push(exceptions);
+        }
+      }
+
+      return code.join('\n');
+    };
+
+
+    /**
+     * Generate code to throw exceptions
+     * @param {Refs} refs
+     * @param {string} prefix
+     * @returns {string} Returns the inner code as string
+     * @private
+     */
+    Node.prototype._exceptions = function (refs, prefix) {
+      var index = this.path.length;
+
+      if (this.childs.length === 0) {
+        // TODO: can this condition be simplified? (we have a fall-through here)
+        return [
+          prefix + 'if (arguments.length > ' + index + ') {',
+          prefix + '  throw createError(name, arguments.length, ' + index + ', arguments[' + index + ']);',
+          prefix + '}'
+        ].join('\n');
+      }
+      else {
+        var keys = {};
+        var types = [];
+
+        for (var i = 0; i < this.childs.length; i++) {
+          var node = this.childs[i];
+          if (node.param) {
+            for (var j = 0; j < node.param.types.length; j++) {
+              var type = node.param.types[j];
+              if (!(type in keys) && !node.param.conversions[j]) {
+                keys[type] = true;
+                types.push(type);
+              }
+            }
+          }
+        }
+
+        return prefix + 'throw createError(name, arguments.length, ' + index + ', arguments[' + index + '], \'' + types.join(',') + '\');';
+      }
+    };
+
+    /**
+     * Split all raw signatures into an array with expanded Signatures
+     * @param {Object.<string, Function>} rawSignatures
+     * @return {Signature[]} Returns an array with expanded signatures
+     */
+    function parseSignatures(rawSignatures) {
+      // FIXME: need to have deterministic ordering of signatures, do not create via object
+      var signature;
+      var keys = {};
+      var signatures = [];
+      var i;
+
+      for (var types in rawSignatures) {
+        if (rawSignatures.hasOwnProperty(types)) {
+          var fn = rawSignatures[types];
+          signature = new Signature(types, fn);
+
+          if (signature.ignore()) {
+            continue;
+          }
+
+          var expanded = signature.expand();
+
+          for (i = 0; i < expanded.length; i++) {
+            var signature_i = expanded[i];
+            var key = signature_i.toString();
+            var existing = keys[key];
+            if (!existing) {
+              keys[key] = signature_i;
+            }
+            else {
+              var cmp = Signature.compare(signature_i, existing);
+              if (cmp < 0) {
+                // override if sorted first
+                keys[key] = signature_i;
+              }
+              else if (cmp === 0) {
+                throw new Error('Signature "' + key + '" is defined twice');
+              }
+              // else: just ignore
+            }
+          }
+        }
+      }
+
+      // convert from map to array
+      for (key in keys) {
+        if (keys.hasOwnProperty(key)) {
+          signatures.push(keys[key]);
+        }
+      }
+
+      // order the signatures
+      signatures.sort(function (a, b) {
+        return Signature.compare(a, b);
+      });
+
+      // filter redundant conversions from signatures with varArgs
+      // TODO: simplify this loop or move it to a separate function
+      for (i = 0; i < signatures.length; i++) {
+        signature = signatures[i];
+
+        if (signature.varArgs) {
+          var index = signature.params.length - 1;
+          var param = signature.params[index];
+
+          var t = 0;
+          while (t < param.types.length) {
+            if (param.conversions[t]) {
+              var type = param.types[t];
+
+              for (var j = 0; j < signatures.length; j++) {
+                var other = signatures[j];
+                var p = other.params[index];
+
+                if (other !== signature &&
+                    p &&
+                    contains(p.types, type) && !p.conversions[index]) {
+                  // this (conversion) type already exists, remove it
+                  param.types.splice(t, 1);
+                  param.conversions.splice(t, 1);
+                  t--;
+                  break;
+                }
+              }
+            }
+            t++;
+          }
+        }
+      }
+
+      return signatures;
+    }
+
+    /**
+     * Filter all any type signatures
+     * @param {Signature[]} signatures
+     * @return {Signature[]} Returns only any type signatures
+     */
+    function filterAnyTypeSignatures (signatures) {
+      var filtered = [];
+
+      for (var i = 0; i < signatures.length; i++) {
+        if (signatures[i].anyType) {
+          filtered.push(signatures[i]);
+        }
+      }
+
+      return filtered;
+    }
+
+    /**
+     * create a map with normalized signatures as key and the function as value
+     * @param {Signature[]} signatures   An array with split signatures
+     * @return {Object.<string, Function>} Returns a map with normalized
+     *                                     signatures as key, and the function
+     *                                     as value.
+     */
+    function mapSignatures(signatures) {
+      var normalized = {};
+
+      for (var i = 0; i < signatures.length; i++) {
+        var signature = signatures[i];
+        if (signature.fn && !signature.hasConversions()) {
+          var params = signature.params.join(',');
+          normalized[params] = signature.fn;
+        }
+      }
+
+      return normalized;
+    }
+
+    /**
+     * Parse signatures recursively in a node tree.
+     * @param {Signature[]} signatures  Array with expanded signatures
+     * @param {Param[]} path            Traversed path of parameter types
+     * @param {Signature[]} anys
+     * @return {Node}                   Returns a node tree
+     */
+    function parseTree(signatures, path, anys) {
+      var i, signature;
+      var index = path.length;
+      var nodeSignature;
+
+      var filtered = [];
+      for (i = 0; i < signatures.length; i++) {
+        signature = signatures[i];
+
+        // filter the first signature with the correct number of params
+        if (signature.params.length === index && !nodeSignature) {
+          nodeSignature = signature;
+        }
+
+        if (signature.params[index] != undefined) {
+          filtered.push(signature);
+        }
+      }
+
+      // sort the filtered signatures by param
+      filtered.sort(function (a, b) {
+        return Param.compare(a.params[index], b.params[index]);
+      });
+
+      // recurse over the signatures
+      var entries = [];
+      for (i = 0; i < filtered.length; i++) {
+        signature = filtered[i];
+        // group signatures with the same param at current index
+        var param = signature.params[index];
+
+        // TODO: replace the next filter loop
+        var existing = entries.filter(function (entry) {
+          return entry.param.overlapping(param);
+        })[0];
+
+        //var existing;
+        //for (var j = 0; j < entries.length; j++) {
+        //  if (entries[j].param.overlapping(param)) {
+        //    existing = entries[j];
+        //    break;
+        //  }
+        //}
+
+        if (existing) {
+          if (existing.param.varArgs) {
+            throw new Error('Conflicting types "' + existing.param + '" and "' + param + '"');
+          }
+          existing.signatures.push(signature);
+        }
+        else {
+          entries.push({
+            param: param,
+            signatures: [signature]
+          });
+        }
+      }
+
+      // find all any type signature that can still match our current path
+      var matchingAnys = [];
+      for (i = 0; i < anys.length; i++) {
+        if (anys[i].paramsStartWith(path)) {
+          matchingAnys.push(anys[i]);
+        }
+      }
+
+      // see if there are any type signatures that don't match any of the
+      // signatures that we have in our tree, i.e. we have alternative
+      // matching signature(s) outside of our current tree and we should
+      // fall through to them instead of throwing an exception
+      var fallThrough = false;
+      for (i = 0; i < matchingAnys.length; i++) {
+        if (!contains(signatures, matchingAnys[i])) {
+          fallThrough = true;
+          break;
+        }
+      }
+
+      // parse the childs
+      var childs = new Array(entries.length);
+      for (i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        childs[i] = parseTree(entry.signatures, path.concat(entry.param), matchingAnys)
+      }
+
+      return new Node(path, nodeSignature, childs, fallThrough);
+    }
+
+    /**
+     * Generate an array like ['arg0', 'arg1', 'arg2']
+     * @param {number} count Number of arguments to generate
+     * @returns {Array} Returns an array with argument names
+     */
+    function getArgs(count) {
+      // create an array with all argument names
+      var args = [];
+      for (var i = 0; i < count; i++) {
+        args[i] = 'arg' + i;
+      }
+
+      return args;
+    }
+
+    /**
+     * Compose a function from sub-functions each handling a single type signature.
+     * Signatures:
+     *   typed(signature: string, fn: function)
+     *   typed(name: string, signature: string, fn: function)
+     *   typed(signatures: Object.<string, function>)
+     *   typed(name: string, signatures: Object.<string, function>)
+     *
+     * @param {string | null} name
+     * @param {Object.<string, Function>} signatures
+     * @return {Function} Returns the typed function
+     * @private
+     */
+    function _typed(name, signatures) {
+      var refs = new Refs();
+
+      // parse signatures, expand them
+      var _signatures = parseSignatures(signatures);
+      if (_signatures.length == 0) {
+        throw new Error('No signatures provided');
+      }
+
+      // filter all any type signatures
+      var anys = filterAnyTypeSignatures(_signatures);
+
+      // parse signatures into a node tree
+      var node = parseTree(_signatures, [], anys);
+
+      //var util = require('util');
+      //console.log('ROOT');
+      //console.log(util.inspect(node, { depth: null }));
+
+      // generate code for the typed function
+      // safeName is a conservative replacement of characters 
+      // to prevend being able to inject JS code at the place of the function name 
+      // the name is useful for stack trackes therefore we want have it there
+      var code = [];
+      var safeName = (name || '').replace(/[^a-zA-Z0-9_$]/g, '_')
+      var args = getArgs(maxParams(_signatures));
+      code.push('function ' + safeName + '(' + args.join(', ') + ') {');
+      code.push('  "use strict";');
+      code.push('  var name = ' + JSON.stringify(name || '') + ';');
+      code.push(node.toCode(refs, '  ', false));
+      code.push('}');
+
+      // generate body for the factory function
+      var body = [
+        refs.toCode(),
+        'return ' + code.join('\n')
+      ].join('\n');
+
+      // evaluate the JavaScript code and attach function references
+      var factory = (new Function(refs.name, 'createError', body));
+      var fn = factory(refs, createError);
+
+      //console.log('FN\n' + fn.toString()); // TODO: cleanup
+
+      // attach the signatures with sub-functions to the constructed function
+      fn.signatures = mapSignatures(_signatures);
+
+      return fn;
+    }
+
+    /**
+     * Calculate the maximum number of parameters in givens signatures
+     * @param {Signature[]} signatures
+     * @returns {number} The maximum number of parameters
+     */
+    function maxParams(signatures) {
+      var max = 0;
+
+      for (var i = 0; i < signatures.length; i++) {
+        var len = signatures[i].params.length;
+        if (len > max) {
+          max = len;
+        }
+      }
+
+      return max;
+    }
+
+    /**
+     * Get the type of a value
+     * @param {*} x
+     * @returns {string} Returns a string with the type of value
+     */
+    function getTypeOf(x) {
+      var obj;
+
+      for (var i = 0; i < typed.types.length; i++) {
+        var entry = typed.types[i];
+
+        if (entry.name === 'Object') {
+          // Array and Date are also Object, so test for Object afterwards
+          obj = entry;
+        }
+        else {
+          if (entry.test(x)) return entry.name;
+        }
+      }
+
+      // at last, test whether an object
+      if (obj && obj.test(x)) return obj.name;
+
+      return 'unknown';
+    }
+
+    /**
+     * Test whether an array contains some item
+     * @param {Array} array
+     * @param {*} item
+     * @return {boolean} Returns true if array contains item, false if not.
+     */
+    function contains(array, item) {
+      return array.indexOf(item) !== -1;
+    }
+
+    /**
+     * Returns the last item in the array
+     * @param {Array} array
+     * @return {*} item
+     */
+    function last (array) {
+      return array[array.length - 1];
+    }
+
+    // data type tests
+    var types = [
+      { name: 'number',    test: function (x) { return typeof x === 'number' } },
+      { name: 'string',    test: function (x) { return typeof x === 'string' } },
+      { name: 'boolean',   test: function (x) { return typeof x === 'boolean' } },
+      { name: 'Function',  test: function (x) { return typeof x === 'function'} },
+      { name: 'Array',     test: Array.isArray },
+      { name: 'Date',      test: function (x) { return x instanceof Date } },
+      { name: 'RegExp',    test: function (x) { return x instanceof RegExp } },
+      { name: 'Object',    test: function (x) { return typeof x === 'object' } },
+      { name: 'null',      test: function (x) { return x === null } },
+      { name: 'undefined', test: function (x) { return x === undefined } }
+    ];
+
+    // configuration
+    var config = {};
+
+    // type conversions. Order is important
+    var conversions = [];
+
+    // types to be ignored
+    var ignore = [];
+
+    // temporary object for holding types and conversions, for constructing
+    // the `typed` function itself
+    // TODO: find a more elegant solution for this
+    var typed = {
+      config: config,
+      types: types,
+      conversions: conversions,
+      ignore: ignore
+    };
+
+    /**
+     * Construct the typed function itself with various signatures
+     *
+     * Signatures:
+     *
+     *   typed(signatures: Object.<string, function>)
+     *   typed(name: string, signatures: Object.<string, function>)
+     */
+    typed = _typed('typed', {
+      'Object': function (signatures) {
+        var fns = [];
+        for (var signature in signatures) {
+          if (signatures.hasOwnProperty(signature)) {
+            fns.push(signatures[signature]);
+          }
+        }
+        var name = getName(fns);
+
+        return _typed(name, signatures);
+      },
+      'string, Object': _typed,
+      // TODO: add a signature 'Array.<function>'
+      '...Function': function (fns) {
+        var err;
+        var name = getName(fns);
+        var signatures = {};
+
+        for (var i = 0; i < fns.length; i++) {
+          var fn = fns[i];
+
+          // test whether this is a typed-function
+          if (!(typeof fn.signatures === 'object')) {
+            err = new TypeError('Function is no typed-function (index: ' + i + ')');
+            err.data = {index: i};
+            throw err;
+          }
+
+          // merge the signatures
+          for (var signature in fn.signatures) {
+            if (fn.signatures.hasOwnProperty(signature)) {
+              if (signatures.hasOwnProperty(signature)) {
+                if (fn.signatures[signature] !== signatures[signature]) {
+                  err = new Error('Signature "' + signature + '" is defined twice');
+                  err.data = {signature: signature};
+                  throw err;
+                }
+                // else: both signatures point to the same function, that's fine
+              }
+              else {
+                signatures[signature] = fn.signatures[signature];
+              }
+            }
+          }
+        }
+
+        return _typed(name, signatures);
+      }
+    });
+
+    /**
+     * Find a specific signature from a (composed) typed function, for
+     * example:
+     *
+     *   typed.find(fn, ['number', 'string'])
+     *   typed.find(fn, 'number, string')
+     *
+     * Function find only only works for exact matches.
+     *
+     * @param {Function} fn                   A typed-function
+     * @param {string | string[]} signature   Signature to be found, can be
+     *                                        an array or a comma separated string.
+     * @return {Function}                     Returns the matching signature, or
+     *                                        throws an errror when no signature
+     *                                        is found.
+     */
+    function find (fn, signature) {
+      if (!fn.signatures) {
+        throw new TypeError('Function is no typed-function');
+      }
+
+      // normalize input
+      var arr;
+      if (typeof signature === 'string') {
+        arr = signature.split(',');
+        for (var i = 0; i < arr.length; i++) {
+          arr[i] = arr[i].trim();
+        }
+      }
+      else if (Array.isArray(signature)) {
+        arr = signature;
+      }
+      else {
+        throw new TypeError('String array or a comma separated string expected');
+      }
+
+      var str = arr.join(',');
+
+      // find an exact match
+      var match = fn.signatures[str];
+      if (match) {
+        return match;
+      }
+
+      // TODO: extend find to match non-exact signatures
+
+      throw new TypeError('Signature not found (signature: ' + (fn.name || 'unnamed') + '(' + arr.join(', ') + '))');
+    }
+
+    /**
+     * Convert a given value to another data type.
+     * @param {*} value
+     * @param {string} type
+     */
+    function convert (value, type) {
+      var from = getTypeOf(value);
+
+      // check conversion is needed
+      if (type === from) {
+        return value;
+      }
+
+      for (var i = 0; i < typed.conversions.length; i++) {
+        var conversion = typed.conversions[i];
+        if (conversion.from === from && conversion.to === type) {
+          return conversion.convert(value);
+        }
+      }
+
+      throw new Error('Cannot convert from ' + from + ' to ' + type);
+    }
+
+    // attach types and conversions to the final `typed` function
+    typed.config = config;
+    typed.types = types;
+    typed.conversions = conversions;
+    typed.ignore = ignore;
+    typed.create = create;
+    typed.find = find;
+    typed.convert = convert;
+
+    // add a type
+    typed.addType = function (type) {
+      if (!type || typeof type.name !== 'string' || typeof type.test !== 'function') {
+        throw new TypeError('Object with properties {name: string, test: function} expected');
+      }
+
+      typed.types.push(type);
+    };
+
+    // add a conversion
+    typed.addConversion = function (conversion) {
+      if (!conversion
+          || typeof conversion.from !== 'string'
+          || typeof conversion.to !== 'string'
+          || typeof conversion.convert !== 'function') {
+        throw new TypeError('Object with properties {from: string, to: string, convert: function} expected');
+      }
+
+      typed.conversions.push(conversion);
+    };
+
+    return typed;
+  }
+
+  return create();
+}));
+
 
 /***/ }),
 
@@ -21740,15 +28691,527 @@ module.exports = function reset_cameras(regl, params){
 
 /***/ }),
 
+/***/ "./src/cats/binom_prop_pval_lookup.js":
+/*!********************************************!*\
+  !*** ./src/cats/binom_prop_pval_lookup.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/* eslint-disable*/
+module.exports = {
+  "p": [
+    0.5,
+    0.48006119416162751,
+    0.46017216272297101,
+    0.4403823076297575,
+    0.42074029056089696,
+    0.4012936743170763,
+    0.38208857781104733,
+    0.3631693488243809,
+    0.34457825838967582,
+    0.32635522028791997,
+    0.30853753872598688,
+    0.29115968678834636,
+    0.27425311775007355,
+    0.25784611080586473,
+    0.24196365222307303,
+    0.22662735237686821,
+    0.21185539858339669,
+    0.19766254312269238,
+    0.18406012534675947,
+    0.17105612630848183,
+    0.15865525393145707,
+    0.14685905637589591,
+    0.13566606094638267,
+    0.12507193563715024,
+    0.11506967022170828,
+    0.10564977366685535,
+    0.096800484585610358,
+    0.088507991437401956,
+    0.080756659233771066,
+    0.073529259609648304,
+    0.066807201268858071,
+    0.060570758002059008,
+    0.054799291699557974,
+    0.049471468033648075,
+    0.044565462758543006,
+    0.040059156863817086,
+    0.035930319112925789,
+    0.032156774795613713,
+    0.028716559816001783,
+    0.025588059521638611,
+    0.022750131948179195,
+    0.020182215405704383,
+    0.017864420562816542,
+    0.015777607391090499,
+    0.013903447513498595,
+    0.012224472655044696,
+    0.010724110021675795,
+    0.0093867055348385662,
+    0.0081975359245961138,
+    0.0071428107352714152,
+    0.0062096653257761323,
+    0.0053861459540666843,
+    0.0046611880237187467,
+    0.0040245885427583027,
+    0.0034669738030406647,
+    0.0029797632350545551,
+    0.002555130330427929,
+    0.0021859614549132405,
+    0.0018658133003840339,
+    0.0015888696473648667,
+    0.0013498980316300933,
+    0.0011442068310226977,
+    0.00096760321321835631,
+    0.00081635231282856037,
+    0.00068713793791584708,
+    0.00057702504239076592,
+    0.00048342414238377663,
+    0.0004040578018640207,
+    0.00033692926567687988,
+    0.00028029327681617744,
+    0.00023262907903552502,
+    0.00019261557563563279,
+    0.00015910859015753364,
+    0.00013112015442048433,
+    0.00010779973347738823,
+    8.8417285200803773e-05,
+    7.2348043925119787e-05,
+    5.9058912418922374e-05,
+    4.8096344017602614e-05,
+    3.9075596597787456e-05,
+    3.1671241833119863e-05,
+    2.5608816474041489e-05,
+    2.0657506912546683e-05,
+    1.6623763729652213e-05,
+    1.334574901590631e-05,
+    1.0688525774934402e-05,
+    8.5399054709917942e-06,
+    6.8068765993340312e-06,
+    5.4125439077038407e-06,
+    4.293514469971858e-06,
+    3.3976731247300535e-06,
+    2.6822957796388472e-06,
+    2.1124547025028419e-06,
+    1.6596751443714555e-06,
+    1.3008074539172771e-06,
+    1.0170832425687032e-06,
+    7.9332815197558919e-07,
+    6.1730737200919249e-07,
+    4.7918327659031855e-07,
+    3.7106740796333271e-07,
+    2.8665157187919333e-07,
+    2.2090503226954194e-07,
+    1.6982674071475937e-07,
+    1.3024322953320117e-07,
+    9.9644263169334701e-08,
+    7.6049605164887e-08,
+    5.7901340399645569e-08,
+    4.3977115940058689e-08,
+    3.3320448485428448e-08,
+    2.518491005446105e-08,
+    1.8989562465887681e-08,
+    1.4283479893922661e-08,
+    1.0717590258310852e-08,
+    8.0223918506634739e-09,
+    5.9903714010635304e-09,
+    4.4621724539016108e-09,
+    3.3157459783261365e-09,
+    2.4578650618080152e-09,
+    1.8175078630994235e-09,
+    1.3407124440918662e-09,
+    9.8658764503769458e-10,
+    7.2422917051376055e-10,
+    5.303423262948808e-10,
+    3.8741473466756636e-10,
+    2.8231580370432682e-10,
+    2.0522634252189396e-10,
+    1.4882282217622966e-10,
+    1.0765746385121517e-10,
+    7.7688475817097756e-11,
+    5.592507575942645e-11,
+    4.0160005838590881e-11,
+    2.8768541736043109e-11,
+    2.055788909399508e-11,
+    1.4654650977302715e-11,
+    1.0420976987965154e-11,
+    7.3922577780177942e-12,
+    5.2309575441445253e-12,
+    3.6924994272355614e-12,
+    2.600126965638173e-12,
+    1.8264310619769611e-12,
+    1.279812543885835e-12,
+    8.9458895587698439e-13,
+    6.23784446333152e-13,
+    4.3388950271780343e-13,
+    3.0106279811174218e-13,
+    2.0838581586720548e-13,
+    1.4388386381575764e-13,
+    9.9103427495475088e-14,
+    6.8092248906200155e-14,
+    4.6670115887190274e-14,
+    3.1908916729108844e-14,
+    2.1762912097085575e-14,
+    1.4806537490047908e-14,
+    1.0048965656526223e-14,
+    6.8033115407739012e-15,
+    4.5946274357785623e-15,
+    3.095358771958668e-15,
+    2.0801863521393674e-15,
+    1.394517146659261e-15,
+    9.3255757716812045e-16,
+    6.2209605742717405e-16,
+    4.1397018162731219e-16,
+    2.7479593923982212e-16,
+    1.8196213635266084e-16,
+    1.2019351542735647e-16,
+    7.9197263146424757e-17,
+    5.2055697448902465e-17,
+    3.4131483264581459e-17,
+    2.232393197288031e-17,
+    1.456514112590909e-17,
+    9.4795348222032499e-18,
+    6.1544255908503949e-18,
+    3.985804962848151e-18,
+    2.5749715380118873e-18,
+    1.6594208699647519e-18,
+    1.0667637375474856e-18,
+    6.840807685935497e-19,
+    4.3759647993090167e-19,
+    2.7923343749396233e-19,
+    1.7774117841455144e-19,
+    1.1285884059538324e-19,
+    7.1484170112696837e-20,
+    4.516591491435403e-20,
+    2.8466774084602088e-20,
+    1.7897488120140146e-20,
+    1.1224633591327901e-20,
+    7.0222842404415411e-21,
+    4.3823862990664603e-21,
+    2.7281535713460872e-21,
+    1.6941535024881097e-21,
+    1.0494515075362604e-21,
+    6.4848144530772079e-22,
+    3.9972212057261192e-22,
+    2.4577864834723153e-22,
+    1.5074931688101589e-22,
+    9.2234135249393526e-23,
+    5.6292823113765143e-23,
+    3.4271987941135974e-23,
+    2.0813752194932085e-23,
+    1.2609160670206559e-23
+  ],
+  "z": [
+    0.0,
+    0.050000000000000003,
+    0.10000000000000001,
+    0.15000000000000002,
+    0.20000000000000001,
+    0.25,
+    0.30000000000000004,
+    0.35000000000000003,
+    0.40000000000000002,
+    0.45000000000000001,
+    0.5,
+    0.55000000000000004,
+    0.60000000000000009,
+    0.65000000000000002,
+    0.70000000000000007,
+    0.75,
+    0.80000000000000004,
+    0.85000000000000009,
+    0.90000000000000002,
+    0.95000000000000007,
+    1.0,
+    1.05,
+    1.1000000000000001,
+    1.1500000000000001,
+    1.2000000000000002,
+    1.25,
+    1.3,
+    1.3500000000000001,
+    1.4000000000000001,
+    1.4500000000000002,
+    1.5,
+    1.55,
+    1.6000000000000001,
+    1.6500000000000001,
+    1.7000000000000002,
+    1.75,
+    1.8,
+    1.8500000000000001,
+    1.9000000000000001,
+    1.9500000000000002,
+    2.0,
+    2.0500000000000003,
+    2.1000000000000001,
+    2.1499999999999999,
+    2.2000000000000002,
+    2.25,
+    2.3000000000000003,
+    2.3500000000000001,
+    2.4000000000000004,
+    2.4500000000000002,
+    2.5,
+    2.5500000000000003,
+    2.6000000000000001,
+    2.6500000000000004,
+    2.7000000000000002,
+    2.75,
+    2.8000000000000003,
+    2.8500000000000001,
+    2.9000000000000004,
+    2.9500000000000002,
+    3.0,
+    3.0500000000000003,
+    3.1000000000000001,
+    3.1500000000000004,
+    3.2000000000000002,
+    3.25,
+    3.3000000000000003,
+    3.3500000000000001,
+    3.4000000000000004,
+    3.4500000000000002,
+    3.5,
+    3.5500000000000003,
+    3.6000000000000001,
+    3.6500000000000004,
+    3.7000000000000002,
+    3.75,
+    3.8000000000000003,
+    3.8500000000000001,
+    3.9000000000000004,
+    3.9500000000000002,
+    4.0,
+    4.0499999999999998,
+    4.1000000000000005,
+    4.1500000000000004,
+    4.2000000000000002,
+    4.25,
+    4.2999999999999998,
+    4.3500000000000005,
+    4.4000000000000004,
+    4.4500000000000002,
+    4.5,
+    4.5499999999999998,
+    4.6000000000000005,
+    4.6500000000000004,
+    4.7000000000000002,
+    4.75,
+    4.8000000000000007,
+    4.8500000000000005,
+    4.9000000000000004,
+    4.9500000000000002,
+    5.0,
+    5.0500000000000007,
+    5.1000000000000005,
+    5.1500000000000004,
+    5.2000000000000002,
+    5.25,
+    5.3000000000000007,
+    5.3500000000000005,
+    5.4000000000000004,
+    5.4500000000000002,
+    5.5,
+    5.5500000000000007,
+    5.6000000000000005,
+    5.6500000000000004,
+    5.7000000000000002,
+    5.75,
+    5.8000000000000007,
+    5.8500000000000005,
+    5.9000000000000004,
+    5.9500000000000002,
+    6.0,
+    6.0500000000000007,
+    6.1000000000000005,
+    6.1500000000000004,
+    6.2000000000000002,
+    6.25,
+    6.3000000000000007,
+    6.3500000000000005,
+    6.4000000000000004,
+    6.4500000000000002,
+    6.5,
+    6.5500000000000007,
+    6.6000000000000005,
+    6.6500000000000004,
+    6.7000000000000002,
+    6.75,
+    6.8000000000000007,
+    6.8500000000000005,
+    6.9000000000000004,
+    6.9500000000000002,
+    7.0,
+    7.0500000000000007,
+    7.1000000000000005,
+    7.1500000000000004,
+    7.2000000000000002,
+    7.25,
+    7.3000000000000007,
+    7.3500000000000005,
+    7.4000000000000004,
+    7.4500000000000002,
+    7.5,
+    7.5500000000000007,
+    7.6000000000000005,
+    7.6500000000000004,
+    7.7000000000000002,
+    7.75,
+    7.8000000000000007,
+    7.8500000000000005,
+    7.9000000000000004,
+    7.9500000000000002,
+    8.0,
+    8.0500000000000007,
+    8.0999999999999996,
+    8.1500000000000004,
+    8.2000000000000011,
+    8.25,
+    8.3000000000000007,
+    8.3499999999999996,
+    8.4000000000000004,
+    8.4500000000000011,
+    8.5,
+    8.5500000000000007,
+    8.5999999999999996,
+    8.6500000000000004,
+    8.7000000000000011,
+    8.75,
+    8.8000000000000007,
+    8.8499999999999996,
+    8.9000000000000004,
+    8.9500000000000011,
+    9.0,
+    9.0500000000000007,
+    9.0999999999999996,
+    9.1500000000000004,
+    9.2000000000000011,
+    9.25,
+    9.3000000000000007,
+    9.3499999999999996,
+    9.4000000000000004,
+    9.4500000000000011,
+    9.5,
+    9.5500000000000007,
+    9.6000000000000014,
+    9.6500000000000004,
+    9.7000000000000011,
+    9.75,
+    9.8000000000000007,
+    9.8500000000000014,
+    9.9000000000000004,
+    9.9500000000000011
+  ]
+};
+
+/***/ }),
+
+/***/ "./src/cats/binom_test.js":
+/*!********************************!*\
+  !*** ./src/cats/binom_test.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable*/
+
+// Load the math.js core
+// Create a new, empty math.js instance
+// It will only contain methods `import` and `config`
+// math.import(require('mathjs/lib/type/fraction'));
+var p_dict = __webpack_require__(/*! ./binom_prop_pval_lookup */ "./src/cats/binom_prop_pval_lookup.js");
+var core = __webpack_require__(/*! mathjs/core */ "./node_modules/mathjs/core.js");
+var math = core.create();
+
+math.import(__webpack_require__(/*! mathjs/lib/function/probability/factorial */ "./node_modules/mathjs/lib/function/probability/factorial.js"));
+
+module.exports = function binom_test(actual_k, n, p){
+
+  var fact = math.factorial;
+  var pval;
+
+  function binom_dist(k, n, p){
+    var bin_coeff = (fact(n))/( fact(k) * fact(n-k) );
+    p = bin_coeff * (Math.pow(p, k) * Math.pow((1 - p), (n-k)) );
+    return p;
+  }
+
+  function my_binom_test_2(actual_k, n, p){
+    var cp = 0;
+    var k;
+    var dp;
+    for (var inst_k=actual_k; inst_k < n+1; inst_k++ ){
+      k = inst_k;
+      dp = binom_dist(k, n, p);
+      cp = cp + dp;
+    }
+
+    return cp;
+
+  }
+
+  // look up p-value from z-score using table
+  function binom_prop_table(actual_k, n, p){
+
+    // expected average number of successes
+    var mu = n * p;
+
+    // standard deviation
+    var sigma = Math.sqrt(n * p * (1 - p));
+
+    // how many standard deviations is the actual_k away
+    // from the expected value
+    var z = (actual_k - mu)/sigma;
+
+    var z_vals = p_dict.z;
+    var p_vals = p_dict.p;
+
+    var found_index = -1;
+    var found = false;
+
+    for (var index=0; index < z_vals.length; index++){
+      var inst_z = z_vals[index];
+
+      // increasing inst_z until z is less than inst_z
+      if (z < inst_z && found === false){
+        found_index = index;
+        found = true;
+      }
+    }
+
+    // give it the smallest p-val if the z-score was larger than
+    // any in the table
+    if (found_index === -1){
+      found_index = z_vals.length - 1;
+    }
+    pval = p_vals[found_index];
+
+    return pval;
+
+  }
+
+  // calculate pval
+  pval = my_binom_test_2(actual_k, n, p);
+  if ( isNaN(pval) ){
+    pval = binom_prop_table(actual_k, n, p);
+  }
+
+  return pval;
+
+};
+
+/***/ }),
+
 /***/ "./src/cats/calc_cat_cluster_breakdown.js":
 /*!************************************************!*\
   !*** ./src/cats/calc_cat_cluster_breakdown.js ***!
   \************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// var binom_test = require('./binom_test');
-// var _ = require('_');
+var binom_test = __webpack_require__(/*! ./binom_test */ "./src/cats/binom_test.js");
 
 module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc){
 
@@ -21942,8 +29405,8 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
           var num_nodes = inst_run_count[inst_cat].num_nodes;
 
           var actual_k  = num_nodes;
-          // var pval = binom_test(actual_k, num_in_clust, expect_prob);
-          var pval = 0.05; // binom_test(actual_k, num_in_clust, expect_prob);
+          var pval = binom_test(actual_k, num_in_clust, expect_prob);
+          // var pval = 0.05; // binom_test(actual_k, num_in_clust, expect_prob);
 
           // working on tracking the 'real' number of nodes, which is only different
           // if downsampling has been done

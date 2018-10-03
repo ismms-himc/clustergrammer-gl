@@ -4,8 +4,6 @@ var cat_breakdown_values = require('./cat_breakdown_values');
 
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
 
-  console.log('make_cat_breakdown_graph')
-
   /*
   This function is used to make the category breakdown graphs for tooltips on
   dendrogram mousover and on dendrogram click modal popup.
@@ -20,19 +18,19 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     // loop through cat_breakdown data
     var width = 370;
     var title_height = 27;
-    var shift_tooltip_left = 177;
+    // var shift_tooltip_left = 177;
     var bar_offset = 23;
 
     // these are the indexes where the number-of-nodes and the number of downsampled
     // nodes are stored
     var num_nodes_index = 4;
     var num_nodes_ds_index = 5;
-    var offset_ds_count = 150;
+    // var offset_ds_count = 150;
 
     var is_downsampled = false;
-    if (cat_breakdown[0].bar_data[0][num_nodes_ds_index] != null){
+    if (cat_breakdown[0].bar_data[0][num_nodes_ds_index] !== null){
       width = width + 100;
-      shift_tooltip_left = shift_tooltip_left + offset_ds_count - 47;
+      // shift_tooltip_left = shift_tooltip_left + offset_ds_count - 47;
       is_downsampled = true;
     }
 

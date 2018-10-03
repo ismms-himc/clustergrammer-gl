@@ -3,7 +3,6 @@ var make_cat_breakdown_graph = require('./../cats/make_cat_breakdown_graph');
 
 module.exports = function make_matrix_cell_tooltip(params){
 
-  // console.log('make_matrix_cell_tooltip')
   var tooltip_dim = {};
   tooltip_dim.height = 25;
   tooltip_dim.width = 150;
@@ -19,7 +18,6 @@ module.exports = function make_matrix_cell_tooltip(params){
   var mouseover = params.interact.mouseover;
   var tooltip_lines = [];
 
-  // console.log(params.tooltip.tooltip_type)
   var cat_breakdown;
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
@@ -50,18 +48,19 @@ module.exports = function make_matrix_cell_tooltip(params){
     });
 
     cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
-    console.log(cat_breakdown)
   }
-  // console.log(tooltip_lines)
 
+  var pos_x;
+  var pos_y;
+  var group_tooltip_container
 
   if (params.tooltip.tooltip_type.indexOf('dendro') < 0){
 
-    var pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
-    var pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
+    pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
+    pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
 
-    console.log('making group to put svg into')
-    var group_tooltip_container = d3.select(params.root + ' .canvas-container')
+    // console.log('making group to put svg into')
+    group_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('g')
       .style('position', 'absolute')
       .style('top', pos_y + 'px')
@@ -125,7 +124,6 @@ module.exports = function make_matrix_cell_tooltip(params){
       inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
       if (inst_line_width > text_width){
         text_width = inst_line_width;
-        // console.log('increased width')
       }
     })
 
@@ -155,13 +153,12 @@ module.exports = function make_matrix_cell_tooltip(params){
 
     // Dendrogram Tooltip
     ////////////////////////////
-    console.log('make dendrogram category breakdown instead')
+    // console.log('make dendrogram category breakdown instead')
 
-    var pos_x = params.zoom_data.x.cursor_position - 370;
-    var pos_y = params.zoom_data.y.cursor_position;
+    pos_x = params.zoom_data.x.cursor_position - 370;
+    pos_y = params.zoom_data.y.cursor_position;
 
-    console.log('making group to put svg into')
-    var group_tooltip_container = d3.select(params.root + ' .canvas-container')
+    group_tooltip_container = d3.select(params.root + ' .canvas-container')
       .append('g')
       .style('position', 'absolute')
       .style('top', pos_y + 'px')
@@ -170,11 +167,9 @@ module.exports = function make_matrix_cell_tooltip(params){
 
     if (params.tooltip.tooltip_type === 'row-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
-      // console.log(cat_breakdown)
       make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row', group_tooltip_container)
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
-      // console.log(cat_breakdown)
       make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, 'col', group_tooltip_container)
     }
 

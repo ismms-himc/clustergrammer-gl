@@ -1,3 +1,5 @@
+/* eslint-disable guard-for-in */
+
 var binom_test = require('./binom_test');
 
 module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc){
@@ -115,11 +117,6 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
       // all rows/cols
       // params
 
-
-
-
-
-
       _.each(cat_types_index, function(tmp_cat_index){
         // console.log('cat_types_index', cat_types_index)
 
@@ -152,7 +149,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
           if (cat_name in tmp_run_count[type_name]){
             tmp_run_count[type_name][cat_name].num_nodes = tmp_run_count[type_name][cat_name].num_nodes + 1;
 
-            if (num_in_clust_index != null){
+            if (num_in_clust_index !== null){
               tmp_run_count[type_name][cat_name].num_nodes_ds = tmp_run_count[type_name][cat_name].num_nodes_ds + parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
             }
 
@@ -160,7 +157,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
             tmp_run_count[type_name][cat_name] = {};
             tmp_run_count[type_name][cat_name].num_nodes = 1;
-            if (num_in_clust_index != null){
+            if (num_in_clust_index !== null){
               tmp_run_count[type_name][cat_name].num_nodes_ds = parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
             }
 

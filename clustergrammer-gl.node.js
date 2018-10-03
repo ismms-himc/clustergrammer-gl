@@ -35710,7 +35710,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     ////////////////////////////
     // console.log('make dendrogram category breakdown instead')
 
-    pos_x = params.zoom_data.x.cursor_position - 370;
+    pos_x = params.zoom_data.x.cursor_position;
     pos_y = params.zoom_data.y.cursor_position;
 
     group_tooltip_container = d3.select(params.root + ' .canvas-container')

@@ -33379,9 +33379,9 @@ module.exports = function make_opacity_arr(params){
 
   var opacity_arr = [].concat.apply([], mat_data);
 
-  var abs_max_val = _.max(opacity_arr, function(d){
+  var abs_max_val = Math.abs(_.max(opacity_arr, function(d){
     return Math.abs(d);
-  });
+  }));
 
   var opacity_scale = d3.scale.linear();
 

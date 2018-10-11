@@ -1,6 +1,9 @@
 // http://jsfiddle.net/9yH7M/1/
 // https://stackoverflow.com/questions/14620769/decompress-gzip-and-zlib-string-in-javascript
 
+// parsing as json
+// https://stackoverflow.com/questions/37225035/serialize-in-json-a-base64-encoded-data
+
 // Get some base64 encoded binary data from the server. Imagine we got this:
 var b64Data     = 'H4sIAAAAAAAAAwXB2w0AEBAEwFbWl2Y0IW4jQmziPNo3k6TuGK0Tj/ESVRs6yzkuHRnGIqPB92qzhg8yp62UMAAAAA==';
 

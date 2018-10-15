@@ -16,6 +16,7 @@ function clustergrammer_gl(args){
   // console.log('################################');
 
   // decompress if necessary
+  // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript
   if (typeof(args.network) === 'string'){
 
     // Decode base64 (convert ascii to binary)

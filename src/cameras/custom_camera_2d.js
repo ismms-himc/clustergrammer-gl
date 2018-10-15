@@ -2,10 +2,12 @@
 // 'use strict';
 
 var interactionEvents = require('./../interactions/interaction-events');
+var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = require('xtend/mutable');
 var mat4 = require('gl-mat4');
 var EventEmitter = require('event-emitter');
 var camera_interaction = require('./camera_interaction');
+var track_interaction_zoom_data = require('./../interactions/track_interaction_zoom_data');
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;
@@ -102,8 +104,11 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   // /////////////////////////////////////////
   // // Alternate interaction tracking
   // /////////////////////////////////////////
+  // debugger
+  // // console.log(element)
+  // console.log(regl._gl.canvas)
   // normalizedInteractionEvents({
-  //   element: element
+  //   element: regl._gl.canvas
   // })
   // .on('wheel', function (ev) {
   //   console.log('norm interact: camera');

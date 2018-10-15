@@ -19,26 +19,18 @@ module.exports = function zoom_rules_high_mat(regl, params){
     element: element,
   })
   .on('interaction', function(ev){
-
-    // working on toggling tracking for cases when we need to ignore
-    // (e.g. moving a slider)
-    if (params.interact.enable_viz_interact){
-      track_interaction_zoom_data(regl, params, ev);
-    } else {
-
-      // example of tracking dragging while clicking (buttons)
-      // will set up someting to not track interactions when mousing over
-      // buttons and sliders
-      if (ev.buttons){
-        // console.log('not tracking ', ev.dx, ev.dy);
-      }
-
-    }
-
+    track_interaction_zoom_data(regl, params, ev);
   })
   .on('interactionend', function(){
 
-    // console.log('clicking')
+    console.log('clicking')
+
+    if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
+      console.log('double click')
+    } else {
+      params.animation.last_click = params.animation.time;
+    }
+
   });
 
 };

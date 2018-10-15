@@ -64,7 +64,6 @@ module.exports = function initialize_params(regl, network){
     calc_text_offsets(params, inst_axis);
   });
 
-
   generate_tooltip_params(regl, params);
 
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
@@ -101,7 +100,6 @@ module.exports = function initialize_params(regl, network){
 
   // spillover params rely on dendro params
   generate_spillover_params(regl, params);
-
 
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])

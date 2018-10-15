@@ -35444,10 +35444,12 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
 // 'use strict';
 
 var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
+// var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var mat4 = __webpack_require__(/*! gl-mat4 */ "./node_modules/gl-mat4/index.js");
 var EventEmitter = __webpack_require__(/*! event-emitter */ "./node_modules/event-emitter/index.js");
 var camera_interaction = __webpack_require__(/*! ./camera_interaction */ "./src/cameras/camera_interaction.js");
+// var track_interaction_zoom_data = require('./../interactions/track_interaction_zoom_data');
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;
@@ -35544,8 +35546,11 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   // /////////////////////////////////////////
   // // Alternate interaction tracking
   // /////////////////////////////////////////
+  // debugger
+  // // console.log(element)
+  // console.log(regl._gl.canvas)
   // normalizedInteractionEvents({
-  //   element: element
+  //   element: regl._gl.canvas
   // })
   // .on('wheel', function (ev) {
   //   console.log('norm interact: camera');
@@ -40058,11 +40063,14 @@ function clustergrammer_gl(args){
   // console.log('################################');
 
   // decompress if necessary
-  if (typeof(args.network) === 'string'){
+  // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript
+  var network;
+  if (typeof (args.network) === 'string'){
 
     // Decode base64 (convert ascii to binary)
-    comp_net = JSON.parse(args.network).compressed;
-    var strData     = atob(comp_net);
+    var comp_net = JSON.parse(args.network).compressed;
+
+    strData     = atob(comp_net);
 
     // Convert binary string to character-number array
     var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
@@ -40077,11 +40085,11 @@ function clustergrammer_gl(args){
 
     var uncomp_net = JSON.parse(strData)
 
-    var network = uncomp_net;
-    console.log('decompressed')
+    network = uncomp_net;
+    // console.log('decompressed')
   } else {
-    var network = args.network;
-    console.log('no need to decompress')
+    network = args.network;
+    // console.log('no need to decompress')
   }
 
   var container = args.container;
@@ -41665,6 +41673,9 @@ module.exports = function generate_animation_params(params){
   params.animation.first_frame = true;
   params.animation.initialize_viz = true;
 
+  params.animation.last_click = 0;
+  params.animation.dblclick_duration = 0.5;
+
 };
 
 /***/ }),
@@ -42106,7 +42117,6 @@ module.exports = function initialize_params(regl, network){
     calc_text_offsets(params, inst_axis);
   });
 
-
   generate_tooltip_params(regl, params);
 
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
@@ -42143,7 +42153,6 @@ module.exports = function initialize_params(regl, network){
 
   // spillover params rely on dendro params
   generate_spillover_params(regl, params);
-
 
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
@@ -43290,26 +43299,18 @@ module.exports = function zoom_rules_high_mat(regl, params){
     element: element,
   })
   .on('interaction', function(ev){
-
-    // working on toggling tracking for cases when we need to ignore
-    // (e.g. moving a slider)
-    if (params.interact.enable_viz_interact){
-      track_interaction_zoom_data(regl, params, ev);
-    } else {
-
-      // example of tracking dragging while clicking (buttons)
-      // will set up someting to not track interactions when mousing over
-      // buttons and sliders
-      if (ev.buttons){
-        // console.log('not tracking ', ev.dx, ev.dy);
-      }
-
-    }
-
+    track_interaction_zoom_data(regl, params, ev);
   })
   .on('interactionend', function(){
 
-    // console.log('clicking')
+    console.log('clicking')
+
+    if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
+      console.log('double click')
+    } else {
+      params.animation.last_click = params.animation.time;
+    }
+
   });
 
 };

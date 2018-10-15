@@ -17,11 +17,13 @@ function clustergrammer_gl(args){
 
   // decompress if necessary
   // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript
-  if (typeof(args.network) === 'string'){
+  var network;
+  if (typeof (args.network) === 'string'){
 
     // Decode base64 (convert ascii to binary)
-    comp_net = JSON.parse(args.network).compressed;
-    var strData     = atob(comp_net);
+    var comp_net = JSON.parse(args.network).compressed;
+
+    strData     = atob(comp_net);
 
     // Convert binary string to character-number array
     var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
@@ -36,11 +38,11 @@ function clustergrammer_gl(args){
 
     var uncomp_net = JSON.parse(strData)
 
-    var network = uncomp_net;
-    console.log('decompressed')
+    network = uncomp_net;
+    // console.log('decompressed')
   } else {
-    var network = args.network;
-    console.log('no need to decompress')
+    network = args.network;
+    // console.log('no need to decompress')
   }
 
   var container = args.container;

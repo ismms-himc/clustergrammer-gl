@@ -40057,45 +40057,33 @@ function clustergrammer_gl(args){
   // console.log('clustergrammer-gl version 0.6.3');
   // console.log('################################');
 
-  console.log('loading pako')
-  console.log(pako)
+  // decompress if necessary
+  if (typeof(args.network) === 'string'){
 
-  // debugger
+    // Decode base64 (convert ascii to binary)
+    comp_net = JSON.parse(args.network).compressed;
+    var strData     = atob(comp_net);
 
-  // comp_net = JSON.parse(args.network).compressed;
+    // Convert binary string to character-number array
+    var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
 
-  // Decode base64 (convert ascii to binary)
+    // Turn number array into byte-array
+    var binData     = new Uint8Array(charData);
 
-  comp_net = JSON.parse(args.network).compressed
-  var strData     = atob(comp_net);
+    // Pako magic
+    var data        = pako.inflate(binData);
 
-  console.log(strData)
+    var strData = new TextDecoder().decode(data)
 
-  // Convert binary string to character-number array
-  var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
+    var uncomp_net = JSON.parse(strData)
 
-  console.log(charData)
+    var network = uncomp_net;
+    console.log('decompressed')
+  } else {
+    var network = args.network;
+    console.log('no need to decompress')
+  }
 
-  // Turn number array into byte-array
-  var binData     = new Uint8Array(charData);
-
-  console.log(binData)
-
-  // Pako magic
-  var data        = pako.inflate(binData);
-
-  console.log(data)
-
-  // Convert gunzipped byteArray back to ascii string:
-  var strData     = String.fromCharCode.apply(null, new Uint16Array(data));
-
-  parse_1 = JSON.parse(strData)
-  uncomp_net = JSON.parse(parse_1)
-
-  // console.log(uncomp_net)
-
-  // var network = args.network;
-  var network = uncomp_net;
   var container = args.container;
 
   // make control panel first so it appears above canvas

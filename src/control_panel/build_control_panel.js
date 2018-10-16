@@ -1,5 +1,6 @@
 var run_reorder = require('./../reorders/run_reorder');
 // var img = require('./../../img/graham_cracker_144.png');
+var build_reorder_cat_titles = require('./../cats/build_reorder_cat_titles');
 
 module.exports = function build_control_panel(regl, cgm){
 

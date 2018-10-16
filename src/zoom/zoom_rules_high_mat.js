@@ -23,7 +23,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(){
 
-    console.log('clicking')
+    // console.log('clicking')
 
     if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
       console.log('double click')

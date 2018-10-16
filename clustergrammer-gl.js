@@ -36176,6 +36176,20 @@ module.exports = function binom_test(actual_k, n, p){
 
 /***/ }),
 
+/***/ "./src/cats/build_reorder_cat_titles.js":
+/*!**********************************************!*\
+  !*** ./src/cats/build_reorder_cat_titles.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {module.export = function build_reorder_cat_titles(params){
+
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/webpack/buildin/module.js */ "./node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
 /***/ "./src/cats/calc_cat_cluster_breakdown.js":
 /*!************************************************!*\
   !*** ./src/cats/calc_cat_cluster_breakdown.js ***!
@@ -37721,6 +37735,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
 // var img = require('./../../img/graham_cracker_144.png');
+var build_reorder_cat_titles = __webpack_require__(/*! ./../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js");
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -43303,7 +43318,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(){
 
-    console.log('clicking')
+    // console.log('clicking')
 
     if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
       console.log('double click')

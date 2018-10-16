@@ -37816,6 +37816,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
 // var img = require('./../../img/graham_cracker_144.png');
 var build_reorder_cat_titles = __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js");
+var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js");
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -38068,6 +38069,965 @@ module.exports = function build_control_panel(regl, cgm){
   */
 
   build_reorder_cat_titles(regl, cgm);
+  build_tree_icon(cgm);
+
+};
+
+/***/ }),
+
+/***/ "./src/control_panel/build_tree_icon.js":
+/*!**********************************************!*\
+  !*** ./src/control_panel/build_tree_icon.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var d3_tip_custom = __webpack_require__(/*! ./d3_tip_custom */ "./src/control_panel/d3_tip_custom.js");
+var position_tree_icon = __webpack_require__(/*! ./position_tree_icon */ "./src/control_panel/position_tree_icon.js");
+var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
+var make_tree_menu = __webpack_require__(/*! ./make_tree_menu */ "./src/control_panel/make_tree_menu.js");
+
+module.exports = function build_tree_icon(cgm){
+
+  var slider_length = 40;
+  var params = cgm.params;
+  var default_opacity = 0.35;
+  var high_opacity = 0.6;
+
+  // // d3-tooltip
+  // var tree_icon_tip = d3_tip_custom()
+  //   .attr('class', function(){
+  //     var root_tip_selector = 'something'; // params.viz.root_tips.replace('.','');
+  //     var class_string = root_tip_selector + '_tree_icon_tip d3-tip';
+  //     return class_string;
+  //   })
+  //   .direction('w')
+  //   .style('display', 'none')
+  //   .offset([-10,-5])
+  //   .html(function(){
+  //     return 'Clustering Menu';
+  //   });
+
+  console.log('here')
+  // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
+  var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
+      .append('g')
+      .classed( 'tree_icon', true)
+      .on('mouseover', function(){
+
+        // only if no menu is showing
+        if (d3.select(params.root+' .tree_menu').empty()){
+
+          // d3.selectAll( params.viz.root_tips + '_tree_icon_tip')
+          //   .style('opacity', 1)
+          //   .style('display', 'block');
+
+          // tree_icon_tip.show();
+
+        }
+
+        d3.selectAll(params.root + ' .tree_leaf_circle')
+          .style('opacity', high_opacity);
+      })
+      .on('mouseout', function(){
+        // tree_icon_tip.hide();
+        d3.selectAll(params.root + ' .tree_leaf_circle')
+        .style('opacity', default_opacity);
+      })
+      // .call(tree_icon_tip);
+
+  var tree_icon_group =  tree_icon_outer_group
+    .append('g')
+    .classed('dendro_tree_container', true)
+    .on('click', function(){
+
+      if (d3.select(params.root+' .tree_menu').empty()){
+
+        toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
+
+        // tree_icon_tip.hide();
+
+      } else {
+
+        toggle_menu(cgm, 'tree_menu', 'close');
+
+      }
+    });
+
+  d3.select(params.root + ' .dendro_tree_container')
+    .attr('transform', 'scale(0.9)');
+
+  position_tree_icon(cgm);
+
+  var offset_triangle = 0;
+  var tree_width = 20;
+
+  // main branch
+  tree_icon_group
+    .append('path')
+    .style('fill', 'black')
+    .attr('transform', 'translate('+offset_triangle+', 0)')
+    .attr('d', function() {
+
+      // up triangle
+      var start_x = 0;
+      var start_y = slider_length;
+
+      var mid_x = tree_width/2;//left_x + slider_length/10;
+      var mid_y = 0;
+
+      var final_x = tree_width;//left_x + slider_length/5;
+      var final_y = slider_length;
+
+      var output_string = 'M' + start_x + ',' + start_y + ' L' +
+      mid_x + ', ' + mid_y + ' L'
+      + final_x + ','+ final_y +' Z';
+
+      return output_string;
+    })
+    .style('opacity', 0.35);
+
+  // left branch
+  var branch_height = 30;
+  tree_icon_group
+    .append('path')
+    .style('fill', 'black')
+    .attr('transform', 'translate('+offset_triangle+', 0)')
+    .attr('d', function() {
+
+      // up triangle
+      var start_x = 4.3;
+      var start_y = 23;
+
+      var mid_x = -5;//left_x + slider_length/10;
+      var mid_y = branch_height/2.5;
+
+      var final_x = 5.8;//left_x + slider_length/5;
+      var final_y = branch_height/1.8;
+
+      var output_string = 'M' + start_x + ',' + start_y + ' L' +
+      mid_x + ', ' + mid_y + ' L'
+      + final_x + ','+ final_y +' Z';
+
+      return output_string;
+    })
+    .style('opacity', 0.35);
+
+  // right branch
+  tree_icon_group
+    .append('path')
+    .style('fill', 'black')
+    .attr('transform', 'translate('+offset_triangle+', 0)')
+    .attr('d', function() {
+
+      // up triangle
+      var start_x = 15.7;
+      var start_y = 23;
+
+      var mid_x = 25;//left_x + slider_length/10;
+      var mid_y = branch_height/2.5;
+
+      var final_x = 14.2;//left_x + slider_length/5;
+      var final_y = branch_height/1.8;
+
+      var output_string = 'M' + start_x + ',' + start_y + ' L' +
+      mid_x + ', ' + mid_y + ' L'
+      + final_x + ','+ final_y +' Z';
+
+      return output_string;
+    })
+    .style('opacity', 0.35);
+
+  var small_leaf_offset = 13;
+  var small_leaf_radius = 9.5;
+
+  tree_icon_group
+    .selectAll()
+    .data([
+      [-3,small_leaf_offset,small_leaf_radius],
+      [tree_width/2,0, 17],
+      [23,small_leaf_offset,small_leaf_radius]])
+    .enter()
+    .append('circle')
+    .classed('tree_leaf_circle', true)
+    .attr('r', function(d){
+      return d[2];
+    })
+    .attr('transform', function(d){
+      return 'translate('+d[0]+', '+d[1]+')';
+    })
+    .attr('fill', 'blue')
+    .attr('opacity', default_opacity)
+    // .attr('');
+
+  tree_icon_group
+    .append('rect')
+    .attr('width', 50)
+    .attr('height', 62)
+    .attr('transform', function(){
+      return 'translate('+ -15 +', '+ -19 +')';
+    })
+    .attr('opacity', 0.0);
+
+};
+
+
+/***/ }),
+
+/***/ "./src/control_panel/d3_tip_custom.js":
+/*!********************************************!*\
+  !*** ./src/control_panel/d3_tip_custom.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function d3_tip_custom(){
+/* eslint-disable */
+// Copyright (c) 2013 Justin Palmer
+//
+// Tooltips for d3.js SVG visualizations
+
+// Public - contructs a new tooltip
+//
+// Returns a tip
+// ******************
+// Nick Fernandez modified version 4-19-2016
+// improved multiple svg, scrolling+zooming support
+// made syntax fixes
+//////////////////////////////////////////////
+  var direction = d3_tip_direction,
+      offset    = d3_tip_offset,
+      html      = d3_tip_html,
+      node      = initNode(),
+      svg       = null,
+      point     = null,
+      target    = null;
+
+  function tip(vis) {
+    svg = getSVGNode(vis);
+    point = svg.createSVGPoint();
+    document.body.appendChild(node);
+  }
+
+  // Public - show the tooltip on the screen
+  //
+  // Returns a tip
+  tip.show = function() {
+
+    var args = Array.prototype.slice.call(arguments);
+    if (args[args.length - 1] instanceof SVGElement) {
+      target = args.pop();
+    }
+
+    var content = html.apply(this, args);
+    var poffset = offset.apply(this, args);
+    var dir     = direction.apply(this, args);
+    var nodel   = d3.select(node);
+    var i = 0;
+    var coords;
+
+    // add z-index to make sure tooltips appear on top
+    nodel.html(content)
+      .style({opacity: 1, 'pointer-events': 'all'})
+      .style('z-index', 99);
+
+    while(i--) {
+      nodel.classed(directions[i], false);
+    }
+    coords = direction_callbacks.get(dir).apply(this);
+    nodel.classed(dir, true).style({
+      top: (coords.top +  poffset[0]) + 'px',
+      left: (coords.left + poffset[1]) + 'px'
+    });
+
+    // quick fix for fading tile tooltips
+    if (isFunction(this) === false){
+
+      var inst_class = d3.select(this).attr('class');
+
+      if (inst_class.indexOf('tile') >= 0){
+        setTimeout(fade_tips, 5000, this);
+      }
+
+    }
+
+    return tip;
+  };
+
+  // Public - hide the tooltip
+  //
+  // Returns a tip
+  tip.hide = function() {
+
+    // // hide all d3-tip tooltips
+    // d3.selectAll('.d3-tip')
+    //   .style('display', 'none');
+
+    var nodel = d3.select(node);
+    nodel.style({opacity: 0, 'pointer-events': 'none'});
+    return tip;
+  };
+
+  // Public: Proxy attr calls to the d3 tip container.  Sets or gets attribute value.
+  //
+  // n - name of the attribute
+  // v - value of the attribute
+  //
+  // Returns tip or attribute value
+  tip.attr = function(n) {
+    if (arguments.length < 2 && typeof n === 'string') {
+      return d3.select(node).attr(n);
+    } else {
+      var args =  Array.prototype.slice.call(arguments);
+      d3.selection.prototype.attr.apply(d3.select(node), args);
+    }
+
+    return tip;
+  };
+
+  // Public: Proxy style calls to the d3 tip container.  Sets or gets a style value.
+  //
+  // n - name of the property
+  // v - value of the property
+  //
+  // Returns tip or style property value
+  tip.style = function(n) {
+    if (arguments.length < 2 && typeof n === 'string') {
+      return d3.select(node).style(n);
+    } else {
+      var args =  Array.prototype.slice.call(arguments);
+      d3.selection.prototype.style.apply(d3.select(node), args);
+    }
+
+    return tip;
+  };
+
+  // Public: Set or get the direction of the tooltip
+  //
+  // v - One of n(north), s(south), e(east), or w(west), nw(northwest),
+  //     sw(southwest), ne(northeast) or se(southeast)
+  //
+  // Returns tip or direction
+  tip.direction = function(v) {
+    if (!arguments.length){
+      return direction;
+    }
+    direction = v == null ? v : d3.functor(v);
+
+    return tip;
+  };
+
+  // Public: Sets or gets the offset of the tip
+  //
+  // v - Array of [x, y] offset
+  //
+  // Returns offset or
+  tip.offset = function(v) {
+    if (!arguments.length) {
+      return offset;
+    }
+    offset = v == null ? v : d3.functor(v);
+
+    return tip;
+  };
+
+  // Public: sets or gets the html value of the tooltip
+  //
+  // v - String value of the tip
+  //
+  // Returns html value or tip
+  tip.html = function(v) {
+    if (!arguments.length) {
+      return html;
+    }
+    html = v == null ? v : d3.functor(v);
+
+    return tip;
+  };
+
+  function d3_tip_direction() {
+    return 'n';
+  }
+  function d3_tip_offset() {
+    return [0, 0];
+  }
+  function d3_tip_html() {
+    return ' ';
+  }
+
+  var direction_callbacks = d3.map({
+    n:  direction_n,
+    s:  direction_s,
+    e:  direction_e,
+    w:  direction_w,
+    nw: direction_nw,
+    ne: direction_ne,
+    sw: direction_sw,
+    se: direction_se,
+    south_custom: direction_south_custom
+  }),
+
+  directions = direction_callbacks.keys();
+
+  function direction_south_custom() {
+    var bbox = getScreenBBox();
+
+
+    return {
+      top:  bbox.s.y,
+      left: bbox.s.x ,
+    };
+
+  }
+
+  function direction_n() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.n.y - node.offsetHeight,
+      left: bbox.n.x - node.offsetWidth / 2
+    };
+  }
+
+  function direction_s() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.s.y,
+      left: bbox.s.x - node.offsetWidth / 2
+    };
+  }
+
+  function direction_e() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.e.y - node.offsetHeight / 2,
+      left: bbox.e.x
+    };
+  }
+
+  function direction_w() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.w.y - node.offsetHeight / 2,
+      left: bbox.w.x - node.offsetWidth
+    };
+  }
+
+  function direction_nw() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.nw.y - node.offsetHeight,
+      left: bbox.nw.x - node.offsetWidth
+    };
+  }
+
+  function direction_ne() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.ne.y - node.offsetHeight,
+      left: bbox.ne.x
+    };
+  }
+
+  function direction_sw() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.sw.y,
+      left: bbox.sw.x - node.offsetWidth
+    };
+  }
+
+  function direction_se() {
+    var bbox = getScreenBBox();
+    return {
+      top:  bbox.se.y,
+      left: bbox.e.x
+    };
+  }
+
+  function initNode() {
+    var node = d3.select(document.createElement('div'));
+    node.style({
+      position: 'absolute',
+      opacity: 0,
+      pointerEvents: 'none',
+      boxSizing: 'border-box'
+    });
+
+    return node.node();
+  }
+
+  function getSVGNode(el) {
+    el = el.node();
+    if(el.tagName.toLowerCase() == 'svg'){
+      return el;
+    }
+
+    return el.ownerSVGElement;
+  }
+
+  // Private - gets the screen coordinates of a shape
+  //
+  // Given a shape on the screen, will return an SVGPoint for the directions
+  // n(north), s(south), e(east), w(west), ne(northeast), se(southeast), nw(northwest),
+  // sw(southwest).
+  //
+  //    +-+-+
+  //    |   |
+  //    +   +
+  //    |   |
+  //    +-+-+
+  //
+  // Returns an Object {n, s, e, w, nw, sw, ne, se}
+  function getScreenBBox() {
+    var targetel   = target || d3.event.target;
+    var bbox       = {};
+    var matrix     = targetel.getScreenCTM();
+    var tbbox      = targetel.getBBox();
+    var width      = tbbox.width;
+    var height     = tbbox.height;
+    var x          = tbbox.x;
+    var y          = tbbox.y;
+    var scrollTop  = document.documentElement.scrollTop || document.body.scrollTop;
+    var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+
+    // Nick - prevents bugs with scrolling and zooming on the same object
+    matrix.a = 1;
+    matrix.d = 1;
+    // changing order of adding scrolling,
+    // original ordering was causing problems with pre-translated or rotated
+    // elements.
+    matrix.e = matrix.e + scrollLeft;
+    matrix.f = matrix.f + scrollTop;
+    point.x = x; //+ scrollLeft
+    point.y = y; //+ scrollTop
+
+    bbox.nw = point.matrixTransform(matrix);
+    point.x = point.x + width;
+    bbox.ne = point.matrixTransform(matrix);
+    point.y = point.y + height;
+    bbox.se = point.matrixTransform(matrix);
+    point.x = point.x - width;
+    bbox.sw = point.matrixTransform(matrix);
+    point.y = point.y - height / 2;
+    bbox.w  = point.matrixTransform(matrix);
+    point.x = point.x + width;
+    bbox.e = point.matrixTransform(matrix);
+    point.x = point.x - width / 2;
+    point.y = point.y - height / 2;
+    bbox.n = point.matrixTransform(matrix);
+    point.y = point.y + height;
+    bbox.s = point.matrixTransform(matrix);
+
+    return bbox;
+  }
+
+  // only fade tips if you are still hovering on the current tip
+  function fade_tips(inst_selection){
+
+    var is_hovering = d3.select(inst_selection)
+      .classed('hovering');
+
+    if (is_hovering){
+      d3.selectAll('.d3-tip')
+        .transition()
+        .duration(250)
+        .style('opacity',0)
+        .style('display', 'none');
+    }
+  }
+
+  function isFunction(functionToCheck) {
+   var getType = {};
+   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+  }
+
+  return tip;
+};
+
+/***/ }),
+
+/***/ "./src/control_panel/make_menu_button_section.js":
+/*!*******************************************************!*\
+  !*** ./src/control_panel/make_menu_button_section.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_menu_button_section(menu_type, button_type, button_info,  button_names){
+
+  var cgm = button_info.cgm;
+  var menu_width = button_info.menu_width;
+  var button_offset = 35;
+
+  // Linkage menu options
+  var vertical_space = 30;
+  var menu_x_offset = menu_width/20 + button_info.x_offset;
+  var underline_width = menu_width/2 - 40;
+
+  var inst_menu = button_info.selection
+    .append('g')
+    .classed('inst_menu', true)
+    .attr('transform', 'translate(' + menu_x_offset + ', ' + button_info.y_offset + ')');
+
+  inst_menu
+    .append('text')
+    .attr('transform', 'translate(0, 0)')
+    .attr('font-size', '18px')
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('cursor', 'default')
+    .text(button_info.name);
+
+  inst_menu
+    .append('rect')
+    .classed( menu_type + '_line', true)
+    .attr('height', '2px')
+    .attr('width', underline_width+'px')
+    .attr('stroke-width', '3px')
+    .attr('opacity', 0.3)
+    .attr('fill', 'black')
+    .attr('transform', 'translate(0,10)');
+
+  var inst_section = inst_menu
+    .append('g')
+    .attr('transform', 'translate(0,' + button_offset + ')')
+    .classed('inst_section', true);
+
+  var button_class = cgm.params.root.replace('#','')+ '_' + button_type + '_buttons';
+
+  var section_groups = inst_section
+    .selectAll('g')
+    .data(button_names)
+    .enter()
+    .append('g')
+    .classed(button_class, true)
+    .attr('transform', function(d,i){
+      var vert = i * vertical_space;
+      var transform_string = 'translate(0,'+ vert + ')';
+      return transform_string;
+    })
+    .attr('cursor', 'default')
+    .on('click', function(d){
+      // deselect all buttons
+      d3.selectAll( '.' + button_class + ' circle')
+        .attr('fill', 'white');
+
+      // pass this along so that it can be updated in the callback
+      click_function(this, d, button_info);
+    });
+
+ function click_function(button_selection, d, button_info){
+    button_info[button_type] = d;
+    d3.select(button_selection)
+      .select('circle')
+      .attr('fill', 'red');
+  }
+
+  section_groups
+    .append('circle')
+    .attr('cx', 10)
+    .attr('cy', -6)
+    .attr('r', 7)
+    .attr('stroke', '#A3A3A3')
+    .attr('stroke-width', '2px')
+    .attr('fill', function(d){
+      return circle_fill_function(d, button_type);
+    });
+
+  function circle_fill_function(d, button_type){
+    var inst_color = 'white';
+    if (d === cgm.params.matrix[button_type]){
+      inst_color = 'red';
+    }
+    return inst_color;
+  }
+
+  section_groups
+    .append('text')
+    .attr('transform', 'translate(25,0)')
+    .attr('font-size','16px')
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('cursor', 'default')
+    .text(function(d){
+      return capitalizeFirstLetter(d);
+    });
+
+
+  function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+
+};
+
+/***/ }),
+
+/***/ "./src/control_panel/make_menu_update_button.js":
+/*!******************************************************!*\
+  !*** ./src/control_panel/make_menu_update_button.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_menu_update_button(cgm, button_info, update_callback){
+
+
+  var update_button_width = cgm.params.viz.update_button_width;
+
+  // var menu_width = button_info.menu_width;
+  // var button_x = menu_width/2 + button_info.default_x_offset;
+
+  var default_opacity = 0.35;
+  var high_opacity = 0.5;
+
+  var update_button = button_info.selection
+    .append('g')
+    .classed('update_button', true)
+    .attr('transform', 'translate('+ button_info.update_x +', ' + button_info.update_y + ')')
+    .on('click', update_callback)
+    .on('mouseover', function(){
+      d3.select(this)
+        .select('rect')
+        .attr('opacity', high_opacity);
+    })
+    .on('mouseout', function(){
+      d3.select(this)
+        .select('rect')
+        .attr('opacity', default_opacity);
+    });
+
+  update_button
+    .append('rect')
+    .attr('width', update_button_width + 'px')
+    .attr('height', '35px')
+    .attr('fill', 'blue')
+    .attr('transform', 'translate(0, -23)')
+    .attr('stroke', '#A3A3A3')
+    .attr('stroke-width', '1px')
+    .attr('opacity', default_opacity);
+
+  update_button
+    .append('text')
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-size','18px')
+    .attr('font-weight', 500)
+    .attr('cursor', 'default')
+    .text('Update')
+    .attr('transform', 'translate(18, 0)');
+
+};
+
+/***/ }),
+
+/***/ "./src/control_panel/make_tree_menu.js":
+/*!*********************************************!*\
+  !*** ./src/control_panel/make_tree_menu.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_menu_button_section = __webpack_require__(/*! ./make_menu_button_section */ "./src/control_panel/make_menu_button_section.js");
+var make_menu_update_button = __webpack_require__(/*! ./make_menu_update_button */ "./src/control_panel/make_menu_update_button.js");
+var position_tree_menu = __webpack_require__(/*! ./position_tree_menu */ "./src/control_panel/position_tree_menu.js");
+var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
+// var recluster = require('../recluster/recluster');
+
+module.exports = function make_tree_menu(cgm){
+
+  var params = cgm.params;
+  var menu_width = cgm.params.viz.tree_menu_width;
+  var menu_height = cgm.params.viz.tree_menu_height;
+  var x_offset = cgm.params.viz.tree_menu_x_offset;
+
+  // make tree menu (state is in cgm, remade each time)
+  /////////////////////////////////////////////////////
+  var tree_menu = d3.select(params.root+' .viz_svg')
+    .append('g')
+    .attr('cursor', 'default')
+    .classed('tree_menu', true)
+    .classed('svg_menus', true);
+
+  position_tree_menu(cgm);
+
+  tree_menu
+    .attr('opacity', 0.0)
+    .transition()
+    .attr('opacity', 1.0);
+
+  var menu_opacity = 0.95;
+
+  tree_menu
+    .append('rect')
+    .classed('tree_menu_background', true)
+    .attr('width', function(){
+      var inst_width = menu_width;
+      return inst_width;
+    })
+    .attr('height', menu_height)
+    .attr('fill', 'white')
+    .attr('stroke', '#A3A3A3')
+    .attr('stroke-width', '3px')
+    .attr('opacity', menu_opacity);
+
+  // Clustering Parameters
+  tree_menu
+    .append('text')
+    .classed('tree_menu_title', true)
+    .attr('transform', 'translate(' + x_offset + ',30)')
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-size','18px')
+    .attr('font-weight', 800)
+    .attr('cursor', 'default')
+    .text('Clustering Parameters');
+
+  var button_info = {};
+  button_info.cgm = cgm;
+  button_info.selection = tree_menu;
+  button_info.menu_width = menu_width;
+  button_info.distance_metric = cgm.params.matrix.distance_metric;
+  button_info.linkage_type = cgm.params.matrix.linkage_type;
+  button_info.default_x_offset = x_offset;
+
+  // distance
+  /////////////////
+  var distance_names = ['cosine', 'euclidean', 'correlation'];
+  button_info.name = 'Distance Metric';
+  button_info.y_offset = 65;
+  button_info.x_offset = 0;
+  make_menu_button_section('tree_menu', 'distance_metric', button_info, distance_names);
+
+  // linkage
+  /////////////////
+  var linkage_names = ['average', 'single', 'complete'];
+  button_info.name = 'Linkage Type';
+  button_info.y_offset = 65;
+  button_info.x_offset = menu_width/2;
+  make_menu_button_section('tree_menu', 'linkage_type', button_info, linkage_names);
+
+  // // Z-score
+  // /////////////////
+  // var zscore_names = ['row', 'col'];
+  // button_info.name = 'Linkage Type';
+  // button_info.y_offset = 200;
+  // button_info.x_offset = 0;
+  // button_section(button_info, linkage_names, distance_click)
+
+  function update_callback(){
+    toggle_menu(cgm, 'tree_menu', 'close');
+
+    // transfer parameters to cgm object when update is pressed
+    cgm.params.matrix.distance_metric = button_info.distance_metric;
+    cgm.params.matrix.linkage_type = button_info.linkage_type;
+    recluster(cgm, button_info.distance_metric, button_info.linkage_type);
+  }
+
+  button_info.update_x = menu_width/2 + button_info.default_x_offset;
+  button_info.update_y = 205;
+  make_menu_update_button(cgm, button_info, update_callback);
+
+};
+
+/***/ }),
+
+/***/ "./src/control_panel/position_tree_icon.js":
+/*!*************************************************!*\
+  !*** ./src/control_panel/position_tree_icon.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function position_tree_icon(cgm){
+
+  var viz = cgm.params.viz;
+  var tmp_left;
+  var tmp_top;
+
+  // keep slider near clustergram
+  var max_room = 100; // viz.svg_dim.width - 3 * viz.uni_margin;
+
+  // position close to row dendrogram trapezoids
+  tmp_left = 800; // viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row;
+
+  // if (tmp_left > max_room){
+  //   tmp_left = max_room;
+  // }
+
+  // tmp_top =  viz.clust.margin.top + 3 * viz.uni_margin - 50;
+  tmp_top =  100; // viz.clust.margin.top + 3 * viz.uni_margin + 90;
+
+  // reposition tree icon
+  d3.select(cgm.params.root + ' .' + 'tree_icon')
+    .attr('transform', function() {
+      var inst_translation;
+      tmp_top = tmp_top - 75;
+      inst_translation = 'translate(' + tmp_left + ',' + tmp_top + ')';
+      return inst_translation;
+    })
+    .style('opacity', 1);
+};
+
+/***/ }),
+
+/***/ "./src/control_panel/position_tree_menu.js":
+/*!*************************************************!*\
+  !*** ./src/control_panel/position_tree_menu.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function position_tree_menu(cgm){
+
+  var params = cgm.params;
+
+  if (d3.select(params.root+' .tree_menu').empty() === false){
+
+    var menu_width = cgm.params.viz.tree_menu_width;
+
+    d3.select(params.root+' .tree_menu')
+      .attr('transform', function(){
+        var shift = {};
+        shift.x = params.viz.clust.dim.width + params.viz.clust.margin.left - menu_width + 30;
+        shift.y = params.viz.clust.margin.top + 15;
+        return 'translate(' + shift.x + ', ' + shift.y + ')';
+      });
+
+  }
+};
+
+/***/ }),
+
+/***/ "./src/control_panel/toggle_menu.js":
+/*!******************************************!*\
+  !*** ./src/control_panel/toggle_menu.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+module.exports = function toggle_menu(cgm, menu_type, toggle, make_menu=null){
+
+  var params = cgm.params;
+
+  if (toggle === 'open'){
+
+    d3.selectAll(cgm.params.root + ' .svg_menus')
+      .remove();
+
+    if (make_menu != null){
+      make_menu(cgm);
+    }
+
+
+  } else if (toggle === 'close'){
+
+    d3.select(params.root + ' .' + menu_type)
+      .transition(700)
+      .attr('opacity', 0);
+
+    setTimeout(function(){
+      d3.select(params.root + ' .' + menu_type)
+        .remove();
+    }, 700);
+  }
 
 };
 

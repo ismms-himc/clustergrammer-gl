@@ -1,6 +1,7 @@
 var run_reorder = require('./../reorders/run_reorder');
 // var img = require('./../../img/graham_cracker_144.png');
 var build_reorder_cat_titles = require('../cats/build_reorder_cat_titles');
+var build_tree_icon = require('./build_tree_icon');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -253,5 +254,6 @@ module.exports = function build_control_panel(regl, cgm){
   */
 
   build_reorder_cat_titles(regl, cgm);
+  build_tree_icon(cgm);
 
 };

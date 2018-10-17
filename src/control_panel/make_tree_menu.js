@@ -90,7 +90,9 @@ module.exports = function make_tree_menu(cgm){
     // transfer parameters to cgm object when update is pressed
     cgm.params.matrix.distance_metric = button_info.distance_metric;
     cgm.params.matrix.linkage_type = button_info.linkage_type;
-    recluster(cgm, button_info.distance_metric, button_info.linkage_type);
+
+    // recluster(cgm, button_info.distance_metric, button_info.linkage_type);
+
   }
 
   button_info.update_x = menu_width/2 + button_info.default_x_offset;

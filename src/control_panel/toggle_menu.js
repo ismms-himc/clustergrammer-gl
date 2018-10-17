@@ -8,7 +8,7 @@ module.exports = function toggle_menu(cgm, menu_type, toggle, make_menu=null){
     d3.selectAll(cgm.params.root + ' .svg_menus')
       .remove();
 
-    if (make_menu != null){
+    if (make_menu !== null){
       make_menu(cgm);
     }
 

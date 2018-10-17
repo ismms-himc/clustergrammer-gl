@@ -1,4 +1,4 @@
-var d3_tip_custom = require('./d3_tip_custom');
+// var d3_tip_custom = require('./d3_tip_custom');
 var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = require('./toggle_menu');
 var make_tree_menu = require('./make_tree_menu');
@@ -24,7 +24,6 @@ module.exports = function build_tree_icon(cgm){
   //     return 'Clustering Menu';
   //   });
 
-  console.log('here')
   // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
       .append('g')
@@ -96,8 +95,8 @@ module.exports = function build_tree_icon(cgm){
       var final_y = slider_length;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y + ' L'
-      + final_x + ','+ final_y +' Z';
+      mid_x + ', ' + mid_y +
+      ' L' + final_x + ','+ final_y +' Z';
 
       return output_string;
     })
@@ -122,8 +121,8 @@ module.exports = function build_tree_icon(cgm){
       var final_y = branch_height/1.8;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y + ' L'
-      + final_x + ','+ final_y +' Z';
+      mid_x + ', ' + mid_y +
+      ' L' + final_x + ','+ final_y +' Z';
 
       return output_string;
     })
@@ -147,8 +146,8 @@ module.exports = function build_tree_icon(cgm){
       var final_y = branch_height/1.8;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y + ' L'
-      + final_x + ','+ final_y +' Z';
+      mid_x + ', ' + mid_y +
+      ' L' + final_x + ','+ final_y +' Z';
 
       return output_string;
     })

@@ -60,8 +60,8 @@ module.exports = function make_menu_button_section(menu_type, button_type, butto
       click_function(this, d, button_info);
     });
 
- function click_function(button_selection, d, button_info){
-    button_info[button_type] = d;
+ function click_function(button_selection, d, inst_button_info){
+    inst_button_info[button_type] = d;
     d3.select(button_selection)
       .select('circle')
       .attr('fill', 'red');
@@ -78,9 +78,9 @@ module.exports = function make_menu_button_section(menu_type, button_type, butto
       return circle_fill_function(d, button_type);
     });
 
-  function circle_fill_function(d, button_type){
+  function circle_fill_function(d, inst_button_type){
     var inst_color = 'white';
-    if (d === cgm.params.matrix[button_type]){
+    if (d === cgm.params.matrix[inst_button_type]){
       inst_color = 'red';
     }
     return inst_color;

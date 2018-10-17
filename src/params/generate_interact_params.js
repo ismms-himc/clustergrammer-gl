@@ -1,5 +1,7 @@
 module.exports = function generate_interact_params(params){
 
+  console.log('generate_interact_params')
+
   params.interact = {};
   params.interact.total = 0;
   params.interact.still_interacting = false;

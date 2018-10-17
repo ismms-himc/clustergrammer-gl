@@ -40259,6 +40259,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
   get_mouseover_type(params);
 
   var axis_indices = {};
+
   if (params.tooltip.in_bounds_tooltip){
 
     var axis_index;
@@ -40330,7 +40331,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
       });
     }
 
-
   }
 
 };
@@ -40373,7 +40373,7 @@ module.exports = function get_mouseover_type(params){
   var cat_index;
 
   params.tooltip.in_bounds_tooltip = false;
-  params.tooltip.tooltip_type = null;
+  params.tooltip.tooltip_type = 'out-of-bounds';
 
   if (inst_pix.x > edim.x.heat_min &&
       inst_pix.x < edim.x.dendro_start &&
@@ -42776,6 +42776,8 @@ module.exports = function generate_dendro_params(regl, params){
 /***/ (function(module, exports) {
 
 module.exports = function generate_interact_params(params){
+
+  console.log('generate_interact_params')
 
   params.interact = {};
   params.interact.total = 0;

@@ -53,6 +53,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
   get_mouseover_type(params);
 
   var axis_indices = {};
+
   if (params.tooltip.in_bounds_tooltip){
 
     var axis_index;
@@ -123,7 +124,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
         }
       });
     }
-
 
   }
 

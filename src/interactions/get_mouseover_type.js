@@ -27,7 +27,7 @@ module.exports = function get_mouseover_type(params){
   var cat_index;
 
   params.tooltip.in_bounds_tooltip = false;
-  params.tooltip.tooltip_type = null;
+  params.tooltip.tooltip_type = 'out-of-bounds';
 
   if (inst_pix.x > edim.x.heat_min &&
       inst_pix.x < edim.x.dendro_start &&

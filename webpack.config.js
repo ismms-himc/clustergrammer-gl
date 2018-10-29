@@ -20,7 +20,7 @@ module.exports = [
       // 'jQuery': 'jquery',
       // 'lodash': '_',
       // 'underscore': '_',
-      'd3': 'd3'
+      // 'd3': 'd3'
     },
     module: {
         rules: [

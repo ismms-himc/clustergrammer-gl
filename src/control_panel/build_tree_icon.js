@@ -1,4 +1,4 @@
-// var d3_tip_custom = require('./d3_tip_custom');
+var d3_tip_custom = require('./d3_tip_custom');
 var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = require('./toggle_menu');
 var make_tree_menu = require('./make_tree_menu');
@@ -13,16 +13,20 @@ module.exports = function build_tree_icon(cgm){
   // // d3-tooltip
   // var tree_icon_tip = d3_tip_custom()
   //   .attr('class', function(){
-  //     var root_tip_selector = 'something'; // params.viz.root_tips.replace('.','');
-  //     var class_string = root_tip_selector + '_tree_icon_tip d3-tip';
+  //     // var root_tip_selector =  // params.viz.root_tips.replace('.','');
+  //     // var class_string = root_tip_selector + '_tree_icon_tip d3-tip';
+  //     class_string = 'custom-d3-tip';
   //     return class_string;
   //   })
   //   .direction('w')
   //   .style('display', 'none')
   //   .offset([-10,-5])
   //   .html(function(){
+  //     console.log('returning html');
   //     return 'Clustering Menu';
   //   });
+
+  // cgm.tree_icon_tip = tree_icon_tip;
 
   // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
@@ -33,7 +37,8 @@ module.exports = function build_tree_icon(cgm){
         // only if no menu is showing
         if (d3.select(params.root+' .tree_menu').empty()){
 
-          // d3.selectAll( params.viz.root_tips + '_tree_icon_tip')
+          // // d3.selectAll( params.viz.root_tips + '_tree_icon_tip')
+          // d3.selectAll('.custom-d3-tip')
           //   .style('opacity', 1)
           //   .style('display', 'block');
 

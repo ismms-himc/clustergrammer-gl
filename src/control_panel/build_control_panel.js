@@ -2,9 +2,25 @@ var run_reorder = require('./../reorders/run_reorder');
 // var img = require('./../../img/graham_cracker_144.png');
 var build_reorder_cat_titles = require('../cats/build_reorder_cat_titles');
 var build_tree_icon = require('./build_tree_icon');
-// var tip = require('d3-tip');
+// var d3v5 = require('d3');
+var tip = require('d3-tip');
+// d3v5.tip = require("d3-tip");
 
 module.exports = function build_control_panel(regl, cgm){
+
+  // console.log(d3);
+  // console.log(d3v5);
+
+  // debugger;
+  // var tooltip = tip.default().html(d => d.value);
+  var tooltip = tip.default()
+                   .direction('se')
+                   .html(function(){
+                      return 'Tool-tip';
+                    });
+
+  // vis.call(tooltip)
+  cgm.tooltip = tooltip;
 
   // Add control panel to the top
   ///////////////////////////////////////
@@ -34,10 +50,12 @@ module.exports = function build_control_panel(regl, cgm){
     .style('width',inst_width+'px')
     .append('svg')
     .style('height',inst_height + 'px')
-    .style('width',inst_width+'px');
+    .style('width',inst_width+'px')
 
-  // /* Initialize tooltip */
-  // tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d; });
+
+  // debugger;
+  /* Initialize tooltip */
+  // tip = d3v5.tip().attr('class', 'd3-tip').html(function(d) { return d; });
 
   control_svg
     .append('rect')
@@ -45,7 +63,15 @@ module.exports = function build_control_panel(regl, cgm){
     .style('width',inst_width+'px')
     .style('position', 'absolute')
     .style('fill', control_panel_color)
-    .attr('class', 'control-panel-background');
+    .attr('class', 'control-panel-background')
+    .call(tooltip)
+    .on('mouseover', function(d){
+      // tooltip.show();
+      tooltip.show('tooltip text!', this);
+      console.log('mouseover control panel')
+    })
+    .on('mouseout', tooltip.hide)
+
 
   // control panel border
   var border_height = 1;

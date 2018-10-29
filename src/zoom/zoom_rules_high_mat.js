@@ -26,7 +26,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // console.log('clicking')
 
     if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
-      console.log('double click')
+      console.log('double click', params.interact.mouseover.row.name, params.interact.mouseover.col.name);
     } else {
       params.animation.last_click = params.animation.time;
     }

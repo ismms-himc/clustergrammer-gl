@@ -39837,17 +39837,12 @@ var get_mouseover_type = __webpack_require__(/*! ./get_mouseover_type */ "./src/
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
+  // console.log('find_mouseover_element')
+
   /*
 
-  Need to use
-
-    params.canvas_pos.x_arr.length
-      and
-    params.canvas_pos.y_arr.length
-
-  to identify where the user is mousing over
-
-  Also need to take into consideration zooming/panning
+    Need to improve behavior for categories and dendrogram. This info will be
+    used to reorder on double click.
 
   */
 
@@ -43916,7 +43911,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     // console.log('clicking')
 
     if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
-      console.log('double click')
+      console.log('double click', params.interact.mouseover.row.name, params.interact.mouseover.col.name);
     } else {
       params.animation.last_click = params.animation.time;
     }

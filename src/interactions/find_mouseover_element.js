@@ -2,17 +2,12 @@ var get_mouseover_type = require('./get_mouseover_type');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
+  // console.log('find_mouseover_element')
+
   /*
 
-  Need to use
-
-    params.canvas_pos.x_arr.length
-      and
-    params.canvas_pos.y_arr.length
-
-  to identify where the user is mousing over
-
-  Also need to take into consideration zooming/panning
+    Need to improve behavior for categories and dendrogram. This info will be
+    used to reorder on double click.
 
   */
 

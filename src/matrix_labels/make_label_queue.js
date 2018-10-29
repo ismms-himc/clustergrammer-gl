@@ -4,6 +4,8 @@ module.exports = function make_inst_queue(params){
   params.labels.queue.low = {}
   params.labels.queue.high = {}
 
+  params.labels.max_label_queue = 1000;
+
   var inst_queue;
 
   _.each(['row', 'col'], function(inst_axis){

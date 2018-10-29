@@ -39292,7 +39292,7 @@ module.exports = function draw_background_calculations(regl, params){
 
     // low priority queue
     if (params.labels.queue.low[inst_axis].length > 0 &&
-      params.labels['num_' + inst_axis] < 1000){
+      params.labels['num_' + inst_axis] < params.labels.max_label_queue){
 
       var inst_name = params.labels.queue.low[inst_axis][0];
 
@@ -41466,6 +41466,8 @@ module.exports = function make_inst_queue(params){
   params.labels.queue = {}
   params.labels.queue.low = {}
   params.labels.queue.high = {}
+
+  params.labels.max_label_queue = 1000;
 
   var inst_queue;
 

@@ -39291,7 +39291,8 @@ module.exports = function draw_background_calculations(regl, params){
   _.each(['row', 'col'], function(inst_axis){
 
     // low priority queue
-    if (params.labels.queue.low[inst_axis].length > 0){
+    if (params.labels.queue.low[inst_axis].length > 0 &&
+      params.labels['num_' + inst_axis] < 1000){
 
       var inst_name = params.labels.queue.low[inst_axis][0];
 
@@ -39300,9 +39301,6 @@ module.exports = function draw_background_calculations(regl, params){
       params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
       drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
-
-      // console.log(params.labels.queue.low[inst_axis].length)
-      // params.labels.draw_labels = true;
 
     }
 
@@ -41472,6 +41470,8 @@ module.exports = function make_inst_queue(params){
   var inst_queue;
 
   _.each(['row', 'col'], function(inst_axis){
+
+    //
 
     // the high priority queue is empty initially
     params.labels.queue.high[inst_axis] = [];

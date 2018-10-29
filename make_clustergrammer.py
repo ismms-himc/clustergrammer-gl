@@ -15,7 +15,7 @@ import pandas as pd
 
 # generate random matrix
 num_rows = 100
-num_cols = 1000
+num_cols = 3000
 np.random.seed(seed=100)
 mat = np.random.rand(num_rows, num_cols)
 
@@ -57,6 +57,6 @@ net.cluster(dist_type='cos',views=['N_row_sum', 'N_row_var'] , dendro=True,
                sim_mat=False, filter_sim=0.1, calc_cat_pval=False, enrichrgram=True)
 
 # write jsons for front-end visualizations
-net.write_json_to_file('viz', 'data/big_data/custom.json', 'indent')
+net.write_json_to_file('viz', 'data/big_data/custom.json', 'no-indent')
 # net.write_json_to_file('sim_row', 'json/mult_view_sim_row.json', 'no-indent')
 # net.write_json_to_file('sim_col', 'json/mult_view_sim_col.json', 'no-indent')

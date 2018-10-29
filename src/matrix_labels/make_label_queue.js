@@ -8,6 +8,8 @@ module.exports = function make_inst_queue(params){
 
   _.each(['row', 'col'], function(inst_axis){
 
+    //
+
     // the high priority queue is empty initially
     params.labels.queue.high[inst_axis] = [];
 

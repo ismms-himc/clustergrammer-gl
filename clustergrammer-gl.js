@@ -37817,6 +37817,7 @@ var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/re
 // var img = require('./../../img/graham_cracker_144.png');
 var build_reorder_cat_titles = __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js");
 var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js");
+// var tip = require('d3-tip');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -37849,6 +37850,9 @@ module.exports = function build_control_panel(regl, cgm){
     .append('svg')
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
+
+  // /* Initialize tooltip */
+  // tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d; });
 
   control_svg
     .append('rect')
@@ -40661,9 +40665,9 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 
 function clustergrammer_gl(args){
 
-  // console.log('################################');
-  // console.log('clustergrammer-gl version 0.6.3');
-  // console.log('################################');
+  console.log('################################');
+  console.log('clustergrammer-gl version 0.6.3');
+  console.log('################################');
 
   // decompress if necessary
   // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript

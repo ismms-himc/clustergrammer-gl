@@ -11,9 +11,9 @@ var pako = require('pako');
 
 function clustergrammer_gl(args){
 
-  // console.log('################################');
-  // console.log('clustergrammer-gl version 0.6.3');
-  // console.log('################################');
+  console.log('################################');
+  console.log('clustergrammer-gl version 0.6.3');
+  console.log('################################');
 
   // decompress if necessary
   // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript

@@ -24,9 +24,11 @@
   <script>
 
 
-    d3.select('body').append('div').attr('id','something');
+    var inst_div = document.createElement('div')
+    inst_div.setAttribute('id', 'something')
+    document.body.appendChild(inst_div);
 
-    var inst_container = document.getElementById('something')
+    var inst_container = document.getElementById('something');
 
     // the control panel is 135 pixels high
     var inst_height = 1035;
@@ -43,9 +45,9 @@
       .style('margin-left', x_offset + 'px')
       .style('margin-top', y_offset + 'px');
 
-    // var filename = 'data/mult_view.json';
+    var filename = 'data/mult_view.json';
     // var filename = 'data/big_data/compressed.json';
-    var filename = 'data/big_data/custom.json';
+    // var filename = 'data/big_data/custom.json';
     // var filename = 'data/big_data/mnist.json';
     // var filename = 'data/big_data/cytof_25k.json';
     // var filename = 'data/big_data/ccle_1000x200.json';

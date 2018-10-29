@@ -2,6 +2,7 @@ var run_reorder = require('./../reorders/run_reorder');
 // var img = require('./../../img/graham_cracker_144.png');
 var build_reorder_cat_titles = require('../cats/build_reorder_cat_titles');
 var build_tree_icon = require('./build_tree_icon');
+// var tip = require('d3-tip');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -34,6 +35,9 @@ module.exports = function build_control_panel(regl, cgm){
     .append('svg')
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
+
+  // /* Initialize tooltip */
+  // tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d; });
 
   control_svg
     .append('rect')

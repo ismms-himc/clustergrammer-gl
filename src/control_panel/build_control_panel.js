@@ -14,10 +14,13 @@ module.exports = function build_control_panel(regl, cgm){
   // debugger;
   // var tooltip = tip.default().html(d => d.value);
   var tooltip = tip.default()
+                   .attr('class', 'd3-tip')
                    .direction('se')
                    .html(function(){
                       return 'Tool-tip';
                     });
+
+
 
   // vis.call(tooltip)
   cgm.tooltip = tooltip;
@@ -72,6 +75,9 @@ module.exports = function build_control_panel(regl, cgm){
     })
     .on('mouseout', tooltip.hide)
 
+  // setting fontsize
+  d3.select('.d3-tip')
+    .style('font-size', '30px');
 
   // control panel border
   var border_height = 1;

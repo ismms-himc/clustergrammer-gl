@@ -14,7 +14,7 @@ module.exports = function build_control_panel(regl, cgm){
   // debugger;
   // var tooltip = tip.default().html(d => d.value);
   var tooltip = tip.default()
-                   .attr('class', 'd3-tip')
+                   .attr('id', 'd3-tip')
                    .direction('sw')
                    .html(function(){
                       return 'Tool-tip';
@@ -71,20 +71,30 @@ module.exports = function build_control_panel(regl, cgm){
     .on('mouseover', function(d){
 
       tooltip.show('tooltip text!', this);
-      var inst_bbox = d3.selectAll('.d3-tip')[0].node().getBBox();
-      console.log(inst_bbox)
 
-      d3.select(this)
-        .attr('transform', function(){
-          var x_trans = inst_bbox.width;
-          return 'translate(' + x_trans + ', 0)';
-        });
+      console.log('empty', d3.select('#d3-tip').empty())
+
+      // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+      var d3_tip_width = parseFloat(d3.select('#d3-tip')
+                                   .style('width')
+                                   .replace('px',''));
+      console.log(d3_tip_width)
+
+      // d3.select(this)
+      //   .attr('transform', function(){
+      //     var x_trans = d3_tip_width;
+      //     return 'translate(' + x_trans + ', 0)';
+      //   });
+
+      d3.select('#d3-tip')
+        .style('margin-left', d3_tip_width + 'px');
+
 
     })
     .on('mouseout', tooltip.hide)
 
   // setting fontsize
-  d3.select('.d3-tip')
+  d3.select('#d3-tip')
     .style('line-height', 1)
     .style('font-weight', 'bold')
     .style('padding', '12px')

@@ -40300,7 +40300,7 @@ module.exports = function build_control_panel(regl, cgm){
   // var tooltip = tip.default().html(d => d.value);
   var tooltip = tip.default()
                    .attr('class', 'd3-tip')
-                   .direction('se')
+                   .direction('sw')
                    .html(function(){
                       return 'Tool-tip';
                     });
@@ -40354,15 +40354,30 @@ module.exports = function build_control_panel(regl, cgm){
     .attr('class', 'control-panel-background')
     .call(tooltip)
     .on('mouseover', function(d){
-      // tooltip.show();
+
       tooltip.show('tooltip text!', this);
-      console.log('mouseover control panel')
+      var inst_bbox = d3.selectAll('.d3-tip')[0].node().getBBox();
+      console.log(inst_bbox)
+
+      d3.select(this)
+        .attr('transform', function(){
+          var x_trans = inst_bbox.width;
+          return 'translate(' + x_trans + ', 0)';
+        });
+
     })
     .on('mouseout', tooltip.hide)
 
   // setting fontsize
   d3.select('.d3-tip')
-    .style('font-size', '30px');
+    .style('line-height', 1)
+    .style('font-weight', 'bold')
+    .style('padding', '12px')
+    .style('background', 'rgba(0, 0, 0, 0.8)')
+    .style('color', '#fff')
+    .style('border-radius', '2px')
+    .style('pointer-events', 'none')
+    .style('font-size', '12px');
 
   // control panel border
   var border_height = 1;

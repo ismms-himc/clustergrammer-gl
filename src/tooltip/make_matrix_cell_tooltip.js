@@ -64,11 +64,11 @@ module.exports = function make_matrix_cell_tooltip(params){
       .append('g')
       .style('position', 'absolute')
       .style('top', function(){
-        var tmp_offset = pos_y - 5; // 20
+        var tmp_offset = pos_y - 0; // 20
         return tmp_offset + 'px'
       })
       .style('left', function(){
-        var tmp_offset = pos_x - 5; // 20
+        var tmp_offset = pos_x - 0; // 20
         return tmp_offset + 'px'
       })
       .classed('group-svg-tooltip', true);

@@ -43593,7 +43593,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.6.3
+  clustergrammer-gl version 0.6.4
 
  */
 

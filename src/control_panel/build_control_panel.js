@@ -55,7 +55,6 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
 
-
   // debugger;
   /* Initialize tooltip */
   // tip = d3v5.tip().attr('class', 'd3-tip').html(function(d) { return d; });
@@ -67,31 +66,67 @@ module.exports = function build_control_panel(regl, cgm){
     .style('position', 'absolute')
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background')
-    .call(tooltip)
-    .on('mouseover', function(d){
 
-      tooltip.show('tooltip text!', this);
+    // attempt to add mouseover to rect
+    //////////////////////////////////////
+    // .call(tooltip)
+    // .on('mouseover', function(d){
 
-      console.log('empty', d3.select('#d3-tip').empty())
+    //   // tooltip.show('tooltip text!', this);
+    //   tooltip.show('tooltip', this);
 
-      // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-      var d3_tip_width = parseFloat(d3.select('#d3-tip')
-                                   .style('width')
-                                   .replace('px',''));
-      console.log(d3_tip_width)
+    //   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+    //   var d3_tip_width = parseFloat(d3.select('#d3-tip')
+    //                                .style('width')
+    //                                .replace('px',''));
 
-      // d3.select(this)
-      //   .attr('transform', function(){
-      //     var x_trans = d3_tip_width;
-      //     return 'translate(' + x_trans + ', 0)';
-      //   });
+    //   d3.select('#d3-tip')
+    //     .style('margin-left', d3_tip_width + 'px');
 
-      d3.select('#d3-tip')
-        .style('margin-left', d3_tip_width + 'px');
+    //     // .style('margin-top', function(){
+    //     //   var x_offset = cgm.params.zoom_data.y.cursor_position;
+    //     //   return x_offset + 'px'
+    //     // })
+    //     // .style('margin-left', function(){
+    //     //   var x_offset = cgm.params.zoom_data.x.cursor_position + d3_tip_width;
+    //     //   return x_offset + 'px'
+    //     // });
 
+    // })
+    // .on('mouseout', tooltip.hide);
 
-    })
-    .on('mouseout', tooltip.hide)
+  // attempt to add mouseover to div
+  //////////////////////////////////////
+  // d3.select('.canvas-container')
+  //   .call(tooltip)
+  //   .on('mouseover', function(d){
+
+  //     console.log('asdfaslkjflakdsmfalsdkfjaslkmdlkfja')
+  //     tooltip.show('tooltip', this);
+
+  //     // // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+  //     // var d3_tip_width = parseFloat(d3.select('#d3-tip')
+  //     //                              .style('width')
+  //     //                              .replace('px',''));
+
+  //     // d3.select('#d3-tip')
+  //     //   .style('margin-left', d3_tip_width + 'px');
+
+  //     //   // .style('margin-top', function(){
+  //     //   //   var x_offset = cgm.params.zoom_data.y.cursor_position;
+  //     //   //   return x_offset + 'px'
+  //     //   // })
+  //     //   // .style('margin-left', function(){
+  //     //   //   var x_offset = cgm.params.zoom_data.x.cursor_position + d3_tip_width;
+  //     //   //   return x_offset + 'px'
+  //     //   // });
+
+  //   })
+  //   .on('mouseout', tooltip.hide);
+
+  // var inst_this = d3.select(control_container).select('rect')
+  // tooltip.show('tooltip', this)
+
 
   // setting fontsize
   d3.select('#d3-tip')

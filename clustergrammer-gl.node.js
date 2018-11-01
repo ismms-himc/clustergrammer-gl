@@ -43605,7 +43605,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.6.3');
+  console.log('clustergrammer-gl version 0.6.4');
   console.log('################################');
 
   // decompress if necessary

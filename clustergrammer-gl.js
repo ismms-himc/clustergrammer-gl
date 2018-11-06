@@ -40290,6 +40290,7 @@ var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/contro
 // var d3v5 = require('d3');
 var tip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js");
 // d3v5.tip = require("d3-tip");
+var initialize_d3_tip = __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js");
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -40361,24 +40362,7 @@ module.exports = function build_control_panel(regl, cgm){
     // .on('mouseout', tooltip.hide);
 
 
-  // artifically initialize tooltip
-  /////////////////////////////////////
-  var control_panel_bkg = d3.select(cgm.params.root + ' .control-panel-background').node();
-  cgm.control_panel_bkg = control_panel_bkg;
-
-  // tooltip.show('tooltip', cgm.control_panel_bkg);
-  tooltip.show('tooltip', cgm.control_panel_bkg);
-
-  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-  var d3_tip_width = parseFloat(d3.select('#d3-tip')
-                               .style('width')
-                               .replace('px',''));
-
-  d3.select('#d3-tip')
-    .style('margin-left', d3_tip_width + 'px');
-
-  cgm.tooltip.hide();
-
+  initialize_d3_tip(cgm);
 
   // setting fontsize
   d3.select('#d3-tip')
@@ -46062,6 +46046,38 @@ module.exports = function make_spillover_args(regl, inst_depth,
   };
 
   return args;
+
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/initialize_d3_tip.js":
+/*!******************************************!*\
+  !*** ./src/tooltip/initialize_d3_tip.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function initialize_d3_tip(cgm){
+
+  // artifically initialize tooltip
+  /////////////////////////////////////
+  var inst_selector = cgm.params.root + ' .control-panel-background';
+  var control_panel_bkg = d3.select(inst_selector).node();
+  cgm.control_panel_bkg = control_panel_bkg;
+
+  // tooltip.show('tooltip', cgm.control_panel_bkg);
+  cgm.tooltip.show('tooltip', cgm.control_panel_bkg);
+
+  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+  var d3_tip_width = parseFloat(d3.select('#d3-tip')
+                               .style('width')
+                               .replace('px',''));
+
+  d3.select('#d3-tip')
+    .style('margin-left', d3_tip_width + 'px');
+
+  cgm.tooltip.hide();
 
 };
 

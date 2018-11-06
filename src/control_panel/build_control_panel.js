@@ -5,6 +5,7 @@ var build_tree_icon = require('./build_tree_icon');
 // var d3v5 = require('d3');
 var tip = require('d3-tip');
 // d3v5.tip = require("d3-tip");
+var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -76,24 +77,7 @@ module.exports = function build_control_panel(regl, cgm){
     // .on('mouseout', tooltip.hide);
 
 
-  // artifically initialize tooltip
-  /////////////////////////////////////
-  var control_panel_bkg = d3.select(cgm.params.root + ' .control-panel-background').node();
-  cgm.control_panel_bkg = control_panel_bkg;
-
-  // tooltip.show('tooltip', cgm.control_panel_bkg);
-  tooltip.show('tooltip', cgm.control_panel_bkg);
-
-  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-  var d3_tip_width = parseFloat(d3.select('#d3-tip')
-                               .style('width')
-                               .replace('px',''));
-
-  d3.select('#d3-tip')
-    .style('margin-left', d3_tip_width + 'px');
-
-  cgm.tooltip.hide();
-
+  initialize_d3_tip(cgm);
 
   // setting fontsize
   d3.select('#d3-tip')

@@ -1,5 +1,5 @@
 var initialize_params = require('./../params/initialize_params');
-_ = require('underscore');
+var _ = require('underscore');
 var reset_cameras = require('./../cameras/reset_cameras');
 var start_animation = require('./start_animation');
 var end_animation = require('./end_animation');

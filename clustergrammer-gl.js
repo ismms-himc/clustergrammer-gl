@@ -42241,7 +42241,6 @@ module.exports = function draw_commands(regl, params){
   // clean tooltip
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
 
-    console.log('should draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
     draw_tooltip_components(regl, params);
 
     show_d3_tip(params);
@@ -42592,7 +42591,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
-_ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
@@ -46328,12 +46327,27 @@ module.exports = function show_d3_tip(params){
   params.tooltip_fun.show('tooltip');
 
   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+
+
   var d3_tip_width = parseFloat(d3.select('#d3-tip')
                                .style('width')
                                .replace('px',''));
 
+var d3_tip_height = parseFloat(d3.select('#d3-tip')
+                               .style('height')
+                               .replace('px',''));
+
   d3.select('#d3-tip')
-    .style('margin-left', d3_tip_width + 'px');
+    .style('margin-left', function(){
+      var total_x_offset = params.zoom_data.x.cursor_position;
+      return total_x_offset + 'px'
+    })
+    .style('margin-top', function(){
+      var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
+      return total_y_offset + 'px'
+    });
+
+
 }
 
 /***/ }),

@@ -23,7 +23,6 @@ module.exports = function draw_commands(regl, params){
   // clean tooltip
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
 
-    console.log('should draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
     draw_tooltip_components(regl, params);
 
     show_d3_tip(params);

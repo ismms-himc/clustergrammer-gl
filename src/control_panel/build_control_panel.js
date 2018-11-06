@@ -16,7 +16,7 @@ module.exports = function build_control_panel(regl, cgm){
   // debugger;
   // var tooltip = tip.default().html(d => d.value);
 
-  cgm.params.tooltip_id = '#d3-tip-custom';
+  cgm.params.tooltip_id = '#d3-tip_' + cgm.params.root.replace('#','');
 
   var tooltip = tip.default()
                    .attr('id', cgm.params.tooltip_id.replace('#',''))

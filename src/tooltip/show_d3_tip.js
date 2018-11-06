@@ -9,7 +9,7 @@ module.exports = function show_d3_tip(params){
 
     params.tooltip_fun.show('tooltip');
 
-    d3.select('#d3-tip-custom')
+    d3.select(params.tooltip_id)
       .html(function(){
         var full_string = mouseover.row.name + ' and ' + mouseover.col.name + ' <br> ' +
                           'value: ' + mouseover.value.toFixed(3);
@@ -17,13 +17,13 @@ module.exports = function show_d3_tip(params){
         return full_string;
       });
 
-    console.log(mouseover.row.name, mouseover.col.name)
+    // console.log(mouseover.row.name, mouseover.col.name)
 
-    var d3_tip_width = parseFloat(d3.select('#d3-tip-custom')
+    var d3_tip_width = parseFloat(d3.select(params.tooltip_id)
                                  .style('width')
                                  .replace('px',''));
 
-    var d3_tip_height = parseFloat(d3.select('#d3-tip-custom')
+    var d3_tip_height = parseFloat(d3.select(params.tooltip_id)
                                  .style('height')
                                  .replace('px',''));
 
@@ -31,9 +31,9 @@ module.exports = function show_d3_tip(params){
     // padding in the tooltip or some related paramters
     var magic_x_offset = 22;
 
-    cgm.params.d3_tip_width = d3_tip_width
+    params.d3_tip_width = d3_tip_width
 
-    d3.select('#d3-tip-custom')
+    d3.select(params.tooltip_id)
       .style('margin-left', function(){
         // var total_x_offset = params.zoom_data.x.cursor_position;
         var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width + 22;

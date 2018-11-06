@@ -40352,65 +40352,34 @@ module.exports = function build_control_panel(regl, cgm){
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background')
 
-    // attempt to add mouseover to rect
-    //////////////////////////////////////
-    // .call(tooltip)
-    // .on('mouseover', function(d){
+    // ////////////////////////////////////
+    // // attempt to add mouseover to rect
+    // ////////////////////////////////////
+    .call(tooltip)
+    .on('mouseover', function(d){
 
-    //   // tooltip.show('tooltip text!', this);
-    //   tooltip.show('tooltip', this);
+      // tooltip.show('tooltip text!', this);
+      tooltip.show('tooltip', this);
 
-    //   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-    //   var d3_tip_width = parseFloat(d3.select('#d3-tip')
-    //                                .style('width')
-    //                                .replace('px',''));
+      // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+      var d3_tip_width = parseFloat(d3.select('#d3-tip')
+                                   .style('width')
+                                   .replace('px',''));
 
-    //   d3.select('#d3-tip')
-    //     .style('margin-left', d3_tip_width + 'px');
+      d3.select('#d3-tip')
+        .style('margin-left', d3_tip_width + 'px');
 
-    //     // .style('margin-top', function(){
-    //     //   var x_offset = cgm.params.zoom_data.y.cursor_position;
-    //     //   return x_offset + 'px'
-    //     // })
-    //     // .style('margin-left', function(){
-    //     //   var x_offset = cgm.params.zoom_data.x.cursor_position + d3_tip_width;
-    //     //   return x_offset + 'px'
-    //     // });
+        // .style('margin-top', function(){
+        //   var x_offset = cgm.params.zoom_data.y.cursor_position;
+        //   return x_offset + 'px'
+        // })
+        // .style('margin-left', function(){
+        //   var x_offset = cgm.params.zoom_data.x.cursor_position + d3_tip_width;
+        //   return x_offset + 'px'
+        // });
 
-    // })
-    // .on('mouseout', tooltip.hide);
-
-  // attempt to add mouseover to div
-  //////////////////////////////////////
-  // d3.select('.canvas-container')
-  //   .call(tooltip)
-  //   .on('mouseover', function(d){
-
-  //     console.log('asdfaslkjflakdsmfalsdkfjaslkmdlkfja')
-  //     tooltip.show('tooltip', this);
-
-  //     // // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-  //     // var d3_tip_width = parseFloat(d3.select('#d3-tip')
-  //     //                              .style('width')
-  //     //                              .replace('px',''));
-
-  //     // d3.select('#d3-tip')
-  //     //   .style('margin-left', d3_tip_width + 'px');
-
-  //     //   // .style('margin-top', function(){
-  //     //   //   var x_offset = cgm.params.zoom_data.y.cursor_position;
-  //     //   //   return x_offset + 'px'
-  //     //   // })
-  //     //   // .style('margin-left', function(){
-  //     //   //   var x_offset = cgm.params.zoom_data.x.cursor_position + d3_tip_width;
-  //     //   //   return x_offset + 'px'
-  //     //   // });
-
-  //   })
-  //   .on('mouseout', tooltip.hide);
-
-  // var inst_this = d3.select(control_container).select('rect')
-  // tooltip.show('tooltip', this)
+    })
+    .on('mouseout', tooltip.hide);
 
 
   // setting fontsize
@@ -40422,6 +40391,7 @@ module.exports = function build_control_panel(regl, cgm){
     .style('color', '#fff')
     .style('border-radius', '2px')
     .style('pointer-events', 'none')
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-size', '12px');
 
   // control panel border
@@ -42492,7 +42462,7 @@ module.exports = function draw_tooltip_components(regl, params){
   turned off drawing tooltip
   */
   // if (params.tooltip.tooltip_type === 'matrix-cell'){
-    make_matrix_cell_tooltip(params);
+    // make_matrix_cell_tooltip(params);
   // }
 
   // params.tooltip.show_tooltip = false;

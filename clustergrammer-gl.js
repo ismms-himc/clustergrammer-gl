@@ -42634,7 +42634,9 @@ module.exports = function run_viz(regl, network){
     }
 
     if (params.interact.still_interacting == true || params.animation.initialize_viz == true || params.animation.running){
+
       draw_interacting(regl, params);
+
     }
     else if (params.interact.still_mouseover == true){
       // mouseover may result in draw command
@@ -46321,11 +46323,9 @@ module.exports = function make_matrix_cell_tooltip(params){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function show_d3_tip(cgm){
+module.exports = function show_d3_tip(params){
 
-  console.log('show_d3_tip')
-
-  cgm.params.tooltip_fun.show('tooltip');
+  params.tooltip_fun.show('tooltip');
 
   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
   var d3_tip_width = parseFloat(d3.select('#d3-tip')
@@ -46863,6 +46863,7 @@ module.exports = function sanitize_potential_zoom(zd, zoom_restrict){
 var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
+var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -46882,15 +46883,25 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
+
+    console.log('interacting!')
+    hide_d3_tip(params);
+
   })
   .on('interactionend', function(){
 
-    // console.log('clicking')
+    console.log('clicking')
 
     if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
-      console.log('double click', params.interact.mouseover.row.name, params.interact.mouseover.col.name);
+
+      console.log('double click',
+                   params.interact.mouseover.row.name,
+                   params.interact.mouseover.col.name);
+
     } else {
+
       params.animation.last_click = params.animation.time;
+
     }
 
   });

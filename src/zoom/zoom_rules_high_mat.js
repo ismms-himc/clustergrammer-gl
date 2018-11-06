@@ -22,7 +22,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    console.log('interacting!')
+    // console.log('interacting!')
     hide_d3_tip(params);
 
   })

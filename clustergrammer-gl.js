@@ -46333,14 +46333,19 @@ module.exports = function show_d3_tip(params){
 
   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
 
+  var mouseover = params.interact.mouseover;
+
   d3.select('#d3-tip')
     .html(function(){
-      var full_string = 'Longer Title adfasdfsflksajdf;kasjf;adksjf;dsalkfj;lkj <br> ' +
-                        'second line <br> ' +
-                        'third line';
+      var full_string = mouseover.row.name + ' and ' + mouseover.col.name + ' <br> ' +
+                        'value: ' + mouseover.value.toFixed(3);
+
       return full_string;
     });
 
+
+
+  console.log(mouseover.row.name, mouseover.col.name)
 
   var d3_tip_width = parseFloat(d3.select('#d3-tip')
                                .style('width')
@@ -46919,7 +46924,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    console.log('interacting!')
+    // console.log('interacting!')
     hide_d3_tip(params);
 
   })

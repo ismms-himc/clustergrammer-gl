@@ -2,6 +2,7 @@ var draw_matrix_components = require('./draw_matrix_components');
 var draw_axis_components = require('./draw_axis_components');
 var draw_tooltip_components = require('./draw_tooltip_components');
 var draw_spillover_components = require('./draw_spillover_components');
+var show_d3_tip = require('./../tooltip/show_d3_tip');
 
 module.exports = function draw_commands(regl, params){
 
@@ -21,7 +22,12 @@ module.exports = function draw_commands(regl, params){
 
   // clean tooltip
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
+
+    console.log('should draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
     draw_tooltip_components(regl, params);
+
+    show_d3_tip(params);
+
   }
 
   if (params.labels.draw_labels){

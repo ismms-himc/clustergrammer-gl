@@ -26,7 +26,7 @@ module.exports = function build_control_panel(regl, cgm){
 
 
   // vis.call(tooltip)
-  cgm.tooltip = tooltip;
+  cgm.params.tooltip_fun = tooltip;
 
   // Add control panel to the top
   ///////////////////////////////////////
@@ -78,7 +78,7 @@ module.exports = function build_control_panel(regl, cgm){
     // })
     // .on('mouseout', tooltip.hide);
 
-  initialize_d3_tip(cgm);
+  initialize_d3_tip(cgm.params);
 
   cgm.show_tooltip = show_d3_tip;
   cgm.hide_tooltip = hide_d3_tip;

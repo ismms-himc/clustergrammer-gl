@@ -40311,7 +40311,7 @@ module.exports = function build_control_panel(regl, cgm){
 
 
   // vis.call(tooltip)
-  cgm.tooltip = tooltip;
+  cgm.params.tooltip_fun = tooltip;
 
   // Add control panel to the top
   ///////////////////////////////////////
@@ -40363,7 +40363,7 @@ module.exports = function build_control_panel(regl, cgm){
     // })
     // .on('mouseout', tooltip.hide);
 
-  initialize_d3_tip(cgm);
+  initialize_d3_tip(cgm.params);
 
   cgm.show_tooltip = show_d3_tip;
   cgm.hide_tooltip = hide_d3_tip;
@@ -42220,6 +42220,7 @@ var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */
 var draw_axis_components = __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js");
 var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draws/draw_tooltip_components.js");
 var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draws/draw_spillover_components.js");
+var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
 
 module.exports = function draw_commands(regl, params){
 
@@ -42239,7 +42240,12 @@ module.exports = function draw_commands(regl, params){
 
   // clean tooltip
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
+
+    console.log('should draw tooltip', params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
     draw_tooltip_components(regl, params);
+
+    show_d3_tip(params);
+
   }
 
   if (params.labels.draw_labels){
@@ -46062,9 +46068,9 @@ module.exports = function make_spillover_args(regl, inst_depth,
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function hide_d3_tip(cgm){
+module.exports = function hide_d3_tip(params){
 
-  cgm.tooltip.hide();
+  params.tooltip_fun.hide();
 
 }
 
@@ -46077,16 +46083,15 @@ module.exports = function hide_d3_tip(cgm){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function initialize_d3_tip(cgm){
+module.exports = function initialize_d3_tip(params){
 
   // artifically initialize tooltip
   /////////////////////////////////////
-  var inst_selector = cgm.params.root + ' .control-panel-background';
+  var inst_selector = params.root + ' .control-panel-background';
   var control_panel_bkg = d3.select(inst_selector).node();
-  cgm.control_panel_bkg = control_panel_bkg;
+  params.control_panel_bkg = control_panel_bkg;
 
-  // tooltip.show('tooltip', cgm.control_panel_bkg);
-  cgm.tooltip.show('tooltip', cgm.control_panel_bkg);
+  params.tooltip_fun.show('tooltip', params.control_panel_bkg);
 
   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
   var d3_tip_width = parseFloat(d3.select('#d3-tip')
@@ -46096,7 +46101,7 @@ module.exports = function initialize_d3_tip(cgm){
   d3.select('#d3-tip')
     .style('margin-left', d3_tip_width + 'px');
 
-  cgm.tooltip.hide();
+  params.tooltip_fun.hide();
 
 };
 
@@ -46318,7 +46323,9 @@ module.exports = function make_matrix_cell_tooltip(params){
 
 module.exports = function show_d3_tip(cgm){
 
-  cgm.tooltip.show('tooltip', cgm.control_panel_bkg);
+  console.log('show_d3_tip')
+
+  cgm.params.tooltip_fun.show('tooltip');
 
   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
   var d3_tip_width = parseFloat(d3.select('#d3-tip')

@@ -1,6 +1,8 @@
 module.exports = function show_d3_tip(cgm){
 
-  cgm.tooltip.show('tooltip', cgm.control_panel_bkg);
+  console.log('show_d3_tip')
+
+  cgm.params.tooltip_fun.show('tooltip');
 
   // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
   var d3_tip_width = parseFloat(d3.select('#d3-tip')

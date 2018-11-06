@@ -1,5 +1,5 @@
-module.exports = function hide_d3_tip(cgm){
+module.exports = function hide_d3_tip(params){
 
-  cgm.tooltip.hide();
+  params.tooltip_fun.hide();
 
 }

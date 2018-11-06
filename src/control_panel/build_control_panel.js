@@ -6,6 +6,8 @@ var build_tree_icon = require('./build_tree_icon');
 var tip = require('d3-tip');
 // d3v5.tip = require("d3-tip");
 var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
+var show_d3_tip = require('./../tooltip/show_d3_tip');
+var hide_d3_tip = require('./../tooltip/hide_d3_tip');
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -76,8 +78,10 @@ module.exports = function build_control_panel(regl, cgm){
     // })
     // .on('mouseout', tooltip.hide);
 
-
   initialize_d3_tip(cgm);
+
+  cgm.show_tooltip = show_d3_tip;
+  cgm.hide_tooltip = hide_d3_tip;
 
   // setting fontsize
   d3.select('#d3-tip')

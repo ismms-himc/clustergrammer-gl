@@ -40291,6 +40291,8 @@ var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/contro
 var tip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js");
 // d3v5.tip = require("d3-tip");
 var initialize_d3_tip = __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js");
+var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
+var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -40361,8 +40363,10 @@ module.exports = function build_control_panel(regl, cgm){
     // })
     // .on('mouseout', tooltip.hide);
 
-
   initialize_d3_tip(cgm);
+
+  cgm.show_tooltip = show_d3_tip;
+  cgm.hide_tooltip = hide_d3_tip;
 
   // setting fontsize
   d3.select('#d3-tip')
@@ -46051,6 +46055,21 @@ module.exports = function make_spillover_args(regl, inst_depth,
 
 /***/ }),
 
+/***/ "./src/tooltip/hide_d3_tip.js":
+/*!************************************!*\
+  !*** ./src/tooltip/hide_d3_tip.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function hide_d3_tip(cgm){
+
+  cgm.tooltip.hide();
+
+}
+
+/***/ }),
+
 /***/ "./src/tooltip/initialize_d3_tip.js":
 /*!******************************************!*\
   !*** ./src/tooltip/initialize_d3_tip.js ***!
@@ -46287,6 +46306,28 @@ module.exports = function make_matrix_cell_tooltip(params){
   }
 
 };
+
+/***/ }),
+
+/***/ "./src/tooltip/show_d3_tip.js":
+/*!************************************!*\
+  !*** ./src/tooltip/show_d3_tip.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function show_d3_tip(cgm){
+
+  cgm.tooltip.show('tooltip', cgm.control_panel_bkg);
+
+  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+  var d3_tip_width = parseFloat(d3.select('#d3-tip')
+                               .style('width')
+                               .replace('px',''));
+
+  d3.select('#d3-tip')
+    .style('margin-left', d3_tip_width + 'px');
+}
 
 /***/ }),
 

@@ -39786,6 +39786,8 @@ var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./
 
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
 
+  console.log('working on make_cat_breakdown_graph')
+
   /*
   This function is used to make the category breakdown graphs for tooltips on
   dendrogram mousover and on dendrogram click modal popup.
@@ -39795,7 +39797,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
-
+    console.log('non-zero cat breakdown length')
 
     // loop through cat_breakdown data
     var width = 370;
@@ -39846,14 +39848,10 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       svg_height = svg_height + title_height * (num_bars + 1);
     });
 
-    // // Cluster Information Title (for tooltip only not modal)
-    // if (tooltip){
-    //   cluster_info_container
-    //     .append('text')
-    //     .text('Cluster Information');
-    // }
+    console.log('cluster_info_container', cluster_info_container)
 
-    var main_dendro_svg = cluster_info_container
+    // var main_dendro_svg = cluster_info_container
+    var main_dendro_svg = d3.select(params.tooltip_id)
       .append('div')
       .style('margin-top','5px')
       .classed('cat_graph', true)
@@ -39862,8 +39860,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       .style('width', width+'px')
       // .style('left', '-270px')
 
-    cluster_info_container
-      .style('margin-bottom', '5px');
+    // cluster_info_container
+    //   .style('margin-bottom', '5px');
 
 
     // make background
@@ -39925,9 +39923,9 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     var pos_x = params.zoom_data.x.cursor_position - width;
     var pos_y = params.zoom_data.y.cursor_position - svg_height;
 
-    cluster_info_container
-      .style('top', pos_y + 'px')
-      .style('left', pos_x + 'px')
+    // cluster_info_container
+    //   .style('top', pos_y + 'px')
+    //   .style('left', pos_x + 'px')
 
     });
 
@@ -46296,7 +46294,9 @@ module.exports = function make_matrix_cell_tooltip(params){
 
     if (params.tooltip.tooltip_type === 'row-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
+
       make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row', group_tooltip_container)
+
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
 
       group_tooltip_container
@@ -46321,16 +46321,18 @@ module.exports = function make_matrix_cell_tooltip(params){
   !*** ./src/tooltip/show_d3_tip.js ***!
   \************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
+var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakdown_graph */ "./src/cats/make_cat_breakdown_graph.js");
 
 module.exports = function show_d3_tip(params){
 
-
   var mouseover = params.interact.mouseover;
 
-  console.log(mouseover.value)
+  console.log(params.tooltip.tooltip_type, mouseover.value)
 
-  if (mouseover.value !== null){
+  if (params.tooltip.tooltip_type === 'matrix-cell'){
 
     params.tooltip_fun.show('tooltip');
 
@@ -46342,7 +46344,28 @@ module.exports = function show_d3_tip(params){
         return full_string;
       });
 
-    // console.log(mouseover.row.name, mouseover.col.name)
+  }
+
+  var cat_breakdown;
+
+  if (params.tooltip.tooltip_type === 'col-dendro'){
+
+
+    params.tooltip_fun.show('tooltip');
+
+    console.log('working on col dendro')
+
+    cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
+
+    var group_tooltip_container = d3.select(params.tooltip_id).node();
+
+    make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, 'col', group_tooltip_container)
+
+
+
+
+  }
+
 
     var d3_tip_width = parseFloat(d3.select(params.tooltip_id)
                                  .style('width')
@@ -46360,17 +46383,15 @@ module.exports = function show_d3_tip(params){
 
     d3.select(params.tooltip_id)
       .style('margin-left', function(){
-        // var total_x_offset = params.zoom_data.x.cursor_position;
         var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width + 22;
         return total_x_offset + 'px'
       })
       .style('margin-top', function(){
-        // var total_y_offset = params.zoom_data.y.cursor_position;
         var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
         return total_y_offset + 'px'
       });
 
-  }
+
 
 }
 

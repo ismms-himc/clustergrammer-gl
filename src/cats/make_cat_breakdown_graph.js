@@ -4,6 +4,8 @@ var cat_breakdown_values = require('./cat_breakdown_values');
 
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
 
+  console.log('working on make_cat_breakdown_graph')
+
   /*
   This function is used to make the category breakdown graphs for tooltips on
   dendrogram mousover and on dendrogram click modal popup.
@@ -13,7 +15,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
-
+    console.log('non-zero cat breakdown length')
 
     // loop through cat_breakdown data
     var width = 370;
@@ -64,14 +66,10 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       svg_height = svg_height + title_height * (num_bars + 1);
     });
 
-    // // Cluster Information Title (for tooltip only not modal)
-    // if (tooltip){
-    //   cluster_info_container
-    //     .append('text')
-    //     .text('Cluster Information');
-    // }
+    console.log('cluster_info_container', cluster_info_container)
 
-    var main_dendro_svg = cluster_info_container
+    // var main_dendro_svg = cluster_info_container
+    var main_dendro_svg = d3.select(params.tooltip_id)
       .append('div')
       .style('margin-top','5px')
       .classed('cat_graph', true)
@@ -80,8 +78,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       .style('width', width+'px')
       // .style('left', '-270px')
 
-    cluster_info_container
-      .style('margin-bottom', '5px');
+    // cluster_info_container
+    //   .style('margin-bottom', '5px');
 
 
     // make background
@@ -143,9 +141,9 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     var pos_x = params.zoom_data.x.cursor_position - width;
     var pos_y = params.zoom_data.y.cursor_position - svg_height;
 
-    cluster_info_container
-      .style('top', pos_y + 'px')
-      .style('left', pos_x + 'px')
+    // cluster_info_container
+    //   .style('top', pos_y + 'px')
+    //   .style('left', pos_x + 'px')
 
     });
 

@@ -71,30 +71,28 @@ module.exports = function build_control_panel(regl, cgm){
     // // attempt to add mouseover to rect
     // ////////////////////////////////////
     .call(tooltip)
-    .on('mouseover', function(d){
+    // .on('mouseover', function(d){
+    // })
+    // .on('mouseout', tooltip.hide);
 
-      // tooltip.show('tooltip text!', this);
-      tooltip.show('tooltip', this);
 
-      // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-      var d3_tip_width = parseFloat(d3.select('#d3-tip')
-                                   .style('width')
-                                   .replace('px',''));
+  // artifically initialize tooltip
+  /////////////////////////////////////
+  var control_panel_bkg = d3.select(cgm.params.root + ' .control-panel-background').node();
+  cgm.control_panel_bkg = control_panel_bkg;
 
-      d3.select('#d3-tip')
-        .style('margin-left', d3_tip_width + 'px');
+  // tooltip.show('tooltip', cgm.control_panel_bkg);
+  tooltip.show('tooltip', cgm.control_panel_bkg);
 
-        // .style('margin-top', function(){
-        //   var x_offset = cgm.params.zoom_data.y.cursor_position;
-        //   return x_offset + 'px'
-        // })
-        // .style('margin-left', function(){
-        //   var x_offset = cgm.params.zoom_data.x.cursor_position + d3_tip_width;
-        //   return x_offset + 'px'
-        // });
+  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
+  var d3_tip_width = parseFloat(d3.select('#d3-tip')
+                               .style('width')
+                               .replace('px',''));
 
-    })
-    .on('mouseout', tooltip.hide);
+  d3.select('#d3-tip')
+    .style('margin-left', d3_tip_width + 'px');
+
+  cgm.tooltip.hide();
 
 
   // setting fontsize

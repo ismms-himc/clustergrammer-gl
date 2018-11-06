@@ -20,7 +20,7 @@ module.exports = function build_control_panel(regl, cgm){
                    .attr('id', 'd3-tip')
                    .direction('sw')
                    .html(function(){
-                      return 'Tool-tip';
+                      return '';
                     });
 
 

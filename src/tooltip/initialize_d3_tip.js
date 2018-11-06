@@ -13,8 +13,13 @@ module.exports = function initialize_d3_tip(params){
                                .style('width')
                                .replace('px',''));
 
-  d3.select('#d3-tip')
-    .style('margin-left', d3_tip_width + 'px');
+  var d3_tip_height = parseFloat(d3.select('#d3-tip')
+                               .style('height')
+                               .replace('px',''));
+
+
+  params.tooltip_ini_width = d3_tip_width;
+  params.tooltip_ini_height = d3_tip_height;
 
   params.tooltip_fun.hide();
 

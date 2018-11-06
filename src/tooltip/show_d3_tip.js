@@ -1,8 +1,5 @@
 module.exports = function show_d3_tip(params){
 
-  params.tooltip_fun.show('tooltip');
-
-  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
 
   var mouseover = params.interact.mouseover;
 
@@ -10,7 +7,9 @@ module.exports = function show_d3_tip(params){
 
   if (mouseover.value !== null){
 
-    d3.select('#d3-tip')
+    params.tooltip_fun.show('tooltip');
+
+    d3.select('#d3-tip-custom')
       .html(function(){
         var full_string = mouseover.row.name + ' and ' + mouseover.col.name + ' <br> ' +
                           'value: ' + mouseover.value.toFixed(3);
@@ -18,15 +17,13 @@ module.exports = function show_d3_tip(params){
         return full_string;
       });
 
-
-
     console.log(mouseover.row.name, mouseover.col.name)
 
-    var d3_tip_width = parseFloat(d3.select('#d3-tip')
+    var d3_tip_width = parseFloat(d3.select('#d3-tip-custom')
                                  .style('width')
                                  .replace('px',''));
 
-    var d3_tip_height = parseFloat(d3.select('#d3-tip')
+    var d3_tip_height = parseFloat(d3.select('#d3-tip-custom')
                                  .style('height')
                                  .replace('px',''));
 
@@ -36,7 +33,7 @@ module.exports = function show_d3_tip(params){
 
     cgm.params.d3_tip_width = d3_tip_width
 
-    d3.select('#d3-tip')
+    d3.select('#d3-tip-custom')
       .style('margin-left', function(){
         // var total_x_offset = params.zoom_data.x.cursor_position;
         var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width + 22;

@@ -4,7 +4,6 @@ var build_reorder_cat_titles = require('../cats/build_reorder_cat_titles');
 var build_tree_icon = require('./build_tree_icon');
 // var d3v5 = require('d3');
 var tip = require('d3-tip');
-// d3v5.tip = require("d3-tip");
 var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
 var show_d3_tip = require('./../tooltip/show_d3_tip');
 var hide_d3_tip = require('./../tooltip/hide_d3_tip');
@@ -16,14 +15,15 @@ module.exports = function build_control_panel(regl, cgm){
 
   // debugger;
   // var tooltip = tip.default().html(d => d.value);
+
+  cgm.params.tooltip_id = '#d3-tip-custom';
+
   var tooltip = tip.default()
-                   .attr('id', 'd3-tip')
+                   .attr('id', cgm.params.tooltip_id.replace('#',''))
                    .direction('sw')
                    .html(function(){
                       return '';
                     });
-
-
 
   // vis.call(tooltip)
   cgm.params.tooltip_fun = tooltip;
@@ -58,10 +58,6 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
 
-  // debugger;
-  /* Initialize tooltip */
-  // tip = d3v5.tip().attr('class', 'd3-tip').html(function(d) { return d; });
-
   control_svg
     .append('rect')
     .style('height',inst_height + 'px')
@@ -84,8 +80,8 @@ module.exports = function build_control_panel(regl, cgm){
   cgm.hide_tooltip = hide_d3_tip;
 
   // setting fontsize
-  d3.select('#d3-tip')
-    .style('line-height', 1)
+  d3.select(cgm.params.tooltip_id)
+    .style('line-height', 1.5)
     .style('font-weight', 'bold')
     .style('padding', '12px')
     .style('background', 'rgba(0, 0, 0, 0.8)')

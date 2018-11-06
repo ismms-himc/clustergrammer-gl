@@ -8,12 +8,12 @@ module.exports = function initialize_d3_tip(params){
 
   params.tooltip_fun.show('tooltip', params.control_panel_bkg);
 
-  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-  var d3_tip_width = parseFloat(d3.select('#d3-tip')
+  var d3_tip_width = parseFloat(d3.select('#d3-tip-custom')
                                .style('width')
                                .replace('px',''));
 
-  var d3_tip_height = parseFloat(d3.select('#d3-tip')
+
+  var d3_tip_height = parseFloat(d3.select('#d3-tip-custom')
                                .style('height')
                                .replace('px',''));
 

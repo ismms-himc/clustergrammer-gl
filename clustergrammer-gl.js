@@ -40289,7 +40289,6 @@ var build_reorder_cat_titles = __webpack_require__(/*! ../cats/build_reorder_cat
 var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js");
 // var d3v5 = require('d3');
 var tip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js");
-// d3v5.tip = require("d3-tip");
 var initialize_d3_tip = __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js");
 var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
 var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
@@ -40301,14 +40300,15 @@ module.exports = function build_control_panel(regl, cgm){
 
   // debugger;
   // var tooltip = tip.default().html(d => d.value);
+
+  cgm.params.tooltip_id = '#d3-tip-custom';
+
   var tooltip = tip.default()
-                   .attr('id', 'd3-tip')
+                   .attr('id', cgm.params.tooltip_id.replace('#',''))
                    .direction('sw')
                    .html(function(){
                       return '';
                     });
-
-
 
   // vis.call(tooltip)
   cgm.params.tooltip_fun = tooltip;
@@ -40343,10 +40343,6 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
 
-  // debugger;
-  /* Initialize tooltip */
-  // tip = d3v5.tip().attr('class', 'd3-tip').html(function(d) { return d; });
-
   control_svg
     .append('rect')
     .style('height',inst_height + 'px')
@@ -40369,8 +40365,8 @@ module.exports = function build_control_panel(regl, cgm){
   cgm.hide_tooltip = hide_d3_tip;
 
   // setting fontsize
-  d3.select('#d3-tip')
-    .style('line-height', 1)
+  d3.select(cgm.params.tooltip_id)
+    .style('line-height', 1.5)
     .style('font-weight', 'bold')
     .style('padding', '12px')
     .style('background', 'rgba(0, 0, 0, 0.8)')
@@ -46094,12 +46090,12 @@ module.exports = function initialize_d3_tip(params){
 
   params.tooltip_fun.show('tooltip', params.control_panel_bkg);
 
-  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-  var d3_tip_width = parseFloat(d3.select('#d3-tip')
+  var d3_tip_width = parseFloat(d3.select('#d3-tip-custom')
                                .style('width')
                                .replace('px',''));
 
-  var d3_tip_height = parseFloat(d3.select('#d3-tip')
+
+  var d3_tip_height = parseFloat(d3.select('#d3-tip-custom')
                                .style('height')
                                .replace('px',''));
 
@@ -46329,9 +46325,6 @@ module.exports = function make_matrix_cell_tooltip(params){
 
 module.exports = function show_d3_tip(params){
 
-  params.tooltip_fun.show('tooltip');
-
-  // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
 
   var mouseover = params.interact.mouseover;
 
@@ -46339,7 +46332,9 @@ module.exports = function show_d3_tip(params){
 
   if (mouseover.value !== null){
 
-    d3.select('#d3-tip')
+    params.tooltip_fun.show('tooltip');
+
+    d3.select('#d3-tip-custom')
       .html(function(){
         var full_string = mouseover.row.name + ' and ' + mouseover.col.name + ' <br> ' +
                           'value: ' + mouseover.value.toFixed(3);
@@ -46347,15 +46342,13 @@ module.exports = function show_d3_tip(params){
         return full_string;
       });
 
-
-
     console.log(mouseover.row.name, mouseover.col.name)
 
-    var d3_tip_width = parseFloat(d3.select('#d3-tip')
+    var d3_tip_width = parseFloat(d3.select('#d3-tip-custom')
                                  .style('width')
                                  .replace('px',''));
 
-    var d3_tip_height = parseFloat(d3.select('#d3-tip')
+    var d3_tip_height = parseFloat(d3.select('#d3-tip-custom')
                                  .style('height')
                                  .replace('px',''));
 
@@ -46365,7 +46358,7 @@ module.exports = function show_d3_tip(params){
 
     cgm.params.d3_tip_width = d3_tip_width
 
-    d3.select('#d3-tip')
+    d3.select('#d3-tip-custom')
       .style('margin-left', function(){
         // var total_x_offset = params.zoom_data.x.cursor_position;
         var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width + 22;

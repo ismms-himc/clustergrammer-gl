@@ -98,6 +98,7 @@ module.exports = function show_d3_tip(params){
     .style('margin-top', function(){
       var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
       return total_y_offset + 'px'
-    });
+    })
+    .style('z-index', 99);
 
 }

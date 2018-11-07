@@ -43069,7 +43069,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.6.5
+  clustergrammer-gl version 0.6.6
 
  */
 
@@ -43081,7 +43081,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.6.5');
+  console.log('clustergrammer-gl version 0.6.6');
   console.log('################################');
 
   // decompress if necessary
@@ -45755,7 +45755,8 @@ module.exports = function show_d3_tip(params){
     .style('margin-top', function(){
       var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
       return total_y_offset + 'px'
-    });
+    })
+    .style('z-index', 99);
 
 }
 

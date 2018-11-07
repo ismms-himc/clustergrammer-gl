@@ -19,15 +19,15 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
       inst_top = 150;
       inst_left = cgm.params.viz_width - 25 ;
     } else {
-      inst_top = cgm.params.viz_height - 100;
-      inst_left = 50;
+      inst_top = cgm.params.viz_height - 80;
+      inst_left = 55;
     }
 
     // axis_slider_container = d3.select(cgm.params.root + ' .control-container')
     axis_slider_container = d3.select(cgm.params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
-      .style('width', '40px')
+      .style('width', '20px')
       .style('position', 'absolute')
       .style('top', inst_top + 'px')
       .style('left', inst_left + 'px')

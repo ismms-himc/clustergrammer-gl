@@ -38119,7 +38119,7 @@ var make_cameras = __webpack_require__(/*! ./make_cameras */ "./src/cameras/make
 
 module.exports = function reset_cameras(regl, params){
 
-  // console.log('reset_cameras\n-------------------')
+  console.log('reset_cameras\n-------------------')
   params.reset_cameras = false;
 
   params.zoom_data = ini_zoom_data();
@@ -39784,7 +39784,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 var cat_breakdown_bars = __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js");
 var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js");
 
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown){
 
   /*
   This function is used to make the category breakdown graphs for tooltips on
@@ -39795,7 +39795,6 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
-
 
     // loop through cat_breakdown data
     var width = 370;
@@ -39846,25 +39845,13 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       svg_height = svg_height + title_height * (num_bars + 1);
     });
 
-    // // Cluster Information Title (for tooltip only not modal)
-    // if (tooltip){
-    //   cluster_info_container
-    //     .append('text')
-    //     .text('Cluster Information');
-    // }
-
-    var main_dendro_svg = cluster_info_container
+    var main_dendro_svg = d3.select(params.tooltip_id)
       .append('div')
       .style('margin-top','5px')
       .classed('cat_graph', true)
       .append('svg')
       .style('height', svg_height+'px')
-      .style('width', width+'px')
-      // .style('left', '-270px')
-
-    cluster_info_container
-      .style('margin-bottom', '5px');
-
+      .style('width', width+'px');
 
     // make background
     main_dendro_svg
@@ -39921,62 +39908,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       // shift down based on number of bars
       shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
 
-      // reposition group
-    var pos_x = params.zoom_data.x.cursor_position - width;
-    var pos_y = params.zoom_data.y.cursor_position - svg_height;
-
-    cluster_info_container
-      .style('top', pos_y + 'px')
-      .style('left', pos_x + 'px')
-
     });
-
-  /*
-    Not Needed, since I'm not using a modal
-  */
-  //   // reposition tooltip
-  //   /////////////////////////////////////////////////
-  //   if (tooltip){
-
-  //     var dendro_tip = d3.select(selector);
-  //     var old_top = dendro_tip.style('top').split('.px')[0];
-  //     var old_left = dendro_tip.style('left').split('.px')[0];
-  //     var shift_top = 0;
-  //     var shift_left = 0;
-
-  //     // shifting
-  //     if (inst_axis === 'row'){
-
-  //       // rows
-  //       //////////////
-  //       shift_top = 0;
-  //       shift_left = shift_tooltip_left;
-
-  //       // // prevent graph from being too high
-  //       // if (dendro_info.pos_top < svg_height){
-  //       //   // do not shift position of category breakdown graph
-  //       //   // shift_top = -(svg_height + (dendro_info.pos_mid - dendro_info.pos_top)/2) ;
-  //       // }
-
-  //     } else {
-
-  //       // columns
-  //       //////////////
-  //       shift_top = svg_height + 32;
-  //       shift_left = 30;
-  //     }
-
-  //     dendro_tip
-  //       .style('top', function(){
-  //         var new_top = String(parseInt( old_top,10) - shift_top) + 'px';
-  //         return new_top;
-  //       })
-  //       .style('left', function(){
-  //         var new_left = String(parseInt( old_left,10) - shift_left) + 'px';
-  //         return new_left;
-  //       });
-
-  //   }
 
   }
 
@@ -40289,7 +40221,9 @@ var build_reorder_cat_titles = __webpack_require__(/*! ../cats/build_reorder_cat
 var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js");
 // var d3v5 = require('d3');
 var tip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js");
-// d3v5.tip = require("d3-tip");
+var initialize_d3_tip = __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js");
+var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
+var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
 
 module.exports = function build_control_panel(regl, cgm){
 
@@ -40298,17 +40232,18 @@ module.exports = function build_control_panel(regl, cgm){
 
   // debugger;
   // var tooltip = tip.default().html(d => d.value);
+
+  cgm.params.tooltip_id = '#d3-tip_' + cgm.params.root.replace('#','');
+
   var tooltip = tip.default()
-                   .attr('id', 'd3-tip')
+                   .attr('id', cgm.params.tooltip_id.replace('#',''))
                    .direction('sw')
                    .html(function(){
-                      return 'Tool-tip';
+                      return '';
                     });
 
-
-
   // vis.call(tooltip)
-  cgm.tooltip = tooltip;
+  cgm.params.tooltip_fun = tooltip;
 
   // Add control panel to the top
   ///////////////////////////////////////
@@ -40340,10 +40275,6 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
 
-  // debugger;
-  /* Initialize tooltip */
-  // tip = d3v5.tip().attr('class', 'd3-tip').html(function(d) { return d; });
-
   control_svg
     .append('rect')
     .style('height',inst_height + 'px')
@@ -40356,35 +40287,18 @@ module.exports = function build_control_panel(regl, cgm){
     // // attempt to add mouseover to rect
     // ////////////////////////////////////
     .call(tooltip)
-    .on('mouseover', function(d){
+    // .on('mouseover', function(d){
+    // })
+    // .on('mouseout', tooltip.hide);
 
-      // tooltip.show('tooltip text!', this);
-      tooltip.show('tooltip', this);
+  initialize_d3_tip(cgm.params);
 
-      // var inst_bbox = d3.selectAll('.d3-tip').node().getBBox();
-      var d3_tip_width = parseFloat(d3.select('#d3-tip')
-                                   .style('width')
-                                   .replace('px',''));
-
-      d3.select('#d3-tip')
-        .style('margin-left', d3_tip_width + 'px');
-
-        // .style('margin-top', function(){
-        //   var x_offset = cgm.params.zoom_data.y.cursor_position;
-        //   return x_offset + 'px'
-        // })
-        // .style('margin-left', function(){
-        //   var x_offset = cgm.params.zoom_data.x.cursor_position + d3_tip_width;
-        //   return x_offset + 'px'
-        // });
-
-    })
-    .on('mouseout', tooltip.hide);
-
+  cgm.show_tooltip = show_d3_tip;
+  cgm.hide_tooltip = hide_d3_tip;
 
   // setting fontsize
-  d3.select('#d3-tip')
-    .style('line-height', 1)
+  d3.select(cgm.params.tooltip_id)
+    .style('line-height', 1.5)
     .style('font-weight', 'bold')
     .style('padding', '12px')
     .style('background', 'rgba(0, 0, 0, 0.8)')
@@ -40618,7 +40532,6 @@ module.exports = function build_control_panel(regl, cgm){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var d3_tip_custom = __webpack_require__(/*! ./d3_tip_custom */ "./src/control_panel/d3_tip_custom.js");
 var position_tree_icon = __webpack_require__(/*! ./position_tree_icon */ "./src/control_panel/position_tree_icon.js");
 var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
 var make_tree_menu = __webpack_require__(/*! ./make_tree_menu */ "./src/control_panel/make_tree_menu.js");
@@ -40629,24 +40542,6 @@ module.exports = function build_tree_icon(cgm){
   var params = cgm.params;
   var default_opacity = 0.35;
   var high_opacity = 0.6;
-
-  // // d3-tooltip
-  // var tree_icon_tip = d3_tip_custom()
-  //   .attr('class', function(){
-  //     // var root_tip_selector =  // params.viz.root_tips.replace('.','');
-  //     // var class_string = root_tip_selector + '_tree_icon_tip d3-tip';
-  //     class_string = 'custom-d3-tip';
-  //     return class_string;
-  //   })
-  //   .direction('w')
-  //   .style('display', 'none')
-  //   .offset([-10,-5])
-  //   .html(function(){
-  //     console.log('returning html');
-  //     return 'Clustering Menu';
-  //   });
-
-  // cgm.tree_icon_tip = tree_icon_tip;
 
   // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
@@ -40811,378 +40706,6 @@ module.exports = function build_tree_icon(cgm){
 
 };
 
-
-/***/ }),
-
-/***/ "./src/control_panel/d3_tip_custom.js":
-/*!********************************************!*\
-  !*** ./src/control_panel/d3_tip_custom.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function d3_tip_custom(){
-/* eslint-disable */
-// Copyright (c) 2013 Justin Palmer
-//
-// Tooltips for d3.js SVG visualizations
-
-// Public - contructs a new tooltip
-//
-// Returns a tip
-// ******************
-// Nick Fernandez modified version 4-19-2016
-// improved multiple svg, scrolling+zooming support
-// made syntax fixes
-//////////////////////////////////////////////
-  var direction = d3_tip_direction,
-      offset    = d3_tip_offset,
-      html      = d3_tip_html,
-      node      = initNode(),
-      svg       = null,
-      point     = null,
-      target    = null;
-
-  function tip(vis) {
-    svg = getSVGNode(vis);
-    point = svg.createSVGPoint();
-    document.body.appendChild(node);
-  }
-
-  // Public - show the tooltip on the screen
-  //
-  // Returns a tip
-  tip.show = function() {
-
-    var args = Array.prototype.slice.call(arguments);
-    if (args[args.length - 1] instanceof SVGElement) {
-      target = args.pop();
-    }
-
-    var content = html.apply(this, args);
-    var poffset = offset.apply(this, args);
-    var dir     = direction.apply(this, args);
-    var nodel   = d3.select(node);
-    var i = 0;
-    var coords;
-
-    // add z-index to make sure tooltips appear on top
-    nodel.html(content)
-      .style({opacity: 1, 'pointer-events': 'all'})
-      .style('z-index', 99);
-
-    while(i--) {
-      nodel.classed(directions[i], false);
-    }
-    coords = direction_callbacks.get(dir).apply(this);
-    nodel.classed(dir, true).style({
-      top: (coords.top +  poffset[0]) + 'px',
-      left: (coords.left + poffset[1]) + 'px'
-    });
-
-    // quick fix for fading tile tooltips
-    if (isFunction(this) === false){
-
-      var inst_class = d3.select(this).attr('class');
-
-      if (inst_class.indexOf('tile') >= 0){
-        setTimeout(fade_tips, 5000, this);
-      }
-
-    }
-
-    return tip;
-  };
-
-  // Public - hide the tooltip
-  //
-  // Returns a tip
-  tip.hide = function() {
-
-    // // hide all d3-tip tooltips
-    // d3.selectAll('.d3-tip')
-    //   .style('display', 'none');
-
-    var nodel = d3.select(node);
-    nodel.style({opacity: 0, 'pointer-events': 'none'});
-    return tip;
-  };
-
-  // Public: Proxy attr calls to the d3 tip container.  Sets or gets attribute value.
-  //
-  // n - name of the attribute
-  // v - value of the attribute
-  //
-  // Returns tip or attribute value
-  tip.attr = function(n) {
-    if (arguments.length < 2 && typeof n === 'string') {
-      return d3.select(node).attr(n);
-    } else {
-      var args =  Array.prototype.slice.call(arguments);
-      d3.selection.prototype.attr.apply(d3.select(node), args);
-    }
-
-    return tip;
-  };
-
-  // Public: Proxy style calls to the d3 tip container.  Sets or gets a style value.
-  //
-  // n - name of the property
-  // v - value of the property
-  //
-  // Returns tip or style property value
-  tip.style = function(n) {
-    if (arguments.length < 2 && typeof n === 'string') {
-      return d3.select(node).style(n);
-    } else {
-      var args =  Array.prototype.slice.call(arguments);
-      d3.selection.prototype.style.apply(d3.select(node), args);
-    }
-
-    return tip;
-  };
-
-  // Public: Set or get the direction of the tooltip
-  //
-  // v - One of n(north), s(south), e(east), or w(west), nw(northwest),
-  //     sw(southwest), ne(northeast) or se(southeast)
-  //
-  // Returns tip or direction
-  tip.direction = function(v) {
-    if (!arguments.length){
-      return direction;
-    }
-    direction = v == null ? v : d3.functor(v);
-
-    return tip;
-  };
-
-  // Public: Sets or gets the offset of the tip
-  //
-  // v - Array of [x, y] offset
-  //
-  // Returns offset or
-  tip.offset = function(v) {
-    if (!arguments.length) {
-      return offset;
-    }
-    offset = v == null ? v : d3.functor(v);
-
-    return tip;
-  };
-
-  // Public: sets or gets the html value of the tooltip
-  //
-  // v - String value of the tip
-  //
-  // Returns html value or tip
-  tip.html = function(v) {
-    if (!arguments.length) {
-      return html;
-    }
-    html = v == null ? v : d3.functor(v);
-
-    return tip;
-  };
-
-  function d3_tip_direction() {
-    return 'n';
-  }
-  function d3_tip_offset() {
-    return [0, 0];
-  }
-  function d3_tip_html() {
-    return ' ';
-  }
-
-  var direction_callbacks = d3.map({
-    n:  direction_n,
-    s:  direction_s,
-    e:  direction_e,
-    w:  direction_w,
-    nw: direction_nw,
-    ne: direction_ne,
-    sw: direction_sw,
-    se: direction_se,
-    south_custom: direction_south_custom
-  }),
-
-  directions = direction_callbacks.keys();
-
-  function direction_south_custom() {
-    var bbox = getScreenBBox();
-
-
-    return {
-      top:  bbox.s.y,
-      left: bbox.s.x ,
-    };
-
-  }
-
-  function direction_n() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.n.y - node.offsetHeight,
-      left: bbox.n.x - node.offsetWidth / 2
-    };
-  }
-
-  function direction_s() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.s.y,
-      left: bbox.s.x - node.offsetWidth / 2
-    };
-  }
-
-  function direction_e() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.e.y - node.offsetHeight / 2,
-      left: bbox.e.x
-    };
-  }
-
-  function direction_w() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.w.y - node.offsetHeight / 2,
-      left: bbox.w.x - node.offsetWidth
-    };
-  }
-
-  function direction_nw() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.nw.y - node.offsetHeight,
-      left: bbox.nw.x - node.offsetWidth
-    };
-  }
-
-  function direction_ne() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.ne.y - node.offsetHeight,
-      left: bbox.ne.x
-    };
-  }
-
-  function direction_sw() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.sw.y,
-      left: bbox.sw.x - node.offsetWidth
-    };
-  }
-
-  function direction_se() {
-    var bbox = getScreenBBox();
-    return {
-      top:  bbox.se.y,
-      left: bbox.e.x
-    };
-  }
-
-  function initNode() {
-    var node = d3.select(document.createElement('div'));
-    node.style({
-      position: 'absolute',
-      opacity: 0,
-      pointerEvents: 'none',
-      boxSizing: 'border-box'
-    });
-
-    return node.node();
-  }
-
-  function getSVGNode(el) {
-    el = el.node();
-    if(el.tagName.toLowerCase() == 'svg'){
-      return el;
-    }
-
-    return el.ownerSVGElement;
-  }
-
-  // Private - gets the screen coordinates of a shape
-  //
-  // Given a shape on the screen, will return an SVGPoint for the directions
-  // n(north), s(south), e(east), w(west), ne(northeast), se(southeast), nw(northwest),
-  // sw(southwest).
-  //
-  //    +-+-+
-  //    |   |
-  //    +   +
-  //    |   |
-  //    +-+-+
-  //
-  // Returns an Object {n, s, e, w, nw, sw, ne, se}
-  function getScreenBBox() {
-    var targetel   = target || d3.event.target;
-    var bbox       = {};
-    var matrix     = targetel.getScreenCTM();
-    var tbbox      = targetel.getBBox();
-    var width      = tbbox.width;
-    var height     = tbbox.height;
-    var x          = tbbox.x;
-    var y          = tbbox.y;
-    var scrollTop  = document.documentElement.scrollTop || document.body.scrollTop;
-    var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
-
-    // Nick - prevents bugs with scrolling and zooming on the same object
-    matrix.a = 1;
-    matrix.d = 1;
-    // changing order of adding scrolling,
-    // original ordering was causing problems with pre-translated or rotated
-    // elements.
-    matrix.e = matrix.e + scrollLeft;
-    matrix.f = matrix.f + scrollTop;
-    point.x = x; //+ scrollLeft
-    point.y = y; //+ scrollTop
-
-    bbox.nw = point.matrixTransform(matrix);
-    point.x = point.x + width;
-    bbox.ne = point.matrixTransform(matrix);
-    point.y = point.y + height;
-    bbox.se = point.matrixTransform(matrix);
-    point.x = point.x - width;
-    bbox.sw = point.matrixTransform(matrix);
-    point.y = point.y - height / 2;
-    bbox.w  = point.matrixTransform(matrix);
-    point.x = point.x + width;
-    bbox.e = point.matrixTransform(matrix);
-    point.x = point.x - width / 2;
-    point.y = point.y - height / 2;
-    bbox.n = point.matrixTransform(matrix);
-    point.y = point.y + height;
-    bbox.s = point.matrixTransform(matrix);
-
-    return bbox;
-  }
-
-  // only fade tips if you are still hovering on the current tip
-  function fade_tips(inst_selection){
-
-    var is_hovering = d3.select(inst_selection)
-      .classed('hovering');
-
-    if (is_hovering){
-      d3.selectAll('.d3-tip')
-        .transition()
-        .duration(250)
-        .style('opacity',0)
-        .style('display', 'none');
-    }
-  }
-
-  function isFunction(functionToCheck) {
-   var getType = {};
-   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-  }
-
-  return tip;
-};
 
 /***/ }),
 
@@ -41603,15 +41126,15 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
       inst_top = 150;
       inst_left = cgm.params.viz_width - 25 ;
     } else {
-      inst_top = cgm.params.viz_height - 100;
-      inst_left = 50;
+      inst_top = cgm.params.viz_height - 80;
+      inst_left = 55;
     }
 
     // axis_slider_container = d3.select(cgm.params.root + ' .control-container')
     axis_slider_container = d3.select(cgm.params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
-      .style('width', '40px')
+      .style('width', '20px')
       .style('position', 'absolute')
       .style('top', inst_top + 'px')
       .style('left', inst_left + 'px')
@@ -42232,8 +41755,9 @@ module.exports = function draw_background_calculations(regl, params){
 
 var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js");
 var draw_axis_components = __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js");
-var draw_tooltip_components = __webpack_require__(/*! ./draw_tooltip_components */ "./src/draws/draw_tooltip_components.js");
+// var draw_tooltip_components = require('./draw_tooltip_components');
 var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draws/draw_spillover_components.js");
+var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
 
 module.exports = function draw_commands(regl, params){
 
@@ -42253,7 +41777,11 @@ module.exports = function draw_commands(regl, params){
 
   // clean tooltip
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
-    draw_tooltip_components(regl, params);
+
+    // draw_tooltip_components(regl, params);
+
+    show_d3_tip(params);
+
   }
 
   if (params.labels.draw_labels){
@@ -42445,32 +41973,6 @@ module.exports = function draw_spillover_components(regl, params){
 
 /***/ }),
 
-/***/ "./src/draws/draw_tooltip_components.js":
-/*!**********************************************!*\
-  !*** ./src/draws/draw_tooltip_components.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// const make_tooltip_text_args = require('./../tooltip/make_tooltip_text_args');
-// var calc_tooltip_background_triangles = require('./../tooltip/calc_tooltip_background_triangles');
-var make_matrix_cell_tooltip = __webpack_require__(/*! ./../tooltip/make_matrix_cell_tooltip */ "./src/tooltip/make_matrix_cell_tooltip.js");
-
-module.exports = function draw_tooltip_components(regl, params){
-
-  /*
-  turned off drawing tooltip
-  */
-  // if (params.tooltip.tooltip_type === 'matrix-cell'){
-    make_matrix_cell_tooltip(params);
-  // }
-
-  // params.tooltip.show_tooltip = false;
-
-};
-
-/***/ }),
-
 /***/ "./src/draws/end_animation.js":
 /*!************************************!*\
   !*** ./src/draws/end_animation.js ***!
@@ -42600,7 +42102,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
-_ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+// var _ = require('underscore');
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
@@ -42642,7 +42144,9 @@ module.exports = function run_viz(regl, network){
     }
 
     if (params.interact.still_interacting == true || params.animation.initialize_viz == true || params.animation.running){
+
       draw_interacting(regl, params);
+
     }
     else if (params.interact.still_mouseover == true){
       // mouseover may result in draw command
@@ -42699,6 +42203,8 @@ module.exports = function final_interaction_frame(regl, params){
 
     // preventing from running on first frame
     if (params.animation.first_frame == false){
+
+      console.log('final_interaction_frame')
 
       // run draw commands
       params.labels.draw_labels = true;
@@ -43563,7 +43069,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.6.4
+  clustergrammer-gl version 0.6.5
 
  */
 
@@ -43575,7 +43081,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.6.4');
+  console.log('clustergrammer-gl version 0.6.5');
   console.log('################################');
 
   // decompress if necessary
@@ -46069,210 +45575,189 @@ module.exports = function make_spillover_args(regl, inst_depth,
 
 /***/ }),
 
-/***/ "./src/tooltip/make_matrix_cell_tooltip.js":
-/*!*************************************************!*\
-  !*** ./src/tooltip/make_matrix_cell_tooltip.js ***!
-  \*************************************************/
+/***/ "./src/tooltip/hide_d3_tip.js":
+/*!************************************!*\
+  !*** ./src/tooltip/hide_d3_tip.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function hide_d3_tip(params){
+
+  params.tooltip_fun.hide();
+
+}
+
+/***/ }),
+
+/***/ "./src/tooltip/initialize_d3_tip.js":
+/*!******************************************!*\
+  !*** ./src/tooltip/initialize_d3_tip.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function initialize_d3_tip(params){
+
+  // artifically initialize tooltip
+  /////////////////////////////////////
+  var inst_selector = params.root + ' .control-panel-background';
+  var control_panel_bkg = d3.select(inst_selector).node();
+  params.control_panel_bkg = control_panel_bkg;
+
+  params.tooltip_fun.show('tooltip', params.control_panel_bkg);
+
+  var d3_tip_width = parseFloat(d3.select(params.tooltip_id)
+                               .style('width')
+                               .replace('px',''));
+
+
+  var d3_tip_height = parseFloat(d3.select(params.tooltip_id)
+                               .style('height')
+                               .replace('px',''));
+
+
+  params.tooltip_ini_width = d3_tip_width;
+  params.tooltip_ini_height = d3_tip_height;
+
+  params.tooltip_fun.hide();
+
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/make_dendro_tooltip.js":
+/*!********************************************!*\
+  !*** ./src/tooltip/make_dendro_tooltip.js ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
 var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakdown_graph */ "./src/cats/make_cat_breakdown_graph.js");
+var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
 
-module.exports = function make_matrix_cell_tooltip(params){
-
-  var tooltip_dim = {};
-  tooltip_dim.height = 25;
-  tooltip_dim.width = 150;
-
-  var tooltip_buffer = {};
-  tooltip_buffer.x = 2;
-  tooltip_buffer.y = 2;
-
-  var text_offset = {};
-  text_offset.x = 10;
-  text_offset.y = 20;
+module.exports = function make_dendro_tooltip(params, inst_axis){
 
   var mouseover = params.interact.mouseover;
-  var tooltip_lines = [];
 
-  var cat_breakdown;
+  params.tooltip_fun.show('tooltip');
+  var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
+  make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
+
+  };
+
+/***/ }),
+
+/***/ "./src/tooltip/show_d3_tip.js":
+/*!************************************!*\
+  !*** ./src/tooltip/show_d3_tip.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
+
+module.exports = function show_d3_tip(params){
+
+  var inst_axis;
+  var full_string;
+  var mouseover = params.interact.mouseover;
+
+  console.log(params.tooltip.tooltip_type)
+  console.log(mouseover)
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
-    tooltip_lines[0] = mouseover.row.name + ' and ' + mouseover.col.name;
-    tooltip_lines[1] = 'value: ' + mouseover.value.toFixed(3);
-  }  else if (params.tooltip.tooltip_type.indexOf('row') >=0 && params.tooltip.tooltip_type != 'row-dendro'){
-    tooltip_lines[0] = mouseover.row.name;
+
+    // Matrix-Cell Tooltip
+    ////////////////////////
+
+    // row name
+    full_string = 'ROW: ' + mouseover.row.name;
+
     _.each(mouseover.row.cats, function(inst_cat){
-      tooltip_lines.push(inst_cat);
+      full_string = full_string + '<br>' + inst_cat
     });
-  } else if (params.tooltip.tooltip_type.indexOf('col') >=0 && params.tooltip.tooltip_type != 'col-dendro'){
-    tooltip_lines[0] = mouseover.col.name;
+
+    full_string = full_string + ' <br> <br> ';
+
+    // col name
+    full_string = full_string + 'COL: ' + mouseover.col.name;
+
     _.each(mouseover.col.cats, function(inst_cat){
-      tooltip_lines.push(inst_cat);
-    });
-  } else if (params.tooltip.tooltip_type === 'row-dendro'){
-
-    // tooltip_lines[0] = 'row-dendro';
-    _.each(mouseover.row.dendro.all_names, function(inst_name){
-      tooltip_lines.push(inst_name)
+      full_string = full_string + '<br>' + inst_cat
     });
 
+    full_string = full_string + ' <br> <br> value: ' + mouseover.value.toFixed(3);
 
-  } else if (params.tooltip.tooltip_type === 'col-dendro'){
-    tooltip_lines[0] = 'col-dendro';
-    _.each(mouseover.col.dendro.all_names, function(inst_name){
-      tooltip_lines.push(inst_name)
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .html(full_string);
+
+  } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
+
+    // Label Tooltip
+    //////////////////
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    full_string = mouseover[inst_axis].name;
+
+    _.each(mouseover[inst_axis].cats, function(inst_cat){
+      full_string = full_string + '<br>' + inst_cat
     });
 
-    cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .html(full_string);
+
+  } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
+
+    // Dendro Tooltip
+    //////////////////
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    make_dendro_tooltip(params, inst_axis);
+
+  } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
+
+    // Category Tooltip
+    /////////////////////
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    var inst_index = params.tooltip.tooltip_type.split('-')[2];
+
+    full_string = mouseover[inst_axis].cats[inst_index]
+
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .html(full_string);
+
   }
 
-  var pos_x;
-  var pos_y;
-  var group_tooltip_container
 
-  if (params.tooltip.tooltip_type.indexOf('dendro') < 0){
+  // position tooltip
+  var d3_tip_width = parseFloat(d3.select(params.tooltip_id)
+                               .style('width')
+                               .replace('px',''));
 
-    pos_x = params.zoom_data.x.cursor_position - tooltip_dim.width  - tooltip_buffer.x;
-    pos_y = params.zoom_data.y.cursor_position - tooltip_lines.length * tooltip_dim.height - tooltip_buffer.y;
+  var d3_tip_height = parseFloat(d3.select(params.tooltip_id)
+                               .style('height')
+                               .replace('px',''));
 
-    // console.log('making group to put svg into')
-    group_tooltip_container = d3.select(params.root + ' .canvas-container')
-      .append('g')
-      .style('position', 'absolute')
-      .style('top', function(){
-        var tmp_offset = pos_y - 0; // 20
-        return tmp_offset + 'px'
-      })
-      .style('left', function(){
-        var tmp_offset = pos_x - 0; // 20
-        return tmp_offset + 'px'
-      })
-      .classed('group-svg-tooltip', true);
+  // this is necessary to offset hte tooltip correctly, probably due to the
+  // padding in the tooltip or some related paramters
+  var magic_x_offset = 22;
 
-    var svg_tooltip_container = group_tooltip_container
-      .append('svg')
-      .style('height', function(){
-        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
-        return  inst_height + 'px'
-      })
-      .style('width', tooltip_dim.width + 'px')
-      .classed('svg-tooltip', true);
+  params.d3_tip_width = d3_tip_width
 
-    var svg_tooltip_group = svg_tooltip_container
-      .append('g')
-      .classed('tooltip-group', true)
-
-    // Non-Dendrogram Tooltip
-    ////////////////////////////
-
-    svg_tooltip_group
-      .append('rect')
-      .style('height', function(){
-        var inst_height = tooltip_lines.length * tooltip_dim.height + tooltip_buffer.y;
-        return  inst_height + 'px'
-      })
-      .style('width', tooltip_dim.width + 'px')
-      .style('fill', 'black')
-      .classed('tooltip-background', true)
-      .style('opacity', 0.85)
-
-    svg_tooltip_group
-      .selectAll('text')
-      .data(tooltip_lines)
-      .enter()
-      .append('text')
-      .style('fill', 'white')
-      .attr('transform', function(d, inst_index){
-        return 'translate(' + text_offset.x + ', '+ (inst_index +1)* text_offset.y +')';
-      })
-      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-      .style('font-weight',  800)
-      .style('font-size', 15)
-      .classed('tooltip-text', true)
-      .text(function(d, inst_index){
-        d3.select(this).classed('tooltip-text-line-' + String(inst_index), true)
-        return d;
-      });
-
-    // debugger;
-
-    var inst_line_width;
-
-    // make sure background is large enough for text
-    //////////////////////////////////////////////////
-    var text_width = d3.select('.tooltip-text').node().getBBox().width;
-
-    _.each(tooltip_lines, function(d, i){
-      inst_line_width = d3.select('.tooltip-text-line-' + String(i)).node().getBBox().width;
-      if (inst_line_width > text_width){
-        text_width = inst_line_width;
-      }
+  d3.select(params.tooltip_id)
+    .style('margin-left', function(){
+      var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
+                           magic_x_offset;
+      return total_x_offset + 'px'
     })
+    .style('margin-top', function(){
+      var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
+      return total_y_offset + 'px'
+    });
 
-    var num_offsets = 4;
-
-    if (text_width > tooltip_dim.width || params.tooltip.tooltip_type === 'row-label'){
-
-      d3.select(params.root + ' .svg-tooltip')
-        .style('width',function(){
-          inst_line_width = text_width + num_offsets * text_offset.x;
-          return inst_line_width + 'px';
-        })
-        .style('left', function(){
-          var inst_pos_x = params.zoom_data.x.cursor_position - text_width - (num_offsets) * text_offset.x;
-          return inst_pos_x;
-        })
-
-      d3.select(params.root + ' .tooltip-background')
-        .style('width',function(){
-          inst_line_width = text_width + num_offsets * text_offset.x;
-          return inst_line_width + 'px';
-        });
-
-    }
-
-  } else {
-
-    // Dendrogram Tooltip
-    ////////////////////////////
-    // console.log('make dendrogram category breakdown instead')
-
-    // pos_x = params.zoom_data.x.cursor_position +100;
-    // pos_y = params.zoom_data.y.cursor_position;
-
-    group_tooltip_container = d3.select(params.root + ' .canvas-container')
-      .append('g')
-        .style('position', 'absolute')
-        .style('margin-top',  '-30px')
-        // .attr('transform', function(d, inst_index){
-        //   return 'translate(' + 100 + ', '+ 0 +')';
-        // })
-      // .style('top', pos_y + 'px')
-      // .style('left', pos_x + 'px')
-      .classed('group-svg-tooltip', true);
-
-
-    if (params.tooltip.tooltip_type === 'row-dendro'){
-      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
-      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row', group_tooltip_container)
-    } else if (params.tooltip.tooltip_type === 'col-dendro'){
-
-      group_tooltip_container
-        .style('margin-left', String(370/2) + 'px')
-
-      cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
-      make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, 'col', group_tooltip_container)
-    }
-
-    // old
-    // var cat_breakdown = calc_cat_cluster_breakdown(params, inst_data, inst_rc);
-    //                     make_cat_breakdown_graph(  params, inst_rc, d, dendro_info[i], inst_selector);
-
-  }
-
-};
+}
 
 /***/ }),
 
@@ -46801,6 +46286,7 @@ module.exports = function sanitize_potential_zoom(zd, zoom_restrict){
 var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
+var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -46820,15 +46306,25 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
+
+    // console.log('interacting!')
+    hide_d3_tip(params);
+
   })
   .on('interactionend', function(){
 
-    // console.log('clicking')
+    console.log('clicking')
 
     if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
-      console.log('double click', params.interact.mouseover.row.name, params.interact.mouseover.col.name);
+
+      console.log('double click',
+                   params.interact.mouseover.row.name,
+                   params.interact.mouseover.col.name);
+
     } else {
+
       params.animation.last_click = params.animation.time;
+
     }
 
   });

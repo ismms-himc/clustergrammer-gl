@@ -2,7 +2,6 @@ var make_dendro_tooltip = require('./make_dendro_tooltip');
 
 module.exports = function show_d3_tip(params){
 
-  var cat_breakdown;
   var inst_axis;
   var full_string;
   var mouseover = params.interact.mouseover;
@@ -31,7 +30,7 @@ module.exports = function show_d3_tip(params){
       full_string = full_string + '<br>' + inst_cat
     });
 
-    full_string = full_string + ' <br> <br> ' + 'value: ' + mouseover.value.toFixed(3);
+    full_string = full_string + ' <br> <br> value: ' + mouseover.value.toFixed(3);
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
@@ -92,7 +91,8 @@ module.exports = function show_d3_tip(params){
 
   d3.select(params.tooltip_id)
     .style('margin-left', function(){
-      var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width + 22;
+      var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
+                           magic_x_offset;
       return total_x_offset + 'px'
     })
     .style('margin-top', function(){

@@ -42102,7 +42102,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+// var _ = require('underscore');
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
@@ -45639,8 +45639,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   var mouseover = params.interact.mouseover;
 
   params.tooltip_fun.show('tooltip');
-  cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
-  var group_tooltip_container = d3.select(params.tooltip_id).node();
+  var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
 
   };
@@ -45658,7 +45657,6 @@ var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./sr
 
 module.exports = function show_d3_tip(params){
 
-  var cat_breakdown;
   var inst_axis;
   var full_string;
   var mouseover = params.interact.mouseover;
@@ -45687,7 +45685,7 @@ module.exports = function show_d3_tip(params){
       full_string = full_string + '<br>' + inst_cat
     });
 
-    full_string = full_string + ' <br> <br> ' + 'value: ' + mouseover.value.toFixed(3);
+    full_string = full_string + ' <br> <br> value: ' + mouseover.value.toFixed(3);
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
@@ -45748,7 +45746,8 @@ module.exports = function show_d3_tip(params){
 
   d3.select(params.tooltip_id)
     .style('margin-left', function(){
-      var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width + 22;
+      var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
+                           magic_x_offset;
       return total_x_offset + 'px'
     })
     .style('margin-top', function(){

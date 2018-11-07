@@ -12,6 +12,8 @@ module.exports = function show_d3_tip(params){
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
+    // Matrix-Cell Tooltip
+    ////////////////////////
     full_string = mouseover.row.name + ' and ' +
                       mouseover.col.name + ' <br> ' +
                       'value: ' + mouseover.value.toFixed(3);
@@ -22,8 +24,14 @@ module.exports = function show_d3_tip(params){
 
   } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
 
+    // Label Tooltip
+    //////////////////
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
     full_string = mouseover[inst_axis].name;
+
+    _.each(mouseover[inst_axis].cats, function(inst_cat){
+      full_string = full_string + '<br>' + inst_cat
+    });
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
@@ -31,22 +39,24 @@ module.exports = function show_d3_tip(params){
 
   } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
 
+    // Dendro Tooltip
+    //////////////////
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
     make_dendro_tooltip(params, inst_axis);
 
   } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
 
+    // Category Tooltip
+    /////////////////////
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
     var inst_index = params.tooltip.tooltip_type.split('-')[2];
-
-    console.log('\n**************************')
-    console.log('CATEGORY', inst_axis, inst_index)
 
     full_string = mouseover[inst_axis].cats[inst_index]
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
       .html(full_string);
+
   }
 
 

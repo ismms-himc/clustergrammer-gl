@@ -1,4 +1,3 @@
-var d3_tip_custom = require('./d3_tip_custom');
 var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = require('./toggle_menu');
 var make_tree_menu = require('./make_tree_menu');
@@ -9,24 +8,6 @@ module.exports = function build_tree_icon(cgm){
   var params = cgm.params;
   var default_opacity = 0.35;
   var high_opacity = 0.6;
-
-  // // d3-tooltip
-  // var tree_icon_tip = d3_tip_custom()
-  //   .attr('class', function(){
-  //     // var root_tip_selector =  // params.viz.root_tips.replace('.','');
-  //     // var class_string = root_tip_selector + '_tree_icon_tip d3-tip';
-  //     class_string = 'custom-d3-tip';
-  //     return class_string;
-  //   })
-  //   .direction('w')
-  //   .style('display', 'none')
-  //   .offset([-10,-5])
-  //   .html(function(){
-  //     console.log('returning html');
-  //     return 'Clustering Menu';
-  //   });
-
-  // cgm.tree_icon_tip = tree_icon_tip;
 
   // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')

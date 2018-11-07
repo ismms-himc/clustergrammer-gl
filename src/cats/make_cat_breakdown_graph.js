@@ -2,7 +2,7 @@
 var cat_breakdown_bars = require('./cat_breakdown_bars');
 var cat_breakdown_values = require('./cat_breakdown_values');
 
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, cluster_info_container){
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown){
 
   /*
   This function is used to make the category breakdown graphs for tooltips on
@@ -63,19 +63,13 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       svg_height = svg_height + title_height * (num_bars + 1);
     });
 
-    // var main_dendro_svg = cluster_info_container
     var main_dendro_svg = d3.select(params.tooltip_id)
       .append('div')
       .style('margin-top','5px')
       .classed('cat_graph', true)
       .append('svg')
       .style('height', svg_height+'px')
-      .style('width', width+'px')
-      // .style('left', '-270px')
-
-    // cluster_info_container
-    //   .style('margin-bottom', '5px');
-
+      .style('width', width+'px');
 
     // make background
     main_dendro_svg
@@ -132,62 +126,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       // shift down based on number of bars
       shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
 
-      // reposition group
-    var pos_x = params.zoom_data.x.cursor_position - width;
-    var pos_y = params.zoom_data.y.cursor_position - svg_height;
-
-    // cluster_info_container
-    //   .style('top', pos_y + 'px')
-    //   .style('left', pos_x + 'px')
-
     });
-
-  /*
-    Not Needed, since I'm not using a modal
-  */
-  //   // reposition tooltip
-  //   /////////////////////////////////////////////////
-  //   if (tooltip){
-
-  //     var dendro_tip = d3.select(selector);
-  //     var old_top = dendro_tip.style('top').split('.px')[0];
-  //     var old_left = dendro_tip.style('left').split('.px')[0];
-  //     var shift_top = 0;
-  //     var shift_left = 0;
-
-  //     // shifting
-  //     if (inst_axis === 'row'){
-
-  //       // rows
-  //       //////////////
-  //       shift_top = 0;
-  //       shift_left = shift_tooltip_left;
-
-  //       // // prevent graph from being too high
-  //       // if (dendro_info.pos_top < svg_height){
-  //       //   // do not shift position of category breakdown graph
-  //       //   // shift_top = -(svg_height + (dendro_info.pos_mid - dendro_info.pos_top)/2) ;
-  //       // }
-
-  //     } else {
-
-  //       // columns
-  //       //////////////
-  //       shift_top = svg_height + 32;
-  //       shift_left = 30;
-  //     }
-
-  //     dendro_tip
-  //       .style('top', function(){
-  //         var new_top = String(parseInt( old_top,10) - shift_top) + 'px';
-  //         return new_top;
-  //       })
-  //       .style('left', function(){
-  //         var new_left = String(parseInt( old_left,10) - shift_left) + 'px';
-  //         return new_left;
-  //       });
-
-  //   }
 
   }
 

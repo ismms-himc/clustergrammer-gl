@@ -179,7 +179,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     if (params.tooltip.tooltip_type === 'row-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
 
-      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, group_tooltip_container)
+      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown);
 
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
 
@@ -187,12 +187,8 @@ module.exports = function make_matrix_cell_tooltip(params){
         .style('margin-left', String(370/2) + 'px')
 
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
-      make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, group_tooltip_container)
+      make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown)
     }
-
-    // old
-    // var cat_breakdown = calc_cat_cluster_breakdown(params, inst_data, inst_rc);
-    //                     make_cat_breakdown_graph(  params, inst_rc, d, dendro_info[i], inst_selector);
 
   }
 

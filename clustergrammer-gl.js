@@ -39786,8 +39786,6 @@ var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./
 
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
 
-  console.log('working on make_cat_breakdown_graph')
-
   /*
   This function is used to make the category breakdown graphs for tooltips on
   dendrogram mousover and on dendrogram click modal popup.
@@ -39797,7 +39795,6 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
-    console.log('non-zero cat breakdown length')
 
     // loop through cat_breakdown data
     var width = 370;
@@ -39847,8 +39844,6 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       }
       svg_height = svg_height + title_height * (num_bars + 1);
     });
-
-    console.log('cluster_info_container', cluster_info_container)
 
     // var main_dendro_svg = cluster_info_container
     var main_dendro_svg = d3.select(params.tooltip_id)
@@ -46107,6 +46102,29 @@ module.exports = function initialize_d3_tip(params){
 
 /***/ }),
 
+/***/ "./src/tooltip/make_dendro_tooltip.js":
+/*!********************************************!*\
+  !*** ./src/tooltip/make_dendro_tooltip.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakdown_graph */ "./src/cats/make_cat_breakdown_graph.js");
+var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
+
+module.exports = function make_dendro_tooltip(params, inst_axis){
+
+  var mouseover = params.interact.mouseover;
+
+  params.tooltip_fun.show('tooltip');
+  cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
+  var group_tooltip_container = d3.select(params.tooltip_id).node();
+  make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown, inst_axis, group_tooltip_container)
+
+  };
+
+/***/ }),
+
 /***/ "./src/tooltip/make_matrix_cell_tooltip.js":
 /*!*************************************************!*\
   !*** ./src/tooltip/make_matrix_cell_tooltip.js ***!
@@ -46323,8 +46341,7 @@ module.exports = function make_matrix_cell_tooltip(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
-var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakdown_graph */ "./src/cats/make_cat_breakdown_graph.js");
+var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
 
 module.exports = function show_d3_tip(params){
 
@@ -46349,18 +46366,12 @@ module.exports = function show_d3_tip(params){
   var cat_breakdown;
 
   if (params.tooltip.tooltip_type === 'col-dendro'){
-    make_dendro_tooltip('col');
+    make_dendro_tooltip(params, 'col');
   } else if (params.tooltip.tooltip_type === 'row-dendro') {
-    make_dendro_tooltip('row');
+    make_dendro_tooltip(params, 'row');
   }
 
-  function make_dendro_tooltip(inst_axis){
 
-    params.tooltip_fun.show('tooltip');
-    cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
-    var group_tooltip_container = d3.select(params.tooltip_id).node();
-    make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown, inst_axis, group_tooltip_container)
-  }
 
   // position tooltip
   var d3_tip_width = parseFloat(d3.select(params.tooltip_id)

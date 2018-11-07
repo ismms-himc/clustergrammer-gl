@@ -4,8 +4,6 @@ var cat_breakdown_values = require('./cat_breakdown_values');
 
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
 
-  console.log('working on make_cat_breakdown_graph')
-
   /*
   This function is used to make the category breakdown graphs for tooltips on
   dendrogram mousover and on dendrogram click modal popup.
@@ -15,7 +13,6 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
 
     // put cluster information in dendro_tip
     ///////////////////////////////////////////
-    console.log('non-zero cat breakdown length')
 
     // loop through cat_breakdown data
     var width = 370;
@@ -65,8 +62,6 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       }
       svg_height = svg_height + title_height * (num_bars + 1);
     });
-
-    console.log('cluster_info_container', cluster_info_container)
 
     // var main_dendro_svg = cluster_info_container
     var main_dendro_svg = d3.select(params.tooltip_id)

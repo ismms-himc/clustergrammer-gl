@@ -46357,9 +46357,24 @@ module.exports = function show_d3_tip(params){
 
     // Matrix-Cell Tooltip
     ////////////////////////
-    full_string = mouseover.row.name + ' and ' +
-                      mouseover.col.name + ' <br> ' +
-                      'value: ' + mouseover.value.toFixed(3);
+
+    // row name
+    full_string = 'ROW: ' + mouseover.row.name;
+
+    _.each(mouseover.row.cats, function(inst_cat){
+      full_string = full_string + '<br>' + inst_cat
+    });
+
+    full_string = full_string + ' <br> <br> ';
+
+    // col name
+    full_string = full_string + 'COL: ' + mouseover.col.name;
+
+    _.each(mouseover.col.cats, function(inst_cat){
+      full_string = full_string + '<br>' + inst_cat
+    });
+
+    full_string = full_string + ' <br> <br> ' + 'value: ' + mouseover.value.toFixed(3);
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)

@@ -46346,6 +46346,8 @@ var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./sr
 module.exports = function show_d3_tip(params){
 
   var cat_breakdown;
+  var inst_axis;
+  var full_string;
   var mouseover = params.interact.mouseover;
 
   console.log(params.tooltip.tooltip_type)
@@ -46353,7 +46355,7 @@ module.exports = function show_d3_tip(params){
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
-    var full_string = mouseover.row.name + ' and ' +
+    full_string = mouseover.row.name + ' and ' +
                       mouseover.col.name + ' <br> ' +
                       'value: ' + mouseover.value.toFixed(3);
 
@@ -46361,35 +46363,29 @@ module.exports = function show_d3_tip(params){
     d3.select(params.tooltip_id)
       .html(full_string);
 
-  } else if (params.tooltip.tooltip_type === 'row-label'){
+  } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
+
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    full_string = mouseover[inst_axis].name;
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
-      .html(mouseover.row.name);
+      .html(full_string);
 
-  } else if (params.tooltip.tooltip_type === 'col-label'){
+  } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
 
-    params.tooltip_fun.show('tooltip');
-    d3.select(params.tooltip_id)
-      .html(mouseover.col.name);
-
-  } else if (params.tooltip.tooltip_type === 'col-dendro'){
-
-    make_dendro_tooltip(params, 'col');
-
-  } else if (params.tooltip.tooltip_type === 'row-dendro') {
-
-    make_dendro_tooltip(params, 'row');
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    make_dendro_tooltip(params, inst_axis);
 
   } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
 
-    var inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
     var inst_index = params.tooltip.tooltip_type.split('-')[2];
 
     console.log('\n**************************')
     console.log('CATEGORY', inst_axis, inst_index)
 
-    var full_string = mouseover[inst_axis].cats[inst_index]
+    full_string = mouseover[inst_axis].cats[inst_index]
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)

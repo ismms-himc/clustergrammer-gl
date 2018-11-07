@@ -5,6 +5,9 @@ module.exports = function show_d3_tip(params){
   var cat_breakdown;
   var mouseover = params.interact.mouseover;
 
+  console.log(params.tooltip.tooltip_type)
+  console.log(mouseover)
+
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
     var full_string = mouseover.row.name + ' and ' +
@@ -17,19 +20,15 @@ module.exports = function show_d3_tip(params){
 
   } else if (params.tooltip.tooltip_type === 'row-label'){
 
-    var full_string = mouseover.row.name;
-
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
-      .html(full_string);
+      .html(mouseover.row.name);
 
   } else if (params.tooltip.tooltip_type === 'col-label'){
 
-    var full_string = mouseover.col.name;
-
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
-      .html(full_string);
+      .html(mouseover.col.name);
 
   } else if (params.tooltip.tooltip_type === 'col-dendro'){
 
@@ -39,6 +38,19 @@ module.exports = function show_d3_tip(params){
 
     make_dendro_tooltip(params, 'row');
 
+  } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
+
+    var inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    var inst_index = params.tooltip.tooltip_type.split('-')[2];
+
+    console.log('\n**************************')
+    console.log('CATEGORY', inst_axis, inst_index)
+
+    var full_string = mouseover[inst_axis].cats[inst_index]
+
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .html(full_string);
   }
 
 

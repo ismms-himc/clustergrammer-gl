@@ -2,7 +2,7 @@
 var cat_breakdown_bars = require('./cat_breakdown_bars');
 var cat_breakdown_values = require('./cat_breakdown_values');
 
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, cluster_info_container){
 
   /*
   This function is used to make the category breakdown graphs for tooltips on

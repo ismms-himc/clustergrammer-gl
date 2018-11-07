@@ -8,6 +8,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   params.tooltip_fun.show('tooltip');
   cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   var group_tooltip_container = d3.select(params.tooltip_id).node();
-  make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown, inst_axis, group_tooltip_container)
+  make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown, group_tooltip_container)
 
   };

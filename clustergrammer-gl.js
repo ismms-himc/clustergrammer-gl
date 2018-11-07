@@ -38119,7 +38119,7 @@ var make_cameras = __webpack_require__(/*! ./make_cameras */ "./src/cameras/make
 
 module.exports = function reset_cameras(regl, params){
 
-  // console.log('reset_cameras\n-------------------')
+  console.log('reset_cameras\n-------------------')
   params.reset_cameras = false;
 
   params.zoom_data = ini_zoom_data();
@@ -39784,7 +39784,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 var cat_breakdown_bars = __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js");
 var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js");
 
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, inst_axis, cluster_info_container){
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown, cluster_info_container){
 
   /*
   This function is used to make the category breakdown graphs for tooltips on
@@ -46119,7 +46119,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   params.tooltip_fun.show('tooltip');
   cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   var group_tooltip_container = d3.select(params.tooltip_id).node();
-  make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown, inst_axis, group_tooltip_container)
+  make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown, group_tooltip_container)
 
   };
 
@@ -46313,7 +46313,7 @@ module.exports = function make_matrix_cell_tooltip(params){
     if (params.tooltip.tooltip_type === 'row-dendro'){
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');
 
-      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, 'row', group_tooltip_container)
+      make_cat_breakdown_graph(params, mouseover.row.dendro, cat_breakdown, group_tooltip_container)
 
     } else if (params.tooltip.tooltip_type === 'col-dendro'){
 
@@ -46321,7 +46321,7 @@ module.exports = function make_matrix_cell_tooltip(params){
         .style('margin-left', String(370/2) + 'px')
 
       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.col.dendro, 'col');
-      make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, 'col', group_tooltip_container)
+      make_cat_breakdown_graph(params, mouseover.col.dendro, cat_breakdown, group_tooltip_container)
     }
 
     // old

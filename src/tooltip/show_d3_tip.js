@@ -2,32 +2,44 @@ var make_dendro_tooltip = require('./make_dendro_tooltip');
 
 module.exports = function show_d3_tip(params){
 
+  var cat_breakdown;
   var mouseover = params.interact.mouseover;
-
-  console.log(params.tooltip.tooltip_type, mouseover.value)
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
+    var full_string = mouseover.row.name + ' and ' +
+                      mouseover.col.name + ' <br> ' +
+                      'value: ' + mouseover.value.toFixed(3);
+
     params.tooltip_fun.show('tooltip');
-
     d3.select(params.tooltip_id)
-      .html(function(){
-        var full_string = mouseover.row.name + ' and ' +
-                          mouseover.col.name + ' <br> ' +
-                          'value: ' + mouseover.value.toFixed(3);
-        return full_string;
-      });
+      .html(full_string);
 
-  }
+  } else if (params.tooltip.tooltip_type === 'row-label'){
 
-  var cat_breakdown;
+    var full_string = mouseover.row.name;
 
-  if (params.tooltip.tooltip_type === 'col-dendro'){
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .html(full_string);
+
+  } else if (params.tooltip.tooltip_type === 'col-label'){
+
+    var full_string = mouseover.col.name;
+
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .html(full_string);
+
+  } else if (params.tooltip.tooltip_type === 'col-dendro'){
+
     make_dendro_tooltip(params, 'col');
-  } else if (params.tooltip.tooltip_type === 'row-dendro') {
-    make_dendro_tooltip(params, 'row');
-  }
 
+  } else if (params.tooltip.tooltip_type === 'row-dendro') {
+
+    make_dendro_tooltip(params, 'row');
+
+  }
 
 
   // position tooltip

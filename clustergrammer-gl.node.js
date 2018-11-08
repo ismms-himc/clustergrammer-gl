@@ -38696,12 +38696,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight',  800)
     .style('font-size', 12)
-    // .style('width', dim_x + 'px')
-    // .style('height', dim_y + 'px')
-    // .style('fill', 'black')
-    // .on('dblclick', function(d, i){
-    //   run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
-    // })
     .attr('transform', function(d, i){
       var y_trans = (dim_y + 1) * i + 10 ;
       return 'translate( 0, '+ y_trans +')';
@@ -42103,7 +42097,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
-// var _ = require('underscore');
+_ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
@@ -43070,7 +43064,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.6.7
+  clustergrammer-gl version 0.6.8
 
  */
 
@@ -43082,7 +43076,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.6.7');
+  console.log('clustergrammer-gl version 0.6.8');
   console.log('################################');
 
   // decompress if necessary
@@ -44390,6 +44384,11 @@ module.exports = function calc_alpha_order(params){
 
   var network = params.network
 
+  // https://stackoverflow.com/questions/9592740/how-can-you-sort-an-array-without-mutating-the-original-array
+  function sort(arr) {
+    return arr.concat().sort();
+  }
+
   var node_names;
   var tmp_names;
   _.each(['row', 'col'], function(inst_axis){
@@ -44397,15 +44396,22 @@ module.exports = function calc_alpha_order(params){
     var inst_nodes = network[inst_axis + '_nodes'];
     node_names = utils.pluck(inst_nodes, 'name');
 
+    console.log(node_names, node_names[10])
     network[inst_axis + '_node_names'] = node_names;
 
-    tmp_names = node_names.sort();
+    // tmp_names = node_names.sort();
+    tmp_names = sort(node_names);
+    console.log(node_names, node_names[10])
 
     _.map(inst_nodes, function(inst_node){
 
       var inst_alpha = node_names.length -  tmp_names.indexOf(inst_node.name) - 1;
 
-      inst_node.alpha = inst_alpha
+      // save alpha order
+      inst_node.alpha = inst_alpha;
+
+      // initialize custom order as alpha order
+      inst_node.custom = inst_alpha;
 
     });
 
@@ -44867,6 +44873,20 @@ module.exports = function generate_label_params(params){
   params.labels.font_detail = 40;
 
   generate_ordered_labels(params);
+
+  // generate titles if necessary
+  var inst_labels;
+  params.labels.titles = {};
+  _.each(['row', 'col'], function(inst_axis){
+
+    // initialize with empty title
+    params.labels.titles[inst_axis] = '';
+
+    inst_label = params.network[inst_axis + '_nodes'][0].name;
+    if (inst_label.indexOf(': ') > 0){
+      params.labels.titles[inst_axis] = inst_label.split(': ')[0];
+    }
+  })
 
 };
 
@@ -46294,6 +46314,8 @@ var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/muta
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
 var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
 
+var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
+
 module.exports = function zoom_rules_high_mat(regl, params){
 
   var opts = opts || {};
@@ -46326,6 +46348,62 @@ module.exports = function zoom_rules_high_mat(regl, params){
       console.log('double click',
                    params.interact.mouseover.row.name,
                    params.interact.mouseover.col.name);
+
+      // update col custom order
+      var full_name;
+      if (params.labels.titles.col !== ''){
+        full_name = params.labels.titles.col + ': ' +
+                    params.interact.mouseover.col.name;
+      }
+
+      var found_col_index = _.indexOf(params.network.col_node_names, full_name);
+
+      console.log('full_name', full_name);
+
+      mat = params.mat_data;
+      tmp_arr = [];
+
+      // row_nodes.forEach(function(node, index) {
+      //   tmp_arr.push( mat[index].row_data[inst_col].value);
+      // });
+
+      console.log('found_col_index', found_col_index)
+
+      _.each(mat, function(inst_row){
+        tmp_arr.push(inst_row[found_col_index]);
+        // tmp_arr.push(inst_row[28]);
+      });
+
+      // sort the cols
+      var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
+        return tmp_arr[b] - tmp_arr[a];
+      });
+
+      _.map(params.network.row_nodes, function(inst_node, node_index){
+        inst_node.custom = params.labels.num_row - tmp_sort[node_index]
+      })
+
+      console.log('tmp_arr')
+      console.log(tmp_arr)
+      console.log(tmp_sort)
+
+      // sort array says which index contains highest lowest values
+      // convert to name list
+      ordered_names = [];
+      _.map(tmp_sort, function(inst_index){
+        ordered_names.push(params.network.row_nodes[inst_index].name);
+      })
+
+      console.log(ordered_names)
+
+      // debugger;
+
+      params.network.row_nodes.forEach(function(node, index){
+        node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
+        // console.log(node.name, tmp_sort[index])
+      })
+
+      run_reorder(regl, cgm, 'row', 'custom');
 
     } else {
 

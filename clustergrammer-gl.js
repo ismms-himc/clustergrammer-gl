@@ -42097,7 +42097,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
-// var _ = require('underscore');
+_ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
@@ -43064,7 +43064,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.6.7
+  clustergrammer-gl version 0.6.8
 
  */
 
@@ -43076,7 +43076,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.6.7');
+  console.log('clustergrammer-gl version 0.6.8');
   console.log('################################');
 
   // decompress if necessary

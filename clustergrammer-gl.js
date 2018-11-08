@@ -40237,6 +40237,7 @@ module.exports = function build_control_panel(regl, cgm){
 
   var tooltip = tip.default()
                    .attr('id', cgm.params.tooltip_id.replace('#',''))
+                   .attr('class', 'cgm-tooltip')
                    .direction('sw')
                    .html(function(){
                       return '';
@@ -45672,22 +45673,22 @@ module.exports = function show_d3_tip(params){
     ////////////////////////
 
     // row name
-    full_string = 'ROW: ' + mouseover.row.name;
+    full_string = mouseover.row.name;
 
-    _.each(mouseover.row.cats, function(inst_cat){
-      full_string = full_string + '<br>' + inst_cat
-    });
+    // _.each(mouseover.row.cats, function(inst_cat){
+    //   full_string = full_string + '<br>' + inst_cat
+    // });
 
-    full_string = full_string + ' <br> <br> ';
+    full_string = full_string + ' and ';
 
     // col name
-    full_string = full_string + 'COL: ' + mouseover.col.name;
+    full_string = full_string + mouseover.col.name;
 
-    _.each(mouseover.col.cats, function(inst_cat){
-      full_string = full_string + '<br>' + inst_cat
-    });
+    // _.each(mouseover.col.cats, function(inst_cat){
+    //   full_string = full_string + '<br>' + inst_cat
+    // });
 
-    full_string = full_string + ' <br> <br> value: ' + mouseover.value.toFixed(3);
+    full_string = full_string + ' <br>value: ' + mouseover.value.toFixed(3);
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
@@ -45746,6 +45747,9 @@ module.exports = function show_d3_tip(params){
 
   params.d3_tip_width = d3_tip_width
 
+  d3.selectAll('.d3-tooltip')
+    .style('display', 'none');
+
   d3.select(params.tooltip_id)
     .style('margin-left', function(){
       var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
@@ -45756,6 +45760,7 @@ module.exports = function show_d3_tip(params){
       var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
       return total_y_offset + 'px'
     })
+    .style('display', 'block')
     .style('z-index', 99);
 
 }

@@ -20,6 +20,7 @@ module.exports = function build_control_panel(regl, cgm){
 
   var tooltip = tip.default()
                    .attr('id', cgm.params.tooltip_id.replace('#',''))
+                   .attr('class', 'cgm-tooltip')
                    .direction('sw')
                    .html(function(){
                       return '';

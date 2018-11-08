@@ -88,8 +88,8 @@ module.exports = function zoom_rules_high_mat(regl, params){
       // debugger;
 
       params.network.row_nodes.forEach(function(node, index){
-        node.custom = tmp_sort[index]
-        console.log(node.name, tmp_sort[index])
+        node.custom = _.indexOf(ordered_names, node.name);
+        // console.log(node.name, tmp_sort[index])
       })
 
       run_reorder(regl, cgm, 'row', 'custom');

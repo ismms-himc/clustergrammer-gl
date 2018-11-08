@@ -87,6 +87,14 @@ module.exports = function initialize_params(regl, network){
   params.zoom_restrict = ini_zoom_restrict(params);
 
   // update zoom_data
+
+  /*
+
+  Need to pass cgm to zoom_rules_high_mat in order to have custom row/col
+  reordering
+
+  */
+
   zoom_rules_high_mat(regl, params);
   make_cameras(regl, params);
 

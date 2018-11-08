@@ -18,7 +18,11 @@ module.exports = function calc_alpha_order(params){
 
       var inst_alpha = node_names.length -  tmp_names.indexOf(inst_node.name) - 1;
 
-      inst_node.alpha = inst_alpha
+      // save alpha order
+      inst_node.alpha = inst_alpha;
+
+      // initialize custom order as alpha order
+      inst_node.custom = inst_alpha;
 
     });
 

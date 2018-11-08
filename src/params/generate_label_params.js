@@ -14,4 +14,18 @@ module.exports = function generate_label_params(params){
 
   generate_ordered_labels(params);
 
+  // generate titles if necessary
+  var inst_labels;
+  params.labels.titles = {};
+  _.each(['row', 'col'], function(inst_axis){
+
+    // initialize with empty title
+    params.labels.titles[inst_axis] = '';
+
+    inst_label = params.network[inst_axis + '_nodes'][0].name;
+    if (inst_label.indexOf(': ') > 0){
+      params.labels.titles[inst_axis] = inst_label.split(': ')[0];
+    }
+  })
+
 };

@@ -41,12 +41,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight',  800)
     .style('font-size', 12)
-    // .style('width', dim_x + 'px')
-    // .style('height', dim_y + 'px')
-    // .style('fill', 'black')
-    // .on('dblclick', function(d, i){
-    //   run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
-    // })
     .attr('transform', function(d, i){
       var y_trans = (dim_y + 1) * i + 10 ;
       return 'translate( 0, '+ y_trans +')';

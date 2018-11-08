@@ -46362,11 +46362,38 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
 
       _.each(mat, function(inst_row){
-        tmp_arr.push(inst_row[inst_index]);
+        tmp_arr.push(inst_row[params.labels.num_row - inst_index]);
+      });
+
+      // sort the cols
+      var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
+        return tmp_arr[b] - tmp_arr[a];
+      });
+
+      _.map(params.network.row_nodes, function(inst_node, node_index){
+        inst_node.custom = params.labels.num_row - tmp_sort[node_index]
       })
+
 
       console.log('tmp_arr')
       console.log(tmp_arr)
+      console.log(tmp_sort)
+
+      // sort array says which index contains highest lowest values
+      // convert to name list
+      ordered_names = [];
+      _.map(tmp_sort, function(inst_index){
+        ordered_names.push(params.network.row_nodes[inst_index].name);
+      })
+
+      console.log(ordered_names)
+
+      // debugger;
+
+      params.network.row_nodes.forEach(function(node, index){
+        node.custom = tmp_sort[index]
+        console.log(node.name, tmp_sort[index])
+      })
 
       run_reorder(regl, cgm, 'row', 'custom');
 

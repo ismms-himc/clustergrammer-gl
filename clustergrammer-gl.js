@@ -44384,6 +44384,11 @@ module.exports = function calc_alpha_order(params){
 
   var network = params.network
 
+  // https://stackoverflow.com/questions/9592740/how-can-you-sort-an-array-without-mutating-the-original-array
+  function sort(arr) {
+    return arr.concat().sort();
+  }
+
   var node_names;
   var tmp_names;
   _.each(['row', 'col'], function(inst_axis){
@@ -44391,9 +44396,12 @@ module.exports = function calc_alpha_order(params){
     var inst_nodes = network[inst_axis + '_nodes'];
     node_names = utils.pluck(inst_nodes, 'name');
 
+    console.log(node_names, node_names[10])
     network[inst_axis + '_node_names'] = node_names;
 
-    tmp_names = node_names.sort();
+    // tmp_names = node_names.sort();
+    tmp_names = sort(node_names);
+    console.log(node_names, node_names[10])
 
     _.map(inst_nodes, function(inst_node){
 
@@ -46348,21 +46356,22 @@ module.exports = function zoom_rules_high_mat(regl, params){
                     params.interact.mouseover.col.name;
       }
 
+      var found_col_index = _.indexOf(params.network.col_node_names, full_name);
 
-      var inst_index = _.indexOf(params.network.col_node_names, full_name);
-
-      console.log('full_name', full_name, inst_index);
-
+      console.log('full_name', full_name);
 
       mat = params.mat_data;
       tmp_arr = [];
+
       // row_nodes.forEach(function(node, index) {
       //   tmp_arr.push( mat[index].row_data[inst_col].value);
       // });
 
+      console.log('found_col_index', found_col_index)
 
       _.each(mat, function(inst_row){
-        tmp_arr.push(inst_row[params.labels.num_row - inst_index]);
+        tmp_arr.push(inst_row[found_col_index]);
+        // tmp_arr.push(inst_row[28]);
       });
 
       // sort the cols
@@ -46373,7 +46382,6 @@ module.exports = function zoom_rules_high_mat(regl, params){
       _.map(params.network.row_nodes, function(inst_node, node_index){
         inst_node.custom = params.labels.num_row - tmp_sort[node_index]
       })
-
 
       console.log('tmp_arr')
       console.log(tmp_arr)
@@ -46391,7 +46399,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
       // debugger;
 
       params.network.row_nodes.forEach(function(node, index){
-        node.custom = _.indexOf(ordered_names, node.name);
+        node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
         // console.log(node.name, tmp_sort[index])
       })
 

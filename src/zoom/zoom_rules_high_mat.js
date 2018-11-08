@@ -45,21 +45,22 @@ module.exports = function zoom_rules_high_mat(regl, params){
                     params.interact.mouseover.col.name;
       }
 
+      var found_col_index = _.indexOf(params.network.col_node_names, full_name);
 
-      var inst_index = _.indexOf(params.network.col_node_names, full_name);
-
-      console.log('full_name', full_name, inst_index);
-
+      console.log('full_name', full_name);
 
       mat = params.mat_data;
       tmp_arr = [];
+
       // row_nodes.forEach(function(node, index) {
       //   tmp_arr.push( mat[index].row_data[inst_col].value);
       // });
 
+      console.log('found_col_index', found_col_index)
 
       _.each(mat, function(inst_row){
-        tmp_arr.push(inst_row[params.labels.num_row - inst_index]);
+        tmp_arr.push(inst_row[found_col_index]);
+        // tmp_arr.push(inst_row[28]);
       });
 
       // sort the cols
@@ -70,7 +71,6 @@ module.exports = function zoom_rules_high_mat(regl, params){
       _.map(params.network.row_nodes, function(inst_node, node_index){
         inst_node.custom = params.labels.num_row - tmp_sort[node_index]
       })
-
 
       console.log('tmp_arr')
       console.log(tmp_arr)
@@ -88,7 +88,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
       // debugger;
 
       params.network.row_nodes.forEach(function(node, index){
-        node.custom = _.indexOf(ordered_names, node.name);
+        node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
         // console.log(node.name, tmp_sort[index])
       })
 

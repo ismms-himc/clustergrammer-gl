@@ -218,7 +218,7 @@ module.exports = function build_control_panel(regl, cgm){
 
           /* category order is already calculated */
           // d = d.replace('alpha', 'cat_1_index')
-          run_reorder(regl, cgm, inst_axis, d);
+          run_reorder(regl, cgm.params, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
             .selectAll('rect')

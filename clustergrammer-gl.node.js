@@ -38715,11 +38715,11 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('opacity', 0.0)
     .on('dblclick', function(d, i){
 
-      run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
+      run_reorder(regl, params, 'col', 'cat_' + String(i) + '_index');
 
-      cgm.params.order.inst.col = 'cat_' + String(i) + '_index';
+      params.order.inst.col = 'cat_' + String(i) + '_index';
 
-      d3.select(cgm.params.root + ' .col-reorder-buttons')
+      d3.select(params.root + ' .col-reorder-buttons')
         .selectAll('rect')
         .style('stroke', button_color);
 
@@ -40429,7 +40429,7 @@ module.exports = function build_control_panel(regl, cgm){
 
           /* category order is already calculated */
           // d = d.replace('alpha', 'cat_1_index')
-          run_reorder(regl, cgm, inst_axis, d);
+          run_reorder(regl, cgm.params, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
             .selectAll('rect')
@@ -43064,7 +43064,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.6.10
+  clustergrammer-gl version 0.7.0
 
  */
 
@@ -43076,7 +43076,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.6.10');
+  console.log('clustergrammer-gl version 0.7.0');
   console.log('################################');
 
   // decompress if necessary
@@ -45237,9 +45237,7 @@ module.exports = function initialize_params(regl, network){
 
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 
-module.exports = function reorder_cat_args(regl, cgm){
-
-  var params = cgm.params;
+module.exports = function reorder_cat_args(regl, params){
 
   // can make more efficient by only checking which axis needs to be reordered
 
@@ -45273,8 +45271,7 @@ module.exports = function reorder_cat_args(regl, cgm){
 
 var make_position_arr = __webpack_require__(/*! ./../matrix_cells/make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 
-module.exports = function reorder_matrix_args(regl, cgm){
-  var params = cgm.params;
+module.exports = function reorder_matrix_args(regl, params){
 
   // calculate new ordering
   params.arrs.position_arr.new = make_position_arr(params,
@@ -45300,9 +45297,7 @@ var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reor
 var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 
-module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
-
-  var params = cgm.params;
+module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
@@ -45315,8 +45310,8 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   params.animation.run_animation = true;
   params.order.new[inst_axis] = new_order;
 
-  reorder_matrix_args(regl, cgm);
-  reorder_cat_args(regl, cgm);
+  reorder_matrix_args(regl, params);
+  reorder_cat_args(regl, params);
 
   // preventing tmp reordering bug that happens when pre-calculated labels are
   // incorrectly animated on reordering. The bug seems to occur only when the
@@ -45326,7 +45321,7 @@ module.exports = function run_reorder(regl, cgm, inst_axis, ini_new_order){
   */
 
   // either update the existing draw text_triangles or trash them
-  if (cgm.params.text_triangles.draw[inst_axis] != false && params.labels['num_' + inst_axis] <= params.max_num_text){
+  if (params.text_triangles.draw[inst_axis] != false && params.labels['num_' + inst_axis] <= params.max_num_text){
     params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;
@@ -46359,19 +46354,19 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    console.log('interacting!')
+    // console.log('interacting!')
     hide_d3_tip(params);
 
   })
   .on('interactionend', function(){
 
-    console.log('clicking')
+    // console.log('clicking');
 
     if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
 
-      console.log('double click',
-                   params.interact.mouseover.row.name,
-                   params.interact.mouseover.col.name);
+      // console.log('double click',
+      //              params.interact.mouseover.row.name,
+      //              params.interact.mouseover.col.name);
 
       // update col custom order
       var full_name;
@@ -46382,7 +46377,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       var found_col_index = _.indexOf(params.network.col_node_names, full_name);
 
-      console.log('full_name', full_name);
+      // console.log('full_name', full_name);
 
       var mat = params.mat_data;
       tmp_arr = [];
@@ -46391,7 +46386,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
       //   tmp_arr.push( mat[index].row_data[inst_col].value);
       // });
 
-      console.log('found_col_index', found_col_index)
+      // console.log('found_col_index', found_col_index)
 
       _.each(mat, function(inst_row){
         tmp_arr.push(inst_row[found_col_index]);
@@ -46407,9 +46402,9 @@ module.exports = function zoom_rules_high_mat(regl, params){
         inst_node.custom = params.labels.num_row - tmp_sort[node_index]
       })
 
-      console.log('tmp_arr')
-      console.log(tmp_arr)
-      console.log(tmp_sort)
+      // console.log('tmp_arr')
+      // console.log(tmp_arr)
+      // console.log(tmp_sort)
 
       // sort array says which index contains highest lowest values
       // convert to name list
@@ -46418,7 +46413,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
         ordered_names.push(params.network.row_nodes[inst_index].name);
       })
 
-      console.log(ordered_names)
+      // console.log(ordered_names)
 
       // debugger;
 
@@ -46427,7 +46422,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
         // console.log(node.name, tmp_sort[index])
       })
 
-      run_reorder(regl, cgm, 'row', 'custom');
+      run_reorder(regl, params, 'row', 'custom');
 
     } else {
 

@@ -60,11 +60,11 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('opacity', 0.0)
     .on('dblclick', function(d, i){
 
-      run_reorder(regl, cgm, 'col', 'cat_' + String(i) + '_index');
+      run_reorder(regl, params, 'col', 'cat_' + String(i) + '_index');
 
-      cgm.params.order.inst.col = 'cat_' + String(i) + '_index';
+      params.order.inst.col = 'cat_' + String(i) + '_index';
 
-      d3.select(cgm.params.root + ' .col-reorder-buttons')
+      d3.select(params.root + ' .col-reorder-buttons')
         .selectAll('rect')
         .style('stroke', button_color);
 

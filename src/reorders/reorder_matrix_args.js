@@ -1,7 +1,6 @@
 var make_position_arr = require('./../matrix_cells/make_position_arr');
 
-module.exports = function reorder_matrix_args(regl, cgm){
-  var params = cgm.params;
+module.exports = function reorder_matrix_args(regl, params){
 
   // calculate new ordering
   params.arrs.position_arr.new = make_position_arr(params,

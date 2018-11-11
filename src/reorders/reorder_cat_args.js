@@ -1,8 +1,6 @@
 var make_cat_position_array = require('./../cats/make_cat_position_array');
 
-module.exports = function reorder_cat_args(regl, cgm){
-
-  var params = cgm.params;
+module.exports = function reorder_cat_args(regl, params){
 
   // can make more efficient by only checking which axis needs to be reordered
 

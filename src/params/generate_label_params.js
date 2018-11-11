@@ -15,7 +15,7 @@ module.exports = function generate_label_params(params){
   generate_ordered_labels(params);
 
   // generate titles if necessary
-  var inst_labels;
+  var inst_label;
   params.labels.titles = {};
   _.each(['row', 'col'], function(inst_axis){
 

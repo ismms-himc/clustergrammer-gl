@@ -38119,7 +38119,7 @@ var make_cameras = __webpack_require__(/*! ./make_cameras */ "./src/cameras/make
 
 module.exports = function reset_cameras(regl, params){
 
-  console.log('reset_cameras\n-------------------')
+  // console.log('reset_cameras\n-------------------')
   params.reset_cameras = false;
 
   params.zoom_data = ini_zoom_data();
@@ -42199,7 +42199,7 @@ module.exports = function final_interaction_frame(regl, params){
     // preventing from running on first frame
     if (params.animation.first_frame == false){
 
-      console.log('final_interaction_frame')
+      // console.log('final_interaction_frame')
 
       // run draw commands
       params.labels.draw_labels = true;
@@ -44396,12 +44396,12 @@ module.exports = function calc_alpha_order(params){
     var inst_nodes = network[inst_axis + '_nodes'];
     node_names = utils.pluck(inst_nodes, 'name');
 
-    console.log(node_names, node_names[10])
+    // console.log(node_names, node_names[10])
     network[inst_axis + '_node_names'] = node_names;
 
     // tmp_names = node_names.sort();
     tmp_names = sort(node_names);
-    console.log(node_names, node_names[10])
+    // console.log(node_names, node_names[10])
 
     _.map(inst_nodes, function(inst_node){
 
@@ -44875,7 +44875,7 @@ module.exports = function generate_label_params(params){
   generate_ordered_labels(params);
 
   // generate titles if necessary
-  var inst_labels;
+  var inst_label;
   params.labels.titles = {};
   _.each(['row', 'col'], function(inst_axis){
 
@@ -45685,6 +45685,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
+// var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
 
 module.exports = function show_d3_tip(params){
 
@@ -45692,8 +45693,14 @@ module.exports = function show_d3_tip(params){
   var full_string;
   var mouseover = params.interact.mouseover;
 
-  console.log(params.tooltip.tooltip_type)
-  console.log(mouseover)
+  // console.log(params.tooltip.tooltip_type)
+  // console.log(mouseover)
+
+  // // check if tooltip is missing
+  // if (d3.select(params.tooltip_id).empty()){
+  //   console.log('need to make new tooltip')
+  //   initialize_d3_tip(cgm.params);
+  // }
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
@@ -45773,10 +45780,19 @@ module.exports = function show_d3_tip(params){
   // padding in the tooltip or some related paramters
   var magic_x_offset = 22;
 
-  params.d3_tip_width = d3_tip_width
+  params.d3_tip_width = d3_tip_width;
 
   d3.selectAll('.d3-tooltip')
     .style('display', 'none');
+
+  // remove any other tooltips left behind by another heatmap
+  d3.selectAll('.cgm-tooltip').each(
+    function(){
+    var inst_id = d3.select(this).attr('id').split('_')[1];
+    if(d3.select('#'+inst_id).empty()){
+      d3.select(this).style('display', 'none')
+    }
+  });
 
   d3.select(params.tooltip_id)
     .style('margin-left', function(){
@@ -46343,7 +46359,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    // console.log('interacting!')
+    console.log('interacting!')
     hide_d3_tip(params);
 
   })
@@ -46368,7 +46384,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       console.log('full_name', full_name);
 
-      mat = params.mat_data;
+      var mat = params.mat_data;
       tmp_arr = [];
 
       // row_nodes.forEach(function(node, index) {

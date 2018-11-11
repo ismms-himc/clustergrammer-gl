@@ -8,7 +8,7 @@ module.exports = function final_interaction_frame(regl, params){
     // preventing from running on first frame
     if (params.animation.first_frame == false){
 
-      console.log('final_interaction_frame')
+      // console.log('final_interaction_frame')
 
       // run draw commands
       params.labels.draw_labels = true;

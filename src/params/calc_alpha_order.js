@@ -15,12 +15,12 @@ module.exports = function calc_alpha_order(params){
     var inst_nodes = network[inst_axis + '_nodes'];
     node_names = utils.pluck(inst_nodes, 'name');
 
-    console.log(node_names, node_names[10])
+    // console.log(node_names, node_names[10])
     network[inst_axis + '_node_names'] = node_names;
 
     // tmp_names = node_names.sort();
     tmp_names = sort(node_names);
-    console.log(node_names, node_names[10])
+    // console.log(node_names, node_names[10])
 
     _.map(inst_nodes, function(inst_node){
 

@@ -1,4 +1,5 @@
 var make_dendro_tooltip = require('./make_dendro_tooltip');
+// var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
 
 module.exports = function show_d3_tip(params){
 
@@ -6,8 +7,14 @@ module.exports = function show_d3_tip(params){
   var full_string;
   var mouseover = params.interact.mouseover;
 
-  console.log(params.tooltip.tooltip_type)
-  console.log(mouseover)
+  // console.log(params.tooltip.tooltip_type)
+  // console.log(mouseover)
+
+  // // check if tooltip is missing
+  // if (d3.select(params.tooltip_id).empty()){
+  //   console.log('need to make new tooltip')
+  //   initialize_d3_tip(cgm.params);
+  // }
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
@@ -87,10 +94,19 @@ module.exports = function show_d3_tip(params){
   // padding in the tooltip or some related paramters
   var magic_x_offset = 22;
 
-  params.d3_tip_width = d3_tip_width
+  params.d3_tip_width = d3_tip_width;
 
   d3.selectAll('.d3-tooltip')
     .style('display', 'none');
+
+  // remove any other tooltips left behind by another heatmap
+  d3.selectAll('.cgm-tooltip').each(
+    function(){
+    var inst_id = d3.select(this).attr('id').split('_')[1];
+    if(d3.select('#'+inst_id).empty()){
+      d3.select(this).style('display', 'none')
+    }
+  });
 
   d3.select(params.tooltip_id)
     .style('margin-left', function(){

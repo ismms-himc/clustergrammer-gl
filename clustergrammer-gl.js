@@ -45782,7 +45782,7 @@ module.exports = function show_d3_tip(params){
 
   params.d3_tip_width = d3_tip_width;
 
-  d3.selectAll('.d3-tooltip')
+  d3.selectAll('.cgm-tooltip')
     .style('display', 'none');
 
   // remove any other tooltips left behind by another heatmap

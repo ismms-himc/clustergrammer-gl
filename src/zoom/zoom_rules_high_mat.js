@@ -43,7 +43,13 @@ module.exports = function zoom_rules_high_mat(regl, params){
       if (params.labels.titles.col !== ''){
         full_name = params.labels.titles.col + ': ' +
                     params.interact.mouseover.col.name;
+      } else {
+        full_name = params.interact.mouseover.col.name;
       }
+
+      // debugger
+
+      // console.log(full_name)
 
       var found_col_index = _.indexOf(params.network.col_node_names, full_name);
 

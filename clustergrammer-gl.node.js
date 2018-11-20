@@ -43277,7 +43277,8 @@ module.exports = function make_matrix_args(regl, params){
     ];
 
   var vert_string = `
-    precision highp float;
+    // precision highp float;
+    precision lowp float;
     attribute vec2 position;
     attribute vec2 pos_att_ini, pos_att_new;
     attribute float opacity_att;
@@ -43311,7 +43312,8 @@ module.exports = function make_matrix_args(regl, params){
     }`;
 
   var frag_string = `
-    precision highp float;
+    // precision highp float;
+    precision lowp float;
 
     // use the varying being passed from the vertex shader
     varying float opacity_vary;

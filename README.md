@@ -9,6 +9,10 @@
 
 The Clustergrammer-GL repo contains the *in-development* WebGL/[regl](http://regl.party/) version of [Clustergrammer](https://github.com/MaayanLab/clustergrammer). See [live example](https://ismms-himc.github.io/clustergrammer-gl/).
 
+### JupyterCon 2018 Presentation
+[![Clustergrammer JupyterCon 2018](http://img.youtube.com/vi/82epZkmfkrE/0.jpg)](http://www.youtube.com/watch?v=82epZkmfkrE)
+
+The Clustergrammer project was recently presented at JupyterCon 2018 (see [slides](http://bit.ly/clustergrammer-jupytercon)).
 
 ## Citing Clustergrammer
 Please consider supporting Clustergrammer by citing our publication:

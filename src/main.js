@@ -77,6 +77,8 @@ function clustergrammer_gl(args){
 
   var params = run_viz(regl, network);
 
+  console.log('MAKING CHANGES')
+
   var cgm = {};
 
   cgm.params = params;

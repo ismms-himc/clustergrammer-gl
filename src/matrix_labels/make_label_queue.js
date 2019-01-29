@@ -4,7 +4,7 @@ module.exports = function make_inst_queue(params){
   params.labels.queue.low = {}
   params.labels.queue.high = {}
 
-  params.labels.max_label_queue = 1000;
+  params.labels.max_label_queue = 2000;
 
   var inst_queue;
 

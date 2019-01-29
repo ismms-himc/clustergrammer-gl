@@ -40269,6 +40269,10 @@ module.exports = function build_control_panel(regl, cgm){
     .append('svg')
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
+    .on('mouseover', function(){
+      console.log('mousing over control panel')
+      cgm.params.tooltip.in_bounds_tooltip = false;
+    })
 
   control_svg
     .append('rect')
@@ -40307,6 +40311,7 @@ module.exports = function build_control_panel(regl, cgm){
   var border_height = 1;
   control_svg
     .append('rect')
+    .classed('north_border', true)
     .style('height', '1px')
     .style('width',inst_width+'px')
     .style('position', 'absolute')
@@ -40512,6 +40517,31 @@ module.exports = function build_control_panel(regl, cgm){
         return get_cat_title(viz, d, 'col');
       });
   */
+
+  // need to move tooltip
+
+  // var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
+  // console.log('working on east_border')
+  // // working on tooltip borders
+  // var east_border = d3.select(control_container)
+  //   .append('svg')
+  //   .style('width', cgm.params.tooltip.border_width + 'px')
+  //   .style('width','5px')
+  //   // .on('mouseover', function(){
+  //   //   console.log('mousing over control panel')
+  //   //   // cgm.params.tooltip.in_bounds_tooltip = false;
+  //   // });
+
+
+  // east_border
+  //   .append('rect')
+  //   .classed('east_border', true)
+  //   .style('height',inst_height + 'px')
+  //   .style('width', cgm.params.tooltip.border_width+'px')
+  //   .style('position', 'absolute')
+  //   .style('fill', 'black')
+  //   .attr('class', 'east_border')
+
 
   build_reorder_cat_titles(regl, cgm);
   build_tree_icon(cgm);
@@ -41721,19 +41751,21 @@ module.exports = function draw_background_calculations(regl, params){
   // var updated_labels = false;
   _.each(['row', 'col'], function(inst_axis){
 
-    // low priority queue
-    if (params.labels.queue.low[inst_axis].length > 0 &&
-      params.labels['num_' + inst_axis] < params.labels.max_label_queue){
+    // disable background text calculation
 
-      var inst_name = params.labels.queue.low[inst_axis][0];
+    // // low priority queue (runs in background)
+    // if (params.labels.queue.low[inst_axis].length > 0 &&
+    //   params.labels['num_' + inst_axis] < params.labels.max_label_queue){
 
-      // add to text_triangles pre-calc
-      var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
-      params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+    //   var inst_name = params.labels.queue.low[inst_axis][0];
 
-      drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+    //   // add to text_triangles pre-calc
+    //   var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+    //   params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-    }
+    //   drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+
+    // }
 
   });
 
@@ -41771,10 +41803,10 @@ module.exports = function draw_commands(regl, params){
   draw_spillover_components(regl, params);
 
   // clean tooltip
+  console.log(params.tooltip.in_bounds_tooltip)
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
 
     // draw_tooltip_components(regl, params);
-
     show_d3_tip(params);
 
   }
@@ -43141,8 +43173,6 @@ function clustergrammer_gl(args){
 
   var params = run_viz(regl, network);
 
-  console.log('MAKING CHANGES')
-
   var cgm = {};
 
   cgm.params = params;
@@ -43885,7 +43915,7 @@ module.exports = function make_inst_queue(params){
   params.labels.queue.low = {}
   params.labels.queue.high = {}
 
-  params.labels.max_label_queue = 1000;
+  params.labels.max_label_queue = 2000;
 
   var inst_queue;
 
@@ -44352,6 +44382,7 @@ const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules
 var drop_label_from_queue = __webpack_require__(/*! ./drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
 
 module.exports = function vectorize_label(params, inst_axis, inst_name){
+  console.log('vectorize_label')
 
   var vect_text_attrs = {
     textAlign: 'left',
@@ -45064,6 +45095,7 @@ module.exports = function generate_tooltip_params(regl, params){
   params.tooltip.background_opacity = 0.75;
   params.tooltip.tooltip_type = null;
 
+  params.tooltip.border_width = 5;
 }
 
 /***/ }),
@@ -45693,7 +45725,7 @@ module.exports = function show_d3_tip(params){
   var full_string;
   var mouseover = params.interact.mouseover;
 
-  // console.log(params.tooltip.tooltip_type)
+  console.log(params.tooltip.tooltip_type)
   // console.log(mouseover)
 
   // // check if tooltip is missing

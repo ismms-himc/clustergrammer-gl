@@ -21,10 +21,10 @@ module.exports = function draw_commands(regl, params){
   draw_spillover_components(regl, params);
 
   // clean tooltip
+  console.log(params.tooltip.in_bounds_tooltip)
   if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
 
     // draw_tooltip_components(regl, params);
-
     show_d3_tip(params);
 
   }

@@ -15,19 +15,21 @@ module.exports = function draw_background_calculations(regl, params){
   // var updated_labels = false;
   _.each(['row', 'col'], function(inst_axis){
 
-    // low priority queue
-    if (params.labels.queue.low[inst_axis].length > 0 &&
-      params.labels['num_' + inst_axis] < params.labels.max_label_queue){
+    // disable background text calculation
 
-      var inst_name = params.labels.queue.low[inst_axis][0];
+    // // low priority queue (runs in background)
+    // if (params.labels.queue.low[inst_axis].length > 0 &&
+    //   params.labels['num_' + inst_axis] < params.labels.max_label_queue){
 
-      // add to text_triangles pre-calc
-      var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
-      params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+    //   var inst_name = params.labels.queue.low[inst_axis][0];
 
-      drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+    //   // add to text_triangles pre-calc
+    //   var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+    //   params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-    }
+    //   drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+
+    // }
 
   });
 

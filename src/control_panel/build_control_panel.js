@@ -58,6 +58,10 @@ module.exports = function build_control_panel(regl, cgm){
     .append('svg')
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
+    .on('mouseover', function(){
+      console.log('mousing over control panel')
+      cgm.params.tooltip.in_bounds_tooltip = false;
+    })
 
   control_svg
     .append('rect')
@@ -96,6 +100,7 @@ module.exports = function build_control_panel(regl, cgm){
   var border_height = 1;
   control_svg
     .append('rect')
+    .classed('north_border', true)
     .style('height', '1px')
     .style('width',inst_width+'px')
     .style('position', 'absolute')
@@ -301,6 +306,31 @@ module.exports = function build_control_panel(regl, cgm){
         return get_cat_title(viz, d, 'col');
       });
   */
+
+  // need to move tooltip
+
+  // var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
+  // console.log('working on east_border')
+  // // working on tooltip borders
+  // var east_border = d3.select(control_container)
+  //   .append('svg')
+  //   .style('width', cgm.params.tooltip.border_width + 'px')
+  //   .style('width','5px')
+  //   // .on('mouseover', function(){
+  //   //   console.log('mousing over control panel')
+  //   //   // cgm.params.tooltip.in_bounds_tooltip = false;
+  //   // });
+
+
+  // east_border
+  //   .append('rect')
+  //   .classed('east_border', true)
+  //   .style('height',inst_height + 'px')
+  //   .style('width', cgm.params.tooltip.border_width+'px')
+  //   .style('position', 'absolute')
+  //   .style('fill', 'black')
+  //   .attr('class', 'east_border')
+
 
   build_reorder_cat_titles(regl, cgm);
   build_tree_icon(cgm);

@@ -38008,10 +38008,21 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
     ev.preventDefault();
   }).on('interaction', function (ev) {
     if (params.interact.enable_viz_interact){
+
+      // console.log(zoom_data.x.cursor_position, zoom_data.y.cursor_position)
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
   });
+
+
+  d3.select('.canvas-container canvas')
+    .on('mouseover', function(){
+      params.tooltip.on_canvas = true;
+    })
+    .on('mouseout', function(){
+      params.tooltip.on_canvas = false;
+    })
 
   // /////////////////////////////////////////
   // // Alternate interaction tracking
@@ -40520,27 +40531,30 @@ module.exports = function build_control_panel(regl, cgm){
 
   // need to move tooltip o
 
-  var control_container = d3.select(cgm.params.root + ' .canvas-container')[0][0];
-  console.log('working on east_border')
-  // working on tooltip borders
-  var east_border = d3.select(control_container)
-    .append('svg')
-    .style('width', cgm.params.tooltip.border_width + 'px')
-    .style('width','5px')
-    // .on('mouseover', function(){
-    //   console.log('mousing over control panel')
-    //   // cgm.params.tooltip.in_bounds_tooltip = false;
-    // });
+  // var control_container = d3.select(cgm.params.root + ' .canvas-container')[0][0];
+  // console.log('working on east_border')
+  // // working on tooltip borders
+  // var east_border = d3.select(control_container)
+  //   .append('svg')
+  //   .style('width', cgm.params.tooltip.border_width + 'px')
+  //   .style('height',cgm.params.viz_height + 'px')
+  //   .style('position', 'absolute')
+  //   .style('top', '0px')
+  //   .style('left', '0px')
+  //   .on('mouseover', function(){
+  //     console.log('east_border\n############################')
+  //     cgm.params.tooltip.in_bounds_tooltip = false;
+  //   });
 
 
-  east_border
-    .append('rect')
-    .classed('east_border', true)
-    .style('height',inst_height + 'px')
-    .style('width', cgm.params.tooltip.border_width+'px')
-    .style('position', 'absolute')
-    .style('fill', 'black')
-    .attr('class', 'east_border')
+  // east_border
+  //   .append('rect')
+  //   .classed('east_border', true)
+  //   .style('height',cgm.params.viz_height + 'px')
+  //   .style('width', cgm.params.tooltip.border_width+'px')
+
+  //   .style('fill', 'black')
+  //   .attr('class', 'east_border')
 
 
   build_reorder_cat_titles(regl, cgm);
@@ -41803,8 +41817,8 @@ module.exports = function draw_commands(regl, params){
   draw_spillover_components(regl, params);
 
   // clean tooltip
-  console.log(params.tooltip.in_bounds_tooltip)
-  if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
+ // console.log(params.tooltip.in_bounds_tooltip)
+  if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip && params.tooltip.on_canvas){
 
     // draw_tooltip_components(regl, params);
     show_d3_tip(params);
@@ -44382,7 +44396,7 @@ const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules
 var drop_label_from_queue = __webpack_require__(/*! ./drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
 
 module.exports = function vectorize_label(params, inst_axis, inst_name){
-  console.log('vectorize_label')
+  // console.log('vectorize_label')
 
   var vect_text_attrs = {
     textAlign: 'left',
@@ -45095,7 +45109,8 @@ module.exports = function generate_tooltip_params(regl, params){
   params.tooltip.background_opacity = 0.75;
   params.tooltip.tooltip_type = null;
 
-  params.tooltip.border_width = 5;
+  params.tooltip.border_width = 10;
+  params.tooltip.on_canvas = false;
 }
 
 /***/ }),
@@ -45725,7 +45740,8 @@ module.exports = function show_d3_tip(params){
   var full_string;
   var mouseover = params.interact.mouseover;
 
-  console.log(params.tooltip.tooltip_type)
+  console.log('showing tooltip!!!!!!!!!!!!!')
+  // console.log(params.tooltip.tooltip_type)
   // console.log(mouseover)
 
   // // check if tooltip is missing

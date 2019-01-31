@@ -96,10 +96,21 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
     ev.preventDefault();
   }).on('interaction', function (ev) {
     if (params.interact.enable_viz_interact){
+
+      // console.log(zoom_data.x.cursor_position, zoom_data.y.cursor_position)
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
   });
+
+
+  d3.select('.canvas-container canvas')
+    .on('mouseover', function(){
+      params.tooltip.on_canvas = true;
+    })
+    .on('mouseout', function(){
+      params.tooltip.on_canvas = false;
+    })
 
   // /////////////////////////////////////////
   // // Alternate interaction tracking

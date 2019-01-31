@@ -309,27 +309,30 @@ module.exports = function build_control_panel(regl, cgm){
 
   // need to move tooltip o
 
-  var control_container = d3.select(cgm.params.root + ' .canvas-container')[0][0];
-  console.log('working on east_border')
-  // working on tooltip borders
-  var east_border = d3.select(control_container)
-    .append('svg')
-    .style('width', cgm.params.tooltip.border_width + 'px')
-    .style('width','5px')
-    // .on('mouseover', function(){
-    //   console.log('mousing over control panel')
-    //   // cgm.params.tooltip.in_bounds_tooltip = false;
-    // });
+  // var control_container = d3.select(cgm.params.root + ' .canvas-container')[0][0];
+  // console.log('working on east_border')
+  // // working on tooltip borders
+  // var east_border = d3.select(control_container)
+  //   .append('svg')
+  //   .style('width', cgm.params.tooltip.border_width + 'px')
+  //   .style('height',cgm.params.viz_height + 'px')
+  //   .style('position', 'absolute')
+  //   .style('top', '0px')
+  //   .style('left', '0px')
+  //   .on('mouseover', function(){
+  //     console.log('east_border\n############################')
+  //     cgm.params.tooltip.in_bounds_tooltip = false;
+  //   });
 
 
-  east_border
-    .append('rect')
-    .classed('east_border', true)
-    .style('height',inst_height + 'px')
-    .style('width', cgm.params.tooltip.border_width+'px')
-    .style('position', 'absolute')
-    .style('fill', 'black')
-    .attr('class', 'east_border')
+  // east_border
+  //   .append('rect')
+  //   .classed('east_border', true)
+  //   .style('height',cgm.params.viz_height + 'px')
+  //   .style('width', cgm.params.tooltip.border_width+'px')
+
+  //   .style('fill', 'black')
+  //   .attr('class', 'east_border')
 
 
   build_reorder_cat_titles(regl, cgm);

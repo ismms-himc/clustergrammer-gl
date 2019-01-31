@@ -14,7 +14,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     axis_dim = 'y';
   }
 
-  /* Column Components */
+  /* Axis Components */
   params.cameras[inst_axis + '-labels'].draw(() => {
 
     params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);

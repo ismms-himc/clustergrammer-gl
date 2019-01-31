@@ -41673,7 +41673,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     axis_dim = 'y';
   }
 
-  /* Column Components */
+  /* Axis Components */
   params.cameras[inst_axis + '-labels'].draw(() => {
 
     params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
@@ -41797,7 +41797,7 @@ module.exports = function draw_background_calculations(regl, params){
 var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js");
 var draw_axis_components = __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js");
 // var draw_tooltip_components = require('./draw_tooltip_components');
-var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draws/draw_spillover_components.js");
+var draw_static_components = __webpack_require__(/*! ./draw_static_components */ "./src/draws/draw_static_components.js");
 var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
 
 module.exports = function draw_commands(regl, params){
@@ -41814,7 +41814,7 @@ module.exports = function draw_commands(regl, params){
   draw_matrix_components(regl, params);
   draw_axis_components(regl, params, 'row', params.labels.draw_labels);
   draw_axis_components(regl, params, 'col', params.labels.draw_labels);
-  draw_spillover_components(regl, params);
+  draw_static_components(regl, params);
 
   // clean tooltip
  // console.log(params.tooltip.in_bounds_tooltip)
@@ -41988,14 +41988,14 @@ module.exports = function draw_mouseover(regl, params){
 
 /***/ }),
 
-/***/ "./src/draws/draw_spillover_components.js":
-/*!************************************************!*\
-  !*** ./src/draws/draw_spillover_components.js ***!
-  \************************************************/
+/***/ "./src/draws/draw_static_components.js":
+/*!*********************************************!*\
+  !*** ./src/draws/draw_static_components.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function draw_spillover_components(regl, params){
+module.exports = function draw_static_components(regl, params){
 
   // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {

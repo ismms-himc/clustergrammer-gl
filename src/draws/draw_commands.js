@@ -1,7 +1,7 @@
 var draw_matrix_components = require('./draw_matrix_components');
 var draw_axis_components = require('./draw_axis_components');
 // var draw_tooltip_components = require('./draw_tooltip_components');
-var draw_spillover_components = require('./draw_spillover_components');
+var draw_static_components = require('./draw_static_components');
 var show_d3_tip = require('./../tooltip/show_d3_tip');
 
 module.exports = function draw_commands(regl, params){
@@ -18,7 +18,7 @@ module.exports = function draw_commands(regl, params){
   draw_matrix_components(regl, params);
   draw_axis_components(regl, params, 'row', params.labels.draw_labels);
   draw_axis_components(regl, params, 'col', params.labels.draw_labels);
-  draw_spillover_components(regl, params);
+  draw_static_components(regl, params);
 
   // clean tooltip
  // console.log(params.tooltip.in_bounds_tooltip)

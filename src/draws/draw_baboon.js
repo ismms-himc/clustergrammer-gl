@@ -13,8 +13,8 @@ var zoom_function = params.zoom_data.zoom_function;
     varying vec2 uv;
     uniform mat4 zoom;
     void main () {
-      uv = position;
-      gl_Position = zoom * vec4(-1.0 * position, 1, 3);
+      uv = position * 0.5 + 0.5;
+      gl_Position = zoom * vec4(-1.0 * position, 1, 1.5);
     }`,
 
     frag: `
@@ -25,7 +25,7 @@ var zoom_function = params.zoom_data.zoom_function;
       gl_FragColor = texture2D(texture, uv);
     }`,
 
-
+    //
     attributes: {
       position: [
          -1,  1,

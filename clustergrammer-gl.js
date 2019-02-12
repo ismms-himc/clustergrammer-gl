@@ -49279,6 +49279,7 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
+var draw_baboon = __webpack_require__(/*! ./draw_baboon */ "./src/draws/draw_baboon.js");
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -49305,10 +49306,15 @@ module.exports = function draw_matrix_components(regl, params){
     position array
     */
 
+    draw_baboon(regl);
+
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
       run_animation: params.animation.running
     });
+
+
+
 
   });
 
@@ -50500,8 +50506,6 @@ var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_
 var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 
-var draw_baboon = __webpack_require__(/*! ./draws/draw_baboon */ "./src/draws/draw_baboon.js");
-
 function clustergrammer_gl(args){
 
   console.log('################################');
@@ -50567,8 +50571,6 @@ function clustergrammer_gl(args){
     container: canvas_container,
     // pixelRatio: window.devicePixelRatio/10
   });
-
-  draw_baboon(regl);
 
   var params = run_viz(regl, network);
 

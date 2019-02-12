@@ -1,4 +1,5 @@
 var interp_fun = require('./interp_fun');
+var draw_baboon = require('./draw_baboon');
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -25,10 +26,15 @@ module.exports = function draw_matrix_components(regl, params){
     position array
     */
 
+    draw_baboon(regl);
+
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
       run_animation: params.animation.running
     });
+
+
+
 
   });
 

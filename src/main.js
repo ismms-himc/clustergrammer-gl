@@ -9,6 +9,8 @@ var build_control_panel = require('./control_panel/build_control_panel');
 var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 var pako = require('pako');
 
+var draw_baboon = require('./draws/draw_baboon');
+
 function clustergrammer_gl(args){
 
   console.log('################################');
@@ -74,6 +76,8 @@ function clustergrammer_gl(args){
     container: canvas_container,
     // pixelRatio: window.devicePixelRatio/10
   });
+
+  draw_baboon(regl);
 
   var params = run_viz(regl, network);
 

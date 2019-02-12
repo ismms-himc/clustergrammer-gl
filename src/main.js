@@ -9,6 +9,8 @@ var build_control_panel = require('./control_panel/build_control_panel');
 var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 var pako = require('pako');
 
+var baboon = require('baboon-image');
+
 function clustergrammer_gl(args){
 
   console.log('################################');
@@ -76,6 +78,38 @@ function clustergrammer_gl(args){
   });
 
   var params = run_viz(regl, network);
+
+  //////////////////////////////////////////////////////
+  // working on custom texture
+  //////////////////////////////////////////////////////
+  params.baboon = baboon;
+
+  console.log(params.baboon.data.length/4)
+
+  // overwrite baboon with custom data
+  data_for_texture = [];
+
+  num_cells = 1000 * 1000
+  // overwriting data_for_texture
+  for (i = 0; i < num_cells * 4; i++) {
+
+    // make rbg
+    // inst_data = 100;
+    inst_data = (i/(4*num_cells))*250
+
+    if (i%4 === 0 || i%4 === 1){
+      inst_data = 0;
+    }
+
+    data_for_texture.push(inst_data);
+
+  }
+
+  u8a = new Uint8Array(data_for_texture)
+
+  baboon.data = u8a
+  //////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
 
   var cgm = {};
 

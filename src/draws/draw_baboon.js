@@ -14,7 +14,7 @@ var zoom_function = params.zoom_data.zoom_function;
     uniform mat4 zoom;
     void main () {
       uv = position;
-      gl_Position = zoom * vec4(1.0 - 2.0 * position, 0, 1);
+      gl_Position = zoom * vec4(-1.0 * position, 1, 3);
     }`,
 
     frag: `
@@ -28,17 +28,22 @@ var zoom_function = params.zoom_data.zoom_function;
 
     attributes: {
       position: [
-        -2,  0,
-         0,  -2,
-         2,   2]
+         -1,  1,
+          1, -1,
+          1,  1,
+          1, -1,
+         -1,  1,
+         -1, -1,]
     },
 
     uniforms: {
       texture: regl.texture(baboon),
       zoom: zoom_function,
     },
-
-    count: 3
+    count: 6,
+    depth: {
+      enable: false
+    },
   })()
 
 };

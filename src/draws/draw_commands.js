@@ -16,9 +16,9 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
-  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
-  draw_static_components(regl, params);
+  // draw_axis_components(regl, params, 'row', params.labels.draw_labels);
+  // draw_axis_components(regl, params, 'col', params.labels.draw_labels);
+  // draw_static_components(regl, params);
 
   // clean tooltip
  // console.log(params.tooltip.in_bounds_tooltip)

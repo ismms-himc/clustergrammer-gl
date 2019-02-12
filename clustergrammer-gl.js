@@ -49097,7 +49097,7 @@ var zoom_function = params.zoom_data.zoom_function;
     uniform sampler2D texture;
     varying vec2 uv;
     void main () {
-      gl_FragColor = texture2D(texture, uv, 0.);
+      gl_FragColor = texture2D(texture, uv);
     }`,
 
 
@@ -49191,9 +49191,9 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
-  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
-  draw_static_components(regl, params);
+  // draw_axis_components(regl, params, 'row', params.labels.draw_labels);
+  // draw_axis_components(regl, params, 'col', params.labels.draw_labels);
+  // draw_static_components(regl, params);
 
   // clean tooltip
  // console.log(params.tooltip.in_bounds_tooltip)
@@ -49313,15 +49313,12 @@ module.exports = function draw_matrix_components(regl, params){
     position array
     */
 
-    // draw_baboon(regl, params);
+    draw_baboon(regl, params);
 
-    regl(params.matrix_args.regl_props.rects)({
-      interp_prop: interp_fun(params),
-      run_animation: params.animation.running
-    });
-
-
-
+    // regl(params.matrix_args.regl_props.rects)({
+    //   interp_prop: interp_fun(params),
+    //   run_animation: params.animation.running
+    // });
 
   });
 
@@ -49400,8 +49397,8 @@ module.exports = function draw_static_components(regl, params){
     // generate the text triangles (using vectorize_labels)
     text_triangle_args = make_col_cat_title_args(regl, params, params.zoom_data.zoom_function);
 
-    // draw row labels twice!
-    regl(text_triangle_args)(params.text_triangles.draw['row']);
+    // // draw row labels twice!
+    // regl(text_triangle_args)(params.text_triangles.draw['row']);
 
   });
 };

@@ -22,7 +22,7 @@ var zoom_function = params.zoom_data.zoom_function;
     uniform sampler2D texture;
     varying vec2 uv;
     void main () {
-      gl_FragColor = texture2D(texture, uv, 0.);
+      gl_FragColor = texture2D(texture, uv);
     }`,
 
 

@@ -50539,6 +50539,7 @@ var run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js
 var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
 var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
+var ndarray = __webpack_require__(/*! ndarray */ "./node_modules/ndarray/ndarray.js");
 
 var baboon = __webpack_require__(/*! baboon-image */ "./node_modules/baboon-image/baboon.js");
 
@@ -50617,16 +50618,24 @@ function clustergrammer_gl(args){
 
   console.log(params.baboon.data.length/4)
 
+  console.log(_.max(params.baboon.data))
+
+
+  // console.log(mat)
+
   // overwrite baboon with custom data
   data_for_texture = [];
 
-  num_cells = 1000 * 1000
+  var num_cols = 3;
+  var num_rows = 20;
+
+  num_cells = num_rows * num_cols
   // overwriting data_for_texture
   for (i = 0; i < num_cells * 4; i++) {
 
     // make rbg
     // inst_data = 100;
-    inst_data = (i/(4*num_cells))*250
+    inst_data = (i/(4*num_cols))*255
 
     if (i%4 === 0 || i%4 === 1){
       inst_data = 0;
@@ -50636,9 +50645,14 @@ function clustergrammer_gl(args){
 
   }
 
+  var data_baboon = ndarray(new Uint8Array(data_for_texture), [num_rows, num_cols,4])
+
   u8a = new Uint8Array(data_for_texture)
 
-  baboon.data = u8a
+  // baboon.data = u8a
+
+  params.baboon = data_baboon;
+
   //////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
 

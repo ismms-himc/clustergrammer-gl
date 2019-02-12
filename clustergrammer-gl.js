@@ -49075,35 +49075,42 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
 const baboon = __webpack_require__(/*! baboon-image */ "./node_modules/baboon-image/baboon.js");
 
-module.exports = function draw_baboon(regl){
+module.exports = function draw_baboon(regl, params){
+
+var zoom_function = params.zoom_data.zoom_function;
 
   regl({
-    frag: `
-    precision mediump float;
-    uniform sampler2D texture;
-    varying vec2 uv;
-    void main () {
-      gl_FragColor = texture2D(texture, uv);
-    }`,
+
 
     vert: `
     precision mediump float;
     attribute vec2 position;
     varying vec2 uv;
+    uniform mat4 zoom;
     void main () {
       uv = position;
-      gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
+      gl_Position = zoom * vec4(1.0 - 2.0 * position, 0, 1);
     }`,
+
+    frag: `
+    precision mediump float;
+    uniform sampler2D texture;
+    varying vec2 uv;
+    void main () {
+      gl_FragColor = texture2D(texture, uv, 0.);
+    }`,
+
 
     attributes: {
       position: [
-        -2, 0,
-        0, -2,
-        2, 2]
+        -2,  0,
+         0,  -2,
+         2,   2]
     },
 
     uniforms: {
-      texture: regl.texture(baboon)
+      texture: regl.texture(baboon),
+      zoom: zoom_function,
     },
 
     count: 3
@@ -49306,7 +49313,7 @@ module.exports = function draw_matrix_components(regl, params){
     position array
     */
 
-    draw_baboon(regl);
+    // draw_baboon(regl, params);
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),

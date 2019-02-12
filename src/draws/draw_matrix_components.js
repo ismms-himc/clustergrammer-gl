@@ -26,7 +26,7 @@ module.exports = function draw_matrix_components(regl, params){
     position array
     */
 
-    draw_baboon(regl);
+    // draw_baboon(regl, params);
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),

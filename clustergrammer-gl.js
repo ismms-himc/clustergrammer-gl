@@ -50626,16 +50626,16 @@ function clustergrammer_gl(args){
   // overwrite baboon with custom data
   data_for_texture = [];
 
+  var num_rows = 10;
   var num_cols = 3;
-  var num_rows = 20;
 
-  num_cells = num_rows * num_cols
+  num_cells = num_cols * num_rows;
   // overwriting data_for_texture
   for (i = 0; i < num_cells * 4; i++) {
 
     // make rbg
     // inst_data = 100;
-    inst_data = (i/(4*num_cols))*255
+    inst_data = (i/(num_cells*4))*255
 
     if (i%4 === 0 || i%4 === 1){
       inst_data = 0;
@@ -50645,7 +50645,7 @@ function clustergrammer_gl(args){
 
   }
 
-  var data_baboon = ndarray(new Uint8Array(data_for_texture), [num_rows, num_cols,4])
+  var data_baboon = ndarray(new Uint8Array(data_for_texture), [num_cols, num_rows,4])
 
   u8a = new Uint8Array(data_for_texture)
 

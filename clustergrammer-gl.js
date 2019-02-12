@@ -49113,7 +49113,7 @@ var zoom_function = params.zoom_data.zoom_function;
     uniform mat4 zoom;
     void main () {
       uv = position * 0.5 + 0.5;
-      gl_Position = zoom * vec4(-1.0 * position, 1, 2);
+      gl_Position = zoom * vec4(-position[0] + 0.0, -position[1] + 0.0, 1, 1.4);
     }`,
 
     frag: `
@@ -49221,9 +49221,9 @@ module.exports = function draw_commands(regl, params){
   // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
 
   draw_matrix_components(regl, params);
-  // draw_axis_components(regl, params, 'row', params.labels.draw_labels);
-  // draw_axis_components(regl, params, 'col', params.labels.draw_labels);
-  // draw_static_components(regl, params);
+  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
+  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
+  draw_static_components(regl, params);
 
   // clean tooltip
  // console.log(params.tooltip.in_bounds_tooltip)

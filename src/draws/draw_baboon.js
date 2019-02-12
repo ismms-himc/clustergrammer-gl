@@ -38,7 +38,7 @@ var zoom_function = params.zoom_data.zoom_function;
     uniform mat4 zoom;
     void main () {
       uv = position * 0.5 + 0.5;
-      gl_Position = zoom * vec4(-1.0 * position, 1, 2);
+      gl_Position = zoom * vec4(-position[0] + 0.0, -position[1] + 0.0, 1, 1.4);
     }`,
 
     frag: `

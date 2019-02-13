@@ -2,6 +2,8 @@ var vectorize_label = require('./vectorize_label')
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
+  console.log('gather_text_triangles')
+
   var inst_dim;
   if (inst_axis === 'col'){
     inst_dim = 'x';
@@ -37,13 +39,15 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       } else {
 
-        // calculate text vector
-        inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.labels.queue.high[inst_axis].push(inst_name);
 
-        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
-        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        inst_text_vect.new_offset = [0, inst_label.offsets.new];
-        params.text_triangles.draw[inst_axis].push(inst_text_vect);
+        // // calculate text vector
+        // inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+
+        // params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+        // inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        // inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        // params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
       }
 

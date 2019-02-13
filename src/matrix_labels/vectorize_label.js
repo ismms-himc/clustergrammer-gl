@@ -2,7 +2,7 @@ const vectorize_text = require('vectorize-text');
 var drop_label_from_queue = require('./drop_label_from_queue');
 
 module.exports = function vectorize_label(params, inst_axis, inst_name){
-  // console.log('vectorize_label')
+  console.log('vectorize_label')
 
   var vect_text_attrs = {
     textAlign: 'left',

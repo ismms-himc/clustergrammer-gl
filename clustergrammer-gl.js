@@ -41718,10 +41718,9 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
         // only regather if there are more labels than can be shown at once
         if (params.labels['num_' + inst_axis] > params.max_num_text){
-
           gather_text_triangles(params, inst_axis);
-
         }
+
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
       } else {
@@ -41855,19 +41854,19 @@ module.exports = function draw_background_calculations(regl, params){
 
     // disable background text calculation
 
-    // // low priority queue (runs in background)
-    // if (params.labels.queue.low[inst_axis].length > 0 &&
-    //   params.labels['num_' + inst_axis] < params.labels.max_label_queue){
+    // low priority queue (runs in background)
+    if (params.labels.queue.high[inst_axis].length > 0 &&
+      params.labels['num_' + inst_axis] < params.labels.max_label_queue){
 
-    //   var inst_name = params.labels.queue.low[inst_axis][0];
+      var inst_name = params.labels.queue.high[inst_axis][0];
 
-    //   // add to text_triangles pre-calc
-    //   var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
-    //   params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+      // add to text_triangles pre-calc
+      var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+      params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-    //   drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+      drop_label_from_queue(params.labels.queue.high[inst_axis], inst_axis, inst_name);
 
-    // }
+    }
 
   });
 
@@ -43786,6 +43785,8 @@ var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
+  console.log('gather_text_triangles')
+
   var inst_dim;
   if (inst_axis === 'col'){
     inst_dim = 'x';
@@ -43821,13 +43822,15 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       } else {
 
-        // calculate text vector
-        inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.labels.queue.high[inst_axis].push(inst_name);
 
-        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
-        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        inst_text_vect.new_offset = [0, inst_label.offsets.new];
-        params.text_triangles.draw[inst_axis].push(inst_text_vect);
+        // // calculate text vector
+        // inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+
+        // params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+        // inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+        // inst_text_vect.new_offset = [0, inst_label.offsets.new];
+        // params.text_triangles.draw[inst_axis].push(inst_text_vect);
 
       }
 
@@ -44213,8 +44216,6 @@ module.exports = function make_inst_queue(params){
 
   _.each(['row', 'col'], function(inst_axis){
 
-    //
-
     // the high priority queue is empty initially
     params.labels.queue.high[inst_axis] = [];
 
@@ -44234,6 +44235,9 @@ module.exports = function make_inst_queue(params){
     });
 
     params.labels.queue.low[inst_axis] = inst_queue;
+
+    // make high label queue non-empty
+    params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
 
   });
 
@@ -44674,7 +44678,7 @@ const vectorize_text = __webpack_require__(/*! vectorize-text */ "./node_modules
 var drop_label_from_queue = __webpack_require__(/*! ./drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
 
 module.exports = function vectorize_label(params, inst_axis, inst_name){
-  // console.log('vectorize_label')
+  console.log('vectorize_label')
 
   var vect_text_attrs = {
     textAlign: 'left',

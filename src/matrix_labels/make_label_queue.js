@@ -10,8 +10,6 @@ module.exports = function make_inst_queue(params){
 
   _.each(['row', 'col'], function(inst_axis){
 
-    //
-
     // the high priority queue is empty initially
     params.labels.queue.high[inst_axis] = [];
 
@@ -31,6 +29,9 @@ module.exports = function make_inst_queue(params){
     });
 
     params.labels.queue.low[inst_axis] = inst_queue;
+
+    // make high label queue non-empty
+    params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
 
   });
 

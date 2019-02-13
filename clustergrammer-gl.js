@@ -49021,6 +49021,8 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       regl(params.dendro.dendro_args[inst_axis])();
     }
 
+    // need to make more efficient
+
     // make the arguments for the draw command
     var text_triangle_args
     if (inst_axis === 'col'){
@@ -49343,12 +49345,12 @@ module.exports = function draw_matrix_components(regl, params){
     position array
     */
 
-    draw_baboon(regl, params);
+    // draw_baboon(regl, params);
 
-    // regl(params.matrix_args.regl_props.rects)({
-    //   interp_prop: interp_fun(params),
-    //   run_animation: params.animation.running
-    // });
+    regl(params.matrix_args.regl_props.rects)({
+      interp_prop: interp_fun(params),
+      run_animation: params.animation.running
+    });
 
   });
 
@@ -50614,44 +50616,47 @@ function clustergrammer_gl(args){
   //////////////////////////////////////////////////////
   // working on custom texture
   //////////////////////////////////////////////////////
-  params.baboon = baboon;
-
-  console.log(params.baboon.data.length/4)
-
-  console.log(_.max(params.baboon.data))
 
 
-  // console.log(mat)
+  // params.baboon = baboon;
 
-  // overwrite baboon with custom data
-  data_for_texture = [];
+  // console.log(params.baboon.data.length/4)
 
-  var num_rows = 10;
-  var num_cols = 3;
+  // console.log(_.max(params.baboon.data))
 
-  num_cells = num_cols * num_rows;
-  // overwriting data_for_texture
-  for (i = 0; i < num_cells * 4; i++) {
 
-    // make rbg
-    // inst_data = 100;
-    inst_data = (i/(num_cells*4))*255
+  // // console.log(mat)
 
-    if (i%4 === 0 || i%4 === 1){
-      inst_data = 0;
-    }
+  // // overwrite baboon with custom data
+  // data_for_texture = [];
 
-    data_for_texture.push(inst_data);
+  // var num_rows = 7*1000;
+  // var num_cols = 1037;
 
-  }
+  // num_cells = num_cols * num_rows;
+  // console.log('num_cells', num_cells)
+  // // overwriting data_for_texture
+  // for (i = 0; i < num_cells * 4; i++) {
 
-  var data_baboon = ndarray(new Uint8Array(data_for_texture), [num_cols, num_rows,4])
+  //   // make rbg
+  //   // inst_data = Math.round((i/(num_cells*4))*255)
+  //   inst_data = Math.round(Math.random()*255);
 
-  u8a = new Uint8Array(data_for_texture)
+  //   if (i%4 === 0 || i%4 === 1){
+  //     inst_data = 0;
+  //   }
 
-  // baboon.data = u8a
+  //   data_for_texture.push(inst_data);
 
-  params.baboon = data_baboon;
+  // }
+
+  // var data_baboon = ndarray(new Uint8Array(data_for_texture), [num_cols, num_rows,4])
+
+  // u8a = new Uint8Array(data_for_texture)
+
+  // // baboon.data = u8a
+
+  // params.baboon = data_baboon;
 
   //////////////////////////////////////////////////////
   //////////////////////////////////////////////////////

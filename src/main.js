@@ -10,7 +10,7 @@ var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 var pako = require('pako');
 var ndarray = require('ndarray');
 
-var baboon = require('baboon-image');
+// var baboon = require('baboon-image');
 
 function clustergrammer_gl(args){
 

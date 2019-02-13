@@ -17,8 +17,8 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
   /* Axis Components */
   params.cameras[inst_axis + '-labels'].draw(() => {
 
+    // viz aid triangles
     params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
-
     regl(params.viz_aid_tri_args[inst_axis])();
 
     // drawing the label categories and dendrogram using the same camera as the
@@ -32,51 +32,51 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       );
     });
 
-    // only show the dendrogram if the current axis is in clust ordering
-    if (params.order.inst[inst_axis] === 'clust' && params.order.new[inst_axis] === 'clust'){
-      regl(params.dendro.dendro_args[inst_axis])();
-    }
+    // // only show the dendrogram if the current axis is in clust ordering
+    // if (params.order.inst[inst_axis] === 'clust' && params.order.new[inst_axis] === 'clust'){
+    //   regl(params.dendro.dendro_args[inst_axis])();
+    // }
 
-    // need to make more efficient
+    // // need to make more efficient
 
-    // make the arguments for the draw command
-    var text_triangle_args
-    if (inst_axis === 'col'){
-      text_triangle_args = make_col_text_args(regl, params, params.zoom_data.zoom_function);
-    } else {
-      text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
-    }
+    // // make the arguments for the draw command
+    // var text_triangle_args
+    // if (inst_axis === 'col'){
+    //   text_triangle_args = make_col_text_args(regl, params, params.zoom_data.zoom_function);
+    // } else {
+    //   text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
+    // }
 
-    if (calc_text_tri){
+    // if (calc_text_tri){
 
-      var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
+    //   var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
-      if (num_viz_labels < params.max_num_text){
+    //   if (num_viz_labels < params.max_num_text){
 
-        calc_viz_area(params);
+    //     calc_viz_area(params);
 
-        // only regather if there are more labels than can be shown at once
-        if (params.labels['num_' + inst_axis] > params.max_num_text){
+    //     // only regather if there are more labels than can be shown at once
+    //     if (params.labels['num_' + inst_axis] > params.max_num_text){
 
-          gather_text_triangles(params, inst_axis);
+    //       gather_text_triangles(params, inst_axis);
 
-        }
-        regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
+    //     }
+    //     regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
-      } else {
-        // console.log('too many labels to draw');
-      }
+    //   } else {
+    //     // console.log('too many labels to draw');
+    //   }
 
-    } else {
+    // } else {
 
-      /*
-        show text triangles if avaialble
-      */
+    //   /*
+    //     show text triangles if avaialble
+    //   */
 
-      if (params.text_triangles.draw[inst_axis] != false){
-        regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
-      }
-    }
+    //   if (params.text_triangles.draw[inst_axis] != false){
+    //     regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
+    //   }
+    // }
 
   });
 

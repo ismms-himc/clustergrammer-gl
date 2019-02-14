@@ -45061,6 +45061,31 @@ module.exports = function gen_int_par(params){
 
 /***/ }),
 
+/***/ "./src/params/gen_pix_to_webgl.js":
+/*!****************************************!*\
+  !*** ./src/params/gen_pix_to_webgl.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function gen_pix_to_webgl(params){
+
+  var pix_to_webgl = {};
+  pix_to_webgl.x = d3.scale.linear();
+  pix_to_webgl.x
+    .domain([0, params.viz_dim.heat.width])
+    .range([-0.5, 0.5]);
+
+  pix_to_webgl.y = d3.scale.linear();
+  pix_to_webgl.y
+    .domain([0, params.viz_dim.heat.height])
+    .range([0.5, -0.5]);
+
+  params.pix_to_webgl = pix_to_webgl;
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_cat_args_arrs.js":
 /*!**********************************************!*\
   !*** ./src/params/generate_cat_args_arrs.js ***!
@@ -45165,34 +45190,6 @@ module.exports = function generate_order_params(params){
     params.order[inst_state].col = 'clust';
 
   });
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_pix_to_webgl.js":
-/*!*********************************************!*\
-  !*** ./src/params/generate_pix_to_webgl.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function generate_pix_to_webgl(params){
-
-  var pix_to_webgl = {};
-  pix_to_webgl.x = d3.scale.linear();
-  pix_to_webgl.x
-    .domain([0, params.viz_dim.heat.width])
-    .range([-0.5, 0.5])
-    // .clamp(true);
-
-  pix_to_webgl.y = d3.scale.linear();
-  pix_to_webgl.y
-    .domain([0, params.viz_dim.heat.height])
-    .range([0.5, -0.5])
-    // .clamp(true);
-
-  params.pix_to_webgl = pix_to_webgl;
 
 };
 
@@ -45377,7 +45374,7 @@ var gen_int_par = __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
 var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
 var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
-var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "./src/params/generate_pix_to_webgl.js");
+var gen_pix_to_webgl = __webpack_require__(/*! ./gen_pix_to_webgl */ "./src/params/gen_pix_to_webgl.js");
 var generate_webgl_to_pix = __webpack_require__(/*! ./generate_webgl_to_pix */ "./src/params/generate_webgl_to_pix.js");
 var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
 var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
@@ -45429,7 +45426,7 @@ module.exports = function initialize_params(regl, network){
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
-  generate_pix_to_webgl(params);
+  gen_pix_to_webgl(params);
   generate_webgl_to_pix(params);
   make_label_queue(params);
   generate_text_zoom_params(params);

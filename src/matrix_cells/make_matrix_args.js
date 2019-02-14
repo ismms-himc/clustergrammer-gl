@@ -3,7 +3,6 @@ var make_opacity_arr = require('./make_opacity_arr');
 
 module.exports = function make_matrix_args(regl, params){
 
-
   // make arrays
   params.arrs = {};
   params.arrs.opacity_arr = make_opacity_arr(params);

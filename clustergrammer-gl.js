@@ -41304,14 +41304,6 @@ var wait_time_final_mouseover = 50;
 
 module.exports = function draw_mouseover(regl, params){
 
-  /////////////////////////////////////
-  /////////////////////////////////////
-  // mouseover draw is causing some flashing after animation, clean up later
-  ////////////////////////////////////
-  /////////////////////////////////////
-
-  // console.log('draw_mouseover')
-
   d3.selectAll(params.root + ' .group-svg-tooltip')
     .remove();
 

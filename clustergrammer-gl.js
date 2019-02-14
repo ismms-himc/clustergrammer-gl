@@ -44962,6 +44962,40 @@ module.exports = function gen_ani_par(params){
 
 /***/ }),
 
+/***/ "./src/params/gen_cat_par.js":
+/*!***********************************!*\
+  !*** ./src/params/gen_cat_par.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var generate_cat_array = __webpack_require__(/*! ./../cats/generate_cat_array */ "./src/cats/generate_cat_array.js");
+var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "./src/cats/generate_cat_info.js");
+
+module.exports = function gen_cat_par(params){
+
+  cat_data = {};
+  cat_data.row = generate_cat_array(params, 'row');
+  cat_data.col = generate_cat_array(params, 'col');
+
+  cat_data.cat_num = {};
+  cat_data.cat_num.row = cat_data.row.length;
+  cat_data.cat_num.col = cat_data.col.length;
+
+  cat_room = {};
+  cat_room.webgl = 0.0135;
+  cat_room.x = cat_room.webgl;
+  cat_room.y = cat_room.webgl;
+  cat_data.cat_room = cat_room
+
+  params.cat_data = cat_data;
+
+  generate_cat_info(params);
+
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_cat_args_arrs.js":
 /*!**********************************************!*\
   !*** ./src/params/generate_cat_args_arrs.js ***!
@@ -44998,37 +45032,6 @@ module.exports = function generate_cat_args_arrs_params(regl, params){
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_cat_params.js":
-/*!*******************************************!*\
-  !*** ./src/params/generate_cat_params.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var generate_cat_array = __webpack_require__(/*! ./../cats/generate_cat_array */ "./src/cats/generate_cat_array.js");
-var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "./src/cats/generate_cat_info.js");
-
-module.exports = function generate_cat_params(params){
-
-  params.cat_data = {};
-  params.cat_data.row = generate_cat_array(params, 'row');
-  params.cat_data.col = generate_cat_array(params, 'col');
-
-  params.cat_data.cat_num = {};
-  params.cat_data.cat_num.row = params.cat_data.row.length;
-  params.cat_data.cat_num.col = params.cat_data.col.length;
-
-  params.cat_data.cat_room = {};
-  var cat_room = 0.0135;
-  params.cat_data.cat_room.x = cat_room;
-  params.cat_data.cat_room.y = cat_room;
-
-  generate_cat_info(params);
 
 };
 
@@ -45370,7 +45373,7 @@ var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/para
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 var gen_ani_par = __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js");
-var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
+var gen_cat_par = __webpack_require__(/*! ./gen_cat_par */ "./src/params/gen_cat_par.js");
 var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
 var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
@@ -45402,7 +45405,7 @@ module.exports = function initialize_params(regl, network){
 
   params.mat_data = params.network.mat;
 
-  generate_cat_params(params);
+  gen_cat_par(params);
   generate_order_params(params);
   generate_label_params(params);
   calc_viz_dim(regl, params);

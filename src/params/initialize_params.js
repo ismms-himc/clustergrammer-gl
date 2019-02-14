@@ -11,7 +11,7 @@ var calc_alpha_order = require('./calc_alpha_order');
 var make_label_queue = require('./../matrix_labels/make_label_queue');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 var gen_ani_par = require('./gen_ani_par');
-var generate_cat_params = require('./generate_cat_params');
+var gen_cat_par = require('./gen_cat_par');
 var generate_label_params = require('./generate_label_params');
 var generate_interact_params = require('./generate_interact_params');
 var generate_order_params = require('./generate_order_params');
@@ -43,7 +43,7 @@ module.exports = function initialize_params(regl, network){
 
   params.mat_data = params.network.mat;
 
-  generate_cat_params(params);
+  gen_cat_par(params);
   generate_order_params(params);
   generate_label_params(params);
   calc_viz_dim(regl, params);

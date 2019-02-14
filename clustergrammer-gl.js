@@ -44996,6 +44996,35 @@ module.exports = function gen_cat_par(params){
 
 /***/ }),
 
+/***/ "./src/params/gen_int_par.js":
+/*!***********************************!*\
+  !*** ./src/params/gen_int_par.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function gen_int_par(params){
+
+  interact = {};
+  interact.total = 0;
+  interact.still_interacting = false;
+  interact.still_mouseover = false;
+  interact.mouseover = {};
+
+  _.each(['row', 'col'], function(inst_axis){
+    interact.mouseover[inst_axis] = {};
+    interact.mouseover[inst_axis].name = null;
+    interact.mouseover[inst_axis].cats = [];
+  });
+
+  interact.mouseover.value = null;
+  interact.enable_viz_interact = true;
+
+  params.interact = interact;
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_cat_args_arrs.js":
 /*!**********************************************!*\
   !*** ./src/params/generate_cat_args_arrs.js ***!
@@ -45070,35 +45099,6 @@ module.exports = function generate_dendro_params(regl, params){
     params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
 
   });
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_interact_params.js":
-/*!************************************************!*\
-  !*** ./src/params/generate_interact_params.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function generate_interact_params(params){
-
-  params.interact = {};
-  params.interact.total = 0;
-  params.interact.still_interacting = false;
-  params.interact.still_mouseover = false;
-  params.interact.mouseover = {};
-
-  _.each(['row', 'col'], function(inst_axis){
-    params.interact.mouseover[inst_axis] = {};
-    params.interact.mouseover[inst_axis].name = null;
-    params.interact.mouseover[inst_axis].cats = [];
-  });
-
-  params.interact.mouseover.value = null;
-
-  params.interact.enable_viz_interact = true;
 
 };
 
@@ -45375,7 +45375,7 @@ var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_off
 var gen_ani_par = __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js");
 var gen_cat_par = __webpack_require__(/*! ./gen_cat_par */ "./src/params/gen_cat_par.js");
 var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
-var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
+var gen_int_par = __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int_par.js");
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
 var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
 var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
@@ -45401,7 +45401,7 @@ module.exports = function initialize_params(regl, network){
 
   gen_ani_par(params);
   calc_alpha_order(params)
-  generate_interact_params(params);
+  gen_int_par(params);
 
   params.mat_data = params.network.mat;
 

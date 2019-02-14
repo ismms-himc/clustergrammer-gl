@@ -13,7 +13,7 @@ var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 var gen_ani_par = require('./gen_ani_par');
 var gen_cat_par = require('./gen_cat_par');
 var generate_label_params = require('./generate_label_params');
-var generate_interact_params = require('./generate_interact_params');
+var gen_int_par = require('./gen_int_par');
 var generate_order_params = require('./generate_order_params');
 var generate_spillover_params = require('./generate_spillover_params');
 var generate_text_triangle_params = require('./generate_text_triangle_params');
@@ -39,7 +39,7 @@ module.exports = function initialize_params(regl, network){
 
   gen_ani_par(params);
   calc_alpha_order(params)
-  generate_interact_params(params);
+  gen_int_par(params);
 
   params.mat_data = params.network.mat;
 

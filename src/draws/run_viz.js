@@ -40,9 +40,14 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    if (params.interact.still_interacting == true || params.animation.initialize_viz == true || params.animation.running){
+    if (params.interact.still_interacting == true ||
+        params.animation.initialize_viz == true ||
+        params.animation.running ||
+        params.animation.update_viz){
 
       draw_interacting(regl, params);
+
+      params.animation.update_viz = false;
 
     }
     else if (params.interact.still_mouseover == true){

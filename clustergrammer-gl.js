@@ -41866,9 +41866,15 @@ module.exports = function draw_background_calculations(regl, params){
 
       drop_label_from_queue(params.labels.queue.high[inst_axis], inst_axis, inst_name);
 
+      if (params.labels.queue.high[inst_axis].length == 0){
+        params.animation.update_viz = true;
+      }
+
     }
 
   });
+
+
 
 };
 
@@ -42283,9 +42289,14 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    if (params.interact.still_interacting == true || params.animation.initialize_viz == true || params.animation.running){
+    if (params.interact.still_interacting == true ||
+        params.animation.initialize_viz == true ||
+        params.animation.running ||
+        params.animation.update_viz){
 
       draw_interacting(regl, params);
+
+      params.animation.update_viz = false;
 
     }
     else if (params.interact.still_mouseover == true){
@@ -43785,7 +43796,7 @@ var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
-  console.log('gather_text_triangles')
+  // console.log('gather_text_triangles')
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -43823,6 +43834,10 @@ module.exports = function gather_text_triangles(params, inst_axis){
       } else {
 
         params.labels.queue.high[inst_axis].push(inst_name);
+
+        /*
+        try moving text triangle calculations to background
+        */
 
         // // calculate text vector
         // inst_text_vect = vectorize_label(params, inst_axis, inst_name);
@@ -45039,6 +45054,9 @@ module.exports = function generate_animation_params(params){
 
   params.animation.last_click = 0;
   params.animation.dblclick_duration = 0.5;
+
+  // used to update viz after background calculations
+  params.animation.update_viz = false;
 
 };
 

@@ -29,8 +29,14 @@ module.exports = function draw_background_calculations(regl, params){
 
       drop_label_from_queue(params.labels.queue.high[inst_axis], inst_axis, inst_name);
 
+      if (params.labels.queue.high[inst_axis].length == 0){
+        params.animation.update_viz = true;
+      }
+
     }
 
   });
+
+
 
 };

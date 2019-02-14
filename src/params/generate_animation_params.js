@@ -18,4 +18,7 @@ module.exports = function generate_animation_params(params){
   params.animation.last_click = 0;
   params.animation.dblclick_duration = 0.5;
 
+  // used to update viz after background calculations
+  params.animation.update_viz = false;
+
 };

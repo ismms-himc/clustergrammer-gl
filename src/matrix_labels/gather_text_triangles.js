@@ -2,7 +2,7 @@ var vectorize_label = require('./vectorize_label')
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
-  console.log('gather_text_triangles')
+  // console.log('gather_text_triangles')
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -40,6 +40,10 @@ module.exports = function gather_text_triangles(params, inst_axis){
       } else {
 
         params.labels.queue.high[inst_axis].push(inst_name);
+
+        /*
+        try moving text triangle calculations to background
+        */
 
         // // calculate text vector
         // inst_text_vect = vectorize_label(params, inst_axis, inst_name);

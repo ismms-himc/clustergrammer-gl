@@ -18,9 +18,13 @@ module.exports = function calc_vd(regl, params){
   });
 
 
-  var axis = {};
-  axis.x = 'row';
-  axis.y = 'col';
+  var label = {};
+  label.x = 'row';
+  label.y = 'col';
+  var other_label = {};
+  other_label.x = 'col';
+  other_label.y = 'row';
+
   var dim = {};
   dim.x = 'width';
   dim.y = 'height';
@@ -29,23 +33,28 @@ module.exports = function calc_vd(regl, params){
   vd.heat = {};
   vd.heat_size = {};
   vd.center = {};
-  var mat_size = {};
+  vd.offcenter = {};
+  vd.shift_camera = {};
+  vd.mat_size = {};
   var offset_heat = {};
   var inst_label;
   var inst_dim;
+  var offcenter_magnitude = 0.075;
+
   _.each(['x', 'y'], function(inst_axis){
 
-    inst_label = axis[inst_axis];
+    inst_label = label[inst_axis];
+    inst_other_label = other_label[inst_axis];
     inst_dim = dim[inst_axis];
 
-    mat_size[inst_axis] = 0.8;
+    vd.mat_size[inst_axis] = 0.8;
 
-    vd.heat_size[inst_axis] = mat_size[inst_axis] -
+    vd.heat_size[inst_axis] = vd.mat_size[inst_axis] -
                               params.cat_data.cat_room[inst_axis] *
                               params.cat_data.cat_num[inst_label];
 
     // square matrix size set by width of canvas
-    vd.mat[inst_dim] = mat_size[inst_axis] * vd.canvas[inst_dim]
+    vd.mat[inst_dim] = vd.mat_size[inst_axis] * vd.canvas[inst_dim]
 
     // min and max position of matrix
     vd.mat[inst_axis] = {};
@@ -53,17 +62,6 @@ module.exports = function calc_vd(regl, params){
     vd.mat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.mat[inst_dim]/2;
 
     vd.heat[inst_dim] = vd.heat_size[inst_axis] * vd.canvas[inst_dim]
-
-    // // min and max position of matrix
-    // offset_heat.x = (vd.mat.width - vd.heat.width)/2;
-    // vd.heat.x = {};
-    // vd.heat.x.min = vd.canvas.width/2 - vd.heat.width/2 + offset_heat.x;
-    // vd.heat.x.max = vd.canvas.width/2 + vd.heat.width/2; //  + offset_heat.x;
-
-    // offset_heat.y = (vd.mat.height - vd.heat.height)/2;
-    // vd.heat.y = {};
-    // vd.heat.y.min = vd.canvas.height/2 - vd.heat.height/2 + offset_heat.y;
-    // vd.heat.y.max = vd.canvas.height/2 + vd.heat.height/2 + offset_heat.y;
 
     offset_heat[inst_axis] = (vd.mat[inst_dim] - vd.heat[inst_dim])/2;
     vd.heat[inst_axis] = {};
@@ -76,28 +74,20 @@ module.exports = function calc_vd(regl, params){
       vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2; + offset_heat.x;
     }
 
+    vd.center[inst_axis] = 0.5;
+
+    vd['tile_' + inst_dim] = (vd.heat_size[inst_axis]/0.5)/params.labels['num_' + inst_other_label];
+
+    // will set up global offset later
+    vd.offcenter[inst_axis] = offcenter_magnitude;
+
+    if (inst_axis === 'x'){
+      vd.shift_camera[inst_axis] = -offcenter_magnitude;
+    } else {
+      vd.shift_camera[inst_axis] = offcenter_magnitude;
+    }
 
   });
-
-  vd.mat_size = mat_size;
-
-
-  vd.center.x = 0.5;
-  vd.center.y = 0.5;
-
-  vd.tile_width = (vd.heat_size.x/0.5)/params.labels.num_col;
-  vd.tile_height = (vd.heat_size.y/0.5)/params.labels.num_row;
-
-  // will set up global offset later
-  vd.offcenter = {};
-  var offcenter_magnitude_x = 0.075;
-  var offcenter_magnitude_y = 0.075;
-  vd.offcenter.x = offcenter_magnitude_x;
-  vd.offcenter.y = offcenter_magnitude_y;
-
-  vd.shift_camera = {};
-  vd.shift_camera.x = -offcenter_magnitude_x;
-  vd.shift_camera.y = offcenter_magnitude_y;
 
   params.viz_dim = vd;
 };

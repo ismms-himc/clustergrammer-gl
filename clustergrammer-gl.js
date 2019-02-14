@@ -45158,10 +45158,6 @@ module.exports = function reorder_matrix_args(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
-var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
-var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
-
 module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
 
   var new_order = ini_new_order.replace('sum', 'rank')
@@ -45175,19 +45171,12 @@ module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
   params.ani.run_animation = true;
   params.order.new[inst_axis] = new_order;
 
-  reorder_matrix_args(regl, params);
-  reorder_cat_args(regl, params);
-
-  // preventing tmp reordering bug that happens when pre-calculated labels are
-  // incorrectly animated on reordering. The bug seems to occur only when the
-  // number of pre-calculated (drawn) rows is less than the total number of rows
-  /*
-  No need to run calc_text_offset (in network_data) during a reorder event
-  */
+  __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js")(regl, params);
+  __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js")(regl, params);
 
   // either update the existing draw text_triangles or trash them
   if (params.text_triangles.draw[inst_axis] != false && params.labels['num_' + inst_axis] <= params.max_num_text){
-    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+    params.text_triangles.draw[inst_axis] = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js")(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }

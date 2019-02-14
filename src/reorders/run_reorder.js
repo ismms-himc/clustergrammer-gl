@@ -3,7 +3,6 @@ module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  // toggle dendro sliders (will re-display at end of animation)
   if (new_order != 'clust'){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
   }
@@ -20,5 +19,4 @@ module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }
-
 };

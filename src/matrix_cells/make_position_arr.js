@@ -1,25 +1,26 @@
 
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
-  var labels = params.labels;
+  var num_row = params.labels.num_row;
+  var num_col = params.labels.num_col;
   var canvas_pos = params.node_canvas_pos;
 
   // pass along row and col node information
   var row_nodes = params.network.row_nodes;
   var col_nodes = params.network.col_nodes;
 
-  var row_order_id;
-  var col_order_id;
+  var row_pos;
+  var col_pos;
 
   function position_function(d, i){
 
-    row_order_id = labels.num_row - 1 - row_nodes[Math.floor(i / labels.num_col)][inst_row_order];
-    col_order_id = labels.num_col - 1 - col_nodes[i % labels.num_col][inst_col_order];
+    row_pos = canvas_pos.y_arr[num_row - 1 - row_nodes[Math.floor(i / num_col)][inst_row_order]];
+    col_pos = canvas_pos.x_arr[num_col - 1 - col_nodes[i % num_col][inst_col_order]];
 
-    return [canvas_pos.x_arr[col_order_id], canvas_pos.y_arr[row_order_id]];
+    return [col_pos, row_pos];
   }
 
-  var pos_arr = Array(labels.num_row * labels.num_col)
+  var pos_arr = Array(num_row * num_col)
             .fill()
             .map(position_function);
 

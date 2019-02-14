@@ -19,16 +19,20 @@ module.exports = function calc_vd(regl, params){
 
 
   var axis = {};
-  axis['x'] = 'row';
-  axis['y'] = 'col';
+  axis.x = 'row';
+  axis.y = 'col';
   var dim = {};
-  dim['x'] = 'width';
-  dim['y'] = 'height';
+  dim.x = 'width';
+  dim.y = 'height';
 
   vd.mat = {};
+  vd.heat = {};
   vd.heat_size = {};
+  vd.center = {};
   var mat_size = {};
+  var offset_heat = {};
   var inst_label;
+  var inst_dim;
   _.each(['x', 'y'], function(inst_axis){
 
     inst_label = axis[inst_axis];
@@ -48,36 +52,38 @@ module.exports = function calc_vd(regl, params){
     vd.mat[inst_axis].min = vd.canvas[inst_dim]/2 - vd.mat[inst_dim]/2;
     vd.mat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.mat[inst_dim]/2;
 
+    vd.heat[inst_dim] = vd.heat_size[inst_axis] * vd.canvas[inst_dim]
+
+    // // min and max position of matrix
+    // offset_heat.x = (vd.mat.width - vd.heat.width)/2;
+    // vd.heat.x = {};
+    // vd.heat.x.min = vd.canvas.width/2 - vd.heat.width/2 + offset_heat.x;
+    // vd.heat.x.max = vd.canvas.width/2 + vd.heat.width/2; //  + offset_heat.x;
+
+    // offset_heat.y = (vd.mat.height - vd.heat.height)/2;
+    // vd.heat.y = {};
+    // vd.heat.y.min = vd.canvas.height/2 - vd.heat.height/2 + offset_heat.y;
+    // vd.heat.y.max = vd.canvas.height/2 + vd.heat.height/2 + offset_heat.y;
+
+    offset_heat[inst_axis] = (vd.mat[inst_dim] - vd.heat[inst_dim])/2;
+    vd.heat[inst_axis] = {};
+    vd.heat[inst_axis].min = vd.canvas[inst_dim]/2 - vd.heat[inst_dim]/2 + offset_heat[inst_axis];
+
+    // need to figure out if this is necessary
+    if (inst_axis == 'x'){
+      vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2; //  + offset_heat.x;
+    } else {
+      vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2; + offset_heat.x;
+    }
+
+
   });
 
   vd.mat_size = mat_size;
 
 
-  // Heatmap Dimensions
-  //////////////////////////////
-  vd.heat = {};
-
-  // square matrix size set by width of canvas
-  vd.heat.width  = vd.heat_size.x * vd.canvas.width;
-  vd.heat.height = vd.heat_size.y * vd.canvas.height;
-
-  var offset_heat = {};
-
-  // min and max position of matrix
-  offset_heat.x = (vd.mat.width - vd.heat.width)/2;
-  vd.heat.x = {};
-  vd.heat.x.min = vd.canvas.width/2 - vd.heat.width/2 + offset_heat.x;
-  vd.heat.x.max = vd.canvas.width/2 + vd.heat.width/2; //  + offset_heat.x;
-
-  offset_heat.y = (vd.mat.height - vd.heat.height)/2;
-  vd.heat.y = {};
-  vd.heat.y.min = vd.canvas.height/2 - vd.heat.height/2 + offset_heat.y;
-  vd.heat.y.max = vd.canvas.height/2 + vd.heat.height/2 + offset_heat.y;
-
-  vd.center = {};
   vd.center.x = 0.5;
   vd.center.y = 0.5;
-
 
   vd.tile_width = (vd.heat_size.x/0.5)/params.labels.num_col;
   vd.tile_height = (vd.heat_size.y/0.5)/params.labels.num_row;

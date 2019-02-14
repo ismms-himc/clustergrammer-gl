@@ -35,16 +35,16 @@ module.exports = function zoom_rules_high_mat(regl, params){
     if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
       // console.log('double click',
-      //              params.interact.mouseover.row.name,
-      //              params.interact.mouseover.col.name);
+      //              params.int.mouseover.row.name,
+      //              params.int.mouseover.col.name);
 
       // update col custom order
       var full_name;
       if (params.labels.titles.col !== ''){
         full_name = params.labels.titles.col + ': ' +
-                    params.interact.mouseover.col.name;
+                    params.int.mouseover.col.name;
       } else {
-        full_name = params.interact.mouseover.col.name;
+        full_name = params.int.mouseover.col.name;
       }
 
       // debugger

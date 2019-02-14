@@ -5,7 +5,7 @@ module.exports = function show_d3_tip(params){
 
   var inst_axis;
   var full_string;
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   // // check if tooltip is missing
   // if (d3.select(params.tooltip_id).empty()){

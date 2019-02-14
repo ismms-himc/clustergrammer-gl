@@ -2,8 +2,6 @@ var get_mouseover_type = require('./get_mouseover_type');
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
-  // console.log('find_mouseover_element')
-
   /*
 
     Need to improve behavior for categories and dendrogram. This info will be
@@ -12,15 +10,15 @@ module.exports = function find_mouseover_element(regl, params, ev){
   */
 
   var viz_dim_heat = params.viz_dim.heat;
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   // reset mouseover params
   _.each(['row', 'col'], function(inst_axis){
-    params.interact.mouseover[inst_axis] = {};
-    params.interact.mouseover[inst_axis].name = null;
-    params.interact.mouseover[inst_axis].cats = [];
+    params.int.mouseover[inst_axis] = {};
+    params.int.mouseover[inst_axis].name = null;
+    params.int.mouseover[inst_axis].cats = [];
   });
-  params.interact.mouseover.value = null;
+  params.int.mouseover.value = null;
 
   var offcenter = {};
   var inst_cat_name;
@@ -58,7 +56,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
       inst_dims = ['row', 'col'];
     } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
       inst_dims = ['row'];
-      // console.log('found row')
     } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
       inst_dims = ['col'];
 
@@ -68,7 +65,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
       if (shift_col_label > 0){
         cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
       }
-      // console.log('shift-col: ', )
     }
 
     _.each(inst_dims, function(inst_axis){
@@ -99,7 +95,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     });
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
-      params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+      params.int.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
     }
 
   }

@@ -5,7 +5,7 @@ module.exports = function draw_interacting(regl, params){
 
   var wait_time_final_interact = 50;
 
-  params.interact.total = params.interact.total + 1;
+  params.int.total = params.int.total + 1;
 
   draw_commands(regl, params);
 

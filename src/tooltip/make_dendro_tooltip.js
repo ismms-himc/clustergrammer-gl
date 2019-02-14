@@ -3,7 +3,7 @@ var calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown')
 
 module.exports = function make_dendro_tooltip(params, inst_axis){
 
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   params.tooltip_fun.show('tooltip');
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);

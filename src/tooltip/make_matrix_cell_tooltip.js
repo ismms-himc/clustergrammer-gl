@@ -15,7 +15,7 @@ module.exports = function make_matrix_cell_tooltip(params){
   text_offset.x = 10;
   text_offset.y = 20;
 
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
   var tooltip_lines = [];
 
   var cat_breakdown;

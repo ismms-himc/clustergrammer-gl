@@ -1,9 +1,9 @@
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
-  params.interact.total = params.interact.total - 1;
+  params.int.total = params.int.total - 1;
 
-  if (params.interact.total == 0 && params.ani.ini_viz == false){
+  if (params.int.total == 0 && params.ani.ini_viz == false){
 
     // preventing from running on first frame
     if (params.ani.first_frame == false){

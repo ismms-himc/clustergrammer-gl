@@ -38007,7 +38007,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-    if (params.interact.enable_viz_interact){
+    if (params.int.enable_viz_interact){
 
       // console.log(zoom_data.x.cursor_position, zoom_data.y.cursor_position)
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
@@ -38035,7 +38035,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   // })
   // .on('wheel', function (ev) {
   //   console.log('norm interact: camera');
-  //   if (params.interact.enable_viz_interact){
+  //   if (params.int.enable_viz_interact){
   //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
   //                        emitter, dViewport, mViewport);
   //   }
@@ -38138,7 +38138,7 @@ module.exports = function reset_cameras(regl, params){
 
   params.labels.draw_labels = false;
   params.ani.ini_viz = true;
-  params.interact.total = 0
+  params.int.total = 0
 
 };
 
@@ -41945,7 +41945,7 @@ module.exports = function draw_interacting(regl, params){
 
   var wait_time_final_interact = 50;
 
-  params.interact.total = params.interact.total + 1;
+  params.int.total = params.int.total + 1;
 
   draw_commands(regl, params);
 
@@ -42259,14 +42259,14 @@ module.exports = function run_viz(regl, network){
 
     params.ani.time = time;
 
-    if (params.interact.total > 1){
+    if (params.int.total > 1){
       d3.selectAll(params.root + ' .group-svg-tooltip')
         .remove();
     }
 
     // prevent this from being negative, can happen when resetting zooo
-    if (params.interact.total < 0){
-      params.interact.total = 0;
+    if (params.int.total < 0){
+      params.int.total = 0;
     }
 
     if (params.reset_cameras){
@@ -42279,7 +42279,7 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    if (params.interact.still_interacting == true ||
+    if (params.int.still_interacting == true ||
         params.ani.ini_viz == true ||
         params.ani.running == true||
         params.ani.update_viz == true){
@@ -42289,7 +42289,7 @@ module.exports = function run_viz(regl, network){
       params.ani.update_viz = false;
 
     }
-    else if (params.interact.still_mouseover == true){
+    else if (params.int.still_mouseover == true){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
@@ -42338,9 +42338,9 @@ module.exports = function start_animation(params){
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
-  params.interact.total = params.interact.total - 1;
+  params.int.total = params.int.total - 1;
 
-  if (params.interact.total == 0 && params.ani.ini_viz == false){
+  if (params.int.total == 0 && params.ani.ini_viz == false){
 
     // preventing from running on first frame
     if (params.ani.first_frame == false){
@@ -42376,7 +42376,7 @@ module.exports = function final_mouseover_frame(regl, params){
   // reduce the number of mouseovers
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
-  if (params.zoom_data.x.total_mouseover == 0 && params.interact.still_mouseover == false){
+  if (params.zoom_data.x.total_mouseover == 0 && params.int.still_mouseover == false){
     params.tooltip.show_tooltip = true;
   }
 
@@ -42395,8 +42395,6 @@ var get_mouseover_type = __webpack_require__(/*! ./get_mouseover_type */ "./src/
 
 module.exports = function find_mouseover_element(regl, params, ev){
 
-  // console.log('find_mouseover_element')
-
   /*
 
     Need to improve behavior for categories and dendrogram. This info will be
@@ -42405,15 +42403,15 @@ module.exports = function find_mouseover_element(regl, params, ev){
   */
 
   var viz_dim_heat = params.viz_dim.heat;
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   // reset mouseover params
   _.each(['row', 'col'], function(inst_axis){
-    params.interact.mouseover[inst_axis] = {};
-    params.interact.mouseover[inst_axis].name = null;
-    params.interact.mouseover[inst_axis].cats = [];
+    params.int.mouseover[inst_axis] = {};
+    params.int.mouseover[inst_axis].name = null;
+    params.int.mouseover[inst_axis].cats = [];
   });
-  params.interact.mouseover.value = null;
+  params.int.mouseover.value = null;
 
   var offcenter = {};
   var inst_cat_name;
@@ -42451,7 +42449,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
       inst_dims = ['row', 'col'];
     } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
       inst_dims = ['row'];
-      // console.log('found row')
     } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
       inst_dims = ['col'];
 
@@ -42461,7 +42458,6 @@ module.exports = function find_mouseover_element(regl, params, ev){
       if (shift_col_label > 0){
         cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
       }
-      // console.log('shift-col: ', )
     }
 
     _.each(inst_dims, function(inst_axis){
@@ -42492,7 +42488,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     });
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
-      params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+      params.int.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
     }
 
   }
@@ -43058,13 +43054,13 @@ module.exports = function keep_track_of_interactions(params){
   var wait_time_final_interact = 100;
 
   // keep track of interactions
-  if (params.interact.still_interacting == false){
+  if (params.int.still_interacting == false){
 
-    params.interact.still_interacting = true;
+    params.int.still_interacting = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.interact.still_interacting = false;
+      params.int.still_interacting = false;
     }, wait_time_final_interact);
 
   }
@@ -43083,13 +43079,13 @@ module.exports = function keep_track_of_interactions(params){
 module.exports = function keep_track_of_mouseovers(params){
 
   // keep track of mouseovers
-  if (params.interact.still_mouseover == false){
+  if (params.int.still_mouseover == false){
 
-    params.interact.still_mouseover = true;
+    params.int.still_mouseover = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.interact.still_mouseover = false;
+      params.int.still_mouseover = false;
     }, 1000);
 
   }
@@ -45020,7 +45016,7 @@ module.exports = function gen_int_par(params){
   interact.mouseover.value = null;
   interact.enable_viz_interact = true;
 
-  params.interact = interact;
+  params.int = interact;
 };
 
 /***/ }),
@@ -45924,7 +45920,7 @@ var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_clus
 
 module.exports = function make_dendro_tooltip(params, inst_axis){
 
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   params.tooltip_fun.show('tooltip');
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
@@ -45948,7 +45944,7 @@ module.exports = function show_d3_tip(params){
 
   var inst_axis;
   var full_string;
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   // // check if tooltip is missing
   // if (d3.select(params.tooltip_id).empty()){
@@ -46624,16 +46620,16 @@ module.exports = function zoom_rules_high_mat(regl, params){
     if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
       // console.log('double click',
-      //              params.interact.mouseover.row.name,
-      //              params.interact.mouseover.col.name);
+      //              params.int.mouseover.row.name,
+      //              params.int.mouseover.col.name);
 
       // update col custom order
       var full_name;
       if (params.labels.titles.col !== ''){
         full_name = params.labels.titles.col + ': ' +
-                    params.interact.mouseover.col.name;
+                    params.int.mouseover.col.name;
       } else {
-        full_name = params.interact.mouseover.col.name;
+        full_name = params.int.mouseover.col.name;
       }
 
       // debugger

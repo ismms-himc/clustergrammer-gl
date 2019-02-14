@@ -20,14 +20,14 @@ module.exports = function run_viz(regl, network){
 
     params.ani.time = time;
 
-    if (params.interact.total > 1){
+    if (params.int.total > 1){
       d3.selectAll(params.root + ' .group-svg-tooltip')
         .remove();
     }
 
     // prevent this from being negative, can happen when resetting zooo
-    if (params.interact.total < 0){
-      params.interact.total = 0;
+    if (params.int.total < 0){
+      params.int.total = 0;
     }
 
     if (params.reset_cameras){
@@ -40,7 +40,7 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
-    if (params.interact.still_interacting == true ||
+    if (params.int.still_interacting == true ||
         params.ani.ini_viz == true ||
         params.ani.running == true||
         params.ani.update_viz == true){
@@ -50,7 +50,7 @@ module.exports = function run_viz(regl, network){
       params.ani.update_viz = false;
 
     }
-    else if (params.interact.still_mouseover == true){
+    else if (params.int.still_mouseover == true){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);

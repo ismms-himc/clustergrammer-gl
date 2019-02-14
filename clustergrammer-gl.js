@@ -44566,23 +44566,17 @@ module.exports = function calc_vd(regl, params){
                               params.cat_data.cat_num[inst_label];
 
     // square matrix size set by width of canvas
-    // vd.mat.width  = mat_size.x * vd.canvas.width;
-    // vd.mat.height = mat_size.y * vd.canvas.height;
     vd.mat[inst_dim] = mat_size[inst_axis] * vd.canvas[inst_dim]
+
+    // min and max position of matrix
+    vd.mat[inst_axis] = {};
+    vd.mat[inst_axis].min = vd.canvas[inst_dim]/2 - vd.mat[inst_dim]/2;
+    vd.mat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.mat[inst_dim]/2;
 
   });
 
   vd.mat_size = mat_size;
 
-
-  // min and max position of matrix
-  vd.mat.x = {};
-  vd.mat.x.min = vd.canvas.width/2 - vd.mat.width/2;
-  vd.mat.x.max = vd.canvas.width/2 + vd.mat.width/2;
-
-  vd.mat.y = {};
-  vd.mat.y.min = vd.canvas.height/2 - vd.mat.height/2;
-  vd.mat.y.max = vd.canvas.height/2 + vd.mat.height/2;
 
   // Heatmap Dimensions
   //////////////////////////////

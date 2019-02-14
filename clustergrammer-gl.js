@@ -44464,8 +44464,6 @@ module.exports = function calc_row_and_col_canvas_positions(params){
 module.exports = function calc_viz_area(params){
 
   var zoom_data = params.zoom_data;
-  var mat_width = params.viz_dim.heat.width;
-  var mat_height = params.viz_dim.heat.height;
   var pix_to_webgl = params.pix_to_webgl;
 
   var buffer_width = 0.0;
@@ -44543,6 +44541,7 @@ module.exports = function calc_vd(regl, params){
   vd.mat_size = {};
 
   var inst_label;
+  var inst_other_label;
   var inst_dim;
   var offset_heat = {};
   var offcenter_magnitude = 0.075;
@@ -44577,7 +44576,7 @@ module.exports = function calc_vd(regl, params){
     if (inst_axis == 'x'){
       vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2; //  + offset_heat.x;
     } else {
-      vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2; + offset_heat.x;
+      vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2 + offset_heat.x;
     }
 
     vd.center[inst_axis] = 0.5;

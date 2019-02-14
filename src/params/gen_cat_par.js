@@ -11,11 +11,11 @@ module.exports = function gen_cat_par(params){
   cat_data.cat_num.row = cat_data.row.length;
   cat_data.cat_num.col = cat_data.col.length;
 
-  cat_room = {};
+  var cat_room = {};
   cat_room.webgl = 0.0135;
   cat_room.x = cat_room.webgl;
   cat_room.y = cat_room.webgl;
-  cat_data.cat_room = cat_room
+  cat_data.cat_room = cat_room;
 
   params.cat_data = cat_data;
 

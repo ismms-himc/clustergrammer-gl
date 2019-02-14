@@ -75,20 +75,20 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.center.x = 0.5;
   viz_dim.center.y = 0.5;
 
-  params.viz_dim = viz_dim;
 
-  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
-  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
+  viz_dim.tile_width = (viz_dim.heat_size.x/0.5)/params.labels.num_col;
+  viz_dim.tile_height = (viz_dim.heat_size.y/0.5)/params.labels.num_row;
 
   // will set up global offset later
-  params.viz_dim.offcenter = {};
+  viz_dim.offcenter = {};
   var offcenter_magnitude_x = 0.075;
   var offcenter_magnitude_y = 0.075;
-  params.viz_dim.offcenter.x = offcenter_magnitude_x;
-  params.viz_dim.offcenter.y = offcenter_magnitude_y;
+  viz_dim.offcenter.x = offcenter_magnitude_x;
+  viz_dim.offcenter.y = offcenter_magnitude_y;
 
-  params.viz_dim.shift_camera = {};
-  params.viz_dim.shift_camera.x = -offcenter_magnitude_x;
-  params.viz_dim.shift_camera.y = offcenter_magnitude_y;
+  viz_dim.shift_camera = {};
+  viz_dim.shift_camera.x = -offcenter_magnitude_x;
+  viz_dim.shift_camera.y = offcenter_magnitude_y;
 
+  params.viz_dim = viz_dim;
 };

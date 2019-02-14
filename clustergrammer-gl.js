@@ -44600,22 +44600,22 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.center.x = 0.5;
   viz_dim.center.y = 0.5;
 
-  params.viz_dim = viz_dim;
 
-  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
-  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
+  viz_dim.tile_width = (viz_dim.heat_size.x/0.5)/params.labels.num_col;
+  viz_dim.tile_height = (viz_dim.heat_size.y/0.5)/params.labels.num_row;
 
   // will set up global offset later
-  params.viz_dim.offcenter = {};
+  viz_dim.offcenter = {};
   var offcenter_magnitude_x = 0.075;
   var offcenter_magnitude_y = 0.075;
-  params.viz_dim.offcenter.x = offcenter_magnitude_x;
-  params.viz_dim.offcenter.y = offcenter_magnitude_y;
+  viz_dim.offcenter.x = offcenter_magnitude_x;
+  viz_dim.offcenter.y = offcenter_magnitude_y;
 
-  params.viz_dim.shift_camera = {};
-  params.viz_dim.shift_camera.x = -offcenter_magnitude_x;
-  params.viz_dim.shift_camera.y = offcenter_magnitude_y;
+  viz_dim.shift_camera = {};
+  viz_dim.shift_camera.x = -offcenter_magnitude_x;
+  viz_dim.shift_camera.y = offcenter_magnitude_y;
 
+  params.viz_dim = viz_dim;
 };
 
 /***/ }),
@@ -44660,21 +44660,21 @@ var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "
 
 module.exports = function gen_cat_par(params){
 
-  var cat_data = {};
-  cat_data.row = generate_cat_array(params, 'row');
-  cat_data.col = generate_cat_array(params, 'col');
+  var cd = {};
+  cd.row = generate_cat_array(params, 'row');
+  cd.col = generate_cat_array(params, 'col');
 
-  cat_data.cat_num = {};
-  cat_data.cat_num.row = cat_data.row.length;
-  cat_data.cat_num.col = cat_data.col.length;
+  cd.cat_num = {};
+  cd.cat_num.row = cd.row.length;
+  cd.cat_num.col = cd.col.length;
 
   var cat_room = {};
   cat_room.webgl = 0.0135;
   cat_room.x = cat_room.webgl;
   cat_room.y = cat_room.webgl;
-  cat_data.cat_room = cat_room;
+  cd.cat_room = cat_room;
 
-  params.cat_data = cat_data;
+  params.cat_data = cd;
 
   generate_cat_info(params);
 

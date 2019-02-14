@@ -40232,12 +40232,6 @@ var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/too
 
 module.exports = function build_control_panel(regl, cgm){
 
-  // console.log(d3);
-  // console.log(d3v5);
-
-  // debugger;
-  // var tooltip = tip.default().html(d => d.value);
-
   cgm.params.tooltip_id = '#d3-tip_' + cgm.params.root.replace('#','');
 
   var tooltip = tip.default()
@@ -40281,7 +40275,6 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
     .on('mouseover', function(){
-      console.log('mousing over control panel')
       cgm.params.tooltip.in_bounds_tooltip = false;
     })
 
@@ -41742,90 +41735,6 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
 /***/ }),
 
-/***/ "./src/draws/draw_baboon.js":
-/*!**********************************!*\
-  !*** ./src/draws/draw_baboon.js ***!
-  \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-module.exports = function draw_baboon(regl, params){
-
-var baboon = params.baboon;
-
-// // overwrite baboon with custom data
-// data_for_texture = [];
-
-// num_cells = 100000
-// // overwriting data_for_texture
-// for (i = 0; i < num_cells * 4; i++) {
-
-//   // make rbg
-//   // inst_data = 100;
-//   inst_data = (i/(4*num_cells))*250
-
-//   if (i%4 === 0 || i%4 === 1){
-//     inst_data = 0;
-//   }
-
-//   data_for_texture.push(inst_data);
-
-// }
-
-// u8a = new Uint8Array(data_for_texture)
-
-// baboon.data = u8a
-
-var zoom_function = params.zoom_data.zoom_function;
-
-  regl({
-
-
-    vert: `
-    precision mediump float;
-    attribute vec2 position;
-    varying vec2 uv;
-    uniform mat4 zoom;
-    void main () {
-      uv = position * 0.5 + 0.5;
-      gl_Position = zoom * vec4(-position[0] + 0.0, -position[1] + 0.0, 1, 1.4);
-    }`,
-
-    frag: `
-    precision mediump float;
-    uniform sampler2D texture;
-    varying vec2 uv;
-    void main () {
-      gl_FragColor = texture2D(texture, uv);
-    }`,
-
-    // two triangles
-    attributes: {
-      position: [
-         -1,  1,
-          1, -1,
-          1,  1,
-          1, -1,
-         -1,  1,
-         -1, -1,]
-    },
-
-    uniforms: {
-      texture: regl.texture(baboon),
-      // texture: regl.texture(typedArrayTexture),
-      zoom: zoom_function,
-    },
-    count: 6,
-    depth: {
-      enable: false
-    },
-  })()
-
-};
-
-/***/ }),
-
 /***/ "./src/draws/draw_background_calculations.js":
 /*!***************************************************!*\
   !*** ./src/draws/draw_background_calculations.js ***!
@@ -41838,26 +41747,12 @@ var drop_label_from_queue = __webpack_require__(/*! ./../matrix_labels/drop_labe
 
 module.exports = function draw_background_calculations(regl, params){
 
-  // console.log('draw_background_calculations');
-
-  /*
-    Set up something to run background calculations if
-    necessary when the visualization is not being updated. For instance,
-    we could calculate the text triangles of all rows a little at a time
-    in the background.
-  */
-
-  // var updated_labels = false;
   _.each(['row', 'col'], function(inst_axis){
 
-    // disable background text calculation
-
-    // low priority queue (runs in background)
     if (params.labels.queue.high[inst_axis].length > 0){
 
       var inst_name = params.labels.queue.high[inst_axis][0];
 
-      // add to text_triangles pre-calc
       var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
       params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
@@ -41871,9 +41766,6 @@ module.exports = function draw_background_calculations(regl, params){
     }
 
   });
-
-
-
 };
 
 /***/ }),
@@ -41998,7 +41890,6 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
-var draw_baboon = __webpack_require__(/*! ./draw_baboon */ "./src/draws/draw_baboon.js");
 
 module.exports = function draw_matrix_components(regl, params){
 
@@ -42024,8 +41915,6 @@ module.exports = function draw_matrix_components(regl, params){
     state, then I will replace the current position array with the final
     position array
     */
-
-    // draw_baboon(regl, params);
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
@@ -42079,9 +41968,7 @@ module.exports = function draw_mouseover(regl, params){
   !*** ./src/draws/draw_static_components.js ***!
   \*********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_col_cat_title_args = __webpack_require__(/*! ../matrix_labels/make_col_cat_title_args */ "./src/matrix_labels/make_col_cat_title_args.js");
+/***/ (function(module, exports) {
 
 module.exports = function draw_static_components(regl, params){
 
@@ -42097,12 +41984,7 @@ module.exports = function draw_static_components(regl, params){
     regl(args.mat_corners)(triangles.mat_corners);
     regl(args.label_corners)(triangles.label_corners);
 
-    // need to make text_triangle_args (make_col_cat_title_args) and
-    // generate the text triangles (using vectorize_labels)
-    text_triangle_args = make_col_cat_title_args(regl, params, params.zoom_data.zoom_function);
-
-    // // draw row labels twice!
-    // regl(text_triangle_args)(params.text_triangles.draw['row']);
+    /* was drawing col text triangle args */
 
   });
 };
@@ -43760,133 +43642,6 @@ module.exports = function generate_ordered_labels(params){
 
 /***/ }),
 
-/***/ "./src/matrix_labels/make_col_cat_title_args.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_labels/make_col_cat_title_args.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
-var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
-
-module.exports = function make_col_cat_title_args(regl, params, zoom_function){
-
-  var inst_axis = 'row';
-  var num_row = params.labels['num_' + inst_axis];
-
-  var scale_text = num_row;
-
-  var webgl_fs = (1/num_row) * params.zoom_data.y.total_zoom;
-
-  var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
-
-  var scale_down_fs;
-  if (webgl_fs > max_webgl_fs){
-    scale_down_fs = webgl_fs/max_webgl_fs;
-    scale_text = scale_text * scale_down_fs;
-  }
-
-  var mat_rotate = m3.rotation(Math.PI/2);
-
-  var x_offset = params.viz_dim.mat_size.x + 0.02;
-
-  var vert_arg = `
-      precision mediump float;
-      attribute vec2 position;
-      uniform mat4 zoom;
-      uniform vec2 inst_offset;
-      uniform vec2 new_offset;
-      uniform float x_offset;
-      uniform float scale_text;
-      uniform float total_zoom;
-      uniform mat3 mat_rotate;
-      uniform float heat_size;
-      varying float x_position;
-      varying float y_position;
-      uniform float shift_heat;
-      uniform float interp_uni;
-      uniform bool run_animation;
-      varying vec2 mixed_offset;
-
-      // vec3 tmp = vec3(1,1,1);
-
-      // last value is a sort-of zoom
-      void main () {
-
-        // reverse y position to get words to be upright
-
-        // the x position is constant for all row labels
-        //------------------------------------------------------
-        // total_zoom stretches out row labels horizontally
-        // then text is offset to the left side of the heatmap
-        //------------------------------------------------------
-        x_position = position.x/scale_text * total_zoom - x_offset;
-
-        // the y position varies for all row labels
-        //------------------------------------------------------
-        // shift by offset and then uniformly shift down by s
-        // shift_heat
-        //------------------------------------------------------
-        // interpolate between the two positions using the interpolate uniform
-        if (run_animation){
-          mixed_offset = mix(inst_offset, new_offset , interp_uni);
-        } else {
-          mixed_offset = inst_offset;
-        }
-
-        // mixed_offset = inst_offset;
-
-        y_position = -position.y/scale_text + 2.0 * heat_size * mixed_offset[1] - shift_heat ;
-
-        gl_Position = zoom *
-                      vec4(x_position,
-                           y_position,
-                           0.50,
-                           1.0);
-      }`;
-
-  var frag_arg =  `
-      precision mediump float;
-      void main () {
-        gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
-      }`;
-
-  var args = {
-    vert: vert_arg,
-    frag: frag_arg,
-    attributes: {
-      position: regl.prop('positions')
-    },
-    elements: regl.prop('cells'),
-    uniforms: {
-      zoom: zoom_function,
-      inst_offset: regl.prop('inst_offset'),
-      new_offset: regl.prop('new_offset'),
-      scale_text: scale_text,
-      x_offset: x_offset,
-      heat_size: params.viz_dim.heat_size.y,
-      shift_heat: params.viz_dim.mat_size.y - params.viz_dim.heat_size.y,
-      total_zoom: params.zoom_data.y.total_zoom,
-      mat_rotate: mat_rotate,
-      // alternate way to define interpolate uni
-      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.ani.running
-    },
-    depth: {
-      enable: true,
-      mask: true,
-      func: 'less',
-      range: [0, 1]
-    },
-  };
-
-  return args;
-
-};
-
-/***/ }),
-
 /***/ "./src/matrix_labels/make_col_text_args.js":
 /*!*************************************************!*\
   !*** ./src/matrix_labels/make_col_text_args.js ***!
@@ -43906,7 +43661,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor.col]);
+      .range([1, 10/params.allow_zoom.col]);
 
   // 17.5, lowering makes larger text
   var final_increase_font_size = num_col/5.0;
@@ -44779,13 +44534,18 @@ module.exports = function calc_viz_dim(regl, params){
 
   var viz_dim = {};
 
-  viz_dim.mat_size = {};
-  viz_dim.mat_size.x = 0.80;
-  viz_dim.mat_size.y = 0.80;
+  mat_size = {};
+  mat_size.x = 0.80;
+  mat_size.y = 0.80;
+  viz_dim.mat_size = mat_size;
+
+  axis = {};
+  axis['x'] = 'row';
+  axis['y'] = 'col';
 
   viz_dim.heat_size = {};
-  viz_dim.heat_size.x = viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
-  viz_dim.heat_size.y = viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
+  viz_dim.heat_size.x = mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  viz_dim.heat_size.y = mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
 
   // Set up viz_dim
   ///////////////////////
@@ -44808,8 +44568,8 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.mat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.mat.width  = viz_dim.mat_size.x * viz_dim.canvas.width;
-  viz_dim.mat.height = viz_dim.mat_size.y * viz_dim.canvas.height;
+  viz_dim.mat.width  = mat_size.x * viz_dim.canvas.width;
+  viz_dim.mat.height = mat_size.y * viz_dim.canvas.height;
 
   // min and max position of matrix
   viz_dim.mat.x = {};
@@ -45349,9 +45109,9 @@ module.exports = function initialize_params(regl, network){
     .domain([10, 1000])
     .range([2, 30]);
 
-  params.allowable_zoom_factor = {};
-  params.allowable_zoom_factor.col = allow_factor(labels.num_col);
-  params.allowable_zoom_factor.row = allow_factor(labels.num_col);
+  params.allow_zoom = {};
+  params.allow_zoom.col = allow_factor(labels.num_col);
+  params.allow_zoom.row = allow_factor(labels.num_col);
   params.text_scale = {};
   params.cat_colors = params.network.cat_colors;
 

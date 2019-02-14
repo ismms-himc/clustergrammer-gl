@@ -4,13 +4,18 @@ module.exports = function calc_viz_dim(regl, params){
 
   var viz_dim = {};
 
-  viz_dim.mat_size = {};
-  viz_dim.mat_size.x = 0.80;
-  viz_dim.mat_size.y = 0.80;
+  mat_size = {};
+  mat_size.x = 0.80;
+  mat_size.y = 0.80;
+  viz_dim.mat_size = mat_size;
+
+  axis = {};
+  axis['x'] = 'row';
+  axis['y'] = 'col';
 
   viz_dim.heat_size = {};
-  viz_dim.heat_size.x = viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
-  viz_dim.heat_size.y = viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
+  viz_dim.heat_size.x = mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
+  viz_dim.heat_size.y = mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
 
   // Set up viz_dim
   ///////////////////////
@@ -33,8 +38,8 @@ module.exports = function calc_viz_dim(regl, params){
   viz_dim.mat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.mat.width  = viz_dim.mat_size.x * viz_dim.canvas.width;
-  viz_dim.mat.height = viz_dim.mat_size.y * viz_dim.canvas.height;
+  viz_dim.mat.width  = mat_size.x * viz_dim.canvas.width;
+  viz_dim.mat.height = mat_size.y * viz_dim.canvas.height;
 
   // min and max position of matrix
   viz_dim.mat.x = {};

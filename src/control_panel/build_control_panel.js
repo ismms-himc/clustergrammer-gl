@@ -10,12 +10,6 @@ var hide_d3_tip = require('./../tooltip/hide_d3_tip');
 
 module.exports = function build_control_panel(regl, cgm){
 
-  // console.log(d3);
-  // console.log(d3v5);
-
-  // debugger;
-  // var tooltip = tip.default().html(d => d.value);
-
   cgm.params.tooltip_id = '#d3-tip_' + cgm.params.root.replace('#','');
 
   var tooltip = tip.default()
@@ -59,7 +53,6 @@ module.exports = function build_control_panel(regl, cgm){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px')
     .on('mouseover', function(){
-      console.log('mousing over control panel')
       cgm.params.tooltip.in_bounds_tooltip = false;
     })
 

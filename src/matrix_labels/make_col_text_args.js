@@ -10,7 +10,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor.col]);
+      .range([1, 10/params.allow_zoom.col]);
 
   // 17.5, lowering makes larger text
   var final_increase_font_size = num_col/5.0;

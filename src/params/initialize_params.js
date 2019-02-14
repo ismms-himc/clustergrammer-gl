@@ -55,9 +55,9 @@ module.exports = function initialize_params(regl, network){
     .domain([10, 1000])
     .range([2, 30]);
 
-  params.allowable_zoom_factor = {};
-  params.allowable_zoom_factor.col = allow_factor(labels.num_col);
-  params.allowable_zoom_factor.row = allow_factor(labels.num_col);
+  params.allow_zoom = {};
+  params.allow_zoom.col = allow_factor(labels.num_col);
+  params.allow_zoom.row = allow_factor(labels.num_col);
   params.text_scale = {};
   params.cat_colors = params.network.cat_colors;
 

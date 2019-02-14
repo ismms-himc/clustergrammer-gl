@@ -1,6 +1,6 @@
 module.exports = function gen_int_par(params){
 
-  interact = {};
+  var interact = {};
   interact.total = 0;
   interact.still_interacting = false;
   interact.still_mouseover = false;

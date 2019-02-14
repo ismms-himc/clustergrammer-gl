@@ -44992,6 +44992,46 @@ module.exports = function gen_cat_par(params){
 
 /***/ }),
 
+/***/ "./src/params/gen_dendro_par.js":
+/*!**************************************!*\
+  !*** ./src/params/gen_dendro_par.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
+var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+
+module.exports = function gen_dendro_par(regl, params){
+
+  var dendro = {};
+
+  dendro.default_level = 5;
+  dendro.tri_height = 0.10;
+  dendro.trap_height = 0.03;
+  dendro.trap_float = 0.005;
+
+  dendro.dendro_args = {};
+  dendro.group_level = {};
+  dendro.update_dendro = false;
+
+  dendro.group_info = {};
+
+  params.dendro = dendro;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    params.dendro.group_level[inst_axis] = params.dendro.default_level;
+
+    params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
+    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+
+  });
+
+};
+
+/***/ }),
+
 /***/ "./src/params/gen_int_par.js":
 /*!***********************************!*\
   !*** ./src/params/gen_int_par.js ***!
@@ -45001,7 +45041,7 @@ module.exports = function gen_cat_par(params){
 
 module.exports = function gen_int_par(params){
 
-  interact = {};
+  var interact = {};
   interact.total = 0;
   interact.still_interacting = false;
   interact.still_mouseover = false;
@@ -45056,44 +45096,6 @@ module.exports = function generate_cat_args_arrs_params(regl, params){
       });
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
-  });
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_dendro_params.js":
-/*!**********************************************!*\
-  !*** ./src/params/generate_dendro_params.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
-var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
-
-module.exports = function generate_dendro_params(regl, params){
-
-  params.dendro = {};
-
-  params.dendro.default_level = 5;
-  params.dendro.tri_height = 0.10;
-  params.dendro.trap_height = 0.03;
-  params.dendro.trap_float = 0.005;
-
-  params.dendro.dendro_args = {};
-  params.dendro.group_level = {};
-  params.dendro.update_dendro = false;
-
-  params.dendro.group_info = {};
-
-  _.each(['row', 'col'], function(inst_axis){
-
-    params.dendro.group_level[inst_axis] = params.dendro.default_level;
-
-    params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
-    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
-
   });
 
 };
@@ -45380,7 +45382,7 @@ var generate_webgl_to_pix = __webpack_require__(/*! ./generate_webgl_to_pix */ "
 var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
 var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
 var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
-var generate_dendro_params = __webpack_require__(/*! ./generate_dendro_params */ "./src/params/generate_dendro_params.js");
+var gen_dendro_par = __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js");
 var calc_mat_arr = __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js");
 
 // /*
@@ -45462,7 +45464,7 @@ module.exports = function initialize_params(regl, network){
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
 
-  generate_dendro_params(regl, params);
+  gen_dendro_par(regl, params);
 
   // spillover params rely on dendro params
   generate_spillover_params(regl, params);

@@ -22,7 +22,7 @@ var generate_webgl_to_pix = require('./generate_webgl_to_pix');
 var generate_text_zoom_params = require('./generate_text_zoom_params');
 var generate_cat_args_arrs = require('./generate_cat_args_arrs');
 var generate_tooltip_params = require('./generate_tooltip_params');
-var generate_dendro_params = require('./generate_dendro_params');
+var gen_dendro_par = require('./gen_dendro_par');
 var calc_mat_arr = require('./../params/calc_mat_arr');
 
 // /*
@@ -104,7 +104,7 @@ module.exports = function initialize_params(regl, network){
   // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
 
-  generate_dendro_params(regl, params);
+  gen_dendro_par(regl, params);
 
   // spillover params rely on dendro params
   generate_spillover_params(regl, params);

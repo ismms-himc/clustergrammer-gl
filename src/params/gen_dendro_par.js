@@ -1,20 +1,22 @@
 var calc_dendro_triangles = require('./../dendrogram/calc_dendro_triangles');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
 
-module.exports = function generate_dendro_params(regl, params){
+module.exports = function gen_dendro_par(regl, params){
 
-  params.dendro = {};
+  var dendro = {};
 
-  params.dendro.default_level = 5;
-  params.dendro.tri_height = 0.10;
-  params.dendro.trap_height = 0.03;
-  params.dendro.trap_float = 0.005;
+  dendro.default_level = 5;
+  dendro.tri_height = 0.10;
+  dendro.trap_height = 0.03;
+  dendro.trap_float = 0.005;
 
-  params.dendro.dendro_args = {};
-  params.dendro.group_level = {};
-  params.dendro.update_dendro = false;
+  dendro.dendro_args = {};
+  dendro.group_level = {};
+  dendro.update_dendro = false;
 
-  params.dendro.group_info = {};
+  dendro.group_info = {};
+
+  params.dendro = dendro;
 
   _.each(['row', 'col'], function(inst_axis){
 

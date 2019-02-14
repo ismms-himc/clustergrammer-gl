@@ -13,6 +13,5 @@ module.exports = function draw_mouseover(regl, params){
     params.tooltip.remove_tooltip_frame = false;
   }
 
-  // wait_time_final_mouseover = 0;
   setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 };

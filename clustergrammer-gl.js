@@ -43308,54 +43308,6 @@ function clustergrammer_gl(args){
 
   var params = run_viz(regl, network);
 
-  //////////////////////////////////////////////////////
-  // working on custom texture
-  //////////////////////////////////////////////////////
-
-
-  // params.baboon = baboon;
-
-  // console.log(params.baboon.data.length/4)
-
-  // console.log(_.max(params.baboon.data))
-
-
-  // // console.log(mat)
-
-  // // overwrite baboon with custom data
-  // data_for_texture = [];
-
-  // var num_rows = 7*1000;
-  // var num_cols = 1037;
-
-  // num_cells = num_cols * num_rows;
-  // console.log('num_cells', num_cells)
-  // // overwriting data_for_texture
-  // for (i = 0; i < num_cells * 4; i++) {
-
-  //   // make rbg
-  //   // inst_data = Math.round((i/(num_cells*4))*255)
-  //   inst_data = Math.round(Math.random()*255);
-
-  //   if (i%4 === 0 || i%4 === 1){
-  //     inst_data = 0;
-  //   }
-
-  //   data_for_texture.push(inst_data);
-
-  // }
-
-  // var data_baboon = ndarray(new Uint8Array(data_for_texture), [num_cols, num_rows,4])
-
-  // u8a = new Uint8Array(data_for_texture)
-
-  // // baboon.data = u8a
-
-  // params.baboon = data_baboon;
-
-  //////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////
-
   var cgm = {};
 
   cgm.params = params;

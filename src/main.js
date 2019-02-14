@@ -4,9 +4,6 @@
 
  */
 
-var run_viz = require('./draws/run_viz');
-var build_control_panel = require('./control_panel/build_control_panel');
-var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 var pako = require('pako');
 
 function clustergrammer_gl(args){
@@ -72,7 +69,7 @@ function clustergrammer_gl(args){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  var params = run_viz(regl, network);
+  var params = require('./draws/run_viz')(regl, network);
 
   var cgm = {};
 
@@ -87,9 +84,9 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  build_dendrogram_sliders(regl, cgm);
+  require('./dendrogram/build_dendrogram_sliders')(regl, cgm);
 
-  build_control_panel(regl, cgm);
+  require('./control_panel/build_control_panel')(regl, cgm);
 
   return cgm;
 

@@ -43092,9 +43092,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
  */
 
-var run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
-var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
-var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 
 function clustergrammer_gl(args){
@@ -43160,7 +43157,7 @@ function clustergrammer_gl(args){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  var params = run_viz(regl, network);
+  var params = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js")(regl, network);
 
   var cgm = {};
 
@@ -43175,9 +43172,9 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  build_dendrogram_sliders(regl, cgm);
+  __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")(regl, cgm);
 
-  build_control_panel(regl, cgm);
+  __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(regl, cgm);
 
   return cgm;
 
@@ -44485,6 +44482,7 @@ module.exports = function calc_viz_area(params){
     total_pan[inst_axis + '_min'] = -zoom_data[inst_axis].total_pan_min;
     total_pan[inst_axis + '_max'] = params.viz_dim.heat[inst_dim] + zoom_data[inst_axis].total_pan_max;
 
+    // x and y axis viz area is defined differently
     if (inst_axis == 'x'){
       viz_area[inst_axis + '_min'] = pix_to_webgl[inst_axis](total_pan[inst_axis + '_min']) - buffer_width;
       viz_area[inst_axis + '_max'] = pix_to_webgl[inst_axis](total_pan[inst_axis + '_max']) + buffer_width;

@@ -45061,6 +45061,53 @@ module.exports = function gen_int_par(params){
 
 /***/ }),
 
+/***/ "./src/params/gen_label_par.js":
+/*!*************************************!*\
+  !*** ./src/params/gen_label_par.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
+module.exports = function gen_label_par(params){
+
+  var labels = {};
+  labels.num_row = params.mat_data.length;
+  labels.num_col = params.mat_data[0].length;
+
+  labels.offset_dict = {};
+  labels.draw_labels = false;
+
+  // font_detail range: min ~12 max ~200
+  // usable range: 14-30 (was using 25)
+  labels.font_detail = 40;
+
+  // generate titles if necessary
+  var inst_label;
+  labels.titles = {};
+  labels.precalc = {}
+  _.each(['row', 'col'], function(inst_axis){
+
+    // initialize with empty title
+    labels.titles[inst_axis] = '';
+
+    inst_label = params.network[inst_axis + '_nodes'][0].name;
+    if (inst_label.indexOf(': ') > 0){
+      labels.titles[inst_axis] = inst_label.split(': ')[0];
+    }
+
+    // pre-calc text triangles if low enough number of labels
+    labels.precalc[inst_axis] = false;
+
+  });
+
+  params.labels = labels;
+  generate_ordered_labels(params);
+
+};
+
+/***/ }),
+
 /***/ "./src/params/gen_pix_to_webgl.js":
 /*!****************************************!*\
   !*** ./src/params/gen_pix_to_webgl.js ***!
@@ -45122,53 +45169,6 @@ module.exports = function generate_cat_args_arrs_params(regl, params){
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_label_params.js":
-/*!*********************************************!*\
-  !*** ./src/params/generate_label_params.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
-module.exports = function generate_label_params(params){
-
-  var labels = {};
-  labels.num_row = params.mat_data.length;
-  labels.num_col = params.mat_data[0].length;
-
-  labels.offset_dict = {};
-  labels.draw_labels = false;
-
-  // font_detail range: min ~12 max ~200
-  // usable range: 14-30 (was using 25)
-  labels.font_detail = 40;
-
-  // generate titles if necessary
-  var inst_label;
-  labels.titles = {};
-  labels.precalc = {}
-  _.each(['row', 'col'], function(inst_axis){
-
-    // initialize with empty title
-    labels.titles[inst_axis] = '';
-
-    inst_label = params.network[inst_axis + '_nodes'][0].name;
-    if (inst_label.indexOf(': ') > 0){
-      labels.titles[inst_axis] = inst_label.split(': ')[0];
-    }
-
-    // pre-calc text triangles if low enough number of labels
-    labels.precalc[inst_axis] = false;
-
-  });
-
-  params.labels = labels;
-  generate_ordered_labels(params);
 
 };
 
@@ -45370,7 +45370,7 @@ var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_que
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
 var gen_ani_par = __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js");
 var gen_cat_par = __webpack_require__(/*! ./gen_cat_par */ "./src/params/gen_cat_par.js");
-var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
+var gen_label_par = __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js");
 var gen_int_par = __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int_par.js");
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
 var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
@@ -45403,7 +45403,7 @@ module.exports = function initialize_params(regl, network){
 
   gen_cat_par(params);
   generate_order_params(params);
-  generate_label_params(params);
+  gen_label_par(params);
   calc_viz_dim(regl, params);
   generate_cat_args_arrs(regl, params);
   params.zoom_data = ini_zoom_data();

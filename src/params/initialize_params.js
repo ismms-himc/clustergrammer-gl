@@ -12,7 +12,7 @@ var make_label_queue = require('./../matrix_labels/make_label_queue');
 var calc_text_offsets = require('./../matrix_labels/calc_text_offsets');
 var gen_ani_par = require('./gen_ani_par');
 var gen_cat_par = require('./gen_cat_par');
-var generate_label_params = require('./generate_label_params');
+var gen_label_par = require('./gen_label_par');
 var gen_int_par = require('./gen_int_par');
 var generate_order_params = require('./generate_order_params');
 var generate_spillover_params = require('./generate_spillover_params');
@@ -45,7 +45,7 @@ module.exports = function initialize_params(regl, network){
 
   gen_cat_par(params);
   generate_order_params(params);
-  generate_label_params(params);
+  gen_label_par(params);
   calc_viz_dim(regl, params);
   generate_cat_args_arrs(regl, params);
   params.zoom_data = ini_zoom_data();

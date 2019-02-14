@@ -1,5 +1,5 @@
 var generate_ordered_labels = require('./../matrix_labels/generate_ordered_labels');
-module.exports = function generate_label_params(params){
+module.exports = function gen_label_par(params){
 
   var labels = {};
   labels.num_row = params.mat_data.length;

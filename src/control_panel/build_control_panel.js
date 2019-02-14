@@ -31,20 +31,9 @@ module.exports = function build_control_panel(regl, cgm){
   var inst_height = 135;
   var inst_width = cgm.params.viz_width;
 
-  // light panel color '#bbc3cc'
-  // light button color '#e3e7ea'
-  // var control_panel_color = '#eee';
-  // dark text color
-  // var text_color = '#2f363d';
-  // button_color = text_color;
   var control_panel_color = 'white';
   var text_color = '#47515b';
   var button_color = '#eee';
-
-  // // experimenting in different color pallets
-  // control_panel_color = '#2f363d'
-  // var button_color = '#e3e7ea';
-  // var text_color = '#e3e7ea';
 
   var control_svg = d3.select(control_container)
     .style('height',inst_height + 'px')
@@ -63,14 +52,7 @@ module.exports = function build_control_panel(regl, cgm){
     .style('position', 'absolute')
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background')
-
-    // ////////////////////////////////////
-    // // attempt to add mouseover to rect
-    // ////////////////////////////////////
-    .call(tooltip)
-    // .on('mouseover', function(d){
-    // })
-    // .on('mouseout', tooltip.hide);
+    .call(tooltip);
 
   initialize_d3_tip(cgm.params);
 
@@ -215,7 +197,6 @@ module.exports = function build_control_panel(regl, cgm){
         if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
 
           /* category order is already calculated */
-          // d = d.replace('alpha', 'cat_1_index')
           run_reorder(regl, cgm.params, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
@@ -266,67 +247,6 @@ module.exports = function build_control_panel(regl, cgm){
       .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
   })
-
-  // control_svg.append('svg:image')
-  // .attr('x', 16)
-  // .attr('y', 5)
-  // .attr('width', 27)
-  // .attr('height', 27)
-  // .attr('xlink:href', img)
-  // .classed('clustergrammer-logo', true)
-  // // .on('click', function(){
-  // //   console.log('clicking logo')
-  // // });
-
-  /*
-  Make Column Reorder titles
-      d3.select(viz.viz_svg)
-      .selectAll()
-      .data(viz.all_cats.col)
-      .enter()
-      .append('text')
-      .classed('col_cat_super', true)
-      .style('font-size', cat_text_size+'px')
-      .style('opacity', cat_super_opacity)
-      .style('cursor','default')
-      .attr('transform', function(d){
-        var inst_cat = parseInt( d.split('-')[1], 10);
-        var inst_y = y_offset + extra_y_room * viz.cat_room.symbol_width
-          * inst_cat;
-        return 'translate('+x_offset+','+inst_y+')';
-      })
-      .text(function(d){
-        return get_cat_title(viz, d, 'col');
-      });
-  */
-
-  // need to move tooltip o
-
-  // var control_container = d3.select(cgm.params.root + ' .canvas-container')[0][0];
-  // console.log('working on east_border')
-  // // working on tooltip borders
-  // var east_border = d3.select(control_container)
-  //   .append('svg')
-  //   .style('width', cgm.params.tooltip.border_width + 'px')
-  //   .style('height',cgm.params.viz_height + 'px')
-  //   .style('position', 'absolute')
-  //   .style('top', '0px')
-  //   .style('left', '0px')
-  //   .on('mouseover', function(){
-  //     console.log('east_border\n############################')
-  //     cgm.params.tooltip.in_bounds_tooltip = false;
-  //   });
-
-
-  // east_border
-  //   .append('rect')
-  //   .classed('east_border', true)
-  //   .style('height',cgm.params.viz_height + 'px')
-  //   .style('width', cgm.params.tooltip.border_width+'px')
-
-  //   .style('fill', 'black')
-  //   .attr('class', 'east_border')
-
 
   build_reorder_cat_titles(regl, cgm);
   build_tree_icon(cgm);

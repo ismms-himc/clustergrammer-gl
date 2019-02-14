@@ -4426,7 +4426,7 @@ exports.nextCombination = function(v) {
     var res = this.imod(a._invmp(this.m).mul(this.r2));
     return res._forceRed(this);
   };
-})(typeof module === 'undefined' || module, this);
+})( false || module, this);
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/module.js */ "./node_modules/webpack/buildin/module.js")(module)))
 
@@ -35689,7 +35689,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // backwards-compatibility for the old `require()` API. If we're in
   // the browser, add `_` as a global object.
   if (true) {
-    if (typeof module !== 'undefined' && module.exports) {
+    if ( true && module.exports) {
       exports = module.exports = _;
     }
     exports._ = _;
@@ -36872,7 +36872,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
   // IE 11 (#1621), and in Safari 8 (#1929).
-  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+  if ( true && typeof Int8Array != 'object') {
     _.isFunction = function(obj) {
       return typeof obj == 'function' || false;
     };
@@ -37647,7 +37647,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
+	g = g || new Function("return this")();
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -39583,157 +39583,7 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = {
-  'aliceblue': [240, 248, 255],
-  'antiquewhite': [250, 235, 215],
-  'aqua': [0, 255, 255],
-  'aquamarine': [127, 255, 212],
-  'azure': [240, 255, 255],
-  'beige': [245, 245, 220],
-  'bisque': [255, 228, 196],
-  'black': [0, 0, 0],
-  'blanchedalmond': [255, 235, 205],
-  'blue': [0, 0, 255],
-  'blueviolet': [138, 43, 226],
-  'brown': [165, 42, 42],
-  'burlywood': [222, 184, 135],
-  'cadetblue': [95, 158, 160],
-  'chartreuse': [127, 255, 0],
-  'chocolate': [210, 105, 30],
-  'coral': [255, 127, 80],
-  'cornflowerblue': [100, 149, 237],
-  'cornsilk': [255, 248, 220],
-  'crimson': [220, 20, 60],
-  'cyan': [0, 255, 255],
-  'darkblue': [0, 0, 139],
-  'darkcyan': [0, 139, 139],
-  'darkgoldenrod': [184, 134, 11],
-  'darkgray': [169, 169, 169],
-  'darkgreen': [0, 100, 0],
-  'darkgrey': [169, 169, 169],
-  'darkkhaki': [189, 183, 107],
-  'darkmagenta': [139, 0, 139],
-  'darkolivegreen': [85, 107, 47],
-  'darkorange': [255, 140, 0],
-  'darkorchid': [153, 50, 204],
-  'darkred': [139, 0, 0],
-  'darksalmon': [233, 150, 122],
-  'darkseagreen': [143, 188, 143],
-  'darkslateblue': [72, 61, 139],
-  'darkslategray': [47, 79, 79],
-  'darkslategrey': [47, 79, 79],
-  'darkturquoise': [0, 206, 209],
-  'darkviolet': [148, 0, 211],
-  'deeppink': [255, 20, 147],
-  'deepskyblue': [0, 191, 255],
-  'dimgray': [105, 105, 105],
-  'dimgrey': [105, 105, 105],
-  'dodgerblue': [30, 144, 255],
-  'firebrick': [178, 34, 34],
-  'floralwhite': [255, 250, 240],
-  'forestgreen': [34, 139, 34],
-  'fuchsia': [255, 0, 255],
-  'gainsboro': [220, 220, 220],
-  'ghostwhite': [248, 248, 255],
-  'gold': [255, 215, 0],
-  'goldenrod': [218, 165, 32],
-  'gray': [128, 128, 128],
-  'green': [0, 128, 0],
-  'greenyellow': [173, 255, 47],
-  'grey': [128, 128, 128],
-  'honeydew': [240, 255, 240],
-  'hotpink': [255, 105, 180],
-  'indianred': [205, 92, 92],
-  'indigo': [75, 0, 130],
-  'ivory': [255, 255, 240],
-  'khaki': [240, 230, 140],
-  'lavender': [230, 230, 250],
-  'lavenderblush': [255, 240, 245],
-  'lawngreen': [124, 252, 0],
-  'lemonchiffon': [255, 250, 205],
-  'lightblue': [173, 216, 230],
-  'lightcoral': [240, 128, 128],
-  'lightcyan': [224, 255, 255],
-  'lightgoldenrodyellow': [250, 250, 210],
-  'lightgray': [211, 211, 211],
-  'lightgreen': [144, 238, 144],
-  'lightgrey': [211, 211, 211],
-  'lightpink': [255, 182, 193],
-  'lightsalmon': [255, 160, 122],
-  'lightseagreen': [32, 178, 170],
-  'lightskyblue': [135, 206, 250],
-  'lightslategray': [119, 136, 153],
-  'lightslategrey': [119, 136, 153],
-  'lightsteelblue': [176, 196, 222],
-  'lightyellow': [255, 255, 224],
-  'lime': [0, 255, 0],
-  'limegreen': [50, 205, 50],
-  'linen': [250, 240, 230],
-  'magenta': [255, 0, 255],
-  'maroon': [128, 0, 0],
-  'mediumaquamarine': [102, 205, 170],
-  'mediumblue': [0, 0, 205],
-  'mediumorchid': [186, 85, 211],
-  'mediumpurple': [147, 112, 219],
-  'mediumseagreen': [60, 179, 113],
-  'mediumslateblue': [123, 104, 238],
-  'mediumspringgreen': [0, 250, 154],
-  'mediumturquoise': [72, 209, 204],
-  'mediumvioletred': [199, 21, 133],
-  'midnightblue': [25, 25, 112],
-  'mintcream': [245, 255, 250],
-  'mistyrose': [255, 228, 225],
-  'moccasin': [255, 228, 181],
-  'navajowhite': [255, 222, 173],
-  'navy': [0, 0, 128],
-  'oldlace': [253, 245, 230],
-  'olive': [128, 128, 0],
-  'olivedrab': [107, 142, 35],
-  'orange': [255, 165, 0],
-  'orangered': [255, 69, 0],
-  'orchid': [218, 112, 214],
-  'palegoldenrod': [238, 232, 170],
-  'palegreen': [152, 251, 152],
-  'paleturquoise': [175, 238, 238],
-  'palevioletred': [219, 112, 147],
-  'papayawhip': [255, 239, 213],
-  'peachpuff': [255, 218, 185],
-  'peru': [205, 133, 63],
-  'pink': [255, 192, 203],
-  'plum': [221, 160, 221],
-  'powderblue': [176, 224, 230],
-  'purple': [128, 0, 128],
-  'red': [255, 0, 0],
-  'rosybrown': [188, 143, 143],
-  'royalblue': [65, 105, 225],
-  'saddlebrown': [139, 69, 19],
-  'salmon': [250, 128, 114],
-  'sandybrown': [244, 164, 96],
-  'seagreen': [46, 139, 87],
-  'seashell': [255, 245, 238],
-  'sienna': [160, 82, 45],
-  'silver': [192, 192, 192],
-  'skyblue': [135, 206, 235],
-  'slateblue': [106, 90, 205],
-  'slategray': [112, 128, 144],
-  'slategrey': [112, 128, 144],
-  'snow': [255, 250, 250],
-  'springgreen': [0, 255, 127],
-  'steelblue': [70, 130, 180],
-  'tan': [210, 180, 140],
-  'teal': [0, 128, 128],
-  'thistle': [216, 191, 216],
-  'tomato': [255, 99, 71],
-  'transparent': [0, 0, 0, 0],
-  'turquoise': [64, 224, 208],
-  'violet': [238, 130, 238],
-  'wheat': [245, 222, 179],
-  'white': [255, 255, 255],
-  'whitesmoke': [245, 245, 245],
-  'yellow': [255, 255, 0],
-  'yellowgreen': [154, 205, 50],
-  'rebeccapurple': [102, 51, 153, 1]
-};
+module.exports = {"aliceblue":[240,248,255],"antiquewhite":[250,235,215],"aqua":[0,255,255],"aquamarine":[127,255,212],"azure":[240,255,255],"beige":[245,245,220],"bisque":[255,228,196],"black":[0,0,0],"blanchedalmond":[255,235,205],"blue":[0,0,255],"blueviolet":[138,43,226],"brown":[165,42,42],"burlywood":[222,184,135],"cadetblue":[95,158,160],"chartreuse":[127,255,0],"chocolate":[210,105,30],"coral":[255,127,80],"cornflowerblue":[100,149,237],"cornsilk":[255,248,220],"crimson":[220,20,60],"cyan":[0,255,255],"darkblue":[0,0,139],"darkcyan":[0,139,139],"darkgoldenrod":[184,134,11],"darkgray":[169,169,169],"darkgreen":[0,100,0],"darkgrey":[169,169,169],"darkkhaki":[189,183,107],"darkmagenta":[139,0,139],"darkolivegreen":[85,107,47],"darkorange":[255,140,0],"darkorchid":[153,50,204],"darkred":[139,0,0],"darksalmon":[233,150,122],"darkseagreen":[143,188,143],"darkslateblue":[72,61,139],"darkslategray":[47,79,79],"darkslategrey":[47,79,79],"darkturquoise":[0,206,209],"darkviolet":[148,0,211],"deeppink":[255,20,147],"deepskyblue":[0,191,255],"dimgray":[105,105,105],"dimgrey":[105,105,105],"dodgerblue":[30,144,255],"firebrick":[178,34,34],"floralwhite":[255,250,240],"forestgreen":[34,139,34],"fuchsia":[255,0,255],"gainsboro":[220,220,220],"ghostwhite":[248,248,255],"gold":[255,215,0],"goldenrod":[218,165,32],"gray":[128,128,128],"green":[0,128,0],"greenyellow":[173,255,47],"grey":[128,128,128],"honeydew":[240,255,240],"hotpink":[255,105,180],"indianred":[205,92,92],"indigo":[75,0,130],"ivory":[255,255,240],"khaki":[240,230,140],"lavender":[230,230,250],"lavenderblush":[255,240,245],"lawngreen":[124,252,0],"lemonchiffon":[255,250,205],"lightblue":[173,216,230],"lightcoral":[240,128,128],"lightcyan":[224,255,255],"lightgoldenrodyellow":[250,250,210],"lightgray":[211,211,211],"lightgreen":[144,238,144],"lightgrey":[211,211,211],"lightpink":[255,182,193],"lightsalmon":[255,160,122],"lightseagreen":[32,178,170],"lightskyblue":[135,206,250],"lightslategray":[119,136,153],"lightslategrey":[119,136,153],"lightsteelblue":[176,196,222],"lightyellow":[255,255,224],"lime":[0,255,0],"limegreen":[50,205,50],"linen":[250,240,230],"magenta":[255,0,255],"maroon":[128,0,0],"mediumaquamarine":[102,205,170],"mediumblue":[0,0,205],"mediumorchid":[186,85,211],"mediumpurple":[147,112,219],"mediumseagreen":[60,179,113],"mediumslateblue":[123,104,238],"mediumspringgreen":[0,250,154],"mediumturquoise":[72,209,204],"mediumvioletred":[199,21,133],"midnightblue":[25,25,112],"mintcream":[245,255,250],"mistyrose":[255,228,225],"moccasin":[255,228,181],"navajowhite":[255,222,173],"navy":[0,0,128],"oldlace":[253,245,230],"olive":[128,128,0],"olivedrab":[107,142,35],"orange":[255,165,0],"orangered":[255,69,0],"orchid":[218,112,214],"palegoldenrod":[238,232,170],"palegreen":[152,251,152],"paleturquoise":[175,238,238],"palevioletred":[219,112,147],"papayawhip":[255,239,213],"peachpuff":[255,218,185],"peru":[205,133,63],"pink":[255,192,203],"plum":[221,160,221],"powderblue":[176,224,230],"purple":[128,0,128],"red":[255,0,0],"rosybrown":[188,143,143],"royalblue":[65,105,225],"saddlebrown":[139,69,19],"salmon":[250,128,114],"sandybrown":[244,164,96],"seagreen":[46,139,87],"seashell":[255,245,238],"sienna":[160,82,45],"silver":[192,192,192],"skyblue":[135,206,235],"slateblue":[106,90,205],"slategray":[112,128,144],"slategrey":[112,128,144],"snow":[255,250,250],"springgreen":[0,255,127],"steelblue":[70,130,180],"tan":[210,180,140],"teal":[0,128,128],"thistle":[216,191,216],"tomato":[255,99,71],"transparent":[0,0,0,0],"turquoise":[64,224,208],"violet":[238,130,238],"wheat":[245,222,179],"white":[255,255,255],"whitesmoke":[245,245,245],"yellow":[255,255,0],"yellowgreen":[154,205,50],"rebeccapurple":[102,51,153,1]}
 
 /***/ }),
 
@@ -39848,20 +39698,9 @@ module.exports = function build_control_panel(regl, cgm){
   var inst_height = 135;
   var inst_width = cgm.params.viz_width;
 
-  // light panel color '#bbc3cc'
-  // light button color '#e3e7ea'
-  // var control_panel_color = '#eee';
-  // dark text color
-  // var text_color = '#2f363d';
-  // button_color = text_color;
   var control_panel_color = 'white';
   var text_color = '#47515b';
   var button_color = '#eee';
-
-  // // experimenting in different color pallets
-  // control_panel_color = '#2f363d'
-  // var button_color = '#e3e7ea';
-  // var text_color = '#e3e7ea';
 
   var control_svg = d3.select(control_container)
     .style('height',inst_height + 'px')
@@ -39880,14 +39719,7 @@ module.exports = function build_control_panel(regl, cgm){
     .style('position', 'absolute')
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background')
-
-    // ////////////////////////////////////
-    // // attempt to add mouseover to rect
-    // ////////////////////////////////////
-    .call(tooltip)
-    // .on('mouseover', function(d){
-    // })
-    // .on('mouseout', tooltip.hide);
+    .call(tooltip);
 
   initialize_d3_tip(cgm.params);
 
@@ -40032,7 +39864,6 @@ module.exports = function build_control_panel(regl, cgm){
         if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
 
           /* category order is already calculated */
-          // d = d.replace('alpha', 'cat_1_index')
           run_reorder(regl, cgm.params, inst_axis, d);
 
           d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
@@ -40083,67 +39914,6 @@ module.exports = function build_control_panel(regl, cgm){
       .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
   })
-
-  // control_svg.append('svg:image')
-  // .attr('x', 16)
-  // .attr('y', 5)
-  // .attr('width', 27)
-  // .attr('height', 27)
-  // .attr('xlink:href', img)
-  // .classed('clustergrammer-logo', true)
-  // // .on('click', function(){
-  // //   console.log('clicking logo')
-  // // });
-
-  /*
-  Make Column Reorder titles
-      d3.select(viz.viz_svg)
-      .selectAll()
-      .data(viz.all_cats.col)
-      .enter()
-      .append('text')
-      .classed('col_cat_super', true)
-      .style('font-size', cat_text_size+'px')
-      .style('opacity', cat_super_opacity)
-      .style('cursor','default')
-      .attr('transform', function(d){
-        var inst_cat = parseInt( d.split('-')[1], 10);
-        var inst_y = y_offset + extra_y_room * viz.cat_room.symbol_width
-          * inst_cat;
-        return 'translate('+x_offset+','+inst_y+')';
-      })
-      .text(function(d){
-        return get_cat_title(viz, d, 'col');
-      });
-  */
-
-  // need to move tooltip o
-
-  // var control_container = d3.select(cgm.params.root + ' .canvas-container')[0][0];
-  // console.log('working on east_border')
-  // // working on tooltip borders
-  // var east_border = d3.select(control_container)
-  //   .append('svg')
-  //   .style('width', cgm.params.tooltip.border_width + 'px')
-  //   .style('height',cgm.params.viz_height + 'px')
-  //   .style('position', 'absolute')
-  //   .style('top', '0px')
-  //   .style('left', '0px')
-  //   .on('mouseover', function(){
-  //     console.log('east_border\n############################')
-  //     cgm.params.tooltip.in_bounds_tooltip = false;
-  //   });
-
-
-  // east_border
-  //   .append('rect')
-  //   .classed('east_border', true)
-  //   .style('height',cgm.params.viz_height + 'px')
-  //   .style('width', cgm.params.tooltip.border_width+'px')
-
-  //   .style('fill', 'black')
-  //   .attr('class', 'east_border')
-
 
   build_reorder_cat_titles(regl, cgm);
   build_tree_icon(cgm);

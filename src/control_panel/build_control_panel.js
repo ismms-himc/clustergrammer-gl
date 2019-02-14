@@ -130,7 +130,7 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'disp', 'alpha'];
+  var order_options = ['clust', 'sum', 'var', 'alpha'];
 
   // make reorder title
 

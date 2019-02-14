@@ -7,7 +7,6 @@ module.exports = function draw_interacting(regl, params){
 
   params.interact.total = params.interact.total + 1;
 
-  console.log('draw_interacting')
   draw_commands(regl, params);
 
   setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);

@@ -7,10 +7,6 @@ module.exports = function show_d3_tip(params){
   var full_string;
   var mouseover = params.interact.mouseover;
 
-  console.log('showing tooltip!!!!!!!!!!!!!')
-  // console.log(params.tooltip.tooltip_type)
-  // console.log(mouseover)
-
   // // check if tooltip is missing
   // if (d3.select(params.tooltip_id).empty()){
   //   console.log('need to make new tooltip')

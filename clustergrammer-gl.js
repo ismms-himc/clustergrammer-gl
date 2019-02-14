@@ -40352,7 +40352,7 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'disp', 'alpha'];
+  var order_options = ['clust', 'sum', 'var', 'alpha'];
 
   // make reorder title
 
@@ -41957,7 +41957,6 @@ module.exports = function draw_interacting(regl, params){
 
   params.interact.total = params.interact.total + 1;
 
-  console.log('draw_interacting')
   draw_commands(regl, params);
 
   setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
@@ -41984,8 +41983,8 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   // turn back on draw_labels
   ///////////////////////////////
 
-  console.log('draw_labels_tooltips_or_dendro');
   draw_commands(regl, params);
+
   params.tooltip.remove_tooltip_frame = true;
 
   if (params.tooltip.show_tooltip){
@@ -43804,8 +43803,6 @@ module.exports = function drop_label_from_queue(inst_queue, inst_axis, inst_name
 var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix_labels/vectorize_label.js")
 
 module.exports = function gather_text_triangles(params, inst_axis){
-
-  console.log('gather_text_triangles', inst_axis, 'inside')
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -46061,10 +46058,6 @@ module.exports = function show_d3_tip(params){
   var inst_axis;
   var full_string;
   var mouseover = params.interact.mouseover;
-
-  console.log('showing tooltip!!!!!!!!!!!!!')
-  // console.log(params.tooltip.tooltip_type)
-  // console.log(mouseover)
 
   // // check if tooltip is missing
   // if (d3.select(params.tooltip_id).empty()){

@@ -2,8 +2,6 @@ var vectorize_label = require('./vectorize_label')
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
-  console.log('gather_text_triangles', inst_axis, 'inside')
-
   var inst_dim;
   if (inst_axis === 'col'){
     inst_dim = 'x';

@@ -4,7 +4,6 @@ module.exports = function calc_vd(regl, params){
 
   var vd = {};
 
-  // canvas
   var opts = opts || {};
   var options = extend({
       element: opts.element || regl._gl.canvas,
@@ -16,7 +15,6 @@ module.exports = function calc_vd(regl, params){
     vd.canvas[inst_dim] = Number.parseFloat(d3.select(element)
       .style(inst_dim).replace('px', ''));
   });
-
 
   var label = {};
   label.x = 'row';
@@ -36,9 +34,10 @@ module.exports = function calc_vd(regl, params){
   vd.offcenter = {};
   vd.shift_camera = {};
   vd.mat_size = {};
-  var offset_heat = {};
+
   var inst_label;
   var inst_dim;
+  var offset_heat = {};
   var offcenter_magnitude = 0.075;
 
   _.each(['x', 'y'], function(inst_axis){
@@ -78,7 +77,6 @@ module.exports = function calc_vd(regl, params){
 
     vd['tile_' + inst_dim] = (vd.heat_size[inst_axis]/0.5)/params.labels['num_' + inst_other_label];
 
-    // will set up global offset later
     vd.offcenter[inst_axis] = offcenter_magnitude;
 
     if (inst_axis === 'x'){

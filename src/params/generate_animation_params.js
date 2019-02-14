@@ -13,7 +13,7 @@ module.exports = function generate_animation_params(params){
 
   params.ani.time = 0;
   params.ani.first_frame = true;
-  params.ani.initialize_viz = true;
+  params.ani.ini_viz = true;
 
   params.ani.last_click = 0;
   params.ani.dblclick_duration = 0.5;

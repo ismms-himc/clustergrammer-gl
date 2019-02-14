@@ -41,7 +41,7 @@ module.exports = function run_viz(regl, network){
     }
 
     if (params.interact.still_interacting == true ||
-        params.ani.initialize_viz == true ||
+        params.ani.ini_viz == true ||
         params.ani.running == true||
         params.ani.update_viz == true){
 

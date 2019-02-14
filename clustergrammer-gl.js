@@ -38137,7 +38137,7 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.labels.draw_labels = false;
-  params.ani.initialize_viz = true;
+  params.ani.ini_viz = true;
   params.interact.total = 0
 
 };
@@ -41704,11 +41704,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
     }
 
-    // console.log(inst_axis, calc_text_tri)
-
     if (calc_text_tri){
-
-      // console.log('draw_axis_components', inst_axis)
 
       /////////////////////////////////////////////////////////
       // need to make more efficient
@@ -41724,24 +41720,18 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
         // only regather if there are more labels than can be shown at once
         if (params.labels['num_' + inst_axis] > params.max_num_text){
-          // console.log('gather_text_triangles', inst_axis, 'outside')
           gather_text_triangles(params, inst_axis);
         }
 
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
-      } else {
-        // console.log('too many labels to draw');
       }
 
     } else {
 
-      /*
-        show text triangles if avaialble
-      */
+      //show text triangles if avaialble
 
       if (params.text_triangles.draw[inst_axis] != false){
-        // console.log('')
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     }
@@ -41961,7 +41951,7 @@ module.exports = function draw_interacting(regl, params){
 
   setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
-  params.ani.initialize_viz = false;
+  params.ani.ini_viz = false;
 
   if (params.ani.time_remain > 0){
     params.ani.time_remain = params.ani.time_remain - 1;
@@ -42290,7 +42280,7 @@ module.exports = function run_viz(regl, network){
     }
 
     if (params.interact.still_interacting == true ||
-        params.ani.initialize_viz == true ||
+        params.ani.ini_viz == true ||
         params.ani.running == true||
         params.ani.update_viz == true){
 
@@ -42350,7 +42340,7 @@ module.exports = function final_interaction_frame(regl, params){
   // reduce the number of interactions
   params.interact.total = params.interact.total - 1;
 
-  if (params.interact.total == 0 && params.ani.initialize_viz == false){
+  if (params.interact.total == 0 && params.ani.ini_viz == false){
 
     // preventing from running on first frame
     if (params.ani.first_frame == false){
@@ -43588,25 +43578,20 @@ module.exports = function make_opacity_arr(params){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
   var num_row = params.labels.num_row;
   var num_col = params.labels.num_col;
   var canvas_pos = params.node_canvas_pos;
 
-  // pass along row and col node information
   var row_nodes = params.network.row_nodes;
   var col_nodes = params.network.col_nodes;
 
   var row_pos;
   var col_pos;
-
   function position_function(d, i){
-
     row_pos = canvas_pos.y_arr[num_row - 1 - row_nodes[Math.floor(i / num_col)][inst_row_order]];
     col_pos = canvas_pos.x_arr[num_col - 1 - col_nodes[i % num_col][inst_col_order]];
-
     return [col_pos, row_pos];
   }
 
@@ -43615,7 +43600,6 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
             .map(position_function);
 
   return pos_arr;
-
 };
 
 /***/ }),
@@ -44972,7 +44956,7 @@ module.exports = function generate_animation_params(params){
 
   params.ani.time = 0;
   params.ani.first_frame = true;
-  params.ani.initialize_viz = true;
+  params.ani.ini_viz = true;
 
   params.ani.last_click = 0;
   params.ani.dblclick_duration = 0.5;

@@ -45,11 +45,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
     }
 
-    // console.log(inst_axis, calc_text_tri)
-
     if (calc_text_tri){
-
-      // console.log('draw_axis_components', inst_axis)
 
       /////////////////////////////////////////////////////////
       // need to make more efficient
@@ -65,24 +61,18 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
         // only regather if there are more labels than can be shown at once
         if (params.labels['num_' + inst_axis] > params.max_num_text){
-          // console.log('gather_text_triangles', inst_axis, 'outside')
           gather_text_triangles(params, inst_axis);
         }
 
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
 
-      } else {
-        // console.log('too many labels to draw');
       }
 
     } else {
 
-      /*
-        show text triangles if avaialble
-      */
+      //show text triangles if avaialble
 
       if (params.text_triangles.draw[inst_axis] != false){
-        // console.log('')
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     }

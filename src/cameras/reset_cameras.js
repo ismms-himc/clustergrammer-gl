@@ -10,7 +10,7 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.labels.draw_labels = false;
-  params.ani.initialize_viz = true;
+  params.ani.ini_viz = true;
   params.interact.total = 0
 
 };

@@ -44546,13 +44546,18 @@ module.exports = function calc_vd(regl, params){
   var axis = {};
   axis['x'] = 'row';
   axis['y'] = 'col';
+  var dim = {};
+  dim['x'] = 'width';
+  dim['y'] = 'height';
 
+  vd.mat = {};
   vd.heat_size = {};
   var mat_size = {};
   var inst_label;
   _.each(['x', 'y'], function(inst_axis){
 
     inst_label = axis[inst_axis];
+    inst_dim = dim[inst_axis];
 
     mat_size[inst_axis] = 0.8;
 
@@ -44560,17 +44565,15 @@ module.exports = function calc_vd(regl, params){
                               params.cat_data.cat_room[inst_axis] *
                               params.cat_data.cat_num[inst_label];
 
+    // square matrix size set by width of canvas
+    // vd.mat.width  = mat_size.x * vd.canvas.width;
+    // vd.mat.height = mat_size.y * vd.canvas.height;
+    vd.mat[inst_dim] = mat_size[inst_axis] * vd.canvas[inst_dim]
+
   });
 
   vd.mat_size = mat_size;
 
-  // Matrix Dimensions
-  /////////////////////////////
-  vd.mat = {};
-
-  // square matrix size set by width of canvas
-  vd.mat.width  = mat_size.x * vd.canvas.width;
-  vd.mat.height = mat_size.y * vd.canvas.height;
 
   // min and max position of matrix
   vd.mat.x = {};

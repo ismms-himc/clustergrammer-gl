@@ -44525,24 +44525,27 @@ module.exports = function calc_viz_area(params){
 
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 
-module.exports = function calc_viz_dim(regl, params){
+module.exports = function calc_vd(regl, params){
 
-  var viz_dim = {};
+  var vd = {};
 
   var mat_size = {};
   mat_size.x = 0.80;
   mat_size.y = 0.80;
-  viz_dim.mat_size = mat_size;
+  vd.mat_size = mat_size;
 
   var axis = {};
   axis['x'] = 'row';
   axis['y'] = 'col';
 
-  viz_dim.heat_size = {};
-  viz_dim.heat_size.x = mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
-  viz_dim.heat_size.y = mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
+  vd.heat_size = {};
+  var inst_label;
+  _.each(['x', 'y'], function(inst_axis){
+    inst_label = axis[inst_axis];
+    vd.heat_size[inst_axis] = mat_size[inst_axis] - params.cat_data.cat_room[inst_axis] * params.cat_data.cat_num[inst_label];
+  });
 
-  // Set up viz_dim
+  // Set up vd
   ///////////////////////
   var opts = opts || {};
   var options = extend({
@@ -44551,71 +44554,71 @@ module.exports = function calc_viz_dim(regl, params){
 
   var element = options.element;
 
-  viz_dim.canvas = {};
+  vd.canvas = {};
 
   _.each(['width', 'height'], function(inst_dim){
-    viz_dim.canvas[inst_dim] = Number.parseFloat(d3.select(element)
+    vd.canvas[inst_dim] = Number.parseFloat(d3.select(element)
       .style(inst_dim).replace('px', ''));
   });
 
   // Matrix Dimensions
   /////////////////////////////
-  viz_dim.mat = {};
+  vd.mat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.mat.width  = mat_size.x * viz_dim.canvas.width;
-  viz_dim.mat.height = mat_size.y * viz_dim.canvas.height;
+  vd.mat.width  = mat_size.x * vd.canvas.width;
+  vd.mat.height = mat_size.y * vd.canvas.height;
 
   // min and max position of matrix
-  viz_dim.mat.x = {};
-  viz_dim.mat.x.min = viz_dim.canvas.width/2 - viz_dim.mat.width/2;
-  viz_dim.mat.x.max = viz_dim.canvas.width/2 + viz_dim.mat.width/2;
+  vd.mat.x = {};
+  vd.mat.x.min = vd.canvas.width/2 - vd.mat.width/2;
+  vd.mat.x.max = vd.canvas.width/2 + vd.mat.width/2;
 
-  viz_dim.mat.y = {};
-  viz_dim.mat.y.min = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
-  viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
+  vd.mat.y = {};
+  vd.mat.y.min = vd.canvas.height/2 - vd.mat.height/2;
+  vd.mat.y.max = vd.canvas.height/2 + vd.mat.height/2;
 
   // Heatmap Dimensions
   //////////////////////////////
-  viz_dim.heat = {};
+  vd.heat = {};
 
   // square matrix size set by width of canvas
-  viz_dim.heat.width  = viz_dim.heat_size.x * viz_dim.canvas.width;
-  viz_dim.heat.height = viz_dim.heat_size.y * viz_dim.canvas.height;
+  vd.heat.width  = vd.heat_size.x * vd.canvas.width;
+  vd.heat.height = vd.heat_size.y * vd.canvas.height;
 
   var offset_heat = {};
 
   // min and max position of matrix
-  offset_heat.x = (viz_dim.mat.width - viz_dim.heat.width)/2;
-  viz_dim.heat.x = {};
-  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
-  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2; //  + offset_heat.x;
+  offset_heat.x = (vd.mat.width - vd.heat.width)/2;
+  vd.heat.x = {};
+  vd.heat.x.min = vd.canvas.width/2 - vd.heat.width/2 + offset_heat.x;
+  vd.heat.x.max = vd.canvas.width/2 + vd.heat.width/2; //  + offset_heat.x;
 
-  offset_heat.y = (viz_dim.mat.height - viz_dim.heat.height)/2;
-  viz_dim.heat.y = {};
-  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
-  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
+  offset_heat.y = (vd.mat.height - vd.heat.height)/2;
+  vd.heat.y = {};
+  vd.heat.y.min = vd.canvas.height/2 - vd.heat.height/2 + offset_heat.y;
+  vd.heat.y.max = vd.canvas.height/2 + vd.heat.height/2 + offset_heat.y;
 
-  viz_dim.center = {};
-  viz_dim.center.x = 0.5;
-  viz_dim.center.y = 0.5;
+  vd.center = {};
+  vd.center.x = 0.5;
+  vd.center.y = 0.5;
 
 
-  viz_dim.tile_width = (viz_dim.heat_size.x/0.5)/params.labels.num_col;
-  viz_dim.tile_height = (viz_dim.heat_size.y/0.5)/params.labels.num_row;
+  vd.tile_width = (vd.heat_size.x/0.5)/params.labels.num_col;
+  vd.tile_height = (vd.heat_size.y/0.5)/params.labels.num_row;
 
   // will set up global offset later
-  viz_dim.offcenter = {};
+  vd.offcenter = {};
   var offcenter_magnitude_x = 0.075;
   var offcenter_magnitude_y = 0.075;
-  viz_dim.offcenter.x = offcenter_magnitude_x;
-  viz_dim.offcenter.y = offcenter_magnitude_y;
+  vd.offcenter.x = offcenter_magnitude_x;
+  vd.offcenter.y = offcenter_magnitude_y;
 
-  viz_dim.shift_camera = {};
-  viz_dim.shift_camera.x = -offcenter_magnitude_x;
-  viz_dim.shift_camera.y = offcenter_magnitude_y;
+  vd.shift_camera = {};
+  vd.shift_camera.x = -offcenter_magnitude_x;
+  vd.shift_camera.y = offcenter_magnitude_y;
 
-  params.viz_dim = viz_dim;
+  params.viz_dim = vd;
 };
 
 /***/ }),

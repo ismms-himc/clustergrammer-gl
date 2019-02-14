@@ -11,7 +11,9 @@ module.exports = function generate_text_triangle_params(params){
   params.text_triangles.draw = {};
 
   _.each(['row', 'col'], function(inst_axis){
-    if (params.labels['num_' + inst_axis] > params.max_num_text){
+
+    params.labels.precalc[inst_axis] = params.labels['num_' + inst_axis] < params.max_num_text
+    if (params.labels.precalc[inst_axis] === false){
       params.text_triangles.draw[inst_axis] = false;
     } else {
       gather_text_triangles(params, inst_axis);

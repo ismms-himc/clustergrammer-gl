@@ -17,6 +17,7 @@ module.exports = function generate_label_params(params){
   // generate titles if necessary
   var inst_label;
   params.labels.titles = {};
+  params.labels.precalc = {}
   _.each(['row', 'col'], function(inst_axis){
 
     // initialize with empty title
@@ -26,6 +27,10 @@ module.exports = function generate_label_params(params){
     if (inst_label.indexOf(': ') > 0){
       params.labels.titles[inst_axis] = inst_label.split(': ')[0];
     }
+
+    // pre-calc text triangles if low enough number of labels
+    params.labels.precalc[inst_axis] = false;
+
   })
 
 };

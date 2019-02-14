@@ -53,7 +53,8 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
 
       var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
-      if (num_viz_labels < params.max_num_text){
+      // if (num_viz_labels < params.max_num_text){
+      if (num_viz_labels < params.max_num_text && params.labels.queue.high[inst_axis].length == 0){
 
         calc_viz_area(params);
 

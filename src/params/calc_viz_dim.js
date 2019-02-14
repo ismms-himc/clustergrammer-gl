@@ -4,37 +4,40 @@ module.exports = function calc_vd(regl, params){
 
   var vd = {};
 
-  var mat_size = {};
-  mat_size.x = 0.80;
-  mat_size.y = 0.80;
-  vd.mat_size = mat_size;
+  // canvas
+  var opts = opts || {};
+  var options = extend({
+      element: opts.element || regl._gl.canvas,
+    }, opts || {});
+  var element = options.element;
+
+  vd.canvas = {};
+  _.each(['width', 'height'], function(inst_dim){
+    vd.canvas[inst_dim] = Number.parseFloat(d3.select(element)
+      .style(inst_dim).replace('px', ''));
+  });
+
 
   var axis = {};
   axis['x'] = 'row';
   axis['y'] = 'col';
 
   vd.heat_size = {};
+  var mat_size = {};
   var inst_label;
   _.each(['x', 'y'], function(inst_axis){
+
     inst_label = axis[inst_axis];
-    vd.heat_size[inst_axis] = mat_size[inst_axis] - params.cat_data.cat_room[inst_axis] * params.cat_data.cat_num[inst_label];
+
+    mat_size[inst_axis] = 0.8;
+
+    vd.heat_size[inst_axis] = mat_size[inst_axis] -
+                              params.cat_data.cat_room[inst_axis] *
+                              params.cat_data.cat_num[inst_label];
+
   });
 
-  // Set up vd
-  ///////////////////////
-  var opts = opts || {};
-  var options = extend({
-      element: opts.element || regl._gl.canvas,
-    }, opts || {});
-
-  var element = options.element;
-
-  vd.canvas = {};
-
-  _.each(['width', 'height'], function(inst_dim){
-    vd.canvas[inst_dim] = Number.parseFloat(d3.select(element)
-      .style(inst_dim).replace('px', ''));
-  });
+  vd.mat_size = mat_size;
 
   // Matrix Dimensions
   /////////////////////////////

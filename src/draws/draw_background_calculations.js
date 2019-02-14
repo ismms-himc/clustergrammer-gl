@@ -18,8 +18,7 @@ module.exports = function draw_background_calculations(regl, params){
     // disable background text calculation
 
     // low priority queue (runs in background)
-    if (params.labels.queue.high[inst_axis].length > 0 &&
-      params.labels['num_' + inst_axis] < params.labels.max_label_queue){
+    if (params.labels.queue.high[inst_axis].length > 0){
 
       var inst_name = params.labels.queue.high[inst_axis][0];
 
@@ -29,7 +28,8 @@ module.exports = function draw_background_calculations(regl, params){
 
       drop_label_from_queue(params.labels.queue.high[inst_axis], inst_axis, inst_name);
 
-      if (params.labels.queue.high[inst_axis].length == 0){
+      if (params.labels.queue.high[inst_axis].length == 0 &&
+          params.labels.precalc[inst_axis] == false){
         params.animation.update_viz = true;
       }
 

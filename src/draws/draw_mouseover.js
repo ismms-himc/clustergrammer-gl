@@ -1,4 +1,3 @@
-// var draw_commands = require('./draw_commands');
 var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
 var wait_time_final_mouseover = 50;
 
@@ -16,13 +15,6 @@ module.exports = function draw_mouseover(regl, params){
     .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
-
-  // clean_tooltip
-  // // remove old tooltip
-  // if (params.tooltip.remove_tooltip_frame){
-  //   params.tooltip.show_tooltip = false;
-  //   draw_commands(regl, params);
-  // }
 
   if (params.tooltip.remove_tooltip_frame){
       // console.log('--- shut down remove_tooltip_frame')

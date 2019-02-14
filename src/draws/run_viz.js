@@ -40,10 +40,18 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
+
+
     if (params.interact.still_interacting == true ||
         params.animation.initialize_viz == true ||
-        params.animation.running ||
-        params.animation.update_viz){
+        params.animation.running == true||
+        params.animation.update_viz == true){
+
+      // console.log('why draw interacting?')
+      // console.log(params.interact.still_interacting,
+      //   params.animation.initialize_viz,
+      //   params.animation.running,
+      //   params.animation.update_viz)
 
       draw_interacting(regl, params);
 

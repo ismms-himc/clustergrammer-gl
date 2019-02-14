@@ -41704,7 +41704,11 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
     }
 
+    // console.log(inst_axis, calc_text_tri)
+
     if (calc_text_tri){
+
+      // console.log('draw_axis_components', inst_axis)
 
       /////////////////////////////////////////////////////////
       // need to make more efficient
@@ -41713,12 +41717,14 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
       // if (num_viz_labels < params.max_num_text){
+
       if (num_viz_labels < params.max_num_text && params.labels.queue.high[inst_axis].length == 0){
 
         calc_viz_area(params);
 
         // only regather if there are more labels than can be shown at once
         if (params.labels['num_' + inst_axis] > params.max_num_text){
+          // console.log('gather_text_triangles', inst_axis, 'outside')
           gather_text_triangles(params, inst_axis);
         }
 
@@ -41735,6 +41741,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       */
 
       if (params.text_triangles.draw[inst_axis] != false){
+        // console.log('')
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     }
@@ -41856,8 +41863,7 @@ module.exports = function draw_background_calculations(regl, params){
     // disable background text calculation
 
     // low priority queue (runs in background)
-    if (params.labels.queue.high[inst_axis].length > 0 &&
-      params.labels['num_' + inst_axis] < params.labels.max_label_queue){
+    if (params.labels.queue.high[inst_axis].length > 0){
 
       var inst_name = params.labels.queue.high[inst_axis][0];
 
@@ -41867,7 +41873,8 @@ module.exports = function draw_background_calculations(regl, params){
 
       drop_label_from_queue(params.labels.queue.high[inst_axis], inst_axis, inst_name);
 
-      if (params.labels.queue.high[inst_axis].length == 0){
+      if (params.labels.queue.high[inst_axis].length == 0 &&
+          params.labels.precalc[inst_axis] == false){
         params.animation.update_viz = true;
       }
 
@@ -41950,6 +41957,7 @@ module.exports = function draw_interacting(regl, params){
 
   params.interact.total = params.interact.total + 1;
 
+  console.log('draw_interacting')
   draw_commands(regl, params);
 
   setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
@@ -41976,7 +41984,7 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   // turn back on draw_labels
   ///////////////////////////////
 
-  // console.log('slow_draw or show_tooltip');
+  console.log('draw_labels_tooltips_or_dendro');
   draw_commands(regl, params);
   params.tooltip.remove_tooltip_frame = true;
 
@@ -42048,7 +42056,6 @@ module.exports = function draw_matrix_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// var draw_commands = require('./draw_commands');
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var wait_time_final_mouseover = 50;
 
@@ -42066,13 +42073,6 @@ module.exports = function draw_mouseover(regl, params){
     .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
-
-  // clean_tooltip
-  // // remove old tooltip
-  // if (params.tooltip.remove_tooltip_frame){
-  //   params.tooltip.show_tooltip = false;
-  //   draw_commands(regl, params);
-  // }
 
   if (params.tooltip.remove_tooltip_frame){
       // console.log('--- shut down remove_tooltip_frame')
@@ -42290,10 +42290,18 @@ module.exports = function run_viz(regl, network){
       end_animation(regl, params);
     }
 
+
+
     if (params.interact.still_interacting == true ||
         params.animation.initialize_viz == true ||
-        params.animation.running ||
-        params.animation.update_viz){
+        params.animation.running == true||
+        params.animation.update_viz == true){
+
+      // console.log('why draw interacting?')
+      // console.log(params.interact.still_interacting,
+      //   params.animation.initialize_viz,
+      //   params.animation.running,
+      //   params.animation.update_viz)
 
       draw_interacting(regl, params);
 
@@ -43797,7 +43805,7 @@ var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
-  console.log('gather_text_triangles  ')
+  console.log('gather_text_triangles', inst_axis, 'inside')
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -43819,9 +43827,12 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       var inst_name = inst_label.name;
 
+
       if (inst_name.indexOf(': ') >= 0){
         inst_name = inst_label.name.split(': ')[1];
       }
+
+      // console.log(inst_name)
 
       var inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
@@ -44256,8 +44267,8 @@ module.exports = function make_inst_queue(params){
 
     params.labels.queue.low[inst_axis] = inst_queue;
 
-    // make high label queue non-empty
-    params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
+    // // make high label queue non-empty
+    // params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
 
   });
 

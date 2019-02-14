@@ -45,7 +45,11 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
     }
 
+    // console.log(inst_axis, calc_text_tri)
+
     if (calc_text_tri){
+
+      // console.log('draw_axis_components', inst_axis)
 
       /////////////////////////////////////////////////////////
       // need to make more efficient
@@ -54,12 +58,14 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
 
       // if (num_viz_labels < params.max_num_text){
+
       if (num_viz_labels < params.max_num_text && params.labels.queue.high[inst_axis].length == 0){
 
         calc_viz_area(params);
 
         // only regather if there are more labels than can be shown at once
         if (params.labels['num_' + inst_axis] > params.max_num_text){
+          // console.log('gather_text_triangles', inst_axis, 'outside')
           gather_text_triangles(params, inst_axis);
         }
 
@@ -76,6 +82,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       */
 
       if (params.text_triangles.draw[inst_axis] != false){
+        // console.log('')
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     }

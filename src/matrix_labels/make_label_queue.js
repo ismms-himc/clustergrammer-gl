@@ -30,8 +30,8 @@ module.exports = function make_inst_queue(params){
 
     params.labels.queue.low[inst_axis] = inst_queue;
 
-    // make high label queue non-empty
-    params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
+    // // make high label queue non-empty
+    // params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
 
   });
 

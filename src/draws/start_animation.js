@@ -1,10 +1,10 @@
 module.exports = function start_animation(params){
 
   // console.log('start_animation')
-  params.animation.run_animation = false;
-  params.animation.last_switch_time = params.animation.time
-  params.animation.running = true;
+  params.ani.run_animation = false;
+  params.ani.last_switch_time = params.ani.time
+  params.ani.running = true;
 
 
-  params.animation.duration_end = params.animation.last_switch_time + params.animation.ani_duration;
+  params.ani.duration_end = params.ani.last_switch_time + params.ani.ani_duration;
 };

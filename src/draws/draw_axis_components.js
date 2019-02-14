@@ -27,7 +27,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       regl(inst_cat_arg)(
         {
           interp_prop: interp_fun(params),
-          run_animation: params.animation.running
+          run_animation: params.ani.running
         }
       );
     });

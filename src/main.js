@@ -64,7 +64,6 @@ function clustergrammer_gl(args){
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];
 
-
   var inst_height = args.viz_height;
   var inst_width  = args.viz_width;
 

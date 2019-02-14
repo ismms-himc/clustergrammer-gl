@@ -12,7 +12,7 @@ module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
   }
 
-  params.animation.run_animation = true;
+  params.ani.run_animation = true;
   params.order.new[inst_axis] = new_order;
 
   reorder_matrix_args(regl, params);

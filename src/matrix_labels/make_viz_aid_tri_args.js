@@ -148,7 +148,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
 
     count: 3,

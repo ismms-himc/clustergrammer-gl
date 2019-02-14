@@ -10,8 +10,8 @@ module.exports = function end_animation(regl, params){
   // The animation has finished
   ///////////////////////////////////////
 
-  params.animation.running = false;
-  params.animation.run_animation = false;
+  params.ani.running = false;
+  params.ani.run_animation = false;
 
   // transfer the new positions to the matrix args attributes
   params.matrix_args.regl_props.rects.attributes.pos_att_ini = {

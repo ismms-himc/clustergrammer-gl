@@ -102,7 +102,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
     depth: {
       enable: true,

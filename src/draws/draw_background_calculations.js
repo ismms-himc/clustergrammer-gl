@@ -30,7 +30,7 @@ module.exports = function draw_background_calculations(regl, params){
 
       if (params.labels.queue.high[inst_axis].length == 0 &&
           params.labels.precalc[inst_axis] == false){
-        params.animation.update_viz = true;
+        params.ani.update_viz = true;
       }
 
     }

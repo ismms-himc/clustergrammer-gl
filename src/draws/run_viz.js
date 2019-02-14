@@ -13,12 +13,12 @@ module.exports = function run_viz(regl, network){
   // global params
   var params = initialize_params(regl, network);
 
-  params.animation.first_frame = true;
+  params.ani.first_frame = true;
 
 
   regl.frame(function ({time}) {
 
-    params.animation.time = time;
+    params.ani.time = time;
 
     if (params.interact.total > 1){
       d3.selectAll(params.root + ' .group-svg-tooltip')
@@ -34,28 +34,20 @@ module.exports = function run_viz(regl, network){
       reset_cameras(regl, params);
     }
 
-    if (params.animation.run_animation){
+    if (params.ani.run_animation){
       start_animation(params);
-    } else if (params.animation.time > params.animation.duration_end && params.animation.running === true){
+    } else if (params.ani.time > params.ani.duration_end && params.ani.running === true){
       end_animation(regl, params);
     }
 
-
-
     if (params.interact.still_interacting == true ||
-        params.animation.initialize_viz == true ||
-        params.animation.running == true||
-        params.animation.update_viz == true){
-
-      // console.log('why draw interacting?')
-      // console.log(params.interact.still_interacting,
-      //   params.animation.initialize_viz,
-      //   params.animation.running,
-      //   params.animation.update_viz)
+        params.ani.initialize_viz == true ||
+        params.ani.running == true||
+        params.ani.update_viz == true){
 
       draw_interacting(regl, params);
 
-      params.animation.update_viz = false;
+      params.ani.update_viz = false;
 
     }
     else if (params.interact.still_mouseover == true){

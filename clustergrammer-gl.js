@@ -38137,7 +38137,7 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.labels.draw_labels = false;
-  params.animation.initialize_viz = true;
+  params.ani.initialize_viz = true;
   params.interact.total = 0
 
 };
@@ -41686,7 +41686,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
       regl(inst_cat_arg)(
         {
           interp_prop: interp_fun(params),
-          run_animation: params.animation.running
+          run_animation: params.ani.running
         }
       );
     });
@@ -41875,7 +41875,7 @@ module.exports = function draw_background_calculations(regl, params){
 
       if (params.labels.queue.high[inst_axis].length == 0 &&
           params.labels.precalc[inst_axis] == false){
-        params.animation.update_viz = true;
+        params.ani.update_viz = true;
       }
 
     }
@@ -41961,10 +41961,10 @@ module.exports = function draw_interacting(regl, params){
 
   setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
 
-  params.animation.initialize_viz = false;
+  params.ani.initialize_viz = false;
 
-  if (params.animation.time_remain > 0){
-    params.animation.time_remain = params.animation.time_remain - 1;
+  if (params.ani.time_remain > 0){
+    params.ani.time_remain = params.ani.time_remain - 1;
   }
 };
 
@@ -42039,7 +42039,7 @@ module.exports = function draw_matrix_components(regl, params){
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     });
 
   });
@@ -42138,8 +42138,8 @@ module.exports = function end_animation(regl, params){
   // The animation has finished
   ///////////////////////////////////////
 
-  params.animation.running = false;
-  params.animation.run_animation = false;
+  params.ani.running = false;
+  params.ani.run_animation = false;
 
   // transfer the new positions to the matrix args attributes
   params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -42193,8 +42193,8 @@ module.exports = function end_animation(regl, params){
 const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
 
 module.exports = function interp_fun(params){
-  var inst_ease = ease((params.animation.time - params.animation.last_switch_time) /
-              params.animation.ani_duration);
+  var inst_ease = ease((params.ani.time - params.ani.last_switch_time) /
+              params.ani.ani_duration);
 
   // console.log(inst_ease)
   return inst_ease;
@@ -42262,12 +42262,12 @@ module.exports = function run_viz(regl, network){
   // global params
   var params = initialize_params(regl, network);
 
-  params.animation.first_frame = true;
+  params.ani.first_frame = true;
 
 
   regl.frame(function ({time}) {
 
-    params.animation.time = time;
+    params.ani.time = time;
 
     if (params.interact.total > 1){
       d3.selectAll(params.root + ' .group-svg-tooltip')
@@ -42283,28 +42283,20 @@ module.exports = function run_viz(regl, network){
       reset_cameras(regl, params);
     }
 
-    if (params.animation.run_animation){
+    if (params.ani.run_animation){
       start_animation(params);
-    } else if (params.animation.time > params.animation.duration_end && params.animation.running === true){
+    } else if (params.ani.time > params.ani.duration_end && params.ani.running === true){
       end_animation(regl, params);
     }
 
-
-
     if (params.interact.still_interacting == true ||
-        params.animation.initialize_viz == true ||
-        params.animation.running == true||
-        params.animation.update_viz == true){
-
-      // console.log('why draw interacting?')
-      // console.log(params.interact.still_interacting,
-      //   params.animation.initialize_viz,
-      //   params.animation.running,
-      //   params.animation.update_viz)
+        params.ani.initialize_viz == true ||
+        params.ani.running == true||
+        params.ani.update_viz == true){
 
       draw_interacting(regl, params);
 
-      params.animation.update_viz = false;
+      params.ani.update_viz = false;
 
     }
     else if (params.interact.still_mouseover == true){
@@ -42336,12 +42328,12 @@ module.exports = function run_viz(regl, network){
 module.exports = function start_animation(params){
 
   // console.log('start_animation')
-  params.animation.run_animation = false;
-  params.animation.last_switch_time = params.animation.time
-  params.animation.running = true;
+  params.ani.run_animation = false;
+  params.ani.last_switch_time = params.ani.time
+  params.ani.running = true;
 
 
-  params.animation.duration_end = params.animation.last_switch_time + params.animation.ani_duration;
+  params.ani.duration_end = params.ani.last_switch_time + params.ani.ani_duration;
 };
 
 /***/ }),
@@ -42358,10 +42350,10 @@ module.exports = function final_interaction_frame(regl, params){
   // reduce the number of interactions
   params.interact.total = params.interact.total - 1;
 
-  if (params.interact.total == 0 && params.animation.initialize_viz == false){
+  if (params.interact.total == 0 && params.ani.initialize_viz == false){
 
     // preventing from running on first frame
-    if (params.animation.first_frame == false){
+    if (params.ani.first_frame == false){
 
       // console.log('final_interaction_frame')
 
@@ -42374,7 +42366,7 @@ module.exports = function final_interaction_frame(regl, params){
 
     } else {
 
-      params.animation.first_frame = false;
+      params.ani.first_frame = false;
     }
   }
 
@@ -43292,7 +43284,6 @@ function clustergrammer_gl(args){
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];
 
-
   var inst_height = args.viz_height;
   var inst_width  = args.viz_width;
 
@@ -43964,7 +43955,7 @@ module.exports = function make_col_cat_title_args(regl, params, zoom_function){
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
     depth: {
       enable: true,
@@ -44127,7 +44118,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       col_width: col_width,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
     depth: {
       enable: true,
@@ -44302,7 +44293,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
     depth: {
       enable: true,
@@ -44475,7 +44466,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
 
     count: 3,
@@ -44968,25 +44959,25 @@ module.exports = function calc_viz_dim(regl, params){
 module.exports = function generate_animation_params(params){
 
   // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
+  params.ani = {};
+  params.ani.time_remain = 0;
 
-  params.animation.running = false;
-  params.animation.run_animation = false;
+  params.ani.running = false;
+  params.ani.run_animation = false;
 
-  params.animation.last_switch_time = 0;
-  params.animation.ani_duration = 3;
-  params.animation.duration_end = 0;
+  params.ani.last_switch_time = 0;
+  params.ani.ani_duration = 3;
+  params.ani.duration_end = 0;
 
-  params.animation.time = 0;
-  params.animation.first_frame = true;
-  params.animation.initialize_viz = true;
+  params.ani.time = 0;
+  params.ani.first_frame = true;
+  params.ani.initialize_viz = true;
 
-  params.animation.last_click = 0;
-  params.animation.dblclick_duration = 0.5;
+  params.ani.last_click = 0;
+  params.ani.dblclick_duration = 0.5;
 
   // used to update viz after background calculations
-  params.animation.update_viz = false;
+  params.ani.update_viz = false;
 
 };
 
@@ -45596,7 +45587,7 @@ module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
   }
 
-  params.animation.run_animation = true;
+  params.ani.run_animation = true;
   params.order.new[inst_axis] = new_order;
 
   reorder_matrix_args(regl, params);
@@ -46648,7 +46639,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     // console.log('clicking');
 
-    if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
+    if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
       // console.log('double click',
       //              params.interact.mouseover.row.name,
@@ -46718,7 +46709,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else {
 
-      params.animation.last_click = params.animation.time;
+      params.ani.last_click = params.ani.time;
 
     }
 

@@ -32,7 +32,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     // console.log('clicking');
 
-    if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
+    if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
       // console.log('double click',
       //              params.interact.mouseover.row.name,
@@ -102,7 +102,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else {
 
-      params.animation.last_click = params.animation.time;
+      params.ani.last_click = params.ani.time;
 
     }
 

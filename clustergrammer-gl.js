@@ -43311,71 +43311,6 @@ module.exports = clustergrammer_gl;
 
 /***/ }),
 
-/***/ "./src/matrix_cells/calc_row_downsampled_mat.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_cells/calc_row_downsampled_mat.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
-
-  // console.log('calc_row_downsampled_mat');
-
-  var mat_data = params.mat_data;
-  // var row_pos = params.row_positions;
-  // var ds_mat = [];
-  // var inst_pos;
-
-  if (run_downsampling){
-    /*
-      Perform trivial downsampling (subsampling)
-    */
-
-    mat_data = params.mat_data;
-    mat_data = mat_data.slice(0,5);
-
-    // column downsampling
-    var new_mat_data = []
-    _.each(mat_data, function(inst_row){
-      inst_row = inst_row.slice(0,3);
-      new_mat_data.push(inst_row);
-    });
-
-    params.mat_data = new_mat_data;
-    params.is_downsampled = true;
-  }
-
-  /*
-    Working on actual downsampling
-  */
-
-  /*
-    row_pos go from -0.5 to 0.5
-  */
-
-  // make 10 positions
-  // var new_pos = _.range(-0.5, 0.5, 0.1);
-  // console.log(new_pos.length);
-
-  // mod_value = 0.1;
-
-  // _.each(mat_data, function(inst_row, inst_index){
-
-  //   inst_pos = row_pos[inst_index];
-
-  //   ds_pos = Math.round(inst_pos/mod_value);
-
-  //   console.log('inst_pos: ', inst_pos);
-  //   console.log('ds_pos', ds_pos)
-  //   console.log('\n');
-
-  // });
-
-}
-
-/***/ }),
-
 /***/ "./src/matrix_cells/make_matrix_args.js":
 /*!**********************************************!*\
   !*** ./src/matrix_cells/make_matrix_args.js ***!
@@ -45365,14 +45300,8 @@ var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat 
 var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
 var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
-var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-var gen_ani_par = __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js");
-var gen_cat_par = __webpack_require__(/*! ./gen_cat_par */ "./src/params/gen_cat_par.js");
-var gen_label_par = __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js");
-var gen_int_par = __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int_par.js");
 var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
 var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
 var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
@@ -45384,39 +45313,23 @@ var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params 
 var gen_dendro_par = __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js");
 var calc_mat_arr = __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js");
 
-// /*
-//   Working on using subset of math.js for matrix splicing
-// */
-// var core = require('mathjs/core');
-// var math = core.create();
-// math.import(require('mathjs/lib/function/probability/factorial'));
-
 module.exports = function initialize_params(regl, network){
 
   var params = {};
   params.network = network;
 
-  gen_ani_par(params);
-  calc_alpha_order(params)
-  gen_int_par(params);
-
+  __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js")(params);
+  __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js")(params)
+  __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int_par.js")(params);
   params.mat_data = params.network.mat;
-
-  gen_cat_par(params);
+  __webpack_require__(/*! ./gen_cat_par */ "./src/params/gen_cat_par.js")(params);
   generate_order_params(params);
-  gen_label_par(params);
+  __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js")(params);
   calc_viz_dim(regl, params);
   generate_cat_args_arrs(regl, params);
   params.zoom_data = ini_zoom_data();
-
-  // calculate row/col canvas positions
   params.canvas_pos = calc_row_and_col_canvas_positions(params);
-
-  // calc row-downsampled matrix
-  var run_downsampling = false;
   params.is_downsampled = false;
-  calc_row_downsampled_mat(params, run_downsampling);
-
   params.viz_aid_tri_args = {};
 
   _.each(['row', 'col'], function(inst_axis){
@@ -45424,7 +45337,6 @@ module.exports = function initialize_params(regl, network){
   });
 
   generate_tooltip_params(regl, params);
-
   params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
 
@@ -45444,28 +45356,12 @@ module.exports = function initialize_params(regl, network){
 
   params.max_zoom = min_dim/4.0;
   params.zoom_restrict = ini_zoom_restrict(params);
-
-  // update zoom_data
-
-  /*
-
-  Need to pass cgm to zoom_rules_high_mat in order to have custom row/col
-  reordering
-
-  */
-
   zoom_rules_high_mat(regl, params);
   make_cameras(regl, params);
 
-  // calc offsets used for matrix
   calc_mat_arr(params);
-
-  // generate matrix_args using buffers
   params.matrix_args = make_matrix_args(regl, params);
-
   gen_dendro_par(regl, params);
-
-  // spillover params rely on dendro params
   generate_spillover_params(regl, params);
 
   var allow_factor = d3.scale.linear()
@@ -45475,10 +45371,7 @@ module.exports = function initialize_params(regl, network){
   params.allowable_zoom_factor = {};
   params.allowable_zoom_factor.col = allow_factor(params.labels.num_col);
   params.allowable_zoom_factor.row = allow_factor(params.labels.num_col);
-
   params.text_scale = {};
-
-  // save category colors
   params.cat_colors = params.network.cat_colors;
 
   return params;

@@ -1,4 +1,4 @@
-module.exports = function generate_animation_params(params){
+module.exports = function gen_ani_par(params){
 
   ani = {};
   ani.time_remain = 0;

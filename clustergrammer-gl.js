@@ -44934,14 +44934,14 @@ module.exports = function calc_viz_dim(regl, params){
 
 /***/ }),
 
-/***/ "./src/params/generate_animation_params.js":
-/*!*************************************************!*\
-  !*** ./src/params/generate_animation_params.js ***!
-  \*************************************************/
+/***/ "./src/params/gen_ani_par.js":
+/*!***********************************!*\
+  !*** ./src/params/gen_ani_par.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function generate_animation_params(params){
+module.exports = function gen_ani_par(params){
 
   ani = {};
   ani.time_remain = 0;
@@ -45369,7 +45369,7 @@ var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_ro
 var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
 var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-var generate_animation_params = __webpack_require__(/*! ./generate_animation_params */ "./src/params/generate_animation_params.js");
+var gen_ani_par = __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js");
 var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
 var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
 var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
@@ -45396,7 +45396,7 @@ module.exports = function initialize_params(regl, network){
   var params = {};
   params.network = network;
 
-  generate_animation_params(params);
+  gen_ani_par(params);
   calc_alpha_order(params)
   generate_interact_params(params);
 

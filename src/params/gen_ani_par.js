@@ -1,6 +1,6 @@
 module.exports = function gen_ani_par(params){
 
-  ani = {};
+  var ani = {};
   ani.time_remain = 0;
   ani.running = false;
   ani.run_animation = false;

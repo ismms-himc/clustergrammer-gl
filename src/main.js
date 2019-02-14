@@ -8,9 +8,6 @@ var run_viz = require('./draws/run_viz');
 var build_control_panel = require('./control_panel/build_control_panel');
 var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders')
 var pako = require('pako');
-var ndarray = require('ndarray');
-
-// var baboon = require('baboon-image');
 
 function clustergrammer_gl(args){
 
@@ -42,10 +39,8 @@ function clustergrammer_gl(args){
     var uncomp_net = JSON.parse(strData)
 
     network = uncomp_net;
-    // console.log('decompressed')
   } else {
     network = args.network;
-    // console.log('no need to decompress')
   }
 
   var container = args.container;

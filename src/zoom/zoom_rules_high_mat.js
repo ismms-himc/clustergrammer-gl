@@ -56,7 +56,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
       // console.log('full_name', full_name);
 
       var mat = params.mat_data;
-      tmp_arr = [];
+      var tmp_arr = [];
 
       // row_nodes.forEach(function(node, index) {
       //   tmp_arr.push( mat[index].row_data[inst_col].value);
@@ -84,7 +84,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       // sort array says which index contains highest lowest values
       // convert to name list
-      ordered_names = [];
+      var ordered_names = [];
       _.map(tmp_sort, function(inst_index){
         ordered_names.push(params.network.row_nodes[inst_index].name);
       })
@@ -93,7 +93,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       // debugger;
 
-      params.network.row_nodes.forEach(function(node, index){
+      params.network.row_nodes.forEach(function(node){
         node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
         // console.log(node.name, tmp_sort[index])
       })

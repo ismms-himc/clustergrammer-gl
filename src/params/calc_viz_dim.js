@@ -4,12 +4,12 @@ module.exports = function calc_viz_dim(regl, params){
 
   var viz_dim = {};
 
-  mat_size = {};
+  var mat_size = {};
   mat_size.x = 0.80;
   mat_size.y = 0.80;
   viz_dim.mat_size = mat_size;
 
-  axis = {};
+  var axis = {};
   axis['x'] = 'row';
   axis['y'] = 'col';
 

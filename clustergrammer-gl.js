@@ -43096,9 +43096,6 @@ var run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js
 var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
 var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
-var ndarray = __webpack_require__(/*! ndarray */ "./node_modules/ndarray/ndarray.js");
-
-// var baboon = require('baboon-image');
 
 function clustergrammer_gl(args){
 
@@ -43130,10 +43127,8 @@ function clustergrammer_gl(args){
     var uncomp_net = JSON.parse(strData)
 
     network = uncomp_net;
-    // console.log('decompressed')
   } else {
     network = args.network;
-    // console.log('no need to decompress')
   }
 
   var container = args.container;
@@ -44534,12 +44529,12 @@ module.exports = function calc_viz_dim(regl, params){
 
   var viz_dim = {};
 
-  mat_size = {};
+  var mat_size = {};
   mat_size.x = 0.80;
   mat_size.y = 0.80;
   viz_dim.mat_size = mat_size;
 
-  axis = {};
+  var axis = {};
   axis['x'] = 'row';
   axis['y'] = 'col';
 
@@ -44634,7 +44629,7 @@ module.exports = function calc_viz_dim(regl, params){
 
 module.exports = function gen_ani_par(params){
 
-  ani = {};
+  var ani = {};
   ani.time_remain = 0;
   ani.running = false;
   ani.run_animation = false;
@@ -44665,7 +44660,7 @@ var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "
 
 module.exports = function gen_cat_par(params){
 
-  cat_data = {};
+  var cat_data = {};
   cat_data.row = generate_cat_array(params, 'row');
   cat_data.col = generate_cat_array(params, 'col');
 
@@ -46275,7 +46270,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
       // console.log('full_name', full_name);
 
       var mat = params.mat_data;
-      tmp_arr = [];
+      var tmp_arr = [];
 
       // row_nodes.forEach(function(node, index) {
       //   tmp_arr.push( mat[index].row_data[inst_col].value);
@@ -46303,7 +46298,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       // sort array says which index contains highest lowest values
       // convert to name list
-      ordered_names = [];
+      var ordered_names = [];
       _.map(tmp_sort, function(inst_index){
         ordered_names.push(params.network.row_nodes[inst_index].name);
       })
@@ -46312,7 +46307,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
       // debugger;
 
-      params.network.row_nodes.forEach(function(node, index){
+      params.network.row_nodes.forEach(function(node){
         node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
         // console.log(node.name, tmp_sort[index])
       })

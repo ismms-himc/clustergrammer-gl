@@ -3,7 +3,7 @@ var generate_cat_info = require('./../cats/generate_cat_info');
 
 module.exports = function gen_cat_par(params){
 
-  cat_data = {};
+  var cat_data = {};
   cat_data.row = generate_cat_array(params, 'row');
   cat_data.col = generate_cat_array(params, 'col');
 

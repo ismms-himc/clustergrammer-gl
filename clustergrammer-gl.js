@@ -45133,6 +45133,34 @@ module.exports = function gen_pix_to_webgl(params){
 
 /***/ }),
 
+/***/ "./src/params/gen_text_zoom_par.js":
+/*!*****************************************!*\
+  !*** ./src/params/gen_text_zoom_par.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function gen_text_zoom_par(params){
+
+  var text_zoom = {};
+
+  text_zoom.row = {};
+  text_zoom.row.scaled_num = params.labels.num_row;
+  text_zoom.row.reference = text_zoom.row.scaled_num;
+  text_zoom.row.factor = 1;
+  text_zoom.row.max_webgl_fs = 0.05;
+
+  text_zoom.col = {};
+  text_zoom.col.scaled_num = params.labels.num_col;
+  text_zoom.col.reference = text_zoom.col.scaled_num;
+  text_zoom.col.factor = 1;
+  text_zoom.col.max_webgl_fs = 0.06;
+
+  params.text_zoom = text_zoom;
+};
+
+/***/ }),
+
 /***/ "./src/params/generate_cat_args_arrs.js":
 /*!**********************************************!*\
   !*** ./src/params/generate_cat_args_arrs.js ***!
@@ -45271,34 +45299,6 @@ module.exports = function generate_text_triangle_params(params){
 
 /***/ }),
 
-/***/ "./src/params/generate_text_zoom_params.js":
-/*!*************************************************!*\
-  !*** ./src/params/generate_text_zoom_params.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function generate_text_zoom_params(params){
-
-  params.text_zoom = {};
-
-  // text zooming info
-  params.text_zoom.row = {};
-  params.text_zoom.row.scaled_num = params.labels.num_row;
-  params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
-  params.text_zoom.row.factor = 1;
-  params.text_zoom.row.max_webgl_fs = 0.05;
-
-  params.text_zoom.col = {};
-  params.text_zoom.col.scaled_num = params.labels.num_col;
-  params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
-  params.text_zoom.col.factor = 1;
-  params.text_zoom.col.max_webgl_fs = 0.06;
-
-};
-
-/***/ }),
-
 /***/ "./src/params/generate_tooltip_params.js":
 /*!***********************************************!*\
   !*** ./src/params/generate_tooltip_params.js ***!
@@ -45377,7 +45377,7 @@ var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_par
 var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
 var gen_pix_to_webgl = __webpack_require__(/*! ./gen_pix_to_webgl */ "./src/params/gen_pix_to_webgl.js");
 var generate_webgl_to_pix = __webpack_require__(/*! ./generate_webgl_to_pix */ "./src/params/generate_webgl_to_pix.js");
-var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
+var gen_text_zoom_par = __webpack_require__(/*! ./gen_text_zoom_par */ "./src/params/gen_text_zoom_par.js");
 var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
 var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
 var gen_dendro_par = __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js");
@@ -45430,7 +45430,7 @@ module.exports = function initialize_params(regl, network){
   gen_pix_to_webgl(params);
   generate_webgl_to_pix(params);
   make_label_queue(params);
-  generate_text_zoom_params(params);
+  gen_text_zoom_par(params);
   calc_viz_area(params);
   generate_text_triangle_params(params);
 

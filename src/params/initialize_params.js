@@ -19,7 +19,7 @@ var generate_spillover_params = require('./generate_spillover_params');
 var generate_text_triangle_params = require('./generate_text_triangle_params');
 var gen_pix_to_webgl = require('./gen_pix_to_webgl');
 var generate_webgl_to_pix = require('./generate_webgl_to_pix');
-var generate_text_zoom_params = require('./generate_text_zoom_params');
+var gen_text_zoom_par = require('./gen_text_zoom_par');
 var generate_cat_args_arrs = require('./generate_cat_args_arrs');
 var generate_tooltip_params = require('./generate_tooltip_params');
 var gen_dendro_par = require('./gen_dendro_par');
@@ -72,7 +72,7 @@ module.exports = function initialize_params(regl, network){
   gen_pix_to_webgl(params);
   generate_webgl_to_pix(params);
   make_label_queue(params);
-  generate_text_zoom_params(params);
+  gen_text_zoom_par(params);
   calc_viz_area(params);
   generate_text_triangle_params(params);
 

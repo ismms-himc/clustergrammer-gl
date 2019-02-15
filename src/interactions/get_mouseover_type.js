@@ -61,10 +61,6 @@ module.exports = function get_mouseover_type(params){
              inst_pix.x > edim.x.heat_min &&
              inst_pix.x < edim.x.dendro_start){
 
-    // // console.log(edim.y.heat_min - inst_pix.y)
-    // console.log( Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) ))
-    // params.tooltip.tooltip_type = 'col-label';
-
     params.tooltip.in_bounds_tooltip = true;
     if (params.cat_data.col.length > 0){
 

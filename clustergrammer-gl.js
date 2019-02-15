@@ -41320,17 +41320,7 @@ module.exports = function draw_static_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
-var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-
 module.exports = function end_animation(regl, params){
-
-  // console.log('end_animation')
-
-  ///////////////////////////////////////
-  // The animation has finished
-  ///////////////////////////////////////
-
   params.ani.running = false;
   params.ani.run_animation = false;
 
@@ -41341,37 +41331,32 @@ module.exports = function end_animation(regl, params){
       };
 
   // transfer the new category positions to the cat args attributes
-  _.each(['row', 'col'], function(inst_axis){
-
-    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
+  _.each(['row', 'col'], function(i_axis){
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[i_axis]; cat_index++) {
       // update the attribute
-      params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
-          buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
+      params.cat_args[i_axis][cat_index].attributes.cat_pos_att_inst = {
+          buffer: regl.buffer(params.cat_arrs.new[i_axis][cat_index]),
           divisor: 1
       };
     }
-
     // transfer new order to old order
-    params.order.inst[inst_axis] = params.order.new[inst_axis]
-
+    params.order.inst[i_axis] = params.order.new[i_axis]
     // turn dendrogram slider back on if necessary
-    if (params.order.inst[inst_axis] === 'clust'){
-      d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
+    if (params.order.inst[i_axis] === 'clust'){
+      d3.select('.'+ i_axis +'_dendro_slider_svg').style('display','block')
     }
 
   });
 
   // transfer new order to text triangles
-  _.each(['row', 'col'], function(inst_axis){
-    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
-
-    // need to update text positions after animation
-    calc_text_offsets(params, inst_axis);
+  // need to update text positions after animation
+  _.each(['row', 'col'], function(i_axis){
+    params.text_triangles.draw[i_axis] = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js")(params, i_axis);
+    __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js")(params, i_axis);
   });
 
   // update ordered_labels
   __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
-
 };
 
 /***/ }),

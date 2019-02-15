@@ -38568,12 +38568,9 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
   var max_len = 25;
 
   var max_bar_value = cat_data.bar_data[0][bars_index];
-
   // only keep the top max_bars categories
   cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
-
   var i_title = cat_data.type_name;
-  // ensure that title is not too long
   if (i_title.length >= max_len){
     i_title = i_title.slice(0, max_len) + '..';
   }
@@ -39574,69 +39571,55 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
-// var img = require('./../../img/graham_cracker_144.png');
-var build_reorder_cat_titles = __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js");
-var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js");
-// var d3v5 = require('d3');
-var tip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js");
-var initialize_d3_tip = __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js");
-var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
-var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
-
 module.exports = function build_control_panel(regl, cgm){
 
-  cgm.params.tooltip_id = '#d3-tip_' + cgm.params.root.replace('#','');
+  var params = cgm.params;
+  params.tooltip_id = '#d3-tip_' + params.root.replace('#','');
 
-  var tooltip = tip.default()
-                   .attr('id', cgm.params.tooltip_id.replace('#',''))
+  var tooltip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js").default()
+                   .attr('id', params.tooltip_id.replace('#',''))
                    .attr('class', 'cgm-tooltip')
                    .direction('sw')
                    .html(function(){
                       return '';
                     });
 
-  // vis.call(tooltip)
-  cgm.params.tooltip_fun = tooltip;
+  params.tooltip_fun = tooltip;
 
-  // Add control panel to the top
-  ///////////////////////////////////////
-
-  // var control_container = d3.select(cgm.params.container).select(' .control-container')[0][0];
-  var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
-  var inst_height = 135;
-  var inst_width = cgm.params.viz_width;
+  var control_container = d3.select(params.root + ' .control-container')[0][0];
+  var i_height = 135;
+  var i_width = params.viz_width;
 
   var control_panel_color = 'white';
   var text_color = '#47515b';
   var button_color = '#eee';
 
   var control_svg = d3.select(control_container)
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
+    .style('height',i_height + 'px')
+    .style('width',i_width+'px')
     .append('svg')
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
+    .style('height',i_height + 'px')
+    .style('width',i_width+'px')
     .on('mouseover', function(){
-      cgm.params.tooltip.in_bounds_tooltip = false;
+      params.tooltip.in_bounds_tooltip = false;
     })
 
   control_svg
     .append('rect')
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
+    .style('height',i_height + 'px')
+    .style('width',i_width+'px')
     .style('position', 'absolute')
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background')
     .call(tooltip);
 
-  initialize_d3_tip(cgm.params);
+  __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js")(params);
 
-  cgm.show_tooltip = show_d3_tip;
-  cgm.hide_tooltip = hide_d3_tip;
+  cgm.show_tooltip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
+  cgm.hide_tooltip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
 
   // setting fontsize
-  d3.select(cgm.params.tooltip_id)
+  d3.select(params.tooltip_id)
     .style('line-height', 1.5)
     .style('font-weight', 'bold')
     .style('padding', '12px')
@@ -39653,12 +39636,12 @@ module.exports = function build_control_panel(regl, cgm){
     .append('rect')
     .classed('north_border', true)
     .style('height', '1px')
-    .style('width',inst_width+'px')
+    .style('width',i_width+'px')
     .style('position', 'absolute')
     .style('stroke', '#eee')
     .style('stroke-width', 3)
     .attr('transform', function(){
-      var y_trans = inst_height - border_height;
+      var y_trans = i_height - border_height;
       return 'translate( 0, '+ y_trans +')';
     });
 
@@ -39721,20 +39704,20 @@ module.exports = function build_control_panel(regl, cgm){
     });
 
 
-  _.each(['row', 'col'], function(inst_axis){
+  _.each(['row', 'col'], function(i_axis){
 
     var axis_title = control_svg
       .append('g')
       .attr('transform', function(){
         var x_offset = 0;
-        var y_offset = button_groups[inst_axis].y_trans;
+        var y_offset = button_groups[i_axis].y_trans;
         return 'translate('+ x_offset  +', '+ y_offset +')';
       })
 
     axis_title
       .append('text')
       .classed('reorder_title', true)
-      .text(inst_axis.toUpperCase())
+      .text(i_axis.toUpperCase())
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight', 400)
       .style('font-size', button_dim.fs)
@@ -39750,7 +39733,7 @@ module.exports = function build_control_panel(regl, cgm){
       .append('g');
 
     reorder_buttons
-      .classed(inst_axis + '-reorder-buttons', true);
+      .classed(i_axis + '-reorder-buttons', true);
 
     var active_button_color = '#0000FF75';
 
@@ -39761,8 +39744,8 @@ module.exports = function build_control_panel(regl, cgm){
       .enter( )
       .append('g')
       .attr('transform', function(d, i){
-        var x_offset = button_dim.x_trans * i + button_groups[inst_axis].x_trans;
-        return 'translate('+ x_offset  +', '+ button_groups[inst_axis].y_trans +')';
+        var x_offset = button_dim.x_trans * i + button_groups[i_axis].x_trans;
+        return 'translate('+ x_offset  +', '+ button_groups[i_axis].y_trans +')';
       })
       .on('click', function(d){
 
@@ -39770,12 +39753,12 @@ module.exports = function build_control_panel(regl, cgm){
                            .replace('var', 'rankvar')
 
         // tmp preventing dispersion reordering from working
-        if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
+        if (params.order.inst[i_axis] != clean_order && clean_order != 'disp'){
 
           /* category order is already calculated */
-          run_reorder(regl, cgm.params, inst_axis, d);
+          __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js")(regl, params, i_axis, d);
 
-          d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
+          d3.select(params.root + ' .' + i_axis + '-reorder-buttons')
             .selectAll('rect')
             .style('stroke', button_color);
 
@@ -39794,13 +39777,13 @@ module.exports = function build_control_panel(regl, cgm){
       .style('rx', 10)
       .style('ry', 10)
       .style('stroke', function(d){
-        var inst_color;
-        if (cgm.params.order.inst[inst_axis] == d){
-          inst_color = active_button_color;
+        var i_color;
+        if (params.order.inst[i_axis] == d){
+          i_color = active_button_color;
         } else {
-          inst_color = button_color;
+          i_color = button_color;
         }
-        return inst_color;
+        return i_color;
       })
       .style('stroke-width', 2.5);
 
@@ -39824,8 +39807,8 @@ module.exports = function build_control_panel(regl, cgm){
 
   })
 
-  build_reorder_cat_titles(regl, cgm);
-  build_tree_icon(cgm);
+  __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js")(regl, cgm);
+  __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js")(cgm);
 
 };
 

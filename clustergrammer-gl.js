@@ -4426,7 +4426,7 @@ exports.nextCombination = function(v) {
     var res = this.imod(a._invmp(this.m).mul(this.r2));
     return res._forceRed(this);
   };
-})( false || module, this);
+})(typeof module === 'undefined' || module, this);
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/module.js */ "./node_modules/webpack/buildin/module.js")(module)))
 
@@ -35689,7 +35689,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // backwards-compatibility for the old `require()` API. If we're in
   // the browser, add `_` as a global object.
   if (true) {
-    if ( true && module.exports) {
+    if (typeof module !== 'undefined' && module.exports) {
       exports = module.exports = _;
     }
     exports._ = _;
@@ -36872,7 +36872,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
   // IE 11 (#1621), and in Safari 8 (#1929).
-  if ( true && typeof Int8Array != 'object') {
+  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
     _.isFunction = function(obj) {
       return typeof obj == 'function' || false;
     };
@@ -37647,7 +37647,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
+	g = g || Function("return this")() || (1, eval)("this");
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -41142,48 +41142,21 @@ module.exports = function draw_background_calculations(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js");
-var draw_axis_components = __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js");
-// var draw_tooltip_components = require('./draw_tooltip_components');
-var draw_static_components = __webpack_require__(/*! ./draw_static_components */ "./src/draws/draw_static_components.js");
-var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
-
 module.exports = function draw_commands(regl, params){
 
-  // if (params.labels.draw_labels){
-  //   console.log('\n***************');
-  //   console.log('** draw_labels **');
-  //   console.log('***************');
-  // }
+  var draw_labels = params.labels.draw_labels;
+  __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
+  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'row', draw_labels);
+  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'col', draw_labels);
+  __webpack_require__(/*! ./draw_static_components */ "./src/draws/draw_static_components.js")(regl, params);
 
-  // console.log('draw')
-  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
-
-  draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
-  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
-  draw_static_components(regl, params);
-
-  // clean tooltip
- // console.log(params.tooltip.in_bounds_tooltip)
-  if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip && params.tooltip.on_canvas){
-
-    // draw_tooltip_components(regl, params);
-    show_d3_tip(params);
-
+  var tooltip = params.tooltip;
+  if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
+    __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js")(params);
   }
-
   if (params.labels.draw_labels){
-    // console.log('----- turn off draw_labels -----')
     params.labels.draw_labels = false;
   }
-
-  // clean_tooltip
-  // if (params.tooltip.show_tooltip){
-  //   // console.log('----- turn off show tooltip ------')
-  //   params.tooltip.show_tooltip = false;
-  // }
-
 };
 
 /***/ }),
@@ -41195,18 +41168,16 @@ module.exports = function draw_commands(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
-var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
-
 module.exports = function draw_interacting(regl, params){
 
   var wait_time_final_interact = 50;
 
   params.int.total = params.int.total + 1;
 
-  draw_commands(regl, params);
+  __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js")(regl, params);
 
-  setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
+  setTimeout(__webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js"),
+             wait_time_final_interact, regl, params);
 
   params.ani.ini_viz = false;
 

@@ -1,9 +1,8 @@
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown){
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
 
-  if (cat_breakdown.length > 0){
+  if (cb.length > 0){
 
-
-    // loop through cat_breakdown data
+    // loop through cb data
     var width = 370;
     var title_height = 27;
     // var shift_tooltip_left = 177;
@@ -16,7 +15,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     // var offset_ds_count = 150;
 
     var is_downsampled = false;
-    if (cat_breakdown[0].bar_data[0][num_nodes_ds_index] !== null){
+    if (cb[0].bar_data[0][num_nodes_ds_index] !== null){
       width = width + 100;
       // shift_tooltip_left = shift_tooltip_left + offset_ds_count - 47;
       is_downsampled = true;
@@ -30,7 +29,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       bars_index = num_nodes_ds_index;
 
       // calculate the total number of nodes in downsampled case
-      var i_bar_data = cat_breakdown[0].bar_data;
+      var i_bar_data = cb[0].bar_data;
       cluster_total = 0;
       _.each(i_bar_data, function(tmp_data){
         cluster_total = cluster_total + tmp_data[num_nodes_ds_index];
@@ -42,9 +41,9 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     // limit the number of bars shown
     var max_bars = 25;
 
-    // calculate height needed for svg based on cat_breakdown data
+    // calculate height needed for svg based on cb data
     var svg_height = 20;
-    _.each(cat_breakdown.slice(0,max_cats), function(tmp_break){
+    _.each(cb.slice(0,max_cats), function(tmp_break){
       var num_bars = tmp_break.bar_data.length;
       if (num_bars > max_bars){
         num_bars = max_bars;
@@ -70,7 +69,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       .attr('opacity', 1);
 
     // limit the category-types
-    cat_breakdown = cat_breakdown.slice(0, max_cats);
+    cb = cb.slice(0, max_cats);
 
     // shift the position of the numbers based on the size of the number
     // offset the count column based on how large the counts are
@@ -80,18 +79,18 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     // the total amout to shift down the next category
     var shift_down = title_height;
 
-    _.each(cat_breakdown, function(cat_data){
+    _.each(cb, function(cat_data){
 
       var max_bar_value = cat_data.bar_data[0][bars_index];
 
       var count_offset = digit_offset(max_bar_value);
 
-      var cat_graph_group = main_dendro_svg
+      var cgg = main_dendro_svg
         .append('g')
-        .classed('cat_graph_group', true)
+        .classed('cgg', true)
         .attr('transform', 'translate(10, '+ shift_down + ')');
 
-        var cat_bar_container = cat_graph_group
+        var cat_bar_container = cgg
           .append('g')
           .classed('cat_bar_container', true)
           .attr('transform', 'translate(0, 10)');
@@ -107,11 +106,11 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
             return 'translate(0,'+ i_y +')';
           });
 
-      require('./cat_breakdown_bars')(params, cat_data, cat_graph_group,
+      require('./cat_breakdown_bars')(params, cat_data, cgg,
                                       title_height, bars_index, max_bars,
                                       cat_bar_groups);
 
-      require('./cat_breakdown_values')(params, cat_graph_group, cat_bar_groups,
+      require('./cat_breakdown_values')(params, cgg, cat_bar_groups,
                                         num_nodes_index, is_downsampled,
                                         count_offset, bars_index, cluster_total);
 

@@ -1,4 +1,3 @@
-var generate_ordered_labels = require('./../matrix_labels/generate_ordered_labels');
 module.exports = function gen_label_par(params){
 
   var labels = {};
@@ -32,6 +31,6 @@ module.exports = function gen_label_par(params){
   });
 
   params.labels = labels;
-  generate_ordered_labels(params);
+  require('./../matrix_labels/gen_ordered_labels')(params);
 
 };

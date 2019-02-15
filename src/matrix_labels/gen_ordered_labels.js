@@ -1,4 +1,4 @@
-module.exports = function generate_ol(params){
+module.exports = function gen_ordered_labels(params){
 
   /*
     Generate lists of ordered label and category names for mouseover

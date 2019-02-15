@@ -41322,7 +41322,6 @@ module.exports = function draw_static_components(regl, params){
 
 var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
 var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
 
 module.exports = function end_animation(regl, params){
 
@@ -41371,7 +41370,7 @@ module.exports = function end_animation(regl, params){
   });
 
   // update ordered_labels
-  generate_ordered_labels(params);
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
 
 };
 
@@ -42891,14 +42890,14 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
 /***/ }),
 
-/***/ "./src/matrix_labels/generate_ordered_labels.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_labels/generate_ordered_labels.js ***!
-  \******************************************************/
+/***/ "./src/matrix_labels/gen_ordered_labels.js":
+/*!*************************************************!*\
+  !*** ./src/matrix_labels/gen_ordered_labels.js ***!
+  \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function generate_ol(params){
+module.exports = function gen_ordered_labels(params){
 
   /*
     Generate lists of ordered label and category names for mouseover
@@ -44058,7 +44057,6 @@ module.exports = function gen_int_par(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
 module.exports = function gen_label_par(params){
 
   var labels = {};
@@ -44092,7 +44090,7 @@ module.exports = function gen_label_par(params){
   });
 
   params.labels = labels;
-  generate_ordered_labels(params);
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
 
 };
 

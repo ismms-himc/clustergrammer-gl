@@ -9,24 +9,10 @@ module.exports = function build_tree_icon(cgm){
   var default_opacity = 0.35;
   var high_opacity = 0.6;
 
-  // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
       .append('g')
       .classed( 'tree_icon', true)
       .on('mouseover', function(){
-
-        // only if no menu is showing
-        if (d3.select(params.root+' .tree_menu').empty()){
-
-          // // d3.selectAll( params.viz.root_tips + '_tree_icon_tip')
-          // d3.selectAll('.custom-d3-tip')
-          //   .style('opacity', 1)
-          //   .style('display', 'block');
-
-          // tree_icon_tip.show();
-
-        }
-
         d3.selectAll(params.root + ' .tree_leaf_circle')
           .style('opacity', high_opacity);
       })
@@ -74,10 +60,10 @@ module.exports = function build_tree_icon(cgm){
       var start_x = 0;
       var start_y = slider_length;
 
-      var mid_x = tree_width/2;//left_x + slider_length/10;
+      var mid_x = tree_width/2;
       var mid_y = 0;
 
-      var final_x = tree_width;//left_x + slider_length/5;
+      var final_x = tree_width;
       var final_y = slider_length;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +

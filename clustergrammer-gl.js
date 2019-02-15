@@ -39832,24 +39832,10 @@ module.exports = function build_tree_icon(cgm){
   var default_opacity = 0.35;
   var high_opacity = 0.6;
 
-  // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
       .append('g')
       .classed( 'tree_icon', true)
       .on('mouseover', function(){
-
-        // only if no menu is showing
-        if (d3.select(params.root+' .tree_menu').empty()){
-
-          // // d3.selectAll( params.viz.root_tips + '_tree_icon_tip')
-          // d3.selectAll('.custom-d3-tip')
-          //   .style('opacity', 1)
-          //   .style('display', 'block');
-
-          // tree_icon_tip.show();
-
-        }
-
         d3.selectAll(params.root + ' .tree_leaf_circle')
           .style('opacity', high_opacity);
       })
@@ -39897,10 +39883,10 @@ module.exports = function build_tree_icon(cgm){
       var start_x = 0;
       var start_y = slider_length;
 
-      var mid_x = tree_width/2;//left_x + slider_length/10;
+      var mid_x = tree_width/2;
       var mid_y = 0;
 
-      var final_x = tree_width;//left_x + slider_length/5;
+      var final_x = tree_width;
       var final_y = slider_length;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +
@@ -40907,13 +40893,6 @@ module.exports = function make_dendro_arr(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
-var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
-var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
-var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
-
 module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
 
   var axis_dim;
@@ -40927,7 +40906,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
   params.cameras[inst_axis + '-labels'].draw(() => {
 
     // viz aid triangles
-    params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
+    params.viz_aid_tri_args[inst_axis] = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js")(regl, params, inst_axis);
     regl(params.viz_aid_tri_args[inst_axis])();
 
     // drawing the label categories and dendrogram using the same camera as the
@@ -40935,7 +40914,7 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     _.each(params.cat_args[inst_axis], function(inst_cat_arg){
       regl(inst_cat_arg)(
         {
-          interp_prop: interp_fun(params),
+          interp_prop: __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js")(params),
           run_animation: params.ani.running
         }
       );
@@ -40949,38 +40928,25 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     // make the arguments for the draw command
     var text_triangle_args
     if (inst_axis === 'col'){
-      text_triangle_args = make_col_text_args(regl, params, params.zoom_data.zoom_function);
+      text_triangle_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js")(regl,
+                                        params, params.zoom_data.zoom_function);
     } else {
-      text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
+      text_triangle_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js")(regl,
+                                        params, params.zoom_data.zoom_function);
     }
 
     if (calc_text_tri){
-
-      /////////////////////////////////////////////////////////
-      // need to make more efficient
-      /////////////////////////////////////////////////////////
-
       var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
-
-      // if (num_viz_labels < params.max_num_text){
-
       if (num_viz_labels < params.max_num_text && params.labels.queue.high[inst_axis].length == 0){
-
-        calc_viz_area(params);
-
+        __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js")(params);
         // only regather if there are more labels than can be shown at once
         if (params.labels['num_' + inst_axis] > params.max_num_text){
-          gather_text_triangles(params, inst_axis);
+          __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js")(params, inst_axis);
         }
-
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
-
       }
 
     } else {
-
-      //show text triangles if avaialble
-
       if (params.text_triangles.draw[inst_axis] != false){
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }

@@ -29,7 +29,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(){
 
-
+    // confirm double click
     if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
       // update col custom order
@@ -40,7 +40,6 @@ module.exports = function zoom_rules_high_mat(regl, params){
       } else {
         full_name = params.int.mouseover.col.name;
       }
-
 
       var found_col_index = _.indexOf(params.network.col_node_names, full_name);
 
@@ -71,8 +70,6 @@ module.exports = function zoom_rules_high_mat(regl, params){
       _.map(tmp_sort, function(inst_index){
         ordered_names.push(params.network.row_nodes[inst_index].name);
       })
-
-      // debugger;
 
       params.network.row_nodes.forEach(function(node){
         node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;

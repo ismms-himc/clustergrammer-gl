@@ -29,7 +29,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   })
   .on('interactionend', function(){
 
-    // confirm double click
+
     if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
       // update col custom order

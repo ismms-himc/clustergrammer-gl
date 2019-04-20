@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.7.1
+  clustergrammer-gl version 0.7.2
 
  */
 

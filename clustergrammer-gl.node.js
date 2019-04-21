@@ -4426,7 +4426,7 @@ exports.nextCombination = function(v) {
     var res = this.imod(a._invmp(this.m).mul(this.r2));
     return res._forceRed(this);
   };
-})(typeof module === 'undefined' || module, this);
+})( false || module, this);
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/module.js */ "./node_modules/webpack/buildin/module.js")(module)))
 
@@ -35689,7 +35689,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // backwards-compatibility for the old `require()` API. If we're in
   // the browser, add `_` as a global object.
   if (true) {
-    if (typeof module !== 'undefined' && module.exports) {
+    if ( true && module.exports) {
       exports = module.exports = _;
     }
     exports._ = _;
@@ -36872,7 +36872,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
   // IE 11 (#1621), and in Safari 8 (#1929).
-  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+  if ( true && typeof Int8Array != 'object') {
     _.isFunction = function(obj) {
       return typeof obj == 'function' || false;
     };
@@ -37647,7 +37647,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
+	g = g || new Function("return this")();
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -38007,11 +38007,22 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   }).on('interactionend', function (ev) {
     ev.preventDefault();
   }).on('interaction', function (ev) {
-    if (params.interact.enable_viz_interact){
+    if (params.int.enable_viz_interact){
+
+      // console.log(zoom_data.x.cursor_position, zoom_data.y.cursor_position)
       camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
                          emitter, dViewport, mViewport);
     }
   });
+
+
+  d3.select('.canvas-container canvas')
+    .on('mouseover', function(){
+      params.tooltip.on_canvas = true;
+    })
+    .on('mouseout', function(){
+      params.tooltip.on_canvas = false;
+    })
 
   // /////////////////////////////////////////
   // // Alternate interaction tracking
@@ -38024,7 +38035,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   // })
   // .on('wheel', function (ev) {
   //   console.log('norm interact: camera');
-  //   if (params.interact.enable_viz_interact){
+  //   if (params.int.enable_viz_interact){
   //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
   //                        emitter, dViewport, mViewport);
   //   }
@@ -38126,8 +38137,8 @@ module.exports = function reset_cameras(regl, params){
   make_cameras(regl, params);
 
   params.labels.draw_labels = false;
-  params.animation.initialize_viz = true;
-  params.interact.total = 0
+  params.ani.ini_viz = true;
+  params.int.total = 0
 
 };
 
@@ -38141,412 +38152,7 @@ module.exports = function reset_cameras(regl, params){
 /***/ (function(module, exports) {
 
 /* eslint-disable*/
-module.exports = {
-  "p": [
-    0.5,
-    0.48006119416162751,
-    0.46017216272297101,
-    0.4403823076297575,
-    0.42074029056089696,
-    0.4012936743170763,
-    0.38208857781104733,
-    0.3631693488243809,
-    0.34457825838967582,
-    0.32635522028791997,
-    0.30853753872598688,
-    0.29115968678834636,
-    0.27425311775007355,
-    0.25784611080586473,
-    0.24196365222307303,
-    0.22662735237686821,
-    0.21185539858339669,
-    0.19766254312269238,
-    0.18406012534675947,
-    0.17105612630848183,
-    0.15865525393145707,
-    0.14685905637589591,
-    0.13566606094638267,
-    0.12507193563715024,
-    0.11506967022170828,
-    0.10564977366685535,
-    0.096800484585610358,
-    0.088507991437401956,
-    0.080756659233771066,
-    0.073529259609648304,
-    0.066807201268858071,
-    0.060570758002059008,
-    0.054799291699557974,
-    0.049471468033648075,
-    0.044565462758543006,
-    0.040059156863817086,
-    0.035930319112925789,
-    0.032156774795613713,
-    0.028716559816001783,
-    0.025588059521638611,
-    0.022750131948179195,
-    0.020182215405704383,
-    0.017864420562816542,
-    0.015777607391090499,
-    0.013903447513498595,
-    0.012224472655044696,
-    0.010724110021675795,
-    0.0093867055348385662,
-    0.0081975359245961138,
-    0.0071428107352714152,
-    0.0062096653257761323,
-    0.0053861459540666843,
-    0.0046611880237187467,
-    0.0040245885427583027,
-    0.0034669738030406647,
-    0.0029797632350545551,
-    0.002555130330427929,
-    0.0021859614549132405,
-    0.0018658133003840339,
-    0.0015888696473648667,
-    0.0013498980316300933,
-    0.0011442068310226977,
-    0.00096760321321835631,
-    0.00081635231282856037,
-    0.00068713793791584708,
-    0.00057702504239076592,
-    0.00048342414238377663,
-    0.0004040578018640207,
-    0.00033692926567687988,
-    0.00028029327681617744,
-    0.00023262907903552502,
-    0.00019261557563563279,
-    0.00015910859015753364,
-    0.00013112015442048433,
-    0.00010779973347738823,
-    8.8417285200803773e-05,
-    7.2348043925119787e-05,
-    5.9058912418922374e-05,
-    4.8096344017602614e-05,
-    3.9075596597787456e-05,
-    3.1671241833119863e-05,
-    2.5608816474041489e-05,
-    2.0657506912546683e-05,
-    1.6623763729652213e-05,
-    1.334574901590631e-05,
-    1.0688525774934402e-05,
-    8.5399054709917942e-06,
-    6.8068765993340312e-06,
-    5.4125439077038407e-06,
-    4.293514469971858e-06,
-    3.3976731247300535e-06,
-    2.6822957796388472e-06,
-    2.1124547025028419e-06,
-    1.6596751443714555e-06,
-    1.3008074539172771e-06,
-    1.0170832425687032e-06,
-    7.9332815197558919e-07,
-    6.1730737200919249e-07,
-    4.7918327659031855e-07,
-    3.7106740796333271e-07,
-    2.8665157187919333e-07,
-    2.2090503226954194e-07,
-    1.6982674071475937e-07,
-    1.3024322953320117e-07,
-    9.9644263169334701e-08,
-    7.6049605164887e-08,
-    5.7901340399645569e-08,
-    4.3977115940058689e-08,
-    3.3320448485428448e-08,
-    2.518491005446105e-08,
-    1.8989562465887681e-08,
-    1.4283479893922661e-08,
-    1.0717590258310852e-08,
-    8.0223918506634739e-09,
-    5.9903714010635304e-09,
-    4.4621724539016108e-09,
-    3.3157459783261365e-09,
-    2.4578650618080152e-09,
-    1.8175078630994235e-09,
-    1.3407124440918662e-09,
-    9.8658764503769458e-10,
-    7.2422917051376055e-10,
-    5.303423262948808e-10,
-    3.8741473466756636e-10,
-    2.8231580370432682e-10,
-    2.0522634252189396e-10,
-    1.4882282217622966e-10,
-    1.0765746385121517e-10,
-    7.7688475817097756e-11,
-    5.592507575942645e-11,
-    4.0160005838590881e-11,
-    2.8768541736043109e-11,
-    2.055788909399508e-11,
-    1.4654650977302715e-11,
-    1.0420976987965154e-11,
-    7.3922577780177942e-12,
-    5.2309575441445253e-12,
-    3.6924994272355614e-12,
-    2.600126965638173e-12,
-    1.8264310619769611e-12,
-    1.279812543885835e-12,
-    8.9458895587698439e-13,
-    6.23784446333152e-13,
-    4.3388950271780343e-13,
-    3.0106279811174218e-13,
-    2.0838581586720548e-13,
-    1.4388386381575764e-13,
-    9.9103427495475088e-14,
-    6.8092248906200155e-14,
-    4.6670115887190274e-14,
-    3.1908916729108844e-14,
-    2.1762912097085575e-14,
-    1.4806537490047908e-14,
-    1.0048965656526223e-14,
-    6.8033115407739012e-15,
-    4.5946274357785623e-15,
-    3.095358771958668e-15,
-    2.0801863521393674e-15,
-    1.394517146659261e-15,
-    9.3255757716812045e-16,
-    6.2209605742717405e-16,
-    4.1397018162731219e-16,
-    2.7479593923982212e-16,
-    1.8196213635266084e-16,
-    1.2019351542735647e-16,
-    7.9197263146424757e-17,
-    5.2055697448902465e-17,
-    3.4131483264581459e-17,
-    2.232393197288031e-17,
-    1.456514112590909e-17,
-    9.4795348222032499e-18,
-    6.1544255908503949e-18,
-    3.985804962848151e-18,
-    2.5749715380118873e-18,
-    1.6594208699647519e-18,
-    1.0667637375474856e-18,
-    6.840807685935497e-19,
-    4.3759647993090167e-19,
-    2.7923343749396233e-19,
-    1.7774117841455144e-19,
-    1.1285884059538324e-19,
-    7.1484170112696837e-20,
-    4.516591491435403e-20,
-    2.8466774084602088e-20,
-    1.7897488120140146e-20,
-    1.1224633591327901e-20,
-    7.0222842404415411e-21,
-    4.3823862990664603e-21,
-    2.7281535713460872e-21,
-    1.6941535024881097e-21,
-    1.0494515075362604e-21,
-    6.4848144530772079e-22,
-    3.9972212057261192e-22,
-    2.4577864834723153e-22,
-    1.5074931688101589e-22,
-    9.2234135249393526e-23,
-    5.6292823113765143e-23,
-    3.4271987941135974e-23,
-    2.0813752194932085e-23,
-    1.2609160670206559e-23
-  ],
-  "z": [
-    0.0,
-    0.050000000000000003,
-    0.10000000000000001,
-    0.15000000000000002,
-    0.20000000000000001,
-    0.25,
-    0.30000000000000004,
-    0.35000000000000003,
-    0.40000000000000002,
-    0.45000000000000001,
-    0.5,
-    0.55000000000000004,
-    0.60000000000000009,
-    0.65000000000000002,
-    0.70000000000000007,
-    0.75,
-    0.80000000000000004,
-    0.85000000000000009,
-    0.90000000000000002,
-    0.95000000000000007,
-    1.0,
-    1.05,
-    1.1000000000000001,
-    1.1500000000000001,
-    1.2000000000000002,
-    1.25,
-    1.3,
-    1.3500000000000001,
-    1.4000000000000001,
-    1.4500000000000002,
-    1.5,
-    1.55,
-    1.6000000000000001,
-    1.6500000000000001,
-    1.7000000000000002,
-    1.75,
-    1.8,
-    1.8500000000000001,
-    1.9000000000000001,
-    1.9500000000000002,
-    2.0,
-    2.0500000000000003,
-    2.1000000000000001,
-    2.1499999999999999,
-    2.2000000000000002,
-    2.25,
-    2.3000000000000003,
-    2.3500000000000001,
-    2.4000000000000004,
-    2.4500000000000002,
-    2.5,
-    2.5500000000000003,
-    2.6000000000000001,
-    2.6500000000000004,
-    2.7000000000000002,
-    2.75,
-    2.8000000000000003,
-    2.8500000000000001,
-    2.9000000000000004,
-    2.9500000000000002,
-    3.0,
-    3.0500000000000003,
-    3.1000000000000001,
-    3.1500000000000004,
-    3.2000000000000002,
-    3.25,
-    3.3000000000000003,
-    3.3500000000000001,
-    3.4000000000000004,
-    3.4500000000000002,
-    3.5,
-    3.5500000000000003,
-    3.6000000000000001,
-    3.6500000000000004,
-    3.7000000000000002,
-    3.75,
-    3.8000000000000003,
-    3.8500000000000001,
-    3.9000000000000004,
-    3.9500000000000002,
-    4.0,
-    4.0499999999999998,
-    4.1000000000000005,
-    4.1500000000000004,
-    4.2000000000000002,
-    4.25,
-    4.2999999999999998,
-    4.3500000000000005,
-    4.4000000000000004,
-    4.4500000000000002,
-    4.5,
-    4.5499999999999998,
-    4.6000000000000005,
-    4.6500000000000004,
-    4.7000000000000002,
-    4.75,
-    4.8000000000000007,
-    4.8500000000000005,
-    4.9000000000000004,
-    4.9500000000000002,
-    5.0,
-    5.0500000000000007,
-    5.1000000000000005,
-    5.1500000000000004,
-    5.2000000000000002,
-    5.25,
-    5.3000000000000007,
-    5.3500000000000005,
-    5.4000000000000004,
-    5.4500000000000002,
-    5.5,
-    5.5500000000000007,
-    5.6000000000000005,
-    5.6500000000000004,
-    5.7000000000000002,
-    5.75,
-    5.8000000000000007,
-    5.8500000000000005,
-    5.9000000000000004,
-    5.9500000000000002,
-    6.0,
-    6.0500000000000007,
-    6.1000000000000005,
-    6.1500000000000004,
-    6.2000000000000002,
-    6.25,
-    6.3000000000000007,
-    6.3500000000000005,
-    6.4000000000000004,
-    6.4500000000000002,
-    6.5,
-    6.5500000000000007,
-    6.6000000000000005,
-    6.6500000000000004,
-    6.7000000000000002,
-    6.75,
-    6.8000000000000007,
-    6.8500000000000005,
-    6.9000000000000004,
-    6.9500000000000002,
-    7.0,
-    7.0500000000000007,
-    7.1000000000000005,
-    7.1500000000000004,
-    7.2000000000000002,
-    7.25,
-    7.3000000000000007,
-    7.3500000000000005,
-    7.4000000000000004,
-    7.4500000000000002,
-    7.5,
-    7.5500000000000007,
-    7.6000000000000005,
-    7.6500000000000004,
-    7.7000000000000002,
-    7.75,
-    7.8000000000000007,
-    7.8500000000000005,
-    7.9000000000000004,
-    7.9500000000000002,
-    8.0,
-    8.0500000000000007,
-    8.0999999999999996,
-    8.1500000000000004,
-    8.2000000000000011,
-    8.25,
-    8.3000000000000007,
-    8.3499999999999996,
-    8.4000000000000004,
-    8.4500000000000011,
-    8.5,
-    8.5500000000000007,
-    8.5999999999999996,
-    8.6500000000000004,
-    8.7000000000000011,
-    8.75,
-    8.8000000000000007,
-    8.8499999999999996,
-    8.9000000000000004,
-    8.9500000000000011,
-    9.0,
-    9.0500000000000007,
-    9.0999999999999996,
-    9.1500000000000004,
-    9.2000000000000011,
-    9.25,
-    9.3000000000000007,
-    9.3499999999999996,
-    9.4000000000000004,
-    9.4500000000000011,
-    9.5,
-    9.5500000000000007,
-    9.6000000000000014,
-    9.6500000000000004,
-    9.7000000000000011,
-    9.75,
-    9.8000000000000007,
-    9.8500000000000014,
-    9.9000000000000004,
-    9.9500000000000011
-  ]
-};
+module.exports = {"p":[0.5,0.48006119416162751,0.46017216272297101,0.4403823076297575,0.42074029056089696,0.4012936743170763,0.38208857781104733,0.3631693488243809,0.34457825838967582,0.32635522028791997,0.30853753872598688,0.29115968678834636,0.27425311775007355,0.25784611080586473,0.24196365222307303,0.22662735237686821,0.21185539858339669,0.19766254312269238,0.18406012534675947,0.17105612630848183,0.15865525393145707,0.14685905637589591,0.13566606094638267,0.12507193563715024,0.11506967022170828,0.10564977366685535,0.096800484585610358,0.088507991437401956,0.080756659233771066,0.073529259609648304,0.066807201268858071,0.060570758002059008,0.054799291699557974,0.049471468033648075,0.044565462758543006,0.040059156863817086,0.035930319112925789,0.032156774795613713,0.028716559816001783,0.025588059521638611,0.022750131948179195,0.020182215405704383,0.017864420562816542,0.015777607391090499,0.013903447513498595,0.012224472655044696,0.010724110021675795,0.0093867055348385662,0.0081975359245961138,0.0071428107352714152,0.0062096653257761323,0.0053861459540666843,0.0046611880237187467,0.0040245885427583027,0.0034669738030406647,0.0029797632350545551,0.002555130330427929,0.0021859614549132405,0.0018658133003840339,0.0015888696473648667,0.0013498980316300933,0.0011442068310226977,0.00096760321321835631,0.00081635231282856037,0.00068713793791584708,0.00057702504239076592,0.00048342414238377663,0.0004040578018640207,0.00033692926567687988,0.00028029327681617744,0.00023262907903552502,0.00019261557563563279,0.00015910859015753364,0.00013112015442048433,0.00010779973347738823,0.000088417285200803773,0.000072348043925119787,0.000059058912418922374,0.000048096344017602614,0.000039075596597787456,0.000031671241833119863,0.000025608816474041489,0.000020657506912546683,0.000016623763729652213,0.00001334574901590631,0.000010688525774934402,0.0000085399054709917942,0.0000068068765993340312,0.0000054125439077038407,0.000004293514469971858,0.0000033976731247300535,0.0000026822957796388472,0.0000021124547025028419,0.0000016596751443714555,0.0000013008074539172771,0.0000010170832425687032,7.9332815197558919E-7,6.1730737200919249E-7,4.7918327659031855E-7,3.7106740796333271E-7,2.8665157187919333E-7,2.2090503226954194E-7,1.6982674071475937E-7,1.3024322953320117E-7,9.9644263169334701E-8,7.6049605164887E-8,5.7901340399645569E-8,4.3977115940058689E-8,3.3320448485428448E-8,2.518491005446105E-8,1.8989562465887681E-8,1.4283479893922661E-8,1.0717590258310852E-8,8.0223918506634739E-9,5.9903714010635304E-9,4.4621724539016108E-9,3.3157459783261365E-9,2.4578650618080152E-9,1.8175078630994235E-9,1.3407124440918662E-9,9.8658764503769458E-10,7.2422917051376055E-10,5.303423262948808E-10,3.8741473466756636E-10,2.8231580370432682E-10,2.0522634252189396E-10,1.4882282217622966E-10,1.0765746385121517E-10,7.7688475817097756E-11,5.592507575942645E-11,4.0160005838590881E-11,2.8768541736043109E-11,2.055788909399508E-11,1.4654650977302715E-11,1.0420976987965154E-11,7.3922577780177942E-12,5.2309575441445253E-12,3.6924994272355614E-12,2.600126965638173E-12,1.8264310619769611E-12,1.279812543885835E-12,8.9458895587698439E-13,6.23784446333152E-13,4.3388950271780343E-13,3.0106279811174218E-13,2.0838581586720548E-13,1.4388386381575764E-13,9.9103427495475088E-14,6.8092248906200155E-14,4.6670115887190274E-14,3.1908916729108844E-14,2.1762912097085575E-14,1.4806537490047908E-14,1.0048965656526223E-14,6.8033115407739012E-15,4.5946274357785623E-15,3.095358771958668E-15,2.0801863521393674E-15,1.394517146659261E-15,9.3255757716812045E-16,6.2209605742717405E-16,4.1397018162731219E-16,2.7479593923982212E-16,1.8196213635266084E-16,1.2019351542735647E-16,7.9197263146424757E-17,5.2055697448902465E-17,3.4131483264581459E-17,2.232393197288031E-17,1.456514112590909E-17,9.4795348222032499E-18,6.1544255908503949E-18,3.985804962848151E-18,2.5749715380118873E-18,1.6594208699647519E-18,1.0667637375474856E-18,6.840807685935497E-19,4.3759647993090167E-19,2.7923343749396233E-19,1.7774117841455144E-19,1.1285884059538324E-19,7.1484170112696837E-20,4.516591491435403E-20,2.8466774084602088E-20,1.7897488120140146E-20,1.1224633591327901E-20,7.0222842404415411E-21,4.3823862990664603E-21,2.7281535713460872E-21,1.6941535024881097E-21,1.0494515075362604E-21,6.4848144530772079E-22,3.9972212057261192E-22,2.4577864834723153E-22,1.5074931688101589E-22,9.2234135249393526E-23,5.6292823113765143E-23,3.4271987941135974E-23,2.0813752194932085E-23,1.2609160670206559E-23],"z":[0.0,0.050000000000000003,0.10000000000000001,0.15000000000000002,0.20000000000000001,0.25,0.30000000000000004,0.35000000000000003,0.40000000000000002,0.45000000000000001,0.5,0.55000000000000004,0.60000000000000009,0.65000000000000002,0.70000000000000007,0.75,0.80000000000000004,0.85000000000000009,0.90000000000000002,0.95000000000000007,1.0,1.05,1.1000000000000001,1.1500000000000001,1.2000000000000002,1.25,1.3,1.3500000000000001,1.4000000000000001,1.4500000000000002,1.5,1.55,1.6000000000000001,1.6500000000000001,1.7000000000000002,1.75,1.8,1.8500000000000001,1.9000000000000001,1.9500000000000002,2.0,2.0500000000000003,2.1000000000000001,2.1499999999999999,2.2000000000000002,2.25,2.3000000000000003,2.3500000000000001,2.4000000000000004,2.4500000000000002,2.5,2.5500000000000003,2.6000000000000001,2.6500000000000004,2.7000000000000002,2.75,2.8000000000000003,2.8500000000000001,2.9000000000000004,2.9500000000000002,3.0,3.0500000000000003,3.1000000000000001,3.1500000000000004,3.2000000000000002,3.25,3.3000000000000003,3.3500000000000001,3.4000000000000004,3.4500000000000002,3.5,3.5500000000000003,3.6000000000000001,3.6500000000000004,3.7000000000000002,3.75,3.8000000000000003,3.8500000000000001,3.9000000000000004,3.9500000000000002,4.0,4.0499999999999998,4.1000000000000005,4.1500000000000004,4.2000000000000002,4.25,4.2999999999999998,4.3500000000000005,4.4000000000000004,4.4500000000000002,4.5,4.5499999999999998,4.6000000000000005,4.6500000000000004,4.7000000000000002,4.75,4.8000000000000007,4.8500000000000005,4.9000000000000004,4.9500000000000002,5.0,5.0500000000000007,5.1000000000000005,5.1500000000000004,5.2000000000000002,5.25,5.3000000000000007,5.3500000000000005,5.4000000000000004,5.4500000000000002,5.5,5.5500000000000007,5.6000000000000005,5.6500000000000004,5.7000000000000002,5.75,5.8000000000000007,5.8500000000000005,5.9000000000000004,5.9500000000000002,6.0,6.0500000000000007,6.1000000000000005,6.1500000000000004,6.2000000000000002,6.25,6.3000000000000007,6.3500000000000005,6.4000000000000004,6.4500000000000002,6.5,6.5500000000000007,6.6000000000000005,6.6500000000000004,6.7000000000000002,6.75,6.8000000000000007,6.8500000000000005,6.9000000000000004,6.9500000000000002,7.0,7.0500000000000007,7.1000000000000005,7.1500000000000004,7.2000000000000002,7.25,7.3000000000000007,7.3500000000000005,7.4000000000000004,7.4500000000000002,7.5,7.5500000000000007,7.6000000000000005,7.6500000000000004,7.7000000000000002,7.75,7.8000000000000007,7.8500000000000005,7.9000000000000004,7.9500000000000002,8.0,8.0500000000000007,8.0999999999999996,8.1500000000000004,8.2000000000000011,8.25,8.3000000000000007,8.3499999999999996,8.4000000000000004,8.4500000000000011,8.5,8.5500000000000007,8.5999999999999996,8.6500000000000004,8.7000000000000011,8.75,8.8000000000000007,8.8499999999999996,8.9000000000000004,8.9500000000000011,9.0,9.0500000000000007,9.0999999999999996,9.1500000000000004,9.2000000000000011,9.25,9.3000000000000007,9.3499999999999996,9.4000000000000004,9.4500000000000011,9.5,9.5500000000000007,9.6000000000000014,9.6500000000000004,9.7000000000000011,9.75,9.8000000000000007,9.8500000000000014,9.9000000000000004,9.9500000000000011]}
 
 /***/ }),
 
@@ -38745,70 +38351,52 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
 
 var binom_test = __webpack_require__(/*! ./binom_test */ "./src/cats/binom_test.js");
 
-module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc){
-
-
-  // console.log(inst_data)
-
-  // Category-breakdown of dendrogram-clusters
-  /////////////////////////////////////////////
-  /*
-  1. get information for nodes in cluster
-  2. find category-types that are string-type
-  3. count instances of each category name for each category-type
-  */
+module.exports = function calc_cat_cluster_breakdown(params, i_data, i_rc){
 
   // in case sim_mat
-  if (inst_rc === 'both'){
-    inst_rc = 'row';
+  if (i_rc === 'both'){
+    i_rc = 'row';
   }
 
   // 1: get information for nodes in cluster
-  ///////////////////////////////////////////
-
   // names of nodes in cluster
-  var clust_names = inst_data.all_names;
-  // array of nodes in the cluster
+  var clust_names = i_data.all_names;
   var clust_nodes = [];
-  var all_nodes = params.network[inst_rc+'_nodes'];
+  var all_nodes = params.network[i_rc+'_nodes'];
   var num_in_clust_index = null;
   var is_downsampled = false;
 
-  var inst_name;
-  _.each(all_nodes, function(inst_node){
+  var i_name;
+  _.each(all_nodes, function(i_node){
 
-    inst_name = inst_node.name;
+    i_name = i_node.name;
 
-    if (inst_name.indexOf(': ') >= 0){
-      inst_name = inst_name.split(': ')[1];
+    if (i_name.indexOf(': ') >= 0){
+      i_name = i_name.split(': ')[1];
     }
 
-    // console.log(inst_name)
-
-    if(clust_names.indexOf(inst_name) >= 0){
-      clust_nodes.push(inst_node);
+    if(clust_names.indexOf(i_name) >= 0){
+      clust_nodes.push(i_node);
     }
 
   });
 
-  // 2: find category-types that are string-type
-  ///////////////////////////////////////////////
+  // 2: find category-types that are string-type: cat_breakdown
+  var c_bd = [];
 
-  var cat_breakdown = [];
+  if ( params.viz.cat_info[i_rc] !== null ){
 
-  if ( params.viz.cat_info[inst_rc] !== null ){
-
-    var inst_cat_info = params.viz.cat_info[inst_rc];
+    var i_cat_info = params.viz.cat_info[i_rc];
 
     // tmp list of all categories
-    var tmp_types_index = _.keys(inst_cat_info);
+    var tmp_types_index = _.keys(i_cat_info);
     // this will hold the indexes of string-type categories
     var cat_types_index = [];
 
     // get category names (only include string-type categories)
     var cat_types_names = [];
     var type_name;
-    var inst_index;
+    var i_index;
     var cat_index;
     for (var i = 0; i < tmp_types_index.length; i++) {
 
@@ -38816,14 +38404,14 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
       // debugger;
 
-      if (params.viz.cat_info[inst_rc][cat_index].type === 'cat_strings'){
-        type_name = params.viz.cat_names[inst_rc][cat_index];
+      if (params.viz.cat_info[i_rc][cat_index].type === 'cat_strings'){
+        type_name = params.viz.cat_names[i_rc][cat_index];
         cat_types_names.push(type_name);
         cat_types_index.push(cat_index);
       } else {
 
         // save number in clust category index if found
-        if (params.viz.cat_names[inst_rc][cat_index] === 'number in clust'){
+        if (params.viz.cat_names[i_rc][cat_index] === 'number in clust'){
           num_in_clust_index = cat_index;
           is_downsampled = true;
         }
@@ -38832,8 +38420,8 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
     }
 
-    var tmp_run_count = {};
-    var inst_breakdown = {};
+    var t_run_count = {};
+    var i_bd = {};
     var bar_data;
     var radix_param = 10;
 
@@ -38856,15 +38444,10 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
       var cat_name;
       var num_in_clust = clust_names.length;
 
-      // use the cat_hist to get the number of instances of this category in
-      // all rows/cols
-      // params
-
       _.each(cat_types_index, function(tmp_cat_index){
-        // console.log('cat_types_index', cat_types_index)
 
-        inst_index = tmp_cat_index.split('-')[1];
-        type_name = cat_types_names[inst_index];
+        i_index = tmp_cat_index.split('-')[1];
+        type_name = cat_types_names[i_index];
 
         if (no_title_given){
           if (tmp_cat_index.indexOf('-') >=0){
@@ -38876,12 +38459,10 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
           }
         }
 
-        tmp_run_count[type_name] = {};
+        t_run_count[type_name] = {};
 
         // loop through the nodes and keep a running count of categories
-        // console.log('clust_nodes', clust_nodes)
         _.each(clust_nodes, function (tmp_node){
-          // console.log(tmp_node)
 
           cat_name = tmp_node[tmp_cat_index];
 
@@ -38889,84 +38470,81 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
             cat_name = cat_name.split(': ')[1];
           }
 
-          if (cat_name in tmp_run_count[type_name]){
-            tmp_run_count[type_name][cat_name].num_nodes = tmp_run_count[type_name][cat_name].num_nodes + 1;
+          if (cat_name in t_run_count[type_name]){
+            t_run_count[type_name][cat_name].num_nodes = t_run_count[type_name][cat_name].num_nodes + 1;
 
             if (num_in_clust_index !== null){
-              tmp_run_count[type_name][cat_name].num_nodes_ds = tmp_run_count[type_name][cat_name].num_nodes_ds + parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
+              t_run_count[type_name][cat_name].num_nodes_ds = t_run_count[type_name][cat_name].num_nodes_ds + parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
             }
 
           } else {
 
-            tmp_run_count[type_name][cat_name] = {};
-            tmp_run_count[type_name][cat_name].num_nodes = 1;
+            t_run_count[type_name][cat_name] = {};
+            t_run_count[type_name][cat_name].num_nodes = 1;
             if (num_in_clust_index !== null){
-              tmp_run_count[type_name][cat_name].num_nodes_ds = parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
+              t_run_count[type_name][cat_name].num_nodes_ds = parseInt(tmp_node[num_in_clust_index].split(': ')[1], radix_param);
             }
 
           }
 
         });
 
-        inst_breakdown = {};
-        inst_breakdown.type_name = type_name;
-        inst_breakdown.num_in_clust = num_in_clust;
+        i_bd = {};
+        i_bd.type_name = type_name;
+        i_bd.num_in_clust = num_in_clust;
 
-        // sort cat info in cat_breakdown
+        // sort cat info in c_bd
         bar_data = [];
         var bar_color;
         var cat_title_and_name;
-        var inst_run_count = tmp_run_count[type_name];
+        var i_run_count = t_run_count[type_name];
 
-        // console.log('inst_run_count', inst_run_count)
+        for (var i_cat in i_run_count){
 
-        for (var inst_cat in inst_run_count){
-
-          var tot_num_cat = params.viz.cat_info[inst_rc][tmp_cat_index].cat_hist[inst_cat];
-          var total_nodes = params.network[inst_rc+'_nodes'].length;
+          var tot_num_cat = params.viz.cat_info[i_rc][tmp_cat_index].cat_hist[i_cat];
+          var total_nodes = params.network[i_rc+'_nodes'].length;
           var expect_prob = tot_num_cat / total_nodes;
 
           // if no cat-title given
           if (no_title_given){
-            cat_title_and_name = inst_cat;
+            cat_title_and_name = i_cat;
           } else {
-            cat_title_and_name = type_name + ': ' + inst_cat;
+            cat_title_and_name = type_name + ': ' + i_cat;
           }
 
           // num_nodes: number of cat-nodes drawn in cluster
-          var num_nodes = inst_run_count[inst_cat].num_nodes;
+          var num_nodes = i_run_count[i_cat].num_nodes;
 
           var actual_k  = num_nodes;
           var pval = binom_test(actual_k, num_in_clust, expect_prob);
-          // var pval = 0.05; // binom_test(actual_k, num_in_clust, expect_prob);
 
           // working on tracking the 'real' number of nodes, which is only different
           // if downsampling has been done
-          if (_.has(inst_run_count[inst_cat], 'num_nodes_ds')){
-            var num_nodes_ds = inst_run_count[inst_cat].num_nodes_ds;
+          if (_.has(i_run_count[i_cat], 'num_nodes_ds')){
+            var num_nodes_ds = i_run_count[i_cat].num_nodes_ds;
           } else {
             num_nodes_ds = null;
           }
 
-          bar_color = params.viz.cat_colors[inst_rc][tmp_cat_index][cat_title_and_name];
+          bar_color = params.viz.cat_colors[i_rc][tmp_cat_index][cat_title_and_name];
 
-          bar_data.push([ tmp_cat_index, cat_title_and_name, inst_run_count[inst_cat], bar_color, num_nodes, num_nodes_ds, pval]);
+          bar_data.push([ tmp_cat_index, cat_title_and_name, i_run_count[i_cat], bar_color, num_nodes, num_nodes_ds, pval]);
         }
 
         bar_data.sort(function(a, b) {
             return b[sorting_index] - a[sorting_index];
         });
 
-        inst_breakdown.bar_data = bar_data;
+        i_bd.bar_data = bar_data;
 
-        cat_breakdown.push(inst_breakdown);
+        c_bd.push(i_bd);
 
       });
 
     }
   }
 
-  return cat_breakdown;
+  return c_bd;
 };
 
 /***/ }),
@@ -38978,32 +38556,30 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups){
+module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
+                                             title_height, bars_index, max_bars,
+                                             cat_bar_groups){
 
   var paragraph_string = '<p>';
   var super_string = ': ';
 
   var bar_width  = params.viz.cat_bar_width;
   var bar_height = params.viz.cat_bar_height;
-
-  var max_string_length = 25;
+  var max_len = 25;
 
   var max_bar_value = cat_data.bar_data[0][bars_index];
-
   // only keep the top max_bars categories
   cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
-
-  var inst_title = cat_data.type_name;
-  // ensure that title is not too long
-  if (inst_title.length >= max_string_length){
-    inst_title = inst_title.slice(0, max_string_length) + '..';
+  var i_title = cat_data.type_name;
+  if (i_title.length >= max_len){
+    i_title = i_title.slice(0, max_len) + '..';
   }
 
   // make title
   cat_graph_group
     .append('text')
     .classed('cat_graph_title', true)
-    .text(inst_title)
+    .text(i_title)
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight',  800);
 
@@ -39018,7 +38594,6 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
     .attr('stroke-width', 1)
     .attr('opacity', 1.0);
 
-
   // bar length is max when all nodes in cluster are of
   // a single cat
   var bar_scale = d3.scale.linear()
@@ -39030,8 +38605,8 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
     .append('rect')
     .attr('height', bar_height+'px')
     .attr('width', function(d){
-      var inst_width = bar_scale(d[bars_index]);
-      return inst_width +'px';
+      var i_width = bar_scale(d[bars_index]);
+      return i_width +'px';
     })
     .attr('fill', function(d){
       // cat color is stored in the third element
@@ -39046,19 +38621,19 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
     .append('text')
     .classed('bar_labels', true)
     .text(function(d){
-      var inst_text = d[1];
-      if (inst_text.indexOf(super_string) > 0){
-        inst_text = inst_text.split(super_string)[1];
+      var i_text = d[1];
+      if (i_text.indexOf(super_string) > 0){
+        i_text = i_text.split(super_string)[1];
       }
-      if (inst_text.indexOf(paragraph_string) > 0){
+      if (i_text.indexOf(paragraph_string) > 0){
         // required for Enrichr category names (needs improvements)
-        inst_text = inst_text.split(paragraph_string)[0];
+        i_text = i_text.split(paragraph_string)[0];
       }
       // ensure that bar name is not too long
-      if (inst_text.length >= max_string_length){
-        inst_text = inst_text.slice(0,max_string_length) + '..';
+      if (i_text.length >= max_len){
+        i_text = i_text.slice(0,max_len) + '..';
       }
-      return inst_text;
+      return i_text;
     })
     .attr('transform', function(){
       return 'translate(5, ' + 0.75 * bar_height + ')' ;
@@ -39080,21 +38655,18 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group, 
 
 module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total){
 
-
   var bar_width = params.viz.cat_bar_width;
   var bar_height = params.viz.cat_bar_height;
   var offset_ds_count = 150;
   var binom_pval_index = 6;
-
 
   // Count Title
   cat_graph_group
     .append('text')
     .text('Count')
     .attr('transform', function(){
-      var inst_x = bar_width + count_offset;
-      var inst_translate = 'translate('+ inst_x +', 0)';
-      return inst_translate;
+      var i_x = bar_width + count_offset;
+      return 'translate('+ i_x +', 0)';
     });
 
   // Percentage Title
@@ -39102,9 +38674,8 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
     .append('text')
     .text('Pct')
     .attr('transform', function(){
-      var inst_x = bar_width + count_offset + 60;
-      var inst_translate = 'translate('+ inst_x +', 0)';
-      return inst_translate;
+      var i_x = bar_width + count_offset + 60;
+      return 'translate('+ i_x +', 0)';
     });
 
   // Percentage Title
@@ -39112,9 +38683,8 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
     .append('text')
     .text('P-val')
     .attr('transform', function(){
-      var inst_x = bar_width + count_offset + 115;
-      var inst_translate = 'translate('+ inst_x +', 0)';
-      return inst_translate;
+      var i_x = bar_width + count_offset + 115;
+      return 'translate('+ i_x +', 0)';
     });
 
   // Count Downsampled Title
@@ -39123,9 +38693,8 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
       .append('text')
       .text('Clusters')
       .attr('transform', function(){
-        var inst_x = bar_width + offset_ds_count ;
-        var inst_translate = 'translate('+ inst_x +', 0)';
-        return inst_translate;
+        var i_x = bar_width + offset_ds_count ;
+        return 'translate('+ i_x +', 0)';
       });
   }
 
@@ -39137,14 +38706,14 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
     .append('text')
     .classed('count_labels', true)
     .text(function(d){
-      var inst_count = d[bars_index];
-      inst_count = inst_count.toLocaleString();
-      return String(inst_count);
+      var i_count = d[bars_index];
+      i_count = i_count.toLocaleString();
+      return String(i_count);
     })
     .attr('transform', function(){
-      var inst_x = bar_width + count_offset + shift_count_num;
-      var inst_y = 0.75 * bar_height;
-      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+      var i_x = bar_width + count_offset + shift_count_num;
+      var i_y = 0.75 * bar_height;
+      return 'translate('+ i_x +', ' + i_y + ')' ;
     })
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
@@ -39158,15 +38727,15 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
     .classed('count_labels', true)
     .text(function(d){
       // calculate the percentage relative to the current cluster
-      var inst_count = d[bars_index] / cluster_total * 100;
-      inst_count = Math.round(inst_count * 10)/10;
-      inst_count = inst_count.toLocaleString();
-      return String(inst_count);
+      var i_count = d[bars_index] / cluster_total * 100;
+      i_count = Math.round(i_count * 10)/10;
+      i_count = i_count.toLocaleString();
+      return String(i_count);
     })
     .attr('transform', function(){
-      var inst_x = bar_width + count_offset + shift_count_num + 47;
-      var inst_y = 0.75 * bar_height;
-      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+      var i_x = bar_width + count_offset + shift_count_num + 47;
+      var i_y = 0.75 * bar_height;
+      return 'translate('+ i_x +', ' + i_y + ')' ;
     })
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
@@ -39177,23 +38746,20 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
     .append('text')
     .classed('count_labels', true)
     .text(function(d){
-      // calculate the percentage relative to the current cluster
-      var inst_count = d[binom_pval_index];
+      var i_count = d[binom_pval_index];
 
-      if (inst_count<0.001){
-        inst_count = parseFloat(inst_count.toPrecision(3));
-        inst_count = inst_count.toExponential();
+      if (i_count<0.001){
+        i_count = parseFloat(i_count.toPrecision(3));
+        i_count = i_count.toExponential();
       } else {
-        inst_count = parseFloat(inst_count.toPrecision(2));
+        i_count = parseFloat(i_count.toPrecision(2));
       }
-
-      // inst_count = inst_count.toLocaleString();
-      return inst_count;
+      return i_count;
     })
     .attr('transform', function(){
-      var inst_x = bar_width + count_offset + shift_count_num + 112;
-      var inst_y = 0.75 * bar_height;
-      return 'translate('+ inst_x +', ' + inst_y + ')' ;
+      var i_x = bar_width + count_offset + shift_count_num + 112;
+      var i_y = 0.75 * bar_height;
+      return 'translate('+ i_x +', ' + i_y + ')' ;
     })
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
@@ -39209,9 +38775,9 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
       })
       .attr('transform', function(){
         // downsampled cluster numbers are smaller and need less flexible offsetting
-        var inst_x = bar_width + shift_count_num + offset_ds_count  + 20;
-        var inst_y = 0.75 * bar_height;
-        return 'translate('+ inst_x +', ' + inst_y + ')' ;
+        var i_x = bar_width + shift_count_num + offset_ds_count  + 20;
+        var i_y = 0.75 * bar_height;
+        return 'translate('+ i_x +', ' + i_y + ')' ;
       })
       .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .attr('font-weight', 400)
@@ -39369,18 +38935,12 @@ module.exports = function generate_cat_array(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var check_if_value_cats = __webpack_require__(/*! ./check_if_value_cats */ "./src/cats/check_if_value_cats.js");
-
 module.exports = function generate_cat_info(params){
 
-  // in clustergrammer.js this is make_cat_params
-
   var viz = {}
-
   var super_string = ': ';
   var tmp_super;
-  var inst_info;
-  // var inst_color;
+  var i_info;
 
   viz.show_categories = {};
   viz.all_cats = {};
@@ -39400,122 +38960,87 @@ module.exports = function generate_cat_info(params){
   viz.cat_colors.value_opacity = ini_val_opacity;
 
   // var num_colors = 0;
-  _.each(['row','col'], function(inst_rc){
+  _.each(['row', 'col'], function(i_rc){
 
-    viz.show_categories[inst_rc] = false;
+    viz.show_categories[i_rc] = false;
 
-    viz.all_cats[inst_rc] = [];
-    var tmp_keys = _.keys(params.network[inst_rc+'_nodes'][0]);
+    viz.all_cats[i_rc] = [];
+    var tmp_keys = _.keys(params.network[i_rc+'_nodes'][0]);
 
     tmp_keys = tmp_keys.sort();
 
     _.each( tmp_keys, function(d){
       if (d.indexOf('cat-') >= 0){
-        viz.show_categories[inst_rc] = true;
-        viz.all_cats[inst_rc].push(d);
+        viz.show_categories[i_rc] = true;
+        viz.all_cats[i_rc].push(d);
       }
     });
 
-    viz.cat_info[inst_rc] = null;
+    viz.cat_info[i_rc] = null;
+    viz.cat_colors[i_rc] = {};
+    viz.cat_info[i_rc] = {};
+    viz.cat_names[i_rc] = {};
 
-    // if (viz.show_categories[inst_rc]){
+    _.each( viz.all_cats[i_rc], function(cat_title){
 
-      viz.cat_colors[inst_rc] = {};
-      viz.cat_info[inst_rc] = {};
-      viz.cat_names[inst_rc] = {};
+      var i_node = params.network[i_rc+'_nodes'][0];
 
-      _.each( viz.all_cats[inst_rc], function(cat_title){
+      // look for title of category in category name
+      if (typeof i_node[cat_title] === 'string' ){
 
-        var inst_node = params.network[inst_rc+'_nodes'][0];
-
-        // look for title of category in category name
-        if (typeof inst_node[cat_title] === 'string' ){
-
-          if (inst_node[cat_title].indexOf(super_string) > 0){
-            tmp_super = inst_node[cat_title].split(super_string)[0];
-            viz.cat_names[inst_rc][cat_title] = tmp_super;
-          } else {
-            viz.cat_names[inst_rc][cat_title] = cat_title;
-          }
-
+        if (i_node[cat_title].indexOf(super_string) > 0){
+          tmp_super = i_node[cat_title].split(super_string)[0];
+          viz.cat_names[i_rc][cat_title] = tmp_super;
         } else {
-          viz.cat_names[inst_rc][cat_title] = cat_title;
+          viz.cat_names[i_rc][cat_title] = cat_title;
         }
 
-        var cat_instances_titles = _.pluck(params.network[inst_rc+'_nodes'], cat_title);
-        var cat_instances = [];
+      } else {
+        viz.cat_names[i_rc][cat_title] = cat_title;
+      }
 
-        _.each(cat_instances_titles, function(inst_cat){
+      var cat_instances_titles = _.pluck(params.network[i_rc+'_nodes'], cat_title);
+      var cat_instances = [];
 
-          var new_cat;
-          if (inst_cat.indexOf(': ') >0){
-            new_cat = inst_cat.split(': ')[1];
-          } else {
-            new_cat = inst_cat;
-          }
+      _.each(cat_instances_titles, function(i_cat){
 
-          cat_instances.push(new_cat);
-        });
-
-        var cat_states = _.uniq( cat_instances_titles ).sort();
-
-        // check whether all the categories are of value type
-        inst_info = check_if_value_cats(cat_states);
-
-        // add histogram to inst_info
-        if (inst_info.type === 'cat_strings'){
-          // remove titles from categories in hist
-          var cat_hist = _.countBy(cat_instances);
-          inst_info.cat_hist = cat_hist;
+        var new_cat;
+        if (i_cat.indexOf(': ') >0){
+          new_cat = i_cat.split(': ')[1];
         } else {
-          inst_info.cat_hist = null;
+          new_cat = i_cat;
         }
 
-        // pass info_info object
-        viz.cat_info[inst_rc][cat_title] = inst_info;
-
-        viz.cat_colors[inst_rc][cat_title] = {};
-
-        // _.each(cat_states, function(cat_tmp, inst_index){
-
-          // inst_color = colors.get_random_color(inst_index + num_colors);
-
-          // viz.cat_colors[inst_rc][cat_title][cat_tmp] = inst_color;
-
-          // // hack to get 'Not' categories to not be dark colored
-          // // also doing this for false
-          // if (typeof cat_tmp === 'string'){
-          //   if (cat_tmp.indexOf('Not ') >= 0 || cat_tmp.indexOf(': false') > 0){
-          //     viz.cat_colors[inst_rc][cat_title][cat_tmp] = '#eee';
-          //   }
-          // }
-
-          // num_colors = num_colors + 1;
-        // });
-
+        cat_instances.push(new_cat);
       });
 
-    // }
+      var cat_states = _.uniq( cat_instances_titles ).sort();
 
-    // if (_.has(params.network, 'cat_colors') && predefined_cat_colors === true){
-      viz.cat_colors[inst_rc] = params.network.cat_colors[inst_rc];
-    // }
+      // check whether all the categories are of value type
+      i_info = __webpack_require__(/*! ./check_if_value_cats */ "./src/cats/check_if_value_cats.js")(cat_states);
 
-    // if (params.sim_mat){
-    //   // sending row color info to columns since row color info can be updated
-    //   viz.cat_colors.col = viz.cat_colors.row;
-    // }
+      // add histogram to i_info
+      if (i_info.type === 'cat_strings'){
+        // remove titles from categories in hist
+        var cat_hist = _.countBy(cat_instances);
+        i_info.cat_hist = cat_hist;
+      } else {
+        i_info.cat_hist = null;
+      }
 
+      // pass info_info object
+      viz.cat_info[i_rc][cat_title] = i_info;
+      viz.cat_colors[i_rc][cat_title] = {};
+
+    });
+
+      viz.cat_colors[i_rc] = params.network.cat_colors[i_rc];
   });
-
-  // viz.cat_colors = viz.cat_colors;
 
   viz.cat_colors.opacity = 0.6;
   viz.cat_colors.active_opacity = 0.9;
 
   params.viz = viz;
-
-  // viz = calc_cat_params(params, viz);
 
 }
 
@@ -39774,38 +39299,22 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// var calc_cat_cluster_breakdown = require('./calc_cat_cluster_breakdown');
-var cat_breakdown_bars = __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js");
-var cat_breakdown_values = __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js");
+module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
 
-module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_breakdown){
+  if (cb.length > 0){
 
-  /*
-  This function is used to make the category breakdown graphs for tooltips on
-  dendrogram mousover and on dendrogram click modal popup.
-  */
-
-  if (cat_breakdown.length > 0){
-
-    // put cluster information in dendro_tip
-    ///////////////////////////////////////////
-
-    // loop through cat_breakdown data
     var width = 370;
     var title_height = 27;
-    // var shift_tooltip_left = 177;
     var bar_offset = 23;
 
     // these are the indexes where the number-of-nodes and the number of downsampled
     // nodes are stored
     var num_nodes_index = 4;
     var num_nodes_ds_index = 5;
-    // var offset_ds_count = 150;
 
     var is_downsampled = false;
-    if (cat_breakdown[0].bar_data[0][num_nodes_ds_index] !== null){
+    if (cb[0].bar_data[0][num_nodes_ds_index] !== null){
       width = width + 100;
-      // shift_tooltip_left = shift_tooltip_left + offset_ds_count - 47;
       is_downsampled = true;
     }
 
@@ -39817,9 +39326,9 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       bars_index = num_nodes_ds_index;
 
       // calculate the total number of nodes in downsampled case
-      var inst_bar_data = cat_breakdown[0].bar_data;
+      var i_bar_data = cb[0].bar_data;
       cluster_total = 0;
-      _.each(inst_bar_data, function(tmp_data){
+      _.each(i_bar_data, function(tmp_data){
         cluster_total = cluster_total + tmp_data[num_nodes_ds_index];
       });
     }
@@ -39829,9 +39338,9 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
     // limit the number of bars shown
     var max_bars = 25;
 
-    // calculate height needed for svg based on cat_breakdown data
+    // calculate height needed for svg based on cb data
     var svg_height = 20;
-    _.each(cat_breakdown.slice(0,max_cats), function(tmp_break){
+    _.each(cb.slice(0,max_cats), function(tmp_break){
       var num_bars = tmp_break.bar_data.length;
       if (num_bars > max_bars){
         num_bars = max_bars;
@@ -39856,30 +39365,29 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
       .attr('fill', 'white')
       .attr('opacity', 1);
 
-
     // limit the category-types
-    cat_breakdown = cat_breakdown.slice(0, max_cats);
+    cb = cb.slice(0, max_cats);
 
     // shift the position of the numbers based on the size of the number
     // offset the count column based on how large the counts are
-    var digit_offset_scale = d3.scale.linear()
+    var digit_offset = d3.scale.linear()
                                .domain([0,100000]).range([20, 30]);
 
     // the total amout to shift down the next category
     var shift_down = title_height;
 
-    _.each(cat_breakdown, function(cat_data){
+    _.each(cb, function(cat_data){
 
       var max_bar_value = cat_data.bar_data[0][bars_index];
 
-      var count_offset = digit_offset_scale(max_bar_value);
+      var count_offset = digit_offset(max_bar_value);
 
-      var cat_graph_group = main_dendro_svg
+      var cgg = main_dendro_svg
         .append('g')
-        .classed('cat_graph_group', true)
+        .classed('cgg', true)
         .attr('transform', 'translate(10, '+ shift_down + ')');
 
-        var cat_bar_container = cat_graph_group
+        var cat_bar_container = cgg
           .append('g')
           .classed('cat_bar_container', true)
           .attr('transform', 'translate(0, 10)');
@@ -39891,13 +39399,17 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cat_brea
           .enter()
           .append('g')
           .attr('transform', function(d, i){
-            var inst_y = i * bar_offset;
-            return 'translate(0,'+ inst_y +')';
+            var i_y = i * bar_offset;
+            return 'translate(0,'+ i_y +')';
           });
 
-      cat_breakdown_bars(params, cat_data, cat_graph_group, title_height, bars_index, max_bars, cat_bar_groups);
+      __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js")(params, cat_data, cgg,
+                                      title_height, bars_index, max_bars,
+                                      cat_bar_groups);
 
-      cat_breakdown_values(params, cat_graph_group, cat_bar_groups, num_nodes_index, is_downsampled, count_offset, bars_index, cluster_total);
+      __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js")(params, cgg, cat_bar_groups,
+                                        num_nodes_index, is_downsampled,
+                                        count_offset, bars_index, cluster_total);
 
       // shift down based on number of bars
       shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
@@ -39977,157 +39489,8 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = {
-  'aliceblue': [240, 248, 255],
-  'antiquewhite': [250, 235, 215],
-  'aqua': [0, 255, 255],
-  'aquamarine': [127, 255, 212],
-  'azure': [240, 255, 255],
-  'beige': [245, 245, 220],
-  'bisque': [255, 228, 196],
-  'black': [0, 0, 0],
-  'blanchedalmond': [255, 235, 205],
-  'blue': [0, 0, 255],
-  'blueviolet': [138, 43, 226],
-  'brown': [165, 42, 42],
-  'burlywood': [222, 184, 135],
-  'cadetblue': [95, 158, 160],
-  'chartreuse': [127, 255, 0],
-  'chocolate': [210, 105, 30],
-  'coral': [255, 127, 80],
-  'cornflowerblue': [100, 149, 237],
-  'cornsilk': [255, 248, 220],
-  'crimson': [220, 20, 60],
-  'cyan': [0, 255, 255],
-  'darkblue': [0, 0, 139],
-  'darkcyan': [0, 139, 139],
-  'darkgoldenrod': [184, 134, 11],
-  'darkgray': [169, 169, 169],
-  'darkgreen': [0, 100, 0],
-  'darkgrey': [169, 169, 169],
-  'darkkhaki': [189, 183, 107],
-  'darkmagenta': [139, 0, 139],
-  'darkolivegreen': [85, 107, 47],
-  'darkorange': [255, 140, 0],
-  'darkorchid': [153, 50, 204],
-  'darkred': [139, 0, 0],
-  'darksalmon': [233, 150, 122],
-  'darkseagreen': [143, 188, 143],
-  'darkslateblue': [72, 61, 139],
-  'darkslategray': [47, 79, 79],
-  'darkslategrey': [47, 79, 79],
-  'darkturquoise': [0, 206, 209],
-  'darkviolet': [148, 0, 211],
-  'deeppink': [255, 20, 147],
-  'deepskyblue': [0, 191, 255],
-  'dimgray': [105, 105, 105],
-  'dimgrey': [105, 105, 105],
-  'dodgerblue': [30, 144, 255],
-  'firebrick': [178, 34, 34],
-  'floralwhite': [255, 250, 240],
-  'forestgreen': [34, 139, 34],
-  'fuchsia': [255, 0, 255],
-  'gainsboro': [220, 220, 220],
-  'ghostwhite': [248, 248, 255],
-  'gold': [255, 215, 0],
-  'goldenrod': [218, 165, 32],
-  'gray': [128, 128, 128],
-  'green': [0, 128, 0],
-  'greenyellow': [173, 255, 47],
-  'grey': [128, 128, 128],
-  'honeydew': [240, 255, 240],
-  'hotpink': [255, 105, 180],
-  'indianred': [205, 92, 92],
-  'indigo': [75, 0, 130],
-  'ivory': [255, 255, 240],
-  'khaki': [240, 230, 140],
-  'lavender': [230, 230, 250],
-  'lavenderblush': [255, 240, 245],
-  'lawngreen': [124, 252, 0],
-  'lemonchiffon': [255, 250, 205],
-  'lightblue': [173, 216, 230],
-  'lightcoral': [240, 128, 128],
-  'lightcyan': [224, 255, 255],
-  'lightgoldenrodyellow': [250, 250, 210],
-  'lightgray': [211, 211, 211],
-  'lightgreen': [144, 238, 144],
-  'lightgrey': [211, 211, 211],
-  'lightpink': [255, 182, 193],
-  'lightsalmon': [255, 160, 122],
-  'lightseagreen': [32, 178, 170],
-  'lightskyblue': [135, 206, 250],
-  'lightslategray': [119, 136, 153],
-  'lightslategrey': [119, 136, 153],
-  'lightsteelblue': [176, 196, 222],
-  'lightyellow': [255, 255, 224],
-  'lime': [0, 255, 0],
-  'limegreen': [50, 205, 50],
-  'linen': [250, 240, 230],
-  'magenta': [255, 0, 255],
-  'maroon': [128, 0, 0],
-  'mediumaquamarine': [102, 205, 170],
-  'mediumblue': [0, 0, 205],
-  'mediumorchid': [186, 85, 211],
-  'mediumpurple': [147, 112, 219],
-  'mediumseagreen': [60, 179, 113],
-  'mediumslateblue': [123, 104, 238],
-  'mediumspringgreen': [0, 250, 154],
-  'mediumturquoise': [72, 209, 204],
-  'mediumvioletred': [199, 21, 133],
-  'midnightblue': [25, 25, 112],
-  'mintcream': [245, 255, 250],
-  'mistyrose': [255, 228, 225],
-  'moccasin': [255, 228, 181],
-  'navajowhite': [255, 222, 173],
-  'navy': [0, 0, 128],
-  'oldlace': [253, 245, 230],
-  'olive': [128, 128, 0],
-  'olivedrab': [107, 142, 35],
-  'orange': [255, 165, 0],
-  'orangered': [255, 69, 0],
-  'orchid': [218, 112, 214],
-  'palegoldenrod': [238, 232, 170],
-  'palegreen': [152, 251, 152],
-  'paleturquoise': [175, 238, 238],
-  'palevioletred': [219, 112, 147],
-  'papayawhip': [255, 239, 213],
-  'peachpuff': [255, 218, 185],
-  'peru': [205, 133, 63],
-  'pink': [255, 192, 203],
-  'plum': [221, 160, 221],
-  'powderblue': [176, 224, 230],
-  'purple': [128, 0, 128],
-  'red': [255, 0, 0],
-  'rosybrown': [188, 143, 143],
-  'royalblue': [65, 105, 225],
-  'saddlebrown': [139, 69, 19],
-  'salmon': [250, 128, 114],
-  'sandybrown': [244, 164, 96],
-  'seagreen': [46, 139, 87],
-  'seashell': [255, 245, 238],
-  'sienna': [160, 82, 45],
-  'silver': [192, 192, 192],
-  'skyblue': [135, 206, 235],
-  'slateblue': [106, 90, 205],
-  'slategray': [112, 128, 144],
-  'slategrey': [112, 128, 144],
-  'snow': [255, 250, 250],
-  'springgreen': [0, 255, 127],
-  'steelblue': [70, 130, 180],
-  'tan': [210, 180, 140],
-  'teal': [0, 128, 128],
-  'thistle': [216, 191, 216],
-  'tomato': [255, 99, 71],
-  'transparent': [0, 0, 0, 0],
-  'turquoise': [64, 224, 208],
-  'violet': [238, 130, 238],
-  'wheat': [245, 222, 179],
-  'white': [255, 255, 255],
-  'whitesmoke': [245, 245, 245],
-  'yellow': [255, 255, 0],
-  'yellowgreen': [154, 205, 50],
-  'rebeccapurple': [102, 51, 153, 1]
-};
+/* eslint-disable */
+module.exports = {"aliceblue":[240,248,255],"antiquewhite":[250,235,215],"aqua":[0,255,255],"aquamarine":[127,255,212],"azure":[240,255,255],"beige":[245,245,220],"bisque":[255,228,196],"black":[0,0,0],"blanchedalmond":[255,235,205],"blue":[0,0,255],"blueviolet":[138,43,226],"brown":[165,42,42],"burlywood":[222,184,135],"cadetblue":[95,158,160],"chartreuse":[127,255,0],"chocolate":[210,105,30],"coral":[255,127,80],"cornflowerblue":[100,149,237],"cornsilk":[255,248,220],"crimson":[220,20,60],"cyan":[0,255,255],"darkblue":[0,0,139],"darkcyan":[0,139,139],"darkgoldenrod":[184,134,11],"darkgray":[169,169,169],"darkgreen":[0,100,0],"darkgrey":[169,169,169],"darkkhaki":[189,183,107],"darkmagenta":[139,0,139],"darkolivegreen":[85,107,47],"darkorange":[255,140,0],"darkorchid":[153,50,204],"darkred":[139,0,0],"darksalmon":[233,150,122],"darkseagreen":[143,188,143],"darkslateblue":[72,61,139],"darkslategray":[47,79,79],"darkslategrey":[47,79,79],"darkturquoise":[0,206,209],"darkviolet":[148,0,211],"deeppink":[255,20,147],"deepskyblue":[0,191,255],"dimgray":[105,105,105],"dimgrey":[105,105,105],"dodgerblue":[30,144,255],"firebrick":[178,34,34],"floralwhite":[255,250,240],"forestgreen":[34,139,34],"fuchsia":[255,0,255],"gainsboro":[220,220,220],"ghostwhite":[248,248,255],"gold":[255,215,0],"goldenrod":[218,165,32],"gray":[128,128,128],"green":[0,128,0],"greenyellow":[173,255,47],"grey":[128,128,128],"honeydew":[240,255,240],"hotpink":[255,105,180],"indianred":[205,92,92],"indigo":[75,0,130],"ivory":[255,255,240],"khaki":[240,230,140],"lavender":[230,230,250],"lavenderblush":[255,240,245],"lawngreen":[124,252,0],"lemonchiffon":[255,250,205],"lightblue":[173,216,230],"lightcoral":[240,128,128],"lightcyan":[224,255,255],"lightgoldenrodyellow":[250,250,210],"lightgray":[211,211,211],"lightgreen":[144,238,144],"lightgrey":[211,211,211],"lightpink":[255,182,193],"lightsalmon":[255,160,122],"lightseagreen":[32,178,170],"lightskyblue":[135,206,250],"lightslategray":[119,136,153],"lightslategrey":[119,136,153],"lightsteelblue":[176,196,222],"lightyellow":[255,255,224],"lime":[0,255,0],"limegreen":[50,205,50],"linen":[250,240,230],"magenta":[255,0,255],"maroon":[128,0,0],"mediumaquamarine":[102,205,170],"mediumblue":[0,0,205],"mediumorchid":[186,85,211],"mediumpurple":[147,112,219],"mediumseagreen":[60,179,113],"mediumslateblue":[123,104,238],"mediumspringgreen":[0,250,154],"mediumturquoise":[72,209,204],"mediumvioletred":[199,21,133],"midnightblue":[25,25,112],"mintcream":[245,255,250],"mistyrose":[255,228,225],"moccasin":[255,228,181],"navajowhite":[255,222,173],"navy":[0,0,128],"oldlace":[253,245,230],"olive":[128,128,0],"olivedrab":[107,142,35],"orange":[255,165,0],"orangered":[255,69,0],"orchid":[218,112,214],"palegoldenrod":[238,232,170],"palegreen":[152,251,152],"paleturquoise":[175,238,238],"palevioletred":[219,112,147],"papayawhip":[255,239,213],"peachpuff":[255,218,185],"peru":[205,133,63],"pink":[255,192,203],"plum":[221,160,221],"powderblue":[176,224,230],"purple":[128,0,128],"red":[255,0,0],"rosybrown":[188,143,143],"royalblue":[65,105,225],"saddlebrown":[139,69,19],"salmon":[250,128,114],"sandybrown":[244,164,96],"seagreen":[46,139,87],"seashell":[255,245,238],"sienna":[160,82,45],"silver":[192,192,192],"skyblue":[135,206,235],"slateblue":[106,90,205],"slategray":[112,128,144],"slategrey":[112,128,144],"snow":[255,250,250],"springgreen":[0,255,127],"steelblue":[70,130,180],"tan":[210,180,140],"teal":[0,128,128],"thistle":[216,191,216],"tomato":[255,99,71],"transparent":[0,0,0,0],"turquoise":[64,224,208],"violet":[238,130,238],"wheat":[245,222,179],"white":[255,255,255],"whitesmoke":[245,245,245],"yellow":[255,255,0],"yellowgreen":[154,205,50],"rebeccapurple":[102,51,153,1]}
 
 /***/ }),
 
@@ -40209,90 +39572,55 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
-// var img = require('./../../img/graham_cracker_144.png');
-var build_reorder_cat_titles = __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js");
-var build_tree_icon = __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js");
-// var d3v5 = require('d3');
-var tip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js");
-var initialize_d3_tip = __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js");
-var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
-var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
-
 module.exports = function build_control_panel(regl, cgm){
 
-  // console.log(d3);
-  // console.log(d3v5);
+  var params = cgm.params;
+  params.tooltip_id = '#d3-tip_' + params.root.replace('#','');
 
-  // debugger;
-  // var tooltip = tip.default().html(d => d.value);
-
-  cgm.params.tooltip_id = '#d3-tip_' + cgm.params.root.replace('#','');
-
-  var tooltip = tip.default()
-                   .attr('id', cgm.params.tooltip_id.replace('#',''))
+  var tooltip = __webpack_require__(/*! d3-tip */ "./node_modules/d3-tip/index.js").default()
+                   .attr('id', params.tooltip_id.replace('#',''))
                    .attr('class', 'cgm-tooltip')
                    .direction('sw')
                    .html(function(){
                       return '';
                     });
 
-  // vis.call(tooltip)
-  cgm.params.tooltip_fun = tooltip;
+  params.tooltip_fun = tooltip;
 
-  // Add control panel to the top
-  ///////////////////////////////////////
+  var control_container = d3.select(params.root + ' .control-container')[0][0];
+  var i_height = 135;
+  var i_width = params.viz_width;
 
-  // var control_container = d3.select(cgm.params.container).select(' .control-container')[0][0];
-  var control_container = d3.select(cgm.params.root + ' .control-container')[0][0];
-  var inst_height = 135;
-  var inst_width = cgm.params.viz_width;
-
-  // light panel color '#bbc3cc'
-  // light button color '#e3e7ea'
-  // var control_panel_color = '#eee';
-  // dark text color
-  // var text_color = '#2f363d';
-  // button_color = text_color;
   var control_panel_color = 'white';
   var text_color = '#47515b';
   var button_color = '#eee';
 
-  // // experimenting in different color pallets
-  // control_panel_color = '#2f363d'
-  // var button_color = '#e3e7ea';
-  // var text_color = '#e3e7ea';
-
   var control_svg = d3.select(control_container)
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
+    .style('height',i_height + 'px')
+    .style('width',i_width+'px')
     .append('svg')
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
+    .style('height',i_height + 'px')
+    .style('width',i_width+'px')
+    .on('mouseover', function(){
+      params.tooltip.in_bounds_tooltip = false;
+    })
 
   control_svg
     .append('rect')
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px')
+    .style('height',i_height + 'px')
+    .style('width',i_width+'px')
     .style('position', 'absolute')
     .style('fill', control_panel_color)
     .attr('class', 'control-panel-background')
+    .call(tooltip);
 
-    // ////////////////////////////////////
-    // // attempt to add mouseover to rect
-    // ////////////////////////////////////
-    .call(tooltip)
-    // .on('mouseover', function(d){
-    // })
-    // .on('mouseout', tooltip.hide);
+  __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js")(params);
 
-  initialize_d3_tip(cgm.params);
-
-  cgm.show_tooltip = show_d3_tip;
-  cgm.hide_tooltip = hide_d3_tip;
+  cgm.show_tooltip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
+  cgm.hide_tooltip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
 
   // setting fontsize
-  d3.select(cgm.params.tooltip_id)
+  d3.select(params.tooltip_id)
     .style('line-height', 1.5)
     .style('font-weight', 'bold')
     .style('padding', '12px')
@@ -40307,13 +39635,14 @@ module.exports = function build_control_panel(regl, cgm){
   var border_height = 1;
   control_svg
     .append('rect')
+    .classed('north_border', true)
     .style('height', '1px')
-    .style('width',inst_width+'px')
+    .style('width',i_width+'px')
     .style('position', 'absolute')
     .style('stroke', '#eee')
     .style('stroke-width', 3)
     .attr('transform', function(){
-      var y_trans = inst_height - border_height;
+      var y_trans = i_height - border_height;
       return 'translate( 0, '+ y_trans +')';
     });
 
@@ -40336,7 +39665,7 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'disp', 'alpha'];
+  var order_options = ['clust', 'sum', 'var', 'alpha'];
 
   // make reorder title
 
@@ -40376,20 +39705,20 @@ module.exports = function build_control_panel(regl, cgm){
     });
 
 
-  _.each(['row', 'col'], function(inst_axis){
+  _.each(['row', 'col'], function(i_axis){
 
     var axis_title = control_svg
       .append('g')
       .attr('transform', function(){
         var x_offset = 0;
-        var y_offset = button_groups[inst_axis].y_trans;
+        var y_offset = button_groups[i_axis].y_trans;
         return 'translate('+ x_offset  +', '+ y_offset +')';
       })
 
     axis_title
       .append('text')
       .classed('reorder_title', true)
-      .text(inst_axis.toUpperCase())
+      .text(i_axis.toUpperCase())
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight', 400)
       .style('font-size', button_dim.fs)
@@ -40405,7 +39734,7 @@ module.exports = function build_control_panel(regl, cgm){
       .append('g');
 
     reorder_buttons
-      .classed(inst_axis + '-reorder-buttons', true);
+      .classed(i_axis + '-reorder-buttons', true);
 
     var active_button_color = '#0000FF75';
 
@@ -40416,8 +39745,8 @@ module.exports = function build_control_panel(regl, cgm){
       .enter( )
       .append('g')
       .attr('transform', function(d, i){
-        var x_offset = button_dim.x_trans * i + button_groups[inst_axis].x_trans;
-        return 'translate('+ x_offset  +', '+ button_groups[inst_axis].y_trans +')';
+        var x_offset = button_dim.x_trans * i + button_groups[i_axis].x_trans;
+        return 'translate('+ x_offset  +', '+ button_groups[i_axis].y_trans +')';
       })
       .on('click', function(d){
 
@@ -40425,13 +39754,12 @@ module.exports = function build_control_panel(regl, cgm){
                            .replace('var', 'rankvar')
 
         // tmp preventing dispersion reordering from working
-        if (cgm.params.order.inst[inst_axis] != clean_order && clean_order != 'disp'){
+        if (params.order.inst[i_axis] != clean_order && clean_order != 'disp'){
 
           /* category order is already calculated */
-          // d = d.replace('alpha', 'cat_1_index')
-          run_reorder(regl, cgm.params, inst_axis, d);
+          __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js")(regl, params, i_axis, d);
 
-          d3.select(cgm.params.root + ' .' + inst_axis + '-reorder-buttons')
+          d3.select(params.root + ' .' + i_axis + '-reorder-buttons')
             .selectAll('rect')
             .style('stroke', button_color);
 
@@ -40450,13 +39778,13 @@ module.exports = function build_control_panel(regl, cgm){
       .style('rx', 10)
       .style('ry', 10)
       .style('stroke', function(d){
-        var inst_color;
-        if (cgm.params.order.inst[inst_axis] == d){
-          inst_color = active_button_color;
+        var i_color;
+        if (params.order.inst[i_axis] == d){
+          i_color = active_button_color;
         } else {
-          inst_color = button_color;
+          i_color = button_color;
         }
-        return inst_color;
+        return i_color;
       })
       .style('stroke-width', 2.5);
 
@@ -40480,41 +39808,8 @@ module.exports = function build_control_panel(regl, cgm){
 
   })
 
-  // control_svg.append('svg:image')
-  // .attr('x', 16)
-  // .attr('y', 5)
-  // .attr('width', 27)
-  // .attr('height', 27)
-  // .attr('xlink:href', img)
-  // .classed('clustergrammer-logo', true)
-  // // .on('click', function(){
-  // //   console.log('clicking logo')
-  // // });
-
-  /*
-  Make Column Reorder titles
-      d3.select(viz.viz_svg)
-      .selectAll()
-      .data(viz.all_cats.col)
-      .enter()
-      .append('text')
-      .classed('col_cat_super', true)
-      .style('font-size', cat_text_size+'px')
-      .style('opacity', cat_super_opacity)
-      .style('cursor','default')
-      .attr('transform', function(d){
-        var inst_cat = parseInt( d.split('-')[1], 10);
-        var inst_y = y_offset + extra_y_room * viz.cat_room.symbol_width
-          * inst_cat;
-        return 'translate('+x_offset+','+inst_y+')';
-      })
-      .text(function(d){
-        return get_cat_title(viz, d, 'col');
-      });
-  */
-
-  build_reorder_cat_titles(regl, cgm);
-  build_tree_icon(cgm);
+  __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js")(regl, cgm);
+  __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js")(cgm);
 
 };
 
@@ -40538,24 +39833,10 @@ module.exports = function build_tree_icon(cgm){
   var default_opacity = 0.35;
   var high_opacity = 0.6;
 
-  // var tree_icon_outer_group = d3.select(params.root +' .viz_svg')
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
       .append('g')
       .classed( 'tree_icon', true)
       .on('mouseover', function(){
-
-        // only if no menu is showing
-        if (d3.select(params.root+' .tree_menu').empty()){
-
-          // // d3.selectAll( params.viz.root_tips + '_tree_icon_tip')
-          // d3.selectAll('.custom-d3-tip')
-          //   .style('opacity', 1)
-          //   .style('display', 'block');
-
-          // tree_icon_tip.show();
-
-        }
-
         d3.selectAll(params.root + ' .tree_leaf_circle')
           .style('opacity', high_opacity);
       })
@@ -40603,10 +39884,10 @@ module.exports = function build_tree_icon(cgm){
       var start_x = 0;
       var start_y = slider_length;
 
-      var mid_x = tree_width/2;//left_x + slider_length/10;
+      var mid_x = tree_width/2;
       var mid_y = 0;
 
-      var final_x = tree_width;//left_x + slider_length/5;
+      var final_x = tree_width;
       var final_y = slider_length;
 
       var output_string = 'M' + start_x + ',' + start_y + ' L' +
@@ -41613,13 +40894,6 @@ module.exports = function make_dendro_arr(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_col_text_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js");
-var make_row_text_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js");
-var calc_viz_area = __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js");
-var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
-var make_viz_aid_tri_args = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js");
-var interp_fun = __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js");
-
 module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
 
   var axis_dim;
@@ -41629,11 +40903,11 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     axis_dim = 'y';
   }
 
-  /* Column Components */
+  /* Axis Components */
   params.cameras[inst_axis + '-labels'].draw(() => {
 
-    params.viz_aid_tri_args[inst_axis] = make_viz_aid_tri_args(regl, params, inst_axis);
-
+    // viz aid triangles
+    params.viz_aid_tri_args[inst_axis] = __webpack_require__(/*! ./../matrix_labels/make_viz_aid_tri_args */ "./src/matrix_labels/make_viz_aid_tri_args.js")(regl, params, inst_axis);
     regl(params.viz_aid_tri_args[inst_axis])();
 
     // drawing the label categories and dendrogram using the same camera as the
@@ -41641,8 +40915,8 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     _.each(params.cat_args[inst_axis], function(inst_cat_arg){
       regl(inst_cat_arg)(
         {
-          interp_prop: interp_fun(params),
-          run_animation: params.animation.running
+          interp_prop: __webpack_require__(/*! ./interp_fun */ "./src/draws/interp_fun.js")(params),
+          run_animation: params.ani.running
         }
       );
     });
@@ -41655,37 +40929,25 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     // make the arguments for the draw command
     var text_triangle_args
     if (inst_axis === 'col'){
-      text_triangle_args = make_col_text_args(regl, params, params.zoom_data.zoom_function);
+      text_triangle_args = __webpack_require__(/*! ./../matrix_labels/make_col_text_args */ "./src/matrix_labels/make_col_text_args.js")(regl,
+                                        params, params.zoom_data.zoom_function);
     } else {
-      text_triangle_args = make_row_text_args(regl, params, params.zoom_data.zoom_function);
+      text_triangle_args = __webpack_require__(/*! ./../matrix_labels/make_row_text_args */ "./src/matrix_labels/make_row_text_args.js")(regl,
+                                        params, params.zoom_data.zoom_function);
     }
 
     if (calc_text_tri){
-
       var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
-
-      if (num_viz_labels < params.max_num_text){
-
-        calc_viz_area(params);
-
+      if (num_viz_labels < params.max_num_text && params.labels.queue.high[inst_axis].length == 0){
+        __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js")(params);
         // only regather if there are more labels than can be shown at once
         if (params.labels['num_' + inst_axis] > params.max_num_text){
-
-          gather_text_triangles(params, inst_axis);
-
+          __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js")(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
-
-      } else {
-        // console.log('too many labels to draw');
       }
 
     } else {
-
-      /*
-        show text triangles if avaialble
-      */
-
       if (params.text_triangles.draw[inst_axis] != false){
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
@@ -41709,34 +40971,25 @@ var drop_label_from_queue = __webpack_require__(/*! ./../matrix_labels/drop_labe
 
 module.exports = function draw_background_calculations(regl, params){
 
-  // console.log('draw_background_calculations');
-
-  /*
-    Set up something to run background calculations if
-    necessary when the visualization is not being updated. For instance,
-    we could calculate the text triangles of all rows a little at a time
-    in the background.
-  */
-
-  // var updated_labels = false;
   _.each(['row', 'col'], function(inst_axis){
 
-    // low priority queue
-    if (params.labels.queue.low[inst_axis].length > 0 &&
-      params.labels['num_' + inst_axis] < params.labels.max_label_queue){
+    if (params.labels.queue.high[inst_axis].length > 0){
 
-      var inst_name = params.labels.queue.low[inst_axis][0];
+      var inst_name = params.labels.queue.high[inst_axis][0];
 
-      // add to text_triangles pre-calc
       var inst_text_vect = vectorize_label(params, inst_axis, inst_name);
       params.text_triangles[inst_axis][inst_name] = inst_text_vect;
 
-      drop_label_from_queue(params.labels.queue.low[inst_axis], inst_axis, inst_name);
+      drop_label_from_queue(params.labels.queue.high[inst_axis], inst_axis, inst_name);
+
+      if (params.labels.queue.high[inst_axis].length == 0 &&
+          params.labels.precalc[inst_axis] == false){
+        params.ani.update_viz = true;
+      }
 
     }
 
   });
-
 };
 
 /***/ }),
@@ -41748,48 +41001,21 @@ module.exports = function draw_background_calculations(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var draw_matrix_components = __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js");
-var draw_axis_components = __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js");
-// var draw_tooltip_components = require('./draw_tooltip_components');
-var draw_spillover_components = __webpack_require__(/*! ./draw_spillover_components */ "./src/draws/draw_spillover_components.js");
-var show_d3_tip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
-
 module.exports = function draw_commands(regl, params){
 
-  // if (params.labels.draw_labels){
-  //   console.log('\n***************');
-  //   console.log('** draw_labels **');
-  //   console.log('***************');
-  // }
+  var draw_labels = params.labels.draw_labels;
+  __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
+  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'row', draw_labels);
+  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'col', draw_labels);
+  __webpack_require__(/*! ./draw_static_components */ "./src/draws/draw_static_components.js")(regl, params);
 
-  // console.log('draw')
-  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
-
-  draw_matrix_components(regl, params);
-  draw_axis_components(regl, params, 'row', params.labels.draw_labels);
-  draw_axis_components(regl, params, 'col', params.labels.draw_labels);
-  draw_spillover_components(regl, params);
-
-  // clean tooltip
-  if (params.tooltip.show_tooltip && params.tooltip.in_bounds_tooltip){
-
-    // draw_tooltip_components(regl, params);
-
-    show_d3_tip(params);
-
+  var tooltip = params.tooltip;
+  if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
+    __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js")(params);
   }
-
   if (params.labels.draw_labels){
-    // console.log('----- turn off draw_labels -----')
     params.labels.draw_labels = false;
   }
-
-  // clean_tooltip
-  // if (params.tooltip.show_tooltip){
-  //   // console.log('----- turn off show tooltip ------')
-  //   params.tooltip.show_tooltip = false;
-  // }
-
 };
 
 /***/ }),
@@ -41801,23 +41027,21 @@ module.exports = function draw_commands(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
-var final_interaction_frame = __webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js");
-
 module.exports = function draw_interacting(regl, params){
 
   var wait_time_final_interact = 50;
 
-  params.interact.total = params.interact.total + 1;
+  params.int.total = params.int.total + 1;
 
-  draw_commands(regl, params);
+  __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js")(regl, params);
 
-  setTimeout(final_interaction_frame, wait_time_final_interact, regl, params);
+  setTimeout(__webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js"),
+             wait_time_final_interact, regl, params);
 
-  params.animation.initialize_viz = false;
+  params.ani.ini_viz = false;
 
-  if (params.animation.time_remain > 0){
-    params.animation.time_remain = params.animation.time_remain - 1;
+  if (params.ani.time_remain > 0){
+    params.ani.time_remain = params.ani.time_remain - 1;
   }
 };
 
@@ -41836,8 +41060,8 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   // turn back on draw_labels
   ///////////////////////////////
 
-  // console.log('slow_draw or show_tooltip');
   draw_commands(regl, params);
+
   params.tooltip.remove_tooltip_frame = true;
 
   if (params.tooltip.show_tooltip){
@@ -41889,7 +41113,7 @@ module.exports = function draw_matrix_components(regl, params){
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     });
 
   });
@@ -41905,64 +41129,44 @@ module.exports = function draw_matrix_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// var draw_commands = require('./draw_commands');
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var wait_time_final_mouseover = 50;
 
 module.exports = function draw_mouseover(regl, params){
-
-  /////////////////////////////////////
-  /////////////////////////////////////
-  // mouseover draw is causing some flashing after animation, clean up later
-  ////////////////////////////////////
-  /////////////////////////////////////
-
-  // console.log('draw_mouseover')
 
   d3.selectAll(params.root + ' .group-svg-tooltip')
     .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 
-  // clean_tooltip
-  // // remove old tooltip
-  // if (params.tooltip.remove_tooltip_frame){
-  //   params.tooltip.show_tooltip = false;
-  //   draw_commands(regl, params);
-  // }
-
   if (params.tooltip.remove_tooltip_frame){
       // console.log('--- shut down remove_tooltip_frame')
     params.tooltip.remove_tooltip_frame = false;
   }
 
-  // wait_time_final_mouseover = 0;
   setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 };
 
 /***/ }),
 
-/***/ "./src/draws/draw_spillover_components.js":
-/*!************************************************!*\
-  !*** ./src/draws/draw_spillover_components.js ***!
-  \************************************************/
+/***/ "./src/draws/draw_static_components.js":
+/*!*********************************************!*\
+  !*** ./src/draws/draw_static_components.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function draw_spillover_components(regl, params){
+module.exports = function draw_static_components(regl, params){
 
-  // Spillover Components (may not need to redraw)
   params.cameras.static.draw(() => {
-
     var args = params.spillover_args;
     var triangles = params.spillover_triangles;
-
-    // spillover rects to hide matrix spillover
     regl(args.mat_sides)(triangles.mat_sides);
     regl(args.cats)(triangles.cats);
     regl(args.mat_corners)(triangles.mat_corners);
     regl(args.label_corners)(triangles.label_corners);
 
+    /* was drawing col text triangle args */
   });
 };
 
@@ -41975,20 +41179,9 @@ module.exports = function draw_spillover_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
-var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
-
 module.exports = function end_animation(regl, params){
-
-  // console.log('end_animation')
-
-  ///////////////////////////////////////
-  // The animation has finished
-  ///////////////////////////////////////
-
-  params.animation.running = false;
-  params.animation.run_animation = false;
+  params.ani.running = false;
+  params.ani.run_animation = false;
 
   // transfer the new positions to the matrix args attributes
   params.matrix_args.regl_props.rects.attributes.pos_att_ini = {
@@ -41997,37 +41190,32 @@ module.exports = function end_animation(regl, params){
       };
 
   // transfer the new category positions to the cat args attributes
-  _.each(['row', 'col'], function(inst_axis){
-
-    for (var cat_index = 0; cat_index < params.cat_data.cat_num[inst_axis]; cat_index++) {
+  _.each(['row', 'col'], function(i_axis){
+    for (var cat_index = 0; cat_index < params.cat_data.cat_num[i_axis]; cat_index++) {
       // update the attribute
-      params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_inst = {
-          buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
+      params.cat_args[i_axis][cat_index].attributes.cat_pos_att_inst = {
+          buffer: regl.buffer(params.cat_arrs.new[i_axis][cat_index]),
           divisor: 1
       };
     }
-
     // transfer new order to old order
-    params.order.inst[inst_axis] = params.order.new[inst_axis]
-
+    params.order.inst[i_axis] = params.order.new[i_axis]
     // turn dendrogram slider back on if necessary
-    if (params.order.inst[inst_axis] === 'clust'){
-      d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','block')
+    if (params.order.inst[i_axis] === 'clust'){
+      d3.select('.'+ i_axis +'_dendro_slider_svg').style('display','block')
     }
 
   });
 
   // transfer new order to text triangles
-  _.each(['row', 'col'], function(inst_axis){
-    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
-
-    // need to update text positions after animation
-    calc_text_offsets(params, inst_axis);
+  // need to update text positions after animation
+  _.each(['row', 'col'], function(i_axis){
+    params.text_triangles.draw[i_axis] = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js")(params, i_axis);
+    __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js")(params, i_axis);
   });
 
   // update ordered_labels
-  generate_ordered_labels(params);
-
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
 };
 
 /***/ }),
@@ -42042,8 +41230,8 @@ module.exports = function end_animation(regl, params){
 const ease = __webpack_require__(/*! eases/cubic-in-out */ "./node_modules/eases/cubic-in-out.js")
 
 module.exports = function interp_fun(params){
-  var inst_ease = ease((params.animation.time - params.animation.last_switch_time) /
-              params.animation.ani_duration);
+  var inst_ease = ease((params.ani.time - params.ani.last_switch_time) /
+              params.ani.ani_duration);
 
   // console.log(inst_ease)
   return inst_ease;
@@ -42111,39 +41299,44 @@ module.exports = function run_viz(regl, network){
   // global params
   var params = initialize_params(regl, network);
 
-  params.animation.first_frame = true;
+  params.ani.first_frame = true;
 
 
   regl.frame(function ({time}) {
 
-    params.animation.time = time;
+    params.ani.time = time;
 
-    if (params.interact.total > 1){
+    if (params.int.total > 1){
       d3.selectAll(params.root + ' .group-svg-tooltip')
         .remove();
     }
 
     // prevent this from being negative, can happen when resetting zooo
-    if (params.interact.total < 0){
-      params.interact.total = 0;
+    if (params.int.total < 0){
+      params.int.total = 0;
     }
 
     if (params.reset_cameras){
       reset_cameras(regl, params);
     }
 
-    if (params.animation.run_animation){
+    if (params.ani.run_animation){
       start_animation(params);
-    } else if (params.animation.time > params.animation.duration_end && params.animation.running === true){
+    } else if (params.ani.time > params.ani.duration_end && params.ani.running === true){
       end_animation(regl, params);
     }
 
-    if (params.interact.still_interacting == true || params.animation.initialize_viz == true || params.animation.running){
+    if (params.int.still_interacting == true ||
+        params.ani.ini_viz == true ||
+        params.ani.running == true||
+        params.ani.update_viz == true){
 
       draw_interacting(regl, params);
 
+      params.ani.update_viz = false;
+
     }
-    else if (params.interact.still_mouseover == true){
+    else if (params.int.still_mouseover == true){
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
@@ -42172,12 +41365,12 @@ module.exports = function run_viz(regl, network){
 module.exports = function start_animation(params){
 
   // console.log('start_animation')
-  params.animation.run_animation = false;
-  params.animation.last_switch_time = params.animation.time
-  params.animation.running = true;
+  params.ani.run_animation = false;
+  params.ani.last_switch_time = params.ani.time
+  params.ani.running = true;
 
 
-  params.animation.duration_end = params.animation.last_switch_time + params.animation.ani_duration;
+  params.ani.duration_end = params.ani.last_switch_time + params.ani.ani_duration;
 };
 
 /***/ }),
@@ -42192,12 +41385,12 @@ module.exports = function start_animation(params){
 module.exports = function final_interaction_frame(regl, params){
 
   // reduce the number of interactions
-  params.interact.total = params.interact.total - 1;
+  params.int.total = params.int.total - 1;
 
-  if (params.interact.total == 0 && params.animation.initialize_viz == false){
+  if (params.int.total == 0 && params.ani.ini_viz == false){
 
     // preventing from running on first frame
-    if (params.animation.first_frame == false){
+    if (params.ani.first_frame == false){
 
       // console.log('final_interaction_frame')
 
@@ -42210,7 +41403,7 @@ module.exports = function final_interaction_frame(regl, params){
 
     } else {
 
-      params.animation.first_frame = false;
+      params.ani.first_frame = false;
     }
   }
 
@@ -42230,7 +41423,7 @@ module.exports = function final_mouseover_frame(regl, params){
   // reduce the number of mouseovers
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover - 1;
 
-  if (params.zoom_data.x.total_mouseover == 0 && params.interact.still_mouseover == false){
+  if (params.zoom_data.x.total_mouseover == 0 && params.int.still_mouseover == false){
     params.tooltip.show_tooltip = true;
   }
 
@@ -42245,11 +41438,7 @@ module.exports = function final_mouseover_frame(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var get_mouseover_type = __webpack_require__(/*! ./get_mouseover_type */ "./src/interactions/get_mouseover_type.js");
-
 module.exports = function find_mouseover_element(regl, params, ev){
-
-  // console.log('find_mouseover_element')
 
   /*
 
@@ -42259,40 +41448,40 @@ module.exports = function find_mouseover_element(regl, params, ev){
   */
 
   var viz_dim_heat = params.viz_dim.heat;
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   // reset mouseover params
-  _.each(['row', 'col'], function(inst_axis){
-    params.interact.mouseover[inst_axis] = {};
-    params.interact.mouseover[inst_axis].name = null;
-    params.interact.mouseover[inst_axis].cats = [];
+  _.each(['row', 'col'], function(i_axis){
+    params.int.mouseover[i_axis] = {};
+    params.int.mouseover[i_axis].name = null;
+    params.int.mouseover[i_axis].cats = [];
   });
-  params.interact.mouseover.value = null;
+  params.int.mouseover.value = null;
 
   var offcenter = {};
-  var inst_cat_name;
+  var i_cat_name;
   var cursor_rel_min = {};
   var dim_dict = {};
   dim_dict.x = 'width';
   dim_dict.y = 'height';
 
-  _.each(['x', 'y'], function(inst_axis){
+  _.each(['x', 'y'], function(i_axis){
 
     // try updating mouseover position
-    params.zoom_data[inst_axis].cursor_position = ev[inst_axis + '0'];
+    params.zoom_data[i_axis].cursor_position = ev[i_axis + '0'];
 
     // convert offcenter WebGl units to pixel units
-    offcenter[inst_axis] = (params.viz_dim.canvas[dim_dict[inst_axis]] *
-                             params.viz_dim.offcenter[inst_axis])/2;
+    offcenter[i_axis] = (params.viz_dim.canvas[dim_dict[i_axis]] *
+                             params.viz_dim.offcenter[i_axis])/2;
 
-    cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
-                                  viz_dim_heat[inst_axis].min - offcenter[inst_axis];
+    cursor_rel_min[i_axis] = params.zoom_data[i_axis].cursor_position -
+                                  viz_dim_heat[i_axis].min - offcenter[i_axis];
 
-    cursor_rel_min[inst_axis] = cursor_rel_min[inst_axis] / params.zoom_data[inst_axis].total_zoom - params.zoom_data[inst_axis].total_pan_min;
+    cursor_rel_min[i_axis] = cursor_rel_min[i_axis] / params.zoom_data[i_axis].total_zoom - params.zoom_data[i_axis].total_pan_min;
 
   });
 
-  get_mouseover_type(params);
+  __webpack_require__(/*! ./get_mouseover_type */ "./src/interactions/get_mouseover_type.js")(params);
 
   var axis_indices = {};
 
@@ -42300,53 +41489,51 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     var axis_index;
 
-    var inst_dims = [];
+    var i_dims = [];
     if (params.tooltip.tooltip_type === 'matrix-cell'){
-      inst_dims = ['row', 'col'];
+      i_dims = ['row', 'col'];
     } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
-      inst_dims = ['row'];
-      // console.log('found row')
+      i_dims = ['row'];
     } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
-      inst_dims = ['col'];
+      i_dims = ['col'];
 
       var y_heat_min = 126;
-      var inst_pix_y = params.zoom_data.y.cursor_position
-      var shift_col_label = y_heat_min - inst_pix_y;
+      var i_pix_y = params.zoom_data.y.cursor_position
+      var shift_col_label = y_heat_min - i_pix_y;
       if (shift_col_label > 0){
         cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
       }
-      // console.log('shift-col: ', )
     }
 
-    _.each(inst_dims, function(inst_axis){
+    _.each(i_dims, function(i_axis){
 
-      if (inst_axis === 'row'){
+      if (i_axis === 'row'){
         axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+        axis_indices[i_axis] = params.labels.ordered_labels[i_axis + '_indices'][axis_index];
       } else {
         axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
-        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
+        axis_indices[i_axis] = params.labels.ordered_labels[i_axis + '_indices'][axis_index];
       }
 
-      mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
+      mouseover[i_axis].name = params.labels.ordered_labels[i_axis + 's'][axis_index];
 
-      if (typeof mouseover[inst_axis].name === 'string'){
-        if (mouseover[inst_axis].name.includes(': ')){
-          mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
+      if (typeof mouseover[i_axis].name === 'string'){
+        if (mouseover[i_axis].name.includes(': ')){
+          mouseover[i_axis].name = mouseover[i_axis].name.split(': ')[1];
         }
       }
 
       // reset cat names
-      mouseover[inst_axis].cats = [];
-      _.each(params.cat_data[inst_axis], function(d, cat_index){
-        inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
-        mouseover[inst_axis].cats[cat_index] = inst_cat_name;
+      mouseover[i_axis].cats = [];
+      _.each(params.cat_data[i_axis], function(d, cat_index){
+        i_cat_name = params.labels.ordered_labels[i_axis + '_cats-' + cat_index][axis_index];
+        mouseover[i_axis].cats[cat_index] = i_cat_name;
       });
 
     });
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
-      params.interact.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+      params.int.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
     }
 
   }
@@ -42354,17 +41541,17 @@ module.exports = function find_mouseover_element(regl, params, ev){
   if (params.tooltip.tooltip_type.indexOf('dendro') >= 0){
 
     if (params.tooltip.tooltip_type === 'row-dendro'){
-      _.each(params.dendro.group_info.row, function(inst_group){
-        if (inst_group.all_names.includes(mouseover.row.name)){
-          mouseover.row.dendro = inst_group;
+      _.each(params.dendro.group_info.row, function(i_group){
+        if (i_group.all_names.includes(mouseover.row.name)){
+          mouseover.row.dendro = i_group;
         }
       });
     }
 
     if (params.tooltip.tooltip_type === 'col-dendro'){
-      _.each(params.dendro.group_info.col, function(inst_group){
-        if (inst_group.all_names.includes(mouseover.col.name)){
-          mouseover.col.dendro = inst_group;
+      _.each(params.dendro.group_info.col, function(i_group){
+        if (i_group.all_names.includes(mouseover.col.name)){
+          mouseover.col.dendro = i_group;
         }
       });
     }
@@ -42444,10 +41631,6 @@ module.exports = function get_mouseover_type(params){
   } else if (inst_pix.y <= edim.y.heat_min &&
              inst_pix.x > edim.x.heat_min &&
              inst_pix.x < edim.x.dendro_start){
-
-    // // console.log(edim.y.heat_min - inst_pix.y)
-    // console.log( Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) ))
-    // params.tooltip.tooltip_type = 'col-label';
 
     params.tooltip.in_bounds_tooltip = true;
     if (params.cat_data.col.length > 0){
@@ -42912,13 +42095,13 @@ module.exports = function keep_track_of_interactions(params){
   var wait_time_final_interact = 100;
 
   // keep track of interactions
-  if (params.interact.still_interacting == false){
+  if (params.int.still_interacting == false){
 
-    params.interact.still_interacting = true;
+    params.int.still_interacting = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.interact.still_interacting = false;
+      params.int.still_interacting = false;
     }, wait_time_final_interact);
 
   }
@@ -42937,13 +42120,13 @@ module.exports = function keep_track_of_interactions(params){
 module.exports = function keep_track_of_mouseovers(params){
 
   // keep track of mouseovers
-  if (params.interact.still_mouseover == false){
+  if (params.int.still_mouseover == false){
 
-    params.interact.still_mouseover = true;
+    params.int.still_mouseover = true;
 
     // wait some time to confirm still not interacting
     setTimeout(function(){
-      params.interact.still_mouseover = false;
+      params.int.still_mouseover = false;
     }, 1000);
 
   }
@@ -43064,19 +42247,16 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.7.1
+  clustergrammer-gl version 0.7.3
 
  */
 
-var run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
-var build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
-var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.7.1');
+  console.log('clustergrammer-gl version 0.7.3');
   console.log('################################');
 
   // decompress if necessary
@@ -43103,10 +42283,8 @@ function clustergrammer_gl(args){
     var uncomp_net = JSON.parse(strData)
 
     network = uncomp_net;
-    // console.log('decompressed')
   } else {
     network = args.network;
-    // console.log('no need to decompress')
   }
 
   var container = args.container;
@@ -43125,7 +42303,6 @@ function clustergrammer_gl(args){
 
   var canvas_container = d3.select(container).select('.canvas-container')[0][0];
 
-
   var inst_height = args.viz_height;
   var inst_width  = args.viz_width;
 
@@ -43139,9 +42316,7 @@ function clustergrammer_gl(args){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  var params = run_viz(regl, network);
-
-  console.log('MAKING CHANGES')
+  var params = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js")(regl, network);
 
   var cgm = {};
 
@@ -43156,9 +42331,9 @@ function clustergrammer_gl(args){
   cgm.params.container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  build_dendrogram_sliders(regl, cgm);
+  __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")(regl, cgm);
 
-  build_control_panel(regl, cgm);
+  __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(regl, cgm);
 
   return cgm;
 
@@ -43166,71 +42341,6 @@ function clustergrammer_gl(args){
 
 // necessary for exporting function
 module.exports = clustergrammer_gl;
-
-/***/ }),
-
-/***/ "./src/matrix_cells/calc_row_downsampled_mat.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_cells/calc_row_downsampled_mat.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function calc_row_downsampled_mat(params, run_downsampling=false){
-
-  // console.log('calc_row_downsampled_mat');
-
-  var mat_data = params.mat_data;
-  // var row_pos = params.row_positions;
-  // var ds_mat = [];
-  // var inst_pos;
-
-  if (run_downsampling){
-    /*
-      Perform trivial downsampling (subsampling)
-    */
-
-    mat_data = params.mat_data;
-    mat_data = mat_data.slice(0,5);
-
-    // column downsampling
-    var new_mat_data = []
-    _.each(mat_data, function(inst_row){
-      inst_row = inst_row.slice(0,3);
-      new_mat_data.push(inst_row);
-    });
-
-    params.mat_data = new_mat_data;
-    params.is_downsampled = true;
-  }
-
-  /*
-    Working on actual downsampling
-  */
-
-  /*
-    row_pos go from -0.5 to 0.5
-  */
-
-  // make 10 positions
-  // var new_pos = _.range(-0.5, 0.5, 0.1);
-  // console.log(new_pos.length);
-
-  // mod_value = 0.1;
-
-  // _.each(mat_data, function(inst_row, inst_index){
-
-  //   inst_pos = row_pos[inst_index];
-
-  //   ds_pos = Math.round(inst_pos/mod_value);
-
-  //   console.log('inst_pos: ', inst_pos);
-  //   console.log('ds_pos', ds_pos)
-  //   console.log('\n');
-
-  // });
-
-}
 
 /***/ }),
 
@@ -43245,7 +42355,6 @@ var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/ma
 var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/matrix_cells/make_opacity_arr.js");
 
 module.exports = function make_matrix_args(regl, params){
-
 
   // make arrays
   params.arrs = {};
@@ -43433,66 +42542,28 @@ module.exports = function make_opacity_arr(params){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-
 module.exports = function make_position_arr(params, inst_row_order, inst_col_order){
 
   var num_row = params.labels.num_row;
   var num_col = params.labels.num_col;
+  var canvas_pos = params.node_canvas_pos;
 
-  // pass along row and col node information
   var row_nodes = params.network.row_nodes;
   var col_nodes = params.network.col_nodes;
 
-  /*
-    working on saving actual row positions (downsampling)
-  */
-  params.row_positions = _.range(num_row);
-
-  var row_order_id;
-  var col_order_id;
-
-  // generate x and y positions
-  ////////////////////////////////
+  var row_pos;
+  var col_pos;
   function position_function(d, i){
-
-    // looking up x and y position
-    var col_id = i % num_col;
-    var row_id = Math.floor(i / num_col);
-
-    if (params.is_downsampled){
-
-      /*
-        the downsampled matrix should be plotted in its inherent order
-      */
-      row_order_id = row_id;
-      col_order_id = col_id;
-
-    } else {
-
-      /*
-        regular data needs to be plotted in the order given by the order
-        arguments in row_nodes/col_nodes
-      */
-
-      row_order_id = num_row - 1 - row_nodes[row_id][inst_row_order];
-      col_order_id = num_col - 1 - col_nodes[col_id][inst_col_order];
-
-    }
-
-    var inst_y = params.node_canvas_pos.y_arr[row_order_id];
-    var inst_x = params.node_canvas_pos.x_arr[col_order_id];
-
-    params.row_positions[row_id] = inst_y;
-
-    return [inst_x, inst_y];
+    row_pos = canvas_pos.y_arr[num_row - 1 - row_nodes[Math.floor(i / num_col)][inst_row_order]];
+    col_pos = canvas_pos.x_arr[num_col - 1 - col_nodes[i % num_col][inst_col_order]];
+    return [col_pos, row_pos];
   }
 
-  var position_arr = Array(num_row * num_col)
+  var pos_arr = Array(num_row * num_col)
             .fill()
             .map(position_function);
 
-  return position_arr;
-
+  return pos_arr;
 };
 
 /***/ }),
@@ -43611,9 +42682,12 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       var inst_name = inst_label.name;
 
+
       if (inst_name.indexOf(': ') >= 0){
         inst_name = inst_label.name.split(': ')[1];
       }
+
+      // console.log(inst_name)
 
       var inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]){
@@ -43626,13 +42700,23 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
       } else {
 
-        // calculate text vector
-        inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+        params.labels.queue.high[inst_axis].push(inst_name);
 
-        params.text_triangles[inst_axis][inst_name] = inst_text_vect;
-        inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
-        inst_text_vect.new_offset = [0, inst_label.offsets.new];
-        params.text_triangles.draw[inst_axis].push(inst_text_vect);
+        /*
+        moved text triangle calculations to background, unless pre-calc
+        */
+
+        if (params.labels.precalc[inst_axis]){
+
+          // calculate text vector
+          inst_text_vect = vectorize_label(params, inst_axis, inst_name);
+
+          params.text_triangles[inst_axis][inst_name] = inst_text_vect;
+          inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+          inst_text_vect.new_offset = [0, inst_label.offsets.new];
+          params.text_triangles.draw[inst_axis].push(inst_text_vect);
+
+        }
 
       }
 
@@ -43644,66 +42728,53 @@ module.exports = function gather_text_triangles(params, inst_axis){
 
 /***/ }),
 
-/***/ "./src/matrix_labels/generate_ordered_labels.js":
-/*!******************************************************!*\
-  !*** ./src/matrix_labels/generate_ordered_labels.js ***!
-  \******************************************************/
+/***/ "./src/matrix_labels/gen_ordered_labels.js":
+/*!*************************************************!*\
+  !*** ./src/matrix_labels/gen_ordered_labels.js ***!
+  \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function generate_ordered_labels(params){
+module.exports = function gen_ordered_labels(params){
+  // Generate lists of ordered label and category names for mouseover
 
-  /*
-    Generate lists of ordered label and category names for mouseover
-  */
-
-  var inst_order;
-  var ordered_labels = {};
-
+  var i_order;
+  var ol = {};
   var axis_nodes;
   var i;
+  var found_axis_cat;
 
-  _.each(['row', 'col'], function(inst_axis){
+  _.each(['row', 'col'], function(i_axis){
+    ol[i_axis + 's'] = [];
+    ol[i_axis + '_indices'] = [];
+    axis_nodes = params.network[i_axis + '_nodes'];
+    found_axis_cat = false;
 
-    ordered_labels[inst_axis + 's'] = [];
-    ordered_labels[inst_axis + '_indices'] = [];
-
-    axis_nodes = params.network[inst_axis + '_nodes'];
-
-    var found_axis_cat = false;
-
-    for (i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
-      ordered_labels[inst_axis + '_cats-' + String(i)] = [];
+    for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
+      ol[i_axis + '_cats-' + String(i)] = [];
     }
 
-    if (params.cat_data.cat_num[inst_axis] > 0){
+    if (params.cat_data.cat_num[i_axis] > 0){
       found_axis_cat = true;
     }
 
     _.each(axis_nodes, function(inst_node, inst_index){
-
-      inst_order = params.labels['num_' + inst_axis] - 1 - inst_node[params.order.inst[inst_axis]];
-
+      i_order = params.labels['num_' + i_axis] - 1 - inst_node[params.order.inst[i_axis]];
       // ordered names
-      ordered_labels[inst_axis + 's'][inst_order] = inst_node.name;
-
+      ol[i_axis + 's'][i_order] = inst_node.name;
       // ordered indices (for value retrieval)
-      ordered_labels[inst_axis + '_indices'][inst_order] = inst_index;
+      ol[i_axis + '_indices'][i_order] = inst_index;
 
       if (found_axis_cat){
-
-        for (i = 0; i < params.cat_data.cat_num[inst_axis]; i++) {
-
-          ordered_labels[inst_axis + '_cats-' + String(i)][inst_order] = inst_node['cat-' + String(i)];
-
+        for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
+          ol[i_axis + '_cats-' + String(i)][i_order] = inst_node['cat-' + String(i)];
         }
       }
-
     });
 
   });
 
-  params.labels.ordered_labels = ordered_labels;
+  params.labels.ordered_labels = ol;
 
 };
 
@@ -43728,7 +42799,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   params.text_scale.col = d3.scale.linear()
       .domain([1, 10])
-      .range([1, 10/params.allowable_zoom_factor.col]);
+      .range([1, 10/params.allow_zoom.col]);
 
   // 17.5, lowering makes larger text
   var final_increase_font_size = num_col/5.0;
@@ -43856,7 +42927,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
       col_width: col_width,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
     depth: {
       enable: true,
@@ -43885,13 +42956,11 @@ module.exports = function make_inst_queue(params){
   params.labels.queue.low = {}
   params.labels.queue.high = {}
 
-  params.labels.max_label_queue = 1000;
+  params.labels.max_label_queue = 2000;
 
   var inst_queue;
 
   _.each(['row', 'col'], function(inst_axis){
-
-    //
 
     // the high priority queue is empty initially
     params.labels.queue.high[inst_axis] = [];
@@ -43912,6 +42981,9 @@ module.exports = function make_inst_queue(params){
     });
 
     params.labels.queue.low[inst_axis] = inst_queue;
+
+    // // make high label queue non-empty
+    // params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
 
   });
 
@@ -44030,7 +43102,7 @@ module.exports = function make_row_text_args(regl, params, zoom_function){
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
     depth: {
       enable: true,
@@ -44203,7 +43275,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running
+      run_animation: params.ani.running
     },
 
     count: 3,
@@ -44537,52 +43609,35 @@ module.exports = function calc_row_and_col_canvas_positions(params){
 
 module.exports = function calc_viz_area(params){
 
-  // console.log('calc_viz_area');
-
   var zoom_data = params.zoom_data;
-
-  // make a d3.scale to transition from 0px - 500px to -1, 1 space
-  var mat_width = params.viz_dim.heat.width;
-  var mat_height = params.viz_dim.heat.height;
-
-  /*
-
-    Experimenting with scales to improve viz area calculation
-
-  */
-
   var pix_to_webgl = params.pix_to_webgl;
 
-  // panning is defined as negative pixel values
-  var total_pan = {};
-  total_pan.x_min = -zoom_data.x.total_pan_min;
-  total_pan.x_max = mat_width + zoom_data.x.total_pan_max;
-
-  total_pan.y_min = -zoom_data.y.total_pan_min;
-  total_pan.y_max = mat_height + zoom_data.y.total_pan_max;
-
   var buffer_width = 0.0;
-
+  var total_pan = {};
   var viz_area = {};
-  viz_area.x_min = pix_to_webgl.x(total_pan.x_min) - buffer_width;
-  // addition not necessary
-  viz_area.x_max = pix_to_webgl.x(total_pan.x_max) + buffer_width;
+  var dim = {}
+  var inst_dim;
+  dim.x = 'width';
+  dim.y = 'height';
 
-  /*
-  experimenting with viz_area calc
-  */
+  _.each(['x', 'y'], function(inst_axis){
+    inst_dim = dim[inst_axis]
 
-   // - params.viz_dim.offcenter.y/2
+    total_pan[inst_axis + '_min'] = -zoom_data[inst_axis].total_pan_min;
+    total_pan[inst_axis + '_max'] = params.viz_dim.heat[inst_dim] + zoom_data[inst_axis].total_pan_max;
 
-  viz_area.y_max = pix_to_webgl.y(total_pan.y_min) - buffer_width;
-  // minus offset not necessary
-  viz_area.y_min = pix_to_webgl.y(total_pan.y_max) + buffer_width;
+    // x and y axis viz area is defined differently
+    if (inst_axis == 'x'){
+      viz_area[inst_axis + '_min'] = pix_to_webgl[inst_axis](total_pan[inst_axis + '_min']) - buffer_width;
+      viz_area[inst_axis + '_max'] = pix_to_webgl[inst_axis](total_pan[inst_axis + '_max']) + buffer_width;
+    } else {
+      viz_area[inst_axis + '_min'] = pix_to_webgl[inst_axis](total_pan[inst_axis + '_max']) - buffer_width;
+      viz_area[inst_axis + '_max'] = pix_to_webgl[inst_axis](total_pan[inst_axis + '_min']) + buffer_width;
+    }
 
-  // console.log('y_min', viz_area.y_min);
-  // console.log('y_max', viz_area.y_max);
+  });
 
   params.viz_area = viz_area;
-
 };
 
 /***/ }),
@@ -44596,123 +43651,326 @@ module.exports = function calc_viz_area(params){
 
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 
-module.exports = function calc_viz_dim(regl, params){
+module.exports = function calc_vd(regl, params){
 
-  var viz_dim = {};
+  var vd = {};
 
-  viz_dim.mat_size = {};
-  viz_dim.mat_size.x = 0.80;
-  viz_dim.mat_size.y = 0.80;
-
-  viz_dim.heat_size = {};
-  viz_dim.heat_size.x = viz_dim.mat_size.x - params.cat_data.cat_room.x * params.cat_data.cat_num.row;
-  viz_dim.heat_size.y = viz_dim.mat_size.y - params.cat_data.cat_room.y * params.cat_data.cat_num.col;
-
-  // Set up viz_dim
-  ///////////////////////
   var opts = opts || {};
   var options = extend({
       element: opts.element || regl._gl.canvas,
     }, opts || {});
-
   var element = options.element;
 
-  viz_dim.canvas = {};
-
+  vd.canvas = {};
   _.each(['width', 'height'], function(inst_dim){
-    viz_dim.canvas[inst_dim] = Number.parseFloat(d3.select(element)
+    vd.canvas[inst_dim] = Number.parseFloat(d3.select(element)
       .style(inst_dim).replace('px', ''));
   });
 
-  // Matrix Dimensions
-  /////////////////////////////
-  viz_dim.mat = {};
+  var label = {};
+  label.x = 'row';
+  label.y = 'col';
+  var other_label = {};
+  other_label.x = 'col';
+  other_label.y = 'row';
 
-  // square matrix size set by width of canvas
-  viz_dim.mat.width  = viz_dim.mat_size.x * viz_dim.canvas.width;
-  viz_dim.mat.height = viz_dim.mat_size.y * viz_dim.canvas.height;
+  var dim = {};
+  dim.x = 'width';
+  dim.y = 'height';
 
-  // min and max position of matrix
-  viz_dim.mat.x = {};
-  viz_dim.mat.x.min = viz_dim.canvas.width/2 - viz_dim.mat.width/2;
-  viz_dim.mat.x.max = viz_dim.canvas.width/2 + viz_dim.mat.width/2;
+  vd.mat = {};
+  vd.heat = {};
+  vd.heat_size = {};
+  vd.center = {};
+  vd.offcenter = {};
+  vd.shift_camera = {};
+  vd.mat_size = {};
 
-  viz_dim.mat.y = {};
-  viz_dim.mat.y.min = viz_dim.canvas.height/2 - viz_dim.mat.height/2;
-  viz_dim.mat.y.max = viz_dim.canvas.height/2 + viz_dim.mat.height/2;
-
-  // Heatmap Dimensions
-  //////////////////////////////
-  viz_dim.heat = {};
-
-  // square matrix size set by width of canvas
-  viz_dim.heat.width  = viz_dim.heat_size.x * viz_dim.canvas.width;
-  viz_dim.heat.height = viz_dim.heat_size.y * viz_dim.canvas.height;
-
+  var inst_label;
+  var inst_other_label;
+  var inst_dim;
   var offset_heat = {};
+  var offcenter_magnitude = 0.075;
 
-  // min and max position of matrix
-  offset_heat.x = (viz_dim.mat.width - viz_dim.heat.width)/2;
-  viz_dim.heat.x = {};
-  viz_dim.heat.x.min = viz_dim.canvas.width/2 - viz_dim.heat.width/2 + offset_heat.x;
-  viz_dim.heat.x.max = viz_dim.canvas.width/2 + viz_dim.heat.width/2; //  + offset_heat.x;
+  _.each(['x', 'y'], function(inst_axis){
 
-  offset_heat.y = (viz_dim.mat.height - viz_dim.heat.height)/2;
-  viz_dim.heat.y = {};
-  viz_dim.heat.y.min = viz_dim.canvas.height/2 - viz_dim.heat.height/2 + offset_heat.y;
-  viz_dim.heat.y.max = viz_dim.canvas.height/2 + viz_dim.heat.height/2 + offset_heat.y;
+    inst_label = label[inst_axis];
+    inst_other_label = other_label[inst_axis];
+    inst_dim = dim[inst_axis];
 
-  viz_dim.center = {};
-  viz_dim.center.x = 0.5;
-  viz_dim.center.y = 0.5;
+    vd.mat_size[inst_axis] = 0.8;
 
-  params.viz_dim = viz_dim;
+    vd.heat_size[inst_axis] = vd.mat_size[inst_axis] -
+                              params.cat_data.cat_room[inst_axis] *
+                              params.cat_data.cat_num[inst_label];
 
-  params.viz_dim.tile_width = (params.viz_dim.heat_size.x/0.5)/params.labels.num_col;
-  params.viz_dim.tile_height = (params.viz_dim.heat_size.y/0.5)/params.labels.num_row;
+    // square matrix size set by width of canvas
+    vd.mat[inst_dim] = vd.mat_size[inst_axis] * vd.canvas[inst_dim]
 
-  // will set up global offset later
-  params.viz_dim.offcenter = {};
-  var offcenter_magnitude_x = 0.075;
-  var offcenter_magnitude_y = 0.075;
-  params.viz_dim.offcenter.x = offcenter_magnitude_x;
-  params.viz_dim.offcenter.y = offcenter_magnitude_y;
+    // min and max position of matrix
+    vd.mat[inst_axis] = {};
+    vd.mat[inst_axis].min = vd.canvas[inst_dim]/2 - vd.mat[inst_dim]/2;
+    vd.mat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.mat[inst_dim]/2;
 
-  params.viz_dim.shift_camera = {};
-  params.viz_dim.shift_camera.x = -offcenter_magnitude_x;
-  params.viz_dim.shift_camera.y = offcenter_magnitude_y;
+    vd.heat[inst_dim] = vd.heat_size[inst_axis] * vd.canvas[inst_dim]
+
+    offset_heat[inst_axis] = (vd.mat[inst_dim] - vd.heat[inst_dim])/2;
+    vd.heat[inst_axis] = {};
+    vd.heat[inst_axis].min = vd.canvas[inst_dim]/2 - vd.heat[inst_dim]/2 + offset_heat[inst_axis];
+
+    // need to figure out if this is necessary
+    if (inst_axis == 'x'){
+      vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2; //  + offset_heat.x;
+    } else {
+      vd.heat[inst_axis].max = vd.canvas[inst_dim]/2 + vd.heat[inst_dim]/2 + offset_heat.x;
+    }
+
+    vd.center[inst_axis] = 0.5;
+
+    vd['tile_' + inst_dim] = (vd.heat_size[inst_axis]/0.5)/params.labels['num_' + inst_other_label];
+
+    vd.offcenter[inst_axis] = offcenter_magnitude;
+
+    if (inst_axis === 'x'){
+      vd.shift_camera[inst_axis] = -offcenter_magnitude;
+    } else {
+      vd.shift_camera[inst_axis] = offcenter_magnitude;
+    }
+
+  });
+
+  params.viz_dim = vd;
+};
+
+/***/ }),
+
+/***/ "./src/params/gen_ani_par.js":
+/*!***********************************!*\
+  !*** ./src/params/gen_ani_par.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function gen_ani_par(params){
+
+  var ani = {};
+  ani.time_remain = 0;
+  ani.running = false;
+  ani.run_animation = false;
+  ani.last_switch_time = 0;
+  ani.ani_duration = 3;
+  ani.duration_end = 0;
+  ani.time = 0;
+  ani.first_frame = true;
+  ani.ini_viz = true;
+  ani.last_click = 0;
+  ani.dblclick_duration = 0.5;
+  ani.update_viz = false;
+
+  params.ani = ani;
+};
+
+/***/ }),
+
+/***/ "./src/params/gen_cat_par.js":
+/*!***********************************!*\
+  !*** ./src/params/gen_cat_par.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var generate_cat_array = __webpack_require__(/*! ./../cats/generate_cat_array */ "./src/cats/generate_cat_array.js");
+var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "./src/cats/generate_cat_info.js");
+
+module.exports = function gen_cat_par(params){
+
+  var cd = {};
+  cd.row = generate_cat_array(params, 'row');
+  cd.col = generate_cat_array(params, 'col');
+
+  cd.cat_num = {};
+  cd.cat_num.row = cd.row.length;
+  cd.cat_num.col = cd.col.length;
+
+  var cat_room = {};
+  cat_room.webgl = 0.0135;
+  cat_room.x = cat_room.webgl;
+  cat_room.y = cat_room.webgl;
+  cd.cat_room = cat_room;
+
+  params.cat_data = cd;
+
+  generate_cat_info(params);
 
 };
 
 /***/ }),
 
-/***/ "./src/params/generate_animation_params.js":
-/*!*************************************************!*\
-  !*** ./src/params/generate_animation_params.js ***!
-  \*************************************************/
+/***/ "./src/params/gen_dendro_par.js":
+/*!**************************************!*\
+  !*** ./src/params/gen_dendro_par.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
+var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+
+module.exports = function gen_dendro_par(regl, params){
+
+  var dendro = {};
+
+  dendro.default_level = 5;
+  dendro.tri_height = 0.10;
+  dendro.trap_height = 0.03;
+  dendro.trap_float = 0.005;
+
+  dendro.dendro_args = {};
+  dendro.group_level = {};
+  dendro.update_dendro = false;
+
+  dendro.group_info = {};
+
+  params.dendro = dendro;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    params.dendro.group_level[inst_axis] = params.dendro.default_level;
+
+    params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
+    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+
+  });
+
+};
+
+/***/ }),
+
+/***/ "./src/params/gen_int_par.js":
+/*!***********************************!*\
+  !*** ./src/params/gen_int_par.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function generate_animation_params(params){
+module.exports = function gen_int_par(params){
 
-  // animation params
-  params.animation = {};
-  params.animation.time_remain = 0;
+  var interact = {};
+  interact.total = 0;
+  interact.still_interacting = false;
+  interact.still_mouseover = false;
+  interact.mouseover = {};
 
-  params.animation.running = false;
-  params.animation.run_animation = false;
+  _.each(['row', 'col'], function(inst_axis){
+    interact.mouseover[inst_axis] = {};
+    interact.mouseover[inst_axis].name = null;
+    interact.mouseover[inst_axis].cats = [];
+  });
 
-  params.animation.last_switch_time = 0;
-  params.animation.ani_duration = 3;
-  params.animation.duration_end = 0;
+  interact.mouseover.value = null;
+  interact.enable_viz_interact = true;
 
-  params.animation.time = 0;
-  params.animation.first_frame = true;
-  params.animation.initialize_viz = true;
+  params.int = interact;
+};
 
-  params.animation.last_click = 0;
-  params.animation.dblclick_duration = 0.5;
+/***/ }),
 
+/***/ "./src/params/gen_label_par.js":
+/*!*************************************!*\
+  !*** ./src/params/gen_label_par.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function gen_label_par(params){
+
+  var labels = {};
+  labels.num_row = params.mat_data.length;
+  labels.num_col = params.mat_data[0].length;
+
+  labels.offset_dict = {};
+  labels.draw_labels = false;
+
+  // font_detail range: min ~12 max ~200
+  // usable range: 14-30 (was using 25)
+  labels.font_detail = 40;
+
+  // generate titles if necessary
+  var inst_label;
+  labels.titles = {};
+  labels.precalc = {}
+  _.each(['row', 'col'], function(inst_axis){
+
+    // initialize with empty title
+    labels.titles[inst_axis] = '';
+
+    inst_label = params.network[inst_axis + '_nodes'][0].name;
+    if (inst_label.indexOf(': ') > 0){
+      labels.titles[inst_axis] = inst_label.split(': ')[0];
+    }
+
+    // pre-calc text triangles if low enough number of labels
+    labels.precalc[inst_axis] = false;
+
+  });
+
+  params.labels = labels;
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
+
+};
+
+/***/ }),
+
+/***/ "./src/params/gen_pix_to_webgl.js":
+/*!****************************************!*\
+  !*** ./src/params/gen_pix_to_webgl.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function gen_pix_to_webgl(params){
+
+  var pix_to_webgl = {};
+  pix_to_webgl.x = d3.scale.linear();
+  pix_to_webgl.x
+    .domain([0, params.viz_dim.heat.width])
+    .range([-0.5, 0.5]);
+
+  pix_to_webgl.y = d3.scale.linear();
+  pix_to_webgl.y
+    .domain([0, params.viz_dim.heat.height])
+    .range([0.5, -0.5]);
+
+  params.pix_to_webgl = pix_to_webgl;
+};
+
+/***/ }),
+
+/***/ "./src/params/gen_text_zoom_par.js":
+/*!*****************************************!*\
+  !*** ./src/params/gen_text_zoom_par.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function gen_text_zoom_par(params){
+
+  var text_zoom = {};
+  var max_webgl_fs = {}
+  max_webgl_fs.row = 0.05;
+  max_webgl_fs.col = 0.06;
+
+  _.each(['row', 'col'], function(inst_axis){
+
+    text_zoom[inst_axis] = {}
+    text_zoom[inst_axis].scaled_num = params.labels['num_' + inst_axis];
+    text_zoom[inst_axis].reference = text_zoom[inst_axis].scaled_num;
+    text_zoom[inst_axis].factor = 1;
+    text_zoom[inst_axis].max_webgl_fs = max_webgl_fs[inst_axis];
+
+  });
+
+  params.text_zoom = text_zoom;
 };
 
 /***/ }),
@@ -44758,145 +44016,6 @@ module.exports = function generate_cat_args_arrs_params(regl, params){
 
 /***/ }),
 
-/***/ "./src/params/generate_cat_params.js":
-/*!*******************************************!*\
-  !*** ./src/params/generate_cat_params.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var generate_cat_array = __webpack_require__(/*! ./../cats/generate_cat_array */ "./src/cats/generate_cat_array.js");
-var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "./src/cats/generate_cat_info.js");
-
-module.exports = function generate_cat_params(params){
-
-  params.cat_data = {};
-  params.cat_data.row = generate_cat_array(params, 'row');
-  params.cat_data.col = generate_cat_array(params, 'col');
-
-  params.cat_data.cat_num = {};
-  params.cat_data.cat_num.row = params.cat_data.row.length;
-  params.cat_data.cat_num.col = params.cat_data.col.length;
-
-  params.cat_data.cat_room = {};
-  var cat_room = 0.0135;
-  params.cat_data.cat_room.x = cat_room;
-  params.cat_data.cat_room.y = cat_room;
-
-  generate_cat_info(params);
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_dendro_params.js":
-/*!**********************************************!*\
-  !*** ./src/params/generate_dendro_params.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
-var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
-
-module.exports = function generate_dendro_params(regl, params){
-
-  params.dendro = {};
-
-  params.dendro.default_level = 5;
-  params.dendro.tri_height = 0.10;
-  params.dendro.trap_height = 0.03;
-  params.dendro.trap_float = 0.005;
-
-  params.dendro.dendro_args = {};
-  params.dendro.group_level = {};
-  params.dendro.update_dendro = false;
-
-  params.dendro.group_info = {};
-
-  _.each(['row', 'col'], function(inst_axis){
-
-    params.dendro.group_level[inst_axis] = params.dendro.default_level;
-
-    params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
-    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
-
-  });
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_interact_params.js":
-/*!************************************************!*\
-  !*** ./src/params/generate_interact_params.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function generate_interact_params(params){
-
-  params.interact = {};
-  params.interact.total = 0;
-  params.interact.still_interacting = false;
-  params.interact.still_mouseover = false;
-  params.interact.mouseover = {};
-
-  _.each(['row', 'col'], function(inst_axis){
-    params.interact.mouseover[inst_axis] = {};
-    params.interact.mouseover[inst_axis].name = null;
-    params.interact.mouseover[inst_axis].cats = [];
-  });
-
-  params.interact.mouseover.value = null;
-
-  params.interact.enable_viz_interact = true;
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_label_params.js":
-/*!*********************************************!*\
-  !*** ./src/params/generate_label_params.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var generate_ordered_labels = __webpack_require__(/*! ./../matrix_labels/generate_ordered_labels */ "./src/matrix_labels/generate_ordered_labels.js");
-module.exports = function generate_label_params(params){
-
-  params.labels = {};
-  params.labels.num_row = params.mat_data.length;
-  params.labels.num_col = params.mat_data[0].length;
-
-  params.labels.offset_dict = {};
-  params.labels.draw_labels = false;
-
-  // font_detail range: min ~12 max ~200
-  // usable range: 14-30 (was using 25)
-  params.labels.font_detail = 40;
-
-  generate_ordered_labels(params);
-
-  // generate titles if necessary
-  var inst_label;
-  params.labels.titles = {};
-  _.each(['row', 'col'], function(inst_axis){
-
-    // initialize with empty title
-    params.labels.titles[inst_axis] = '';
-
-    inst_label = params.network[inst_axis + '_nodes'][0].name;
-    if (inst_label.indexOf(': ') > 0){
-      params.labels.titles[inst_axis] = inst_label.split(': ')[0];
-    }
-  })
-
-};
-
-/***/ }),
-
 /***/ "./src/params/generate_order_params.js":
 /*!*********************************************!*\
   !*** ./src/params/generate_order_params.js ***!
@@ -44914,34 +44033,6 @@ module.exports = function generate_order_params(params){
     params.order[inst_state].col = 'clust';
 
   });
-
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_pix_to_webgl.js":
-/*!*********************************************!*\
-  !*** ./src/params/generate_pix_to_webgl.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function generate_pix_to_webgl(params){
-
-  var pix_to_webgl = {};
-  pix_to_webgl.x = d3.scale.linear();
-  pix_to_webgl.x
-    .domain([0, params.viz_dim.heat.width])
-    .range([-0.5, 0.5])
-    // .clamp(true);
-
-  pix_to_webgl.y = d3.scale.linear();
-  pix_to_webgl.y
-    .domain([0, params.viz_dim.heat.height])
-    .range([0.5, -0.5])
-    // .clamp(true);
-
-  params.pix_to_webgl = pix_to_webgl;
 
 };
 
@@ -45010,40 +44101,14 @@ module.exports = function generate_text_triangle_params(params){
   params.text_triangles.draw = {};
 
   _.each(['row', 'col'], function(inst_axis){
-    if (params.labels['num_' + inst_axis] > params.max_num_text){
+
+    params.labels.precalc[inst_axis] = params.labels['num_' + inst_axis] < params.max_num_text
+    if (params.labels.precalc[inst_axis] === false){
       params.text_triangles.draw[inst_axis] = false;
     } else {
       gather_text_triangles(params, inst_axis);
     }
   });
-};
-
-/***/ }),
-
-/***/ "./src/params/generate_text_zoom_params.js":
-/*!*************************************************!*\
-  !*** ./src/params/generate_text_zoom_params.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function generate_text_zoom_params(params){
-
-  params.text_zoom = {};
-
-  // text zooming info
-  params.text_zoom.row = {};
-  params.text_zoom.row.scaled_num = params.labels.num_row;
-  params.text_zoom.row.reference = params.text_zoom.row.scaled_num;
-  params.text_zoom.row.factor = 1;
-  params.text_zoom.row.max_webgl_fs = 0.05;
-
-  params.text_zoom.col = {};
-  params.text_zoom.col.scaled_num = params.labels.num_col;
-  params.text_zoom.col.reference = params.text_zoom.col.scaled_num;
-  params.text_zoom.col.factor = 1;
-  params.text_zoom.col.max_webgl_fs = 0.06;
-
 };
 
 /***/ }),
@@ -45064,6 +44129,8 @@ module.exports = function generate_tooltip_params(regl, params){
   params.tooltip.background_opacity = 0.75;
   params.tooltip.tooltip_type = null;
 
+  params.tooltip.border_width = 10;
+  params.tooltip.on_canvas = false;
 }
 
 /***/ }),
@@ -45103,132 +44170,70 @@ module.exports = function generate_webgl_to_pix(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var calc_row_and_col_canvas_positions = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js");
-var calc_viz_dim = __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js");
-var ini_zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js");
-var ini_zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js");
-var zoom_rules_high_mat = __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
-var make_cameras = __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js");
-var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js");
-var calc_viz_area = __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js");
-var calc_row_downsampled_mat = __webpack_require__(/*! ./../matrix_cells/calc_row_downsampled_mat */ "./src/matrix_cells/calc_row_downsampled_mat.js");
-var calc_alpha_order = __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js");
-var make_label_queue = __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js");
-var calc_text_offsets = __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js");
-var generate_animation_params = __webpack_require__(/*! ./generate_animation_params */ "./src/params/generate_animation_params.js");
-var generate_cat_params = __webpack_require__(/*! ./generate_cat_params */ "./src/params/generate_cat_params.js");
-var generate_label_params = __webpack_require__(/*! ./generate_label_params */ "./src/params/generate_label_params.js");
-var generate_interact_params = __webpack_require__(/*! ./generate_interact_params */ "./src/params/generate_interact_params.js");
-var generate_order_params = __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js");
-var generate_spillover_params = __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js");
-var generate_text_triangle_params = __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js");
-var generate_pix_to_webgl = __webpack_require__(/*! ./generate_pix_to_webgl */ "./src/params/generate_pix_to_webgl.js");
-var generate_webgl_to_pix = __webpack_require__(/*! ./generate_webgl_to_pix */ "./src/params/generate_webgl_to_pix.js");
-var generate_text_zoom_params = __webpack_require__(/*! ./generate_text_zoom_params */ "./src/params/generate_text_zoom_params.js");
-var generate_cat_args_arrs = __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js");
-var generate_tooltip_params = __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js");
-var generate_dendro_params = __webpack_require__(/*! ./generate_dendro_params */ "./src/params/generate_dendro_params.js");
-var calc_mat_arr = __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js");
-
-// /*
-//   Working on using subset of math.js for matrix splicing
-// */
-// var core = require('mathjs/core');
-// var math = core.create();
-// math.import(require('mathjs/lib/function/probability/factorial'));
-
 module.exports = function initialize_params(regl, network){
 
   var params = {};
   params.network = network;
 
-  generate_animation_params(params);
-  calc_alpha_order(params)
-  generate_interact_params(params);
-
+  __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js")(params);
+  __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js")(params)
+  __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int_par.js")(params);
   params.mat_data = params.network.mat;
+  __webpack_require__(/*! ./gen_cat_par */ "./src/params/gen_cat_par.js")(params);
+  __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js")(params);
+  __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js")(params);
+  var labels = params.labels;
 
-  generate_cat_params(params);
-  generate_order_params(params);
-  generate_label_params(params);
-  calc_viz_dim(regl, params);
-  generate_cat_args_arrs(regl, params);
-  params.zoom_data = ini_zoom_data();
-
-  // calculate row/col canvas positions
-  params.canvas_pos = calc_row_and_col_canvas_positions(params);
-
-  // calc row-downsampled matrix
-  var run_downsampling = false;
+  __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js")(regl, params);
+  __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+  params.zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js")();
+  params.canvas_pos = __webpack_require__(/*! ./calc_row_and_col_canvas_positions */ "./src/params/calc_row_and_col_canvas_positions.js")(params);
   params.is_downsampled = false;
-  calc_row_downsampled_mat(params, run_downsampling);
-
   params.viz_aid_tri_args = {};
 
   _.each(['row', 'col'], function(inst_axis){
-    calc_text_offsets(params, inst_axis);
+    __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js")(params, inst_axis);
   });
 
-  generate_tooltip_params(regl, params);
+  __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js")(regl, params);
+  params.tile_pix_width = params.viz_dim.heat.width/labels.num_col;
+  params.tile_pix_height = params.viz_dim.heat.height/labels.num_row;
 
-  params.tile_pix_width = params.viz_dim.heat.width/params.labels.num_col;
-  params.tile_pix_height = params.viz_dim.heat.height/params.labels.num_row;
-
-  generate_pix_to_webgl(params);
-  generate_webgl_to_pix(params);
-  make_label_queue(params);
-  generate_text_zoom_params(params);
-  calc_viz_area(params);
-  generate_text_triangle_params(params);
+  __webpack_require__(/*! ./gen_pix_to_webgl */ "./src/params/gen_pix_to_webgl.js")(params);
+  __webpack_require__(/*! ./generate_webgl_to_pix */ "./src/params/generate_webgl_to_pix.js")(params);
+  __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js")(params);
+  __webpack_require__(/*! ./gen_text_zoom_par */ "./src/params/gen_text_zoom_par.js")(params);
+  __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js")(params);
+  __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js")(params);
 
   var min_dim;
-  if (params.labels.num_col < params.labels.num_row){
-    min_dim = params.labels.num_col;
+  if (labels.num_col < labels.num_row){
+    min_dim = labels.num_col;
   } else {
-    min_dim = params.labels.num_row;
+    min_dim = labels.num_row;
   }
 
   params.max_zoom = min_dim/4.0;
-  params.zoom_restrict = ini_zoom_restrict(params);
+  params.zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js")(params);
+  __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js")(regl, params);
+  __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js")(regl, params);
 
-  // update zoom_data
-
-  /*
-
-  Need to pass cgm to zoom_rules_high_mat in order to have custom row/col
-  reordering
-
-  */
-
-  zoom_rules_high_mat(regl, params);
-  make_cameras(regl, params);
-
-  // calc offsets used for matrix
-  calc_mat_arr(params);
-
-  // generate matrix_args using buffers
-  params.matrix_args = make_matrix_args(regl, params);
-
-  generate_dendro_params(regl, params);
-
-  // spillover params rely on dendro params
-  generate_spillover_params(regl, params);
+  __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
+  params.matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js")(regl, params);
+  __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js")(regl, params);
+  __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js")(regl, params);
 
   var allow_factor = d3.scale.linear()
     .domain([10, 1000])
     .range([2, 30]);
 
-  params.allowable_zoom_factor = {};
-  params.allowable_zoom_factor.col = allow_factor(params.labels.num_col);
-  params.allowable_zoom_factor.row = allow_factor(params.labels.num_col);
-
+  params.allow_zoom = {};
+  params.allow_zoom.col = allow_factor(labels.num_col);
+  params.allow_zoom.row = allow_factor(labels.num_col);
   params.text_scale = {};
-
-  // save category colors
   params.cat_colors = params.network.cat_colors;
 
   return params;
-
 };
 
 /***/ }),
@@ -45298,40 +44303,27 @@ module.exports = function reorder_matrix_args(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var reorder_cat_args = __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js");
-var reorder_matrix_args = __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js");
-var update_text_triangle_order = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js");
-
 module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
 
   var new_order = ini_new_order.replace('sum', 'rank')
                                .replace('var', 'rankvar');
 
-  // toggle dendro sliders (will re-display at end of animation)
   if (new_order != 'clust'){
     d3.select('.'+ inst_axis +'_dendro_slider_svg').style('display','none')
   }
 
-  params.animation.run_animation = true;
+  params.ani.run_animation = true;
   params.order.new[inst_axis] = new_order;
 
-  reorder_matrix_args(regl, params);
-  reorder_cat_args(regl, params);
-
-  // preventing tmp reordering bug that happens when pre-calculated labels are
-  // incorrectly animated on reordering. The bug seems to occur only when the
-  // number of pre-calculated (drawn) rows is less than the total number of rows
-  /*
-  No need to run calc_text_offset (in network_data) during a reorder event
-  */
+  __webpack_require__(/*! ./reorder_matrix_args */ "./src/reorders/reorder_matrix_args.js")(regl, params);
+  __webpack_require__(/*! ./reorder_cat_args */ "./src/reorders/reorder_cat_args.js")(regl, params);
 
   // either update the existing draw text_triangles or trash them
   if (params.text_triangles.draw[inst_axis] != false && params.labels['num_' + inst_axis] <= params.max_num_text){
-    params.text_triangles.draw[inst_axis] = update_text_triangle_order(params, inst_axis);
+    params.text_triangles.draw[inst_axis] = __webpack_require__(/*! ./../matrix_labels/update_text_triangle_order */ "./src/matrix_labels/update_text_triangle_order.js")(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }
-
 };
 
 /***/ }),
@@ -45667,7 +44659,7 @@ var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_clus
 
 module.exports = function make_dendro_tooltip(params, inst_axis){
 
-  var mouseover = params.interact.mouseover;
+  var mouseover = params.int.mouseover;
 
   params.tooltip_fun.show('tooltip');
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
@@ -45691,10 +44683,7 @@ module.exports = function show_d3_tip(params){
 
   var inst_axis;
   var full_string;
-  var mouseover = params.interact.mouseover;
-
-  // console.log(params.tooltip.tooltip_type)
-  // console.log(mouseover)
+  var mouseover = params.int.mouseover;
 
   // // check if tooltip is missing
   // if (d3.select(params.tooltip_id).empty()){
@@ -46359,45 +45348,31 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    // console.log('interacting!')
     hide_d3_tip(params);
 
   })
   .on('interactionend', function(){
 
-    // console.log('clicking');
 
-    if (params.animation.time - params.animation.last_click < params.animation.dblclick_duration){
-
-      // console.log('double click',
-      //              params.interact.mouseover.row.name,
-      //              params.interact.mouseover.col.name);
+    if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
       // update col custom order
       var full_name;
       if (params.labels.titles.col !== ''){
         full_name = params.labels.titles.col + ': ' +
-                    params.interact.mouseover.col.name;
+                    params.int.mouseover.col.name;
       } else {
-        full_name = params.interact.mouseover.col.name;
+        full_name = params.int.mouseover.col.name;
       }
-
-      // debugger
-
-      // console.log(full_name)
 
       var found_col_index = _.indexOf(params.network.col_node_names, full_name);
 
-      // console.log('full_name', full_name);
-
       var mat = params.mat_data;
-      tmp_arr = [];
+      var tmp_arr = [];
 
       // row_nodes.forEach(function(node, index) {
       //   tmp_arr.push( mat[index].row_data[inst_col].value);
       // });
-
-      // console.log('found_col_index', found_col_index)
 
       _.each(mat, function(inst_row){
         tmp_arr.push(inst_row[found_col_index]);
@@ -46413,31 +45388,22 @@ module.exports = function zoom_rules_high_mat(regl, params){
         inst_node.custom = params.labels.num_row - tmp_sort[node_index]
       })
 
-      // console.log('tmp_arr')
-      // console.log(tmp_arr)
-      // console.log(tmp_sort)
-
       // sort array says which index contains highest lowest values
       // convert to name list
-      ordered_names = [];
+      var ordered_names = [];
       _.map(tmp_sort, function(inst_index){
         ordered_names.push(params.network.row_nodes[inst_index].name);
       })
 
-      // console.log(ordered_names)
-
-      // debugger;
-
-      params.network.row_nodes.forEach(function(node, index){
+      params.network.row_nodes.forEach(function(node){
         node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
-        // console.log(node.name, tmp_sort[index])
       })
 
       run_reorder(regl, params, 'row', 'custom');
 
     } else {
 
-      params.animation.last_click = params.animation.time;
+      params.ani.last_click = params.ani.time;
 
     }
 

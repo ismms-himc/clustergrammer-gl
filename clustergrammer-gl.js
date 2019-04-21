@@ -42247,7 +42247,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.7.2
+  clustergrammer-gl version 0.7.3
 
  */
 
@@ -42256,7 +42256,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.7.2');
+  console.log('clustergrammer-gl version 0.7.3');
   console.log('################################');
 
   // decompress if necessary

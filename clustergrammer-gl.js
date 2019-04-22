@@ -726,9 +726,8 @@ function roundRat (f) {
 function compileSearch(funcName, predicate, reversed, extraArgs, earlyOut) {
   var code = [
     "function ", funcName, "(a,l,h,", extraArgs.join(","),  "){",
-earlyOut ? "" : "var i=", (reversed ? "l-1" : "h+1"),
-";while(l<=h){\
-var m=(l+h)>>>1,x=a[m]"]
+    earlyOut ? "" : "var i=", (reversed ? "l-1" : "h+1"),
+    ";while(l<=h){var m=(l+h)>>>1,x=a[m]"]
   if(earlyOut) {
     if(predicate.indexOf("c") < 0) {
       code.push(";if(x===y){return m}else if(x<=y){")
@@ -767,11 +766,11 @@ return dispatchBsearch", suffix].join(""))
 }
 
 module.exports = {
-  ge: compileBoundsSearch(">=", false, "GE"),
-  gt: compileBoundsSearch(">", false, "GT"),
-  lt: compileBoundsSearch("<", true, "LT"),
-  le: compileBoundsSearch("<=", true, "LE"),
-  eq: compileBoundsSearch("-", true, "EQ", true)
+  ge: compileBoundsSearch(">=", false,  "GE"),
+  gt: compileBoundsSearch(">",  false,  "GT"),
+  lt: compileBoundsSearch("<",  true,   "LT"),
+  le: compileBoundsSearch("<=", true,   "LE"),
+  eq: compileBoundsSearch("-",  true,   "EQ", true)
 }
 
 
@@ -4805,7 +4804,7 @@ function iterInit(d, count) {
     BOX_ISTACK = pool.mallocInt32(maxInts)
   }
   var maxDoubles = bits.nextPow2(DFRAME_SIZE*levels)
-  if(BOX_DSTACK < maxDoubles) {
+  if(BOX_DSTACK.length < maxDoubles) {
     pool.free(BOX_DSTACK)
     BOX_DSTACK = pool.mallocDouble(maxDoubles)
   }
@@ -9107,7 +9106,7 @@ function solveIntersection (a, b, c, d) {
 module.exports = compareAngle
 
 var orient = __webpack_require__(/*! robust-orientation */ "./node_modules/robust-orientation/orientation.js")
-var sgn = __webpack_require__(/*! signum */ "./node_modules/compare-angle/node_modules/signum/sgn.js")
+var sgn = __webpack_require__(/*! signum */ "./node_modules/signum/sgn.js")
 var twoSum = __webpack_require__(/*! two-sum */ "./node_modules/two-sum/two-sum.js")
 var robustProduct = __webpack_require__(/*! robust-product */ "./node_modules/robust-product/product.js")
 var robustSum = __webpack_require__(/*! robust-sum */ "./node_modules/robust-sum/robust-sum.js")
@@ -9186,24 +9185,6 @@ function compareAngle(a, b, c, d) {
       }
     }
   }
-}
-
-/***/ }),
-
-/***/ "./node_modules/compare-angle/node_modules/signum/sgn.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/compare-angle/node_modules/signum/sgn.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function signum(x) {
-  if(x < 0) { return -1 }
-  if(x > 0) { return 1 }
-  return 0.0
 }
 
 /***/ }),
@@ -32262,6 +32243,24 @@ function linearExpansionSum(e, f) {
 
 /***/ }),
 
+/***/ "./node_modules/signum/sgn.js":
+/*!************************************!*\
+  !*** ./node_modules/signum/sgn.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function signum(x) {
+  if(x < 0) { return -1 }
+  if(x > 0) { return 1 }
+  return 0.0
+}
+
+/***/ }),
+
 /***/ "./node_modules/simplicial-complex/node_modules/bit-twiddle/twiddle.js":
 /*!*****************************************************************************!*\
   !*** ./node_modules/simplicial-complex/node_modules/bit-twiddle/twiddle.js ***!
@@ -37422,9 +37421,6 @@ function createText(str, options) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 module.exports = vectorizeText
 module.exports.processPixels = processPixels
 
@@ -37434,6 +37430,72 @@ var simplify = __webpack_require__(/*! simplify-planar-graph */ "./node_modules/
 var cleanPSLG = __webpack_require__(/*! clean-pslg */ "./node_modules/clean-pslg/clean-pslg.js")
 var cdt2d = __webpack_require__(/*! cdt2d */ "./node_modules/cdt2d/cdt2d.js")
 var toPolygonCrappy = __webpack_require__(/*! planar-graph-to-polyline */ "./node_modules/planar-graph-to-polyline/pg2pl.js")
+
+var TAG_bold = "b"
+var CHR_bold = 'b|'
+
+var TAG_italic = "i"
+var CHR_italic = 'i|'
+
+var TAG_super = "sup"
+var CHR_super0 = '+'
+var CHR_super = '+1'
+
+var TAG_sub = "sub"
+var CHR_sub0 = '-'
+var CHR_sub = '-1'
+
+function parseTag(tag, TAG_CHR, str, map) {
+
+  var opnTag =  "<"  + tag + ">"
+  var clsTag =  "</" + tag + ">"
+
+  var nOPN = opnTag.length
+  var nCLS = clsTag.length
+
+  var isRecursive = (TAG_CHR[0] === CHR_super0) ||
+                    (TAG_CHR[0] === CHR_sub0);
+
+  var a = 0
+  var b = -nCLS
+  while (a > -1) {
+    a = str.indexOf(opnTag, a)
+    if(a === -1) break
+
+    b = str.indexOf(clsTag, a + nOPN)
+    if(b === -1) break
+
+    if(b <= a) break
+
+    for(var i = a; i < b + nCLS; ++i){
+      if((i < a + nOPN) || (i >= b)) {
+        map[i] = null
+        str = str.substr(0, i) + " " + str.substr(i + 1)
+      } else {
+        if(map[i] !== null) {
+          var pos = map[i].indexOf(TAG_CHR[0])
+          if(pos === -1) {
+            map[i] += TAG_CHR
+          } else { // i.e. to handle multiple sub/super-scripts
+            if(isRecursive) {
+              // i.e to increase the sub/sup number
+              map[i] = map[i].substr(0, pos + 1) + (1 + parseInt(map[i][pos + 1])) + map[i].substr(pos + 2)
+            }
+          }
+        }
+      }
+    }
+
+    var start = a + nOPN
+    var remainingStr = str.substr(start, b - start)
+
+    var c = remainingStr.indexOf(opnTag)
+    if(c !== -1) a = c
+    else a = b + nCLS
+  }
+
+  return map
+}
 
 function transformPositions(positions, options, size) {
   var align = options.textAlign || "start"
@@ -37508,27 +37570,168 @@ function transformPositions(positions, options, size) {
   })
 }
 
-function getPixels(canvas, context, str, size) {
-  var width = Math.ceil(context.measureText(str).width + 2*size)|0
-  if(width > 8192) {
-    throw new Error("vectorize-text: String too long (sorry, this will get fixed later)")
+function getPixels(canvas, context, rawString, fontSize, lineSpacing, styletags) {
+
+  rawString = rawString.replace(/\n/g, '') // don't accept \n in the input
+
+  if(styletags.breaklines === true) {
+    rawString = rawString.replace(/\<br\>/g, '\n') // replace <br> tags with \n in the string
+  } else {
+    rawString = rawString.replace(/\<br\>/g, ' ') // don't accept <br> tags in the input and replace with space in this case
   }
-  var height = 3 * size
-  if(canvas.height < height) {
-    canvas.height = height
+
+  var activeStyle = ""
+  var map = []
+  for(j = 0; j < rawString.length; ++j) {
+    map[j] = activeStyle
+  }
+
+  if(styletags.bolds === true) map = parseTag(TAG_bold, CHR_bold, rawString, map)
+  if(styletags.italics === true) map = parseTag(TAG_italic, CHR_italic, rawString, map)
+  if(styletags.superscripts === true) map = parseTag(TAG_super, CHR_super, rawString, map)
+  if(styletags.subscripts === true) map = parseTag(TAG_sub, CHR_sub, rawString, map)
+
+  var allStyles = []
+  var plainText = ""
+  for(j = 0; j < rawString.length; ++j) {
+    if(map[j] !== null) {
+      plainText += rawString[j]
+      allStyles.push(map[j])
+    }
+  }
+
+  var allTexts = plainText.split('\n')
+
+  var numberOfLines = allTexts.length
+  var lineHeight = Math.round(lineSpacing * fontSize)
+  var offsetX = fontSize
+  var offsetY = fontSize * 2
+  var maxWidth = 0
+  var minHeight = numberOfLines * lineHeight + offsetY
+
+  if(canvas.height < minHeight) {
+    canvas.height = minHeight
   }
 
   context.fillStyle = "#000"
   context.fillRect(0, 0, canvas.width, canvas.height)
 
   context.fillStyle = "#fff"
-  context.fillText(str, size, 2*size)
+  var i, j, xPos, yPos, zPos
+  var nDone = 0
+
+  var buffer = ""
+  function writeBuffer() {
+    if(buffer !== "") {
+      var delta = context.measureText(buffer).width
+
+      context.fillText(buffer, offsetX + xPos, offsetY + yPos)
+      xPos += delta
+    }
+  }
+
+  function getTextFontSize() {
+    return "" + Math.round(zPos) + "px ";
+  }
+
+  function changeStyle(oldStyle, newStyle) {
+    var ctxFont = "" + context.font;
+
+    if(styletags.subscripts === true) {
+      var oldIndex_Sub = oldStyle.indexOf(CHR_sub0);
+      var newIndex_Sub = newStyle.indexOf(CHR_sub0);
+
+      var oldSub = (oldIndex_Sub > -1) ? parseInt(oldStyle[1 + oldIndex_Sub]) : 0;
+      var newSub = (newIndex_Sub > -1) ? parseInt(newStyle[1 + newIndex_Sub]) : 0;
+
+      if(oldSub !== newSub) {
+        ctxFont = ctxFont.replace(getTextFontSize(), "?px ")
+        zPos *= Math.pow(0.75, (newSub - oldSub))
+        ctxFont = ctxFont.replace("?px ", getTextFontSize())
+      }
+      yPos += 0.25 * lineHeight * (newSub - oldSub);
+    }
+
+    if(styletags.superscripts === true) {
+      var oldIndex_Super = oldStyle.indexOf(CHR_super0);
+      var newIndex_Super = newStyle.indexOf(CHR_super0);
+
+      var oldSuper = (oldIndex_Super > -1) ? parseInt(oldStyle[1 + oldIndex_Super]) : 0;
+      var newSuper = (newIndex_Super > -1) ? parseInt(newStyle[1 + newIndex_Super]) : 0;
+
+      if(oldSuper !== newSuper) {
+        ctxFont = ctxFont.replace(getTextFontSize(), "?px ")
+        zPos *= Math.pow(0.75, (newSuper - oldSuper))
+        ctxFont = ctxFont.replace("?px ", getTextFontSize())
+      }
+      yPos -= 0.25 * lineHeight * (newSuper - oldSuper);
+    }
+
+    if(styletags.bolds === true) {
+      var wasBold = (oldStyle.indexOf(CHR_bold) > -1)
+      var is_Bold = (newStyle.indexOf(CHR_bold) > -1)
+
+      if(!wasBold && is_Bold) {
+        if(wasItalic) {
+          ctxFont = ctxFont.replace("italic ", "italic bold ")
+        } else {
+          ctxFont = "bold " + ctxFont
+        }
+      }
+      if(wasBold && !is_Bold) {
+        ctxFont = ctxFont.replace("bold ", '')
+      }
+    }
+
+    if(styletags.italics === true) {
+      var wasItalic = (oldStyle.indexOf(CHR_italic) > -1)
+      var is_Italic = (newStyle.indexOf(CHR_italic) > -1)
+
+      if(!wasItalic && is_Italic) {
+        ctxFont = "italic " + ctxFont
+      }
+      if(wasItalic && !is_Italic) {
+        ctxFont = ctxFont.replace("italic ", '')
+      }
+    }
+    context.font = ctxFont
+  }
+
+  for(i = 0; i < numberOfLines; ++i) {
+    var txt = allTexts[i] + '\n'
+    xPos = 0
+    yPos = i * lineHeight
+    zPos = fontSize
+
+    buffer = ""
+    
+    for(j = 0; j < txt.length; ++j) {
+      var style = (j + nDone < allStyles.length) ? allStyles[j + nDone] : allStyles[allStyles.length - 1]
+      if(activeStyle === style) {
+        buffer += txt[j]
+      } else {
+        writeBuffer()
+        buffer = txt[j]
+
+        if(style !== undefined) {
+          changeStyle(activeStyle, style)
+          activeStyle = style
+        }
+      }
+    }
+    writeBuffer()
+
+    nDone += txt.length
+
+    var width = Math.round(xPos + 2 * offsetX) | 0
+    if(maxWidth < width) maxWidth = width
+  }
 
   //Cut pixels from image
-  var pixelData = context.getImageData(0, 0, width, height)
-  var pixels = ndarray(pixelData.data, [height, width, 4])
-
-  return pixels.pick(-1,-1,0).transpose(1,0)
+  var xCut = maxWidth
+  var yCut = offsetY + lineHeight * numberOfLines
+  var pixels = ndarray(context.getImageData(0, 0, xCut, yCut).data, [yCut, xCut, 4])
+  return pixels.pick(-1, -1, 0).transpose(1, 0)
 }
 
 function getContour(pixels, doSimplify) {
@@ -37615,15 +37818,59 @@ function processPixels(pixels, options, size) {
 }
 
 function vectorizeText(str, canvas, context, options) {
-  var size = options.size || 64
-  var family = options.font || "normal"
+  var size = 64
+  var lineSpacing = 1.25
+  var styletags = {
+    breaklines: false,
+    bolds: false,
+    italics: false,
+    subscripts: false,
+    superscripts: false
+  }
 
-  context.font = size + "px " + family
+  if(options) {
+
+    if(options.size &&
+       options.size > 0) size =
+       options.size
+
+    if(options.lineSpacing &&
+       options.lineSpacing > 0) lineSpacing =
+       options.lineSpacing
+
+    if(options.styletags &&
+       options.styletags.breaklines) styletags.breaklines =
+       options.styletags.breaklines ? true : false
+
+    if(options.styletags &&
+       options.styletags.bolds) styletags.bolds =
+       options.styletags.bolds ? true : false
+
+    if(options.styletags &&
+       options.styletags.italics) styletags.italics =
+       options.styletags.italics ? true : false
+
+    if(options.styletags &&
+       options.styletags.subscripts) styletags.subscripts =
+       options.styletags.subscripts ? true : false
+
+    if(options.styletags &&
+       options.styletags.superscripts) styletags.superscripts =
+       options.styletags.superscripts ? true : false
+  }
+
+  context.font = [
+    options.fontStyle,
+    options.fontVariant,
+    options.fontWeight,
+    size + "px",
+    options.font
+  ].filter(function(d) {return d}).join(" ")
   context.textAlign = "start"
   context.textBaseline = "alphabetic"
   context.direction = "ltr"
 
-  var pixels = getPixels(canvas, context, str, size)
+  var pixels = getPixels(canvas, context, str, size, lineSpacing, styletags)
 
   return processPixels(pixels, options, size)
 }
@@ -38016,15 +38263,18 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   });
 
 
-  d3.select('.canvas-container canvas')
-    .on('mouseover', function(){
-      params.tooltip.on_canvas = true;
-      console.log(params.root, 'on canvas')
-    })
-    .on('mouseout', function(){
-      params.tooltip.on_canvas = false;
-      console.log(params.root, 'off canvas');
-    })
+  // console.log('empty?', d3.select(params.root + ' .canvas-container canvas').empty());
+
+  // d3.select(params.root + ' .canvas-container canvas')
+  //   .on('mouseover', function(){
+  //     params.tooltip.on_canvas = true;
+  //     console.log(params.root, 'on canvas')
+  //   })
+  //   .on('mouseout', function(){
+  //     // disable off canvas
+  //     // params.tooltip.on_canvas = false;
+  //     console.log(params.root, 'off canvas');
+  //   });
 
   // /////////////////////////////////////////
   // // Alternate interaction tracking
@@ -42337,6 +42587,19 @@ function clustergrammer_gl(args){
 
   __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(regl, cgm);
 
+  console.log('empty?', d3.select(cgm.params.root + ' .canvas-container canvas').empty());
+
+  d3.select(cgm.params.root + ' .canvas-container canvas')
+    .on('mouseover', function(){
+      cgm.params.tooltip.on_canvas = true;
+      console.log(cgm.params.root, 'on canvas')
+    })
+    .on('mouseout', function(){
+      // disable off canvas
+      cgm.params.tooltip.on_canvas = false;
+      console.log(cgm.params.root, 'off canvas');
+    });
+
   return cgm;
 
 }
@@ -44132,7 +44395,8 @@ module.exports = function generate_tooltip_params(regl, params){
   params.tooltip.tooltip_type = null;
 
   params.tooltip.border_width = 10;
-  params.tooltip.on_canvas = false;
+  // setting to true
+  params.tooltip.on_canvas = true;
 }
 
 /***/ }),

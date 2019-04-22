@@ -104,15 +104,18 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   });
 
 
-  d3.select('.canvas-container canvas')
-    .on('mouseover', function(){
-      params.tooltip.on_canvas = true;
-      console.log(params.root, 'on canvas')
-    })
-    .on('mouseout', function(){
-      params.tooltip.on_canvas = false;
-      console.log(params.root, 'off canvas');
-    })
+  // console.log('empty?', d3.select(params.root + ' .canvas-container canvas').empty());
+
+  // d3.select(params.root + ' .canvas-container canvas')
+  //   .on('mouseover', function(){
+  //     params.tooltip.on_canvas = true;
+  //     console.log(params.root, 'on canvas')
+  //   })
+  //   .on('mouseout', function(){
+  //     // disable off canvas
+  //     // params.tooltip.on_canvas = false;
+  //     console.log(params.root, 'off canvas');
+  //   });
 
   // /////////////////////////////////////////
   // // Alternate interaction tracking

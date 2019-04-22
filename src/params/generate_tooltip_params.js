@@ -8,5 +8,6 @@ module.exports = function generate_tooltip_params(regl, params){
   params.tooltip.tooltip_type = null;
 
   params.tooltip.border_width = 10;
-  params.tooltip.on_canvas = false;
+  // setting to true
+  params.tooltip.on_canvas = true;
 }

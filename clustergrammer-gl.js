@@ -38019,9 +38019,11 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   d3.select('.canvas-container canvas')
     .on('mouseover', function(){
       params.tooltip.on_canvas = true;
+      console.log(params.root, 'on canvas')
     })
     .on('mouseout', function(){
       params.tooltip.on_canvas = false;
+      console.log(params.root, 'off canvas');
     })
 
   // /////////////////////////////////////////
@@ -42247,7 +42249,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.7.3
+  clustergrammer-gl version 0.7.4
 
  */
 
@@ -42256,7 +42258,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.7.3');
+  console.log('clustergrammer-gl version 0.7.4');
   console.log('################################');
 
   // decompress if necessary

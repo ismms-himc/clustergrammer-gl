@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.7.3
+  clustergrammer-gl version 0.7.4
 
  */
 
@@ -9,7 +9,7 @@ var pako = require('pako');
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.7.3');
+  console.log('clustergrammer-gl version 0.7.4');
   console.log('################################');
 
   // decompress if necessary

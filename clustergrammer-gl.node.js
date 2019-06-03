@@ -38603,18 +38603,18 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
 
 var binom_test = __webpack_require__(/*! ./binom_test */ "./src/cats/binom_test.js");
 
-module.exports = function calc_cat_cluster_breakdown(params, i_data, i_rc){
+module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc){
 
   // in case sim_mat
-  if (i_rc === 'both'){
-    i_rc = 'row';
+  if (inst_rc === 'both'){
+    inst_rc = 'row';
   }
 
   // 1: get information for nodes in cluster
   // names of nodes in cluster
-  var clust_names = i_data.all_names;
+  var clust_names = inst_data.all_names;
   var clust_nodes = [];
-  var all_nodes = params.network[i_rc+'_nodes'];
+  var all_nodes = params.network[inst_rc+'_nodes'];
   var num_in_clust_index = null;
   var is_downsampled = false;
 
@@ -38636,9 +38636,9 @@ module.exports = function calc_cat_cluster_breakdown(params, i_data, i_rc){
   // 2: find category-types that are string-type: cat_breakdown
   var c_bd = [];
 
-  if ( params.viz.cat_info[i_rc] !== null ){
+  if ( params.viz.cat_info[inst_rc] !== null ){
 
-    var i_cat_info = params.viz.cat_info[i_rc];
+    var i_cat_info = params.viz.cat_info[inst_rc];
 
     // tmp list of all categories
     var tmp_types_index = _.keys(i_cat_info);
@@ -38656,14 +38656,14 @@ module.exports = function calc_cat_cluster_breakdown(params, i_data, i_rc){
 
       // debugger;
 
-      if (params.viz.cat_info[i_rc][cat_index].type === 'cat_strings'){
-        type_name = params.viz.cat_names[i_rc][cat_index];
+      if (params.viz.cat_info[inst_rc][cat_index].type === 'cat_strings'){
+        type_name = params.viz.cat_names[inst_rc][cat_index];
         cat_types_names.push(type_name);
         cat_types_index.push(cat_index);
       } else {
 
         // save number in clust category index if found
-        if (params.viz.cat_names[i_rc][cat_index] === 'number in clust'){
+        if (params.viz.cat_names[inst_rc][cat_index] === 'number in clust'){
           num_in_clust_index = cat_index;
           is_downsampled = true;
         }
@@ -38753,8 +38753,8 @@ module.exports = function calc_cat_cluster_breakdown(params, i_data, i_rc){
 
         for (var i_cat in i_run_count){
 
-          var tot_num_cat = params.viz.cat_info[i_rc][tmp_cat_index].cat_hist[i_cat];
-          var total_nodes = params.network[i_rc+'_nodes'].length;
+          var tot_num_cat = params.viz.cat_info[inst_rc][tmp_cat_index].cat_hist[i_cat];
+          var total_nodes = params.network[inst_rc+'_nodes'].length;
           var expect_prob = tot_num_cat / total_nodes;
 
           // if no cat-title given
@@ -38778,7 +38778,7 @@ module.exports = function calc_cat_cluster_breakdown(params, i_data, i_rc){
             num_nodes_ds = null;
           }
 
-          bar_color = params.viz.cat_colors[i_rc][tmp_cat_index][cat_title_and_name];
+          bar_color = params.viz.cat_colors[inst_rc][tmp_cat_index][cat_title_and_name];
 
           bar_data.push([ tmp_cat_index, cat_title_and_name, i_run_count[i_cat], bar_color, num_nodes, num_nodes_ds, pval]);
         }

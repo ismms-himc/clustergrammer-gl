@@ -88,8 +88,6 @@ function clustergrammer_gl(args){
 
   require('./control_panel/build_control_panel')(regl, cgm);
 
-  console.log('empty?', d3.select(cgm.params.root + ' .canvas-container canvas').empty());
-
   d3.select(cgm.params.root + ' .canvas-container canvas')
     .on('mouseover', function(){
       cgm.params.tooltip.on_canvas = true;

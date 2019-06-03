@@ -41627,6 +41627,67 @@ module.exports = function start_animation(params){
 
 /***/ }),
 
+/***/ "./src/interactions/double_clicking.js":
+/*!*********************************************!*\
+  !*** ./src/interactions/double_clicking.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
+
+module.exports = function double_clicking(regl, params){
+
+  console.log('double clicking!!!!');
+
+  // update col custom order
+  var full_name;
+  if (params.labels.titles.col !== ''){
+    full_name = params.labels.titles.col + ': ' +
+                params.int.mouseover.col.name;
+  } else {
+    full_name = params.int.mouseover.col.name;
+  }
+
+  var found_col_index = _.indexOf(params.network.col_node_names, full_name);
+
+  var mat = params.mat_data;
+  var tmp_arr = [];
+
+  // row_nodes.forEach(function(node, index) {
+  //   tmp_arr.push( mat[index].row_data[inst_col].value);
+  // });
+
+  _.each(mat, function(inst_row){
+    tmp_arr.push(inst_row[found_col_index]);
+    // tmp_arr.push(inst_row[28]);
+  });
+
+  // sort the cols
+  var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
+    return tmp_arr[b] - tmp_arr[a];
+  });
+
+  _.map(params.network.row_nodes, function(inst_node, node_index){
+    inst_node.custom = params.labels.num_row - tmp_sort[node_index]
+  })
+
+  // sort array says which index contains highest lowest values
+  // convert to name list
+  var ordered_names = [];
+  _.map(tmp_sort, function(inst_index){
+    ordered_names.push(params.network.row_nodes[inst_index].name);
+  })
+
+  params.network.row_nodes.forEach(function(node){
+    node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
+  })
+
+  run_reorder(regl, params, 'row', 'custom');
+}
+
+/***/ }),
+
 /***/ "./src/interactions/final_interaction_frame.js":
 /*!*****************************************************!*\
   !*** ./src/interactions/final_interaction_frame.js ***!
@@ -41712,11 +41773,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   var offcenter = {};
   var inst_cat_name;
-  var cursor_rel_min = {};
   var dim_dict = {};
   dim_dict.x = 'width';
   dim_dict.y = 'height';
 
+  var cursor_rel_min = {};
   _.each(['x', 'y'], function(inst_axis){
 
     // try updating mouseover position
@@ -41726,10 +41787,15 @@ module.exports = function find_mouseover_element(regl, params, ev){
     offcenter[inst_axis] = (params.viz_dim.canvas[dim_dict[inst_axis]] *
                              params.viz_dim.offcenter[inst_axis])/2;
 
+    // calculate relative to min position before zooming
     cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
                                   viz_dim_heat[inst_axis].min - offcenter[inst_axis];
 
+    // reflect zooming and panning in relative to min calculation
     cursor_rel_min[inst_axis] = cursor_rel_min[inst_axis] / params.zoom_data[inst_axis].total_zoom - params.zoom_data[inst_axis].total_pan_min;
+
+    // transfer to zoom_data
+    params.zoom_data[inst_axis].cursor_rel_min = cursor_rel_min[inst_axis];
 
   });
 
@@ -41749,6 +41815,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
       inst_dims = ['col'];
 
+      // shift found column label to reflect slanted column labels
       var y_heat_min = 126;
       var i_pix_y = params.zoom_data.y.cursor_position
       var shift_col_label = y_heat_min - i_pix_y;
@@ -45291,6 +45358,9 @@ module.exports = function ini_zoom_data(){
     // this is used to keep track of the final mouseover
     inst_data.total_mouseover = 0;
 
+    // cursor position relative min
+    inst_data.cursor_rel_min = 0;
+
     // add to zoom_data
     zoom_data[inst_dim] = inst_data;
   });
@@ -45590,8 +45660,7 @@ var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-ev
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
 var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
-
-var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
+var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking */ "./src/interactions/double_clicking.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -45614,56 +45683,15 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     hide_d3_tip(params);
 
+    // console.log(params.int.mouseover.row.name, params.int.mouseover.col.name)
+
   })
   .on('interactionend', function(){
 
 
     if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
-      // update col custom order
-      var full_name;
-      if (params.labels.titles.col !== ''){
-        full_name = params.labels.titles.col + ': ' +
-                    params.int.mouseover.col.name;
-      } else {
-        full_name = params.int.mouseover.col.name;
-      }
-
-      var found_col_index = _.indexOf(params.network.col_node_names, full_name);
-
-      var mat = params.mat_data;
-      var tmp_arr = [];
-
-      // row_nodes.forEach(function(node, index) {
-      //   tmp_arr.push( mat[index].row_data[inst_col].value);
-      // });
-
-      _.each(mat, function(inst_row){
-        tmp_arr.push(inst_row[found_col_index]);
-        // tmp_arr.push(inst_row[28]);
-      });
-
-      // sort the cols
-      var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
-        return tmp_arr[b] - tmp_arr[a];
-      });
-
-      _.map(params.network.row_nodes, function(inst_node, node_index){
-        inst_node.custom = params.labels.num_row - tmp_sort[node_index]
-      })
-
-      // sort array says which index contains highest lowest values
-      // convert to name list
-      var ordered_names = [];
-      _.map(tmp_sort, function(inst_index){
-        ordered_names.push(params.network.row_nodes[inst_index].name);
-      })
-
-      params.network.row_nodes.forEach(function(node){
-        node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
-      })
-
-      run_reorder(regl, params, 'row', 'custom');
+      double_clicking(regl, params);
 
     } else {
 

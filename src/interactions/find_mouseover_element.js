@@ -20,11 +20,11 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   var offcenter = {};
   var inst_cat_name;
-  var cursor_rel_min = {};
   var dim_dict = {};
   dim_dict.x = 'width';
   dim_dict.y = 'height';
 
+  var cursor_rel_min = {};
   _.each(['x', 'y'], function(inst_axis){
 
     // try updating mouseover position
@@ -34,10 +34,15 @@ module.exports = function find_mouseover_element(regl, params, ev){
     offcenter[inst_axis] = (params.viz_dim.canvas[dim_dict[inst_axis]] *
                              params.viz_dim.offcenter[inst_axis])/2;
 
+    // calculate relative to min position before zooming
     cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
                                   viz_dim_heat[inst_axis].min - offcenter[inst_axis];
 
+    // reflect zooming and panning in relative to min calculation
     cursor_rel_min[inst_axis] = cursor_rel_min[inst_axis] / params.zoom_data[inst_axis].total_zoom - params.zoom_data[inst_axis].total_pan_min;
+
+    // transfer to zoom_data
+    params.zoom_data[inst_axis].cursor_rel_min = cursor_rel_min[inst_axis];
 
   });
 
@@ -57,6 +62,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
       inst_dims = ['col'];
 
+      // shift found column label to reflect slanted column labels
       var y_heat_min = 126;
       var i_pix_y = params.zoom_data.y.cursor_position
       var shift_col_label = y_heat_min - i_pix_y;

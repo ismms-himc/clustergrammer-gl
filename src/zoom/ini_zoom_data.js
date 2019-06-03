@@ -45,6 +45,9 @@ module.exports = function ini_zoom_data(){
     // this is used to keep track of the final mouseover
     inst_data.total_mouseover = 0;
 
+    // cursor position relative min
+    inst_data.cursor_rel_min = 0;
+
     // add to zoom_data
     zoom_data[inst_dim] = inst_data;
   });

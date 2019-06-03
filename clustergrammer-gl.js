@@ -41823,11 +41823,25 @@ module.exports = function find_mouseover_element(regl, params, ev){
       inst_dims = ['col'];
 
       // shift found column label to reflect slanted column labels
-      var y_heat_min = 126;
-      var i_pix_y = params.zoom_data.y.cursor_position
-      var shift_col_label = y_heat_min - i_pix_y;
-      if (shift_col_label > 0){
-        cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
+      ///////////////////////////////////////////////////////////////
+      // the shift is equal to the height above the column labels
+      // however, this should be dimished based on how far zoomed out the user is
+
+      // console.log(( params.zoom_data.x.total_zoom/params.zoom_restrict.x.max ))
+
+      // only shift if zooming is greater than 1% of total zoom available in x
+      if (params.zoom_data.x.total_zoom/params.zoom_restrict.x.max > 0.01){
+        var y_heat_min = 126;
+        var i_pix_y = params.zoom_data.y.cursor_position
+
+        // console.log('shifting col label to account for 45% angle')
+
+        var shift_col_label = y_heat_min - i_pix_y;
+
+        if (shift_col_label > 0){
+          cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
+        }
+
       }
     }
 

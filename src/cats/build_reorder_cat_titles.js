@@ -78,8 +78,8 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
 
 
   // Row Titles
-  var pos_x = 124;
-  var pos_y = 85;
+  var pos_x = 125;
+  var pos_y = 60; // 85 with two cats
   var row_cat_title_group = d3.select(params.root + ' .canvas-container')
     .append('g')
     .style('position', 'absolute')

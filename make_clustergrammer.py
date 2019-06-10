@@ -51,6 +51,10 @@ df = pd.DataFrame(data=mat, columns=cols, index=rows)
   # net.make_clust()
   # net.dendro_cats('row', 5)
 
+new_rows = [(x, 'Cat-1: 1', 'Cat-2: A') for x in df.index]
+new_cols = [(x, 'Cat-1: 1') for x in df.columns]
+df.index = new_rows
+
 net.load_df(df)
 
 net.cluster(dist_type='cos',views=['N_row_sum', 'N_row_var'] , dendro=True,

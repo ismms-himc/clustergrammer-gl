@@ -3,7 +3,7 @@ var make_cat_args = require('./../cats/make_cat_args');
 
 /* eslint-disable no-loop-func */
 
-module.exports = function generate_cat_args_arrs_params(regl, params){
+module.exports = function generate_cat_args_arrs(regl, params){
 
   params.cat_args = {};
   params.cat_args.row = [];
@@ -24,6 +24,9 @@ module.exports = function generate_cat_args_arrs_params(regl, params){
           params, inst_axis, cat_index, params.order[inst_state][inst_axis]
         );
       });
+
+      console.log('make_cat_args')
+
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });

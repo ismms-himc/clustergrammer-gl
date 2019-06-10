@@ -39430,7 +39430,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-
   /////////////////////////////////
   // Label Color Buffer
   /////////////////////////////////
@@ -39439,8 +39438,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
-
-    console.log(inst_cat);
 
     /*
       Added fallback color
@@ -39467,6 +39464,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
+    if (params.tooltip.tooltip_type == inst_axis + '-label'){
+      console.log(inst_axis + '-label')
+    }
+
+    console.log(inst_cat, params.tooltip.tooltip_type);
+
+    // vary opacity
     color_arr[i] = color_to_rgba(inst_color, 0.8);
   }
 
@@ -44372,7 +44376,7 @@ var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/ca
 
 /* eslint-disable no-loop-func */
 
-module.exports = function generate_cat_args_arrs_params(regl, params){
+module.exports = function generate_cat_args_arrs(regl, params){
 
   params.cat_args = {};
   params.cat_args.row = [];
@@ -44393,6 +44397,9 @@ module.exports = function generate_cat_args_arrs_params(regl, params){
           params, inst_axis, cat_index, params.order[inst_state][inst_axis]
         );
       });
+
+      console.log('make_cat_args')
+
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
@@ -44570,6 +44577,9 @@ module.exports = function initialize_params(regl, network){
   __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js")(params);
   var labels = params.labels;
 
+  console.log('generate_tooltip_params')
+  __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js")(regl, params);
+
   __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js")(regl, params);
   __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
   params.zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js")();
@@ -44581,7 +44591,6 @@ module.exports = function initialize_params(regl, network){
     __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js")(params, inst_axis);
   });
 
-  __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js")(regl, params);
   params.tile_pix_width = params.viz_dim.heat.width/labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/labels.num_row;
 

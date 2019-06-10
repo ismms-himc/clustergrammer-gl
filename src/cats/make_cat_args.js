@@ -44,7 +44,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-
   /////////////////////////////////
   // Label Color Buffer
   /////////////////////////////////
@@ -53,8 +52,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
-
-    console.log(inst_cat);
 
     /*
       Added fallback color
@@ -81,6 +78,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
+    if (params.tooltip.tooltip_type == inst_axis + '-label'){
+      console.log(inst_axis + '-label')
+    }
+
+    console.log(inst_cat, params.tooltip.tooltip_type);
+
+    // vary opacity
     color_arr[i] = color_to_rgba(inst_color, 0.8);
   }
 

@@ -12,6 +12,9 @@ module.exports = function initialize_params(regl, network){
   require('./gen_label_par')(params);
   var labels = params.labels;
 
+  console.log('generate_tooltip_params')
+  require('./generate_tooltip_params')(regl, params);
+
   require('./calc_viz_dim')(regl, params);
   require('./generate_cat_args_arrs')(regl, params);
   params.zoom_data = require('./../zoom/ini_zoom_data')();
@@ -23,7 +26,6 @@ module.exports = function initialize_params(regl, network){
     require('./../matrix_labels/calc_text_offsets')(params, inst_axis);
   });
 
-  require('./generate_tooltip_params')(regl, params);
   params.tile_pix_width = params.viz_dim.heat.width/labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/labels.num_row;
 

@@ -39919,12 +39919,12 @@ module.exports = function build_control_panel(regl, cgm){
 
   var order_options = ['clust', 'sum', 'var', 'alpha', 'umap'];
 
-  // make reorder title
+  // make Rarrange title
 
   control_svg
   .append('text')
   .classed('reorder_title', true)
-  .text('reorder'.toUpperCase())
+  .text('rearrange'.toUpperCase())
   .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
   .style('font-weight', 400)
   .style('font-size', button_dim.fs)

@@ -77,7 +77,7 @@ module.exports = function build_control_panel(regl, cgm){
   button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
-  button_dim.fs = 12;
+  button_dim.fs = 11;
 
   var button_groups = {};
   button_groups.row = {};

@@ -53,7 +53,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
-    // console.log(inst_cat)
+
+    console.log(inst_cat);
 
     /*
       Added fallback color
@@ -80,7 +81,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
-    color_arr[i] = color_to_rgba(inst_color, 1);
+    color_arr[i] = color_to_rgba(inst_color, 0.8);
   }
 
   const color_buffer = regl.buffer({

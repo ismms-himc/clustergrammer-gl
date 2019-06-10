@@ -38637,34 +38637,34 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
       return 'translate( 0, '+ y_trans +')';
     })
 
-  // col_cat_reorder_group
-  //   .selectAll('rect')
-  //   .data(params.cat_data.col)
-  //   .enter()
-  //   .append('rect')
-  //   .style('width', row_dim_x + 'px')
-  //   .style('height', function(){
-  //     var rect_height = row_dim_y + 2;
-  //     return rect_height + 'px'
-  //   })
-  //   .style('fill', 'white')
-  //   .style('opacity', 0.0)
-  //   .on('dblclick', function(d, i){
+  row_cat_reorder_group
+    .selectAll('rect')
+    .data(params.cat_data.row)
+    .enter()
+    .append('rect')
+    .style('width', row_dim_x + 'px')
+    .style('height', function(){
+      var rect_height = row_dim_y + 2;
+      return rect_height + 'px'
+    })
+    .style('fill', 'white')
+    .style('opacity', 0.0)
+    .on('dblclick', function(d, i){
 
-  //     run_reorder(regl, params, 'col', 'cat_' + String(i) + '_index');
+      run_reorder(regl, params, 'row', 'cat_' + String(i) + '_index');
 
-  //     params.order.inst.col = 'cat_' + String(i) + '_index';
+      params.order.inst.row = 'cat_' + String(i) + '_index';
 
-  //     d3.select(params.root + ' .col-reorder-buttons')
-  //       .selectAll('rect')
-  //       .style('stroke', button_color);
+      d3.select(params.root + ' .row-reorder-buttons')
+        .selectAll('rect')
+        .style('stroke', button_color);
 
-  //   })
-  //   .attr('transform', function(d, i){
-  //     var y_trans = (row_dim_y + 2)* i ;
-  //     return 'translate( 0, '+ y_trans +')';
-  //   })
-  //   .style('user-select', 'none');
+    })
+    .attr('transform', function(d, i){
+      var y_trans = (row_dim_y + 2)* i ;
+      return 'translate( 0, '+ y_trans +')';
+    })
+    .style('user-select', 'none');
 
 
 };

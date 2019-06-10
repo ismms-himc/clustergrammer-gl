@@ -93,9 +93,9 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     if (params.tooltip.tooltip_type){
 
       // console.log(params.tooltip.tooltip_type)
-      if (params.tooltip.tooltip_type == 'col-cat-0'){
+      // if (params.tooltip.tooltip_type == 'col-cat-0'){
+      if (params.tooltip.tooltip_type.includes('col-cat-')){
         inst_opacity = 0.1;
-
       }
 
     }

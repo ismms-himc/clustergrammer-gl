@@ -38516,8 +38516,9 @@ var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/re
 module.exports = function build_reorder_cat_titles(regl, cgm){
 
   var params = cgm.params;
-
   var button_color = '#eee';
+
+  // Column Titles
   var pos_x = 845;
   var pos_y = 125;
   var col_cat_title_group = d3.select(params.root + ' .canvas-container')
@@ -38587,6 +38588,83 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
       return 'translate( 0, '+ y_trans +')';
     })
     .style('user-select', 'none');
+
+
+  // Row Titles
+  var pos_x = 124;
+  var pos_y = 85;
+  var row_cat_title_group = d3.select(params.root + ' .canvas-container')
+    .append('g')
+    .style('position', 'absolute')
+    .style('top', pos_y + 'px')
+    .style('left', pos_x + 'px')
+    .classed('row-cat-title-group', true);
+
+  var row_dim_x = 60;
+  var row_dim_y = 10;
+
+  var row_cat_title_svg = row_cat_title_group
+    .append('svg')
+    .style('width', function(){
+      var svg_height = row_dim_y * params.cat_data.row.length + 5;
+      return svg_height  + 'px'
+    })
+    .style('height', row_dim_x + 'px')
+    .classed('row-cat-title-svg', true);
+
+  var row_cat_reorder_group = row_cat_title_svg
+    .append('g')
+    .classed('row-cat-reorder-group', true)
+    .attr('transform', function(){
+        inst_rotate = -90;
+        return 'translate(0,' + row_dim_x + '), rotate('+ inst_rotate +')';
+      });
+
+  row_cat_reorder_group
+    .selectAll('rect')
+    .data(params.cat_data.row)
+    .enter()
+    .append('text')
+    .text(function(d){
+      return d.cat_title;
+    })
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight',  800)
+    .style('font-size', 12)
+    .attr('transform', function(d, i){
+      var y_trans = (row_dim_y + 1) * i  + 10 ;
+      return 'translate( 0, '+ y_trans +')';
+    })
+
+  // col_cat_reorder_group
+  //   .selectAll('rect')
+  //   .data(params.cat_data.col)
+  //   .enter()
+  //   .append('rect')
+  //   .style('width', row_dim_x + 'px')
+  //   .style('height', function(){
+  //     var rect_height = row_dim_y + 2;
+  //     return rect_height + 'px'
+  //   })
+  //   .style('fill', 'white')
+  //   .style('opacity', 0.0)
+  //   .on('dblclick', function(d, i){
+
+  //     run_reorder(regl, params, 'col', 'cat_' + String(i) + '_index');
+
+  //     params.order.inst.col = 'cat_' + String(i) + '_index';
+
+  //     d3.select(params.root + ' .col-reorder-buttons')
+  //       .selectAll('rect')
+  //       .style('stroke', button_color);
+
+  //   })
+  //   .attr('transform', function(d, i){
+  //     var y_trans = (row_dim_y + 2)* i ;
+  //     return 'translate( 0, '+ y_trans +')';
+  //   })
+  //   .style('user-select', 'none');
+
 
 };
 
@@ -40674,7 +40752,7 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
           inst_rotate = -90;
         }
         return 'rotate('+ inst_rotate +')';
-      })
+      });
 
     axis_slider_container
       .append('rect')
@@ -41638,16 +41716,13 @@ var custom_label_reorder = __webpack_require__(/*! ./../reorders/custom_label_re
 
 module.exports = function double_clicking(regl, params){
 
-  // Custom column reordering
   if (params.zoom_data.y.cursor_rel_min <=0 ){
-
     custom_label_reorder(regl, params, 'col');
-
   }
-
   else if (params.zoom_data.x.cursor_rel_min <=0){
     custom_label_reorder(regl, params, 'row');
   }
+
 }
 
 /***/ }),

@@ -39,7 +39,7 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
           inst_rotate = -90;
         }
         return 'rotate('+ inst_rotate +')';
-      })
+      });
 
     axis_slider_container
       .append('rect')

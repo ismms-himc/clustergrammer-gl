@@ -41634,20 +41634,19 @@ module.exports = function start_animation(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var custom_col_reorder = __webpack_require__(/*! ./../reorders/custom_col_reorder */ "./src/reorders/custom_col_reorder.js");
-var custom_row_reorder = __webpack_require__(/*! ./../reorders/custom_row_reorder */ "./src/reorders/custom_row_reorder.js");
+var custom_label_reorder = __webpack_require__(/*! ./../reorders/custom_label_reorder */ "./src/reorders/custom_label_reorder.js");
 
 module.exports = function double_clicking(regl, params){
 
   // Custom column reordering
   if (params.zoom_data.y.cursor_rel_min <=0 ){
 
-    custom_col_reorder(regl, params);
+    custom_label_reorder(regl, params, 'col');
 
   }
 
   else if (params.zoom_data.x.cursor_rel_min <=0){
-    custom_row_reorder(regl, params);
+    custom_label_reorder(regl, params, 'row');
   }
 }
 
@@ -44548,119 +44547,66 @@ module.exports = function initialize_params(regl, network){
 
 /***/ }),
 
-/***/ "./src/reorders/custom_col_reorder.js":
-/*!********************************************!*\
-  !*** ./src/reorders/custom_col_reorder.js ***!
-  \********************************************/
+/***/ "./src/reorders/custom_label_reorder.js":
+/*!**********************************************!*\
+  !*** ./src/reorders/custom_label_reorder.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
 
-module.exports = function custom_col_reorder(regl, params){
+module.exports = function custom_label_reorder(regl, params, inst_axis){
 
-  // update col custom order
+  // update custom label order
   var full_name;
-  if (params.labels.titles.col !== ''){
-    full_name = params.labels.titles.col + ': ' +
-                params.int.mouseover.col.name;
+  if (params.labels.titles[inst_axis] !== ''){
+    full_name = params.labels.titles[inst_axis] + ': ' +
+                params.int.mouseover[inst_axis].name;
   } else {
-    full_name = params.int.mouseover.col.name;
+    full_name = params.int.mouseover[inst_axis].name;
   }
 
-  var found_col_index = _.indexOf(params.network.col_node_names,
+  var found_label_index = _.indexOf(params.network[inst_axis + '_node_names'],
                                   full_name);
 
   var mat = params.mat_data;
+
   var tmp_arr = [];
+  var other_axis;
+  if (inst_axis === 'col'){
+    other_axis = 'row';
+    console.log('col')
+    _.each(mat, function(inst_row){
+      tmp_arr.push(inst_row[found_label_index]);
+    });
+  } else {
+    console.log('row')
+    other_axis = 'col';
+    tmp_arr = mat[found_label_index]
+  }
 
-  _.each(mat, function(inst_row){
-    tmp_arr.push(inst_row[found_col_index]);
-  });
-
-  // sort the cols
   var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
     return tmp_arr[b] - tmp_arr[a];
   });
 
-  _.map(params.network.row_nodes, function(inst_node, node_index){
-    inst_node.custom = params.labels.num_row - tmp_sort[node_index]
+
+  _.map(params.network[other_axis + '_nodes'], function(inst_node, node_index){
+    inst_node.custom = params.labels['num_' + other_axis] - tmp_sort[node_index]
   })
 
   // sort array says which index contains highest lowest values
   // convert to name list
   var ordered_names = [];
   _.map(tmp_sort, function(inst_index){
-    ordered_names.push(params.network.row_nodes[inst_index].name);
+    ordered_names.push(params.network[other_axis + '_nodes'][inst_index].name);
   })
 
-  params.network.row_nodes.forEach(function(node){
-    node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
+  params.network[other_axis + '_nodes'].forEach(function(node){
+    node.custom = params.labels['num_' + other_axis] - _.indexOf(ordered_names, node.name) - 1;
   })
 
-  run_reorder(regl, params, 'row', 'custom');
-
-}
-
-/***/ }),
-
-/***/ "./src/reorders/custom_row_reorder.js":
-/*!********************************************!*\
-  !*** ./src/reorders/custom_row_reorder.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
-
-module.exports = function custom_row_reorder(regl, params){
-  console.log('run custom row reordering');
-
-  // update row custom order
-  var full_name;
-  if (params.labels.titles.row !== ''){
-    full_name = params.labels.titles.row + ': ' +
-                params.int.mouseover.row.name;
-  } else {
-    full_name = params.int.mouseover.row.name;
-  }
-
-  var found_row_index = _.indexOf(params.network.row_node_names,
-                                  full_name);
-
-  var mat = params.mat_data;
-  var tmp_arr = [];
-
-  // debugger;
-
-  // _.each(mat, function(inst_row){
-  //   tmp_arr.
-  // })
-
-  tmp_arr = mat[found_row_index]
-
-  // sort the rows
-  var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
-    return tmp_arr[b] - tmp_arr[a];
-  });
-
-  ////////////////////////////////////////////
-  _.map(params.network.col_nodes, function(inst_node, node_index){
-    inst_node.custom = params.labels.num_col - tmp_sort[node_index]
-  })
-
-  // sort array says which index contains highest lowest values
-  // convert to name list
-  var ordered_names = [];
-  _.map(tmp_sort, function(inst_index){
-    ordered_names.push(params.network.col_nodes[inst_index].name);
-  })
-
-  params.network.col_nodes.forEach(function(node){
-    node.custom = params.labels.num_col - _.indexOf(ordered_names, node.name) - 1;
-  })
-
-  run_reorder(regl, params, 'col', 'custom');
+  run_reorder(regl, params, other_axis, 'custom');
 
 }
 

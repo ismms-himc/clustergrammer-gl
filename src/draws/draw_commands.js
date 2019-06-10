@@ -1,5 +1,7 @@
 module.exports = function draw_commands(regl, params){
 
+  require('./../params/generate_cat_args_arrs')(regl, params);
+
   var draw_labels = params.labels.draw_labels;
   require('./draw_matrix_components')(regl, params);
   require('./draw_axis_components')(regl, params, 'row', draw_labels);

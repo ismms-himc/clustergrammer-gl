@@ -53,6 +53,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
 
+    // console.log('inst_cat', inst_cat)
+
     /*
       Added fallback color
     */
@@ -78,14 +80,32 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
-    // if (params.tooltip.tooltip_type == inst_axis + '-label'){
+    // console.log('tooltip_type', params.tooltip.tooltip_type)
+    // if (params.tooltip.tooltip_type){
+
+    //   // params.int.mouseover.col.cats[0]
     //   console.log(inst_axis + '-label')
     // }
 
     // console.log(inst_cat, params.tooltip.tooltip_type);
 
+    var inst_opacity = 1.0;
+    if (params.tooltip.tooltip_type){
+
+      // console.log(params.tooltip.tooltip_type)
+      if (params.tooltip.tooltip_type == 'col-cat-0'){
+        inst_opacity = 0.1;
+
+      }
+
+    }
+
+    if (params.int.mouseover.col.cats[0] == inst_cat){
+      inst_opacity = 1.0
+    }
+
     // vary opacity
-    color_arr[i] = color_to_rgba(inst_color, 0.8);
+    color_arr[i] = color_to_rgba(inst_color, inst_opacity);
   }
 
   const color_buffer = regl.buffer({
@@ -223,6 +243,21 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop('run_animation')
     },
+
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
 
     count: 6,
     instances: num_labels,

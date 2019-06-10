@@ -5,6 +5,8 @@ var make_cat_args = require('./../cats/make_cat_args');
 
 module.exports = function generate_cat_args_arrs(regl, params){
 
+  // console.log('re-generate cat parameters because mousing over cats')
+
   params.cat_args = {};
   params.cat_args.row = [];
   params.cat_args.col = [];
@@ -25,7 +27,7 @@ module.exports = function generate_cat_args_arrs(regl, params){
         );
       });
 
-      console.log('make_cat_args')
+      // console.log('make_cat_args')
 
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }

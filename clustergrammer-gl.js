@@ -39439,6 +39439,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
 
+    // console.log('inst_cat', inst_cat)
+
     /*
       Added fallback color
     */
@@ -39464,14 +39466,32 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
-    // if (params.tooltip.tooltip_type == inst_axis + '-label'){
+    // console.log('tooltip_type', params.tooltip.tooltip_type)
+    // if (params.tooltip.tooltip_type){
+
+    //   // params.int.mouseover.col.cats[0]
     //   console.log(inst_axis + '-label')
     // }
 
     // console.log(inst_cat, params.tooltip.tooltip_type);
 
+    var inst_opacity = 1.0;
+    if (params.tooltip.tooltip_type){
+
+      // console.log(params.tooltip.tooltip_type)
+      if (params.tooltip.tooltip_type == 'col-cat-0'){
+        inst_opacity = 0.1;
+
+      }
+
+    }
+
+    if (params.int.mouseover.col.cats[0] == inst_cat){
+      inst_opacity = 1.0
+    }
+
     // vary opacity
-    color_arr[i] = color_to_rgba(inst_color, 0.8);
+    color_arr[i] = color_to_rgba(inst_color, inst_opacity);
   }
 
   const color_buffer = regl.buffer({
@@ -39609,6 +39629,21 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop('run_animation')
     },
+
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
 
     count: 6,
     instances: num_labels,
@@ -41338,6 +41373,8 @@ module.exports = function draw_background_calculations(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = function draw_commands(regl, params){
+
+  __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
 
   var draw_labels = params.labels.draw_labels;
   __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
@@ -44381,6 +44418,8 @@ var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/ca
 
 module.exports = function generate_cat_args_arrs(regl, params){
 
+  // console.log('re-generate cat parameters because mousing over cats')
+
   params.cat_args = {};
   params.cat_args.row = [];
   params.cat_args.col = [];
@@ -44401,7 +44440,7 @@ module.exports = function generate_cat_args_arrs(regl, params){
         );
       });
 
-      console.log('make_cat_args')
+      // console.log('make_cat_args')
 
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }

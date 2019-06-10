@@ -39464,11 +39464,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
-    if (params.tooltip.tooltip_type == inst_axis + '-label'){
-      console.log(inst_axis + '-label')
-    }
+    // if (params.tooltip.tooltip_type == inst_axis + '-label'){
+    //   console.log(inst_axis + '-label')
+    // }
 
-    console.log(inst_cat, params.tooltip.tooltip_type);
+    // console.log(inst_cat, params.tooltip.tooltip_type);
 
     // vary opacity
     color_arr[i] = color_to_rgba(inst_color, 0.8);
@@ -41393,12 +41393,13 @@ module.exports = function draw_interacting(regl, params){
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 
 module.exports = function draw_labels_tooltips_or_dendro(regl, params){
+
   // turn back on draw_labels
   ///////////////////////////////
 
-  draw_commands(regl, params);
+  console.log('draw_labels_tooltips_or_dendro')
 
-  params.tooltip.remove_tooltip_frame = true;
+  draw_commands(regl, params);
 
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;
@@ -41474,11 +41475,6 @@ module.exports = function draw_mouseover(regl, params){
     .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
-
-  if (params.tooltip.remove_tooltip_frame){
-      // console.log('--- shut down remove_tooltip_frame')
-    params.tooltip.remove_tooltip_frame = false;
-  }
 
   setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 };
@@ -41671,13 +41667,20 @@ module.exports = function run_viz(regl, network){
 
       params.ani.update_viz = false;
 
+      console.log('still interacting')
+
     }
     else if (params.int.still_mouseover == true){
+
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
+
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
+
+
       draw_labels_tooltips_or_dendro(regl, params);
+
     } else {
       // run background calculations
       draw_background_calculations(regl, params);
@@ -44516,7 +44519,6 @@ module.exports = function generate_tooltip_params(regl, params){
 
   params.tooltip = {};
   params.tooltip.show_tooltip = false;
-  params.tooltip.remove_tooltip_frame = true;
   params.tooltip.in_bounds_tooltip = false;
   params.tooltip.background_opacity = 0.75;
   params.tooltip.tooltip_type = null;

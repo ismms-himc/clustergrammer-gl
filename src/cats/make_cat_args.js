@@ -78,11 +78,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
-    if (params.tooltip.tooltip_type == inst_axis + '-label'){
-      console.log(inst_axis + '-label')
-    }
+    // if (params.tooltip.tooltip_type == inst_axis + '-label'){
+    //   console.log(inst_axis + '-label')
+    // }
 
-    console.log(inst_cat, params.tooltip.tooltip_type);
+    // console.log(inst_cat, params.tooltip.tooltip_type);
 
     // vary opacity
     color_arr[i] = color_to_rgba(inst_color, 0.8);

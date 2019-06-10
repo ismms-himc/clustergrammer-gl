@@ -1,12 +1,13 @@
 var draw_commands = require('./draw_commands');
 
 module.exports = function draw_labels_tooltips_or_dendro(regl, params){
+
   // turn back on draw_labels
   ///////////////////////////////
 
-  draw_commands(regl, params);
+  console.log('draw_labels_tooltips_or_dendro')
 
-  params.tooltip.remove_tooltip_frame = true;
+  draw_commands(regl, params);
 
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;

@@ -52,4 +52,11 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
 
   run_reorder(regl, params, other_axis, 'custom');
 
+  // unselect reorder buttons
+  var button_color = '#eee';
+
+  d3.select(params.root + ' .' + inst_axis + '-reorder-buttons')
+  .selectAll('rect')
+  .style('stroke', button_color);
+
 }

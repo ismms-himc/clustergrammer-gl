@@ -38592,7 +38592,8 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
 
   // Row Titles
   var pos_x = 125;
-  var pos_y = 60; // 85 with two cats
+  // var pos_y = 98; // 60 with no cats, 72 with one cat, 85 with two cats
+  var pos_y = 62 + 12 * params.cat_data.col.length;
   var row_cat_title_group = d3.select(params.root + ' .canvas-container')
     .append('g')
     .style('position', 'absolute')

@@ -15,7 +15,7 @@ import pandas as pd
 
 # generate random matrix
 num_rows = 100
-num_cols = 3000
+num_cols = 100
 np.random.seed(seed=100)
 mat = np.random.rand(num_rows, num_cols)
 
@@ -51,9 +51,12 @@ df = pd.DataFrame(data=mat, columns=cols, index=rows)
   # net.make_clust()
   # net.dendro_cats('row', 5)
 
-new_rows = [(x, 'Cat-1: 1', 'Cat-2: A') for x in df.index]
-new_cols = [(x, 'Cat-1: 1') for x in df.columns]
+new_rows = [(x, 'Cat-1: A', 'Cat-2: B') for x in df.index]
+# new_cols = [(x, 'Cat-1: A') for x in df.columns]
+# new_cols = [(x, 'Cat-1: A', 'Cat-2: B') for x in df.columns]
+# new_cols = [(x, 'Cat-1: A', 'Cat-2: B', 'Cat-3: C') for x in df.columns]
 df.index = new_rows
+# df.columns = new_cols
 
 net.load_df(df)
 

@@ -38516,8 +38516,9 @@ var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/re
 module.exports = function build_reorder_cat_titles(regl, cgm){
 
   var params = cgm.params;
-
   var button_color = '#eee';
+
+  // Column Titles
   var pos_x = 845;
   var pos_y = 125;
   var col_cat_title_group = d3.select(params.root + ' .canvas-container')
@@ -38587,6 +38588,84 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
       return 'translate( 0, '+ y_trans +')';
     })
     .style('user-select', 'none');
+
+
+  // Row Titles
+  var pos_x = 125;
+  // var pos_y = 98; // 60 with no cats, 72 with one cat, 85 with two cats
+  var pos_y = 62 + 12 * params.cat_data.col.length;
+  var row_cat_title_group = d3.select(params.root + ' .canvas-container')
+    .append('g')
+    .style('position', 'absolute')
+    .style('top', pos_y + 'px')
+    .style('left', pos_x + 'px')
+    .classed('row-cat-title-group', true);
+
+  var row_dim_x = 60;
+  var row_dim_y = 10;
+
+  var row_cat_title_svg = row_cat_title_group
+    .append('svg')
+    .style('width', function(){
+      var svg_height = row_dim_y * params.cat_data.row.length + 5;
+      return svg_height  + 'px'
+    })
+    .style('height', row_dim_x + 'px')
+    .classed('row-cat-title-svg', true);
+
+  var row_cat_reorder_group = row_cat_title_svg
+    .append('g')
+    .classed('row-cat-reorder-group', true)
+    .attr('transform', function(){
+        inst_rotate = -90;
+        return 'translate(0,' + row_dim_x + '), rotate('+ inst_rotate +')';
+      });
+
+  row_cat_reorder_group
+    .selectAll('rect')
+    .data(params.cat_data.row)
+    .enter()
+    .append('text')
+    .text(function(d){
+      return d.cat_title;
+    })
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight',  800)
+    .style('font-size', 12)
+    .attr('transform', function(d, i){
+      var y_trans = (row_dim_y + 1) * i  + 10 ;
+      return 'translate( 0, '+ y_trans +')';
+    })
+
+  row_cat_reorder_group
+    .selectAll('rect')
+    .data(params.cat_data.row)
+    .enter()
+    .append('rect')
+    .style('width', row_dim_x + 'px')
+    .style('height', function(){
+      var rect_height = row_dim_y + 2;
+      return rect_height + 'px'
+    })
+    .style('fill', 'white')
+    .style('opacity', 0.0)
+    .on('dblclick', function(d, i){
+
+      run_reorder(regl, params, 'row', 'cat_' + String(i) + '_index');
+
+      params.order.inst.row = 'cat_' + String(i) + '_index';
+
+      d3.select(params.root + ' .row-reorder-buttons')
+        .selectAll('rect')
+        .style('stroke', button_color);
+
+    })
+    .attr('transform', function(d, i){
+      var y_trans = (row_dim_y + 2)* i ;
+      return 'translate( 0, '+ y_trans +')';
+    })
+    .style('user-select', 'none');
+
 
 };
 
@@ -39351,7 +39430,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
 
-
   /////////////////////////////////
   // Label Color Buffer
   /////////////////////////////////
@@ -39360,7 +39438,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
-    // console.log(inst_cat)
+
+    // console.log('inst_cat', inst_cat)
 
     /*
       Added fallback color
@@ -39387,7 +39466,33 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
-    color_arr[i] = color_to_rgba(inst_color, 1);
+    // console.log('tooltip_type', params.tooltip.tooltip_type)
+    // if (params.tooltip.tooltip_type){
+
+    //   // params.int.mouseover.col.cats[0]
+    //   console.log(inst_axis + '-label')
+    // }
+
+    // console.log(inst_cat, params.tooltip.tooltip_type);
+
+    var inst_opacity = 1.0;
+
+    // if (params.tooltip.tooltip_type){
+
+    //   // console.log(params.tooltip.tooltip_type)
+    //   // if (params.tooltip.tooltip_type == 'col-cat-0'){
+    //   if (params.tooltip.tooltip_type.includes('col-cat-')){
+    //     inst_opacity = 0.1;
+    //   }
+
+    // }
+
+    // if (params.int.mouseover.col.cats[0] == inst_cat){
+    //   inst_opacity = 1.0
+    // }
+
+    // vary opacity
+    color_arr[i] = color_to_rgba(inst_color, inst_opacity);
   }
 
   const color_buffer = regl.buffer({
@@ -39525,6 +39630,21 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop('run_animation')
     },
+
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
 
     count: 6,
     instances: num_labels,
@@ -39903,7 +40023,7 @@ module.exports = function build_control_panel(regl, cgm){
   button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
-  button_dim.fs = 12;
+  button_dim.fs = 11;
 
   var button_groups = {};
   button_groups.row = {};
@@ -39917,14 +40037,14 @@ module.exports = function build_control_panel(regl, cgm){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'alpha'];
+  var order_options = ['clust', 'sum', 'var', 'alpha', 'umap'];
 
-  // make reorder title
+  // make Rarrange title
 
   control_svg
   .append('text')
   .classed('reorder_title', true)
-  .text('reorder'.toUpperCase())
+  .text('rearrange'.toUpperCase())
   .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
   .style('font-weight', 400)
   .style('font-size', button_dim.fs)
@@ -40674,7 +40794,7 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
           inst_rotate = -90;
         }
         return 'rotate('+ inst_rotate +')';
-      })
+      });
 
     axis_slider_container
       .append('rect')
@@ -41255,6 +41375,11 @@ module.exports = function draw_background_calculations(regl, params){
 
 module.exports = function draw_commands(regl, params){
 
+  //
+  // This is required to updated category opacity when mousing over
+  //
+  // require('./../params/generate_cat_args_arrs')(regl, params);
+
   var draw_labels = params.labels.draw_labels;
   __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
   __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'row', draw_labels);
@@ -41281,7 +41406,7 @@ module.exports = function draw_commands(regl, params){
 
 module.exports = function draw_interacting(regl, params){
 
-  var wait_time_final_interact = 50;
+  var wait_time_final_interact = 10;
 
   params.int.total = params.int.total + 1;
 
@@ -41309,12 +41434,13 @@ module.exports = function draw_interacting(regl, params){
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 
 module.exports = function draw_labels_tooltips_or_dendro(regl, params){
+
   // turn back on draw_labels
   ///////////////////////////////
 
-  draw_commands(regl, params);
+  console.log('draw_labels_tooltips_or_dendro')
 
-  params.tooltip.remove_tooltip_frame = true;
+  draw_commands(regl, params);
 
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;
@@ -41382,7 +41508,7 @@ module.exports = function draw_matrix_components(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
-var wait_time_final_mouseover = 50;
+var wait_time_final_mouseover = 10;
 
 module.exports = function draw_mouseover(regl, params){
 
@@ -41390,11 +41516,6 @@ module.exports = function draw_mouseover(regl, params){
     .remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
-
-  if (params.tooltip.remove_tooltip_frame){
-      // console.log('--- shut down remove_tooltip_frame')
-    params.tooltip.remove_tooltip_frame = false;
-  }
 
   setTimeout(final_mouseover_frame, wait_time_final_mouseover, regl, params);
 };
@@ -41587,8 +41708,12 @@ module.exports = function run_viz(regl, network){
 
       params.ani.update_viz = false;
 
+      console.log('still interacting')
+
     }
     else if (params.int.still_mouseover == true){
+
+      console.log('still_mouseover')
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
@@ -41624,6 +41749,28 @@ module.exports = function start_animation(params){
 
   params.ani.duration_end = params.ani.last_switch_time + params.ani.ani_duration;
 };
+
+/***/ }),
+
+/***/ "./src/interactions/double_clicking.js":
+/*!*********************************************!*\
+  !*** ./src/interactions/double_clicking.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var custom_label_reorder = __webpack_require__(/*! ./../reorders/custom_label_reorder */ "./src/reorders/custom_label_reorder.js");
+
+module.exports = function double_clicking(regl, params){
+
+  if (params.zoom_data.y.cursor_rel_min <=0 ){
+    custom_label_reorder(regl, params, 'col');
+  }
+  else if (params.zoom_data.x.cursor_rel_min <=0){
+    custom_label_reorder(regl, params, 'row');
+  }
+
+}
 
 /***/ }),
 
@@ -41703,33 +41850,38 @@ module.exports = function find_mouseover_element(regl, params, ev){
   var mouseover = params.int.mouseover;
 
   // reset mouseover params
-  _.each(['row', 'col'], function(i_axis){
-    params.int.mouseover[i_axis] = {};
-    params.int.mouseover[i_axis].name = null;
-    params.int.mouseover[i_axis].cats = [];
+  _.each(['row', 'col'], function(inst_axis){
+    params.int.mouseover[inst_axis] = {};
+    params.int.mouseover[inst_axis].name = null;
+    params.int.mouseover[inst_axis].cats = [];
   });
   params.int.mouseover.value = null;
 
   var offcenter = {};
-  var i_cat_name;
-  var cursor_rel_min = {};
+  var inst_cat_name;
   var dim_dict = {};
   dim_dict.x = 'width';
   dim_dict.y = 'height';
 
-  _.each(['x', 'y'], function(i_axis){
+  var cursor_rel_min = {};
+  _.each(['x', 'y'], function(inst_axis){
 
     // try updating mouseover position
-    params.zoom_data[i_axis].cursor_position = ev[i_axis + '0'];
+    params.zoom_data[inst_axis].cursor_position = ev[inst_axis + '0'];
 
     // convert offcenter WebGl units to pixel units
-    offcenter[i_axis] = (params.viz_dim.canvas[dim_dict[i_axis]] *
-                             params.viz_dim.offcenter[i_axis])/2;
+    offcenter[inst_axis] = (params.viz_dim.canvas[dim_dict[inst_axis]] *
+                             params.viz_dim.offcenter[inst_axis])/2;
 
-    cursor_rel_min[i_axis] = params.zoom_data[i_axis].cursor_position -
-                                  viz_dim_heat[i_axis].min - offcenter[i_axis];
+    // calculate relative to min position before zooming
+    cursor_rel_min[inst_axis] = params.zoom_data[inst_axis].cursor_position -
+                                  viz_dim_heat[inst_axis].min - offcenter[inst_axis];
 
-    cursor_rel_min[i_axis] = cursor_rel_min[i_axis] / params.zoom_data[i_axis].total_zoom - params.zoom_data[i_axis].total_pan_min;
+    // reflect zooming and panning in relative to min calculation
+    cursor_rel_min[inst_axis] = cursor_rel_min[inst_axis] / params.zoom_data[inst_axis].total_zoom - params.zoom_data[inst_axis].total_pan_min;
+
+    // transfer to zoom_data
+    params.zoom_data[inst_axis].cursor_rel_min = cursor_rel_min[inst_axis];
 
   });
 
@@ -41741,45 +41893,60 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
     var axis_index;
 
-    var i_dims = [];
+    var inst_dims = [];
     if (params.tooltip.tooltip_type === 'matrix-cell'){
-      i_dims = ['row', 'col'];
+      inst_dims = ['row', 'col'];
     } else if (params.tooltip.tooltip_type.indexOf('row') >= 0){
-      i_dims = ['row'];
+      inst_dims = ['row'];
     } else if (params.tooltip.tooltip_type.indexOf('col') >= 0){
-      i_dims = ['col'];
+      inst_dims = ['col'];
 
-      var y_heat_min = 126;
-      var i_pix_y = params.zoom_data.y.cursor_position
-      var shift_col_label = y_heat_min - i_pix_y;
-      if (shift_col_label > 0){
-        cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
+      // shift found column label to reflect slanted column labels
+      ///////////////////////////////////////////////////////////////
+      // the shift is equal to the height above the column labels
+      // however, this should be dimished based on how far zoomed out the user is
+
+      // console.log(( params.zoom_data.x.total_zoom/params.zoom_restrict.x.max ))
+
+      // only shift if zooming is greater than 1% of total zoom available in x
+      if (params.zoom_data.x.total_zoom/params.zoom_restrict.x.max > 0.01){
+        var y_heat_min = 126;
+        var i_pix_y = params.zoom_data.y.cursor_position
+
+        // console.log('shifting col label to account for 45% angle')
+
+        var shift_col_label = y_heat_min - i_pix_y;
+
+        if (shift_col_label > 0){
+          cursor_rel_min.x = cursor_rel_min.x - shift_col_label/ params.zoom_data.x.total_zoom;
+        }
+
       }
     }
 
-    _.each(i_dims, function(i_axis){
+    _.each(inst_dims, function(inst_axis){
 
-      if (i_axis === 'row'){
+      if (inst_axis === 'row'){
         axis_index = Math.floor(cursor_rel_min.y/params.tile_pix_height);
-        axis_indices[i_axis] = params.labels.ordered_labels[i_axis + '_indices'][axis_index];
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
       } else {
         axis_index = Math.floor(cursor_rel_min.x/params.tile_pix_width);
-        axis_indices[i_axis] = params.labels.ordered_labels[i_axis + '_indices'][axis_index];
+        axis_indices[inst_axis] = params.labels.ordered_labels[inst_axis + '_indices'][axis_index];
       }
 
-      mouseover[i_axis].name = params.labels.ordered_labels[i_axis + 's'][axis_index];
+      mouseover[inst_axis].name = params.labels.ordered_labels[inst_axis + 's'][axis_index];
 
-      if (typeof mouseover[i_axis].name === 'string'){
-        if (mouseover[i_axis].name.includes(': ')){
-          mouseover[i_axis].name = mouseover[i_axis].name.split(': ')[1];
+      if (typeof mouseover[inst_axis].name === 'string'){
+        if (mouseover[inst_axis].name.includes(': ')){
+          mouseover[inst_axis].name = mouseover[inst_axis].name.split(': ')[1];
         }
       }
 
       // reset cat names
-      mouseover[i_axis].cats = [];
-      _.each(params.cat_data[i_axis], function(d, cat_index){
-        i_cat_name = params.labels.ordered_labels[i_axis + '_cats-' + cat_index][axis_index];
-        mouseover[i_axis].cats[cat_index] = i_cat_name;
+      mouseover[inst_axis].cats = [];
+      _.each(params.cat_data[inst_axis], function(d, cat_index){
+        inst_cat_name = params.labels.ordered_labels[inst_axis + '_cats-' + cat_index][axis_index];
+        mouseover[inst_axis].cats[cat_index] = inst_cat_name;
       });
 
     });
@@ -42344,7 +42511,7 @@ function interactionEvents (opts) {
 
 module.exports = function keep_track_of_interactions(params){
 
-  var wait_time_final_interact = 100;
+  var wait_time_final_interact = 25;
 
   // keep track of interactions
   if (params.int.still_interacting == false){
@@ -42499,7 +42666,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.7.5
+  clustergrammer-gl version 0.8.0
 
  */
 
@@ -42508,7 +42675,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.7.5');
+  console.log('clustergrammer-gl version 0.8.0');
   console.log('################################');
 
   // decompress if necessary
@@ -42586,8 +42753,6 @@ function clustergrammer_gl(args){
   __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")(regl, cgm);
 
   __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(regl, cgm);
-
-  console.log('empty?', d3.select(cgm.params.root + ' .canvas-container canvas').empty());
 
   d3.select(cgm.params.root + ' .canvas-container canvas')
     .on('mouseover', function(){
@@ -44134,6 +44299,7 @@ module.exports = function gen_int_par(params){
 
   interact.mouseover.value = null;
   interact.enable_viz_interact = true;
+  // interact.wait_time_final_interact = 50;
 
   params.int = interact;
 };
@@ -44252,7 +44418,9 @@ var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/ca
 
 /* eslint-disable no-loop-func */
 
-module.exports = function generate_cat_args_arrs_params(regl, params){
+module.exports = function generate_cat_args_arrs(regl, params){
+
+  // console.log('re-generate cat parameters because mousing over cats')
 
   params.cat_args = {};
   params.cat_args.row = [];
@@ -44273,6 +44441,9 @@ module.exports = function generate_cat_args_arrs_params(regl, params){
           params, inst_axis, cat_index, params.order[inst_state][inst_axis]
         );
       });
+
+      // console.log('make_cat_args')
+
       params.cat_args[inst_axis][cat_index] = make_cat_args(regl, params, inst_axis, cat_index);
     }
   });
@@ -44389,7 +44560,6 @@ module.exports = function generate_tooltip_params(regl, params){
 
   params.tooltip = {};
   params.tooltip.show_tooltip = false;
-  params.tooltip.remove_tooltip_frame = true;
   params.tooltip.in_bounds_tooltip = false;
   params.tooltip.background_opacity = 0.75;
   params.tooltip.tooltip_type = null;
@@ -44450,6 +44620,9 @@ module.exports = function initialize_params(regl, network){
   __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js")(params);
   var labels = params.labels;
 
+  console.log('generate_tooltip_params')
+  __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js")(regl, params);
+
   __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js")(regl, params);
   __webpack_require__(/*! ./generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
   params.zoom_data = __webpack_require__(/*! ./../zoom/ini_zoom_data */ "./src/zoom/ini_zoom_data.js")();
@@ -44461,7 +44634,6 @@ module.exports = function initialize_params(regl, network){
     __webpack_require__(/*! ./../matrix_labels/calc_text_offsets */ "./src/matrix_labels/calc_text_offsets.js")(params, inst_axis);
   });
 
-  __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js")(regl, params);
   params.tile_pix_width = params.viz_dim.heat.width/labels.num_col;
   params.tile_pix_height = params.viz_dim.heat.height/labels.num_row;
 
@@ -44501,6 +44673,78 @@ module.exports = function initialize_params(regl, network){
 
   return params;
 };
+
+/***/ }),
+
+/***/ "./src/reorders/custom_label_reorder.js":
+/*!**********************************************!*\
+  !*** ./src/reorders/custom_label_reorder.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
+
+module.exports = function custom_label_reorder(regl, params, inst_axis){
+
+  // update custom label order
+  var full_name;
+  if (params.labels.titles[inst_axis] !== ''){
+    full_name = params.labels.titles[inst_axis] + ': ' +
+                params.int.mouseover[inst_axis].name;
+  } else {
+    full_name = params.int.mouseover[inst_axis].name;
+  }
+
+  var found_label_index = _.indexOf(params.network[inst_axis + '_node_names'],
+                                  full_name);
+
+  var mat = params.mat_data;
+
+  var tmp_arr = [];
+  var other_axis;
+  if (inst_axis === 'col'){
+    other_axis = 'row';
+    console.log('col')
+    _.each(mat, function(inst_row){
+      tmp_arr.push(inst_row[found_label_index]);
+    });
+  } else {
+    console.log('row')
+    other_axis = 'col';
+    tmp_arr = mat[found_label_index]
+  }
+
+  var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
+    return tmp_arr[b] - tmp_arr[a];
+  });
+
+
+  _.map(params.network[other_axis + '_nodes'], function(inst_node, node_index){
+    inst_node.custom = params.labels['num_' + other_axis] - tmp_sort[node_index]
+  })
+
+  // sort array says which index contains highest lowest values
+  // convert to name list
+  var ordered_names = [];
+  _.map(tmp_sort, function(inst_index){
+    ordered_names.push(params.network[other_axis + '_nodes'][inst_index].name);
+  })
+
+  params.network[other_axis + '_nodes'].forEach(function(node){
+    node.custom = params.labels['num_' + other_axis] - _.indexOf(ordered_names, node.name) - 1;
+  })
+
+  run_reorder(regl, params, other_axis, 'custom');
+
+  // unselect reorder buttons
+  var button_color = '#eee';
+
+  d3.select(params.root + ' .' + inst_axis + '-reorder-buttons')
+  .selectAll('rect')
+  .style('stroke', button_color);
+
+}
 
 /***/ }),
 
@@ -45293,6 +45537,9 @@ module.exports = function ini_zoom_data(){
     // this is used to keep track of the final mouseover
     inst_data.total_mouseover = 0;
 
+    // cursor position relative min
+    inst_data.cursor_rel_min = 0;
+
     // add to zoom_data
     zoom_data[inst_dim] = inst_data;
   });
@@ -45592,8 +45839,7 @@ var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-ev
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
 var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
-
-var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
+var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking */ "./src/interactions/double_clicking.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -45616,56 +45862,15 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     hide_d3_tip(params);
 
+    // console.log(params.int.mouseover.row.name, params.int.mouseover.col.name)
+
   })
   .on('interactionend', function(){
 
 
     if (params.ani.time - params.ani.last_click < params.ani.dblclick_duration){
 
-      // update col custom order
-      var full_name;
-      if (params.labels.titles.col !== ''){
-        full_name = params.labels.titles.col + ': ' +
-                    params.int.mouseover.col.name;
-      } else {
-        full_name = params.int.mouseover.col.name;
-      }
-
-      var found_col_index = _.indexOf(params.network.col_node_names, full_name);
-
-      var mat = params.mat_data;
-      var tmp_arr = [];
-
-      // row_nodes.forEach(function(node, index) {
-      //   tmp_arr.push( mat[index].row_data[inst_col].value);
-      // });
-
-      _.each(mat, function(inst_row){
-        tmp_arr.push(inst_row[found_col_index]);
-        // tmp_arr.push(inst_row[28]);
-      });
-
-      // sort the cols
-      var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
-        return tmp_arr[b] - tmp_arr[a];
-      });
-
-      _.map(params.network.row_nodes, function(inst_node, node_index){
-        inst_node.custom = params.labels.num_row - tmp_sort[node_index]
-      })
-
-      // sort array says which index contains highest lowest values
-      // convert to name list
-      var ordered_names = [];
-      _.map(tmp_sort, function(inst_index){
-        ordered_names.push(params.network.row_nodes[inst_index].name);
-      })
-
-      params.network.row_nodes.forEach(function(node){
-        node.custom = params.labels.num_row - _.indexOf(ordered_names, node.name) - 1;
-      })
-
-      run_reorder(regl, params, 'row', 'custom');
+      double_clicking(regl, params);
 
     } else {
 

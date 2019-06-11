@@ -23,3 +23,6 @@ Fernandez, N. F. et al. Clustergrammer, a web-based heatmap visualization and an
 Clustergrammer-GL is being developed by the [Human Immune Monitoring Center](https://icahn.mssm.edu/research/human-immune-monitoring-center) and [Ma'ayan lab](http://labs.icahn.mssm.edu/maayanlab/) at the [Icahn School of Medicine at Mount Sinai](http://icahn.mssm.edu/). More information about Clustergrammer's license can be found in [Clustergrammer's Documentation](https://clustergrammer.readthedocs.io/license.html).
 
 Please [contact us](http://clustergrammer.readthedocs.io/#funding-and-contact) for support, licensing questions, comments, and suggestions.
+
+## Releasing
+Update version (package.json and main.js). Set webpack to make all builds. Run npm publish.

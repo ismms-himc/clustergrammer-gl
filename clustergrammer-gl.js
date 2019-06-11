@@ -39436,15 +39436,12 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var is_mousing_over_cat = false;
   var inst_opacity = 1.0;
 
+  // if mousing over categories initialize all categories to low opacity
   if (params.tooltip.tooltip_type){
-
-    // if mousing over categories initialize all categories to low opacity
     if (params.tooltip.tooltip_type.includes('-cat-')){
-      // inst_opacity = 0.1;
       is_mousing_over_cat = true;
       var mouseover_cat_index = params.tooltip.tooltip_type.split('-')[2]
       mousing_over_cat = params.int.mouseover[inst_axis].cats[mouseover_cat_index]
-      // console.log('HERE', mousing_over_cat)
     }
   }
 
@@ -41372,10 +41369,27 @@ module.exports = function draw_background_calculations(regl, params){
 
 module.exports = function draw_commands(regl, params){
 
-  // This is required to updated category opacity when mousing over
-  __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+  // if mousing over categories initialize all categories to low opacity
+  var mousing_over_cat = false;
+  if (params.tooltip.tooltip_type){
+    if (params.tooltip.tooltip_type.includes('-cat-')){
+      // This is required to updated category opacity when mousing over
+      __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+      // console.log('generate_cat_args_arrs\n--------------------------')
 
-  console.log('draw_commands')
+      params.int.need_reset_cat_opacity = true;
+      mousing_over_cat = true;
+    }
+  }
+
+  if (params.int.need_reset_cat_opacity && mousing_over_cat == false){
+    // console.log('\n\n')
+    // console.log(mousing_over_cat)
+    // console.log(params.tooltip.tooltip_type)
+    // console.log('reset cat opacity\n==============================')
+    __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+  }
+
 
   var draw_labels = params.labels.draw_labels;
   __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
@@ -41435,7 +41449,7 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   // turn back on draw_labels
   ///////////////////////////////
 
-  console.log('draw_labels_tooltips_or_dendro')
+  // console.log('draw_labels_tooltips_or_dendro')
 
   draw_commands(regl, params);
 
@@ -44286,6 +44300,7 @@ module.exports = function gen_int_par(params){
   interact.total = 0;
   interact.still_interacting = false;
   interact.still_mouseover = false;
+  interact.need_reset_cat_opacity = false;
   interact.mouseover = {};
 
   _.each(['row', 'col'], function(inst_axis){

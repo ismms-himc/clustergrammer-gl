@@ -4,6 +4,7 @@ module.exports = function gen_int_par(params){
   interact.total = 0;
   interact.still_interacting = false;
   interact.still_mouseover = false;
+  interact.need_reset_cat_opacity = false;
   interact.mouseover = {};
 
   _.each(['row', 'col'], function(inst_axis){

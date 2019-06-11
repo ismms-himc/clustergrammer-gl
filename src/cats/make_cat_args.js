@@ -50,15 +50,12 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var is_mousing_over_cat = false;
   var inst_opacity = 1.0;
 
+  // if mousing over categories initialize all categories to low opacity
   if (params.tooltip.tooltip_type){
-
-    // if mousing over categories initialize all categories to low opacity
     if (params.tooltip.tooltip_type.includes('-cat-')){
-      // inst_opacity = 0.1;
       is_mousing_over_cat = true;
       var mouseover_cat_index = params.tooltip.tooltip_type.split('-')[2]
       mousing_over_cat = params.int.mouseover[inst_axis].cats[mouseover_cat_index]
-      // console.log('HERE', mousing_over_cat)
     }
   }
 

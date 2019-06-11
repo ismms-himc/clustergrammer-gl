@@ -39440,7 +39440,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
     // if mousing over categories initialize all categories to low opacity
     if (params.tooltip.tooltip_type.includes('-cat-')){
-      inst_opacity = 0.1;
+      // inst_opacity = 0.1;
       is_mousing_over_cat = true;
       var mouseover_cat_index = params.tooltip.tooltip_type.split('-')[2]
       mousing_over_cat = params.int.mouseover[inst_axis].cats[mouseover_cat_index]
@@ -39480,19 +39480,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = 'white';
     }
 
-    // console.log('tooltip_type', params.tooltip.tooltip_type)
-    // if (params.tooltip.tooltip_type){
-
-    //   // params.int.mouseover.col.cats[0]
-    //   console.log(inst_axis + '-label')
-    // }
-
-    // console.log(inst_cat, params.tooltip.tooltip_type);
-
-
     if (is_mousing_over_cat){
-      // console.log('mousing_over_cat', mousing_over_cat);
-
       if (mousing_over_cat == inst_cat){
         inst_opacity = 1.0;
       } else {

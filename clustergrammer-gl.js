@@ -39476,19 +39476,20 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     // console.log(inst_cat, params.tooltip.tooltip_type);
 
     var inst_opacity = 1.0;
-    if (params.tooltip.tooltip_type){
 
-      // console.log(params.tooltip.tooltip_type)
-      // if (params.tooltip.tooltip_type == 'col-cat-0'){
-      if (params.tooltip.tooltip_type.includes('col-cat-')){
-        inst_opacity = 0.1;
-      }
+    // if (params.tooltip.tooltip_type){
 
-    }
+    //   // console.log(params.tooltip.tooltip_type)
+    //   // if (params.tooltip.tooltip_type == 'col-cat-0'){
+    //   if (params.tooltip.tooltip_type.includes('col-cat-')){
+    //     inst_opacity = 0.1;
+    //   }
 
-    if (params.int.mouseover.col.cats[0] == inst_cat){
-      inst_opacity = 1.0
-    }
+    // }
+
+    // if (params.int.mouseover.col.cats[0] == inst_cat){
+    //   inst_opacity = 1.0
+    // }
 
     // vary opacity
     color_arr[i] = color_to_rgba(inst_color, inst_opacity);
@@ -41374,7 +41375,10 @@ module.exports = function draw_background_calculations(regl, params){
 
 module.exports = function draw_commands(regl, params){
 
-  __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+  //
+  // This is required to updated category opacity when mousing over
+  //
+  // require('./../params/generate_cat_args_arrs')(regl, params);
 
   var draw_labels = params.labels.draw_labels;
   __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);

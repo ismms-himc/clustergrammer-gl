@@ -90,19 +90,20 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     // console.log(inst_cat, params.tooltip.tooltip_type);
 
     var inst_opacity = 1.0;
-    if (params.tooltip.tooltip_type){
 
-      // console.log(params.tooltip.tooltip_type)
-      // if (params.tooltip.tooltip_type == 'col-cat-0'){
-      if (params.tooltip.tooltip_type.includes('col-cat-')){
-        inst_opacity = 0.1;
-      }
+    // if (params.tooltip.tooltip_type){
 
-    }
+    //   // console.log(params.tooltip.tooltip_type)
+    //   // if (params.tooltip.tooltip_type == 'col-cat-0'){
+    //   if (params.tooltip.tooltip_type.includes('col-cat-')){
+    //     inst_opacity = 0.1;
+    //   }
 
-    if (params.int.mouseover.col.cats[0] == inst_cat){
-      inst_opacity = 1.0
-    }
+    // }
+
+    // if (params.int.mouseover.col.cats[0] == inst_cat){
+    //   inst_opacity = 1.0
+    // }
 
     // vary opacity
     color_arr[i] = color_to_rgba(inst_color, inst_opacity);

@@ -41708,12 +41708,12 @@ module.exports = function run_viz(regl, network){
 
       params.ani.update_viz = false;
 
-      console.log('still interacting')
+      // console.log('still interacting')
 
     }
     else if (params.int.still_mouseover == true){
 
-      console.log('still_mouseover')
+      // console.log('still_mouseover')
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
@@ -42666,7 +42666,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.8.0
+  clustergrammer-gl version 0.8.1
 
  */
 
@@ -42675,7 +42675,7 @@ var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 function clustergrammer_gl(args){
 
   console.log('################################');
-  console.log('clustergrammer-gl version 0.8.0');
+  console.log('clustergrammer-gl version 0.8.1');
   console.log('################################');
 
   // decompress if necessary

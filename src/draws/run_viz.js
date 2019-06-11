@@ -49,12 +49,12 @@ module.exports = function run_viz(regl, network){
 
       params.ani.update_viz = false;
 
-      console.log('still interacting')
+      // console.log('still interacting')
 
     }
     else if (params.int.still_mouseover == true){
 
-      console.log('still_mouseover')
+      // console.log('still_mouseover')
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);

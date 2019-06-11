@@ -1,9 +1,9 @@
 module.exports = function draw_commands(regl, params){
 
-  //
   // This is required to updated category opacity when mousing over
-  //
-  // require('./../params/generate_cat_args_arrs')(regl, params);
+  require('./../params/generate_cat_args_arrs')(regl, params);
+
+  console.log('draw_commands')
 
   var draw_labels = params.labels.draw_labels;
   require('./draw_matrix_components')(regl, params);

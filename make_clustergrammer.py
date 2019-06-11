@@ -52,11 +52,19 @@ df = pd.DataFrame(data=mat, columns=cols, index=rows)
   # net.dendro_cats('row', 5)
 
 new_rows = [(x, 'Cat-1: A', 'Cat-2: B') for x in df.index]
-# new_cols = [(x, 'Cat-1: A') for x in df.columns]
+new_cols = [(x, 'Cat-1: A') for x in df.columns]
+
+new_cols = []
+inst_val = -round(df.shape[1]/2)
+for inst_col in df.columns.tolist():
+  inst_val = inst_val + 1
+  new_col = (inst_col, 'Val: ' + str(inst_val))
+  new_cols.append(new_col)
+
 # new_cols = [(x, 'Cat-1: A', 'Cat-2: B') for x in df.columns]
 # new_cols = [(x, 'Cat-1: A', 'Cat-2: B', 'Cat-3: C') for x in df.columns]
 df.index = new_rows
-# df.columns = new_cols
+df.columns = new_cols
 
 net.load_df(df)
 

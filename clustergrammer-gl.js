@@ -39380,6 +39380,31 @@ module.exports = function generate_cat_info(params){
 
 /***/ }),
 
+/***/ "./src/cats/get_cat_value.js":
+/*!***********************************!*\
+  !*** ./src/cats/get_cat_value.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function get_cat_value(unprocessed_value){
+
+  var super_string = ': ';
+  if (typeof unprocessed_value === 'string'){
+
+    if ( unprocessed_value.indexOf(super_string) > -1 ){
+      unprocessed_value = unprocessed_value.split(super_string)[1];
+    }
+  }
+
+  var cat_value = parseFloat(unprocessed_value);
+
+  return cat_value;
+
+};
+
+/***/ }),
+
 /***/ "./src/cats/make_cat_args.js":
 /*!***********************************!*\
   !*** ./src/cats/make_cat_args.js ***!
@@ -39389,6 +39414,7 @@ module.exports = function generate_cat_info(params){
 
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
+var get_cat_value = __webpack_require__(/*! ./get_cat_value */ "./src/cats/get_cat_value.js");
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
@@ -39448,6 +39474,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
+  console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
+
   /* Category Colors */
   ////////////////////////////
   // String based categories are working
@@ -39456,6 +39484,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
+
+    if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
+      inst_cat_value = get_cat_value(inst_cat)
+      console.log('value-cat', inst_cat_value);
+    }
 
     // Control Colors
     ////////////////////

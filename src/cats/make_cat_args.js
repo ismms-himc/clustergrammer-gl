@@ -1,5 +1,6 @@
 var m3 = require('./../draws/mat3_transform');
 var color_to_rgba = require('./../colors/color_to_rgba');
+var get_cat_value = require('./get_cat_value');
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
@@ -59,6 +60,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
+  console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
+
   /* Category Colors */
   ////////////////////////////
   // String based categories are working
@@ -67,6 +70,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
+
+    if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
+      inst_cat_value = get_cat_value(inst_cat)
+      console.log('value-cat', inst_cat_value);
+    }
 
     // Control Colors
     ////////////////////

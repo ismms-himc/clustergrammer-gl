@@ -38899,8 +38899,11 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
   var max_len = 25;
 
   var max_bar_value = cat_data.bar_data[0][bars_index];
-  // only keep the top max_bars categories
-  cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
+  // // only keep the top max_bars categories
+  // cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
+
+  // console.log('cat_data.length', cat_data.bar_data.length)
+
   var i_title = cat_data.type_name;
   if (i_title.length >= max_len){
     i_title = i_title.slice(0, max_len) + '..';
@@ -39702,7 +39705,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
     // limit on the number of category types shown
     var max_cats = 3;
     // limit the number of bars shown
-    var max_bars = 25;
+    var max_bars = 10;
 
     // calculate height needed for svg based on cb data
     var svg_height = 20;
@@ -39734,6 +39737,9 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
     // limit the category-types
     cb = cb.slice(0, max_cats);
 
+    // console.log(cb.length)
+    // debugger;
+
     // shift the position of the numbers based on the size of the number
     // offset the count column based on how large the counts are
     var digit_offset = d3.scale.linear()
@@ -39745,6 +39751,9 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
     _.each(cb, function(cat_data){
 
       var max_bar_value = cat_data.bar_data[0][bars_index];
+
+      // only keep the top max_bars categories
+      cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
 
       var count_offset = digit_offset(max_bar_value);
 
@@ -42773,7 +42782,7 @@ function clustergrammer_gl(args){
     .on('mouseout', function(){
       // disable off canvas
       cgm.params.tooltip.on_canvas = false;
-      console.log(cgm.params.root, 'off canvas');
+      // console.log(cgm.params.root, 'off canvas');
     });
 
   return cgm;

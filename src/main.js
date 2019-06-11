@@ -96,7 +96,7 @@ function clustergrammer_gl(args){
     .on('mouseout', function(){
       // disable off canvas
       cgm.params.tooltip.on_canvas = false;
-      console.log(cgm.params.root, 'off canvas');
+      // console.log(cgm.params.root, 'off canvas');
     });
 
   return cgm;

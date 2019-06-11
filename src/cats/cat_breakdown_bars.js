@@ -10,8 +10,11 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
   var max_len = 25;
 
   var max_bar_value = cat_data.bar_data[0][bars_index];
-  // only keep the top max_bars categories
-  cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
+  // // only keep the top max_bars categories
+  // cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
+
+  // console.log('cat_data.length', cat_data.bar_data.length)
+
   var i_title = cat_data.type_name;
   if (i_title.length >= max_len){
     i_title = i_title.slice(0, max_len) + '..';

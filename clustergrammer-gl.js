@@ -39487,7 +39487,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
     if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
       inst_cat_value = get_cat_value(inst_cat)
-      console.log('value-cat', inst_cat_value);
+
+      // debugger;
+
+      console.log(inst_axis, cat_index_name)
+      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(inst_cat_value));
+
+      console.log('value-cat', inst_cat_value, inst_opacity);
     }
 
     // Control Colors

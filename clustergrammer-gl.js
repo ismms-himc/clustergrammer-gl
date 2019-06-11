@@ -41406,7 +41406,7 @@ module.exports = function draw_commands(regl, params){
 
 module.exports = function draw_interacting(regl, params){
 
-  var wait_time_final_interact = 10;
+  var wait_time_final_interact = 100;
 
   params.int.total = params.int.total + 1;
 
@@ -41508,7 +41508,7 @@ module.exports = function draw_matrix_components(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
-var wait_time_final_mouseover = 10;
+var wait_time_final_mouseover = 100;
 
 module.exports = function draw_mouseover(regl, params){
 
@@ -42511,7 +42511,7 @@ function interactionEvents (opts) {
 
 module.exports = function keep_track_of_interactions(params){
 
-  var wait_time_final_interact = 25;
+  var wait_time_final_interact = 100;
 
   // keep track of interactions
   if (params.int.still_interacting == false){

@@ -41402,7 +41402,7 @@ module.exports = function draw_commands(regl, params){
 
 module.exports = function draw_interacting(regl, params){
 
-  var wait_time_final_interact = 50;
+  var wait_time_final_interact = 10;
 
   params.int.total = params.int.total + 1;
 
@@ -41504,7 +41504,7 @@ module.exports = function draw_matrix_components(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
-var wait_time_final_mouseover = 50;
+var wait_time_final_mouseover = 10;
 
 module.exports = function draw_mouseover(regl, params){
 
@@ -41709,15 +41709,12 @@ module.exports = function run_viz(regl, network){
     }
     else if (params.int.still_mouseover == true){
 
+      console.log('still_mouseover')
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
-
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
-
-
       draw_labels_tooltips_or_dendro(regl, params);
-
     } else {
       // run background calculations
       draw_background_calculations(regl, params);
@@ -42510,7 +42507,7 @@ function interactionEvents (opts) {
 
 module.exports = function keep_track_of_interactions(params){
 
-  var wait_time_final_interact = 100;
+  var wait_time_final_interact = 25;
 
   // keep track of interactions
   if (params.int.still_interacting == false){
@@ -44298,6 +44295,7 @@ module.exports = function gen_int_par(params){
 
   interact.mouseover.value = null;
   interact.enable_viz_interact = true;
+  // interact.wait_time_final_interact = 50;
 
   params.int = interact;
 };

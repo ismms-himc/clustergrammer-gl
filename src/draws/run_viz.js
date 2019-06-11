@@ -54,15 +54,12 @@ module.exports = function run_viz(regl, network){
     }
     else if (params.int.still_mouseover == true){
 
+      console.log('still_mouseover')
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
-
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
-
-
       draw_labels_tooltips_or_dendro(regl, params);
-
     } else {
       // run background calculations
       draw_background_calculations(regl, params);

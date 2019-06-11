@@ -14,6 +14,7 @@ module.exports = function gen_int_par(params){
 
   interact.mouseover.value = null;
   interact.enable_viz_interact = true;
+  // interact.wait_time_final_interact = 50;
 
   params.int = interact;
 };

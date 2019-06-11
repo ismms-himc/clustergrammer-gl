@@ -47,6 +47,20 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   /////////////////////////////////
   // Label Color Buffer
   /////////////////////////////////
+  var is_mousing_over_cat = false;
+  var inst_opacity = 1.0;
+
+  if (params.tooltip.tooltip_type){
+
+    // if mousing over categories initialize all categories to low opacity
+    if (params.tooltip.tooltip_type.includes('-cat-')){
+      inst_opacity = 0.1;
+      is_mousing_over_cat = true;
+      var mouseover_cat_index = params.tooltip.tooltip_type.split('-')[2]
+      mousing_over_cat = params.int.mouseover[inst_axis].cats[mouseover_cat_index]
+      // console.log('HERE', mousing_over_cat)
+    }
+  }
 
   var color_arr = [];
   for (var i = 0; i < num_labels; i++){
@@ -89,24 +103,16 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
     // console.log(inst_cat, params.tooltip.tooltip_type);
 
-    var inst_opacity = 1.0;
 
-    if (params.tooltip.tooltip_type){
+    if (is_mousing_over_cat){
+      // console.log('mousing_over_cat', mousing_over_cat);
 
-      // if mousing over categories initialize all categories to low opacity
-      if (params.tooltip.tooltip_type.includes('-cat-')){
+      if (mousing_over_cat == inst_cat){
+        inst_opacity = 1.0;
+      } else {
         inst_opacity = 0.1;
       }
-
-      var mouseover_cat_index = params.tooltip.tooltip_type.split('-')[2]
-      console.log('mouseover_cat_index', mouseover_cat_index)
-
-      // if category matches mousover category set opacity to 1
-      if (params.int.mouseover[inst_axis].cats[mouseover_cat_index] == inst_cat){
-        inst_opacity = 1.0
-      }
     }
-
 
     // vary opacity
     color_arr[i] = color_to_rgba(inst_color, inst_opacity);

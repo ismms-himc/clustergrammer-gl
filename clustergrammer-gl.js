@@ -39448,19 +39448,19 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
+  /* Category Colors */
+  ////////////////////////////
+  // String based categories are working
+  // Working on value-based categories
   var color_arr = [];
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
 
-    // console.log('inst_cat', inst_cat)
-
-    /*
-      Added fallback color
-    */
+    // Control Colors
+    ////////////////////
     var inst_color;
     if ('cat_colors' in params.network){
-
       if (cat_index_name in params.network.cat_colors[inst_axis]){
         try {
           inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
@@ -39473,13 +39473,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         // get random colors from color dictionary
         inst_color = 'white';
       }
-
     } else {
-
       // get random colors from color dictionary
       inst_color = 'white';
     }
 
+    // Vary Opacity
+    ////////////////////
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
         inst_opacity = 1.0;
@@ -39488,7 +39488,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       }
     }
 
-    // vary opacity
     color_arr[i] = color_to_rgba(inst_color, inst_opacity);
   }
 

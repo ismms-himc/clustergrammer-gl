@@ -6,7 +6,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   var cat_index_name = 'cat-' + String(cat_index);
 
-  // console.log('generalizing mat_size')
+  console.log('make_cat_args')
   /*
 
   Hacking Categories Plan
@@ -76,10 +76,10 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
       // debugger;
 
-      console.log(inst_axis, cat_index_name)
+      // console.log(inst_axis, cat_index_name)
       inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(inst_cat_value));
 
-      console.log('value-cat', inst_cat_value, inst_opacity);
+      // console.log('value-cat', inst_cat_value, inst_opacity);
     }
 
     // Control Colors

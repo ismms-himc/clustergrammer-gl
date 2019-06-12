@@ -39284,6 +39284,8 @@ module.exports = function generate_cat_info(params){
   viz.cat_bar_width = 180;
   viz.cat_bar_height = 20;
 
+  viz.cat_value_colors = ['#2F4F4F', '#9370DB'];
+
   // this will hold the information for calculating the opacity of the value
   // function
   var ini_val_opacity = {};
@@ -39420,7 +39422,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   var cat_index_name = 'cat-' + String(cat_index);
 
-  // console.log('generalizing mat_size')
+  console.log('make_cat_args')
   /*
 
   Hacking Categories Plan
@@ -39490,10 +39492,10 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
       // debugger;
 
-      console.log(inst_axis, cat_index_name)
+      // console.log(inst_axis, cat_index_name)
       inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(inst_cat_value));
 
-      console.log('value-cat', inst_cat_value, inst_opacity);
+      // console.log('value-cat', inst_cat_value, inst_opacity);
     }
 
     // Control Colors
@@ -41422,7 +41424,7 @@ module.exports = function draw_commands(regl, params){
     if (params.tooltip.tooltip_type.includes('-cat-')){
       // This is required to updated category opacity when mousing over
       __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
-      // console.log('generate_cat_args_arrs\n--------------------------')
+      console.log('generate_cat_args_arrs\n--------------------------')
 
       params.int.need_reset_cat_opacity = true;
       mousing_over_cat = true;
@@ -41433,8 +41435,9 @@ module.exports = function draw_commands(regl, params){
     // console.log('\n\n')
     // console.log(mousing_over_cat)
     // console.log(params.tooltip.tooltip_type)
-    // console.log('reset cat opacity\n==============================')
+    console.log('reset cat opacity\n==============================')
     __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+    params.int.need_reset_cat_opacity = false;
   }
 
 

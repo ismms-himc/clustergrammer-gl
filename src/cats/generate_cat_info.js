@@ -13,6 +13,8 @@ module.exports = function generate_cat_info(params){
   viz.cat_bar_width = 180;
   viz.cat_bar_height = 20;
 
+  viz.cat_value_colors = ['#2F4F4F', '#9370DB'];
+
   // this will hold the information for calculating the opacity of the value
   // function
   var ini_val_opacity = {};

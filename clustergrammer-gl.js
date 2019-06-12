@@ -39488,6 +39488,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   // String based categories are working
   // Working on value-based categories
   var color_arr = [];
+  var inst_value_color;
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
@@ -39498,6 +39499,13 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       // console.log(inst_axis, cat_index_name)
       inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(inst_cat_value));
       // console.log('value-cat', inst_cat_value, inst_opacity);
+
+      // get positive and negative colors
+      if (inst_cat_value > 0){
+        inst_value_color = params.viz.cat_value_colors[0];
+      } else {
+        inst_value_color = params.viz.cat_value_colors[1];
+      }
     }
 
     // Set Category Colors
@@ -39522,7 +39530,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         inst_color = 'white';
       }
     } else {
-      inst_color = 'black';
+      inst_color = inst_value_color;
     }
 
     // Set Category Opacity

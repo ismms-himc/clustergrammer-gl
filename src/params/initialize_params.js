@@ -1,3 +1,5 @@
+var hzome_functions = require('./../tooltip/hzome_functions')
+
 module.exports = function initialize_params(regl, network){
 
   var params = {};
@@ -62,6 +64,8 @@ module.exports = function initialize_params(regl, network){
   params.allow_zoom.row = allow_factor(labels.num_col);
   params.text_scale = {};
   params.cat_colors = params.network.cat_colors;
+
+  params.hzome = hzome_functions(params);
 
   return params;
 };

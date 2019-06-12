@@ -1,23 +1,7 @@
 var axios = require('axios');
 module.exports = function hzome_functions(params){
 
-  console.log(axios)
-  // debugger
-
-  // save gene data to global variable
-  gene_data = {};
-
-  function get_mouseover(root_tip, gene_symbol){
-    console.log('get_mouseover');
-
-    // not sure if this is necessary
-    if ( d3.select(root_tip + '_row_tip').classed(gene_symbol) ){
-     get_request(root_tip, gene_symbol);
-    }
-
-  }
-
-  function get_request(root_tip, ini_gene_symbol){
+  function get_request(ini_gene_symbol){
     console.log('get_request');
 
     var gene_symbol;
@@ -35,24 +19,21 @@ module.exports = function hzome_functions(params){
 
     // // get request using Jquery
     // $.get(url, function(data) {
-
     //   data = JSON.parse(data);
-
-    //   // save data for repeated use
-    //   gene_data[gene_symbol] = {}
-    //   gene_data[gene_symbol].name = data.name;
-    //   gene_data[gene_symbol].description = data.description;
-
     //   set_tooltip(data, ini_gene_symbol);
-
     //   return data;
-
     // });
 
     axios.get(url)
       .then(function (response) {
         // handle success
-        set_tooltip(response.data, params.tooltip_id, ini_gene_symbol);
+        set_tooltip(response.data, ini_gene_symbol);
+
+        // save data for repeated use
+        params.hzome.gene_data[gene_symbol] = {}
+        params.hzome.gene_data[gene_symbol].name = response.data.name;
+        params.hzome.gene_data[gene_symbol].description = response.data.description;
+
       })
       .catch(function (error) {
         // handle error
@@ -64,13 +45,13 @@ module.exports = function hzome_functions(params){
 
   }
 
-  function set_tooltip(data, root_tip, gene_symbol){
+  function set_tooltip(data, gene_symbol){
     console.log('set_tooltip');
 
     if (data.name != undefined){
 
       // assign html
-      d3.select(root_tip)
+      d3.select(params.tooltip_id)
         .html(function(){
             var sym_name = gene_symbol + ': ' + data.name;
             var full_html = '<p>' + sym_name + '</p>' +  '<p>' +
@@ -86,16 +67,20 @@ module.exports = function hzome_functions(params){
   }
 
 
-  function gene_info(root_tip, gene_info){
+  function gene_info(gene_symbol){
     console.log('gene_info');
 
-    var gene_symbol = gene_info.name;
+    // var gene_symbol = gene_info.name;
 
-    if (_.has(gene_data, gene_symbol)){
-      var inst_data = gene_data[gene_symbol];
-      set_tooltip(inst_data, root_tip, gene_symbol);
+    if (_.has(params.hzome.gene_data, gene_symbol)){
+
+      console.log('found in params.hzome.gene_data')
+      var inst_data = params.hzome.gene_data[gene_symbol];
+      set_tooltip(inst_data, gene_symbol);
     } else{
-      setTimeout(get_mouseover, 250, root_tip, gene_symbol);
+      // setTimeout(get_request, 250, gene_symbol);
+      console.log('make get request for data')
+      get_request(gene_symbol);
     }
 
   }
@@ -103,8 +88,7 @@ module.exports = function hzome_functions(params){
   hzome = {}
 
   hzome.gene_info = gene_info;
-  hzome.gene_data = gene_data;
-  hzome.get_mouseover = get_mouseover;
+  hzome.gene_data = {};
   hzome.get_request = get_request;
 
   return hzome;

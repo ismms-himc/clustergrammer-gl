@@ -41437,7 +41437,7 @@ module.exports = function draw_commands(regl, params){
     if (params.tooltip.tooltip_type.includes('-cat-')){
       // This is required to updated category opacity when mousing over
       __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
-      console.log('generate_cat_args_arrs\n--------------------------')
+      // console.log('generate_cat_args_arrs\n--------------------------')
 
       params.int.need_reset_cat_opacity = true;
       mousing_over_cat = true;
@@ -41448,7 +41448,7 @@ module.exports = function draw_commands(regl, params){
     // console.log('\n\n')
     // console.log(mousing_over_cat)
     // console.log(params.tooltip.tooltip_type)
-    console.log('reset cat opacity\n==============================')
+    // console.log('reset cat opacity\n==============================')
     __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
     params.int.need_reset_cat_opacity = false;
   }
@@ -45383,6 +45383,11 @@ module.exports = function show_d3_tip(params){
   var tooltip_text = make_tooltip_text(params);
 
   // position tooltip
+
+  // this is necessary to offset the tooltip correctly, probably due to the
+  // padding in the tooltip or some related paramters
+  var magic_x_offset = 22;
+
   var d3_tip_width = parseFloat(d3.select(params.tooltip_id)
                                .style('width')
                                .replace('px',''));
@@ -45390,10 +45395,6 @@ module.exports = function show_d3_tip(params){
   var d3_tip_height = parseFloat(d3.select(params.tooltip_id)
                                .style('height')
                                .replace('px',''));
-
-  // this is necessary to offset the tooltip correctly, probably due to the
-  // padding in the tooltip or some related paramters
-  var magic_x_offset = 22;
 
   params.d3_tip_width = d3_tip_width;
 
@@ -45407,6 +45408,10 @@ module.exports = function show_d3_tip(params){
   // column mouseover. Should be able to check params.tooltip.tooltip_type to
   // find out how to position the tooltip
   d3.select(params.tooltip_id)
+    .style('display', 'block')
+    .style('z-index', 99);
+
+  d3.select(params.tooltip_id)
     .style('margin-left', function(){
       var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
                            magic_x_offset;
@@ -45416,9 +45421,6 @@ module.exports = function show_d3_tip(params){
       var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
       return total_y_offset + 'px'
     })
-    .style('display', 'block')
-    .style('z-index', 99);
-
 }
 
 /***/ }),

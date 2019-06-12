@@ -45285,14 +45285,8 @@ module.exports = function show_d3_tip(params){
   console.log('showing d3_tip')
 
   var inst_axis;
-  var full_string;
+  var tooltip_text;
   var mouseover = params.int.mouseover;
-
-  // // check if tooltip is missing
-  // if (d3.select(params.tooltip_id).empty()){
-  //   console.log('need to make new tooltip')
-  //   initialize_d3_tip(cgm.params);
-  // }
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
@@ -45300,41 +45294,33 @@ module.exports = function show_d3_tip(params){
     ////////////////////////
 
     // row name
-    full_string = mouseover.row.name;
+    tooltip_text = mouseover.row.name;
 
-    // _.each(mouseover.row.cats, function(inst_cat){
-    //   full_string = full_string + '<br>' + inst_cat
-    // });
-
-    full_string = full_string + ' and ';
+    tooltip_text = tooltip_text + ' and ';
 
     // col name
-    full_string = full_string + mouseover.col.name;
+    tooltip_text = tooltip_text + mouseover.col.name;
 
-    // _.each(mouseover.col.cats, function(inst_cat){
-    //   full_string = full_string + '<br>' + inst_cat
-    // });
-
-    full_string = full_string + ' <br>value: ' + mouseover.value.toFixed(3);
+    tooltip_text = tooltip_text + ' <br>value: ' + mouseover.value.toFixed(3);
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
-      .html(full_string);
+      .html(tooltip_text);
 
   } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
 
     // Label Tooltip
     //////////////////
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
-    full_string = mouseover[inst_axis].name;
+    tooltip_text = mouseover[inst_axis].name;
 
     _.each(mouseover[inst_axis].cats, function(inst_cat){
-      full_string = full_string + '<br>' + inst_cat
+      tooltip_text = tooltip_text + '<br>' + inst_cat
     });
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
-      .html(full_string);
+      .html(tooltip_text);
 
   } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
 
@@ -45350,11 +45336,11 @@ module.exports = function show_d3_tip(params){
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
     var inst_index = params.tooltip.tooltip_type.split('-')[2];
 
-    full_string = mouseover[inst_axis].cats[inst_index]
+    tooltip_text = mouseover[inst_axis].cats[inst_index]
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
-      .html(full_string);
+      .html(tooltip_text);
 
   }
 

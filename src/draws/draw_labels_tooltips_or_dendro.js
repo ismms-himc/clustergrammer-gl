@@ -4,9 +4,6 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
 
   // turn back on draw_labels
   ///////////////////////////////
-
-  // console.log('draw_labels_tooltips_or_dendro')
-
   draw_commands(regl, params);
 
   if (params.tooltip.show_tooltip){

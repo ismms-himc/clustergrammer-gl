@@ -3,6 +3,8 @@ var make_dendro_tooltip = require('./make_dendro_tooltip');
 
 module.exports = function show_d3_tip(params){
 
+  console.log('showing d3_tip')
+
   var inst_axis;
   var full_string;
   var mouseover = params.int.mouseover;
@@ -87,7 +89,7 @@ module.exports = function show_d3_tip(params){
                                .style('height')
                                .replace('px',''));
 
-  // this is necessary to offset hte tooltip correctly, probably due to the
+  // this is necessary to offset the tooltip correctly, probably due to the
   // padding in the tooltip or some related paramters
   var magic_x_offset = 22;
 
@@ -105,6 +107,10 @@ module.exports = function show_d3_tip(params){
     }
   });
 
+  // need to set up custom positioning of the tooltip based on the mouseover type
+  // upper left if on matrix-cell, upper right if on row label, lower left if on
+  // column mouseover. Should be able to check params.tooltip.tooltip_type to
+  // find out how to position the tooltip
   d3.select(params.tooltip_id)
     .style('margin-left', function(){
       var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +

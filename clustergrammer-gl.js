@@ -41837,10 +41837,11 @@ var custom_label_reorder = __webpack_require__(/*! ./../reorders/custom_label_re
 
 module.exports = function double_clicking(regl, params){
 
-  if (params.zoom_data.y.cursor_rel_min <=0 ){
-    custom_label_reorder(regl, params, 'col');
-  }
-  else if (params.zoom_data.x.cursor_rel_min <=0){
+// params.tooltip.tooltip_type
+if (params.tooltip.tooltip_type === 'col-label'){
+  custom_label_reorder(regl, params, 'col');
+}
+if (params.tooltip.tooltip_type === 'row-label'){
     custom_label_reorder(regl, params, 'row');
   }
 
@@ -41960,6 +41961,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
   });
 
   __webpack_require__(/*! ./get_mouseover_type */ "./src/interactions/get_mouseover_type.js")(params);
+
+  // console.log('tooltip_type', params.tooltip.tooltip_type)
 
   var axis_indices = {};
 
@@ -44780,12 +44783,12 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
   var other_axis;
   if (inst_axis === 'col'){
     other_axis = 'row';
-    console.log('col')
+    // console.log('col')
     _.each(mat, function(inst_row){
       tmp_arr.push(inst_row[found_label_index]);
     });
   } else {
-    console.log('row')
+    // console.log('row')
     other_axis = 'col';
     tmp_arr = mat[found_label_index]
   }

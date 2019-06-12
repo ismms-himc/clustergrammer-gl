@@ -20,12 +20,12 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
   var other_axis;
   if (inst_axis === 'col'){
     other_axis = 'row';
-    console.log('col')
+    // console.log('col')
     _.each(mat, function(inst_row){
       tmp_arr.push(inst_row[found_label_index]);
     });
   } else {
-    console.log('row')
+    // console.log('row')
     other_axis = 'col';
     tmp_arr = mat[found_label_index]
   }

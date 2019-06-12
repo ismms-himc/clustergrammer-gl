@@ -48,6 +48,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
   require('./get_mouseover_type')(params);
 
+  // console.log('tooltip_type', params.tooltip.tooltip_type)
+
   var axis_indices = {};
 
   if (params.tooltip.in_bounds_tooltip){

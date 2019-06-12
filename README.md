@@ -25,4 +25,7 @@ Clustergrammer-GL is being developed by the [Human Immune Monitoring Center](htt
 Please [contact us](http://clustergrammer.readthedocs.io/#funding-and-contact) for support, licensing questions, comments, and suggestions.
 
 ## Releasing
-Update version (package.json and main.js). Set webpack to make all builds. Run npm publish.
+- Update versions in package.json
+- Up[date version in main.js
+- Set webpack to make all builds
+- Run npm publish.

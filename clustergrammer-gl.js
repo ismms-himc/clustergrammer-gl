@@ -45197,6 +45197,63 @@ module.exports = function make_spillover_args(regl, inst_depth,
 
 /***/ }),
 
+/***/ "./src/tooltip/display_and_position_tooltip.js":
+/*!*****************************************************!*\
+  !*** ./src/tooltip/display_and_position_tooltip.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function display_and_position_tooltip(params){
+
+  // Display Tooltip
+  ////////////////////////////////
+  d3.selectAll('.cgm-tooltip')
+    .style('display', 'none');
+
+  // display tooltip
+  d3.select(params.tooltip_id)
+    .style('display', 'block')
+    .style('z-index', 99);
+
+  // Position Tooltip
+  ////////////////////////////////
+  // this is necessary to offset the tooltip correctly, probably due to the
+  // padding in the tooltip or some related paramters
+  var magic_x_offset = 22;
+
+  var d3_tip_width = parseFloat(d3.select(params.tooltip_id)
+                               .style('width')
+                               .replace('px',''));
+
+  var d3_tip_height = parseFloat(d3.select(params.tooltip_id)
+                               .style('height')
+                               .replace('px',''));
+
+  params.d3_tip_width = d3_tip_width;
+
+
+  console.log('position tooltip type', params.tooltip.tooltip_type)
+
+  // need to set up custom positioning of the tooltip based on the mouseover type
+  // upper left if on matrix-cell, upper right if on row label, lower left if on
+  // column mouseover. Should be able to check params.tooltip.tooltip_type to
+  // find out how to position the tooltip
+  d3.select(params.tooltip_id)
+    .style('margin-left', function(){
+      var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
+                           magic_x_offset;
+      return total_x_offset + 'px'
+    })
+    .style('margin-top', function(){
+      var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
+      return total_y_offset + 'px'
+    })
+
+};
+
+/***/ }),
+
 /***/ "./src/tooltip/hide_d3_tip.js":
 /*!************************************!*\
   !*** ./src/tooltip/hide_d3_tip.js ***!
@@ -45343,55 +45400,6 @@ module.exports = function make_tooltip_text(params){
 
 /***/ }),
 
-/***/ "./src/tooltip/position_tooltip.js":
-/*!*****************************************!*\
-  !*** ./src/tooltip/position_tooltip.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function position_tooltip(params){
-  // this is necessary to offset the tooltip correctly, probably due to the
-  // padding in the tooltip or some related paramters
-  var magic_x_offset = 22;
-
-  var d3_tip_width = parseFloat(d3.select(params.tooltip_id)
-                               .style('width')
-                               .replace('px',''));
-
-  var d3_tip_height = parseFloat(d3.select(params.tooltip_id)
-                               .style('height')
-                               .replace('px',''));
-
-  params.d3_tip_width = d3_tip_width;
-
-  d3.selectAll('.cgm-tooltip')
-    .style('display', 'none');
-
-  /* former position of remove lost tooltips */
-
-  // need to set up custom positioning of the tooltip based on the mouseover type
-  // upper left if on matrix-cell, upper right if on row label, lower left if on
-  // column mouseover. Should be able to check params.tooltip.tooltip_type to
-  // find out how to position the tooltip
-  d3.select(params.tooltip_id)
-    .style('display', 'block')
-    .style('z-index', 99);
-
-  d3.select(params.tooltip_id)
-    .style('margin-left', function(){
-      var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
-                           magic_x_offset;
-      return total_x_offset + 'px'
-    })
-    .style('margin-top', function(){
-      var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
-      return total_y_offset + 'px'
-    })
-};
-
-/***/ }),
-
 /***/ "./src/tooltip/remove_lost_tooltips.js":
 /*!*********************************************!*\
   !*** ./src/tooltip/remove_lost_tooltips.js ***!
@@ -45421,7 +45429,7 @@ module.exports = function remove_lost_tooltips(params){
 
 var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/tooltip/make_tooltip_text.js");
 var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
-var position_tooltip = __webpack_require__(/*! ./position_tooltip */ "./src/tooltip/position_tooltip.js");
+var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
 module.exports = function show_d3_tip(params){
 
@@ -45431,7 +45439,7 @@ module.exports = function show_d3_tip(params){
 
   make_tooltip_text(params);
 
-  position_tooltip(params);
+  display_and_position_tooltip(params);
 }
 
 /***/ }),

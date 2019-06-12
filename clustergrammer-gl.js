@@ -45232,7 +45232,7 @@ module.exports = function display_and_position_tooltip(params){
 
   params.d3_tip_width = d3_tip_width;
 
-  console.log('position tooltip type', params.tooltip.tooltip_type);
+  // console.log('position tooltip type', params.tooltip.tooltip_type);
 
   // debugger;
 
@@ -45262,7 +45262,7 @@ module.exports = function display_and_position_tooltip(params){
 
     d3.select(params.tooltip_id)
       .style('margin-left', function(){
-        var total_x_offset = 150;
+        var total_x_offset = 150 + params.cat_data.row.length * 12;
         return total_x_offset + 'px'
       })
       .style('margin-top', function(){
@@ -45281,13 +45281,13 @@ module.exports = function display_and_position_tooltip(params){
         return total_x_offset + 'px'
       })
       .style('margin-top', function(){
-        var total_y_offset = 125;
+        var total_y_offset = 125 + params.cat_data.col.length * 12;
         return total_y_offset + 'px'
       });
   }
 
   else if (params.tooltip.tooltip_type === 'col-dendro'){
-    console.log('col-dendro')
+    // console.log('col-dendro')
 
     d3.select(params.tooltip_id)
       .style('margin-left', function(){
@@ -45296,9 +45296,6 @@ module.exports = function display_and_position_tooltip(params){
         return total_x_offset + 'px'
       })
       .style('margin-top', function(){
-        // var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
-        // var total_y_offset = params.viz_dim.heat.y.max;
-        // console.log(total_y_offset)
         var total_y_offset = 845 - d3_tip_height;
         return total_y_offset + 'px'
       });
@@ -45323,7 +45320,7 @@ module.exports = function display_and_position_tooltip(params){
   }
 
   else if (params.tooltip.tooltip_type.includes('col-cat-')){
-    console.log('col-dendro')
+    // console.log('col-dendro')
 
     d3.select(params.tooltip_id)
       .style('margin-left', function(){

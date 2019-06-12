@@ -45343,47 +45343,14 @@ module.exports = function make_tooltip_text(params){
 
 /***/ }),
 
-/***/ "./src/tooltip/remove_lost_tooltips.js":
-/*!*********************************************!*\
-  !*** ./src/tooltip/remove_lost_tooltips.js ***!
-  \*********************************************/
+/***/ "./src/tooltip/position_tooltip.js":
+/*!*****************************************!*\
+  !*** ./src/tooltip/position_tooltip.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function remove_lost_tooltips(params){
-  // remove any other tooltips left behind by another heatmap
-  d3.selectAll('.cgm-tooltip').each(
-    function(){
-    var inst_id = d3.select(this).attr('id').split('_')[1];
-    if(d3.select('#'+inst_id).empty()){
-      d3.select(this).style('display', 'none')
-    }
-  });
-};
-
-/***/ }),
-
-/***/ "./src/tooltip/show_d3_tip.js":
-/*!************************************!*\
-  !*** ./src/tooltip/show_d3_tip.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
-var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/tooltip/make_tooltip_text.js");
-var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
-
-module.exports = function show_d3_tip(params){
-
-  console.log('showing d3_tip')
-
-  remove_lost_tooltips(params);
-
-  var tooltip_text = make_tooltip_text(params);
-
-  // position tooltip
-
+module.exports = function position_tooltip(params){
   // this is necessary to offset the tooltip correctly, probably due to the
   // padding in the tooltip or some related paramters
   var magic_x_offset = 22;
@@ -45421,6 +45388,50 @@ module.exports = function show_d3_tip(params){
       var total_y_offset = params.zoom_data.y.cursor_position - d3_tip_height;
       return total_y_offset + 'px'
     })
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/remove_lost_tooltips.js":
+/*!*********************************************!*\
+  !*** ./src/tooltip/remove_lost_tooltips.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function remove_lost_tooltips(params){
+  // remove any other tooltips left behind by another heatmap
+  d3.selectAll('.cgm-tooltip').each(
+    function(){
+    var inst_id = d3.select(this).attr('id').split('_')[1];
+    if(d3.select('#'+inst_id).empty()){
+      d3.select(this).style('display', 'none')
+    }
+  });
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/show_d3_tip.js":
+/*!************************************!*\
+  !*** ./src/tooltip/show_d3_tip.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/tooltip/make_tooltip_text.js");
+var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
+var position_tooltip = __webpack_require__(/*! ./position_tooltip */ "./src/tooltip/position_tooltip.js");
+
+module.exports = function show_d3_tip(params){
+
+  console.log('showing d3_tip')
+
+  remove_lost_tooltips(params);
+
+  make_tooltip_text(params);
+
+  position_tooltip(params);
 }
 
 /***/ }),

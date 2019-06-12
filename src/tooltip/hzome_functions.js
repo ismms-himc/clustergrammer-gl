@@ -1,9 +1,14 @@
-module.exports = function hzome_functions(root_id){
+var axios = require('axios');
+module.exports = function hzome_functions(params){
+
+  console.log(axios)
+  // debugger
 
   // save gene data to global variable
   gene_data = {};
 
   function get_mouseover(root_tip, gene_symbol){
+    console.log('get_mouseover');
 
     // not sure if this is necessary
     if ( d3.select(root_tip + '_row_tip').classed(gene_symbol) ){
@@ -13,6 +18,7 @@ module.exports = function hzome_functions(root_id){
   }
 
   function get_request(root_tip, ini_gene_symbol){
+    console.log('get_request');
 
     var gene_symbol;
     if (ini_gene_symbol.indexOf(' ') > 0){
@@ -27,38 +33,61 @@ module.exports = function hzome_functions(root_id){
     var base_url = 'https://amp.pharm.mssm.edu/Harmonizome/api/1.0/gene/';
     var url = base_url + gene_symbol;
 
-    $.get(url, function(data) {
+    // // get request using Jquery
+    // $.get(url, function(data) {
 
-      data = JSON.parse(data);
+    //   data = JSON.parse(data);
 
-      // save data for repeated use
-      gene_data[gene_symbol] = {}
-      gene_data[gene_symbol].name = data.name;
-      gene_data[gene_symbol].description = data.description;
+    //   // save data for repeated use
+    //   gene_data[gene_symbol] = {}
+    //   gene_data[gene_symbol].name = data.name;
+    //   gene_data[gene_symbol].description = data.description;
 
-      set_tooltip(data, root_tip, ini_gene_symbol);
+    //   set_tooltip(data, ini_gene_symbol);
 
-      return data;
+    //   return data;
 
-    });
+    // });
+
+    axios.get(url)
+      .then(function (response) {
+        // handle success
+        set_tooltip(response.data, params.tooltip_id, ini_gene_symbol);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+      .finally(function () {
+        // always executed
+      });
+
   }
 
   function set_tooltip(data, root_tip, gene_symbol){
+    console.log('set_tooltip');
 
     if (data.name != undefined){
 
-      d3.selectAll(root_tip + '_row_tip')
+      // assign html
+      d3.select(root_tip)
         .html(function(){
             var sym_name = gene_symbol + ': ' + data.name;
             var full_html = '<p>' + sym_name + '</p>' +  '<p>' +
               data.description + '</p>';
             return full_html;
         });
+
+      //set width
+      d3.select(params.tooltip_id)
+        .selectAll('p')
+        .style('width', '500px');
     }
   }
 
 
   function gene_info(root_tip, gene_info){
+    console.log('gene_info');
 
     var gene_symbol = gene_info.name;
 

@@ -1,6 +1,9 @@
 var make_dendro_tooltip = require('./make_dendro_tooltip');
+var hzome_functions = require('./hzome_functions')
 
 module.exports = function make_tooltip_text(params){
+
+  var hzome = hzome_functions(params);
 
   var inst_axis;
   var tooltip_text;
@@ -37,6 +40,9 @@ module.exports = function make_tooltip_text(params){
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
       .html(tooltip_text);
+
+
+    hzome.get_request('tmp', mouseover[inst_axis].name);
 
   } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
 

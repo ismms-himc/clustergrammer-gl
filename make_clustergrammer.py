@@ -58,7 +58,7 @@ new_cols = []
 inst_val = -round(df.shape[1]/2)
 for inst_col in df.columns.tolist():
   inst_val = inst_val + 1
-  new_col = (inst_col, 'Val: ' + str(inst_val))
+  new_col = (inst_col, 'Cat: C-' + str(inst_val), 'Val: ' + str(inst_val))
   new_cols.append(new_col)
 
 # new_cols = [(x, 'Cat-1: A', 'Cat-2: B') for x in df.columns]

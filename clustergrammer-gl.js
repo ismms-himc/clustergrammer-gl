@@ -39478,6 +39478,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
 
+  var is_cat_value = false;
+  if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
+    is_cat_value = true;
+  }
+
   /* Category Colors */
   ////////////////////////////
   // String based categories are working
@@ -39487,26 +39492,28 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
 
-    if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
+    // Check if value-based category
+    if (is_cat_value){
       inst_cat_value = get_cat_value(inst_cat)
-
-      // debugger;
-
       // console.log(inst_axis, cat_index_name)
       inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(inst_cat_value));
-
       // console.log('value-cat', inst_cat_value, inst_opacity);
     }
 
-    // Control Colors
-    ////////////////////
+    // Set Category Colors
+    ///////////////////////////
     var inst_color;
-    if ('cat_colors' in params.network){
-      if (cat_index_name in params.network.cat_colors[inst_axis]){
-        try {
-          inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
-        }
-        catch(err){
+    if (is_cat_value === false){
+      if ('cat_colors' in params.network){
+        if (cat_index_name in params.network.cat_colors[inst_axis]){
+          try {
+            inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
+          }
+          catch(err){
+            // get random colors from color dictionary
+            inst_color = 'white';
+          }
+        } else {
           // get random colors from color dictionary
           inst_color = 'white';
         }
@@ -39515,12 +39522,11 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         inst_color = 'white';
       }
     } else {
-      // get random colors from color dictionary
-      inst_color = 'white';
+      inst_color = 'black';
     }
 
-    // Vary Opacity
-    ////////////////////
+    // Set Category Opacity
+    ///////////////////////////
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
         inst_opacity = 1.0;

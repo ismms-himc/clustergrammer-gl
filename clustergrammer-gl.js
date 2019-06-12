@@ -47343,7 +47343,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 module.exports = function hzome_functions(params){
 
   function get_request(ini_gene_symbol){
-    console.log('get_request');
+    // console.log('get_request');
 
     var gene_symbol;
     if (ini_gene_symbol.indexOf(' ') > 0){
@@ -47387,7 +47387,7 @@ module.exports = function hzome_functions(params){
   }
 
   function set_tooltip(data, gene_symbol){
-    console.log('set_tooltip');
+    // console.log('set_tooltip');
 
     if (data.name != undefined){
 
@@ -47409,18 +47409,18 @@ module.exports = function hzome_functions(params){
 
 
   function gene_info(gene_symbol){
-    console.log('gene_info');
+    // console.log('gene_info');
 
     // var gene_symbol = gene_info.name;
 
     if (_.has(params.hzome.gene_data, gene_symbol)){
 
-      console.log('found in params.hzome.gene_data')
+      // console.log('found in params.hzome.gene_data')
       var inst_data = params.hzome.gene_data[gene_symbol];
       set_tooltip(inst_data, gene_symbol);
     } else{
       // setTimeout(get_request, 250, gene_symbol);
-      console.log('make get request for data')
+      // console.log('make get request for data')
       get_request(gene_symbol);
     }
 

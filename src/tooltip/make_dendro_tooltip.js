@@ -9,4 +9,4 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
 
-  };
+};

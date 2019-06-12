@@ -1,13 +1,12 @@
-var make_dendro_tooltip = require('./make_dendro_tooltip');
 // var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
 var make_tooltip_text = require('./make_tooltip_text');
+var remove_lost_tooltips = require('./remove_lost_tooltips');
 
 module.exports = function show_d3_tip(params){
 
   console.log('showing d3_tip')
 
-  var inst_axis;
-  var tooltip_text;
+  remove_lost_tooltips(params);
 
   var tooltip_text = make_tooltip_text(params);
 
@@ -29,14 +28,7 @@ module.exports = function show_d3_tip(params){
   d3.selectAll('.cgm-tooltip')
     .style('display', 'none');
 
-  // remove any other tooltips left behind by another heatmap
-  d3.selectAll('.cgm-tooltip').each(
-    function(){
-    var inst_id = d3.select(this).attr('id').split('_')[1];
-    if(d3.select('#'+inst_id).empty()){
-      d3.select(this).style('display', 'none')
-    }
-  });
+  /* former position of remove lost tooltips */
 
   // need to set up custom positioning of the tooltip based on the mouseover type
   // upper left if on matrix-cell, upper right if on row label, lower left if on

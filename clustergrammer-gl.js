@@ -45266,7 +45266,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
 
-  };
+};
 
 /***/ }),
 
@@ -45275,10 +45275,14 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   !*** ./src/tooltip/make_tooltip_text.js ***!
   \******************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
 
 module.exports = function make_tooltip_text(params){
 
+  var inst_axis;
+  var tooltip_text;
   var mouseover = params.int.mouseover;
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
@@ -45339,6 +45343,26 @@ module.exports = function make_tooltip_text(params){
 
 /***/ }),
 
+/***/ "./src/tooltip/remove_lost_tooltips.js":
+/*!*********************************************!*\
+  !*** ./src/tooltip/remove_lost_tooltips.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function remove_lost_tooltips(params){
+  // remove any other tooltips left behind by another heatmap
+  d3.selectAll('.cgm-tooltip').each(
+    function(){
+    var inst_id = d3.select(this).attr('id').split('_')[1];
+    if(d3.select('#'+inst_id).empty()){
+      d3.select(this).style('display', 'none')
+    }
+  });
+};
+
+/***/ }),
+
 /***/ "./src/tooltip/show_d3_tip.js":
 /*!************************************!*\
   !*** ./src/tooltip/show_d3_tip.js ***!
@@ -45346,16 +45370,15 @@ module.exports = function make_tooltip_text(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
 // var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
 var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/tooltip/make_tooltip_text.js");
+var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
 
 module.exports = function show_d3_tip(params){
 
   console.log('showing d3_tip')
 
-  var inst_axis;
-  var tooltip_text;
+  remove_lost_tooltips(params);
 
   var tooltip_text = make_tooltip_text(params);
 
@@ -45377,14 +45400,7 @@ module.exports = function show_d3_tip(params){
   d3.selectAll('.cgm-tooltip')
     .style('display', 'none');
 
-  // remove any other tooltips left behind by another heatmap
-  d3.selectAll('.cgm-tooltip').each(
-    function(){
-    var inst_id = d3.select(this).attr('id').split('_')[1];
-    if(d3.select('#'+inst_id).empty()){
-      d3.select(this).style('display', 'none')
-    }
-  });
+  /* former position of remove lost tooltips */
 
   // need to set up custom positioning of the tooltip based on the mouseover type
   // upper left if on matrix-cell, upper right if on row label, lower left if on

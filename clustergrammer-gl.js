@@ -39422,7 +39422,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   var cat_index_name = 'cat-' + String(cat_index);
 
-  console.log('make_cat_args')
   /*
 
   Hacking Categories Plan
@@ -39476,7 +39475,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
-  console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
+  // console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
 
   var is_cat_value = false;
   if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
@@ -45136,6 +45135,8 @@ module.exports = function calc_spillover_triangles(params){
 module.exports = function make_spillover_args(regl, inst_depth,
                                                inst_color=[1, 1, 1, 1]){
 
+  // fix heatmap bleedthrough with variable opacity categories
+
   // Spillover Arguments
   ///////////////////////////////
   var args = {
@@ -45164,6 +45165,21 @@ module.exports = function make_spillover_args(regl, inst_depth,
       color: inst_color,
       inst_depth: inst_depth
     },
+
+    blend: {
+        enable: true,
+        func: {
+          srcRGB: 'src alpha',
+          srcAlpha: 1,
+          dstRGB: 'one minus src alpha',
+          dstAlpha: 1
+        },
+        equation: {
+          rgb: 'add',
+          alpha: 'add'
+        },
+        color: [0, 0, 0, 0]
+      },
 
     count: 3,
     depth: {

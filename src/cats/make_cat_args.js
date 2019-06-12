@@ -6,7 +6,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   var cat_index_name = 'cat-' + String(cat_index);
 
-  console.log('make_cat_args')
   /*
 
   Hacking Categories Plan
@@ -60,7 +59,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
-  console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
+  // console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
 
   var is_cat_value = false;
   if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){

@@ -45270,22 +45270,15 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 
 /***/ }),
 
-/***/ "./src/tooltip/show_d3_tip.js":
-/*!************************************!*\
-  !*** ./src/tooltip/show_d3_tip.js ***!
-  \************************************/
+/***/ "./src/tooltip/make_tooltip_text.js":
+/*!******************************************!*\
+  !*** ./src/tooltip/make_tooltip_text.js ***!
+  \******************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
-// var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
+module.exports = function make_tooltip_text(params){
 
-module.exports = function show_d3_tip(params){
-
-  console.log('showing d3_tip')
-
-  var inst_axis;
-  var tooltip_text;
   var mouseover = params.int.mouseover;
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
@@ -45295,12 +45288,10 @@ module.exports = function show_d3_tip(params){
 
     // row name
     tooltip_text = mouseover.row.name;
-
     tooltip_text = tooltip_text + ' and ';
 
     // col name
     tooltip_text = tooltip_text + mouseover.col.name;
-
     tooltip_text = tooltip_text + ' <br>value: ' + mouseover.value.toFixed(3);
 
     params.tooltip_fun.show('tooltip');
@@ -45344,6 +45335,29 @@ module.exports = function show_d3_tip(params){
 
   }
 
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/show_d3_tip.js":
+/*!************************************!*\
+  !*** ./src/tooltip/show_d3_tip.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
+// var initialize_d3_tip = require('./../tooltip/initialize_d3_tip');
+var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/tooltip/make_tooltip_text.js");
+
+module.exports = function show_d3_tip(params){
+
+  console.log('showing d3_tip')
+
+  var inst_axis;
+  var tooltip_text;
+
+  var tooltip_text = make_tooltip_text(params);
 
   // position tooltip
   var d3_tip_width = parseFloat(d3.select(params.tooltip_id)

@@ -42008,9 +42008,6 @@ module.exports = function build_control_panel(regl, cgm){
 
   __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js")(params);
 
-  // cgm.show_tooltip = require('./../tooltip/show_tooltip');
-  // cgm.hide_tooltip = require('./../tooltip/hide_tooltip');
-
   // setting fontsize
   d3.select(params.tooltip_id)
     .style('line-height', 1.5)
@@ -43425,6 +43422,8 @@ module.exports = function draw_commands(regl, params){
   __webpack_require__(/*! ./draw_static_components */ "./src/draws/draw_static_components.js")(regl, params);
 
   var tooltip = params.tooltip;
+
+  // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
     __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
   }
@@ -44589,6 +44588,29 @@ module.exports = function keep_track_of_mouseovers(params){
   }
 
 };
+
+/***/ }),
+
+/***/ "./src/interactions/single_clicking.js":
+/*!*********************************************!*\
+  !*** ./src/interactions/single_clicking.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function single_clicking(params){
+
+  params.ani.last_click = params.ani.time;
+
+  if (params.tooltip.tooltip_type.includes('-dendro')){
+    if (params.tooltip.permanent_tooltip === false){
+      console.log('single clicking dendrogram')
+      __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
+      params.tooltip.permanent_tooltip = true;
+    }
+  }
+
+}
 
 /***/ }),
 
@@ -47331,23 +47353,6 @@ module.exports = function display_and_position_tooltip(params){
 
 /***/ }),
 
-/***/ "./src/tooltip/hide_tooltip.js":
-/*!*************************************!*\
-  !*** ./src/tooltip/hide_tooltip.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function hide_tooltip(params){
-
-  if (params.tooltip.permanent_tooltip === false){
-    params.tooltip_fun.hide();
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/tooltip/hzome_functions.js":
 /*!****************************************!*\
   !*** ./src/tooltip/hzome_functions.js ***!
@@ -47506,6 +47511,12 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   var mouseover = params.int.mouseover;
 
   params.tooltip_fun.show('tooltip');
+
+  d3.select(params.tooltip_id)
+    .style('text-align', 'right')
+    .append('text')
+    .text('X')
+
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
 
@@ -47524,6 +47535,7 @@ var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./sr
 
 module.exports = function make_tooltip_text(params){
 
+  console.log('make_tooltip_text')
 
   var inst_axis;
   var tooltip_text;
@@ -47544,6 +47556,7 @@ module.exports = function make_tooltip_text(params){
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
+      .style('text-align', 'left')
       .html(tooltip_text);
 
   } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
@@ -47559,6 +47572,7 @@ module.exports = function make_tooltip_text(params){
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
+      .style('text-align', 'left')
       .html(tooltip_text);
 
 
@@ -47582,6 +47596,7 @@ module.exports = function make_tooltip_text(params){
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
+      .style('text-align', 'left')
       .html(tooltip_text);
 
   }
@@ -47610,6 +47625,23 @@ module.exports = function remove_lost_tooltips(params){
 
 /***/ }),
 
+/***/ "./src/tooltip/run_hide_tooltip.js":
+/*!*****************************************!*\
+  !*** ./src/tooltip/run_hide_tooltip.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function run_hide_tooltip(params){
+
+  if (params.tooltip.permanent_tooltip === false){
+    params.tooltip_fun.hide();
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/tooltip/run_show_tooltip.js":
 /*!*****************************************!*\
   !*** ./src/tooltip/run_show_tooltip.js ***!
@@ -47621,15 +47653,20 @@ var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/to
 var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
 var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
-module.exports = function show_tooltip(params){
+module.exports = function run_show_tooltip(params){
 
-  console.log('SHOW TOOLTIP!!!!!!')
+  if (params.tooltip.permanent_tooltip === false){
 
-  remove_lost_tooltips(params);
+    console.log('SHOW TOOLTIP!!!!!!')
 
-  make_tooltip_text(params);
+    remove_lost_tooltips(params);
 
-  display_and_position_tooltip(params);
+    make_tooltip_text(params);
+
+    display_and_position_tooltip(params);
+
+  }
+
 }
 
 /***/ }),
@@ -48162,8 +48199,9 @@ module.exports = function sanitize_potential_zoom(zd, zoom_restrict){
 var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
-var hide_tooltip = __webpack_require__(/*! ./../tooltip/hide_tooltip */ "./src/tooltip/hide_tooltip.js");
+var run_hide_tooltip = __webpack_require__(/*! ./../tooltip/run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
 var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking */ "./src/interactions/double_clicking.js");
+var single_clicking = __webpack_require__(/*! ./../interactions/single_clicking */ "./src/interactions/single_clicking.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
 
@@ -48184,7 +48222,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    hide_tooltip(params);
+    run_hide_tooltip(params);
 
     // console.log(params.int.mouseover.row.name, params.int.mouseover.col.name)
 
@@ -48198,8 +48236,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else {
 
-      params.ani.last_click = params.ani.time;
-      console.log('clicked')
+      single_clicking(params);
 
     }
 

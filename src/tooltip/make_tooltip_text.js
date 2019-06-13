@@ -2,6 +2,7 @@ var make_dendro_tooltip = require('./make_dendro_tooltip');
 
 module.exports = function make_tooltip_text(params){
 
+  console.log('make_tooltip_text')
 
   var inst_axis;
   var tooltip_text;
@@ -22,6 +23,7 @@ module.exports = function make_tooltip_text(params){
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
+      .style('text-align', 'left')
       .html(tooltip_text);
 
   } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
@@ -37,6 +39,7 @@ module.exports = function make_tooltip_text(params){
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
+      .style('text-align', 'left')
       .html(tooltip_text);
 
 
@@ -60,6 +63,7 @@ module.exports = function make_tooltip_text(params){
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)
+      .style('text-align', 'left')
       .html(tooltip_text);
 
   }

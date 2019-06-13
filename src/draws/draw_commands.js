@@ -30,6 +30,8 @@ module.exports = function draw_commands(regl, params){
   require('./draw_static_components')(regl, params);
 
   var tooltip = params.tooltip;
+
+  // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
     require('./../tooltip/run_show_tooltip')(params);
   }

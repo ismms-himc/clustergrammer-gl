@@ -40656,6 +40656,9 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
   // 1: get information for nodes in cluster
   // names of nodes in cluster
   var clust_names = inst_data.all_names;
+
+  params.dendro.selected_clust_names = clust_names;
+
   var clust_nodes = [];
   var all_nodes = params.network[inst_rc+'_nodes'];
   var num_in_clust_index = null;
@@ -46324,6 +46327,8 @@ module.exports = function gen_dendro_par(regl, params){
   dendro.group_level = {};
   dendro.update_dendro = false;
 
+  dendro.selected_clust_names = []
+
   dendro.group_info = {};
 
   params.dendro = dendro;
@@ -47528,6 +47533,32 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
+
+  d3.select(params.tooltip_id)
+    .append('text')
+    .text('Selcted ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
+
+  d3.select(params.tooltip_id)
+    .append('input')
+    .attr('value', function(){
+      return cgm.params.dendro.selected_clust_names.join(', ');
+    })
+    .style('width', '350px')
+    .style('display', 'block');
+
+
+    // .append('div')
+    // .style('text-align', 'right')
+    // .style('cursor', 'default')
+    // .on('click', function(){
+    //   console.log('clicking close tooltip')
+    //   params.tooltip.permanent_tooltip = false;
+    //   run_hide_tooltip(params);
+    // })
+    // .append('text')
+    // .text('X')
+    // .style('font-size', '15px')
+
 
 };
 

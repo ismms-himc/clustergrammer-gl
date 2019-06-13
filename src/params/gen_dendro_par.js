@@ -14,6 +14,8 @@ module.exports = function gen_dendro_par(regl, params){
   dendro.group_level = {};
   dendro.update_dendro = false;
 
+  dendro.selected_clust_names = []
+
   dendro.group_info = {};
 
   params.dendro = dendro;

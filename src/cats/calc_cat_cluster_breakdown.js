@@ -12,6 +12,9 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
   // 1: get information for nodes in cluster
   // names of nodes in cluster
   var clust_names = inst_data.all_names;
+
+  params.dendro.selected_clust_names = clust_names;
+
   var clust_nodes = [];
   var all_nodes = params.network[inst_rc+'_nodes'];
   var num_in_clust_index = null;

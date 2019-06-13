@@ -1,4 +1,3 @@
-// var initialize_params = require('./../params/initialize_params');
 _ = require('underscore');
 var reset_cameras = require('./../cameras/reset_cameras');
 var start_animation = require('./start_animation');
@@ -10,7 +9,7 @@ var draw_background_calculations = require('./draw_background_calculations');
 
 module.exports = function run_viz(regl, params){
 
-  // var params = initialize_params(regl, network);
+  console.log('run_viz')
 
   params.ani.first_frame = true;
 

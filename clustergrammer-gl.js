@@ -43694,7 +43694,6 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// var initialize_params = require('./../params/initialize_params');
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
@@ -43706,7 +43705,7 @@ var draw_background_calculations = __webpack_require__(/*! ./draw_background_cal
 
 module.exports = function run_viz(regl, params){
 
-  // var params = initialize_params(regl, network);
+  console.log('run_viz')
 
   params.ani.first_frame = true;
 
@@ -44831,10 +44830,15 @@ function clustergrammer_gl(args){
       // console.log(cgm.params.root, 'off canvas');
     });
 
-  // exposing reset_cameras during development
+  // exposing methods during development
+  ///////////////////////////////////////////
+  //
   cgm.reset_cameras = reset_cameras;
+  cgm.run_viz
   cgm.regl = regl;
 
+  // working on re-building visualization
+  cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
   return cgm;
 
 }

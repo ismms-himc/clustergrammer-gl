@@ -105,10 +105,15 @@ function clustergrammer_gl(args){
       // console.log(cgm.params.root, 'off canvas');
     });
 
-  // exposing reset_cameras during development
+  // exposing methods during development
+  ///////////////////////////////////////////
+  //
   cgm.reset_cameras = reset_cameras;
+  cgm.run_viz
   cgm.regl = regl;
 
+  // working on re-building visualization
+  cgm.run_viz = require('./draws/run_viz');
   return cgm;
 
 }

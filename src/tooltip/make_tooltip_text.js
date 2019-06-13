@@ -2,8 +2,6 @@ var make_dendro_tooltip = require('./make_dendro_tooltip');
 
 module.exports = function make_tooltip_text(params){
 
-  console.log('make_tooltip_text')
-
   var inst_axis;
   var tooltip_text;
   var mouseover = params.int.mouseover;

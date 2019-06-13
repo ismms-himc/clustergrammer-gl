@@ -6,8 +6,6 @@ module.exports = function run_show_tooltip(params){
 
   if (params.tooltip.permanent_tooltip === false){
 
-    console.log('SHOW TOOLTIP!!!!!!')
-
     remove_lost_tooltips(params);
 
     make_tooltip_text(params);

@@ -33,7 +33,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .attr('value', function(){
       return cgm.params.dendro.selected_clust_names.join(', ');
     })
-    .style('width', '350px')
+    .style('width', '364px')
     .style('display', 'block');
 
 

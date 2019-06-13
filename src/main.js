@@ -6,6 +6,7 @@
 
 var pako = require('pako');
 var reset_cameras = require('./cameras/reset_cameras');
+var initialize_params = require('./params/initialize_params');
 
 function clustergrammer_gl(args){
 
@@ -70,7 +71,11 @@ function clustergrammer_gl(args){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  var params = require('./draws/run_viz')(regl, network);
+
+
+  var params = initialize_params(regl, network);
+
+  require('./draws/run_viz')(regl, params);
 
   var cgm = {};
 

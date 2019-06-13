@@ -43694,7 +43694,7 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var initialize_params = __webpack_require__(/*! ./../params/initialize_params */ "./src/params/initialize_params.js");
+// var initialize_params = require('./../params/initialize_params');
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
@@ -43704,13 +43704,11 @@ var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/dr
 var draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
 var draw_background_calculations = __webpack_require__(/*! ./draw_background_calculations */ "./src/draws/draw_background_calculations.js");
 
-module.exports = function run_viz(regl, network){
+module.exports = function run_viz(regl, params){
 
-  // global params
-  var params = initialize_params(regl, network);
+  // var params = initialize_params(regl, network);
 
   params.ani.first_frame = true;
-
 
   regl.frame(function ({time}) {
 
@@ -43763,7 +43761,7 @@ module.exports = function run_viz(regl, network){
 
   });
 
-  return params;
+  // return params;
 
 };
 
@@ -44607,7 +44605,6 @@ module.exports = function single_clicking(params){
 
   if (params.tooltip.tooltip_type.includes('-dendro')){
     if (params.tooltip.permanent_tooltip === false){
-      console.log('single clicking dendrogram')
       __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
       params.tooltip.permanent_tooltip = true;
     }
@@ -44735,6 +44732,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 var reset_cameras = __webpack_require__(/*! ./cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
+var initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
 
 function clustergrammer_gl(args){
 
@@ -44799,7 +44797,11 @@ function clustergrammer_gl(args){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  var params = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js")(regl, network);
+
+
+  var params = initialize_params(regl, network);
+
+  __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js")(regl, params);
 
   var cgm = {};
 
@@ -47543,7 +47545,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .attr('value', function(){
       return cgm.params.dendro.selected_clust_names.join(', ');
     })
-    .style('width', '350px')
+    .style('width', '364px')
     .style('display', 'block');
 
 
@@ -47574,8 +47576,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
 
 module.exports = function make_tooltip_text(params){
-
-  console.log('make_tooltip_text')
 
   var inst_axis;
   var tooltip_text;
@@ -47696,8 +47696,6 @@ var display_and_position_tooltip = __webpack_require__(/*! ./display_and_positio
 module.exports = function run_show_tooltip(params){
 
   if (params.tooltip.permanent_tooltip === false){
-
-    console.log('SHOW TOOLTIP!!!!!!')
 
     remove_lost_tooltips(params);
 

@@ -1,4 +1,4 @@
-var initialize_params = require('./../params/initialize_params');
+// var initialize_params = require('./../params/initialize_params');
 _ = require('underscore');
 var reset_cameras = require('./../cameras/reset_cameras');
 var start_animation = require('./start_animation');
@@ -8,13 +8,11 @@ var draw_mouseover = require('./draw_mouseover');
 var draw_labels_tooltips_or_dendro = require('./draw_labels_tooltips_or_dendro');
 var draw_background_calculations = require('./draw_background_calculations');
 
-module.exports = function run_viz(regl, network){
+module.exports = function run_viz(regl, params){
 
-  // global params
-  var params = initialize_params(regl, network);
+  // var params = initialize_params(regl, network);
 
   params.ani.first_frame = true;
-
 
   regl.frame(function ({time}) {
 
@@ -67,6 +65,6 @@ module.exports = function run_viz(regl, network){
 
   });
 
-  return params;
+  // return params;
 
 };

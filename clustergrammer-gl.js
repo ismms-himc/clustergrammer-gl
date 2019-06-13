@@ -43711,7 +43711,7 @@ module.exports = function run_viz(regl, params){
 
   regl.frame(function ({time}) {
 
-    console.log('tick')
+    // console.log('tick')
 
     params.ani.time = time;
 
@@ -43784,6 +43784,63 @@ module.exports = function start_animation(params){
 
 
   params.ani.duration_end = params.ani.last_switch_time + params.ani.ani_duration;
+};
+
+/***/ }),
+
+/***/ "./src/initialize_viz/destroy_viz.js":
+/*!*******************************************!*\
+  !*** ./src/initialize_viz/destroy_viz.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+module.exports = function destroy_viz(){
+  console.log('destroy_viz', d3.select(this.params.base_container).empty())
+  d3.select(this.params.base_container)
+    .selectAll('div')
+    .remove()
+  regl.destroy()
+}
+
+/***/ }),
+
+/***/ "./src/initialize_viz/initialize_containers.js":
+/*!*****************************************************!*\
+  !*** ./src/initialize_viz/initialize_containers.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function initialize_containers(args){
+
+  var base_container = args.container;
+
+  // make control panel (needs to appear above canvas)
+  d3.select(base_container)
+    .append('div')
+    .attr('class', 'control-container')
+    .style('cursor', 'default');
+
+  // make canvas container
+  d3.select(base_container)
+    .append('div')
+    .attr('class', 'canvas-container')
+    .style('position', 'absolute')
+    .style('cursor', 'default');
+
+  var canvas_container = d3.select(base_container)
+                           .select('.canvas-container')[0][0];
+
+  var inst_height = args.viz_height;
+  var inst_width  = args.viz_width;
+
+  d3.select(canvas_container)
+    .style('height',inst_height + 'px')
+    .style('width',inst_width+'px');
+
+  return canvas_container;
 };
 
 /***/ }),
@@ -44736,6 +44793,7 @@ var reset_cameras = __webpack_require__(/*! ./cameras/reset_cameras */ "./src/ca
 var initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
 var initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
 var decompress_network = __webpack_require__(/*! ./params/decompress_network */ "./src/params/decompress_network.js");
+var initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js")
 
 function clustergrammer_gl(args){
 
@@ -44747,28 +44805,7 @@ function clustergrammer_gl(args){
 
   var base_container = args.container;
 
-  // make control panel (needs to appear above canvas)
-  d3.select(base_container)
-    .append('div')
-    .attr('class', 'control-container')
-    .style('cursor', 'default');
-
-  // make canvas container
-  d3.select(base_container)
-    .append('div')
-    .attr('class', 'canvas-container')
-    .style('position', 'absolute')
-    .style('cursor', 'default');
-
-  var canvas_container = d3.select(base_container)
-                           .select('.canvas-container')[0][0];
-
-  var inst_height = args.viz_height;
-  var inst_width  = args.viz_width;
-
-  d3.select(canvas_container)
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px');
+  var canvas_container = initialize_containers(args);
 
   regl = initialize_regl(canvas_container);
 
@@ -44813,6 +44850,8 @@ function clustergrammer_gl(args){
   // working on re-building visualization
   cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
   cgm.initialize_regl = initialize_regl;
+
+  cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
 
   return cgm;
 

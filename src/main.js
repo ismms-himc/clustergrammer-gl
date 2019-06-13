@@ -9,6 +9,7 @@ var reset_cameras = require('./cameras/reset_cameras');
 var initialize_params = require('./params/initialize_params');
 var initialize_regl = require('./params/initialize_regl');
 var decompress_network = require('./params/decompress_network');
+var initialize_containers = require('./initialize_viz/initialize_containers')
 
 function clustergrammer_gl(args){
 
@@ -20,28 +21,7 @@ function clustergrammer_gl(args){
 
   var base_container = args.container;
 
-  // make control panel (needs to appear above canvas)
-  d3.select(base_container)
-    .append('div')
-    .attr('class', 'control-container')
-    .style('cursor', 'default');
-
-  // make canvas container
-  d3.select(base_container)
-    .append('div')
-    .attr('class', 'canvas-container')
-    .style('position', 'absolute')
-    .style('cursor', 'default');
-
-  var canvas_container = d3.select(base_container)
-                           .select('.canvas-container')[0][0];
-
-  var inst_height = args.viz_height;
-  var inst_width  = args.viz_width;
-
-  d3.select(canvas_container)
-    .style('height',inst_height + 'px')
-    .style('width',inst_width+'px');
+  var canvas_container = initialize_containers(args);
 
   regl = initialize_regl(canvas_container);
 
@@ -86,6 +66,8 @@ function clustergrammer_gl(args){
   // working on re-building visualization
   cgm.run_viz = require('./draws/run_viz');
   cgm.initialize_regl = initialize_regl;
+
+  cgm.destroy_viz = require('./initialize_viz/destroy_viz');
 
   return cgm;
 

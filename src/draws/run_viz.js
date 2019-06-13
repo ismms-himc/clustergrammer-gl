@@ -15,7 +15,7 @@ module.exports = function run_viz(regl, params){
 
   regl.frame(function ({time}) {
 
-    console.log('tick')
+    // console.log('tick')
 
     params.ani.time = time;
 

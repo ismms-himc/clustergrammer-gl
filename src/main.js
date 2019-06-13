@@ -5,6 +5,7 @@
  */
 
 var pako = require('pako');
+var reset_cameras = require('./cameras/reset_cameras');
 
 function clustergrammer_gl(args){
 
@@ -91,13 +92,17 @@ function clustergrammer_gl(args){
   d3.select(cgm.params.root + ' .canvas-container canvas')
     .on('mouseover', function(){
       cgm.params.tooltip.on_canvas = true;
-      console.log(cgm.params.root, 'on canvas')
+      // console.log(cgm.params.root, 'on canvas')
     })
     .on('mouseout', function(){
       // disable off canvas
       cgm.params.tooltip.on_canvas = false;
       // console.log(cgm.params.root, 'off canvas');
     });
+
+  // exposing reset_cameras during development
+  cgm.reset_cameras = reset_cameras;
+  cgm.regl = regl;
 
   return cgm;
 

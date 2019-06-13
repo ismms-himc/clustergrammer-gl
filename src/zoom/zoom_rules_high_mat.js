@@ -1,7 +1,7 @@
 var interactionEvents = require('./../interactions/interaction-events');
 var extend = require('xtend/mutable');
 var track_interaction_zoom_data = require('./../interactions/track_interaction_zoom_data');
-var hide_d3_tip = require('./../tooltip/hide_d3_tip');
+var hide_tooltip = require('./../tooltip/hide_tooltip');
 var double_clicking = require('./../interactions/double_clicking');
 
 module.exports = function zoom_rules_high_mat(regl, params){
@@ -23,7 +23,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    hide_d3_tip(params);
+    hide_tooltip(params);
 
     // console.log(params.int.mouseover.row.name, params.int.mouseover.col.name)
 
@@ -38,6 +38,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     } else {
 
       params.ani.last_click = params.ani.time;
+      console.log('clicked')
 
     }
 

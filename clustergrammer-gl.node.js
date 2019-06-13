@@ -40306,6 +40306,9 @@ var custom_camera_2d = __webpack_require__(/*! ./custom_camera_2d */ "./src/came
 
 module.exports = function make_cameras(regl, params){
 
+  // console.log('---------------------------------------------')
+  // console.log('make_cameras total pan x min', params.zoom_data.x.total_pan_max)
+
   var zoom_data = params.zoom_data;
 
   const cameras = {};
@@ -40351,6 +40354,7 @@ module.exports = function reset_cameras(regl, params){
   params.labels.draw_labels = false;
   params.ani.ini_viz = true;
   params.int.total = 0
+
 
 };
 
@@ -44705,6 +44709,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
  */
 
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
+var reset_cameras = __webpack_require__(/*! ./cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 
 function clustergrammer_gl(args){
 
@@ -44798,6 +44803,10 @@ function clustergrammer_gl(args){
       cgm.params.tooltip.on_canvas = false;
       // console.log(cgm.params.root, 'off canvas');
     });
+
+  // exposing reset_cameras during development
+  cgm.reset_cameras = reset_cameras;
+  cgm.regl = regl;
 
   return cgm;
 

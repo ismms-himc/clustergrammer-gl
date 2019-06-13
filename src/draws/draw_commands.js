@@ -31,7 +31,7 @@ module.exports = function draw_commands(regl, params){
 
   var tooltip = params.tooltip;
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
-    require('./../tooltip/show_d3_tip')(params);
+    require('./../tooltip/show_tooltip')(params);
   }
   if (params.labels.draw_labels){
     params.labels.draw_labels = false;

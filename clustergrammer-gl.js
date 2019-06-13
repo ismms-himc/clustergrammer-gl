@@ -40306,6 +40306,9 @@ var custom_camera_2d = __webpack_require__(/*! ./custom_camera_2d */ "./src/came
 
 module.exports = function make_cameras(regl, params){
 
+  // console.log('---------------------------------------------')
+  // console.log('make_cameras total pan x min', params.zoom_data.x.total_pan_max)
+
   var zoom_data = params.zoom_data;
 
   const cameras = {};
@@ -40351,6 +40354,7 @@ module.exports = function reset_cameras(regl, params){
   params.labels.draw_labels = false;
   params.ani.ini_viz = true;
   params.int.total = 0
+
 
 };
 
@@ -42004,8 +42008,8 @@ module.exports = function build_control_panel(regl, cgm){
 
   __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js")(params);
 
-  cgm.show_tooltip = __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js");
-  cgm.hide_tooltip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
+  cgm.show_tooltip = __webpack_require__(/*! ./../tooltip/show_tooltip */ "./src/tooltip/show_tooltip.js");
+  cgm.hide_tooltip = __webpack_require__(/*! ./../tooltip/hide_tooltip */ "./src/tooltip/hide_tooltip.js");
 
   // setting fontsize
   d3.select(params.tooltip_id)
@@ -43422,7 +43426,7 @@ module.exports = function draw_commands(regl, params){
 
   var tooltip = params.tooltip;
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
-    __webpack_require__(/*! ./../tooltip/show_d3_tip */ "./src/tooltip/show_d3_tip.js")(params);
+    __webpack_require__(/*! ./../tooltip/show_tooltip */ "./src/tooltip/show_tooltip.js")(params);
   }
   if (params.labels.draw_labels){
     params.labels.draw_labels = false;
@@ -44705,6 +44709,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
  */
 
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
+var reset_cameras = __webpack_require__(/*! ./cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 
 function clustergrammer_gl(args){
 
@@ -44791,13 +44796,17 @@ function clustergrammer_gl(args){
   d3.select(cgm.params.root + ' .canvas-container canvas')
     .on('mouseover', function(){
       cgm.params.tooltip.on_canvas = true;
-      console.log(cgm.params.root, 'on canvas')
+      // console.log(cgm.params.root, 'on canvas')
     })
     .on('mouseout', function(){
       // disable off canvas
       cgm.params.tooltip.on_canvas = false;
       // console.log(cgm.params.root, 'off canvas');
     });
+
+  // exposing reset_cameras during development
+  cgm.reset_cameras = reset_cameras;
+  cgm.regl = regl;
 
   return cgm;
 
@@ -46593,15 +46602,20 @@ module.exports = function generate_text_triangle_params(params){
 
 module.exports = function generate_tooltip_params(regl, params){
 
-  params.tooltip = {};
-  params.tooltip.show_tooltip = false;
-  params.tooltip.in_bounds_tooltip = false;
-  params.tooltip.background_opacity = 0.75;
-  params.tooltip.tooltip_type = null;
+  tooltip = {};
+  tooltip.show_tooltip = false;
+  tooltip.in_bounds_tooltip = false;
+  tooltip.background_opacity = 0.75;
+  tooltip.tooltip_type = null;
 
-  params.tooltip.border_width = 10;
+  tooltip.border_width = 10;
   // setting to true
-  params.tooltip.on_canvas = true;
+  tooltip.on_canvas = true;
+
+  // enable user to mouseover and interact with the tooltip
+  tooltip.permanent_tooltip = false;
+
+  params.tooltip = tooltip;
 }
 
 /***/ }),
@@ -46657,7 +46671,7 @@ module.exports = function initialize_params(regl, network){
   __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js")(params);
   var labels = params.labels;
 
-  console.log('generate_tooltip_params')
+  // console.log('generate_tooltip_params')
   __webpack_require__(/*! ./generate_tooltip_params */ "./src/params/generate_tooltip_params.js")(regl, params);
 
   __webpack_require__(/*! ./calc_viz_dim */ "./src/params/calc_viz_dim.js")(regl, params);
@@ -47317,16 +47331,18 @@ module.exports = function display_and_position_tooltip(params){
 
 /***/ }),
 
-/***/ "./src/tooltip/hide_d3_tip.js":
-/*!************************************!*\
-  !*** ./src/tooltip/hide_d3_tip.js ***!
-  \************************************/
+/***/ "./src/tooltip/hide_tooltip.js":
+/*!*************************************!*\
+  !*** ./src/tooltip/hide_tooltip.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function hide_d3_tip(params){
+module.exports = function hide_tooltip(params){
 
-  params.tooltip_fun.hide();
+  if (params.tooltip.permanent_tooltip === false){
+    params.tooltip_fun.hide();
+  }
 
 }
 
@@ -47594,10 +47610,10 @@ module.exports = function remove_lost_tooltips(params){
 
 /***/ }),
 
-/***/ "./src/tooltip/show_d3_tip.js":
-/*!************************************!*\
-  !*** ./src/tooltip/show_d3_tip.js ***!
-  \************************************/
+/***/ "./src/tooltip/show_tooltip.js":
+/*!*************************************!*\
+  !*** ./src/tooltip/show_tooltip.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -47605,9 +47621,7 @@ var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/to
 var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
 var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
-module.exports = function show_d3_tip(params){
-
-  // console.log('showing d3_tip')
+module.exports = function show_tooltip(params){
 
   remove_lost_tooltips(params);
 
@@ -48146,7 +48160,7 @@ module.exports = function sanitize_potential_zoom(zd, zoom_restrict){
 var interactionEvents = __webpack_require__(/*! ./../interactions/interaction-events */ "./src/interactions/interaction-events.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
-var hide_d3_tip = __webpack_require__(/*! ./../tooltip/hide_d3_tip */ "./src/tooltip/hide_d3_tip.js");
+var hide_tooltip = __webpack_require__(/*! ./../tooltip/hide_tooltip */ "./src/tooltip/hide_tooltip.js");
 var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking */ "./src/interactions/double_clicking.js");
 
 module.exports = function zoom_rules_high_mat(regl, params){
@@ -48168,7 +48182,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
   .on('interaction', function(ev){
     track_interaction_zoom_data(regl, params, ev);
 
-    hide_d3_tip(params);
+    hide_tooltip(params);
 
     // console.log(params.int.mouseover.row.name, params.int.mouseover.col.name)
 
@@ -48183,6 +48197,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
     } else {
 
       params.ani.last_click = params.ani.time;
+      console.log('clicked')
 
     }
 

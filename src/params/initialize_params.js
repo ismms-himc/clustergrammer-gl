@@ -14,7 +14,7 @@ module.exports = function initialize_params(regl, network){
   require('./gen_label_par')(params);
   var labels = params.labels;
 
-  console.log('generate_tooltip_params')
+  // console.log('generate_tooltip_params')
   require('./generate_tooltip_params')(regl, params);
 
   require('./calc_viz_dim')(regl, params);

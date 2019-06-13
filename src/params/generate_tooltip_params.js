@@ -1,12 +1,17 @@
 module.exports = function generate_tooltip_params(regl, params){
 
-  params.tooltip = {};
-  params.tooltip.show_tooltip = false;
-  params.tooltip.in_bounds_tooltip = false;
-  params.tooltip.background_opacity = 0.75;
-  params.tooltip.tooltip_type = null;
+  tooltip = {};
+  tooltip.show_tooltip = false;
+  tooltip.in_bounds_tooltip = false;
+  tooltip.background_opacity = 0.75;
+  tooltip.tooltip_type = null;
 
-  params.tooltip.border_width = 10;
+  tooltip.border_width = 10;
   // setting to true
-  params.tooltip.on_canvas = true;
+  tooltip.on_canvas = true;
+
+  // enable user to mouseover and interact with the tooltip
+  tooltip.permanent_tooltip = false;
+
+  params.tooltip = tooltip;
 }

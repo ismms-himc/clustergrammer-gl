@@ -42008,8 +42008,8 @@ module.exports = function build_control_panel(regl, cgm){
 
   __webpack_require__(/*! ./../tooltip/initialize_d3_tip */ "./src/tooltip/initialize_d3_tip.js")(params);
 
-  cgm.show_tooltip = __webpack_require__(/*! ./../tooltip/show_tooltip */ "./src/tooltip/show_tooltip.js");
-  cgm.hide_tooltip = __webpack_require__(/*! ./../tooltip/hide_tooltip */ "./src/tooltip/hide_tooltip.js");
+  // cgm.show_tooltip = require('./../tooltip/show_tooltip');
+  // cgm.hide_tooltip = require('./../tooltip/hide_tooltip');
 
   // setting fontsize
   d3.select(params.tooltip_id)
@@ -43426,7 +43426,7 @@ module.exports = function draw_commands(regl, params){
 
   var tooltip = params.tooltip;
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
-    __webpack_require__(/*! ./../tooltip/show_tooltip */ "./src/tooltip/show_tooltip.js")(params);
+    __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
   }
   if (params.labels.draw_labels){
     params.labels.draw_labels = false;
@@ -47610,10 +47610,10 @@ module.exports = function remove_lost_tooltips(params){
 
 /***/ }),
 
-/***/ "./src/tooltip/show_tooltip.js":
-/*!*************************************!*\
-  !*** ./src/tooltip/show_tooltip.js ***!
-  \*************************************/
+/***/ "./src/tooltip/run_show_tooltip.js":
+/*!*****************************************!*\
+  !*** ./src/tooltip/run_show_tooltip.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -47622,6 +47622,8 @@ var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./
 var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
 module.exports = function show_tooltip(params){
+
+  console.log('SHOW TOOLTIP!!!!!!')
 
   remove_lost_tooltips(params);
 

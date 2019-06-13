@@ -42,8 +42,8 @@ module.exports = function build_control_panel(regl, cgm){
 
   require('./../tooltip/initialize_d3_tip')(params);
 
-  cgm.show_tooltip = require('./../tooltip/show_tooltip');
-  cgm.hide_tooltip = require('./../tooltip/hide_tooltip');
+  // cgm.show_tooltip = require('./../tooltip/show_tooltip');
+  // cgm.hide_tooltip = require('./../tooltip/hide_tooltip');
 
   // setting fontsize
   d3.select(params.tooltip_id)

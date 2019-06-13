@@ -4,6 +4,8 @@ var display_and_position_tooltip = require('./display_and_position_tooltip');
 
 module.exports = function show_tooltip(params){
 
+  console.log('SHOW TOOLTIP!!!!!!')
+
   remove_lost_tooltips(params);
 
   make_tooltip_text(params);

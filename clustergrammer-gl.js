@@ -43711,6 +43711,8 @@ module.exports = function run_viz(regl, params){
 
   regl.frame(function ({time}) {
 
+    console.log('tick')
+
     params.ani.time = time;
 
     if (params.int.total > 1){
@@ -44732,6 +44734,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 var pako = __webpack_require__(/*! pako */ "./node_modules/pako/index.js");
 var reset_cameras = __webpack_require__(/*! ./cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
+var initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
+var decompress_network = __webpack_require__(/*! ./params/decompress_network */ "./src/params/decompress_network.js");
 
 function clustergrammer_gl(args){
 
@@ -44739,49 +44743,25 @@ function clustergrammer_gl(args){
   console.log('clustergrammer-gl version 0.9.0');
   console.log('################################');
 
-  // decompress if necessary
-  // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript
-  var network;
-  if (typeof (args.network) === 'string'){
+  network = decompress_network(args.network);
 
-    // Decode base64 (convert ascii to binary)
-    var comp_net = JSON.parse(args.network).compressed;
+  var base_container = args.container;
 
-    strData     = atob(comp_net);
-
-    // Convert binary string to character-number array
-    var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
-
-    // Turn number array into byte-array
-    var binData     = new Uint8Array(charData);
-
-    // Pako magic
-    var data        = pako.inflate(binData);
-
-    var strData = new TextDecoder().decode(data)
-
-    var uncomp_net = JSON.parse(strData)
-
-    network = uncomp_net;
-  } else {
-    network = args.network;
-  }
-
-  var container = args.container;
-
-  // make control panel first so it appears above canvas
-  d3.select(container)
+  // make control panel (needs to appear above canvas)
+  d3.select(base_container)
     .append('div')
     .attr('class', 'control-container')
     .style('cursor', 'default');
 
-  d3.select(container)
+  // make canvas container
+  d3.select(base_container)
     .append('div')
     .attr('class', 'canvas-container')
     .style('position', 'absolute')
     .style('cursor', 'default');
 
-  var canvas_container = d3.select(container).select('.canvas-container')[0][0];
+  var canvas_container = d3.select(base_container)
+                           .select('.canvas-container')[0][0];
 
   var inst_height = args.viz_height;
   var inst_width  = args.viz_width;
@@ -44790,13 +44770,7 @@ function clustergrammer_gl(args){
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
 
-  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
-    extensions: ['angle_instanced_arrays'],
-    container: canvas_container,
-    // pixelRatio: window.devicePixelRatio/10
-  });
-
-
+  regl = initialize_regl(canvas_container);
 
   var params = initialize_params(regl, network);
 
@@ -44812,7 +44786,7 @@ function clustergrammer_gl(args){
   // id of container
   cgm.params.root = '#' + args.container.id;
   cgm.params.canvas_root = cgm.params.root + ' .canvas-container';
-  cgm.params.container = args.container;
+  cgm.params.base_container = args.container;
   cgm.params.canvas_container = canvas_container;
 
   __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")(regl, cgm);
@@ -44834,11 +44808,12 @@ function clustergrammer_gl(args){
   ///////////////////////////////////////////
   //
   cgm.reset_cameras = reset_cameras;
-  cgm.run_viz
   cgm.regl = regl;
 
   // working on re-building visualization
   cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
+  cgm.initialize_regl = initialize_regl;
+
   return cgm;
 
 }
@@ -46248,6 +46223,40 @@ module.exports = function calc_vd(regl, params){
 
 /***/ }),
 
+/***/ "./src/params/decompress_network.js":
+/*!******************************************!*\
+  !*** ./src/params/decompress_network.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function decompress_network(network){
+
+  // decompress if necessary
+  // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript
+  var network;
+  if (typeof (args.network) === 'string'){
+    // Decode base64 (convert ascii to binary)
+    var comp_net = JSON.parse(args.network).compressed;
+    strData     = atob(comp_net);
+    // Convert binary string to character-number array
+    var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
+    // Turn number array into byte-array
+    var binData     = new Uint8Array(charData);
+    // Pako magic
+    var data        = pako.inflate(binData);
+    var strData = new TextDecoder().decode(data)
+    var uncomp_net = JSON.parse(strData)
+    network = uncomp_net;
+  } else {
+    network = args.network;
+  }
+
+  return network
+};
+
+/***/ }),
+
 /***/ "./src/params/gen_ani_par.js":
 /*!***********************************!*\
   !*** ./src/params/gen_ani_par.js ***!
@@ -46758,6 +46767,26 @@ module.exports = function initialize_params(regl, network){
   params.hzome = hzome_functions(params);
 
   return params;
+};
+
+/***/ }),
+
+/***/ "./src/params/initialize_regl.js":
+/*!***************************************!*\
+  !*** ./src/params/initialize_regl.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function initialize_regl(canvas_container){
+
+  var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
+    extensions: ['angle_instanced_arrays'],
+    container: canvas_container,
+    // pixelRatio: window.devicePixelRatio/10
+  });
+
+  return regl;
 };
 
 /***/ }),

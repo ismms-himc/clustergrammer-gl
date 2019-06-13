@@ -47292,6 +47292,7 @@ module.exports = function display_and_position_tooltip(params){
 
   // display tooltip
   d3.select(params.tooltip_id)
+    .style('opacity', 1)
     .style('display', 'block')
     .style('z-index', 99);
 
@@ -47766,6 +47767,8 @@ var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./
 var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
 module.exports = function run_show_tooltip(params){
+
+  console.log('show tooltip!!!')
 
   if (params.tooltip.permanent_tooltip === false){
 

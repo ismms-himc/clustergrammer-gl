@@ -7,6 +7,7 @@ module.exports = function display_and_position_tooltip(params){
 
   // display tooltip
   d3.select(params.tooltip_id)
+    .style('opacity', 1)
     .style('display', 'block')
     .style('z-index', 99);
 

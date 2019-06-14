@@ -24,7 +24,7 @@ module.exports = function run_viz(regl, params){
         .remove();
     }
 
-    // prevent this from being negative, can happen when resetting zooo
+    // prevent this from being negative, can happen when resetting zoom
     if (params.int.total < 0){
       params.int.total = 0;
     }
@@ -65,7 +65,5 @@ module.exports = function run_viz(regl, params){
     }
 
   });
-
-  // return params;
 
 };

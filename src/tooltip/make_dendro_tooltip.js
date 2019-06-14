@@ -45,7 +45,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
       run_dendro_crop(params, d);
     })
     .append('text')
-    .text('Crop cluster')
+    .text('Crop to Selected Cluster')
 
 
     // .append('div')

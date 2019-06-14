@@ -48899,20 +48899,39 @@ math.import(__webpack_require__(/*! mathjs/lib/type/matrix */ "./node_modules/ma
 math.import(__webpack_require__(/*! mathjs/lib/function/matrix/zeros */ "./node_modules/mathjs/lib/function/matrix/zeros.js"));
 
 module.exports = function run_dendro_crop(params, inst_data){
+
   console.log('run dendro crop')
 
+  var selected_clust_names = params.dendro.selected_clust_names;
+  var ini_all_names = params.network.row_node_names;
+  var super_string = ': ';
 
-      var selected_clust_names = params.dendro.selected_clust_names;
-      var all_nodes = params.network.row_node_names;
+  var all_names = []
+  if (ini_all_names[0].indexOf(super_string) > 0){
+    _.each(ini_all_names, function(d){
+      all_names.push(d.split(': ')[1])
+    })
 
-      var found_index;
-      var found_nodes = [];
-      _.each(selected_clust_names, function(d){
-        found_index = all_nodes.indexOf(d);
-        found_node = cgm.params.network.row_nodes[found_index]
-        found_nodes.push(found_node);
-      });
-      console.log(found_nodes.length);
+  } else {
+    all_names = ini_all_names;
+  }
+
+  console.log(selected_clust_names)
+  console.log(all_names)
+
+
+  var found_index;
+  var found_nodes = [];
+  _.each(selected_clust_names, function(d){
+    found_index = all_names.indexOf(d);
+    console.log(found_index)
+    found_node = cgm.params.network.row_nodes[found_index]
+    found_nodes.push(found_node);
+  });
+
+
+  console.log(found_nodes);
+
 };
 
 /***/ }),
@@ -53781,7 +53800,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
       run_dendro_crop(params, d);
     })
     .append('text')
-    .text('Crop cluster')
+    .text('Crop to Selected Cluster')
 
 
     // .append('div')

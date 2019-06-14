@@ -13,13 +13,15 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
   var inst_left;
   var inst_rotate;
 
+  // hardwiring dendro slider position
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
       inst_top = 150;
       inst_left = cgm.params.viz_width - 25 ;
     } else {
-      inst_top = cgm.params.viz_height - 80;
+      // inst_top = cgm.params.viz_height - 80;
+      inst_top = 795; // cgm.params.viz_height - 80;
       inst_left = 55;
     }
 

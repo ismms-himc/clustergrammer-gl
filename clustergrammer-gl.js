@@ -48886,6 +48886,37 @@ module.exports = function toggle_menu(cgm, menu_type, toggle, make_menu=null){
 
 /***/ }),
 
+/***/ "./src/crop/run_dendro_crop.js":
+/*!*************************************!*\
+  !*** ./src/crop/run_dendro_crop.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var core = __webpack_require__(/*! mathjs/core */ "./node_modules/mathjs/core.js");
+var math = core.create();
+math.import(__webpack_require__(/*! mathjs/lib/type/matrix */ "./node_modules/mathjs/lib/type/matrix/index.js"));
+math.import(__webpack_require__(/*! mathjs/lib/function/matrix/zeros */ "./node_modules/mathjs/lib/function/matrix/zeros.js"));
+
+module.exports = function run_dendro_crop(params, inst_data){
+  console.log('run dendro crop')
+
+
+      var selected_clust_names = params.dendro.selected_clust_names;
+      var all_nodes = params.network.row_node_names;
+
+      var found_index;
+      var found_nodes = [];
+      _.each(selected_clust_names, function(d){
+        found_index = all_nodes.indexOf(d);
+        found_node = cgm.params.network.row_nodes[found_index]
+        found_nodes.push(found_node);
+      });
+      console.log(found_nodes.length);
+};
+
+/***/ }),
+
 /***/ "./src/dendrogram/build_dendrogram_sliders.js":
 /*!****************************************************!*\
   !*** ./src/dendrogram/build_dendrogram_sliders.js ***!
@@ -48908,13 +48939,15 @@ module.exports = function build_dendrogram_sliders(regl, cgm){
   var inst_left;
   var inst_rotate;
 
+  // hardwiring dendro slider position
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
       inst_top = 150;
       inst_left = cgm.params.viz_width - 25 ;
     } else {
-      inst_top = cgm.params.viz_height - 80;
+      // inst_top = cgm.params.viz_height - 80;
+      inst_top = 795; // cgm.params.viz_height - 80;
       inst_left = 55;
     }
 
@@ -53704,11 +53737,7 @@ module.exports = function initialize_d3_tip(params){
 var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakdown_graph */ "./src/cats/make_cat_breakdown_graph.js");
 var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
 var run_hide_tooltip = __webpack_require__(/*! ./run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
-
-var core = __webpack_require__(/*! mathjs/core */ "./node_modules/mathjs/core.js");
-var math = core.create();
-math.import(__webpack_require__(/*! mathjs/lib/type/matrix */ "./node_modules/mathjs/lib/type/matrix/index.js"));
-math.import(__webpack_require__(/*! mathjs/lib/function/matrix/zeros */ "./node_modules/mathjs/lib/function/matrix/zeros.js"));
+var run_dendro_crop = __webpack_require__(/*! ./../crop/run_dendro_crop */ "./src/crop/run_dendro_crop.js");
 
 module.exports = function make_dendro_tooltip(params, inst_axis){
 
@@ -53749,20 +53778,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .style('cursor', 'default')
     .style('padding-top', '7px')
     .on('click', function(d){
-      console.log('clicking crop button')
-
-      var selected_clust_names = params.dendro.selected_clust_names;
-      var all_nodes = params.network.row_node_names;
-
-      var found_index;
-      var found_nodes = [];
-      _.each(selected_clust_names, function(d){
-        found_index = all_nodes.indexOf(d);
-        found_node = cgm.params.network.row_nodes[found_index]
-        found_nodes.push(found_node);
-      });
-      console.log(found_nodes.length);
-      debugger;
+      run_dendro_crop(params, d);
     })
     .append('text')
     .text('Crop cluster')

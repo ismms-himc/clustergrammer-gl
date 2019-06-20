@@ -42912,9 +42912,12 @@ var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/dr
 var draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
 var draw_background_calculations = __webpack_require__(/*! ./draw_background_calculations */ "./src/draws/draw_background_calculations.js");
 
-module.exports = function run_viz(regl, params){
+module.exports = function run_viz(){
 
-  console.log('run_viz')
+  var regl = this.regl;
+  var params = this.params;
+
+  console.log('run_viz, using this')
 
   params.ani.first_frame = true;
 
@@ -44016,17 +44019,11 @@ function clustergrammer_gl(args){
 
   // initialize parameters
   var network = decompress_network(args.network);
-  var params = initialize_params(regl, network);
+  var params = initialize_params(args, canvas_container, regl, network);
 
   cgm.regl = regl;
-
-  // id of container
-  params.root = '#' + args.container.id;
-  params.canvas_root = params.root + ' .canvas-container';
-  params.base_container = args.container;
-  params.canvas_container = canvas_container;
-
   cgm.params = params;
+
 
   build_dendrogram_sliders(cgm);
 
@@ -44043,7 +44040,9 @@ function clustergrammer_gl(args){
       // console.log(cgm.params.root, 'off canvas');
     });
 
-  run_viz(regl, params);
+  // run_viz(cgm);
+  cgm.run_viz = run_viz;
+  cgm.run_viz();
 
   // exposing methods during development
   ///////////////////////////////////////////
@@ -45935,7 +45934,7 @@ module.exports = function generate_webgl_to_pix(params){
 
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 
-module.exports = function initialize_params(regl, network){
+module.exports = function initialize_params(args, canvas_container, regl, network){
 
   var params = {};
   params.network = network;
@@ -46004,6 +46003,12 @@ module.exports = function initialize_params(regl, network){
 
   params.viz_height = 1035; //inst_height;
   params.viz_width = 900; // inst_width;
+
+  params.root = '#' + args.container.id;
+  params.canvas_root = params.root + ' .canvas-container';
+  params.base_container = args.container;
+  params.canvas_container = canvas_container;
+
 
   return params;
 };

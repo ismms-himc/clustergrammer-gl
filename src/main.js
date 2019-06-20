@@ -25,17 +25,11 @@ function clustergrammer_gl(args){
 
   // initialize parameters
   var network = decompress_network(args.network);
-  var params = initialize_params(regl, network);
+  var params = initialize_params(args, canvas_container, regl, network);
 
   cgm.regl = regl;
-
-  // id of container
-  params.root = '#' + args.container.id;
-  params.canvas_root = params.root + ' .canvas-container';
-  params.base_container = args.container;
-  params.canvas_container = canvas_container;
-
   cgm.params = params;
+
 
   build_dendrogram_sliders(cgm);
 
@@ -52,7 +46,9 @@ function clustergrammer_gl(args){
       // console.log(cgm.params.root, 'off canvas');
     });
 
-  run_viz(regl, params);
+  // run_viz(cgm);
+  cgm.run_viz = run_viz;
+  cgm.run_viz();
 
   // exposing methods during development
   ///////////////////////////////////////////

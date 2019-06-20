@@ -7,9 +7,12 @@ var draw_mouseover = require('./draw_mouseover');
 var draw_labels_tooltips_or_dendro = require('./draw_labels_tooltips_or_dendro');
 var draw_background_calculations = require('./draw_background_calculations');
 
-module.exports = function run_viz(regl, params){
+module.exports = function run_viz(){
 
-  console.log('run_viz')
+  var regl = this.regl;
+  var params = this.params;
+
+  console.log('run_viz, using this')
 
   params.ani.first_frame = true;
 

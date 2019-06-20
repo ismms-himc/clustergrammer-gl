@@ -23,19 +23,14 @@ function clustergrammer_gl(args){
   cgm.run_viz = require('./draws/run_viz');
   cgm.destroy_viz = require('./initialize_viz/destroy_viz');
   cgm.ini_canvas_mouseover = require('./initialize_viz/ini_canvas_mouseover')
-
-  // initialize contiainers and regl
-  cgm.initialize_containers();
-  cgm.initialize_regl();
+  cgm.viz_from_network = require('./initialize_viz/viz_from_network');
 
   // initialize network
-  cgm.decompress_network(cgm.args.network);
+  cgm.decompress_network(args.network);
 
-  // define parameters and run visualization
-  cgm.initialize_params();
-  cgm.build_control_panel();
-  cgm.ini_canvas_mouseover();
-  cgm.run_viz();
+  // going to work on passing in filtered network in place of full network
+  // as a quick crop method
+  cgm.viz_from_network()
 
   return cgm;
 }

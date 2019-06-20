@@ -42922,7 +42922,7 @@ module.exports = function run_viz(){
 
   regl.frame(function ({time}) {
 
-    console.log('tick')
+    // console.log('tick')
 
     params.ani.time = time;
 
@@ -43075,6 +43075,28 @@ module.exports = function initialize_containers(){
   // console.log(canvas_container)
   this.canvas_container = canvas_container;
   // return canvas_container;
+};
+
+/***/ }),
+
+/***/ "./src/initialize_viz/viz_from_network.js":
+/*!************************************************!*\
+  !*** ./src/initialize_viz/viz_from_network.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function viz_from_network(){
+
+  this.initialize_containers();
+  this.initialize_regl();
+
+  console.log('viz_from_network')
+  // define parameters and run visualization
+  this.initialize_params();
+  this.build_control_panel();
+  this.ini_canvas_mouseover();
+  this.run_viz();
 };
 
 /***/ }),
@@ -44041,19 +44063,14 @@ function clustergrammer_gl(args){
   cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
   cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
   cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
-
-  // initialize contiainers and regl
-  cgm.initialize_containers();
-  cgm.initialize_regl();
+  cgm.viz_from_network = __webpack_require__(/*! ./initialize_viz/viz_from_network */ "./src/initialize_viz/viz_from_network.js");
 
   // initialize network
-  cgm.decompress_network(cgm.args.network);
+  cgm.decompress_network(args.network);
 
-  // define parameters and run visualization
-  cgm.initialize_params();
-  cgm.build_control_panel();
-  cgm.ini_canvas_mouseover();
-  cgm.run_viz();
+  // going to work on passing in filtered network in place of full network
+  // as a quick crop method
+  cgm.viz_from_network()
 
   return cgm;
 }

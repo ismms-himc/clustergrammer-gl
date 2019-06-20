@@ -41120,8 +41120,9 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function build_control_panel(cgm){
+module.exports = function build_control_panel(){
 
+  var cgm = this;
   var regl = cgm.regl;
 
   var params = cgm.params;
@@ -43014,6 +43015,27 @@ module.exports = function destroy_viz(){
 
 /***/ }),
 
+/***/ "./src/initialize_viz/ini_canvas_mouseover.js":
+/*!****************************************************!*\
+  !*** ./src/initialize_viz/ini_canvas_mouseover.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function ini_canvas_mouseover(){
+
+  d3.select(this.params.root + ' .canvas-container canvas')
+    .on('mouseover', function(){
+      this.params.tooltip.on_canvas = true;
+    })
+    .on('mouseout', function(){
+      this.params.tooltip.on_canvas = false;
+    });
+
+};
+
+/***/ }),
+
 /***/ "./src/initialize_viz/initialize_containers.js":
 /*!*****************************************************!*\
   !*** ./src/initialize_viz/initialize_containers.js ***!
@@ -44013,44 +44035,21 @@ function clustergrammer_gl(args){
   cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
   cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
   cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");;
+  cgm.build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
+  cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
+  cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
+  cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
 
   // initialize regl
   cgm.initialize_containers();
-
   cgm.initialize_regl();
-
-  // initialize parameters
-  var network = cgm.decompress_network(cgm.args.network);
-
-  var params = cgm.initialize_params(cgm.args, cgm.canvas_container, cgm.regl, network);
-
-  cgm.params = params;
-
-
-  __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(cgm);
-
-  d3.select(cgm.params.root + ' .canvas-container canvas')
-    .on('mouseover', function(){
-      cgm.params.tooltip.on_canvas = true;
-      // console.log(cgm.params.root, 'on canvas')
-    })
-    .on('mouseout', function(){
-      // disable off canvas
-      cgm.params.tooltip.on_canvas = false;
-      // console.log(cgm.params.root, 'off canvas');
-    });
-
-  // run_viz(cgm);
-  cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
+  cgm.network = cgm.decompress_network(cgm.args.network);
+  cgm.initialize_params();
+  cgm.build_control_panel();
+  cgm.ini_canvas_mouseover();
   cgm.run_viz();
 
-  // exposing methods during development
-  ///////////////////////////////////////////
-  //
-  cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
-
   return cgm;
-
 }
 
 // necessary for exporting function
@@ -45934,9 +45933,14 @@ module.exports = function generate_webgl_to_pix(params){
 
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 
-module.exports = function initialize_params(args, canvas_container, regl, network){
+module.exports = function initialize_params(network){
+
+  var args = this.args;
 
   var canvas_container = this.canvas_container;
+
+  var regl = this.regl;
+  var network = this.network;
 
   var params = {};
   params.network = network;
@@ -46012,7 +46016,7 @@ module.exports = function initialize_params(args, canvas_container, regl, networ
   params.canvas_container = canvas_container;
 
 
-  return params;
+  this.params = params;
 };
 
 /***/ }),

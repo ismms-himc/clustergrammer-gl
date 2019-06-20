@@ -1,5 +1,6 @@
-module.exports = function build_control_panel(cgm){
+module.exports = function build_control_panel(){
 
+  var cgm = this;
   var regl = cgm.regl;
 
   var params = cgm.params;

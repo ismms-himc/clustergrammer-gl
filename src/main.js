@@ -19,44 +19,21 @@ function clustergrammer_gl(args){
   cgm.initialize_regl = require('./params/initialize_regl');
   cgm.initialize_containers = require('./initialize_viz/initialize_containers');
   cgm.build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders');;
+  cgm.build_control_panel = require('./control_panel/build_control_panel');
+  cgm.run_viz = require('./draws/run_viz');
+  cgm.destroy_viz = require('./initialize_viz/destroy_viz');
+  cgm.ini_canvas_mouseover = require('./initialize_viz/ini_canvas_mouseover')
 
   // initialize regl
   cgm.initialize_containers();
-
   cgm.initialize_regl();
-
-  // initialize parameters
-  var network = cgm.decompress_network(cgm.args.network);
-
-  var params = cgm.initialize_params(cgm.args, cgm.canvas_container, cgm.regl, network);
-
-  cgm.params = params;
-
-
-  require('./control_panel/build_control_panel')(cgm);
-
-  d3.select(cgm.params.root + ' .canvas-container canvas')
-    .on('mouseover', function(){
-      cgm.params.tooltip.on_canvas = true;
-      // console.log(cgm.params.root, 'on canvas')
-    })
-    .on('mouseout', function(){
-      // disable off canvas
-      cgm.params.tooltip.on_canvas = false;
-      // console.log(cgm.params.root, 'off canvas');
-    });
-
-  // run_viz(cgm);
-  cgm.run_viz = require('./draws/run_viz');
+  cgm.network = cgm.decompress_network(cgm.args.network);
+  cgm.initialize_params();
+  cgm.build_control_panel();
+  cgm.ini_canvas_mouseover();
   cgm.run_viz();
 
-  // exposing methods during development
-  ///////////////////////////////////////////
-  //
-  cgm.destroy_viz = require('./initialize_viz/destroy_viz');
-
   return cgm;
-
 }
 
 // necessary for exporting function

@@ -42922,7 +42922,7 @@ module.exports = function run_viz(){
 
   regl.frame(function ({time}) {
 
-    // console.log('tick')
+    console.log('tick')
 
     params.ani.time = time;
 
@@ -43004,13 +43004,15 @@ module.exports = function start_animation(params){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-
 module.exports = function destroy_viz(){
+
   console.log('destroy_viz', d3.select(this.params.base_container).empty())
   d3.select(this.params.base_container)
     .selectAll('div')
     .remove()
-  regl.destroy()
+
+  this.regl.destroy()
+
 }
 
 /***/ }),
@@ -44040,10 +44042,14 @@ function clustergrammer_gl(args){
   cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
   cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
 
-  // initialize regl
+  // initialize contiainers and regl
   cgm.initialize_containers();
   cgm.initialize_regl();
-  cgm.network = cgm.decompress_network(cgm.args.network);
+
+  // initialize network
+  cgm.decompress_network(cgm.args.network);
+
+  // define parameters and run visualization
   cgm.initialize_params();
   cgm.build_control_panel();
   cgm.ini_canvas_mouseover();
@@ -45486,7 +45492,7 @@ module.exports = function decompress_network(network){
     network = args.network;
   }
 
-  return network
+  this.network = network;
 };
 
 /***/ }),

@@ -24,10 +24,14 @@ function clustergrammer_gl(args){
   cgm.destroy_viz = require('./initialize_viz/destroy_viz');
   cgm.ini_canvas_mouseover = require('./initialize_viz/ini_canvas_mouseover')
 
-  // initialize regl
+  // initialize contiainers and regl
   cgm.initialize_containers();
   cgm.initialize_regl();
-  cgm.network = cgm.decompress_network(cgm.args.network);
+
+  // initialize network
+  cgm.decompress_network(cgm.args.network);
+
+  // define parameters and run visualization
   cgm.initialize_params();
   cgm.build_control_panel();
   cgm.ini_canvas_mouseover();

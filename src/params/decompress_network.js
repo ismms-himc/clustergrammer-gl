@@ -20,5 +20,5 @@ module.exports = function decompress_network(network){
     network = args.network;
   }
 
-  return network
+  this.network = network;
 };

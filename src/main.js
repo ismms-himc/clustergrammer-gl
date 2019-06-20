@@ -17,19 +17,19 @@ function clustergrammer_gl(args){
   console.log('clustergrammer-gl version 0.9.0');
   console.log('################################');
 
-  network = decompress_network(args.network);
+  var cgm = {};
 
+  // initialize regl
   var base_container = args.container;
-
   var canvas_container = initialize_containers(args);
+  var regl = initialize_regl(canvas_container);
 
-  regl = initialize_regl(canvas_container);
-
+  // initialize parameters
+  var network = decompress_network(args.network);
   var params = initialize_params(regl, network);
-
   require('./draws/run_viz')(regl, params);
 
-  var cgm = {};
+  cgm.regl = regl;
 
   cgm.params = params;
 
@@ -42,9 +42,9 @@ function clustergrammer_gl(args){
   cgm.params.base_container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  require('./dendrogram/build_dendrogram_sliders')(regl, cgm);
+  require('./dendrogram/build_dendrogram_sliders')(cgm);
 
-  require('./control_panel/build_control_panel')(regl, cgm);
+  require('./control_panel/build_control_panel')(cgm);
 
   d3.select(cgm.params.root + ' .canvas-container canvas')
     .on('mouseover', function(){
@@ -61,11 +61,9 @@ function clustergrammer_gl(args){
   ///////////////////////////////////////////
   //
   cgm.reset_cameras = reset_cameras;
-  cgm.regl = regl;
 
   // working on re-building visualization
   cgm.run_viz = require('./draws/run_viz');
-  cgm.initialize_regl = initialize_regl;
 
   cgm.destroy_viz = require('./initialize_viz/destroy_viz');
 

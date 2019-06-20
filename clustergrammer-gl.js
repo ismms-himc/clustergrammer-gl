@@ -48087,7 +48087,9 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function build_control_panel(regl, cgm){
+module.exports = function build_control_panel(cgm){
+
+  var regl = cgm.regl;
 
   var params = cgm.params;
   params.tooltip_id = '#d3-tip_' + params.root.replace('#','');
@@ -48945,7 +48947,9 @@ module.exports = function run_dendro_crop(params, inst_data){
 
 var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/dendrogram/build_single_dendro_slider.js");
 
-module.exports = function build_dendrogram_sliders(regl, cgm){
+module.exports = function build_dendrogram_sliders(cgm){
+
+  var regl = cgm.regl;
 
   // Add sliders on top of the canvas
   /////////////////////////////////////
@@ -50971,19 +50975,19 @@ function clustergrammer_gl(args){
   console.log('clustergrammer-gl version 0.9.0');
   console.log('################################');
 
-  network = decompress_network(args.network);
+  var cgm = {};
 
+  // initialize regl
   var base_container = args.container;
-
   var canvas_container = initialize_containers(args);
+  var regl = initialize_regl(canvas_container);
 
-  regl = initialize_regl(canvas_container);
-
+  // initialize parameters
+  var network = decompress_network(args.network);
   var params = initialize_params(regl, network);
-
   __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js")(regl, params);
 
-  var cgm = {};
+  cgm.regl = regl;
 
   cgm.params = params;
 
@@ -50996,9 +51000,9 @@ function clustergrammer_gl(args){
   cgm.params.base_container = args.container;
   cgm.params.canvas_container = canvas_container;
 
-  __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")(regl, cgm);
+  __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js")(cgm);
 
-  __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(regl, cgm);
+  __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(cgm);
 
   d3.select(cgm.params.root + ' .canvas-container canvas')
     .on('mouseover', function(){
@@ -51015,11 +51019,9 @@ function clustergrammer_gl(args){
   ///////////////////////////////////////////
   //
   cgm.reset_cameras = reset_cameras;
-  cgm.regl = regl;
 
   // working on re-building visualization
   cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
-  cgm.initialize_regl = initialize_regl;
 
   cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
 

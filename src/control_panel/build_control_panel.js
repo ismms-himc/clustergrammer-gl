@@ -1,4 +1,6 @@
-module.exports = function build_control_panel(regl, cgm){
+module.exports = function build_control_panel(cgm){
+
+  var regl = cgm.regl;
 
   var params = cgm.params;
   params.tooltip_id = '#d3-tip_' + params.root.replace('#','');

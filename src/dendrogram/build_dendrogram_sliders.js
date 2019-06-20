@@ -1,6 +1,8 @@
 var build_single_dendro_slider = require('./build_single_dendro_slider');
 
-module.exports = function build_dendrogram_sliders(regl, cgm){
+module.exports = function build_dendrogram_sliders(cgm){
+
+  var regl = cgm.regl;
 
   // Add sliders on top of the canvas
   /////////////////////////////////////

@@ -43997,12 +43997,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
   clustergrammer-gl version 0.9.0
 
  */
-
-var initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
-var initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
-var decompress_network = __webpack_require__(/*! ./params/decompress_network */ "./src/params/decompress_network.js");
-var initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
-var run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
 var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");
 
 function clustergrammer_gl(args){
@@ -44013,22 +44007,21 @@ function clustergrammer_gl(args){
 
   var cgm = {};
 
-  cgm.initialize_params = initialize_params;
-  cgm.decompress_network = decompress_network;
-  cgm.initialize_regl = initialize_regl;
-  cgm.initialize_containers = initialize_containers;
+  cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
+  cgm.decompress_network = __webpack_require__(/*! ./params/decompress_network */ "./src/params/decompress_network.js");
+  cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
+  cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
 
   // initialize regl
   cgm.canvas_container = cgm.initialize_containers(args);
   cgm.regl = cgm.initialize_regl();
 
   // initialize parameters
-  var network = decompress_network(args.network);
+  var network = cgm.decompress_network(args.network);
 
   var params = cgm.initialize_params(args, cgm.canvas_container, cgm.regl, network);
 
   cgm.params = params;
-
 
   build_dendrogram_sliders(cgm);
 
@@ -44046,7 +44039,7 @@ function clustergrammer_gl(args){
     });
 
   // run_viz(cgm);
-  cgm.run_viz = run_viz;
+  cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
   cgm.run_viz();
 
   // exposing methods during development

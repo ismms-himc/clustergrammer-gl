@@ -67,5 +67,8 @@ module.exports = function initialize_params(regl, network){
 
   params.hzome = hzome_functions(params);
 
+  params.viz_height = 1035; //inst_height;
+  params.viz_width = 900; // inst_width;
+
   return params;
 };

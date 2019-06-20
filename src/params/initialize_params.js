@@ -2,6 +2,8 @@ var hzome_functions = require('./../tooltip/hzome_functions')
 
 module.exports = function initialize_params(args, canvas_container, regl, network){
 
+  var canvas_container = this.canvas_container;
+
   var params = {};
   params.network = network;
 

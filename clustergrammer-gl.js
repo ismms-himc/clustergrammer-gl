@@ -44013,15 +44013,20 @@ function clustergrammer_gl(args){
 
   var cgm = {};
 
+  cgm.initialize_params = initialize_params;
+  cgm.decompress_network = decompress_network;
+  cgm.initialize_regl = initialize_regl;
+  cgm.initialize_containers = initialize_containers;
+
   // initialize regl
-  var canvas_container = initialize_containers(args);
-  var regl = initialize_regl(canvas_container);
+  cgm.canvas_container = cgm.initialize_containers(args);
+  cgm.regl = initialize_regl(cgm.canvas_container);
 
   // initialize parameters
   var network = decompress_network(args.network);
-  var params = initialize_params(args, canvas_container, regl, network);
 
-  cgm.regl = regl;
+  var params = cgm.initialize_params(args, cgm.canvas_container, cgm.regl, network);
+
   cgm.params = params;
 
 
@@ -45935,6 +45940,8 @@ module.exports = function generate_webgl_to_pix(params){
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 
 module.exports = function initialize_params(args, canvas_container, regl, network){
+
+  var canvas_container = this.canvas_container;
 
   var params = {};
   params.network = network;

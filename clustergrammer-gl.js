@@ -43023,9 +43023,9 @@ module.exports = function destroy_viz(){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function initialize_containers(args){
+module.exports = function initialize_containers(){
 
-  var base_container = args.container;
+  var base_container = this.args.container;
 
   // make control panel (needs to appear above canvas)
   d3.select(base_container)
@@ -43043,14 +43043,16 @@ module.exports = function initialize_containers(args){
   var canvas_container = d3.select(base_container)
                            .select('.canvas-container')[0][0];
 
-  var inst_height = args.viz_height;
-  var inst_width  = args.viz_width;
+  var inst_height = this.args.viz_height;
+  var inst_width  = this.args.viz_width;
 
   d3.select(canvas_container)
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
 
-  return canvas_container;
+  // console.log(canvas_container)
+  this.canvas_container = canvas_container;
+  // return canvas_container;
 };
 
 /***/ }),
@@ -44007,19 +44009,23 @@ function clustergrammer_gl(args){
 
   var cgm = {};
 
+  cgm.args = args;
+
   cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
   cgm.decompress_network = __webpack_require__(/*! ./params/decompress_network */ "./src/params/decompress_network.js");
   cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
   cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
 
   // initialize regl
-  cgm.canvas_container = cgm.initialize_containers(args);
+  cgm.initialize_containers();
+
+  console.log(cgm.canvas_container)
   cgm.regl = cgm.initialize_regl();
 
   // initialize parameters
-  var network = cgm.decompress_network(args.network);
+  var network = cgm.decompress_network(cgm.args.network);
 
-  var params = cgm.initialize_params(args, cgm.canvas_container, cgm.regl, network);
+  var params = cgm.initialize_params(cgm.args, cgm.canvas_container, cgm.regl, network);
 
   cgm.params = params;
 

@@ -13,19 +13,23 @@ function clustergrammer_gl(args){
 
   var cgm = {};
 
+  cgm.args = args;
+
   cgm.initialize_params = require('./params/initialize_params');
   cgm.decompress_network = require('./params/decompress_network');
   cgm.initialize_regl = require('./params/initialize_regl');
   cgm.initialize_containers = require('./initialize_viz/initialize_containers');
 
   // initialize regl
-  cgm.canvas_container = cgm.initialize_containers(args);
+  cgm.initialize_containers();
+
+  console.log(cgm.canvas_container)
   cgm.regl = cgm.initialize_regl();
 
   // initialize parameters
-  var network = cgm.decompress_network(args.network);
+  var network = cgm.decompress_network(cgm.args.network);
 
-  var params = cgm.initialize_params(args, cgm.canvas_container, cgm.regl, network);
+  var params = cgm.initialize_params(cgm.args, cgm.canvas_container, cgm.regl, network);
 
   cgm.params = params;
 

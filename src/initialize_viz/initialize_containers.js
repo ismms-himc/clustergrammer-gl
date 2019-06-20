@@ -1,6 +1,6 @@
-module.exports = function initialize_containers(args){
+module.exports = function initialize_containers(){
 
-  var base_container = args.container;
+  var base_container = this.args.container;
 
   // make control panel (needs to appear above canvas)
   d3.select(base_container)
@@ -18,12 +18,14 @@ module.exports = function initialize_containers(args){
   var canvas_container = d3.select(base_container)
                            .select('.canvas-container')[0][0];
 
-  var inst_height = args.viz_height;
-  var inst_width  = args.viz_width;
+  var inst_height = this.args.viz_height;
+  var inst_width  = this.args.viz_width;
 
   d3.select(canvas_container)
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
 
-  return canvas_container;
+  // console.log(canvas_container)
+  this.canvas_container = canvas_container;
+  // return canvas_container;
 };

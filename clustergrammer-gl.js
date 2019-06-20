@@ -41980,9 +41980,9 @@ module.exports = function run_dendro_crop(params, inst_data){
 
 var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/dendrogram/build_single_dendro_slider.js");
 
-module.exports = function build_dendrogram_sliders(cgm){
+module.exports = function build_dendrogram_sliders(){
 
-  var regl = cgm.regl;
+  var regl = this.regl;
 
   // Add sliders on top of the canvas
   /////////////////////////////////////
@@ -42000,15 +42000,13 @@ module.exports = function build_dendrogram_sliders(cgm){
 
     if (inst_axis === 'row'){
       inst_top = 150;
-      inst_left = cgm.params.viz_width - 25 ;
+      inst_left = this.params.viz_width - 25 ;
     } else {
-      // inst_top = cgm.params.viz_height - 80;
-      inst_top = 795; // cgm.params.viz_height - 80;
+      inst_top = 795;
       inst_left = 55;
     }
 
-    // axis_slider_container = d3.select(cgm.params.root + ' .control-container')
-    axis_slider_container = d3.select(cgm.params.root + ' .canvas-container')
+    axis_slider_container = d3.select(this.params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
       .style('width', '20px')
@@ -42031,7 +42029,7 @@ module.exports = function build_dendrogram_sliders(cgm){
       .style('width', '25px')
       .style('fill', 'white');
 
-    build_single_dendro_slider(regl, cgm, inst_axis);
+    build_single_dendro_slider(regl, this, inst_axis);
   });
 
 }
@@ -43999,7 +43997,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
   clustergrammer-gl version 0.9.0
 
  */
-var build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");
 
 function clustergrammer_gl(args){
 
@@ -44015,11 +44012,11 @@ function clustergrammer_gl(args){
   cgm.decompress_network = __webpack_require__(/*! ./params/decompress_network */ "./src/params/decompress_network.js");
   cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
   cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
+  cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");;
 
   // initialize regl
   cgm.initialize_containers();
 
-  console.log(cgm.canvas_container)
   cgm.initialize_regl();
 
   // initialize parameters
@@ -44029,7 +44026,6 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  build_dendrogram_sliders(cgm);
 
   __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js")(cgm);
 

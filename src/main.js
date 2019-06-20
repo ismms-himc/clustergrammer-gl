@@ -3,7 +3,6 @@
   clustergrammer-gl version 0.9.0
 
  */
-var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders');
 
 function clustergrammer_gl(args){
 
@@ -19,11 +18,11 @@ function clustergrammer_gl(args){
   cgm.decompress_network = require('./params/decompress_network');
   cgm.initialize_regl = require('./params/initialize_regl');
   cgm.initialize_containers = require('./initialize_viz/initialize_containers');
+  cgm.build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders');;
 
   // initialize regl
   cgm.initialize_containers();
 
-  console.log(cgm.canvas_container)
   cgm.initialize_regl();
 
   // initialize parameters
@@ -33,7 +32,6 @@ function clustergrammer_gl(args){
 
   cgm.params = params;
 
-  build_dendrogram_sliders(cgm);
 
   require('./control_panel/build_control_panel')(cgm);
 

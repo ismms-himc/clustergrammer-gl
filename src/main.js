@@ -7,8 +7,9 @@
 var initialize_params = require('./params/initialize_params');
 var initialize_regl = require('./params/initialize_regl');
 var decompress_network = require('./params/decompress_network');
-var initialize_containers = require('./initialize_viz/initialize_containers')
+var initialize_containers = require('./initialize_viz/initialize_containers');
 var run_viz = require('./draws/run_viz');
+var build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders');
 
 function clustergrammer_gl(args){
 
@@ -28,17 +29,15 @@ function clustergrammer_gl(args){
 
   cgm.regl = regl;
 
+  // id of container
+  params.root = '#' + args.container.id;
+  params.canvas_root = params.root + ' .canvas-container';
+  params.base_container = args.container;
+  params.canvas_container = canvas_container;
+
   cgm.params = params;
 
-
-
-  // id of container
-  cgm.params.root = '#' + args.container.id;
-  cgm.params.canvas_root = cgm.params.root + ' .canvas-container';
-  cgm.params.base_container = args.container;
-  cgm.params.canvas_container = canvas_container;
-
-  require('./dendrogram/build_dendrogram_sliders')(cgm);
+  build_dendrogram_sliders(cgm);
 
   require('./control_panel/build_control_panel')(cgm);
 

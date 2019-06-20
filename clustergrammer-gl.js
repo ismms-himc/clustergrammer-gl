@@ -44020,7 +44020,7 @@ function clustergrammer_gl(args){
 
   // initialize regl
   cgm.canvas_container = cgm.initialize_containers(args);
-  cgm.regl = initialize_regl(cgm.canvas_container);
+  cgm.regl = cgm.initialize_regl();
 
   // initialize parameters
   var network = decompress_network(args.network);
@@ -46030,6 +46030,8 @@ module.exports = function initialize_params(args, canvas_container, regl, networ
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = function initialize_regl(canvas_container){
+
+  var canvas_container = this.canvas_container;
 
   var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
     extensions: ['angle_instanced_arrays'],

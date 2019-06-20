@@ -44020,7 +44020,7 @@ function clustergrammer_gl(args){
   cgm.initialize_containers();
 
   console.log(cgm.canvas_container)
-  cgm.regl = cgm.initialize_regl();
+  cgm.initialize_regl();
 
   // initialize parameters
   var network = cgm.decompress_network(cgm.args.network);
@@ -46038,7 +46038,7 @@ module.exports = function initialize_regl(canvas_container){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  return regl;
+  this.regl = regl;
 };
 
 /***/ }),

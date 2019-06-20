@@ -8,5 +8,5 @@ module.exports = function initialize_regl(canvas_container){
     // pixelRatio: window.devicePixelRatio/10
   });
 
-  return regl;
+  this.regl = regl;
 };

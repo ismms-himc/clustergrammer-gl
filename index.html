@@ -61,7 +61,9 @@
     // console.log('passing network to clustergrammer-gl')
 
     var my_widget_callback = function(){
-      console.log('RUNNING MY WIDGET CALLBACK')
+      console.log('RUNNING MY WIDGET CALLBAC')
+      console.log('defining some widget in index.html')
+      console.log(this)
     }
 
     d3.json(filename, function(network){

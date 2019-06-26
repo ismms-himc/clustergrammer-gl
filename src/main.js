@@ -24,6 +24,16 @@ function clustergrammer_gl(args){
   cgm.destroy_viz = require('./initialize_viz/destroy_viz');
   cgm.ini_canvas_mouseover = require('./initialize_viz/ini_canvas_mouseover')
   cgm.viz_from_network = require('./initialize_viz/viz_from_network');
+  cgm.draw_labels_tooltips_or_dendro = require('./draws/draw_labels_tooltips_or_dendro');
+
+
+  if (typeof args.widget_callback !== 'undefined'){
+    console.log('pass widget_callback to cgm  ')
+    cgm.widget_callback = args.widget_callback;
+  }
+
+
+  console.log('widget_model', cgm.args.widget_model)
 
   // initialize network
   cgm.decompress_network(args.network);

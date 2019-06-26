@@ -4,13 +4,15 @@ var start_animation = require('./start_animation');
 var end_animation = require('./end_animation');
 var draw_interacting = require('./draw_interacting');
 var draw_mouseover = require('./draw_mouseover');
-var draw_labels_tooltips_or_dendro = require('./draw_labels_tooltips_or_dendro');
+
 var draw_background_calculations = require('./draw_background_calculations');
 
 module.exports = function run_viz(){
 
-  var regl = this.regl;
-  var params = this.params;
+  var cgm = this;
+  var regl = cgm.regl;
+  var params = cgm.params;
+
 
   console.log('run_viz, using this')
 
@@ -61,7 +63,7 @@ module.exports = function run_viz(){
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
-      draw_labels_tooltips_or_dendro(regl, params);
+      cgm.draw_labels_tooltips_or_dendro();
     } else {
       // run background calculations
       draw_background_calculations(regl, params);

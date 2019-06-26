@@ -42681,7 +42681,11 @@ module.exports = function draw_interacting(regl, params){
 
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 
-module.exports = function draw_labels_tooltips_or_dendro(regl, params){
+module.exports = function draw_labels_tooltips_or_dendro(){
+
+  var cgm = this;
+  var regl = cgm.regl;
+  var params = cgm.params;
 
   // turn back on draw_labels
   ///////////////////////////////
@@ -42694,6 +42698,14 @@ module.exports = function draw_labels_tooltips_or_dendro(regl, params){
   // turn back off draw dendro
   if (params.dendro.update_dendro){
     params.dendro.update_dendro = false;
+  }
+
+  console.log('is this a widget?', params.is_widget);
+
+  if (params.is_widget){
+    console.log('run widget callback!!!!!!!!!!!!!')
+  } else {
+    console.log('not a widget')
   }
 
 };
@@ -42908,13 +42920,15 @@ var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
 var draw_interacting = __webpack_require__(/*! ./draw_interacting */ "./src/draws/draw_interacting.js");
 var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/draw_mouseover.js");
-var draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
+
 var draw_background_calculations = __webpack_require__(/*! ./draw_background_calculations */ "./src/draws/draw_background_calculations.js");
 
 module.exports = function run_viz(){
 
-  var regl = this.regl;
-  var params = this.params;
+  var cgm = this;
+  var regl = cgm.regl;
+  var params = cgm.params;
+
 
   console.log('run_viz, using this')
 
@@ -42965,7 +42979,7 @@ module.exports = function run_viz(){
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
-      draw_labels_tooltips_or_dendro(regl, params);
+      cgm.draw_labels_tooltips_or_dendro();
     } else {
       // run background calculations
       draw_background_calculations(regl, params);
@@ -43112,11 +43126,12 @@ var custom_label_reorder = __webpack_require__(/*! ./../reorders/custom_label_re
 
 module.exports = function double_clicking(regl, params){
 
-// params.tooltip.tooltip_type
-if (params.tooltip.tooltip_type === 'col-label'){
-  custom_label_reorder(regl, params, 'col');
-}
-if (params.tooltip.tooltip_type === 'row-label'){
+  // params.tooltip.tooltip_type
+  if (params.tooltip.tooltip_type === 'col-label'){
+    custom_label_reorder(regl, params, 'col');
+  }
+
+  if (params.tooltip.tooltip_type === 'row-label'){
     custom_label_reorder(regl, params, 'row');
   }
 
@@ -44064,6 +44079,16 @@ function clustergrammer_gl(args){
   cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
   cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
   cgm.viz_from_network = __webpack_require__(/*! ./initialize_viz/viz_from_network */ "./src/initialize_viz/viz_from_network.js");
+  cgm.draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draws/draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
+
+
+  if (typeof args.widget_callback !== 'undefined'){
+    console.log('pass widget_callback to cgm  ')
+    cgm.widget_callback = args.widget_callback;
+  }
+
+
+  console.log('widget_model', cgm.args.widget_model)
 
   // initialize network
   cgm.decompress_network(args.network);
@@ -46038,6 +46063,13 @@ module.exports = function initialize_params(network){
   params.base_container = args.container;
   params.canvas_container = canvas_container;
 
+  params.is_widget = false;
+  if (typeof args.widget_model !== 'undefined'){
+    params.widget_model = args.widget_model;
+    params.is_widget = true;
+  } else {
+    params.widget_model = null;
+  }
 
   this.params = params;
 };
@@ -46132,6 +46164,15 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
   d3.select(params.root + ' .' + other_axis + '-reorder-buttons')
   .selectAll('rect')
   .style('stroke', button_color);
+
+  // working on passing reordered label to widget if available
+  if (params.is_widget){
+    console.log('saving to widget')
+    params.widget_model.model.set('value', full_name);
+  } else {
+    console.log('not a widget')
+  }
+
 
 }
 
@@ -46934,7 +46975,6 @@ module.exports = function make_tooltip_text(params){
     d3.select(params.tooltip_id)
       .style('text-align', 'left')
       .html(tooltip_text);
-
 
     params.hzome.gene_info(mouseover[inst_axis].name);
 

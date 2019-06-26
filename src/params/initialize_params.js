@@ -82,6 +82,13 @@ module.exports = function initialize_params(network){
   params.base_container = args.container;
   params.canvas_container = canvas_container;
 
+  params.is_widget = false;
+  if (typeof args.widget_model !== 'undefined'){
+    params.widget_model = args.widget_model;
+    params.is_widget = true;
+  } else {
+    params.widget_model = null;
+  }
 
   this.params = params;
 };

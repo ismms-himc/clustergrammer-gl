@@ -40,7 +40,6 @@ module.exports = function make_tooltip_text(params){
       .style('text-align', 'left')
       .html(tooltip_text);
 
-
     params.hzome.gene_info(mouseover[inst_axis].name);
 
   } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){

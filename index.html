@@ -60,6 +60,10 @@
 
     // console.log('passing network to clustergrammer-gl')
 
+    var my_widget_callback = function(){
+      console.log('RUNNING MY WIDGET CALLBACK')
+    }
+
     d3.json(filename, function(network){
 
       args = {};
@@ -67,6 +71,9 @@
       args.container=inst_container;
       args.viz_width=inst_width;
       args.viz_height=inst_width;
+      args.widget_model = 'my-widget-model';
+      args.widget_callback = my_widget_callback
+
       cgm = Clustergrammer2(args);
       // cgm2 = Clustergrammer2(args);
 

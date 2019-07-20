@@ -26,6 +26,6 @@ Please [contact us](http://clustergrammer.readthedocs.io/#funding-and-contact) f
 
 ## Releasing
 - Update versions in package.json
-- Up[date version in main.js
+- Update version in main.js
 - Set webpack to make all builds
 - Run npm publish.

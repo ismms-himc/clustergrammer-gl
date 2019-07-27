@@ -1,6 +1,6 @@
 var hzome_functions = require('./../tooltip/hzome_functions')
 
-module.exports = function initialize_params(network){
+module.exports = function initialize_params(){
 
   var args = this.args;
 

@@ -1,7 +1,8 @@
 var change_groups = require('./change_groups');
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
+module.exports = function build_single_dendro_slider(regl, params, inst_axis){
+
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
@@ -10,10 +11,10 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
   var drag = d3.behavior.drag()
       .on('drag', dragging)
       .on('dragend', function(){
-        cgm.params.is_slider_drag = false;
+        params.is_slider_drag = false;
       });
 
-  var slider_group = d3.select(cgm.params.root + ' .'+ inst_axis +'_dendro_slider_svg')
+  var slider_group = d3.select(params.root + ' .'+ inst_axis +'_dendro_slider_svg')
       .append('g')
       .classed( inst_axis + '_slider_group', true)
       .attr('transform', function(){
@@ -94,7 +95,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
   function dragging() {
 
-    cgm.params.is_slider_drag = true;
+    params.is_slider_drag = true;
 
     // d[0] = d3.event.x;
     var slider_pos = d3.event.y;
@@ -117,7 +118,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(regl, cgm.params, inst_axis, slider_value);
+    change_groups(regl, params, inst_axis, slider_value);
 
   }
 
@@ -127,12 +128,12 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
     var rel_pos = d3.round(clicked_line_position[1], -1);
 
-    d3.select(cgm.params.root+ ' .'+inst_axis+'_group_circle')
+    d3.select(params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     var slider_value = 10 - rel_pos/10;
 
-    change_groups(regl, cgm.params, inst_axis, slider_value);
+    change_groups(regl, params, inst_axis, slider_value);
 
   }
 };

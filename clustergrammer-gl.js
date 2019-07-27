@@ -41983,6 +41983,10 @@ var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_s
 
 module.exports = function build_dendrogram_sliders(){
 
+  var params = this.params;
+
+  console.log('something')
+
   var regl = this.regl;
 
   // Add sliders on top of the canvas
@@ -42001,13 +42005,13 @@ module.exports = function build_dendrogram_sliders(){
 
     if (inst_axis === 'row'){
       inst_top = 150;
-      inst_left = this.params.viz_width - 25 ;
+      inst_left = params.viz_width - 25 ;
     } else {
       inst_top = 795;
       inst_left = 55;
     }
 
-    axis_slider_container = d3.select(this.params.root + ' .canvas-container')
+    axis_slider_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
       .style('width', '20px')
@@ -42030,7 +42034,7 @@ module.exports = function build_dendrogram_sliders(){
       .style('width', '25px')
       .style('fill', 'white');
 
-    build_single_dendro_slider(regl, this, inst_axis);
+    build_single_dendro_slider(regl, params, inst_axis);
   });
 
 }
@@ -42047,7 +42051,8 @@ module.exports = function build_dendrogram_sliders(){
 var change_groups = __webpack_require__(/*! ./change_groups */ "./src/dendrogram/change_groups.js");
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
+module.exports = function build_single_dendro_slider(regl, params, inst_axis){
+
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
@@ -42056,10 +42061,10 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
   var drag = d3.behavior.drag()
       .on('drag', dragging)
       .on('dragend', function(){
-        cgm.params.is_slider_drag = false;
+        params.is_slider_drag = false;
       });
 
-  var slider_group = d3.select(cgm.params.root + ' .'+ inst_axis +'_dendro_slider_svg')
+  var slider_group = d3.select(params.root + ' .'+ inst_axis +'_dendro_slider_svg')
       .append('g')
       .classed( inst_axis + '_slider_group', true)
       .attr('transform', function(){
@@ -42140,7 +42145,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
   function dragging() {
 
-    cgm.params.is_slider_drag = true;
+    params.is_slider_drag = true;
 
     // d[0] = d3.event.x;
     var slider_pos = d3.event.y;
@@ -42163,7 +42168,7 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(regl, cgm.params, inst_axis, slider_value);
+    change_groups(regl, params, inst_axis, slider_value);
 
   }
 
@@ -42173,12 +42178,12 @@ module.exports = function build_single_dendro_slider(regl, cgm, inst_axis){
 
     var rel_pos = d3.round(clicked_line_position[1], -1);
 
-    d3.select(cgm.params.root+ ' .'+inst_axis+'_group_circle')
+    d3.select(params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     var slider_value = 10 - rel_pos/10;
 
-    change_groups(regl, cgm.params, inst_axis, slider_value);
+    change_groups(regl, params, inst_axis, slider_value);
 
   }
 };
@@ -43110,6 +43115,7 @@ module.exports = function viz_from_network(){
   // define parameters and run visualization
   this.initialize_params();
   this.build_control_panel();
+  this.build_dendrogram_sliders();
   this.ini_canvas_mouseover();
   this.run_viz();
 };
@@ -45982,7 +45988,7 @@ module.exports = function generate_webgl_to_pix(params){
 
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 
-module.exports = function initialize_params(network){
+module.exports = function initialize_params(){
 
   var args = this.args;
 

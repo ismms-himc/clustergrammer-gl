@@ -2,6 +2,10 @@ var build_single_dendro_slider = require('./build_single_dendro_slider');
 
 module.exports = function build_dendrogram_sliders(){
 
+  var params = this.params;
+
+  console.log('something')
+
   var regl = this.regl;
 
   // Add sliders on top of the canvas
@@ -20,13 +24,13 @@ module.exports = function build_dendrogram_sliders(){
 
     if (inst_axis === 'row'){
       inst_top = 150;
-      inst_left = this.params.viz_width - 25 ;
+      inst_left = params.viz_width - 25 ;
     } else {
       inst_top = 795;
       inst_left = 55;
     }
 
-    axis_slider_container = d3.select(this.params.root + ' .canvas-container')
+    axis_slider_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
       .style('width', '20px')
@@ -49,7 +53,7 @@ module.exports = function build_dendrogram_sliders(){
       .style('width', '25px')
       .style('fill', 'white');
 
-    build_single_dendro_slider(regl, this, inst_axis);
+    build_single_dendro_slider(regl, params, inst_axis);
   });
 
 }

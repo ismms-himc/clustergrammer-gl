@@ -91,16 +91,16 @@ module.exports = function build_control_panel(){
   //   .image('https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
 
   control_svg
-    .append("svg:a")
+    .append('svg:a')
     .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
     .attr('xlink:target', '_blank')
-    .append("svg:image")
+    .append('svg:image')
     .classed('cgm-logo', true)
     .attr('x', 7)
     .attr('y', 50)
     .attr('width', 50)
     .attr('height', 50)
-    .attr("xlink:href", "https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png")
+    .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
     // .attr("xlink:href", logo_url)
 
     // console.log(logo_url)

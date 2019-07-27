@@ -15,10 +15,10 @@ function clustergrammer_gl(args){
   cgm.args = args;
 
   cgm.initialize_params = require('./params/initialize_params');
-  cgm.decompress_network = require('./params/decompress_network');
+  // cgm.decompress_network = require('./params/decompress_network');
   cgm.initialize_regl = require('./params/initialize_regl');
   cgm.initialize_containers = require('./initialize_viz/initialize_containers');
-  cgm.build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders');;
+  cgm.build_dendrogram_sliders = require('./dendrogram/build_dendrogram_sliders');
   cgm.build_control_panel = require('./control_panel/build_control_panel');
   cgm.run_viz = require('./draws/run_viz');
   cgm.destroy_viz = require('./initialize_viz/destroy_viz');
@@ -36,7 +36,8 @@ function clustergrammer_gl(args){
   console.log('widget_model', cgm.args.widget_model)
 
   // initialize network
-  cgm.decompress_network(args.network);
+  // cgm.decompress_network(args.network);
+  cgm.network = args.network;
 
   // going to work on passing in filtered network in place of full network
   // as a quick crop method

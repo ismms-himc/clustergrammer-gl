@@ -1,6 +1,6 @@
 module.exports = function generate_tooltip_params(regl, params){
 
-  tooltip = {};
+  var tooltip = {};
   tooltip.show_tooltip = false;
   tooltip.in_bounds_tooltip = false;
   tooltip.background_opacity = 0.75;

@@ -33588,9 +33588,9 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
 
 
   // Row Titles
-  var pos_x = 125;
+  pos_x = 125;
   // var pos_y = 98; // 60 with no cats, 72 with one cat, 85 with two cats
-  var pos_y = 62 + 12 * params.cat_data.col.length;
+  pos_y = 62 + 12 * params.cat_data.col.length;
   var row_cat_title_group = d3.select(params.root + ' .canvas-container')
     .append('g')
     .style('position', 'absolute')
@@ -33610,6 +33610,7 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('height', row_dim_x + 'px')
     .classed('row-cat-title-svg', true);
 
+  var inst_rotate;
   var row_cat_reorder_group = row_cat_title_svg
     .append('g')
     .classed('row-cat-reorder-group', true)
@@ -34465,6 +34466,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   /////////////////////////////////
   var is_mousing_over_cat = false;
   var inst_opacity = 1.0;
+  var mousing_over_cat;
 
   // if mousing over categories initialize all categories to low opacity
   if (params.tooltip.tooltip_type){
@@ -34488,6 +34490,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   // Working on value-based categories
   var color_arr = [];
   var inst_value_color;
+  var inst_cat_value;
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
@@ -35093,16 +35096,16 @@ module.exports = function build_control_panel(){
   //   .image('https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
 
   control_svg
-    .append("svg:a")
+    .append('svg:a')
     .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
     .attr('xlink:target', '_blank')
-    .append("svg:image")
+    .append('svg:image')
     .classed('cgm-logo', true)
     .attr('x', 7)
     .attr('y', 50)
     .attr('width', 50)
     .attr('height', 50)
-    .attr("xlink:href", "https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png")
+    .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
     // .attr("xlink:href", logo_url)
 
     // console.log(logo_url)
@@ -35279,8 +35282,6 @@ var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_s
 module.exports = function build_dendrogram_sliders(){
 
   var params = this.params;
-
-  console.log('something')
 
   var regl = this.regl;
 
@@ -36230,8 +36231,7 @@ module.exports = function run_viz(){
   var regl = cgm.regl;
   var params = cgm.params;
 
-
-  console.log('run_viz, using this')
+  // console.log('run_viz, using this')
 
   params.ani.first_frame = true;
 
@@ -36321,7 +36321,7 @@ module.exports = function start_animation(params){
 
 module.exports = function destroy_viz(){
 
-  console.log('destroy_viz', d3.select(this.params.base_container).empty())
+  // console.log('destroy_viz', d3.select(this.params.base_container).empty())
   d3.select(this.params.base_container)
     .selectAll('div')
     .remove()
@@ -36406,7 +36406,7 @@ module.exports = function viz_from_network(){
   this.initialize_containers();
   this.initialize_regl();
 
-  console.log('viz_from_network')
+  // console.log('viz_from_network')
   // define parameters and run visualization
   this.initialize_params();
   this.build_control_panel();
@@ -37372,10 +37372,10 @@ function clustergrammer_gl(args){
   cgm.args = args;
 
   cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
-  cgm.decompress_network = __webpack_require__(/*! ./params/decompress_network */ "./src/params/decompress_network.js");
+  // cgm.decompress_network = require('./params/decompress_network');
   cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
   cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
-  cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");;
+  cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");
   cgm.build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
   cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
   cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
@@ -37393,7 +37393,8 @@ function clustergrammer_gl(args){
   console.log('widget_model', cgm.args.widget_model)
 
   // initialize network
-  cgm.decompress_network(args.network);
+  // cgm.decompress_network(args.network);
+  cgm.network = args.network;
 
   // going to work on passing in filtered network in place of full network
   // as a quick crop method
@@ -38807,40 +38808,6 @@ module.exports = function calc_vd(regl, params){
 
 /***/ }),
 
-/***/ "./src/params/decompress_network.js":
-/*!******************************************!*\
-  !*** ./src/params/decompress_network.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function decompress_network(network){
-
-  // decompress if necessary
-  // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript
-  var network;
-  if (typeof (network) === 'string'){
-    // Decode base64 (convert ascii to binary)
-    var comp_net = JSON.parse(network).compressed;
-    strData     = atob(comp_net);
-    // Convert binary string to character-number array
-    var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
-    // Turn number array into byte-array
-    var binData     = new Uint8Array(charData);
-    // Pako magic
-    var data        = pako.inflate(binData);
-    var strData = new TextDecoder().decode(data)
-    var uncomp_net = JSON.parse(strData)
-    network = uncomp_net;
-  } else {
-    network = network;
-  }
-
-  this.network = network;
-};
-
-/***/ }),
-
 /***/ "./src/params/gen_ani_par.js":
 /*!***********************************!*\
   !*** ./src/params/gen_ani_par.js ***!
@@ -39228,7 +39195,7 @@ module.exports = function generate_text_triangle_params(params){
 
 module.exports = function generate_tooltip_params(regl, params){
 
-  tooltip = {};
+  var tooltip = {};
   tooltip.show_tooltip = false;
   tooltip.in_bounds_tooltip = false;
   tooltip.background_opacity = 0.75;
@@ -39385,7 +39352,7 @@ module.exports = function initialize_params(){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function initialize_regl(canvas_container){
+module.exports = function initialize_regl(){
 
   var canvas_container = this.canvas_container;
 
@@ -39469,10 +39436,10 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
 
   // working on passing reordered label to widget if available
   if (params.is_widget){
-    console.log('saving to widget')
+    // console.log('saving to widget')
     params.widget_model.model.set('value', full_name);
   } else {
-    console.log('not a widget')
+    // console.log('not a widget')
   }
 
 

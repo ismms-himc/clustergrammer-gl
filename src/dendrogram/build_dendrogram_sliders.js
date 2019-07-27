@@ -4,8 +4,6 @@ module.exports = function build_dendrogram_sliders(){
 
   var params = this.params;
 
-  console.log('something')
-
   var regl = this.regl;
 
   // Add sliders on top of the canvas

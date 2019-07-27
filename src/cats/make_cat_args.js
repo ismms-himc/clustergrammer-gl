@@ -49,6 +49,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   /////////////////////////////////
   var is_mousing_over_cat = false;
   var inst_opacity = 1.0;
+  var mousing_over_cat;
 
   // if mousing over categories initialize all categories to low opacity
   if (params.tooltip.tooltip_type){
@@ -72,6 +73,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   // Working on value-based categories
   var color_arr = [];
   var inst_value_color;
+  var inst_cat_value;
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];

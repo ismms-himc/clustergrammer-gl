@@ -1,4 +1,4 @@
-module.exports = function initialize_regl(canvas_container){
+module.exports = function initialize_regl(){
 
   var canvas_container = this.canvas_container;
 

@@ -13,8 +13,7 @@ module.exports = function run_viz(){
   var regl = cgm.regl;
   var params = cgm.params;
 
-
-  console.log('run_viz, using this')
+  // console.log('run_viz, using this')
 
   params.ani.first_frame = true;
 

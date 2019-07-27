@@ -60,10 +60,10 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
 
   // working on passing reordered label to widget if available
   if (params.is_widget){
-    console.log('saving to widget')
+    // console.log('saving to widget')
     params.widget_model.model.set('value', full_name);
   } else {
-    console.log('not a widget')
+    // console.log('not a widget')
   }
 
 

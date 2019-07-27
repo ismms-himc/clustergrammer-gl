@@ -24,16 +24,15 @@ module.exports = function run_dendro_crop(params, inst_data){
   console.log(selected_clust_names)
   console.log(all_names)
 
-
   var found_index;
   var found_nodes = [];
+  var found_node;
   _.each(selected_clust_names, function(d){
     found_index = all_names.indexOf(d);
     console.log(found_index)
-    found_node = cgm.params.network.row_nodes[found_index]
+    found_node = params.network.row_nodes[found_index]
     found_nodes.push(found_node);
   });
-
 
   console.log(found_nodes);
 

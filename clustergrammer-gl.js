@@ -41120,6 +41120,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+// var logo_url = require("file-loader!../graham_cracker_70.png");
 module.exports = function build_control_panel(){
 
   var cgm = this;
@@ -41205,7 +41206,28 @@ module.exports = function build_control_panel(){
   button_groups.row = {};
   button_groups.col = {};
 
-  var shift_x_order_buttons = 65;
+  var cracker_room = 60;
+
+  // control_svg
+  //   .append('image')
+  //   .image('https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
+
+  control_svg
+    .append("svg:a")
+    .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
+    .attr('xlink:target', '_blank')
+    .append("svg:image")
+    .classed('cgm-logo', true)
+    .attr('x', 5)
+    .attr('y', 50)
+    .attr('width', 50)
+    .attr('height', 50)
+    .attr("xlink:href", "https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png")
+    // .attr("xlink:href", logo_url)
+
+    // console.log(logo_url)
+
+  var shift_x_order_buttons = 65 + cracker_room;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
 
@@ -41213,28 +41235,28 @@ module.exports = function build_control_panel(){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'alpha', 'umap'];
+  var order_options = ['clust', 'sum', 'var', 'alpha'];
 
   // make Rarrange title
 
   control_svg
-  .append('text')
-  .classed('reorder_title', true)
-  .text('rearrange'.toUpperCase())
-  .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-  .style('font-weight', 400)
-  .style('font-size', button_dim.fs)
-  .style('text-anchor', 'middle')
-  .style('stroke', text_color)
-  .style('alignment-baseline', 'middle')
-  .style('letter-spacing', '2px')
-  .style('cursor', 'default')
-  .style('-webkit-user-select', 'none')
-      .attr('transform', function(){
-      var x_offset = 247;
-      var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
-      return 'translate( '+ x_offset +', '+ y_trans +')';
-    })
+    .append('text')
+    .classed('reorder_title', true)
+    .text('rearrange'.toUpperCase())
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight', 400)
+    .style('font-size', button_dim.fs)
+    .style('text-anchor', 'middle')
+    .style('stroke', text_color)
+    .style('alignment-baseline', 'middle')
+    .style('letter-spacing', '2px')
+    .style('cursor', 'default')
+    .style('-webkit-user-select', 'none')
+        .attr('transform', function(){
+        var x_offset = 215 + cracker_room;
+        var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+        return 'translate( '+ x_offset +', '+ y_trans +')';
+      })
 
   control_svg
     .append('rect')
@@ -41247,7 +41269,7 @@ module.exports = function build_control_panel(){
     .style('stroke', '#eee')
     .style('stroke-width', 2)
     .attr('transform', function(){
-      var x_offset = button_dim.x_trans - button_dim.buffer + 1;
+      var x_offset = button_dim.x_trans - button_dim.buffer + 1 + cracker_room;
       var y_trans = y_offset_buttons - button_dim.buffer + 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
@@ -41263,6 +41285,8 @@ module.exports = function build_control_panel(){
         return 'translate('+ x_offset  +', '+ y_offset +')';
       })
 
+    var axis_title_offset = 30 + cracker_room;
+
     axis_title
       .append('text')
       .classed('reorder_title', true)
@@ -41276,7 +41300,7 @@ module.exports = function build_control_panel(){
       .style('letter-spacing', '2px')
       .style('cursor', 'default')
       .style('-webkit-user-select', 'none')
-      .attr('transform', 'translate('+ 30 +', '+ button_dim.height/2 +')');
+      .attr('transform', 'translate('+ axis_title_offset +', '+ button_dim.height/2 +')');
 
     var reorder_buttons = control_svg
       .append('g');
@@ -41357,566 +41381,7 @@ module.exports = function build_control_panel(){
   })
 
   __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js")(regl, cgm);
-  __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js")(cgm);
-
-};
-
-/***/ }),
-
-/***/ "./src/control_panel/build_tree_icon.js":
-/*!**********************************************!*\
-  !*** ./src/control_panel/build_tree_icon.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var position_tree_icon = __webpack_require__(/*! ./position_tree_icon */ "./src/control_panel/position_tree_icon.js");
-var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
-var make_tree_menu = __webpack_require__(/*! ./make_tree_menu */ "./src/control_panel/make_tree_menu.js");
-
-module.exports = function build_tree_icon(cgm){
-
-  var slider_length = 40;
-  var params = cgm.params;
-  var default_opacity = 0.35;
-  var high_opacity = 0.6;
-
-  var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
-      .append('g')
-      .classed( 'tree_icon', true)
-      .on('mouseover', function(){
-        d3.selectAll(params.root + ' .tree_leaf_circle')
-          .style('opacity', high_opacity);
-      })
-      .on('mouseout', function(){
-        // tree_icon_tip.hide();
-        d3.selectAll(params.root + ' .tree_leaf_circle')
-        .style('opacity', default_opacity);
-      })
-      // .call(tree_icon_tip);
-
-  var tree_icon_group =  tree_icon_outer_group
-    .append('g')
-    .classed('dendro_tree_container', true)
-    .on('click', function(){
-
-      if (d3.select(params.root+' .tree_menu').empty()){
-
-        toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
-
-        // tree_icon_tip.hide();
-
-      } else {
-
-        toggle_menu(cgm, 'tree_menu', 'close');
-
-      }
-    });
-
-  d3.select(params.root + ' .dendro_tree_container')
-    .attr('transform', 'scale(0.9)');
-
-  position_tree_icon(cgm);
-
-  var offset_triangle = 0;
-  var tree_width = 20;
-
-  // main branch
-  tree_icon_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
-
-      // up triangle
-      var start_x = 0;
-      var start_y = slider_length;
-
-      var mid_x = tree_width/2;
-      var mid_y = 0;
-
-      var final_x = tree_width;
-      var final_y = slider_length;
-
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y +
-      ' L' + final_x + ','+ final_y +' Z';
-
-      return output_string;
-    })
-    .style('opacity', 0.35);
-
-  // left branch
-  var branch_height = 30;
-  tree_icon_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
-
-      // up triangle
-      var start_x = 4.3;
-      var start_y = 23;
-
-      var mid_x = -5;//left_x + slider_length/10;
-      var mid_y = branch_height/2.5;
-
-      var final_x = 5.8;//left_x + slider_length/5;
-      var final_y = branch_height/1.8;
-
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y +
-      ' L' + final_x + ','+ final_y +' Z';
-
-      return output_string;
-    })
-    .style('opacity', 0.35);
-
-  // right branch
-  tree_icon_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
-
-      // up triangle
-      var start_x = 15.7;
-      var start_y = 23;
-
-      var mid_x = 25;//left_x + slider_length/10;
-      var mid_y = branch_height/2.5;
-
-      var final_x = 14.2;//left_x + slider_length/5;
-      var final_y = branch_height/1.8;
-
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y +
-      ' L' + final_x + ','+ final_y +' Z';
-
-      return output_string;
-    })
-    .style('opacity', 0.35);
-
-  var small_leaf_offset = 13;
-  var small_leaf_radius = 9.5;
-
-  tree_icon_group
-    .selectAll()
-    .data([
-      [-3,small_leaf_offset,small_leaf_radius],
-      [tree_width/2,0, 17],
-      [23,small_leaf_offset,small_leaf_radius]])
-    .enter()
-    .append('circle')
-    .classed('tree_leaf_circle', true)
-    .attr('r', function(d){
-      return d[2];
-    })
-    .attr('transform', function(d){
-      return 'translate('+d[0]+', '+d[1]+')';
-    })
-    .attr('fill', 'blue')
-    .attr('opacity', default_opacity)
-    // .attr('');
-
-  tree_icon_group
-    .append('rect')
-    .attr('width', 50)
-    .attr('height', 62)
-    .attr('transform', function(){
-      return 'translate('+ -15 +', '+ -19 +')';
-    })
-    .attr('opacity', 0.0);
-
-};
-
-
-/***/ }),
-
-/***/ "./src/control_panel/make_menu_button_section.js":
-/*!*******************************************************!*\
-  !*** ./src/control_panel/make_menu_button_section.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function make_menu_button_section(menu_type, button_type, button_info,  button_names){
-
-  var cgm = button_info.cgm;
-  var menu_width = button_info.menu_width;
-  var button_offset = 35;
-
-  // Linkage menu options
-  var vertical_space = 30;
-  var menu_x_offset = menu_width/20 + button_info.x_offset;
-  var underline_width = menu_width/2 - 40;
-
-  var inst_menu = button_info.selection
-    .append('g')
-    .classed('inst_menu', true)
-    .attr('transform', 'translate(' + menu_x_offset + ', ' + button_info.y_offset + ')');
-
-  inst_menu
-    .append('text')
-    .attr('transform', 'translate(0, 0)')
-    .attr('font-size', '18px')
-    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    .attr('cursor', 'default')
-    .text(button_info.name);
-
-  inst_menu
-    .append('rect')
-    .classed( menu_type + '_line', true)
-    .attr('height', '2px')
-    .attr('width', underline_width+'px')
-    .attr('stroke-width', '3px')
-    .attr('opacity', 0.3)
-    .attr('fill', 'black')
-    .attr('transform', 'translate(0,10)');
-
-  var inst_section = inst_menu
-    .append('g')
-    .attr('transform', 'translate(0,' + button_offset + ')')
-    .classed('inst_section', true);
-
-  var button_class = cgm.params.root.replace('#','')+ '_' + button_type + '_buttons';
-
-  var section_groups = inst_section
-    .selectAll('g')
-    .data(button_names)
-    .enter()
-    .append('g')
-    .classed(button_class, true)
-    .attr('transform', function(d,i){
-      var vert = i * vertical_space;
-      var transform_string = 'translate(0,'+ vert + ')';
-      return transform_string;
-    })
-    .attr('cursor', 'default')
-    .on('click', function(d){
-      // deselect all buttons
-      d3.selectAll( '.' + button_class + ' circle')
-        .attr('fill', 'white');
-
-      // pass this along so that it can be updated in the callback
-      click_function(this, d, button_info);
-    });
-
- function click_function(button_selection, d, inst_button_info){
-    inst_button_info[button_type] = d;
-    d3.select(button_selection)
-      .select('circle')
-      .attr('fill', 'red');
-  }
-
-  section_groups
-    .append('circle')
-    .attr('cx', 10)
-    .attr('cy', -6)
-    .attr('r', 7)
-    .attr('stroke', '#A3A3A3')
-    .attr('stroke-width', '2px')
-    .attr('fill', function(d){
-      return circle_fill_function(d, button_type);
-    });
-
-  function circle_fill_function(d, inst_button_type){
-    var inst_color = 'white';
-    if (d === cgm.params.matrix[inst_button_type]){
-      inst_color = 'red';
-    }
-    return inst_color;
-  }
-
-  section_groups
-    .append('text')
-    .attr('transform', 'translate(25,0)')
-    .attr('font-size','16px')
-    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    .attr('cursor', 'default')
-    .text(function(d){
-      return capitalizeFirstLetter(d);
-    });
-
-
-  function capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-
-};
-
-/***/ }),
-
-/***/ "./src/control_panel/make_menu_update_button.js":
-/*!******************************************************!*\
-  !*** ./src/control_panel/make_menu_update_button.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function make_menu_update_button(cgm, button_info, update_callback){
-
-
-  var update_button_width = cgm.params.viz.update_button_width;
-
-  // var menu_width = button_info.menu_width;
-  // var button_x = menu_width/2 + button_info.default_x_offset;
-
-  var default_opacity = 0.35;
-  var high_opacity = 0.5;
-
-  var update_button = button_info.selection
-    .append('g')
-    .classed('update_button', true)
-    .attr('transform', 'translate('+ button_info.update_x +', ' + button_info.update_y + ')')
-    .on('click', update_callback)
-    .on('mouseover', function(){
-      d3.select(this)
-        .select('rect')
-        .attr('opacity', high_opacity);
-    })
-    .on('mouseout', function(){
-      d3.select(this)
-        .select('rect')
-        .attr('opacity', default_opacity);
-    });
-
-  update_button
-    .append('rect')
-    .attr('width', update_button_width + 'px')
-    .attr('height', '35px')
-    .attr('fill', 'blue')
-    .attr('transform', 'translate(0, -23)')
-    .attr('stroke', '#A3A3A3')
-    .attr('stroke-width', '1px')
-    .attr('opacity', default_opacity);
-
-  update_button
-    .append('text')
-    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    .attr('font-size','18px')
-    .attr('font-weight', 500)
-    .attr('cursor', 'default')
-    .text('Update')
-    .attr('transform', 'translate(18, 0)');
-
-};
-
-/***/ }),
-
-/***/ "./src/control_panel/make_tree_menu.js":
-/*!*********************************************!*\
-  !*** ./src/control_panel/make_tree_menu.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var make_menu_button_section = __webpack_require__(/*! ./make_menu_button_section */ "./src/control_panel/make_menu_button_section.js");
-var make_menu_update_button = __webpack_require__(/*! ./make_menu_update_button */ "./src/control_panel/make_menu_update_button.js");
-var position_tree_menu = __webpack_require__(/*! ./position_tree_menu */ "./src/control_panel/position_tree_menu.js");
-var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
-// var recluster = require('../recluster/recluster');
-
-module.exports = function make_tree_menu(cgm){
-
-  var params = cgm.params;
-  var menu_width = cgm.params.viz.tree_menu_width;
-  var menu_height = cgm.params.viz.tree_menu_height;
-  var x_offset = cgm.params.viz.tree_menu_x_offset;
-
-  // make tree menu (state is in cgm, remade each time)
-  /////////////////////////////////////////////////////
-  var tree_menu = d3.select(params.root+' .viz_svg')
-    .append('g')
-    .attr('cursor', 'default')
-    .classed('tree_menu', true)
-    .classed('svg_menus', true);
-
-  position_tree_menu(cgm);
-
-  tree_menu
-    .attr('opacity', 0.0)
-    .transition()
-    .attr('opacity', 1.0);
-
-  var menu_opacity = 0.95;
-
-  tree_menu
-    .append('rect')
-    .classed('tree_menu_background', true)
-    .attr('width', function(){
-      var inst_width = menu_width;
-      return inst_width;
-    })
-    .attr('height', menu_height)
-    .attr('fill', 'white')
-    .attr('stroke', '#A3A3A3')
-    .attr('stroke-width', '3px')
-    .attr('opacity', menu_opacity);
-
-  // Clustering Parameters
-  tree_menu
-    .append('text')
-    .classed('tree_menu_title', true)
-    .attr('transform', 'translate(' + x_offset + ',30)')
-    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    .attr('font-size','18px')
-    .attr('font-weight', 800)
-    .attr('cursor', 'default')
-    .text('Clustering Parameters');
-
-  var button_info = {};
-  button_info.cgm = cgm;
-  button_info.selection = tree_menu;
-  button_info.menu_width = menu_width;
-  button_info.distance_metric = cgm.params.matrix.distance_metric;
-  button_info.linkage_type = cgm.params.matrix.linkage_type;
-  button_info.default_x_offset = x_offset;
-
-  // distance
-  /////////////////
-  var distance_names = ['cosine', 'euclidean', 'correlation'];
-  button_info.name = 'Distance Metric';
-  button_info.y_offset = 65;
-  button_info.x_offset = 0;
-  make_menu_button_section('tree_menu', 'distance_metric', button_info, distance_names);
-
-  // linkage
-  /////////////////
-  var linkage_names = ['average', 'single', 'complete'];
-  button_info.name = 'Linkage Type';
-  button_info.y_offset = 65;
-  button_info.x_offset = menu_width/2;
-  make_menu_button_section('tree_menu', 'linkage_type', button_info, linkage_names);
-
-  // // Z-score
-  // /////////////////
-  // var zscore_names = ['row', 'col'];
-  // button_info.name = 'Linkage Type';
-  // button_info.y_offset = 200;
-  // button_info.x_offset = 0;
-  // button_section(button_info, linkage_names, distance_click)
-
-  function update_callback(){
-    toggle_menu(cgm, 'tree_menu', 'close');
-
-    // transfer parameters to cgm object when update is pressed
-    cgm.params.matrix.distance_metric = button_info.distance_metric;
-    cgm.params.matrix.linkage_type = button_info.linkage_type;
-
-    // recluster(cgm, button_info.distance_metric, button_info.linkage_type);
-
-  }
-
-  button_info.update_x = menu_width/2 + button_info.default_x_offset;
-  button_info.update_y = 205;
-  make_menu_update_button(cgm, button_info, update_callback);
-
-};
-
-/***/ }),
-
-/***/ "./src/control_panel/position_tree_icon.js":
-/*!*************************************************!*\
-  !*** ./src/control_panel/position_tree_icon.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function position_tree_icon(cgm){
-
-  // var viz = cgm.params.viz;
-  var tmp_left;
-  var tmp_top;
-
-  // keep slider near clustergram
-  // var max_room = 100; // viz.svg_dim.width - 3 * viz.uni_margin;
-
-  // position close to row dendrogram trapezoids
-  tmp_left = 800; // viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row;
-
-  // if (tmp_left > max_room){
-  //   tmp_left = max_room;
-  // }
-
-  // tmp_top =  viz.clust.margin.top + 3 * viz.uni_margin - 50;
-  tmp_top =  100; // viz.clust.margin.top + 3 * viz.uni_margin + 90;
-
-  // reposition tree icon
-  d3.select(cgm.params.root + ' .tree_icon')
-    .attr('transform', function() {
-      var inst_translation;
-      tmp_top = tmp_top - 75;
-      inst_translation = 'translate(' + tmp_left + ',' + tmp_top + ')';
-      return inst_translation;
-    })
-    .style('opacity', 1);
-};
-
-/***/ }),
-
-/***/ "./src/control_panel/position_tree_menu.js":
-/*!*************************************************!*\
-  !*** ./src/control_panel/position_tree_menu.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function position_tree_menu(cgm){
-
-  var params = cgm.params;
-
-  if (d3.select(params.root+' .tree_menu').empty() === false){
-
-    var menu_width = cgm.params.viz.tree_menu_width;
-
-    d3.select(params.root+' .tree_menu')
-      .attr('transform', function(){
-        var shift = {};
-        shift.x = params.viz.clust.dim.width + params.viz.clust.margin.left - menu_width + 30;
-        shift.y = params.viz.clust.margin.top + 15;
-        return 'translate(' + shift.x + ', ' + shift.y + ')';
-      });
-
-  }
-};
-
-/***/ }),
-
-/***/ "./src/control_panel/toggle_menu.js":
-/*!******************************************!*\
-  !*** ./src/control_panel/toggle_menu.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-module.exports = function toggle_menu(cgm, menu_type, toggle, make_menu=null){
-
-  var params = cgm.params;
-
-  if (toggle === 'open'){
-
-    d3.selectAll(cgm.params.root + ' .svg_menus')
-      .remove();
-
-    if (make_menu !== null){
-      make_menu(cgm);
-    }
-
-
-  } else if (toggle === 'close'){
-
-    d3.select(params.root + ' .' + menu_type)
-      .transition(700)
-      .attr('opacity', 0);
-
-    setTimeout(function(){
-      d3.select(params.root + ' .' + menu_type)
-        .remove();
-    }, 700);
-  }
+  // require('./build_tree_icon')(cgm);
 
 };
 

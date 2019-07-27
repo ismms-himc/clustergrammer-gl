@@ -1,3 +1,4 @@
+// var logo_url = require("file-loader!../graham_cracker_70.png");
 module.exports = function build_control_panel(){
 
   var cgm = this;
@@ -83,7 +84,28 @@ module.exports = function build_control_panel(){
   button_groups.row = {};
   button_groups.col = {};
 
-  var shift_x_order_buttons = 65;
+  var cracker_room = 60;
+
+  // control_svg
+  //   .append('image')
+  //   .image('https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
+
+  control_svg
+    .append("svg:a")
+    .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
+    .attr('xlink:target', '_blank')
+    .append("svg:image")
+    .classed('cgm-logo', true)
+    .attr('x', 5)
+    .attr('y', 50)
+    .attr('width', 50)
+    .attr('height', 50)
+    .attr("xlink:href", "https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png")
+    // .attr("xlink:href", logo_url)
+
+    // console.log(logo_url)
+
+  var shift_x_order_buttons = 65 + cracker_room;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
 
@@ -91,28 +113,28 @@ module.exports = function build_control_panel(){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'alpha', 'umap'];
+  var order_options = ['clust', 'sum', 'var', 'alpha'];
 
   // make Rarrange title
 
   control_svg
-  .append('text')
-  .classed('reorder_title', true)
-  .text('rearrange'.toUpperCase())
-  .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-  .style('font-weight', 400)
-  .style('font-size', button_dim.fs)
-  .style('text-anchor', 'middle')
-  .style('stroke', text_color)
-  .style('alignment-baseline', 'middle')
-  .style('letter-spacing', '2px')
-  .style('cursor', 'default')
-  .style('-webkit-user-select', 'none')
-      .attr('transform', function(){
-      var x_offset = 247;
-      var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
-      return 'translate( '+ x_offset +', '+ y_trans +')';
-    })
+    .append('text')
+    .classed('reorder_title', true)
+    .text('rearrange'.toUpperCase())
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight', 400)
+    .style('font-size', button_dim.fs)
+    .style('text-anchor', 'middle')
+    .style('stroke', text_color)
+    .style('alignment-baseline', 'middle')
+    .style('letter-spacing', '2px')
+    .style('cursor', 'default')
+    .style('-webkit-user-select', 'none')
+        .attr('transform', function(){
+        var x_offset = 215 + cracker_room;
+        var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+        return 'translate( '+ x_offset +', '+ y_trans +')';
+      })
 
   control_svg
     .append('rect')
@@ -125,7 +147,7 @@ module.exports = function build_control_panel(){
     .style('stroke', '#eee')
     .style('stroke-width', 2)
     .attr('transform', function(){
-      var x_offset = button_dim.x_trans - button_dim.buffer + 1;
+      var x_offset = button_dim.x_trans - button_dim.buffer + 1 + cracker_room;
       var y_trans = y_offset_buttons - button_dim.buffer + 2;
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
@@ -141,6 +163,8 @@ module.exports = function build_control_panel(){
         return 'translate('+ x_offset  +', '+ y_offset +')';
       })
 
+    var axis_title_offset = 30 + cracker_room;
+
     axis_title
       .append('text')
       .classed('reorder_title', true)
@@ -154,7 +178,7 @@ module.exports = function build_control_panel(){
       .style('letter-spacing', '2px')
       .style('cursor', 'default')
       .style('-webkit-user-select', 'none')
-      .attr('transform', 'translate('+ 30 +', '+ button_dim.height/2 +')');
+      .attr('transform', 'translate('+ axis_title_offset +', '+ button_dim.height/2 +')');
 
     var reorder_buttons = control_svg
       .append('g');
@@ -235,6 +259,6 @@ module.exports = function build_control_panel(){
   })
 
   require('../cats/build_reorder_cat_titles')(regl, cgm);
-  require('./build_tree_icon')(cgm);
+  // require('./build_tree_icon')(cgm);
 
 };

@@ -43527,14 +43527,14 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.10.0
+  clustergrammer-gl version 0.10.1
 
  */
 
 function clustergrammer_gl(args){
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.0');
+  console.log('clustergrammer-gl version 0.10.1');
   console.log('#################################');
 
   var cgm = {};
@@ -44989,9 +44989,9 @@ module.exports = function decompress_network(network){
   // decompress if necessary
   // https://stackoverflow.com/questions/8936984/uint8array-to-string-in-javascript
   var network;
-  if (typeof (args.network) === 'string'){
+  if (typeof (network) === 'string'){
     // Decode base64 (convert ascii to binary)
-    var comp_net = JSON.parse(args.network).compressed;
+    var comp_net = JSON.parse(network).compressed;
     strData     = atob(comp_net);
     // Convert binary string to character-number array
     var charData    = strData.split('').map(function(x){return x.charCodeAt(0);});
@@ -45003,7 +45003,7 @@ module.exports = function decompress_network(network){
     var uncomp_net = JSON.parse(strData)
     network = uncomp_net;
   } else {
-    network = args.network;
+    network = network;
   }
 
   this.network = network;

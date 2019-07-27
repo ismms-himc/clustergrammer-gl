@@ -84,7 +84,7 @@ module.exports = function build_control_panel(){
   button_groups.row = {};
   button_groups.col = {};
 
-  var cracker_room = 60;
+  var cracker_room = 65;
 
   // control_svg
   //   .append('image')
@@ -96,7 +96,7 @@ module.exports = function build_control_panel(){
     .attr('xlink:target', '_blank')
     .append("svg:image")
     .classed('cgm-logo', true)
-    .attr('x', 5)
+    .attr('x', 7)
     .attr('y', 50)
     .attr('width', 50)
     .attr('height', 50)

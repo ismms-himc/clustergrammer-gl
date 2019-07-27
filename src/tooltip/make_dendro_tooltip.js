@@ -37,15 +37,17 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .style('width', '364px')
     .style('display', 'block');
 
-  d3.select(params.tooltip_id)
-    .append('div')
-    .style('cursor', 'default')
-    .style('padding-top', '7px')
-    .on('click', function(d){
-      run_dendro_crop(params, d);
-    })
-    .append('text')
-    .text('Crop to Selected Cluster')
+  // // working on adding crop functionality
+  // /////////////////////////////////////////
+  // d3.select(params.tooltip_id)
+  //   .append('div')
+  //   .style('cursor', 'default')
+  //   .style('padding-top', '7px')
+  //   .on('click', function(d){
+  //     run_dendro_crop(params, d);
+  //   })
+  //   .append('text')
+  //   .text('Crop to Selected Cluster')
 
 
     // .append('div')

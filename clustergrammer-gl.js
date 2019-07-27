@@ -41206,7 +41206,7 @@ module.exports = function build_control_panel(){
   button_groups.row = {};
   button_groups.col = {};
 
-  var cracker_room = 60;
+  var cracker_room = 65;
 
   // control_svg
   //   .append('image')
@@ -41218,7 +41218,7 @@ module.exports = function build_control_panel(){
     .attr('xlink:target', '_blank')
     .append("svg:image")
     .classed('cgm-logo', true)
-    .attr('x', 5)
+    .attr('x', 7)
     .attr('y', 50)
     .attr('width', 50)
     .attr('height', 50)
@@ -43527,15 +43527,15 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.9.0
+  clustergrammer-gl version 0.10.0
 
  */
 
 function clustergrammer_gl(args){
 
-  console.log('################################');
-  console.log('clustergrammer-gl version 0.9.0');
-  console.log('################################');
+  console.log('#################################');
+  console.log('clustergrammer-gl version 0.10.0');
+  console.log('#################################');
 
   var cgm = {};
 
@@ -46371,15 +46371,17 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .style('width', '364px')
     .style('display', 'block');
 
-  d3.select(params.tooltip_id)
-    .append('div')
-    .style('cursor', 'default')
-    .style('padding-top', '7px')
-    .on('click', function(d){
-      run_dendro_crop(params, d);
-    })
-    .append('text')
-    .text('Crop to Selected Cluster')
+  // // working on adding crop functionality
+  // /////////////////////////////////////////
+  // d3.select(params.tooltip_id)
+  //   .append('div')
+  //   .style('cursor', 'default')
+  //   .style('padding-top', '7px')
+  //   .on('click', function(d){
+  //     run_dendro_crop(params, d);
+  //   })
+  //   .append('text')
+  //   .text('Crop to Selected Cluster')
 
 
     // .append('div')

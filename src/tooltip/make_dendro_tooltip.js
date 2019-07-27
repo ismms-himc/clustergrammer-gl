@@ -28,6 +28,8 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .append('text')
     .text('Selcted ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
 
+  console.log(params.dendro.selected_clust_names.length);
+
   d3.select(params.tooltip_id)
     .append('input')
     .attr('value', function(){

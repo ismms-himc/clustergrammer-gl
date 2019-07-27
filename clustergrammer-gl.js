@@ -36005,7 +36005,7 @@ module.exports = function draw_labels_tooltips_or_dendro(){
 
   if (params.is_widget){
     console.log('--> running widget callback')
-    cgm.widget_callback();
+    cgm.widget_callback(cgm);
   } else {
     console.log('not a widget')
   }
@@ -37357,14 +37357,14 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.10.2
+  clustergrammer-gl version 0.10.3
 
  */
 
 function clustergrammer_gl(args){
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.2');
+  console.log('clustergrammer-gl version 0.10.3');
   console.log('#################################');
 
   var cgm = {};
@@ -40158,6 +40158,8 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   d3.select(params.tooltip_id)
     .append('text')
     .text('Selcted ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
+
+  console.log(params.dendro.selected_clust_names.length);
 
   d3.select(params.tooltip_id)
     .append('input')

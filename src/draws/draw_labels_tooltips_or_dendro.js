@@ -23,7 +23,7 @@ module.exports = function draw_labels_tooltips_or_dendro(){
 
   if (params.is_widget){
     console.log('--> running widget callback')
-    cgm.widget_callback();
+    cgm.widget_callback(cgm);
   } else {
     console.log('not a widget')
   }

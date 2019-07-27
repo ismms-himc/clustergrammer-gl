@@ -35,10 +35,10 @@ module.exports = function hzome_functions(params){
         params.hzome.gene_data[gene_symbol].description = response.data.description;
 
       })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
+      // .catch(function (error) {
+      //   // handle error
+      //   console.log(error);
+      // })
       .finally(function () {
         // always executed
       });
@@ -54,7 +54,7 @@ module.exports = function hzome_functions(params){
       d3.select(params.tooltip_id)
         .html(function(){
             var sym_name = gene_symbol + ': ' + data.name;
-            var full_html = '<p>' + sym_name + '</p>' +  '<p>' +
+            var full_html = '<p>' + sym_name + '</p> <p>' +
               data.description + '</p>';
             return full_html;
         });
@@ -85,7 +85,7 @@ module.exports = function hzome_functions(params){
 
   }
 
-  hzome = {}
+  var hzome = {}
 
   hzome.gene_info = gene_info;
   hzome.gene_data = {};

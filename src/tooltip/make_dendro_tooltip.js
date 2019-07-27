@@ -1,7 +1,7 @@
 var make_cat_breakdown_graph = require('./../cats/make_cat_breakdown_graph');
 var calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown');
 var run_hide_tooltip = require('./run_hide_tooltip');
-var run_dendro_crop = require('./../crop/run_dendro_crop');
+// var run_dendro_crop = require('./../crop/run_dendro_crop');
 
 module.exports = function make_dendro_tooltip(params, inst_axis){
 
@@ -14,7 +14,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .style('text-align', 'right')
     .style('cursor', 'default')
     .on('click', function(){
-      console.log('clicking close tooltip')
       params.tooltip.permanent_tooltip = false;
       run_hide_tooltip(params);
     })
@@ -32,7 +31,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   d3.select(params.tooltip_id)
     .append('input')
     .attr('value', function(){
-      return cgm.params.dendro.selected_clust_names.join(', ');
+      return params.dendro.selected_clust_names.join(', ');
     })
     .style('width', '364px')
     .style('display', 'block');

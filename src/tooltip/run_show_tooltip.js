@@ -4,11 +4,11 @@ var display_and_position_tooltip = require('./display_and_position_tooltip');
 
 module.exports = function run_show_tooltip(params){
 
-  console.log('show tooltip!!!')
+  //console.log('show tooltip!!!')
 
   if (params.tooltip.permanent_tooltip === false){
 
-    remove_lost_tooltips(params);
+    remove_lost_tooltips();
 
     make_tooltip_text(params);
 

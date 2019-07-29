@@ -118,13 +118,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = inst_value_color;
     }
 
-    // Set Category Opacity
+    // Mouseover highlight
     ///////////////////////////
+    // switch non-highlighted colors to white (avoid opacity bug)
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
         inst_opacity = 1.0;
       } else {
-        inst_opacity = 0.1;
+        inst_opacity = 1.0;
+        inst_color = 'white';
       }
     }
 

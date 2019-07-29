@@ -1,13 +1,13 @@
 /*
 
-  clustergrammer-gl version 0.10.3
+  clustergrammer-gl version 0.10.4
 
  */
 
 function clustergrammer_gl(args){
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.3');
+  console.log('clustergrammer-gl version 0.10.4');
   console.log('#################################');
 
   var cgm = {};

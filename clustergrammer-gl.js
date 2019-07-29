@@ -34535,13 +34535,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       inst_color = inst_value_color;
     }
 
-    // Set Category Opacity
+    // Mouseover highlight
     ///////////////////////////
+    // switch non-highlighted colors to white (avoid opacity bug)
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
         inst_opacity = 1.0;
       } else {
-        inst_opacity = 0.1;
+        inst_opacity = 1.0;
+        inst_color = 'white';
       }
     }
 
@@ -37367,14 +37369,14 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.10.3
+  clustergrammer-gl version 0.10.4
 
  */
 
 function clustergrammer_gl(args){
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.3');
+  console.log('clustergrammer-gl version 0.10.4');
   console.log('#################################');
 
   var cgm = {};

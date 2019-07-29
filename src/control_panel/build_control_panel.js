@@ -92,8 +92,8 @@ module.exports = function build_control_panel(){
 
   control_svg
     .append('svg:a')
-    .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
-    .attr('xlink:target', '_blank')
+    // .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
+    // .attr('xlink:target', '_blank')
     .append('svg:image')
     .classed('cgm-logo', true)
     .attr('x', 7)
@@ -101,6 +101,14 @@ module.exports = function build_control_panel(){
     .attr('width', 50)
     .attr('height', 50)
     .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
+    .on('click', function(d) {
+        console.log('open tab')
+        window.open(
+          'https://clustergrammer.readthedocs.io/clustergrammer2.html',
+          '_blank' // <- This is what makes it open in a new window.
+        );
+      })
+    .style("cursor", "pointer");
     // .attr("xlink:href", logo_url)
 
     // console.log(logo_url)

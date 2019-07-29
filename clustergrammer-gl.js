@@ -35097,8 +35097,8 @@ module.exports = function build_control_panel(){
 
   control_svg
     .append('svg:a')
-    .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
-    .attr('xlink:target', '_blank')
+    // .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
+    // .attr('xlink:target', '_blank')
     .append('svg:image')
     .classed('cgm-logo', true)
     .attr('x', 7)
@@ -35106,6 +35106,14 @@ module.exports = function build_control_panel(){
     .attr('width', 50)
     .attr('height', 50)
     .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
+    .on('click', function(d) {
+        console.log('open tab')
+        window.open(
+          'https://clustergrammer.readthedocs.io/clustergrammer2.html',
+          '_blank' // <- This is what makes it open in a new window.
+        );
+      })
+    .style("cursor", "pointer");
     // .attr("xlink:href", logo_url)
 
     // console.log(logo_url)
@@ -36341,12 +36349,14 @@ module.exports = function destroy_viz(){
 
 module.exports = function ini_canvas_mouseover(){
 
-  d3.select(this.params.root + ' .canvas-container canvas')
+  var params = this.params;
+
+  d3.select(params.root + ' .canvas-container canvas')
     .on('mouseover', function(){
-      this.params.tooltip.on_canvas = true;
+      params.tooltip.on_canvas = true;
     })
     .on('mouseout', function(){
-      this.params.tooltip.on_canvas = false;
+      params.tooltip.on_canvas = false;
     });
 
 };
@@ -40160,6 +40170,8 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .text('Selcted ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
 
   console.log(params.dendro.selected_clust_names.length);
+
+  console.log(params.tooltip_id)
 
   d3.select(params.tooltip_id)
     .append('input')

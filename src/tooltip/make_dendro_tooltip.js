@@ -30,6 +30,8 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 
   console.log(params.dendro.selected_clust_names.length);
 
+  console.log(params.tooltip_id)
+
   d3.select(params.tooltip_id)
     .append('input')
     .attr('value', function(){

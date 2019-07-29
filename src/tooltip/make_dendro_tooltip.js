@@ -35,10 +35,13 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   d3.select(params.tooltip_id)
     .append('input')
     .attr('value', function(){
+
+      console.log('here')
       return params.dendro.selected_clust_names.join(', ');
     })
     .style('width', '364px')
-    .style('display', 'block');
+    .style('display', 'block')
+    .style('color', 'black');
 
   // // working on adding crop functionality
   // /////////////////////////////////////////

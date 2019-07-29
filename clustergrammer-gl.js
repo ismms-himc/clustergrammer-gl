@@ -37369,14 +37369,14 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.10.4
+  clustergrammer-gl version 0.10.5
 
  */
 
 function clustergrammer_gl(args){
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.4');
+  console.log('clustergrammer-gl version 0.10.5');
   console.log('#################################');
 
   var cgm = {};
@@ -40178,10 +40178,13 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   d3.select(params.tooltip_id)
     .append('input')
     .attr('value', function(){
+
+      console.log('here')
       return params.dendro.selected_clust_names.join(', ');
     })
     .style('width', '364px')
-    .style('display', 'block');
+    .style('display', 'block')
+    .style('color', 'black');
 
   // // working on adding crop functionality
   // /////////////////////////////////////////

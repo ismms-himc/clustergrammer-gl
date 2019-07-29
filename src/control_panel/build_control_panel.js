@@ -96,19 +96,18 @@ module.exports = function build_control_panel(){
     // .attr('xlink:target', '_blank')
     .append('svg:image')
     .classed('cgm-logo', true)
-    .attr('x', 7)
-    .attr('y', 50)
+    .attr('x', 15)
+    .attr('y', 55)
     .attr('width', 50)
     .attr('height', 50)
     .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
     .on('click', function(d) {
-        console.log('open tab')
         window.open(
           'https://clustergrammer.readthedocs.io/clustergrammer2.html',
           '_blank' // <- This is what makes it open in a new window.
         );
       })
-    .style("cursor", "pointer");
+    .style('cursor', 'pointer');
     // .attr("xlink:href", logo_url)
 
     // console.log(logo_url)

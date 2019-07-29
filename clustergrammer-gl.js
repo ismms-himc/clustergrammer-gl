@@ -35103,19 +35103,18 @@ module.exports = function build_control_panel(){
     // .attr('xlink:target', '_blank')
     .append('svg:image')
     .classed('cgm-logo', true)
-    .attr('x', 7)
-    .attr('y', 50)
+    .attr('x', 15)
+    .attr('y', 55)
     .attr('width', 50)
     .attr('height', 50)
     .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
     .on('click', function(d) {
-        console.log('open tab')
         window.open(
           'https://clustergrammer.readthedocs.io/clustergrammer2.html',
           '_blank' // <- This is what makes it open in a new window.
         );
       })
-    .style("cursor", "pointer");
+    .style('cursor', 'pointer');
     // .attr("xlink:href", logo_url)
 
     // console.log(logo_url)
@@ -36011,13 +36010,11 @@ module.exports = function draw_labels_tooltips_or_dendro(){
     params.dendro.update_dendro = false;
   }
 
-  console.log('is this a widget?', params.is_widget);
-
   if (params.is_widget){
-    console.log('--> running widget callback')
+    // console.log('--> running widget callback')
     cgm.widget_callback(cgm);
   } else {
-    console.log('not a widget')
+    // console.log('not a widget')
   }
 
 };
@@ -40171,15 +40168,9 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .append('text')
     .text('Selcted ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
 
-  console.log(params.dendro.selected_clust_names.length);
-
-  console.log(params.tooltip_id)
-
   d3.select(params.tooltip_id)
     .append('input')
     .attr('value', function(){
-
-      console.log('here')
       return params.dendro.selected_clust_names.join(', ');
     })
     .style('width', '364px')

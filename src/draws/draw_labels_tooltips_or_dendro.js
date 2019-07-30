@@ -1,6 +1,6 @@
 var draw_commands = require('./draw_commands');
 
-module.exports = function draw_labels_tooltips_or_dendro(){
+module.exports = function draw_labels_tooltips_or_dendro(external_model){
 
   var cgm = this;
   var regl = cgm.regl;
@@ -21,7 +21,7 @@ module.exports = function draw_labels_tooltips_or_dendro(){
 
   if (params.is_widget){
     // console.log('--> running widget callback')
-    cgm.widget_callback(cgm);
+    cgm.widget_callback(cgm, external_model);
   } else {
     // console.log('not a widget')
   }

@@ -1,4 +1,4 @@
-module.exports = function viz_from_network(){
+module.exports = function viz_from_network(external_model){
 
   this.initialize_containers();
   this.initialize_regl();
@@ -9,5 +9,5 @@ module.exports = function viz_from_network(){
   this.build_control_panel();
   this.build_dendrogram_sliders();
   this.ini_canvas_mouseover();
-  this.run_viz();
+  this.run_viz(external_model);
 };

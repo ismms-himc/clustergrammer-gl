@@ -35991,7 +35991,7 @@ module.exports = function draw_interacting(regl, params){
 
 var draw_commands = __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js");
 
-module.exports = function draw_labels_tooltips_or_dendro(){
+module.exports = function draw_labels_tooltips_or_dendro(external_model){
 
   var cgm = this;
   var regl = cgm.regl;
@@ -36012,7 +36012,7 @@ module.exports = function draw_labels_tooltips_or_dendro(){
 
   if (params.is_widget){
     // console.log('--> running widget callback')
-    cgm.widget_callback(cgm);
+    cgm.widget_callback(cgm, external_model);
   } else {
     // console.log('not a widget')
   }
@@ -36232,7 +36232,7 @@ var draw_mouseover = __webpack_require__(/*! ./draw_mouseover */ "./src/draws/dr
 
 var draw_background_calculations = __webpack_require__(/*! ./draw_background_calculations */ "./src/draws/draw_background_calculations.js");
 
-module.exports = function run_viz(){
+module.exports = function run_viz(external_model){
 
   var cgm = this;
   var regl = cgm.regl;
@@ -36287,7 +36287,7 @@ module.exports = function run_viz(){
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
-      cgm.draw_labels_tooltips_or_dendro();
+      cgm.draw_labels_tooltips_or_dendro(external_model);
     } else {
       // run background calculations
       draw_background_calculations(regl, params);
@@ -36410,7 +36410,7 @@ module.exports = function initialize_containers(){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function viz_from_network(){
+module.exports = function viz_from_network(external_model){
 
   this.initialize_containers();
   this.initialize_regl();
@@ -36421,7 +36421,7 @@ module.exports = function viz_from_network(){
   this.build_control_panel();
   this.build_dendrogram_sliders();
   this.ini_canvas_mouseover();
-  this.run_viz();
+  this.run_viz(external_model);
 };
 
 /***/ }),
@@ -37407,7 +37407,8 @@ function clustergrammer_gl(args){
 
   // going to work on passing in filtered network in place of full network
   // as a quick crop method
-  cgm.viz_from_network()
+  var external_model = {'widget': 'model'};
+  cgm.viz_from_network(external_model);
 
   return cgm;
 }
@@ -39442,14 +39443,6 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
   d3.select(params.root + ' .' + other_axis + '-reorder-buttons')
   .selectAll('rect')
   .style('stroke', button_color);
-
-  // working on passing reordered label to widget if available
-  if (params.is_widget){
-    // console.log('saving to widget')
-    params.widget_model.model.set('value', full_name);
-  } else {
-    // console.log('not a widget')
-  }
 
 
 }

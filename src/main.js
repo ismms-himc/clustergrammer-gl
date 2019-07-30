@@ -41,7 +41,8 @@ function clustergrammer_gl(args){
 
   // going to work on passing in filtered network in place of full network
   // as a quick crop method
-  cgm.viz_from_network()
+  var external_model = {'widget': 'model'};
+  cgm.viz_from_network(external_model);
 
   return cgm;
 }

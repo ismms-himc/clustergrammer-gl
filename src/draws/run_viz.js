@@ -7,7 +7,7 @@ var draw_mouseover = require('./draw_mouseover');
 
 var draw_background_calculations = require('./draw_background_calculations');
 
-module.exports = function run_viz(){
+module.exports = function run_viz(external_model){
 
   var cgm = this;
   var regl = cgm.regl;
@@ -62,7 +62,7 @@ module.exports = function run_viz(){
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
     } else if (params.labels.draw_labels || params.tooltip.show_tooltip || params.dendro.update_dendro){
-      cgm.draw_labels_tooltips_or_dendro();
+      cgm.draw_labels_tooltips_or_dendro(external_model);
     } else {
       // run background calculations
       draw_background_calculations(regl, params);

@@ -60,13 +60,11 @@
 
     // console.log('passing network to clustergrammer-gl')
 
-    var my_widget_callback = function(cgm, external_model){
-      console.log('******************************')
+    var my_widget_callback = function(external_model){
+      console.log('-------------------------------')
       console.log('RUNNING MY WIDGET CALLBACK')
-      console.log('defining some widget in index.html')
-      console.log(cgm)
       console.log(external_model)
-      console.log('******************************')
+      console.log('-------------------------------')
     }
 
     d3.json(filename, function(network){
@@ -76,10 +74,15 @@
       args.container=inst_container;
       args.viz_width=inst_width;
       args.viz_height=inst_width;
-      args.widget_model = 'my-widget-model';
+      // args.widget_model = 'my-widget-model';
       args.widget_callback = my_widget_callback
 
+      // // do not pass widget
+      // cgm = Clustergrammer2(args);
+
+      // pass widget
       cgm = Clustergrammer2(args, {'widget':'external-model'});
+
       // cgm2 = Clustergrammer2(args);
 
     });

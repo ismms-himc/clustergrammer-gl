@@ -36012,7 +36012,7 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
 
   if (params.is_widget){
     // console.log('--> running widget callback')
-    cgm.widget_callback(cgm, external_model);
+    cgm.widget_callback(external_model);
   } else {
     // console.log('not a widget')
   }
@@ -36417,7 +36417,7 @@ module.exports = function viz_from_network(external_model){
 
   // console.log('viz_from_network')
   // define parameters and run visualization
-  this.initialize_params();
+  this.initialize_params(external_model);
   this.build_control_panel();
   this.build_dendrogram_sliders();
   this.ini_canvas_mouseover();
@@ -37378,9 +37378,6 @@ function clustergrammer_gl(args, external_model=null){
   console.log('clustergrammer-gl version 0.10.6');
   console.log('#################################');
 
-  // var external_model = args.widget_model;
-  // delete args.widget_model;
-
   var cgm = {};
   cgm.args = args;
 
@@ -37413,6 +37410,11 @@ function clustergrammer_gl(args, external_model=null){
   // going to work on passing in filtered network in place of full network
   // as a quick crop method
   cgm.viz_from_network(external_model);
+
+  if (external_model != null){
+    external_model.cgm = cgm;
+
+  }
 
   return cgm;
 }
@@ -39264,7 +39266,7 @@ module.exports = function generate_webgl_to_pix(params){
 
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 
-module.exports = function initialize_params(){
+module.exports = function initialize_params(external_model){
 
   var args = this.args;
 
@@ -39347,11 +39349,12 @@ module.exports = function initialize_params(){
   params.canvas_container = canvas_container;
 
   params.is_widget = false;
-  if (typeof args.widget_model !== 'undefined'){
-    params.widget_model = args.widget_model;
+  if (external_model !== null){
+    // params.widget_model = args.widget_model;
+    console.log('found widget')
     params.is_widget = true;
   } else {
-    params.widget_model = null;
+    // params.widget_model = null;
   }
 
   this.params = params;

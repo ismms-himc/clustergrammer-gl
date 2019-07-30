@@ -1,6 +1,6 @@
 var hzome_functions = require('./../tooltip/hzome_functions')
 
-module.exports = function initialize_params(){
+module.exports = function initialize_params(external_model){
 
   var args = this.args;
 
@@ -83,11 +83,12 @@ module.exports = function initialize_params(){
   params.canvas_container = canvas_container;
 
   params.is_widget = false;
-  if (typeof args.widget_model !== 'undefined'){
-    params.widget_model = args.widget_model;
+  if (external_model !== null){
+    // params.widget_model = args.widget_model;
+    console.log('found widget')
     params.is_widget = true;
   } else {
-    params.widget_model = null;
+    // params.widget_model = null;
   }
 
   this.params = params;

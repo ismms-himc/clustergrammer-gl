@@ -12,9 +12,6 @@ function clustergrammer_gl(args, external_model=null){
   console.log('clustergrammer-gl version 0.10.6');
   console.log('#################################');
 
-  // var external_model = args.widget_model;
-  // delete args.widget_model;
-
   var cgm = {};
   cgm.args = args;
 
@@ -47,6 +44,11 @@ function clustergrammer_gl(args, external_model=null){
   // going to work on passing in filtered network in place of full network
   // as a quick crop method
   cgm.viz_from_network(external_model);
+
+  if (external_model != null){
+    external_model.cgm = cgm;
+
+  }
 
   return cgm;
 }

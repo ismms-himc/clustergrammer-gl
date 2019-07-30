@@ -37370,15 +37370,20 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
  */
 
-function clustergrammer_gl(args){
+function clustergrammer_gl(args, external_model=null){
+
+  console.log(external_model)
 
   console.log('#################################');
   console.log('clustergrammer-gl version 0.10.6');
   console.log('#################################');
 
-  var cgm = {};
+  // var external_model = args.widget_model;
+  // delete args.widget_model;
 
+  var cgm = {};
   cgm.args = args;
+
 
   cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
   // cgm.decompress_network = require('./params/decompress_network');
@@ -37399,7 +37404,7 @@ function clustergrammer_gl(args){
   }
 
 
-  console.log('widget_model', cgm.args.widget_model)
+  // console.log('widget_model', cgm.args.widget_model)
 
   // initialize network
   // cgm.decompress_network(args.network);
@@ -37407,7 +37412,6 @@ function clustergrammer_gl(args){
 
   // going to work on passing in filtered network in place of full network
   // as a quick crop method
-  var external_model = {'widget': 'model'};
   cgm.viz_from_network(external_model);
 
   return cgm;

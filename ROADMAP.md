@@ -35,6 +35,7 @@ Clustergrammer-GL is primarily being built as a dependency of [Clustergrammer2](
 * [tooltip overflow](https://github.com/ismms-himc/clustergrammer-gl/issues/35)
 * [callback functions on common interactions](https://github.com/ismms-himc/clustergrammer-gl/issues/32)
 * [initial ordering button](https://github.com/ismms-himc/clustergrammer-gl/issues/24)
+* [category updating for Enrichrgram](https://github.com/ismms-himc/clustergrammer-gl/issues/17)
 
 # Documentation
 Please see Clustergrammer's full documentation to see how Clustergrammer-GL fits into the larger project, which includes:

@@ -25,17 +25,21 @@ Clustergrammer-GL is primarily being built as a dependency of [Clustergrammer2](
 
 # Issues
 ## High Priority
+* [category bleedthrough](https://github.com/ismms-himc/clustergrammer-gl/issues/15)
 * [dendrogram slicing of linkage matrix](https://github.com/ismms-himc/clustergrammer-gl/issues/30)
 * [camera update](https://github.com/ismms-himc/clustergrammer-gl/issues/19)
 * [slow scrolling speed](https://github.com/ismms-himc/clustergrammer-gl/issues/36)
 * [row/column search](https://github.com/ismms-himc/clustergrammer-gl/issues/23)
 
 ## Normal Priority
+* [improve text cutoff](https://github.com/ismms-himc/clustergrammer-gl/issues/7)
 * [dendrogram interactions](https://github.com/ismms-himc/clustergrammer-gl/issues/18)
 * [tooltip overflow](https://github.com/ismms-himc/clustergrammer-gl/issues/35)
 * [callback functions on common interactions](https://github.com/ismms-himc/clustergrammer-gl/issues/32)
 * [initial ordering button](https://github.com/ismms-himc/clustergrammer-gl/issues/24)
 * [category updating for Enrichrgram](https://github.com/ismms-himc/clustergrammer-gl/issues/17)
+* [brush select zoom](https://github.com/ismms-himc/clustergrammer-gl/issues/11)
+
 
 # Documentation
 Please see Clustergrammer's full documentation to see how Clustergrammer-GL fits into the larger project, which includes:

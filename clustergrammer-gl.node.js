@@ -37375,48 +37375,53 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.7');
+  console.log('clustergrammer-gl version 0.10.8');
   console.log('#################################');
 
   var cgm = {};
-  cgm.args = args;
+
+  // check if container is defined
+  if (args.container !=null){
+
+    cgm.args = args;
+
+    cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
+    // cgm.decompress_network = require('./params/decompress_network');
+    cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
+    cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
+    cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");
+    cgm.build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
+    cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
+    cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
+    cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
+    cgm.viz_from_network = __webpack_require__(/*! ./initialize_viz/viz_from_network */ "./src/initialize_viz/viz_from_network.js");
+    cgm.draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draws/draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
 
 
-  cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
-  // cgm.decompress_network = require('./params/decompress_network');
-  cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
-  cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
-  cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");
-  cgm.build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
-  cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
-  cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
-  cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
-  cgm.viz_from_network = __webpack_require__(/*! ./initialize_viz/viz_from_network */ "./src/initialize_viz/viz_from_network.js");
-  cgm.draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draws/draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
+    if (typeof args.widget_callback !== 'undefined'){
+      console.log('pass widget_callback to cgm  ')
+      cgm.widget_callback = args.widget_callback;
+    }
 
 
-  if (typeof args.widget_callback !== 'undefined'){
-    console.log('pass widget_callback to cgm  ')
-    cgm.widget_callback = args.widget_callback;
+    // console.log('widget_model', cgm.args.widget_model)
+
+    // initialize network
+    // cgm.decompress_network(args.network);
+    cgm.network = args.network;
+
+    // going to work on passing in filtered network in place of full network
+    // as a quick crop method
+    cgm.viz_from_network(external_model);
+
+    if (external_model != null){
+      external_model.cgm = cgm;
+
+    }
+
+    return cgm;
+
   }
-
-
-  // console.log('widget_model', cgm.args.widget_model)
-
-  // initialize network
-  // cgm.decompress_network(args.network);
-  cgm.network = args.network;
-
-  // going to work on passing in filtered network in place of full network
-  // as a quick crop method
-  cgm.viz_from_network(external_model);
-
-  if (external_model != null){
-    external_model.cgm = cgm;
-
-  }
-
-  return cgm;
 }
 
 // necessary for exporting function

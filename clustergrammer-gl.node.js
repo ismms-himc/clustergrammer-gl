@@ -34538,16 +34538,29 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     // Mouseover highlight
     ///////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
+    inst_opacity = 1.0;
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
-        inst_opacity = 1.0;
+        inst_color =color_to_rgba(inst_color, inst_opacity)
       } else {
-        inst_opacity = 1.0;
-        inst_color = 'white';
+
+        // not currently selected category
+        inst_color =color_to_rgba(inst_color, inst_opacity).map(x => x * 0.25 + 0.75)
+
+        // console.log(color_to_rgba(inst_color, inst_opacity))
+        // console.log(color_to_rgba(inst_color, inst_opacity).map(x => (x + 1)/2.0))
+
+        // .map(x => x * 10.0);
+
       }
+    } else {
+      inst_color = color_to_rgba(inst_color, inst_opacity)
+
     }
 
-    color_arr[i] = color_to_rgba(inst_color, inst_opacity);
+    color_arr[i] = inst_color
+
+    // console.log(color_to_rgba(inst_color, inst_opacity))
   }
 
   const color_buffer = regl.buffer({
@@ -37366,7 +37379,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.10.7
+  clustergrammer-gl version 0.10.9
 
  */
 
@@ -37375,7 +37388,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.8');
+  console.log('clustergrammer-gl version 0.10.9');
   console.log('#################################');
 
   var cgm = {};

@@ -34539,7 +34539,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     ///////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
     inst_opacity = 1.0;
-    blend_fraction = 0.25;
+    var blend_fraction = 0.25;
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
         inst_color =color_to_rgba(inst_color, inst_opacity)
@@ -34547,12 +34547,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         // not currently selected category
         inst_color = color_to_rgba(inst_color, inst_opacity)
-                       .map(x => x * blend_fraction  + (1-blend_fraction))
-
-        // console.log(color_to_rgba(inst_color, inst_opacity))
-        // console.log(color_to_rgba(inst_color, inst_opacity).map(x => (x + 1)/2.0))
-
-        // .map(x => x * 10.0);
+                       .map((x) => x * blend_fraction  + (1-blend_fraction));
 
       }
     } else {
@@ -36026,10 +36021,8 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
   }
 
   if (params.is_widget){
-    console.log('--> running widget callback')
+    console.log('--> running widget callback on mouseend')
     cgm.widget_callback(external_model);
-  } else {
-    // console.log('not a widget')
   }
 
 };
@@ -37254,7 +37247,7 @@ module.exports = function keep_track_of_mouseovers(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function single_clicking(params){
+module.exports = function single_clicking(params, external_model){
 
   params.ani.last_click = params.ani.time;
 
@@ -37263,6 +37256,11 @@ module.exports = function single_clicking(params){
       __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
       params.tooltip.permanent_tooltip = true;
     }
+  }
+
+  if (params.is_widget){
+    console.log('--> running widget callback on click')
+    cgm.widget_callback(external_model);
   }
 
 }
@@ -40937,7 +40935,7 @@ module.exports = function zoom_rules_high_mat(regl, params, external_model){
     } else {
 
       console.log('single-click')
-      single_clicking(params);
+      single_clicking(params, external_model);
 
     }
 

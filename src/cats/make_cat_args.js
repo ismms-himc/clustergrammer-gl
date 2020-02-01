@@ -122,7 +122,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     ///////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
     inst_opacity = 1.0;
-    blend_fraction = 0.25;
+    var blend_fraction = 0.25;
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
         inst_color =color_to_rgba(inst_color, inst_opacity)
@@ -130,12 +130,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
         // not currently selected category
         inst_color = color_to_rgba(inst_color, inst_opacity)
-                       .map(x => x * blend_fraction  + (1-blend_fraction))
-
-        // console.log(color_to_rgba(inst_color, inst_opacity))
-        // console.log(color_to_rgba(inst_color, inst_opacity).map(x => (x + 1)/2.0))
-
-        // .map(x => x * 10.0);
+                       .map((x) => x * blend_fraction  + (1-blend_fraction));
 
       }
     } else {

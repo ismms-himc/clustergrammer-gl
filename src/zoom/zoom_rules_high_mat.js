@@ -39,7 +39,7 @@ module.exports = function zoom_rules_high_mat(regl, params, external_model){
     } else {
 
       console.log('single-click')
-      single_clicking(params);
+      single_clicking(params, external_model);
 
     }
 

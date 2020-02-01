@@ -37391,7 +37391,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.3
+  clustergrammer-gl version 0.11.4
 
  */
 
@@ -37400,7 +37400,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.3');
+  console.log('clustergrammer-gl version 0.11.4');
   console.log('#################################');
 
   var cgm = {};
@@ -40929,6 +40929,7 @@ var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking 
 
 module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
+  var cgm = this;
   var opts = opts || {};
   var options = extend({
       element: opts.element || regl._gl.canvas,

@@ -7,6 +7,7 @@ var double_clicking = require('./../interactions/double_clicking');
 
 module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
+  var cgm = this;
   var opts = opts || {};
   var options = extend({
       element: opts.element || regl._gl.canvas,

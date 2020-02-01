@@ -31,6 +31,9 @@ function clustergrammer_gl(args, external_model=null){
     cgm.viz_from_network = require('./initialize_viz/viz_from_network');
     cgm.draw_labels_tooltips_or_dendro = require('./draws/draw_labels_tooltips_or_dendro');
 
+    cgm.single_clicking = require('./interactions/single_clicking');
+    cgm.zoom_rules_high_mat = require('./zoom/zoom_rules_high_mat');
+
 
     if (typeof args.widget_callback !== 'undefined'){
       console.log('pass widget_callback to cgm  ')

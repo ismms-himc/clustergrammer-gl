@@ -37259,6 +37259,10 @@ module.exports = function single_clicking(params, external_model){
 
   params.ani.last_click = params.ani.time;
 
+  var cgm = this;
+
+  // debugger
+
   if (params.tooltip.tooltip_type.includes('-dendro')){
     if (params.tooltip.permanent_tooltip === false){
       __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
@@ -37417,6 +37421,9 @@ function clustergrammer_gl(args, external_model=null){
     cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
     cgm.viz_from_network = __webpack_require__(/*! ./initialize_viz/viz_from_network */ "./src/initialize_viz/viz_from_network.js");
     cgm.draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draws/draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
+
+    cgm.single_clicking = __webpack_require__(/*! ./interactions/single_clicking */ "./src/interactions/single_clicking.js");
+    cgm.zoom_rules_high_mat = __webpack_require__(/*! ./zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 
 
     if (typeof args.widget_callback !== 'undefined'){
@@ -39299,11 +39306,14 @@ var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ ".
 
 module.exports = function initialize_params(external_model){
 
+  var cgm = this;
+
   var args = this.args;
 
   var canvas_container = this.canvas_container;
 
   var regl = this.regl;
+
   var network = this.network;
 
   var params = {};
@@ -39351,7 +39361,11 @@ module.exports = function initialize_params(external_model){
 
   params.max_zoom = min_dim/4.0;
   params.zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js")(params);
-  __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js")(regl, params, external_model);
+
+  // require('./../zoom/zoom_rules_high_mat')(regl, params, external_model);
+  cgm.zoom_rules_high_mat(regl, params, external_model);
+
+
   __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js")(regl, params);
 
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
@@ -40911,7 +40925,7 @@ var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/muta
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
 var run_hide_tooltip = __webpack_require__(/*! ./../tooltip/run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
 var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking */ "./src/interactions/double_clicking.js");
-var single_clicking = __webpack_require__(/*! ./../interactions/single_clicking */ "./src/interactions/single_clicking.js");
+// var single_clicking = require('./../interactions/single_clicking');
 
 module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
@@ -40947,7 +40961,7 @@ module.exports = function zoom_rules_high_mat(regl, params, external_model){
     } else {
 
       console.log('single-click')
-      single_clicking(params, external_model);
+      cgm.single_clicking(params, external_model);
 
     }
 

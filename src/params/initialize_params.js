@@ -54,7 +54,7 @@ module.exports = function initialize_params(external_model){
 
   params.max_zoom = min_dim/4.0;
   params.zoom_restrict = require('./../zoom/ini_zoom_restrict')(params);
-  require('./../zoom/zoom_rules_high_mat')(regl, params);
+  require('./../zoom/zoom_rules_high_mat')(regl, params, external_model);
   require('./../cameras/make_cameras')(regl, params);
 
   require('./../params/calc_mat_arr')(params);
@@ -84,7 +84,6 @@ module.exports = function initialize_params(external_model){
 
   params.is_widget = false;
   if (external_model !== null){
-    // params.widget_model = args.widget_model;
     console.log('found widget')
     params.is_widget = true;
   } else {

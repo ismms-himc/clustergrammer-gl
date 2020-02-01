@@ -34539,13 +34539,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     ///////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
     inst_opacity = 1.0;
+    blend_fraction = 0.25;
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
         inst_color =color_to_rgba(inst_color, inst_opacity)
       } else {
 
         // not currently selected category
-        inst_color =color_to_rgba(inst_color, inst_opacity).map(x => x * 0.25 + 0.75)
+        inst_color = color_to_rgba(inst_color, inst_opacity)
+                       .map(x => x * blend_fraction  + (1-blend_fraction))
 
         // console.log(color_to_rgba(inst_color, inst_opacity))
         // console.log(color_to_rgba(inst_color, inst_opacity).map(x => (x + 1)/2.0))
@@ -36024,7 +36026,7 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
   }
 
   if (params.is_widget){
-    // console.log('--> running widget callback')
+    console.log('--> running widget callback')
     cgm.widget_callback(external_model);
   } else {
     // console.log('not a widget')
@@ -37428,6 +37430,7 @@ function clustergrammer_gl(args, external_model=null){
     cgm.viz_from_network(external_model);
 
     if (external_model != null){
+
       external_model.cgm = cgm;
 
     }
@@ -39338,7 +39341,7 @@ module.exports = function initialize_params(external_model){
 
   params.max_zoom = min_dim/4.0;
   params.zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js")(params);
-  __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js")(regl, params);
+  __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js")(regl, params, external_model);
   __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js")(regl, params);
 
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
@@ -39368,7 +39371,6 @@ module.exports = function initialize_params(external_model){
 
   params.is_widget = false;
   if (external_model !== null){
-    // params.widget_model = args.widget_model;
     console.log('found widget')
     params.is_widget = true;
   } else {
@@ -40901,7 +40903,7 @@ var run_hide_tooltip = __webpack_require__(/*! ./../tooltip/run_hide_tooltip */ 
 var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking */ "./src/interactions/double_clicking.js");
 var single_clicking = __webpack_require__(/*! ./../interactions/single_clicking */ "./src/interactions/single_clicking.js");
 
-module.exports = function zoom_rules_high_mat(regl, params){
+module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
   var opts = opts || {};
   var options = extend({
@@ -40934,6 +40936,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else {
 
+      console.log('single-click')
       single_clicking(params);
 
     }

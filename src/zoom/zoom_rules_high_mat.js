@@ -5,7 +5,7 @@ var run_hide_tooltip = require('./../tooltip/run_hide_tooltip');
 var double_clicking = require('./../interactions/double_clicking');
 var single_clicking = require('./../interactions/single_clicking');
 
-module.exports = function zoom_rules_high_mat(regl, params){
+module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
   var opts = opts || {};
   var options = extend({
@@ -38,6 +38,7 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else {
 
+      console.log('single-click')
       single_clicking(params);
 
     }

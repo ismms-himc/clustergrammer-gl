@@ -49,6 +49,7 @@ function clustergrammer_gl(args, external_model=null){
     cgm.viz_from_network(external_model);
 
     if (external_model != null){
+
       external_model.cgm = cgm;
 
     }

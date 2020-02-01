@@ -91,6 +91,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       } else {
         inst_value_color = params.viz.cat_value_colors[1];
       }
+      inst_value_color = 'blue' // [1.0,1.0,1.0,1.0]
+      console.log(inst_value_color)
     }
 
     // Set Category Colors
@@ -125,7 +127,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     var blend_fraction = 0.25;
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
-        inst_color =color_to_rgba(inst_color, inst_opacity)
+        inst_color = color_to_rgba(inst_color, inst_opacity)
       } else {
 
         // not currently selected category
@@ -140,7 +142,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
     color_arr[i] = inst_color
 
-    // console.log(color_to_rgba(inst_color, inst_opacity))
   }
 
   const color_buffer = regl.buffer({

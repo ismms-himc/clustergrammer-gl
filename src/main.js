@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.11.0
+  clustergrammer-gl version 0.11.1
 
  */
 
@@ -9,7 +9,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.0');
+  console.log('clustergrammer-gl version 0.11.1');
   console.log('#################################');
 
   var cgm = {};

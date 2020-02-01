@@ -35857,11 +35857,15 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     }
 
     if (calc_text_tri){
+
       var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
+
       if (num_viz_labels < params.max_num_text && params.labels.queue.high[inst_axis].length == 0){
+
         __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js")(params);
+
         // only regather if there are more labels than can be shown at once
-        if (params.labels['num_' + inst_axis] > params.max_num_text){
+        if (params.labels['num_' + inst_axis] >= params.max_num_text){
           __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js")(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
@@ -39211,6 +39215,10 @@ module.exports = function generate_text_triangle_params(params){
   _.each(['row', 'col'], function(inst_axis){
 
     params.labels.precalc[inst_axis] = params.labels['num_' + inst_axis] < params.max_num_text
+
+    console.log(params.labels['num_' + inst_axis] < params.max_num_text)
+
+    // initial drawing of labels
     if (params.labels.precalc[inst_axis] === false){
       params.text_triangles.draw[inst_axis] = false;
     } else {

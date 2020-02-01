@@ -37387,7 +37387,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.1
+  clustergrammer-gl version 0.11.2
 
  */
 
@@ -37396,7 +37396,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.1');
+  console.log('clustergrammer-gl version 0.11.2');
   console.log('#################################');
 
   var cgm = {};

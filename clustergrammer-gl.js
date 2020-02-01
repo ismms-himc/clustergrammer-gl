@@ -34477,8 +34477,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
-  // console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
-
   var is_cat_value = false;
   if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
     is_cat_value = true;
@@ -34490,26 +34488,24 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   // Working on value-based categories
   var color_arr = [];
   var inst_value_color;
-  var is_cat_value;
+  var ini_cat_value;
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
 
     // Check if value-based category
     if (is_cat_value){
-      is_cat_value = get_cat_value(inst_cat)
-      // console.log(inst_axis, cat_index_name)
-      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(is_cat_value));
-      // console.log('value-cat', is_cat_value, inst_opacity);
-
+      ini_cat_value = get_cat_value(inst_cat)
+      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name]
+                            .cat_scale(Math.abs(ini_cat_value));
       // get positive and negative colors
-      if (is_cat_value > 0){
-        inst_value_color = params.viz.cat_value_colors[0];
+      if (ini_cat_value > 0){
+        ini_value_color = params.viz.cat_value_colors[0];
       } else {
-        inst_value_color = params.viz.cat_value_colors[1];
+        ini_value_color = params.viz.cat_value_colors[1];
       }
       // inst_value_color = params.viz.cat_value_colors[0];
-      inst_value_color = color_to_rgba(params.viz.cat_value_colors[0])
+      inst_value_color = color_to_rgba(ini_value_color)
                            .map((x) => x * inst_opacity + (1 - inst_opacity));
     }
 
@@ -34535,7 +34531,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         inst_color = 'white';
       }
     } else {
-      console.log('here')
       inst_color = inst_value_color;
     }
 

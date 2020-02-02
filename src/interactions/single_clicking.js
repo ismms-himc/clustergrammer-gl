@@ -1,8 +1,12 @@
+var run_hide_tooltip = require('./../tooltip/run_hide_tooltip');
+
 module.exports = function single_clicking(params, external_model){
 
   params.ani.last_click = params.ani.time;
 
   var cgm = this;
+
+  run_hide_tooltip(params, true);
 
   // debugger
 

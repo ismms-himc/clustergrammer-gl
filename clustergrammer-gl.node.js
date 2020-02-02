@@ -37255,11 +37255,15 @@ module.exports = function keep_track_of_mouseovers(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var run_hide_tooltip = __webpack_require__(/*! ./../tooltip/run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
+
 module.exports = function single_clicking(params, external_model){
 
   params.ani.last_click = params.ani.time;
 
   var cgm = this;
+
+  run_hide_tooltip(params, true);
 
   // debugger
 
@@ -37391,7 +37395,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.5
+  clustergrammer-gl version 0.11.6
 
  */
 
@@ -37400,7 +37404,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.5');
+  console.log('clustergrammer-gl version 0.11.6');
   console.log('#################################');
 
   var cgm = {};
@@ -40356,11 +40360,18 @@ module.exports = function remove_lost_tooltips(){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function run_hide_tooltip(params){
+module.exports = function run_hide_tooltip(params, click_on_heatmap=false){
 
   if (params.tooltip.permanent_tooltip === false){
     params.tooltip_fun.hide();
+    ;
   }
+
+   if (click_on_heatmap){
+     params.tooltip.permanent_tooltip = false;
+     params.tooltip_fun.hide();
+
+   }
 
 }
 

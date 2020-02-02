@@ -36028,10 +36028,10 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
     params.dendro.update_dendro = false;
   }
 
-  if (params.is_widget){
-    console.log('--> running widget callback on mouseend')
-    cgm.widget_callback(external_model);
-  }
+  // if (params.is_widget){
+  //   console.log('--> running widget callback on mouseend')
+  //   cgm.widget_callback(external_model);
+  // }
 
 };
 
@@ -37391,7 +37391,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.4
+  clustergrammer-gl version 0.11.5
 
  */
 
@@ -37400,7 +37400,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.4');
+  console.log('clustergrammer-gl version 0.11.5');
   console.log('#################################');
 
   var cgm = {};

@@ -19,11 +19,9 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
     params.dendro.update_dendro = false;
   }
 
-  if (params.is_widget){
-    // console.log('--> running widget callback')
-    cgm.widget_callback(external_model);
-  } else {
-    // console.log('not a widget')
-  }
+  // if (params.is_widget){
+  //   console.log('--> running widget callback on mouseend')
+  //   cgm.widget_callback(external_model);
+  // }
 
 };

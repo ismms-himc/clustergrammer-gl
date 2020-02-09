@@ -34477,8 +34477,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
-  // console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
-
   var is_cat_value = false;
   if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
     is_cat_value = true;
@@ -34490,24 +34488,25 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   // Working on value-based categories
   var color_arr = [];
   var inst_value_color;
-  var inst_cat_value;
+  var ini_cat_value;
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
 
     // Check if value-based category
     if (is_cat_value){
-      inst_cat_value = get_cat_value(inst_cat)
-      // console.log(inst_axis, cat_index_name)
-      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(inst_cat_value));
-      // console.log('value-cat', inst_cat_value, inst_opacity);
-
+      ini_cat_value = get_cat_value(inst_cat)
+      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name]
+                            .cat_scale(Math.abs(ini_cat_value));
       // get positive and negative colors
-      if (inst_cat_value > 0){
-        inst_value_color = params.viz.cat_value_colors[0];
+      if (ini_cat_value > 0){
+        ini_value_color = params.viz.cat_value_colors[0];
       } else {
-        inst_value_color = params.viz.cat_value_colors[1];
+        ini_value_color = params.viz.cat_value_colors[1];
       }
+      // inst_value_color = params.viz.cat_value_colors[0];
+      inst_value_color = color_to_rgba(ini_value_color)
+                           .map((x) => x * inst_opacity + (1 - inst_opacity));
     }
 
     // Set Category Colors
@@ -34538,16 +34537,31 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     // Mouseover highlight
     ///////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
+    inst_opacity = 1.0;
+    var blend_fraction = 0.25;
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
-        inst_opacity = 1.0;
+        if (is_cat_value === false){
+          inst_color = color_to_rgba(inst_color, inst_opacity)
+        }
       } else {
-        inst_opacity = 1.0;
-        inst_color = 'white';
+
+        // not currently selected category
+        if (is_cat_value === false){
+          inst_color = color_to_rgba(inst_color, inst_opacity)
+                         .map((x) => x * blend_fraction  + (1 - blend_fraction));
+        }
       }
+    } else {
+
+      if (is_cat_value === false){
+        inst_color = color_to_rgba(inst_color, inst_opacity)
+      }
+
     }
 
-    color_arr[i] = color_to_rgba(inst_color, inst_opacity);
+    color_arr[i] = inst_color
+
   }
 
   const color_buffer = regl.buffer({
@@ -35847,11 +35861,15 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
     }
 
     if (calc_text_tri){
+
       var num_viz_labels = params.labels['num_' + inst_axis]/params.zoom_data[axis_dim].total_zoom;
+
       if (num_viz_labels < params.max_num_text && params.labels.queue.high[inst_axis].length == 0){
+
         __webpack_require__(/*! ./../params/calc_viz_area */ "./src/params/calc_viz_area.js")(params);
+
         // only regather if there are more labels than can be shown at once
-        if (params.labels['num_' + inst_axis] > params.max_num_text){
+        if (params.labels['num_' + inst_axis] >= params.max_num_text){
           __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js")(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
@@ -36010,12 +36028,10 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
     params.dendro.update_dendro = false;
   }
 
-  if (params.is_widget){
-    // console.log('--> running widget callback')
-    cgm.widget_callback(external_model);
-  } else {
-    // console.log('not a widget')
-  }
+  // if (params.is_widget){
+  //   console.log('--> running widget callback on mouseend')
+  //   cgm.widget_callback(external_model);
+  // }
 
 };
 
@@ -37239,15 +37255,28 @@ module.exports = function keep_track_of_mouseovers(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function single_clicking(params){
+var run_hide_tooltip = __webpack_require__(/*! ./../tooltip/run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
+
+module.exports = function single_clicking(params, external_model){
 
   params.ani.last_click = params.ani.time;
+
+  var cgm = this;
+
+  run_hide_tooltip(params, true);
+
+  // debugger
 
   if (params.tooltip.tooltip_type.includes('-dendro')){
     if (params.tooltip.permanent_tooltip === false){
       __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
       params.tooltip.permanent_tooltip = true;
     }
+  }
+
+  if (params.is_widget){
+    console.log('--> running widget callback on click')
+    cgm.widget_callback(external_model);
   }
 
 }
@@ -37366,7 +37395,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.10.7
+  clustergrammer-gl version 0.11.6
 
  */
 
@@ -37375,48 +37404,57 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.10.7');
+  console.log('clustergrammer-gl version 0.11.6');
   console.log('#################################');
 
   var cgm = {};
-  cgm.args = args;
+
+  // check if container is defined
+  if (args.container !=null){
+
+    cgm.args = args;
+
+    cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
+    // cgm.decompress_network = require('./params/decompress_network');
+    cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
+    cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
+    cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");
+    cgm.build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
+    cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
+    cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
+    cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
+    cgm.viz_from_network = __webpack_require__(/*! ./initialize_viz/viz_from_network */ "./src/initialize_viz/viz_from_network.js");
+    cgm.draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draws/draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
+
+    cgm.single_clicking = __webpack_require__(/*! ./interactions/single_clicking */ "./src/interactions/single_clicking.js");
+    cgm.zoom_rules_high_mat = __webpack_require__(/*! ./zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 
 
-  cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
-  // cgm.decompress_network = require('./params/decompress_network');
-  cgm.initialize_regl = __webpack_require__(/*! ./params/initialize_regl */ "./src/params/initialize_regl.js");
-  cgm.initialize_containers = __webpack_require__(/*! ./initialize_viz/initialize_containers */ "./src/initialize_viz/initialize_containers.js");
-  cgm.build_dendrogram_sliders = __webpack_require__(/*! ./dendrogram/build_dendrogram_sliders */ "./src/dendrogram/build_dendrogram_sliders.js");
-  cgm.build_control_panel = __webpack_require__(/*! ./control_panel/build_control_panel */ "./src/control_panel/build_control_panel.js");
-  cgm.run_viz = __webpack_require__(/*! ./draws/run_viz */ "./src/draws/run_viz.js");
-  cgm.destroy_viz = __webpack_require__(/*! ./initialize_viz/destroy_viz */ "./src/initialize_viz/destroy_viz.js");
-  cgm.ini_canvas_mouseover = __webpack_require__(/*! ./initialize_viz/ini_canvas_mouseover */ "./src/initialize_viz/ini_canvas_mouseover.js")
-  cgm.viz_from_network = __webpack_require__(/*! ./initialize_viz/viz_from_network */ "./src/initialize_viz/viz_from_network.js");
-  cgm.draw_labels_tooltips_or_dendro = __webpack_require__(/*! ./draws/draw_labels_tooltips_or_dendro */ "./src/draws/draw_labels_tooltips_or_dendro.js");
+    if (typeof args.widget_callback !== 'undefined'){
+      console.log('pass widget_callback to cgm  ')
+      cgm.widget_callback = args.widget_callback;
+    }
 
 
-  if (typeof args.widget_callback !== 'undefined'){
-    console.log('pass widget_callback to cgm  ')
-    cgm.widget_callback = args.widget_callback;
+    // console.log('widget_model', cgm.args.widget_model)
+
+    // initialize network
+    // cgm.decompress_network(args.network);
+    cgm.network = args.network;
+
+    // going to work on passing in filtered network in place of full network
+    // as a quick crop method
+    cgm.viz_from_network(external_model);
+
+    if (external_model != null){
+
+      external_model.cgm = cgm;
+
+    }
+
+    return cgm;
+
   }
-
-
-  // console.log('widget_model', cgm.args.widget_model)
-
-  // initialize network
-  // cgm.decompress_network(args.network);
-  cgm.network = args.network;
-
-  // going to work on passing in filtered network in place of full network
-  // as a quick crop method
-  cgm.viz_from_network(external_model);
-
-  if (external_model != null){
-    external_model.cgm = cgm;
-
-  }
-
-  return cgm;
 }
 
 // necessary for exporting function
@@ -39192,6 +39230,10 @@ module.exports = function generate_text_triangle_params(params){
   _.each(['row', 'col'], function(inst_axis){
 
     params.labels.precalc[inst_axis] = params.labels['num_' + inst_axis] < params.max_num_text
+
+    // console.log(params.labels['num_' + inst_axis] < params.max_num_text)
+
+    // initial drawing of labels
     if (params.labels.precalc[inst_axis] === false){
       params.text_triangles.draw[inst_axis] = false;
     } else {
@@ -39268,11 +39310,14 @@ var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ ".
 
 module.exports = function initialize_params(external_model){
 
+  var cgm = this;
+
   var args = this.args;
 
   var canvas_container = this.canvas_container;
 
   var regl = this.regl;
+
   var network = this.network;
 
   var params = {};
@@ -39320,7 +39365,11 @@ module.exports = function initialize_params(external_model){
 
   params.max_zoom = min_dim/4.0;
   params.zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js")(params);
-  __webpack_require__(/*! ./../zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js")(regl, params);
+
+  // require('./../zoom/zoom_rules_high_mat')(regl, params, external_model);
+  cgm.zoom_rules_high_mat(regl, params, external_model);
+
+
   __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js")(regl, params);
 
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
@@ -39350,7 +39399,6 @@ module.exports = function initialize_params(external_model){
 
   params.is_widget = false;
   if (external_model !== null){
-    // params.widget_model = args.widget_model;
     console.log('found widget')
     params.is_widget = true;
   } else {
@@ -40312,11 +40360,18 @@ module.exports = function remove_lost_tooltips(){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function run_hide_tooltip(params){
+module.exports = function run_hide_tooltip(params, click_on_heatmap=false){
 
   if (params.tooltip.permanent_tooltip === false){
     params.tooltip_fun.hide();
+    ;
   }
+
+   if (click_on_heatmap){
+     params.tooltip.permanent_tooltip = false;
+     params.tooltip_fun.hide();
+
+   }
 
 }
 
@@ -40881,10 +40936,11 @@ var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/muta
 var track_interaction_zoom_data = __webpack_require__(/*! ./../interactions/track_interaction_zoom_data */ "./src/interactions/track_interaction_zoom_data.js");
 var run_hide_tooltip = __webpack_require__(/*! ./../tooltip/run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
 var double_clicking = __webpack_require__(/*! ./../interactions/double_clicking */ "./src/interactions/double_clicking.js");
-var single_clicking = __webpack_require__(/*! ./../interactions/single_clicking */ "./src/interactions/single_clicking.js");
+// var single_clicking = require('./../interactions/single_clicking');
 
-module.exports = function zoom_rules_high_mat(regl, params){
+module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
+  var cgm = this;
   var opts = opts || {};
   var options = extend({
       element: opts.element || regl._gl.canvas,
@@ -40916,7 +40972,8 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else {
 
-      single_clicking(params);
+      console.log('single-click')
+      cgm.single_clicking(params, external_model);
 
     }
 

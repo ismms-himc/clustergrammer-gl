@@ -60,8 +60,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     }
   }
 
-  // console.log('make_cat_args', params.viz.cat_info[inst_axis][cat_index_name].type)
-
   var is_cat_value = false;
   if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
     is_cat_value = true;
@@ -73,24 +71,25 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   // Working on value-based categories
   var color_arr = [];
   var inst_value_color;
-  var inst_cat_value;
+  var ini_cat_value;
   for (var i = 0; i < num_labels; i++){
 
     var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
 
     // Check if value-based category
     if (is_cat_value){
-      inst_cat_value = get_cat_value(inst_cat)
-      // console.log(inst_axis, cat_index_name)
-      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(Math.abs(inst_cat_value));
-      // console.log('value-cat', inst_cat_value, inst_opacity);
-
+      ini_cat_value = get_cat_value(inst_cat)
+      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name]
+                            .cat_scale(Math.abs(ini_cat_value));
       // get positive and negative colors
-      if (inst_cat_value > 0){
-        inst_value_color = params.viz.cat_value_colors[0];
+      if (ini_cat_value > 0){
+        ini_value_color = params.viz.cat_value_colors[0];
       } else {
-        inst_value_color = params.viz.cat_value_colors[1];
+        ini_value_color = params.viz.cat_value_colors[1];
       }
+      // inst_value_color = params.viz.cat_value_colors[0];
+      inst_value_color = color_to_rgba(ini_value_color)
+                           .map((x) => x * inst_opacity + (1 - inst_opacity));
     }
 
     // Set Category Colors
@@ -121,16 +120,31 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     // Mouseover highlight
     ///////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
+    inst_opacity = 1.0;
+    var blend_fraction = 0.25;
     if (is_mousing_over_cat){
       if (mousing_over_cat == inst_cat){
-        inst_opacity = 1.0;
+        if (is_cat_value === false){
+          inst_color = color_to_rgba(inst_color, inst_opacity)
+        }
       } else {
-        inst_opacity = 1.0;
-        inst_color = 'white';
+
+        // not currently selected category
+        if (is_cat_value === false){
+          inst_color = color_to_rgba(inst_color, inst_opacity)
+                         .map((x) => x * blend_fraction  + (1 - blend_fraction));
+        }
       }
+    } else {
+
+      if (is_cat_value === false){
+        inst_color = color_to_rgba(inst_color, inst_opacity)
+      }
+
     }
 
-    color_arr[i] = color_to_rgba(inst_color, inst_opacity);
+    color_arr[i] = inst_color
+
   }
 
   const color_buffer = regl.buffer({

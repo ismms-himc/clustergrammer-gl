@@ -13,6 +13,10 @@ module.exports = function generate_text_triangle_params(params){
   _.each(['row', 'col'], function(inst_axis){
 
     params.labels.precalc[inst_axis] = params.labels['num_' + inst_axis] < params.max_num_text
+
+    // console.log(params.labels['num_' + inst_axis] < params.max_num_text)
+
+    // initial drawing of labels
     if (params.labels.precalc[inst_axis] === false){
       params.text_triangles.draw[inst_axis] = false;
     } else {

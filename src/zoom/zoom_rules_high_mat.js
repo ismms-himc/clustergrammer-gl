@@ -3,10 +3,11 @@ var extend = require('xtend/mutable');
 var track_interaction_zoom_data = require('./../interactions/track_interaction_zoom_data');
 var run_hide_tooltip = require('./../tooltip/run_hide_tooltip');
 var double_clicking = require('./../interactions/double_clicking');
-var single_clicking = require('./../interactions/single_clicking');
+// var single_clicking = require('./../interactions/single_clicking');
 
-module.exports = function zoom_rules_high_mat(regl, params){
+module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
+  var cgm = this;
   var opts = opts || {};
   var options = extend({
       element: opts.element || regl._gl.canvas,
@@ -38,7 +39,8 @@ module.exports = function zoom_rules_high_mat(regl, params){
 
     } else {
 
-      single_clicking(params);
+      console.log('single-click')
+      cgm.single_clicking(params, external_model);
 
     }
 

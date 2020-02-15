@@ -15,8 +15,20 @@ module.exports = function initialize_containers(){
     .style('position', 'absolute')
     .style('cursor', 'default');
 
+  console.log('base_container')
+  // debugger
+  console.log(base_container)
+
+  // var canvas_container = d3.select(base_container)
+  //                          .select('.canvas-container')[0][0];
+
+  // var canvas_container = d3.select('#' + base_container.id + ' .canvas_container');
+
   var canvas_container = d3.select(base_container)
-                           .select('.canvas-container')[0][0];
+                           .select('.canvas-container')._groups[0][0];
+
+
+
 
   var inst_height = this.args.viz_height;
   var inst_width  = this.args.viz_width;

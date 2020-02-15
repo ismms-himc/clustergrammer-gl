@@ -23,11 +23,14 @@
   <script src="clustergrammer-gl.js"></script>
 
 
+
   <script>
 
     var inst_div = document.createElement('div')
     inst_div.setAttribute('id', 'something')
     document.body.appendChild(inst_div);
+
+    console.log('HERE')
 
     var inst_container = document.getElementById('something');
 
@@ -68,7 +71,32 @@
       console.log('-------------------------------')
     }
 
-    d3.json(filename, function(network){
+    console.log('going to load JSON')
+
+    // d3.json(filename, function(network){
+
+    //   console.log('loaded JSON')
+
+    //   args = {};
+    //   args.network = network;
+    //   args.container=inst_container;
+    //   args.viz_width=inst_width;
+    //   args.viz_height=inst_width;
+    //   // args.widget_model = 'my-widget-model';
+    //   args.widget_callback = my_widget_callback
+
+    //   // // do not pass widget
+    //   // cgm = Clustergrammer2(args);
+
+    //   // pass widget
+    //   cgm = Clustergrammer2(args, {'widget':'external-model'});
+
+    // });
+
+
+    d3.json(filename).then(function(network) {
+
+      console.log(network);
 
       args = {};
       args.network = network;
@@ -83,6 +111,7 @@
 
       // pass widget
       cgm = Clustergrammer2(args, {'widget':'external-model'});
+
 
     });
 

@@ -69,7 +69,7 @@ module.exports = function initialize_params(external_model){
   require('./gen_dendro_par')(regl, params);
   require('./generate_spillover_params')(regl, params);
 
-  var allow_factor = d3.scale.linear()
+  var allow_factor = d3.scaleLinear()
     .domain([10, 1000])
     .range([2, 30]);
 

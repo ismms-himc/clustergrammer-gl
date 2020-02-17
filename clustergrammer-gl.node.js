@@ -37645,7 +37645,7 @@ module.exports = function make_opacity_arr(params){
     return Math.abs(d);
   }));
 
-  var opacity_scale = d3.scale.linear();
+  var opacity_scale = d3.scaleLinear();
 
   var opacity_domain = abs_max_val;
   var opacity_range = 1.0;
@@ -39065,12 +39065,12 @@ module.exports = function gen_label_par(params){
 module.exports = function gen_pix_to_webgl(params){
 
   var pix_to_webgl = {};
-  pix_to_webgl.x = d3.scale.linear();
+  pix_to_webgl.x = d3.scaleLinear();
   pix_to_webgl.x
     .domain([0, params.viz_dim.heat.width])
     .range([-0.5, 0.5]);
 
-  pix_to_webgl.y = d3.scale.linear();
+  pix_to_webgl.y = d3.scaleLinear();
   pix_to_webgl.y
     .domain([0, params.viz_dim.heat.height])
     .range([0.5, -0.5]);
@@ -39293,13 +39293,13 @@ module.exports = function generate_tooltip_params(regl, params){
 module.exports = function generate_webgl_to_pix(params){
 
   var webgl_to_pix = {};
-  webgl_to_pix.x = d3.scale.linear();
+  webgl_to_pix.x = d3.scaleLinear();
   webgl_to_pix.x
     .domain([-0.5, 0.5])
     .range([0, params.viz_dim.heat.width])
     .clamp(true);
 
-  webgl_to_pix.y = d3.scale.linear();
+  webgl_to_pix.y = d3.scaleLinear();
   webgl_to_pix.y
     .domain([0.5, -0.5])
     .range([0, params.viz_dim.heat.height])
@@ -39389,7 +39389,7 @@ module.exports = function initialize_params(external_model){
   __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js")(regl, params);
   __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js")(regl, params);
 
-  var allow_factor = d3.scale.linear()
+  var allow_factor = d3.scaleLinear()
     .domain([10, 1000])
     .range([2, 30]);
 

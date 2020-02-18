@@ -1,17 +1,18 @@
 /*
 
-  clustergrammer-gl version 0.11.7
+  clustergrammer-gl version 0.11.8
 
  */
 
 function clustergrammer_gl(args, external_model=null){
 
-  console.log(d3.version)
+  var d3 = require("d3");
+  console.log('required d3', d3.version)
 
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.7');
+  console.log('clustergrammer-gl version 0.11.8');
   console.log('#################################');
 
   var cgm = {};

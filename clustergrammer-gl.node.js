@@ -37412,18 +37412,19 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.7
+  clustergrammer-gl version 0.11.8
 
  */
 
 function clustergrammer_gl(args, external_model=null){
 
-  console.log(d3.version)
+  var d3 = __webpack_require__(/*! d3 */ "d3");
+  console.log('required d3', d3.version)
 
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.7');
+  console.log('clustergrammer-gl version 0.11.8');
   console.log('#################################');
 
   var cgm = {};
@@ -41070,6 +41071,17 @@ module.exports = function zoom_rules_low_mat(params, zoom_restrict, zoom_data,
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+
+/***/ "d3":
+/*!*********************!*\
+  !*** external "d3" ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("d3");
 
 /***/ })
 

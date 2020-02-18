@@ -33508,6 +33508,7 @@ module.exports = function binom_test(actual_k, n, p){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
 
 module.exports = function build_reorder_cat_titles(regl, cgm){
@@ -33886,8 +33887,9 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
   !*** ./src/cats/cat_breakdown_bars.js ***!
   \****************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
                                              title_height, bars_index, max_bars,
                                              cat_bar_groups){
@@ -34129,8 +34131,9 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
   !*** ./src/cats/check_if_value_cats.js ***!
   \*****************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function check_if_value_cats(cat_states){
 
   var tmp_cat = cat_states[0];
@@ -34740,6 +34743,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
 
   if (cb.length > 0){
@@ -35019,6 +35023,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 // var logo_url = require("file-loader!../graham_cracker_70.png");
 module.exports = function build_control_panel(){
 
@@ -35302,6 +35307,7 @@ module.exports = function build_control_panel(){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/dendrogram/build_single_dendro_slider.js");
 
 module.exports = function build_dendrogram_sliders(){
@@ -35369,6 +35375,7 @@ module.exports = function build_dendrogram_sliders(){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var change_groups = __webpack_require__(/*! ./change_groups */ "./src/dendrogram/change_groups.js");
 // var position_dendro_slider = require('./position_dendro_slider');
 
@@ -36094,6 +36101,7 @@ module.exports = function draw_matrix_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var final_mouseover_frame = __webpack_require__(/*! ./../interactions/final_mouseover_frame */ "./src/interactions/final_mouseover_frame.js");
 var wait_time_final_mouseover = 100;
 
@@ -36139,6 +36147,7 @@ module.exports = function draw_static_components(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function end_animation(regl, params){
   params.ani.running = false;
   params.ani.run_animation = false;
@@ -36244,6 +36253,7 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
@@ -36345,8 +36355,9 @@ module.exports = function start_animation(params){
   !*** ./src/initialize_viz/destroy_viz.js ***!
   \*******************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function destroy_viz(){
 
   // console.log('destroy_viz', d3.select(this.params.base_container).empty())
@@ -36365,8 +36376,9 @@ module.exports = function destroy_viz(){
   !*** ./src/initialize_viz/ini_canvas_mouseover.js ***!
   \****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function ini_canvas_mouseover(){
 
   var params = this.params;
@@ -36388,8 +36400,9 @@ module.exports = function ini_canvas_mouseover(){
   !*** ./src/initialize_viz/initialize_containers.js ***!
   \*****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function initialize_containers(){
 
   var base_container = this.args.container;
@@ -37412,7 +37425,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.8
+  clustergrammer-gl version 0.11.9
 
  */
 
@@ -37424,7 +37437,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.8');
+  console.log('clustergrammer-gl version 0.11.9');
   console.log('#################################');
 
   var cgm = {};
@@ -37641,8 +37654,9 @@ module.exports = function make_matrix_args(regl, params){
   !*** ./src/matrix_cells/make_opacity_arr.js ***!
   \**********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function make_opacity_arr(params){
 
   var mat_data = params.mat_data;
@@ -37925,6 +37939,7 @@ module.exports = function gen_ordered_labels(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var m3 = __webpack_require__(/*! ./../draws/mat3_transform */ "./src/draws/mat3_transform.js");
 var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/interp_fun.js");
 
@@ -38787,6 +38802,7 @@ module.exports = function calc_viz_area(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
 
 module.exports = function calc_vd(regl, params){
@@ -39068,8 +39084,9 @@ module.exports = function gen_label_par(params){
   !*** ./src/params/gen_pix_to_webgl.js ***!
   \****************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function gen_pix_to_webgl(params){
 
   var pix_to_webgl = {};
@@ -39296,8 +39313,9 @@ module.exports = function generate_tooltip_params(regl, params){
   !*** ./src/params/generate_webgl_to_pix.js ***!
   \*********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function generate_webgl_to_pix(params){
 
   var webgl_to_pix = {};
@@ -39326,6 +39344,7 @@ module.exports = function generate_webgl_to_pix(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 
 module.exports = function initialize_params(external_model){
@@ -39459,6 +39478,7 @@ module.exports = function initialize_regl(){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
 
 module.exports = function custom_label_reorder(regl, params, inst_axis){
@@ -39589,6 +39609,7 @@ module.exports = function reorder_matrix_args(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
 
   var new_order = ini_new_order.replace('sum', 'rank')
@@ -39904,8 +39925,9 @@ module.exports = function make_spillover_args(regl, inst_depth,
   !*** ./src/tooltip/display_and_position_tooltip.js ***!
   \*****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function display_and_position_tooltip(params){
 
   // Display Tooltip
@@ -40063,6 +40085,7 @@ module.exports = function display_and_position_tooltip(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 module.exports = function hzome_functions(params){
 
@@ -40168,8 +40191,9 @@ module.exports = function hzome_functions(params){
   !*** ./src/tooltip/initialize_d3_tip.js ***!
   \******************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function initialize_d3_tip(params){
 
   // artifically initialize tooltip
@@ -40206,6 +40230,7 @@ module.exports = function initialize_d3_tip(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakdown_graph */ "./src/cats/make_cat_breakdown_graph.js");
 var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
 var run_hide_tooltip = __webpack_require__(/*! ./run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
@@ -40282,6 +40307,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
 
 module.exports = function make_tooltip_text(params){
@@ -40358,8 +40384,9 @@ module.exports = function make_tooltip_text(params){
   !*** ./src/tooltip/remove_lost_tooltips.js ***!
   \*********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+var d3 = __webpack_require__(/*! d3 */ "d3");
 module.exports = function remove_lost_tooltips(){
   // remove any other tooltips left behind by another heatmap
   d3.selectAll('.cgm-tooltip').each(

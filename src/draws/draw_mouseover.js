@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
 var wait_time_final_mouseover = 100;
 

@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function run_reorder(regl, params, inst_axis, ini_new_order){
 
   var new_order = ini_new_order.replace('sum', 'rank')

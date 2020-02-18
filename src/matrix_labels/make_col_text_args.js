@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var m3 = require('./../draws/mat3_transform');
 var interp_fun = require('./../draws/interp_fun');
 

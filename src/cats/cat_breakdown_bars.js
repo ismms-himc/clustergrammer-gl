@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
                                              title_height, bars_index, max_bars,
                                              cat_bar_groups){

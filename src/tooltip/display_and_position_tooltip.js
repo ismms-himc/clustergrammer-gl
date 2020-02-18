@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function display_and_position_tooltip(params){
 
   // Display Tooltip

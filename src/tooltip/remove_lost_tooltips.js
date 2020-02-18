@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function remove_lost_tooltips(){
   // remove any other tooltips left behind by another heatmap
   d3.selectAll('.cgm-tooltip').each(

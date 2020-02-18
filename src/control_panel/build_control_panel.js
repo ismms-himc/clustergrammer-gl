@@ -1,3 +1,4 @@
+var d3 = require("d3");
 // var logo_url = require("file-loader!../graham_cracker_70.png");
 module.exports = function build_control_panel(){
 

@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = require('./toggle_menu');
 var make_tree_menu = require('./make_tree_menu');

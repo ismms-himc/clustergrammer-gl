@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var hzome_functions = require('./../tooltip/hzome_functions')
 
 module.exports = function initialize_params(external_model){

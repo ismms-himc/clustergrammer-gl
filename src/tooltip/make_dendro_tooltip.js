@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var make_cat_breakdown_graph = require('./../cats/make_cat_breakdown_graph');
 var calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown');
 var run_hide_tooltip = require('./run_hide_tooltip');

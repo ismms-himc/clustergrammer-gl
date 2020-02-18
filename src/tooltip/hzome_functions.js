@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var axios = require('axios');
 module.exports = function hzome_functions(params){
 

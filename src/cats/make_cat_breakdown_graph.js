@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
 
   if (cb.length > 0){

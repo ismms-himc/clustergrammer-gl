@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var make_dendro_tooltip = require('./make_dendro_tooltip');
 
 module.exports = function make_tooltip_text(params){

@@ -1,3 +1,4 @@
+var d3 = require("d3");
 var extend = require('xtend/mutable');
 
 module.exports = function calc_vd(regl, params){

@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function d3_tip_custom(){
 /* eslint-disable */
 // Copyright (c) 2013 Justin Palmer

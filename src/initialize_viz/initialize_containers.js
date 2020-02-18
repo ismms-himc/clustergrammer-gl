@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function initialize_containers(){
 
   var base_container = this.args.container;

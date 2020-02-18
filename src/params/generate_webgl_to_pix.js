@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function generate_webgl_to_pix(params){
 
   var webgl_to_pix = {};

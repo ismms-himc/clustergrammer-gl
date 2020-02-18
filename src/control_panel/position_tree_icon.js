@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function position_tree_icon(cgm){
 
   // var viz = cgm.params.viz;

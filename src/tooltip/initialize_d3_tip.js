@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function initialize_d3_tip(params){
 
   // artifically initialize tooltip

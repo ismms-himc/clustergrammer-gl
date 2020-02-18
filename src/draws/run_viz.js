@@ -1,3 +1,4 @@
+var d3 = require("d3");
 _ = require('underscore');
 var reset_cameras = require('./../cameras/reset_cameras');
 var start_animation = require('./start_animation');

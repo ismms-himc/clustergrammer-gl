@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function check_if_value_cats(cat_states){
 
   var tmp_cat = cat_states[0];

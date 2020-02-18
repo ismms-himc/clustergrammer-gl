@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function end_animation(regl, params){
   params.ani.running = false;
   params.ani.run_animation = false;

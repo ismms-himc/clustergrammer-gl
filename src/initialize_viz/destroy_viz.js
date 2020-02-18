@@ -1,3 +1,4 @@
+var d3 = require("d3");
 module.exports = function destroy_viz(){
 
   // console.log('destroy_viz', d3.select(this.params.base_container).empty())

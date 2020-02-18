@@ -17,7 +17,9 @@ module.exports = function build_control_panel(){
 
   params.tooltip_fun = tooltip;
 
-  var control_container = d3.select(params.root + ' .control-container')[0][0];
+  // var control_container = d3.select(params.root + ' .control-container')[0][0];
+  var control_container = d3.select(params.root + ' .control-container')
+                            ._groups[0][0];
   var i_height = 135;
   var i_width = params.viz_width;
 

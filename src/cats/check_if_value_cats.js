@@ -55,7 +55,7 @@ module.exports = function check_if_value_cats(cat_states){
 
     max_abs_val = Math.abs(max_value);
 
-    cat_scale = d3.scale.linear().domain([0, max_abs_val]).range([0,1]);
+    cat_scale = d3.scaleLinear().domain([0, max_abs_val]).range([0,1]);
   }
 
   var inst_info = {};

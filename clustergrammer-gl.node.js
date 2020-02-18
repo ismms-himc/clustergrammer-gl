@@ -33931,7 +33931,7 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
 
   // bar length is max when all nodes in cluster are of
   // a single cat
-  var bar_scale = d3.scale.linear()
+  var bar_scale = d3.scaleLinear()
                     .domain([0, max_bar_value])
                     .range([0, bar_width]);
 
@@ -34188,7 +34188,7 @@ module.exports = function check_if_value_cats(cat_states){
 
     max_abs_val = Math.abs(max_value);
 
-    cat_scale = d3.scale.linear().domain([0, max_abs_val]).range([0,1]);
+    cat_scale = d3.scaleLinear().domain([0, max_abs_val]).range([0,1]);
   }
 
   var inst_info = {};
@@ -34814,7 +34814,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
 
     // shift the position of the numbers based on the size of the number
     // offset the count column based on how large the counts are
-    var digit_offset = d3.scale.linear()
+    var digit_offset = d3.scaleLinear()
                                .domain([0,100000]).range([20, 30]);
 
     // the total amout to shift down the next category
@@ -37417,6 +37417,8 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
  */
 
 function clustergrammer_gl(args, external_model=null){
+
+  console.log(d3.version)
 
   console.log(external_model)
 

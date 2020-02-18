@@ -41,7 +41,7 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
 
   // bar length is max when all nodes in cluster are of
   // a single cat
-  var bar_scale = d3.scale.linear()
+  var bar_scale = d3.scaleLinear()
                     .domain([0, max_bar_value])
                     .range([0, bar_width]);
 

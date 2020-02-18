@@ -72,7 +72,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
 
     // shift the position of the numbers based on the size of the number
     // offset the count column based on how large the counts are
-    var digit_offset = d3.scale.linear()
+    var digit_offset = d3.scaleLinear()
                                .domain([0,100000]).range([20, 30]);
 
     // the total amout to shift down the next category

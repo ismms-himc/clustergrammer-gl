@@ -6,6 +6,8 @@
 
 function clustergrammer_gl(args, external_model=null){
 
+  console.log(d3.version)
+
   console.log(external_model)
 
   console.log('#################################');

@@ -35374,14 +35374,17 @@ var change_groups = __webpack_require__(/*! ./change_groups */ "./src/dendrogram
 
 module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
+  function custom_round(x, n) {
+    return n == null ? Math.round(x) : Math.round(x * (n = Math.pow(10, n))) / n;
+  }
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
   var rect_width = 20;
 
-  var drag = d3.behavior.drag()
+  var drag = d3.drag()
       .on('drag', dragging)
-      .on('dragend', function(){
+      .on('end', function(){
         params.is_slider_drag = false;
       });
 
@@ -35483,7 +35486,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
       this.parentNode.appendChild(this);
     }
 
-    slider_pos = d3.round(slider_pos, -1);
+    slider_pos = custom_round(slider_pos, -1);
 
     var slider_value = 10 - slider_pos/10;
 
@@ -35497,7 +35500,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     var clicked_line_position = d3.mouse(this);
 
-    var rel_pos = d3.round(clicked_line_position[1], -1);
+    var rel_pos = custom_round(clicked_line_position[1], -1);
 
     d3.select(params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
@@ -37929,13 +37932,13 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 
   var col_width = params.viz_dim.heat_size.x/num_col;
 
-  params.text_scale.col = d3.scale.linear()
+  params.text_scale.col = d3.scaleLinear()
       .domain([1, 10])
       .range([1, 10/params.allow_zoom.col]);
 
   // 17.5, lowering makes larger text
   var final_increase_font_size = num_col/5.0;
-  params.text_scale.col = d3.scale.linear()
+  params.text_scale.col = d3.scaleLinear()
       .domain([1, params.max_zoom])
       .range( [1, final_increase_font_size]);
 

@@ -37425,7 +37425,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.9
+  clustergrammer-gl version 0.11.10
 
  */
 
@@ -37437,7 +37437,7 @@ function clustergrammer_gl(args, external_model=null){
   console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.9');
+  console.log('clustergrammer-gl version 0.11.10');
   console.log('#################################');
 
   var cgm = {};
@@ -37814,6 +37814,8 @@ var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
+  console.log('gather_text_triangles')
+
   var inst_dim;
   if (inst_axis === 'col'){
     inst_dim = 'x';
@@ -37833,7 +37835,6 @@ module.exports = function gather_text_triangles(params, inst_axis){
     if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
 
       var inst_name = inst_label.name;
-
 
       if (inst_name.indexOf(': ') >= 0){
         inst_name = inst_label.name.split(': ')[1];
@@ -38762,6 +38763,8 @@ module.exports = function calc_row_and_col_canvas_positions(params){
 
 module.exports = function calc_viz_area(params){
 
+  // console.log('calc_viz_area!!!!!!!!!!!!')
+
   var zoom_data = params.zoom_data;
   var pix_to_webgl = params.pix_to_webgl;
 
@@ -38770,8 +38773,16 @@ module.exports = function calc_viz_area(params){
   var viz_area = {};
   var dim = {}
   var inst_dim;
+  var label_name;
+  var found_label;
   dim.x = 'width';
   dim.y = 'height';
+
+  var label_dict = {};
+  label_dict.x = 'col'
+  label_dict.y = 'row'
+
+  params.labels.visible_labels = {};
 
   _.each(['x', 'y'], function(inst_axis){
     inst_dim = dim[inst_axis]
@@ -38788,7 +38799,31 @@ module.exports = function calc_viz_area(params){
       viz_area[inst_axis + '_max'] = pix_to_webgl[inst_axis](total_pan[inst_axis + '_min']) + buffer_width;
     }
 
+    label_name = label_dict[inst_axis]
+
+    params.labels.visible_labels[label_dict[inst_axis]] = [];
+
+    var min_viz = viz_area[inst_axis + '_min'];
+    var max_viz = viz_area[inst_axis + '_max'];
+
+    _.each(params.network[label_name + '_nodes'], function(inst_label){
+
+      if (inst_label.offsets.inst > min_viz && inst_label.offsets.inst < max_viz){
+
+        found_label = inst_label.name;
+
+        if (found_label.indexOf(': ') >=0){
+          found_label = found_label.split(': ')[1];
+        }
+
+        params.labels.visible_labels[label_dict[inst_axis]].push(found_label);
+
+      }
+
+    });
+
   });
+
 
   params.viz_area = viz_area;
 };

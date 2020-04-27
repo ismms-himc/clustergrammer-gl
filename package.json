@@ -1,8 +1,9 @@
 {
   "name": "clustergrammer-gl",
-  "version": "0.11.9",
+  "version": "0.11.10",
   "description": "Rebuilding Clustergrammer with WebGL and regl",
   "main": "clustergrammer-gl.node.js",
+  "module ": "clustergrammer-gl.esm.js",
   "scripts": {
     "start": "budo --open --live --force-default-index --host localhost index.js -- -g es2040 -t glslify",
     "build": "browserify index.js -g es2040 -t glslify | uglifyjs -cm| indexhtmlify | metadataify | github-cornerify > index.html",

@@ -14,7 +14,7 @@ module.exports = [
       path: __dirname,
       filename: 'clustergrammer-gl.js',
       libraryTarget: 'var',
-      library: 'Clustergrammer2'
+      library: 'Clustergrammer-GL'
     },
     externals: {
       // 'jQuery': 'jquery',
@@ -67,13 +67,13 @@ module.exports = [
         path: __dirname,
         filename: 'clustergrammer-gl.node.js',
         libraryTarget: 'commonjs2',
-        library: 'Clustergrammer2'
+        library: 'Clustergrammer-GL'
       },
       externals: {
         // 'jQuery': 'jQuery',
         // 'lodash': '_',
         // 'underscore': '_',
-        'd3': 'd3'
+        // 'd3': 'd3'
       },
       module: {
         rules: [
@@ -108,13 +108,13 @@ module.exports = [
         path: __dirname,
         filename: 'clustergrammer-gl.min.js',
         libraryTarget: 'var',
-        library: 'Clustergrammer2'
+        library: 'Clustergrammer-GL'
       },
       externals: {
         'jQuery': 'jQuery',
         // 'lodash': '_',
         // 'underscore': '_',
-        'd3': 'd3'
+        // 'd3': 'd3'
       },
       optimization: {
         minimize: true
@@ -152,13 +152,13 @@ module.exports = [
         path: __dirname,
         filename: 'clustergrammer-gl.node.min.js',
         libraryTarget: 'commonjs2',
-        library: 'Clustergrammer2'
+        library: 'Clustergrammer-GL'
       },
       externals: {
         'jQuery': 'jQuery',
         // 'lodash': '_',
         // 'underscore': '_',
-        'd3': 'd3'
+        // 'd3': 'd3'
       },
       optimization: {
         minimize: true

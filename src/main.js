@@ -60,6 +60,10 @@ function clustergrammer_gl(args, external_model=null){
 
     }
 
+    console.log('something!!!!!!!!!!!!!!!!')
+
+    cgm.recluster = require('./recluster/recluster');
+
     return cgm;
 
   }

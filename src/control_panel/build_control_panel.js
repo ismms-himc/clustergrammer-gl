@@ -103,7 +103,8 @@ module.exports = function build_control_panel(){
     .attr('y', 55)
     .attr('width', 50)
     .attr('height', 50)
-    .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
+    // .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
+    .attr('xlink:href', 'https://raw.githubusercontent.com/ismms-himc/clustergrammer-gl/master/img/graham_cracker_144.png')
     .on('click', function(d) {
         window.open(
           'https://clustergrammer.readthedocs.io/clustergrammer2.html',

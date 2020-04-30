@@ -15,7 +15,7 @@ import pandas as pd
 
 # generate random matrix
 num_rows = 100
-num_cols = 100
+num_cols = 1000
 np.random.seed(seed=100)
 mat = np.random.rand(num_rows, num_cols)
 

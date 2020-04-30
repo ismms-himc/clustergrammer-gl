@@ -14,7 +14,7 @@ module.exports = [
       path: __dirname,
       filename: 'clustergrammer-gl.js',
       libraryTarget: 'var',
-      library: 'Clustergrammer-GL'
+      library: 'CGM'
     },
     externals: {
       // 'jQuery': 'jquery',
@@ -67,7 +67,7 @@ module.exports = [
         path: __dirname,
         filename: 'clustergrammer-gl.node.js',
         libraryTarget: 'commonjs2',
-        library: 'Clustergrammer-GL'
+        library: 'CGM'
       },
       externals: {
         // 'jQuery': 'jQuery',
@@ -108,7 +108,7 @@ module.exports = [
         path: __dirname,
         filename: 'clustergrammer-gl.min.js',
         libraryTarget: 'var',
-        library: 'Clustergrammer-GL'
+        library: 'CGM'
       },
       externals: {
         'jQuery': 'jQuery',
@@ -152,7 +152,7 @@ module.exports = [
         path: __dirname,
         filename: 'clustergrammer-gl.node.min.js',
         libraryTarget: 'commonjs2',
-        library: 'Clustergrammer-GL'
+        library: 'CGM'
       },
       externals: {
         'jQuery': 'jQuery',

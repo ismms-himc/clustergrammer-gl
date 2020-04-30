@@ -1,4 +1,4 @@
-var Clustergrammer2 =
+var CGM =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};

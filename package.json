@@ -1,6 +1,6 @@
 {
   "name": "clustergrammer-gl",
-  "version": "0.11.10",
+  "version": "0.11.11",
   "description": "Rebuilding Clustergrammer with WebGL and regl",
   "main": "clustergrammer-gl.node.js",
   "module ": "clustergrammer-gl.esm.js",

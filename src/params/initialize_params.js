@@ -92,7 +92,7 @@ module.exports = function initialize_params(external_model){
 
   params.is_widget = false;
   if (external_model !== null){
-    console.log('found widget')
+    // console.log('found widget')
     params.is_widget = true;
   } else {
     // params.widget_model = null;

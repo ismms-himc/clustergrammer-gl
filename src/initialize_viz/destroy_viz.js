@@ -8,4 +8,7 @@ module.exports = function destroy_viz(){
 
   this.regl.destroy()
 
+  // remove tooltip
+  d3.select(cgm.params.tooltip_id).remove()
+
 }

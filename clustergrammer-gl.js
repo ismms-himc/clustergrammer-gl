@@ -70112,6 +70112,9 @@ module.exports = function destroy_viz(){
 
   this.regl.destroy()
 
+  // remove tooltip
+  d3.select(cgm.params.tooltip_id).remove()
+
 }
 
 /***/ }),
@@ -70165,9 +70168,9 @@ module.exports = function initialize_containers(){
     .style('position', 'absolute')
     .style('cursor', 'default');
 
-  console.log('base_container')
+  // console.log('base_container')
   // debugger
-  console.log(base_container)
+  // console.log(base_container)
 
   // var canvas_container = d3.select(base_container)
   //                          .select('.canvas-container')[0][0];
@@ -71170,19 +71173,16 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.10
+  clustergrammer-gl version 0.11.11
 
  */
 
 function clustergrammer_gl(args, external_model=null){
 
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-  console.log('required d3', d3.version)
-
-  console.log(external_model)
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.10');
+  console.log('clustergrammer-gl version 0.11.11');
   console.log('#################################');
 
   var cgm = {};
@@ -71214,8 +71214,6 @@ function clustergrammer_gl(args, external_model=null){
     }
 
 
-    // console.log('widget_model', cgm.args.widget_model)
-
     // initialize network
     // cgm.decompress_network(args.network);
     cgm.network = args.network;
@@ -71229,8 +71227,6 @@ function clustergrammer_gl(args, external_model=null){
       external_model.cgm = cgm;
 
     }
-
-    console.log('something!!!!!!!!!!!!!!!!')
 
     cgm.recluster = __webpack_require__(/*! ./recluster/recluster */ "./src/recluster/recluster.js");
 
@@ -71563,7 +71559,7 @@ var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
-  console.log('gather_text_triangles')
+  // console.log('gather_text_triangles')
 
   var inst_dim;
   if (inst_axis === 'col'){
@@ -73222,7 +73218,7 @@ module.exports = function initialize_params(external_model){
 
   params.is_widget = false;
   if (external_model !== null){
-    console.log('found widget')
+    // console.log('found widget')
     params.is_widget = true;
   } else {
     // params.widget_model = null;

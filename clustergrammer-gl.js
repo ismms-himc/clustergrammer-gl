@@ -70113,7 +70113,7 @@ module.exports = function destroy_viz(){
   this.regl.destroy()
 
   // remove tooltip
-  d3.select(cgm.params.tooltip_id).remove()
+  d3.select(this.params.tooltip_id).remove()
 
 }
 
@@ -71173,7 +71173,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.11.11
+  clustergrammer-gl version 0.11.12
 
  */
 
@@ -71182,7 +71182,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.11.11');
+  console.log('clustergrammer-gl version 0.11.12');
   console.log('#################################');
 
   var cgm = {};

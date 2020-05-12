@@ -101,7 +101,6 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     params.is_slider_drag = true;
 
-    // d[0] = d3.event.x;
     var slider_pos = d3.event.y;
 
     if (slider_pos < 0){

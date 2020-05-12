@@ -1,6 +1,5 @@
 var calc_dendro_triangles = require('./../dendrogram/calc_dendro_triangles');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
-// var make_dendro_triangles = require('./make_dendro_triangles');
 
 /* Changes the groupings (x- and y-axis color bars).
  */
@@ -14,8 +13,6 @@ module.exports = function (regl, params, inst_axis, slider_value) {
 
   // var is_change_group = true;
   // make_dendro_triangles(cgm, inst_axis, is_change_group);
-
-  // console.log(slider_value);
 
   // this can probably be improved
   params.dendro.update_dendro = true;

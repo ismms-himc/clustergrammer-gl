@@ -31,8 +31,11 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names){
   var cutoff_vals = [];
   var cutoff_indexes = [];
   var threshold_status = [];
-  for (var i = 0; i <= 10; i++) {
-    cutoff_vals.push(max_distance_in_dm * i/10);
+
+  let num_slices = 10
+
+  for (var i = 0; i <= num_slices; i++) {
+    cutoff_vals.push(max_distance_in_dm * i/num_slices);
     // cutoff_vals.push(manual_cutoff);
     threshold_status.push('above');
     group.push(0);

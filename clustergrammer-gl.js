@@ -69223,7 +69223,6 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     params.is_slider_drag = true;
 
-    // d[0] = d3.event.x;
     var slider_pos = d3.event.y;
 
     if (slider_pos < 0){
@@ -69366,7 +69365,6 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
 var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
-// var make_dendro_triangles = require('./make_dendro_triangles');
 
 /* Changes the groupings (x- and y-axis color bars).
  */
@@ -69380,8 +69378,6 @@ module.exports = function (regl, params, inst_axis, slider_value) {
 
   // var is_change_group = true;
   // make_dendro_triangles(cgm, inst_axis, is_change_group);
-
-  // console.log(slider_value);
 
   // this can probably be improved
   params.dendro.update_dendro = true;
@@ -73398,8 +73394,11 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names){
   var cutoff_vals = [];
   var cutoff_indexes = [];
   var threshold_status = [];
-  for (var i = 0; i <= 10; i++) {
-    cutoff_vals.push(max_distance_in_dm * i/10);
+
+  let num_slices = 10
+
+  for (var i = 0; i <= num_slices; i++) {
+    cutoff_vals.push(max_distance_in_dm * i/num_slices);
     // cutoff_vals.push(manual_cutoff);
     threshold_status.push('above');
     group.push(0);
@@ -73519,6 +73518,8 @@ var get_order_and_groups_clusterfck_tree = __webpack_require__(/*! ./get_order_a
 // var update_view = require('../update/update_view');
 // var underscore = require('underscore');
 
+var change_groups = __webpack_require__(/*! ./../dendrogram/change_groups */ "./src/dendrogram/change_groups.js");
+
 math.import(__webpack_require__(/*! mathjs/lib/function/matrix/transpose */ "./node_modules/mathjs/lib/function/matrix/transpose.js"));
 math.import(__webpack_require__(/*! mathjs/lib/type/matrix */ "./node_modules/mathjs/lib/type/matrix/index.js"));
 
@@ -73590,11 +73591,14 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
   });
 
 
-  cgm.new_view = new_view
+  // cgm.new_view = new_view
 
   // run reordering
   __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js")(cgm.regl, cgm.params, 'row', 'clust');
   __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js")(cgm.regl, cgm.params, 'col', 'clust');
+
+  change_groups(cgm.regl, cgm.params, 'row', cgm.params.dendro.group_level.row);
+  change_groups(cgm.regl, cgm.params, 'col', cgm.params.dendro.group_level.col);
 
   // // add new view to views
   // cgm.config.network.views.push(new_view);

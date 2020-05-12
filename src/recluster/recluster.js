@@ -7,6 +7,8 @@ var get_order_and_groups_clusterfck_tree = require('./get_order_and_groups_clust
 // var update_view = require('../update/update_view');
 // var underscore = require('underscore');
 
+var change_groups = require('./../dendrogram/change_groups');
+
 math.import(require('mathjs/lib/function/matrix/transpose'));
 math.import(require('mathjs/lib/type/matrix'));
 
@@ -78,11 +80,14 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
   });
 
 
-  cgm.new_view = new_view
+  // cgm.new_view = new_view
 
   // run reordering
   require('./../reorders/run_reorder')(cgm.regl, cgm.params, 'row', 'clust');
   require('./../reorders/run_reorder')(cgm.regl, cgm.params, 'col', 'clust');
+
+  change_groups(cgm.regl, cgm.params, 'row', cgm.params.dendro.group_level.row);
+  change_groups(cgm.regl, cgm.params, 'col', cgm.params.dendro.group_level.col);
 
   // // add new view to views
   // cgm.config.network.views.push(new_view);

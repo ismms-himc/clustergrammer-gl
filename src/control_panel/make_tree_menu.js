@@ -7,6 +7,8 @@ var toggle_menu = require('./toggle_menu');
 
 module.exports = function make_tree_menu(cgm){
 
+  console.log('MAKE TREE MENU')
+
   var params = cgm.params;
   var menu_width = cgm.params.viz.tree_menu_width;
   var menu_height = cgm.params.viz.tree_menu_height;
@@ -14,7 +16,7 @@ module.exports = function make_tree_menu(cgm){
 
   // make tree menu (state is in cgm, remade each time)
   /////////////////////////////////////////////////////
-  var tree_menu = d3.select(params.root+' .viz_svg')
+  var tree_menu = d3.select(params.root + ' .control-container svg')
     .append('g')
     .attr('cursor', 'default')
     .classed('tree_menu', true)
@@ -57,8 +59,8 @@ module.exports = function make_tree_menu(cgm){
   button_info.cgm = cgm;
   button_info.selection = tree_menu;
   button_info.menu_width = menu_width;
-  button_info.distance_metric = cgm.params.matrix.distance_metric;
-  button_info.linkage_type = cgm.params.matrix.linkage_type;
+  button_info.distance_metric = 'cosine' // cgm.params.matrix.distance_metric;
+  button_info.linkage_type = 'average' //cgm.params.matrix.linkage_type;
   button_info.default_x_offset = x_offset;
 
   // distance

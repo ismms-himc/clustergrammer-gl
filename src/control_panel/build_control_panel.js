@@ -1,5 +1,6 @@
 var d3 = require("d3");
 // var logo_url = require("file-loader!../graham_cracker_70.png");
+
 module.exports = function build_control_panel(){
 
   var cgm = this;
@@ -270,6 +271,6 @@ module.exports = function build_control_panel(){
   })
 
   require('../cats/build_reorder_cat_titles')(regl, cgm);
-  // require('./build_tree_icon')(cgm);
+  require('./build_tree_icon')(cgm);
 
 };

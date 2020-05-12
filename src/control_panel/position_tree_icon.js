@@ -9,7 +9,7 @@ module.exports = function position_tree_icon(cgm){
   // var max_room = 100; // viz.svg_dim.width - 3 * viz.uni_margin;
 
   // position close to row dendrogram trapezoids
-  tmp_left = 800; // viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row;
+  tmp_left = 850; // viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row;
 
   // if (tmp_left > max_room){
   //   tmp_left = max_room;

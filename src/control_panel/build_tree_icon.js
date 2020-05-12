@@ -29,7 +29,7 @@ module.exports = function build_tree_icon(cgm){
     .classed('dendro_tree_container', true)
     .on('click', function(){
 
-      if (d3.select(params.root+' .tree_menu').empty()){
+      if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
 
         toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
 
@@ -42,7 +42,7 @@ module.exports = function build_tree_icon(cgm){
       }
     });
 
-  d3.select(params.root + ' .dendro_tree_container')
+  d3.select(params.root + '  .control-container svg .dendro_tree_container')
     .attr('transform', 'scale(0.9)');
 
   position_tree_icon(cgm);

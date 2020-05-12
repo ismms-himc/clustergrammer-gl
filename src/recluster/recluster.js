@@ -5,35 +5,34 @@ var math = core.create();
 var dist_fun = require('./distance_functions');
 var get_order_and_groups_clusterfck_tree = require('./get_order_and_groups_clusterfck_tree');
 // var update_view = require('../update/update_view');
-var underscore = require('underscore');
+// var underscore = require('underscore');
 
 math.import(require('mathjs/lib/function/matrix/transpose'));
 math.import(require('mathjs/lib/type/matrix'));
 
-module.exports = function recluster(cgm, distance_metric, linkage_type){
+module.exports = function recluster(distance_metric='cosine', linkage_type='average'){
+
+  var cgm = this;
+
+  console.log('reclustering\n----------------------------------')
 
   var new_view = {};
   new_view.N_row_sum = 'null';
   new_view.N_row_var = 'null';
   new_view.distance_metric = distance_metric;
-  new_view.linkage_type = distance_metric;
+  new_view.linkage_type = linkage_type;
 
   var view_name = distance_metric + '_' + linkage_type;
 
   new_view.name = view_name;
 
-  // // constructing new nodes from old view (does not work when filtering)
-  // new_view.nodes = $.extend(true, [], cgm.params.network_data.views[0].nodes);
+  // constructing new nodes from old view (does not work when filtering)
 
   new_view.nodes = {};
-  // new_view.nodes.row_nodes = $.extend(true, [], cgm.params.network.row_nodes);
-  // new_view.nodes.row_nodes = $.extend(true, [], cgm.params.network.row_nodes);
   new_view.nodes.row_nodes = _.clone(cgm.params.network.row_nodes);
   new_view.nodes.col_nodes = _.clone(cgm.params.network.col_nodes);
 
-  // _.cloneDeep(
-
-  underscore.each(['row', 'col'], function(inst_rc){
+  _.each(['row', 'col'], function(inst_rc){
 
     var mat;
     var transpose = math.transpose;
@@ -41,28 +40,24 @@ module.exports = function recluster(cgm, distance_metric, linkage_type){
     var name_nodes;
 
     if (inst_rc === 'row'){
-      // mat = $.extend(true, [], cgm.params.network_data.mat);
       mat = _.clone(cgm.params.network.mat);
 
-      // names = cgm.params.network_data.row_nodes_names;
       names = cgm.params.network.row_nodes.map(x => x.name.split(': ')[1]);
       name_nodes = 'row_nodes';
 
     } else if (inst_rc === 'col'){
-      // mat = $.extend(true, [], cgm.params.network_data.mat);
       mat = _.clone(cgm.params.network.mat);
       mat = transpose(mat);
 
-      //names = cgm.params.network_data.col_nodes_names;
       names = cgm.params.network.col_nodes.map(x => x.name.split(': ')[1])
       name_nodes = 'col_nodes';
     }
-
 
     // average, single, complete
     var clusters = clusterfck.hcluster(mat, dist_fun[distance_metric], linkage_type);
 
     var order_info = get_order_and_groups_clusterfck_tree(clusters, names);
+
     var inst_node;
     var inst_order;
 
@@ -74,6 +69,8 @@ module.exports = function recluster(cgm, distance_metric, linkage_type){
       inst_node = rc_nodes[index];
       inst_order = order_info.info[index];
 
+      // console.log(inst_node.name, inst_node.clust)
+
       inst_node.clust = inst_order.order;
       inst_node.group = inst_order.group;
     }
@@ -82,6 +79,10 @@ module.exports = function recluster(cgm, distance_metric, linkage_type){
 
 
   cgm.new_view = new_view
+
+  // run reordering
+  require('./../reorders/run_reorder')(cgm.regl, cgm.params, 'row', 'clust');
+  require('./../reorders/run_reorder')(cgm.regl, cgm.params, 'col', 'clust');
 
   // // add new view to views
   // cgm.config.network.views.push(new_view);

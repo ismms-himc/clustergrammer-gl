@@ -69504,7 +69504,7 @@ module.exports = function make_tree_menu(cgm){
 
     console.log(button_info)
 
-    cgm.recluster(cgm, button_info.distance_metric, button_info.linkage_type);
+    cgm.recluster(button_info.distance_metric, button_info.linkage_type);
 
   }
 

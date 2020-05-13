@@ -137,10 +137,37 @@ module.exports = function build_control_panel(){
         .attr('opacity', 0.5)
       d3.select(this)
         .attr('opacity', 1.0)
+
+      if (params.viz.current_panel == 'recluster') {
+
+        console.log('switch to reorder')
+
+        params.viz.current_panel = 'reorder'
+
+        // modify buttons
+        d3.select(params.root + ' .panel_button_title')
+          .text('reorder'.toUpperCase())
+        d3.select(params.root + ' .top_button_title')
+          .text('COL')
+        d3.select(params.root + ' .bottom_button_title')
+          .text('ROW')
+        d3.selectAll(params.root + ' .reorder_buttons')
+          .style('display', 'block');
+        d3.select(params.root + ' .run_cluster_container')
+          .style('display', 'none')
+
+        d3.selectAll(params.root + ' .dist_options')
+          .style('display', 'none')
+        d3.selectAll(params.root + ' .link_options_container')
+          .style('display', 'none')
+
+        // toggle_menu(cgm, 'tree_menu', 'close');
+      }
+
     })
     .append('text')
     .text('reorder'.toUpperCase())
-    .style('-webkit-user-select', 'none')
+    // .style('-webkit-user-select', 'none')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
     .attr('font-size', button_dim.fs)

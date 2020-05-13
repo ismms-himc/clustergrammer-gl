@@ -68906,10 +68906,37 @@ module.exports = function build_control_panel(){
         .attr('opacity', 0.5)
       d3.select(this)
         .attr('opacity', 1.0)
+
+      if (params.viz.current_panel == 'recluster') {
+
+        console.log('switch to reorder')
+
+        params.viz.current_panel = 'reorder'
+
+        // modify buttons
+        d3.select(params.root + ' .panel_button_title')
+          .text('reorder'.toUpperCase())
+        d3.select(params.root + ' .top_button_title')
+          .text('COL')
+        d3.select(params.root + ' .bottom_button_title')
+          .text('ROW')
+        d3.selectAll(params.root + ' .reorder_buttons')
+          .style('display', 'block');
+        d3.select(params.root + ' .run_cluster_container')
+          .style('display', 'none')
+
+        d3.selectAll(params.root + ' .dist_options')
+          .style('display', 'none')
+        d3.selectAll(params.root + ' .link_options_container')
+          .style('display', 'none')
+
+        // toggle_menu(cgm, 'tree_menu', 'close');
+      }
+
     })
     .append('text')
     .text('reorder'.toUpperCase())
-    .style('-webkit-user-select', 'none')
+    // .style('-webkit-user-select', 'none')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
     .attr('font-size', button_dim.fs)
@@ -69103,6 +69130,36 @@ module.exports = function build_tree_icon(cgm){
         .attr('opacity', 0.5)
       d3.select(this)
         .attr('opacity', 1.0)
+
+      if (params.viz.current_panel === 'reorder'){
+
+        console.log('switch to recluster')
+
+        // modify buttons
+        d3.select(params.root + ' .panel_button_title')
+          .text('recluster'.toUpperCase())
+        d3.select(params.root + ' .top_button_title')
+          .text('DIST')
+        d3.select(params.root + ' .bottom_button_title')
+          .text('LINK')
+        d3.selectAll(params.root + ' .reorder_buttons')
+          .style('display', 'none');
+        d3.select(params.root + ' .run_cluster_container')
+          .style('display', 'block')
+
+        d3.selectAll(params.root + ' .dist_options')
+          .style('display', 'block')
+        d3.selectAll(params.root + ' .link_options_container')
+          .style('display', 'block')
+
+        params.viz.current_panel = 'recluster'
+
+        console.log(params.viz.current_panel)
+
+        // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
+
+      }
+
     })
     .attr('transform', function(){
         var x_offset = 220 + cracker_room;
@@ -69112,7 +69169,7 @@ module.exports = function build_tree_icon(cgm){
     .attr('opacity', 0.5)
     .append('text')
     .text('recluster'.toUpperCase())
-    .style('-webkit-user-select', 'none')
+    // .style('-webkit-user-select', 'none')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
     .attr('font-size', button_dim.fs)
@@ -69142,7 +69199,6 @@ module.exports = function build_tree_icon(cgm){
     .append('g')
     .classed('dendro_tree_container', true)
     .on('click', function(){
-
 
       // show recluster menu
       // if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){

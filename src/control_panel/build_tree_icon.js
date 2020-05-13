@@ -9,6 +9,53 @@ module.exports = function build_tree_icon(cgm){
   var params = cgm.params;
   var default_opacity = 0.35;
   var high_opacity = 0.6;
+  var y_offset_buttons = 47;
+  var cracker_room = 65;
+
+  var button_dim = {};
+  button_dim.height = 32;
+  button_dim.width = 63;
+  button_dim.buffer = 12;
+  button_dim.x_trans = button_dim.width + button_dim.buffer;
+  button_dim.fs = 11;
+
+  var control_panel_color = 'white';
+  var text_color = '#47515b';
+  var button_color = '#eee';
+  var active_run_color = '#00FF75';
+  let active_button_color = '#008000'
+
+  control_svg = d3.select(params.root + ' .control-container svg')
+
+  control_svg
+    .append('g')
+    .classed('panel_button_titles', true)
+    .classed('recluster_button_title', true)
+    .on('click', function(){
+      console.log('choose recluster panel')
+      d3.selectAll(params.root + ' .panel_button_titles')
+        .attr('opacity', 0.5)
+      d3.select(this)
+        .attr('opacity', 1.0)
+    })
+    .attr('transform', function(){
+        var x_offset = 220 + cracker_room;
+        var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+        return 'translate( '+ x_offset +', '+ y_trans +')';
+     })
+    .attr('opacity', 0.5)
+    .append('text')
+    .text('recluster'.toUpperCase())
+    .style('-webkit-user-select', 'none')
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+
 
   var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
       .append('g')
@@ -206,19 +253,9 @@ module.exports = function build_tree_icon(cgm){
     })
     .attr('opacity', 0.0);
 
-  var control_panel_color = 'white';
-  var text_color = '#47515b';
-  var button_color = '#eee';
-  // var active_run_color = '#008000' //
-  var active_run_color = '#00FF75';
-  let active_button_color = '#008000'
 
-  var button_dim = {};
-  button_dim.height = 32;
-  button_dim.width = 63;
-  button_dim.buffer = 12;
-  button_dim.x_trans = button_dim.width + button_dim.buffer;
-  button_dim.fs = 11;
+
+
 
   ///////////////////////////
   // Run Recluster Button

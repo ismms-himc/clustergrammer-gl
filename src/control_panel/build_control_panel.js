@@ -128,8 +128,17 @@ module.exports = function build_control_panel(){
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
   control_svg
+    .append('g')
+    .classed('panel_button_titles', true)
+    .classed('reorder_button_title', true)
+    .on('click', function(){
+      console.log('choose reordering panel')
+      d3.selectAll(params.root + ' .panel_button_titles')
+        .attr('opacity', 0.5)
+      d3.select(this)
+        .attr('opacity', 1.0)
+    })
     .append('text')
-    .classed('panel_button_title', true)
     .text('reorder'.toUpperCase())
     .style('-webkit-user-select', 'none')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
@@ -141,13 +150,10 @@ module.exports = function build_control_panel(){
     .attr('letter-spacing', '2px')
     .attr('cursor', 'default')
     .attr('transform', function(){
-        var x_offset = 175 + cracker_room;
+        var x_offset = 130 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
-    .on('click', function(){
-      console.log('choose reordering panel')
-    })
 
 
   var order_options = ['clust', 'sum', 'var'];

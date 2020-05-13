@@ -1,7 +1,7 @@
 var d3 = require("d3");
 var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = require('./toggle_menu');
-var make_tree_menu = require('./make_tree_menu');
+// var make_tree_menu = require('./make_tree_menu');
 
 module.exports = function build_tree_icon(cgm){
 
@@ -32,7 +32,7 @@ module.exports = function build_tree_icon(cgm){
     .classed('panel_button_titles', true)
     .classed('recluster_button_title', true)
     .on('click', function(){
-      console.log('choose recluster panel')
+      // console.log('choose recluster panel')
       d3.selectAll(params.root + ' .panel_button_titles')
         .attr('opacity', 0.5)
       d3.select(this)
@@ -40,7 +40,7 @@ module.exports = function build_tree_icon(cgm){
 
       if (params.viz.current_panel === 'reorder'){
 
-        console.log('switch to recluster')
+        // console.log('switch to recluster')
 
         // modify buttons
         d3.select(params.root + ' .panel_button_title')
@@ -61,7 +61,7 @@ module.exports = function build_tree_icon(cgm){
 
         params.viz.current_panel = 'recluster'
 
-        console.log(params.viz.current_panel)
+        // console.log(params.viz.current_panel)
 
         // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
 
@@ -86,200 +86,200 @@ module.exports = function build_tree_icon(cgm){
     .attr('cursor', 'default')
 
 
-  var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
-      .append('g')
-      .classed( 'tree_icon', true)
-      .on('mouseover', function(){
-        d3.selectAll(params.root + ' .tree_leaf_circle')
-          .style('opacity', high_opacity);
-      })
-      .on('mouseout', function(){
-        if (params.viz.current_panel !== 'recluster'){
-          d3.selectAll(params.root + ' .tree_leaf_circle')
-          .style('opacity', default_opacity);
-        }
-      })
+  // var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
+  //     .append('g')
+  //     .classed( 'tree_icon', true)
+  //     .on('mouseover', function(){
+  //       d3.selectAll(params.root + ' .tree_leaf_circle')
+  //         .style('opacity', high_opacity);
+  //     })
+  //     .on('mouseout', function(){
+  //       if (params.viz.current_panel !== 'recluster'){
+  //         d3.selectAll(params.root + ' .tree_leaf_circle')
+  //         .style('opacity', default_opacity);
+  //       }
+  //     })
       // .call(tree_icon_tip);
 
-  var tree_icon_group =  tree_icon_outer_group
-    .append('g')
-    .classed('dendro_tree_container', true)
-    .on('click', function(){
+    // var tree_icon_group =  tree_icon_outer_group
+    //   .append('g')
+    //   .classed('dendro_tree_container', true)
+    //   .on('click', function(){
 
-      // show recluster menu
-      // if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
+    //     // show recluster menu
+    //     // if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
 
-      if (params.viz.current_panel === 'reorder'){
+    //     if (params.viz.current_panel === 'reorder'){
 
-        console.log('switch to recluster')
+    //       console.log('switch to recluster')
 
-        // modify buttons
-        d3.select(params.root + ' .panel_button_title')
-          .text('recluster'.toUpperCase())
-        d3.select(params.root + ' .top_button_title')
-          .text('DIST')
-        d3.select(params.root + ' .bottom_button_title')
-          .text('LINK')
-        d3.selectAll(params.root + ' .reorder_buttons')
-          .style('display', 'none');
-        d3.select(params.root + ' .run_cluster_container')
-          .style('display', 'block')
+    //       // modify buttons
+    //       d3.select(params.root + ' .panel_button_title')
+    //         .text('recluster'.toUpperCase())
+    //       d3.select(params.root + ' .top_button_title')
+    //         .text('DIST')
+    //       d3.select(params.root + ' .bottom_button_title')
+    //         .text('LINK')
+    //       d3.selectAll(params.root + ' .reorder_buttons')
+    //         .style('display', 'none');
+    //       d3.select(params.root + ' .run_cluster_container')
+    //         .style('display', 'block')
 
-        d3.selectAll(params.root + ' .dist_options')
-          .style('display', 'block')
-        d3.selectAll(params.root + ' .link_options_container')
-          .style('display', 'block')
+    //       d3.selectAll(params.root + ' .dist_options')
+    //         .style('display', 'block')
+    //       d3.selectAll(params.root + ' .link_options_container')
+    //         .style('display', 'block')
 
-        params.viz.current_panel = 'recluster'
+    //       params.viz.current_panel = 'recluster'
 
-        console.log(params.viz.current_panel)
+    //       console.log(params.viz.current_panel)
 
-        // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
+    //       // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
 
-      } else {
+    //     } else {
 
-        console.log('switch to reorder')
+    //       console.log('switch to reorder')
 
-        params.viz.current_panel = 'reorder'
+    //       params.viz.current_panel = 'reorder'
 
-        // modify buttons
-        d3.select(params.root + ' .panel_button_title')
-          .text('reorder'.toUpperCase())
-        d3.select(params.root + ' .top_button_title')
-          .text('COL')
-        d3.select(params.root + ' .bottom_button_title')
-          .text('ROW')
-        d3.selectAll(params.root + ' .reorder_buttons')
-          .style('display', 'block');
-        d3.select(params.root + ' .run_cluster_container')
-          .style('display', 'none')
+    //       // modify buttons
+    //       d3.select(params.root + ' .panel_button_title')
+    //         .text('reorder'.toUpperCase())
+    //       d3.select(params.root + ' .top_button_title')
+    //         .text('COL')
+    //       d3.select(params.root + ' .bottom_button_title')
+    //         .text('ROW')
+    //       d3.selectAll(params.root + ' .reorder_buttons')
+    //         .style('display', 'block');
+    //       d3.select(params.root + ' .run_cluster_container')
+    //         .style('display', 'none')
 
-        d3.selectAll(params.root + ' .dist_options')
-          .style('display', 'none')
-        d3.selectAll(params.root + ' .link_options_container')
-          .style('display', 'none')
+    //       d3.selectAll(params.root + ' .dist_options')
+    //         .style('display', 'none')
+    //       d3.selectAll(params.root + ' .link_options_container')
+    //         .style('display', 'none')
 
-        // toggle_menu(cgm, 'tree_menu', 'close');
-      }
+    //       // toggle_menu(cgm, 'tree_menu', 'close');
+    //     }
 
 
 
-    });
+    //   });
 
-  d3.select(params.root + '  .control-container svg .dendro_tree_container')
-    .attr('transform', 'scale(0.9)');
+    // d3.select(params.root + '  .control-container svg .dendro_tree_container')
+    //   .attr('transform', 'scale(0.9)');
 
-  position_tree_icon(cgm);
+    // position_tree_icon(cgm);
 
-  var offset_triangle = 0;
-  var tree_width = 20;
+    // var offset_triangle = 0;
+    // var tree_width = 20;
 
-  // main branch
-  tree_icon_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
+    // // main branch
+    // tree_icon_group
+    //   .append('path')
+    //   .style('fill', 'black')
+    //   .attr('transform', 'translate('+offset_triangle+', 0)')
+    //   .attr('d', function() {
 
-      // up triangle
-      var start_x = 0;
-      var start_y = slider_length;
+    //     // up triangle
+    //     var start_x = 0;
+    //     var start_y = slider_length;
 
-      var mid_x = tree_width/2;
-      var mid_y = 0;
+    //     var mid_x = tree_width/2;
+    //     var mid_y = 0;
 
-      var final_x = tree_width;
-      var final_y = slider_length;
+    //     var final_x = tree_width;
+    //     var final_y = slider_length;
 
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y +
-      ' L' + final_x + ','+ final_y +' Z';
+    //     var output_string = 'M' + start_x + ',' + start_y + ' L' +
+    //     mid_x + ', ' + mid_y +
+    //     ' L' + final_x + ','+ final_y +' Z';
 
-      return output_string;
-    })
-    .style('opacity', 0.35);
+    //     return output_string;
+    //   })
+    //   .style('opacity', 0.35);
 
-  // left branch
-  var branch_height = 30;
-  tree_icon_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
+    // // left branch
+    // var branch_height = 30;
+    // tree_icon_group
+    //   .append('path')
+    //   .style('fill', 'black')
+    //   .attr('transform', 'translate('+offset_triangle+', 0)')
+    //   .attr('d', function() {
 
-      // up triangle
-      var start_x = 4.3;
-      var start_y = 23;
+    //     // up triangle
+    //     var start_x = 4.3;
+    //     var start_y = 23;
 
-      var mid_x = -5;//left_x + slider_length/10;
-      var mid_y = branch_height/2.5;
+    //     var mid_x = -5;//left_x + slider_length/10;
+    //     var mid_y = branch_height/2.5;
 
-      var final_x = 5.8;//left_x + slider_length/5;
-      var final_y = branch_height/1.8;
+    //     var final_x = 5.8;//left_x + slider_length/5;
+    //     var final_y = branch_height/1.8;
 
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y +
-      ' L' + final_x + ','+ final_y +' Z';
+    //     var output_string = 'M' + start_x + ',' + start_y + ' L' +
+    //     mid_x + ', ' + mid_y +
+    //     ' L' + final_x + ','+ final_y +' Z';
 
-      return output_string;
-    })
-    .style('opacity', 0.35);
+    //     return output_string;
+    //   })
+    //   .style('opacity', 0.35);
 
-  // right branch
-  tree_icon_group
-    .append('path')
-    .style('fill', 'black')
-    .attr('transform', 'translate('+offset_triangle+', 0)')
-    .attr('d', function() {
+    // // right branch
+    // tree_icon_group
+    //   .append('path')
+    //   .style('fill', 'black')
+    //   .attr('transform', 'translate('+offset_triangle+', 0)')
+    //   .attr('d', function() {
 
-      // up triangle
-      var start_x = 15.7;
-      var start_y = 23;
+    //     // up triangle
+    //     var start_x = 15.7;
+    //     var start_y = 23;
 
-      var mid_x = 25;//left_x + slider_length/10;
-      var mid_y = branch_height/2.5;
+    //     var mid_x = 25;//left_x + slider_length/10;
+    //     var mid_y = branch_height/2.5;
 
-      var final_x = 14.2;//left_x + slider_length/5;
-      var final_y = branch_height/1.8;
+    //     var final_x = 14.2;//left_x + slider_length/5;
+    //     var final_y = branch_height/1.8;
 
-      var output_string = 'M' + start_x + ',' + start_y + ' L' +
-      mid_x + ', ' + mid_y +
-      ' L' + final_x + ','+ final_y +' Z';
+    //     var output_string = 'M' + start_x + ',' + start_y + ' L' +
+    //     mid_x + ', ' + mid_y +
+    //     ' L' + final_x + ','+ final_y +' Z';
 
-      return output_string;
-    })
-    .style('opacity', 0.35);
+    //     return output_string;
+    //   })
+    //   .style('opacity', 0.35);
 
-  var small_leaf_offset = 13;
-  var small_leaf_radius = 9.5;
+    // var small_leaf_offset = 13;
+    // var small_leaf_radius = 9.5;
 
-  tree_icon_group
-    .selectAll()
-    .data([
-      [-3,small_leaf_offset,small_leaf_radius],
-      [tree_width/2,0, 17],
-      [23,small_leaf_offset,small_leaf_radius]])
-    .enter()
-    .append('circle')
-    .classed('tree_leaf_circle', true)
-    .attr('r', function(d){
-      return d[2];
-    })
-    .attr('transform', function(d){
-      return 'translate('+d[0]+', '+d[1]+')';
-    })
-    .attr('fill', 'blue')
-    .attr('opacity', default_opacity)
-    // .attr('');
+    // tree_icon_group
+    //   .selectAll()
+    //   .data([
+    //     [-3,small_leaf_offset,small_leaf_radius],
+    //     [tree_width/2,0, 17],
+    //     [23,small_leaf_offset,small_leaf_radius]])
+    //   .enter()
+    //   .append('circle')
+    //   .classed('tree_leaf_circle', true)
+    //   .attr('r', function(d){
+    //     return d[2];
+    //   })
+    //   .attr('transform', function(d){
+    //     return 'translate('+d[0]+', '+d[1]+')';
+    //   })
+    //   .attr('fill', 'blue')
+    //   .attr('opacity', default_opacity)
+    //   // .attr('');
 
-  tree_icon_group
-    .append('rect')
-    .attr('width', 50)
-    .attr('height', 62)
-    .attr('transform', function(){
-      return 'translate('+ -15 +', '+ -19 +')';
-    })
-    .attr('opacity', 0.0);
+    // tree_icon_group
+    //   .append('rect')
+    //   .attr('width', 50)
+    //   .attr('height', 62)
+    //   .attr('transform', function(){
+    //     return 'translate('+ -15 +', '+ -19 +')';
+    //   })
+    //   .attr('opacity', 0.0);
 
 
 
@@ -289,12 +289,12 @@ module.exports = function build_tree_icon(cgm){
   // Run Recluster Button
   ///////////////////////////
 
-  var button_info = {};
-  // button_info.selection = tree_menu;
-  // button_info.menu_width = menu_width;
-  button_info.distance_metric = cgm.params.matrix.distance_metric;
-  button_info.linkage_type = cgm.params.matrix.linkage_type;
-  button_info.default_x_offset = x_offset;
+  // var button_info = {};
+  // // button_info.selection = tree_menu;
+  // // button_info.menu_width = menu_width;
+  // button_info.distance_metric = cgm.params.matrix.distance_metric;
+  // button_info.linkage_type = cgm.params.matrix.linkage_type;
+  // button_info.default_x_offset = x_offset;
 
   run_cluster_container = d3.select(params.root + ' .control_svg')
     .append('g')
@@ -302,16 +302,16 @@ module.exports = function build_tree_icon(cgm){
     .attr('transform', 'translate('+ 350  +', '+ 91 +')')
     .on('click', function(){
 
-      console.log('clicking run button')
+      // console.log('click run button!!!!!!!')
 
-      if (button_info.distance_metric != cgm.params.matrix.distance_metric || button_info.linkage_type != cgm.params.matrix.linkage_type){
-
-        console.log('reclustering???')
+      if (params.matrix.potential_recluster.distance_metric != cgm.params.matrix.distance_metric || params.matrix.potential_recluster.linkage_type != cgm.params.matrix.linkage_type){
 
         // transfer parameters to cgm object when update is pressed
-        cgm.params.matrix.distance_metric = button_info.distance_metric;
-        cgm.params.matrix.linkage_type = button_info.linkage_type;
-        cgm.recluster(button_info.distance_metric, button_info.linkage_type);
+        cgm.params.matrix.distance_metric = params.matrix.potential_recluster.distance_metric;
+        cgm.params.matrix.linkage_type = params.matrix.potential_recluster.linkage_type;
+        cgm.recluster(params.matrix.potential_recluster.distance_metric, params.matrix.potential_recluster.linkage_type);
+
+
       }
 
     })
@@ -346,7 +346,20 @@ module.exports = function build_tree_icon(cgm){
   // Recluster Options
   ///////////////////////////
 
-  var dist_options = ['cos', 'corr', 'eucl'];
+  var dist_options = [
+    {
+      'short': 'cos',
+      'full': 'cosine'
+    },
+    {
+      'short': 'corr',
+      'full': 'correlation'
+    },
+    {
+      'short': 'eucl',
+      'full': 'euclidean'
+    }
+  ];
 
   let dist_dict = {}
   dist_dict['cosine'] = 'cos'
@@ -376,7 +389,9 @@ module.exports = function build_tree_icon(cgm){
     })
     .on('click', function(d){
 
-      console.log('clicking distance button', d)
+      // console.log('clicking distance button', d.full)
+
+      params.matrix.potential_recluster.distance_metric = d.full;
 
       d3.select(params.root + ' .dist_option_container')
         .selectAll('rect')
@@ -398,7 +413,7 @@ module.exports = function build_tree_icon(cgm){
     .style('ry', 10)
     .attr('stroke', function(d){
       var i_color;
-      if (dist_dict[params.matrix.distance_metric] == d){
+      if (dist_dict[params.matrix.distance_metric] == d.short){
         i_color = active_button_color;
       } else {
         i_color = button_color;
@@ -410,7 +425,7 @@ module.exports = function build_tree_icon(cgm){
   dist_options
     .append('text')
     .classed('button-name', true)
-    .text((d) => d.toUpperCase())
+    .text((d) => d.short.toUpperCase())
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight', 400)
     .style('font-size', button_dim.fs)
@@ -424,7 +439,20 @@ module.exports = function build_tree_icon(cgm){
 
   // Linkage Options Container
   ////////////////////////////////
-  var link_options = ['avg', 'single', 'cmplt'];
+  var link_options = [
+    {
+      'short': 'avg',
+      'full': 'average'
+    },
+    {
+      'short': 'single',
+      'full': 'single'
+    },
+    {
+      'short': 'cmplt',
+      'full': 'complete'
+    }
+  ];
   let link_dict = {}
   link_dict['average'] = 'avg'
   link_dict['single'] = 'single'
@@ -438,17 +466,15 @@ module.exports = function build_tree_icon(cgm){
     .data(link_options)
     .enter()
     .append('g')
-    .classed('link_options_container', function(d){
-      console.log('HERE')
-      return true
-    })
+    .classed('link_options_container', true)
     .attr('transform', function(d, i){
       var x_offset = button_dim.x_trans * i + shift_x_order_buttons;
       return 'translate('+ x_offset  +', '+ y_offset_bottom +')';
     })
     .on('click', function(d){
 
-      console.log('clicking linkage button', d)
+      // console.log('clicking linkage button', d.full)
+      params.matrix.potential_recluster.linkage_type = d.full;
 
       d3.select(params.root + ' .link_option_container')
         .selectAll('rect')
@@ -470,7 +496,7 @@ module.exports = function build_tree_icon(cgm){
     .style('ry', 10)
     .attr('stroke', function(d){
       var i_color;
-      if (link_dict[params.matrix.linkage_type] == d){
+      if (link_dict[params.matrix.linkage_type] == d.short){
         i_color = active_button_color;
       } else {
         i_color = button_color;
@@ -482,7 +508,7 @@ module.exports = function build_tree_icon(cgm){
   link_options_container
     .append('text')
     .classed('button-name', true)
-    .text((d) => d.toUpperCase())
+    .text((d) => d.short.toUpperCase())
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight', 400)
     .style('font-size', button_dim.fs)

@@ -56,6 +56,11 @@ module.exports = function initialize_params(external_model){
   // initialize control panel in reorder mode
   params.viz.current_panel = 'reorder'
 
+
+  params.matrix.potential_recluster = {}
+  params.matrix.potential_recluster.distance_metric = params.matrix.distance_metric
+  params.matrix.potential_recluster.linkage_type = params.matrix.linkage_type
+
   var min_dim;
   if (labels.num_col < labels.num_row){
     min_dim = labels.num_col;

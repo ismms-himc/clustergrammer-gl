@@ -33,6 +33,7 @@ module.exports = function build_control_panel(){
     .style('height',i_height + 'px')
     .style('width',i_width+'px')
     .append('svg')
+    .classed('control_svg', true)
     .style('height',i_height + 'px')
     .style('width',i_width+'px')
     .on('mouseover', function(){
@@ -128,7 +129,7 @@ module.exports = function build_control_panel(){
   control_svg
     .append('text')
     .classed('panel_button_title', true)
-    .text('rearrange'.toUpperCase())
+    .text('reorder'.toUpperCase())
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight', 400)
     .style('font-size', button_dim.fs)
@@ -149,10 +150,6 @@ module.exports = function build_control_panel(){
   control_svg
     .append('rect')
     .style('height', '1px')
-    // .style('width', function(){
-    //   var tmp_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer - 10;
-    //   return tmp_width;
-    // })
     .style('width', '220px')
     .style('position', 'absolute')
     .style('stroke', '#eee')
@@ -203,12 +200,13 @@ module.exports = function build_control_panel(){
 
     var active_button_color = '#0000FF75';
 
-    // generate single button
+    // generate reorder buttons
     var button_group = reorder_buttons
       .selectAll('g')
       .data(order_options)
-      .enter( )
+      .enter()
       .append('g')
+      .classed('reorder_buttons', true)
       .attr('transform', function(d, i){
         var x_offset = button_dim.x_trans * i + button_groups[i_axis].x_trans;
         return 'translate('+ x_offset  +', '+ button_groups[i_axis].y_trans +')';
@@ -218,8 +216,7 @@ module.exports = function build_control_panel(){
         var clean_order = d.replace('sum', 'rank')
                            .replace('var', 'rankvar')
 
-        // tmp preventing dispersion reordering from working
-        if (params.order.inst[i_axis] != clean_order && clean_order != 'disp'){
+        if (params.order.inst[i_axis] != clean_order){
 
           /* category order is already calculated */
           require('./../reorders/run_reorder')(regl, params, i_axis, d);

@@ -18,9 +18,10 @@ module.exports = function build_tree_icon(cgm){
           .style('opacity', high_opacity);
       })
       .on('mouseout', function(){
-        // tree_icon_tip.hide();
-        d3.selectAll(params.root + ' .tree_leaf_circle')
-        .style('opacity', default_opacity);
+        if (params.viz.current_panel !== 'recluster'){
+          d3.selectAll(params.root + ' .tree_leaf_circle')
+          .style('opacity', default_opacity);
+        }
       })
       // .call(tree_icon_tip);
 
@@ -39,11 +40,13 @@ module.exports = function build_tree_icon(cgm){
 
         // modify buttons
         d3.select(params.root + ' .panel_button_title')
-          .text('RECLUSTER')
+          .text('recluster'.toUpperCase())
         d3.select(params.root + ' .top_button_title')
           .text('DIST')
-         d3.select(params.root + ' .bottom_button_title')
+        d3.select(params.root + ' .bottom_button_title')
           .text('LINK')
+        d3.selectAll(params.root + ' .reorder_buttons')
+          .style('display', 'none');
 
         params.viz.current_panel = 'recluster'
 
@@ -59,11 +62,13 @@ module.exports = function build_tree_icon(cgm){
 
         // modify buttons
         d3.select(params.root + ' .panel_button_title')
-          .text('REARRANGE')
+          .text('reorder'.toUpperCase())
         d3.select(params.root + ' .top_button_title')
           .text('COL')
-         d3.select(params.root + ' .bottom_button_title')
+        d3.select(params.root + ' .bottom_button_title')
           .text('ROW')
+        d3.selectAll(params.root + ' .reorder_buttons')
+          .style('display', 'block');
 
         // toggle_menu(cgm, 'tree_menu', 'close');
       }
@@ -186,5 +191,9 @@ module.exports = function build_tree_icon(cgm){
       return 'translate('+ -15 +', '+ -19 +')';
     })
     .attr('opacity', 0.0);
+
+
+  // Build reorder buttons
+  d3.select(params.root + ' .control_svg')
 
 };

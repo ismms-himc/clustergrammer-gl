@@ -68802,6 +68802,7 @@ module.exports = function build_control_panel(){
     .style('height',i_height + 'px')
     .style('width',i_width+'px')
     .append('svg')
+    .classed('control_svg', true)
     .style('height',i_height + 'px')
     .style('width',i_width+'px')
     .on('mouseover', function(){
@@ -68897,7 +68898,7 @@ module.exports = function build_control_panel(){
   control_svg
     .append('text')
     .classed('panel_button_title', true)
-    .text('rearrange'.toUpperCase())
+    .text('reorder'.toUpperCase())
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight', 400)
     .style('font-size', button_dim.fs)
@@ -68918,10 +68919,6 @@ module.exports = function build_control_panel(){
   control_svg
     .append('rect')
     .style('height', '1px')
-    // .style('width', function(){
-    //   var tmp_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer - 10;
-    //   return tmp_width;
-    // })
     .style('width', '220px')
     .style('position', 'absolute')
     .style('stroke', '#eee')
@@ -68972,12 +68969,13 @@ module.exports = function build_control_panel(){
 
     var active_button_color = '#0000FF75';
 
-    // generate single button
+    // generate reorder buttons
     var button_group = reorder_buttons
       .selectAll('g')
       .data(order_options)
-      .enter( )
+      .enter()
       .append('g')
+      .classed('reorder_buttons', true)
       .attr('transform', function(d, i){
         var x_offset = button_dim.x_trans * i + button_groups[i_axis].x_trans;
         return 'translate('+ x_offset  +', '+ button_groups[i_axis].y_trans +')';
@@ -68987,8 +68985,7 @@ module.exports = function build_control_panel(){
         var clean_order = d.replace('sum', 'rank')
                            .replace('var', 'rankvar')
 
-        // tmp preventing dispersion reordering from working
-        if (params.order.inst[i_axis] != clean_order && clean_order != 'disp'){
+        if (params.order.inst[i_axis] != clean_order){
 
           /* category order is already calculated */
           __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js")(regl, params, i_axis, d);
@@ -69076,9 +69073,10 @@ module.exports = function build_tree_icon(cgm){
           .style('opacity', high_opacity);
       })
       .on('mouseout', function(){
-        // tree_icon_tip.hide();
-        d3.selectAll(params.root + ' .tree_leaf_circle')
-        .style('opacity', default_opacity);
+        if (params.viz.current_panel !== 'recluster'){
+          d3.selectAll(params.root + ' .tree_leaf_circle')
+          .style('opacity', default_opacity);
+        }
       })
       // .call(tree_icon_tip);
 
@@ -69097,11 +69095,13 @@ module.exports = function build_tree_icon(cgm){
 
         // modify buttons
         d3.select(params.root + ' .panel_button_title')
-          .text('RECLUSTER')
+          .text('recluster'.toUpperCase())
         d3.select(params.root + ' .top_button_title')
           .text('DIST')
-         d3.select(params.root + ' .bottom_button_title')
+        d3.select(params.root + ' .bottom_button_title')
           .text('LINK')
+        d3.selectAll(params.root + ' .reorder_buttons')
+          .style('display', 'none');
 
         params.viz.current_panel = 'recluster'
 
@@ -69117,11 +69117,13 @@ module.exports = function build_tree_icon(cgm){
 
         // modify buttons
         d3.select(params.root + ' .panel_button_title')
-          .text('REARRANGE')
+          .text('reorder'.toUpperCase())
         d3.select(params.root + ' .top_button_title')
           .text('COL')
-         d3.select(params.root + ' .bottom_button_title')
+        d3.select(params.root + ' .bottom_button_title')
           .text('ROW')
+        d3.selectAll(params.root + ' .reorder_buttons')
+          .style('display', 'block');
 
         // toggle_menu(cgm, 'tree_menu', 'close');
       }
@@ -69244,6 +69246,10 @@ module.exports = function build_tree_icon(cgm){
       return 'translate('+ -15 +', '+ -19 +')';
     })
     .attr('opacity', 0.0);
+
+
+  // Build reorder buttons
+  d3.select(params.root + ' .control_svg')
 
 };
 
@@ -69572,21 +69578,20 @@ module.exports = function position_tree_icon(cgm){
   // var max_room = 100; // viz.svg_dim.width - 3 * viz.uni_margin;
 
   // position close to row dendrogram trapezoids
-  tmp_left = 850; // viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row;
+  tmp_left = 375; // viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row;
 
   // if (tmp_left > max_room){
   //   tmp_left = max_room;
   // }
 
   // tmp_top =  viz.clust.margin.top + 3 * viz.uni_margin - 50;
-  tmp_top =  100; // viz.clust.margin.top + 3 * viz.uni_margin + 90;
+  tmp_top =  30; // viz.clust.margin.top + 3 * viz.uni_margin + 90;
 
   // reposition tree icon
   d3.select(cgm.params.root + ' .tree_icon')
     .attr('transform', function() {
       var inst_translation;
-      tmp_top = tmp_top - 75;
-      inst_translation = 'translate(' + tmp_left + ',' + 65 + ')';
+      inst_translation = 'translate(' + tmp_left + ',' + tmp_top + ')';
       return inst_translation;
     })
     .style('opacity', 1);

@@ -63,7 +63,6 @@ module.exports = function make_tree_menu(cgm){
   // cgm.params.matrix.linkage_type = 'average'
 
   var button_info = {};
-  // button_info.cgm = cgm;
   button_info.selection = tree_menu;
   button_info.menu_width = menu_width;
   button_info.distance_metric = cgm.params.matrix.distance_metric;

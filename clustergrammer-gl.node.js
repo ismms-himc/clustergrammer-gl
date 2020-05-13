@@ -68936,7 +68936,6 @@ module.exports = function build_control_panel(){
     })
     .append('text')
     .text('reorder'.toUpperCase())
-    // .style('-webkit-user-select', 'none')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
     .attr('font-size', button_dim.fs)
@@ -69169,7 +69168,6 @@ module.exports = function build_tree_icon(cgm){
     .attr('opacity', 0.5)
     .append('text')
     .text('recluster'.toUpperCase())
-    // .style('-webkit-user-select', 'none')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
     .attr('font-size', button_dim.fs)
@@ -69382,13 +69380,31 @@ module.exports = function build_tree_icon(cgm){
   ///////////////////////////
   // Run Recluster Button
   ///////////////////////////
+
+  var button_info = {};
+  // button_info.selection = tree_menu;
+  // button_info.menu_width = menu_width;
+  button_info.distance_metric = cgm.params.matrix.distance_metric;
+  button_info.linkage_type = cgm.params.matrix.linkage_type;
+  button_info.default_x_offset = x_offset;
+
   run_cluster_container = d3.select(params.root + ' .control_svg')
     .append('g')
     .classed('run_cluster_container', true)
     .attr('transform', 'translate('+ 350  +', '+ 91 +')')
-    .on('click', function(d){
+    .on('click', function(){
 
-      console.log('clicking run button', d)
+      console.log('clicking run button')
+
+      if (button_info.distance_metric != cgm.params.matrix.distance_metric || button_info.linkage_type != cgm.params.matrix.linkage_type){
+
+        console.log('reclustering???')
+
+        // transfer parameters to cgm object when update is pressed
+        cgm.params.matrix.distance_metric = button_info.distance_metric;
+        cgm.params.matrix.linkage_type = button_info.linkage_type;
+        cgm.recluster(button_info.distance_metric, button_info.linkage_type);
+      }
 
     })
     .style('display', 'none');
@@ -69415,7 +69431,7 @@ module.exports = function build_tree_icon(cgm){
     .style('alignment-baseline', 'middle')
     .style('letter-spacing', '2px')
     .style('cursor', 'default')
-    .style('-webkit-user-select', 'none')
+    // .style('-webkit-user-select', 'none')
     .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
   ///////////////////////////
@@ -69824,7 +69840,6 @@ module.exports = function make_tree_menu(cgm){
   // cgm.params.matrix.linkage_type = 'average'
 
   var button_info = {};
-  // button_info.cgm = cgm;
   button_info.selection = tree_menu;
   button_info.menu_width = menu_width;
   button_info.distance_metric = cgm.params.matrix.distance_metric;

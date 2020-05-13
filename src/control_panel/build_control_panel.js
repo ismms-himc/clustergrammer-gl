@@ -167,7 +167,6 @@ module.exports = function build_control_panel(){
     })
     .append('text')
     .text('reorder'.toUpperCase())
-    // .style('-webkit-user-select', 'none')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
     .attr('font-size', button_dim.fs)

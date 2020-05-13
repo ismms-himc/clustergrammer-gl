@@ -209,7 +209,8 @@ module.exports = function build_tree_icon(cgm){
   var control_panel_color = 'white';
   var text_color = '#47515b';
   var button_color = '#eee';
-  var active_run_color = '#008000' //'#00FF75';
+  // var active_run_color = '#008000' //
+  var active_run_color = '#00FF75';
   let active_button_color = '#008000'
 
   var button_dim = {};
@@ -224,9 +225,7 @@ module.exports = function build_tree_icon(cgm){
   ///////////////////////////
   run_cluster_container = d3.select(params.root + ' .control_svg')
     .append('g')
-    .classed('run_cluster_container', function(d){
-      console.log('SOMETHING')
-    })
+    .classed('run_cluster_container', true)
     .attr('transform', 'translate('+ 350  +', '+ 91 +')')
     .on('click', function(d){
 
@@ -294,7 +293,15 @@ module.exports = function build_tree_icon(cgm){
     })
     .on('click', function(d){
 
-      console.log('clicking run button', d)
+      console.log('clicking distance button', d)
+
+      d3.select(params.root + ' .dist_option_container')
+        .selectAll('rect')
+        .attr('stroke', button_color);
+
+      d3.select(this)
+        .select('rect')
+        .attr('stroke', active_button_color);
 
     })
     .style('display', 'none');
@@ -358,7 +365,15 @@ module.exports = function build_tree_icon(cgm){
     })
     .on('click', function(d){
 
-      console.log('clicking run button', d)
+      console.log('clicking linkage button', d)
+
+      d3.select(params.root + ' .link_option_container')
+        .selectAll('rect')
+        .attr('stroke', button_color);
+
+      d3.select(this)
+        .select('rect')
+        .attr('stroke', active_button_color);
 
     })
     .style('display', 'none');

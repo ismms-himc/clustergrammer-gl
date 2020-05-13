@@ -223,11 +223,11 @@ module.exports = function build_control_panel(){
 
           d3.select(params.root + ' .' + i_axis + '-reorder-buttons')
             .selectAll('rect')
-            .style('stroke', button_color);
+            .attr('stroke', button_color);
 
           d3.select(this)
             .select('rect')
-            .style('stroke', active_button_color);
+            .attr('stroke', active_button_color);
 
         }
       })

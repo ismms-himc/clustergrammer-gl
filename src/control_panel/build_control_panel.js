@@ -30,28 +30,29 @@ module.exports = function build_control_panel(){
   var button_color = '#eee';
 
   var control_svg = d3.select(control_container)
-    .style('height',i_height + 'px')
-    .style('width',i_width+'px')
+    .attr('height',i_height + 'px')
+    .attr('width',i_width+'px')
     .append('svg')
     .classed('control_svg', true)
-    .style('height',i_height + 'px')
-    .style('width',i_width+'px')
+    .attr('height',i_height + 'px')
+    .attr('width',i_width+'px')
     .on('mouseover', function(){
       params.tooltip.in_bounds_tooltip = false;
     })
 
   control_svg
     .append('rect')
-    .style('height',i_height + 'px')
-    .style('width',i_width+'px')
-    .style('position', 'absolute')
-    .style('fill', control_panel_color)
+    .attr('height',i_height + 'px')
+    .attr('width',i_width+'px')
+    .attr('position', 'absolute')
+    .attr('fill', control_panel_color)
     .attr('class', 'control-panel-background')
     .call(tooltip);
 
   require('./../tooltip/initialize_d3_tip')(params);
 
-  // setting fontsize
+  // tooltip style
+  //////////////////////////
   d3.select(params.tooltip_id)
     .style('line-height', 1.5)
     .style('font-weight', 'bold')
@@ -68,11 +69,11 @@ module.exports = function build_control_panel(){
   control_svg
     .append('rect')
     .classed('north_border', true)
-    .style('height', '1px')
-    .style('width',i_width+'px')
-    .style('position', 'absolute')
-    .style('stroke', '#eee')
-    .style('stroke-width', 3)
+    .attr('height', '1px')
+    .attr('width',i_width+'px')
+    .attr('position', 'absolute')
+    .attr('stroke', '#eee')
+    .attr('stroke-width', 3)
     .attr('transform', function(){
       var y_trans = i_height - border_height;
       return 'translate( 0, '+ y_trans +')';
@@ -109,11 +110,11 @@ module.exports = function build_control_panel(){
     .attr('xlink:href', 'https://raw.githubusercontent.com/ismms-himc/clustergrammer-gl/master/img/graham_cracker_144.png')
     .on('click', function(d) {
         window.open(
-          'https://clustergrammer.readthedocs.io/clustergrammer2.html',
+          'https://clustergrammer.readthedocs.io/',
           '_blank' // <- This is what makes it open in a new window.
         );
       })
-    .style('cursor', 'pointer');
+    // .attr('cursor', 'pointer');
     // .attr("xlink:href", logo_url)
 
     // console.log(logo_url)
@@ -185,15 +186,15 @@ module.exports = function build_control_panel(){
       .append('text')
       .classed(name_dict[i_axis] + '_button_title', true)
       .text(i_axis.toUpperCase())
-      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-      .style('font-weight', 400)
-      .style('font-size', button_dim.fs)
-      .style('text-anchor', 'middle')
-      .style('stroke', text_color)
-      .style('alignment-baseline', 'middle')
-      .style('letter-spacing', '2px')
-      .style('cursor', 'default')
       .style('-webkit-user-select', 'none')
+      .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .attr('font-weight', 400)
+      .attr('font-size', button_dim.fs)
+      .attr('text-anchor', 'middle')
+      .attr('stroke', text_color)
+      .attr('alignment-baseline', 'middle')
+      .attr('letter-spacing', '2px')
+      .attr('cursor', 'default')
       .attr('transform', 'translate('+ axis_title_offset +', '+ button_dim.height/2 +')');
 
     var reorder_buttons = control_svg
@@ -261,15 +262,15 @@ module.exports = function build_control_panel(){
       .text(function(d){
         return d.toUpperCase();
       })
-      .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-      .style('font-weight', 400)
-      .style('font-size', button_dim.fs)
-      .style('text-anchor', 'middle')
-      .style('stroke', text_color)
-      .style('alignment-baseline', 'middle')
-      .style('letter-spacing', '2px')
-      .style('cursor', 'default')
       .style('-webkit-user-select', 'none')
+      .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .attr('font-weight', 400)
+      .attr('font-size', button_dim.fs)
+      .attr('text-anchor', 'middle')
+      .attr('stroke', text_color)
+      .attr('alignment-baseline', 'middle')
+      .attr('letter-spacing', '2px')
+      .attr('cursor', 'default')
       .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
   })

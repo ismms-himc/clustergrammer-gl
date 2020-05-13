@@ -27,11 +27,11 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
     var inst_top;
     if (inst_axis === 'row'){
       heat_shift = params.viz_dim.mat_size.y - params.viz_dim.heat_size.y;
-      inst_top = -params.node_canvas_pos.y_arr[order_index] - 2*tri_width - 2 * heat_shift;
+      inst_top = -params.node_canvas_pos.y_arr[order_index] - 2 * tri_width - 2 * heat_shift;
     } else {
       // emperical rule
       heat_shift = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
-      inst_top = -params.node_canvas_pos.x_arr[order_index] - 2*tri_width + 2 * heat_shift;
+      inst_top = -params.node_canvas_pos.x_arr[order_index] - 2 * tri_width + 2 * heat_shift;
     }
 
     var inst_bot = inst_top + tri_width;

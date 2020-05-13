@@ -130,30 +130,34 @@ module.exports = function build_control_panel(){
     .append('text')
     .classed('panel_button_title', true)
     .text('reorder'.toUpperCase())
-    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    .style('font-weight', 400)
-    .style('font-size', button_dim.fs)
-    .style('text-anchor', 'middle')
-    .style('stroke', text_color)
-    .style('alignment-baseline', 'middle')
-    .style('letter-spacing', '2px')
-    .style('cursor', 'default')
     .style('-webkit-user-select', 'none')
-        .attr('transform', function(){
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
         var x_offset = 175 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
+    .on('click', function(){
+      console.log('choose reordering panel')
+    })
+
 
   var order_options = ['clust', 'sum', 'var'];
 
   control_svg
     .append('rect')
-    .style('height', '1px')
-    .style('width', '220px')
-    .style('position', 'absolute')
-    .style('stroke', '#eee')
-    .style('stroke-width', 2)
+    .attr('height', '1px')
+    .attr('width', '220px')
+    .attr('position', 'absolute')
+    .attr('stroke', '#eee')
+    .attr('stroke-width', 2)
     .attr('transform', function(){
       var x_offset = button_dim.x_trans - button_dim.buffer + 1 + cracker_room;
       var y_trans = y_offset_buttons - button_dim.buffer + 2;

@@ -49,6 +49,13 @@ module.exports = function initialize_params(external_model){
   require('./calc_viz_area')(params);
   require('./generate_text_triangle_params')(params);
 
+  params.matrix = {}
+  params.matrix.distance_metric = 'cosine'
+  params.matrix.linkage_type = 'average'
+
+  // initialize control panel in reorder mode
+  params.viz.current_panel = 'reorder'
+
   var min_dim;
   if (labels.num_col < labels.num_row){
     min_dim = labels.num_col;

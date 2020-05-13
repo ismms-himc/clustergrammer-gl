@@ -125,13 +125,9 @@ module.exports = function build_control_panel(){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'alpha'];
-
-  // make Rarrange title
-
   control_svg
     .append('text')
-    .classed('reorder_title', true)
+    .classed('panel_button_title', true)
     .text('rearrange'.toUpperCase())
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight', 400)
@@ -143,18 +139,21 @@ module.exports = function build_control_panel(){
     .style('cursor', 'default')
     .style('-webkit-user-select', 'none')
         .attr('transform', function(){
-        var x_offset = 215 + cracker_room;
+        var x_offset = 175 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
 
+  var order_options = ['clust', 'sum', 'var'];
+
   control_svg
     .append('rect')
     .style('height', '1px')
-    .style('width', function(){
-      var tmp_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer;
-      return tmp_width;
-    })
+    // .style('width', function(){
+    //   var tmp_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer - 10;
+    //   return tmp_width;
+    // })
+    .style('width', '220px')
     .style('position', 'absolute')
     .style('stroke', '#eee')
     .style('stroke-width', 2)
@@ -164,22 +163,26 @@ module.exports = function build_control_panel(){
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
 
+  let name_dict = {}
+  name_dict['col'] = 'top'
+  name_dict['row'] = 'bottom'
 
   _.each(['row', 'col'], function(i_axis){
 
     var axis_title = control_svg
       .append('g')
+      .classed(name_dict[i_axis] + '_button_title_container', true)
       .attr('transform', function(){
         var x_offset = 0;
         var y_offset = button_groups[i_axis].y_trans;
         return 'translate('+ x_offset  +', '+ y_offset +')';
       })
 
-    var axis_title_offset = 30 + cracker_room;
+    var axis_title_offset = 35 + cracker_room;
 
     axis_title
       .append('text')
-      .classed('reorder_title', true)
+      .classed(name_dict[i_axis] + '_button_title', true)
       .text(i_axis.toUpperCase())
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight', 400)

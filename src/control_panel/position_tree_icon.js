@@ -23,7 +23,7 @@ module.exports = function position_tree_icon(cgm){
     .attr('transform', function() {
       var inst_translation;
       tmp_top = tmp_top - 75;
-      inst_translation = 'translate(' + tmp_left + ',' + tmp_top + ')';
+      inst_translation = 'translate(' + tmp_left + ',' + 65 + ')';
       return inst_translation;
     })
     .style('opacity', 1);

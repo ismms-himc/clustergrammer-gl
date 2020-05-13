@@ -29,17 +29,47 @@ module.exports = function build_tree_icon(cgm){
     .classed('dendro_tree_container', true)
     .on('click', function(){
 
-      if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
 
-        toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
+      // show recluster menu
+      // if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
 
-        // tree_icon_tip.hide();
+      if (params.viz.current_panel === 'reorder'){
+
+        console.log('switch to recluster')
+
+        // modify buttons
+        d3.select(params.root + ' .panel_button_title')
+          .text('RECLUSTER')
+        d3.select(params.root + ' .top_button_title')
+          .text('DIST')
+         d3.select(params.root + ' .bottom_button_title')
+          .text('LINK')
+
+        params.viz.current_panel = 'recluster'
+
+        console.log(params.viz.current_panel)
+
+        // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
 
       } else {
 
-        toggle_menu(cgm, 'tree_menu', 'close');
+        console.log('switch to reorder')
 
+        params.viz.current_panel = 'reorder'
+
+        // modify buttons
+        d3.select(params.root + ' .panel_button_title')
+          .text('REARRANGE')
+        d3.select(params.root + ' .top_button_title')
+          .text('COL')
+         d3.select(params.root + ' .bottom_button_title')
+          .text('ROW')
+
+        // toggle_menu(cgm, 'tree_menu', 'close');
       }
+
+
+
     });
 
   d3.select(params.root + '  .control-container svg .dendro_tree_container')

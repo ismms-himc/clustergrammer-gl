@@ -58,9 +58,9 @@ module.exports = function make_tree_menu(cgm){
   //   .text('Clustering Parameters');
 
 
-  cgm.params.matrix = {}
-  cgm.params.matrix.distance_metric = 'cosine'
-  cgm.params.matrix.linkage_type = 'average'
+  // cgm.params.matrix = {}
+  // cgm.params.matrix.distance_metric = 'cosine'
+  // cgm.params.matrix.linkage_type = 'average'
 
   var button_info = {};
   // button_info.cgm = cgm;
@@ -97,13 +97,18 @@ module.exports = function make_tree_menu(cgm){
   function update_callback(){
     toggle_menu(cgm, 'tree_menu', 'close');
 
-    // transfer parameters to cgm object when update is pressed
-    cgm.params.matrix.distance_metric = button_info.distance_metric;
-    cgm.params.matrix.linkage_type = button_info.linkage_type;
+    console.log('Pre-reclustering\n---------------------------------')
+    console.log('button_info')
+    console.log(button_info.distance_metric, button_info.linkage_type)
+    console.log('cgm')
+    console.log(cgm.params.matrix.distance_metric, cgm.params.matrix.linkage_type)
 
-    console.log(button_info)
-
-    cgm.recluster(button_info.distance_metric, button_info.linkage_type);
+    if (button_info.distance_metric != cgm.params.matrix.distance_metric || button_info.linkage_type != cgm.params.matrix.linkage_type){
+      // transfer parameters to cgm object when update is pressed
+      cgm.params.matrix.distance_metric = button_info.distance_metric;
+      cgm.params.matrix.linkage_type = button_info.linkage_type;
+      cgm.recluster(button_info.distance_metric, button_info.linkage_type);
+    }
 
   }
 

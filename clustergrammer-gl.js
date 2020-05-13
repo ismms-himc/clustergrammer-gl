@@ -68894,13 +68894,9 @@ module.exports = function build_control_panel(){
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans = button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
-  var order_options = ['clust', 'sum', 'var', 'alpha'];
-
-  // make Rarrange title
-
   control_svg
     .append('text')
-    .classed('reorder_title', true)
+    .classed('panel_button_title', true)
     .text('rearrange'.toUpperCase())
     .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style('font-weight', 400)
@@ -68912,18 +68908,21 @@ module.exports = function build_control_panel(){
     .style('cursor', 'default')
     .style('-webkit-user-select', 'none')
         .attr('transform', function(){
-        var x_offset = 215 + cracker_room;
+        var x_offset = 175 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
 
+  var order_options = ['clust', 'sum', 'var'];
+
   control_svg
     .append('rect')
     .style('height', '1px')
-    .style('width', function(){
-      var tmp_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer;
-      return tmp_width;
-    })
+    // .style('width', function(){
+    //   var tmp_width = (order_options.length  + 1) * button_dim.width - button_dim.buffer - 10;
+    //   return tmp_width;
+    // })
+    .style('width', '220px')
     .style('position', 'absolute')
     .style('stroke', '#eee')
     .style('stroke-width', 2)
@@ -68933,22 +68932,26 @@ module.exports = function build_control_panel(){
       return 'translate( '+ x_offset +', '+ y_trans +')';
     });
 
+  let name_dict = {}
+  name_dict['col'] = 'top'
+  name_dict['row'] = 'bottom'
 
   _.each(['row', 'col'], function(i_axis){
 
     var axis_title = control_svg
       .append('g')
+      .classed(name_dict[i_axis] + '_button_title_container', true)
       .attr('transform', function(){
         var x_offset = 0;
         var y_offset = button_groups[i_axis].y_trans;
         return 'translate('+ x_offset  +', '+ y_offset +')';
       })
 
-    var axis_title_offset = 30 + cracker_room;
+    var axis_title_offset = 35 + cracker_room;
 
     axis_title
       .append('text')
-      .classed('reorder_title', true)
+      .classed(name_dict[i_axis] + '_button_title', true)
       .text(i_axis.toUpperCase())
       .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .style('font-weight', 400)
@@ -69084,17 +69087,47 @@ module.exports = function build_tree_icon(cgm){
     .classed('dendro_tree_container', true)
     .on('click', function(){
 
-      if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
 
-        toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
+      // show recluster menu
+      // if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
 
-        // tree_icon_tip.hide();
+      if (params.viz.current_panel === 'reorder'){
+
+        console.log('switch to recluster')
+
+        // modify buttons
+        d3.select(params.root + ' .panel_button_title')
+          .text('RECLUSTER')
+        d3.select(params.root + ' .top_button_title')
+          .text('DIST')
+         d3.select(params.root + ' .bottom_button_title')
+          .text('LINK')
+
+        params.viz.current_panel = 'recluster'
+
+        console.log(params.viz.current_panel)
+
+        // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
 
       } else {
 
-        toggle_menu(cgm, 'tree_menu', 'close');
+        console.log('switch to reorder')
 
+        params.viz.current_panel = 'reorder'
+
+        // modify buttons
+        d3.select(params.root + ' .panel_button_title')
+          .text('REARRANGE')
+        d3.select(params.root + ' .top_button_title')
+          .text('COL')
+         d3.select(params.root + ' .bottom_button_title')
+          .text('ROW')
+
+        // toggle_menu(cgm, 'tree_menu', 'close');
       }
+
+
+
     });
 
   d3.select(params.root + '  .control-container svg .dendro_tree_container')
@@ -69459,9 +69492,9 @@ module.exports = function make_tree_menu(cgm){
   //   .text('Clustering Parameters');
 
 
-  cgm.params.matrix = {}
-  cgm.params.matrix.distance_metric = 'cosine'
-  cgm.params.matrix.linkage_type = 'average'
+  // cgm.params.matrix = {}
+  // cgm.params.matrix.distance_metric = 'cosine'
+  // cgm.params.matrix.linkage_type = 'average'
 
   var button_info = {};
   // button_info.cgm = cgm;
@@ -69498,13 +69531,18 @@ module.exports = function make_tree_menu(cgm){
   function update_callback(){
     toggle_menu(cgm, 'tree_menu', 'close');
 
-    // transfer parameters to cgm object when update is pressed
-    cgm.params.matrix.distance_metric = button_info.distance_metric;
-    cgm.params.matrix.linkage_type = button_info.linkage_type;
+    console.log('Pre-reclustering\n---------------------------------')
+    console.log('button_info')
+    console.log(button_info.distance_metric, button_info.linkage_type)
+    console.log('cgm')
+    console.log(cgm.params.matrix.distance_metric, cgm.params.matrix.linkage_type)
 
-    console.log(button_info)
-
-    cgm.recluster(button_info.distance_metric, button_info.linkage_type);
+    if (button_info.distance_metric != cgm.params.matrix.distance_metric || button_info.linkage_type != cgm.params.matrix.linkage_type){
+      // transfer parameters to cgm object when update is pressed
+      cgm.params.matrix.distance_metric = button_info.distance_metric;
+      cgm.params.matrix.linkage_type = button_info.linkage_type;
+      cgm.recluster(button_info.distance_metric, button_info.linkage_type);
+    }
 
   }
 
@@ -69548,7 +69586,7 @@ module.exports = function position_tree_icon(cgm){
     .attr('transform', function() {
       var inst_translation;
       tmp_top = tmp_top - 75;
-      inst_translation = 'translate(' + tmp_left + ',' + tmp_top + ')';
+      inst_translation = 'translate(' + tmp_left + ',' + 65 + ')';
       return inst_translation;
     })
     .style('opacity', 1);
@@ -73749,6 +73787,13 @@ module.exports = function initialize_params(external_model){
   __webpack_require__(/*! ./gen_text_zoom_par */ "./src/params/gen_text_zoom_par.js")(params);
   __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js")(params);
   __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js")(params);
+
+  params.matrix = {}
+  params.matrix.distance_metric = 'cosine'
+  params.matrix.linkage_type = 'average'
+
+  // initialize control panel in reorder mode
+  params.viz.current_panel = 'reorder'
 
   var min_dim;
   if (labels.num_col < labels.num_row){

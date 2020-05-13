@@ -1,7 +1,7 @@
 var d3 = require("d3");
-module.exports = function make_menu_button_section(menu_type, button_type, button_info,  button_names){
+module.exports = function make_menu_button_section(cgm, menu_type, button_type, button_info,  button_names){
 
-  var cgm = button_info.cgm;
+  // var cgm = button_info.cgm;
   var menu_width = button_info.menu_width;
   var button_offset = 35;
 

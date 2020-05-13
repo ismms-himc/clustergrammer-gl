@@ -7,7 +7,9 @@ var toggle_menu = require('./toggle_menu');
 
 module.exports = function make_tree_menu(cgm){
 
-  console.log('MAKE TREE MENU')
+  cgm.params.viz.tree_menu_width = 500;
+  cgm.params.viz.tree_menu_height = 100;
+  cgm.params.viz.tree_menu_x_offset = 0;
 
   var params = cgm.params;
   var menu_width = cgm.params.viz.tree_menu_width;
@@ -44,40 +46,45 @@ module.exports = function make_tree_menu(cgm){
     .attr('stroke-width', '3px')
     .attr('opacity', menu_opacity);
 
-  // Clustering Parameters
-  tree_menu
-    .append('text')
-    .classed('tree_menu_title', true)
-    .attr('transform', 'translate(' + x_offset + ',30)')
-    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    .attr('font-size','18px')
-    .attr('font-weight', 800)
-    .attr('cursor', 'default')
-    .text('Clustering Parameters');
+  // // Clustering Parameters
+  // tree_menu
+  //   .append('text')
+  //   .classed('tree_menu_title', true)
+  //   .attr('transform', 'translate(' + x_offset + ',30)')
+  //   .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+  //   .attr('font-size','18px')
+  //   .attr('font-weight', 800)
+  //   .attr('cursor', 'default')
+  //   .text('Clustering Parameters');
+
+
+  cgm.params.matrix = {}
+  cgm.params.matrix.distance_metric = 'cosine'
+  cgm.params.matrix.linkage_type = 'average'
 
   var button_info = {};
-  button_info.cgm = cgm;
+  // button_info.cgm = cgm;
   button_info.selection = tree_menu;
   button_info.menu_width = menu_width;
-  button_info.distance_metric = 'cosine' // cgm.params.matrix.distance_metric;
-  button_info.linkage_type = 'average' //cgm.params.matrix.linkage_type;
+  button_info.distance_metric = cgm.params.matrix.distance_metric;
+  button_info.linkage_type = cgm.params.matrix.linkage_type;
   button_info.default_x_offset = x_offset;
 
   // distance
   /////////////////
   var distance_names = ['cosine', 'euclidean', 'correlation'];
   button_info.name = 'Distance Metric';
-  button_info.y_offset = 65;
+  button_info.y_offset = 0;
   button_info.x_offset = 0;
-  make_menu_button_section('tree_menu', 'distance_metric', button_info, distance_names);
+  make_menu_button_section(cgm, 'tree_menu', 'distance_metric', button_info, distance_names);
 
   // linkage
   /////////////////
   var linkage_names = ['average', 'single', 'complete'];
   button_info.name = 'Linkage Type';
-  button_info.y_offset = 65;
+  button_info.y_offset = 0;
   button_info.x_offset = menu_width/2;
-  make_menu_button_section('tree_menu', 'linkage_type', button_info, linkage_names);
+  make_menu_button_section(cgm, 'tree_menu', 'linkage_type', button_info, linkage_names);
 
   // // Z-score
   // /////////////////
@@ -94,12 +101,14 @@ module.exports = function make_tree_menu(cgm){
     cgm.params.matrix.distance_metric = button_info.distance_metric;
     cgm.params.matrix.linkage_type = button_info.linkage_type;
 
-    // recluster(cgm, button_info.distance_metric, button_info.linkage_type);
+    console.log(button_info)
+
+    cgm.recluster(cgm, button_info.distance_metric, button_info.linkage_type);
 
   }
 
   button_info.update_x = menu_width/2 + button_info.default_x_offset;
-  button_info.update_y = 205;
+  button_info.update_y = 10 // 205;
   make_menu_update_button(cgm, button_info, update_callback);
 
 };

@@ -1,6 +1,7 @@
 var d3 = require("d3");
 module.exports = function make_menu_update_button(cgm, button_info, update_callback){
 
+  cgm.params.viz.update_button_width = 100
 
   var update_button_width = cgm.params.viz.update_button_width;
 

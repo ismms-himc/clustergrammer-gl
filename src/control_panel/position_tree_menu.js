@@ -10,8 +10,8 @@ module.exports = function position_tree_menu(cgm){
     d3.select(params.root + ' .control-container svg .tree_menu')
       .attr('transform', function(){
         var shift = {};
-        shift.x = '800'//params.viz.clust.dim.width + params.viz.clust.margin.left - menu_width + 30;
-        shift.y = '100' // params.viz.clust.margin.top + 15;
+        shift.x = 100 //params.viz.clust.dim.width + params.viz.clust.margin.left - menu_width + 30;
+        shift.y = 25 // params.viz.clust.margin.top + 15;
         return 'translate(' + shift.x + ', ' + shift.y + ')';
       });
 

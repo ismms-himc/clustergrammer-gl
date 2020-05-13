@@ -47,6 +47,8 @@ module.exports = function build_tree_icon(cgm){
           .text('LINK')
         d3.selectAll(params.root + ' .reorder_buttons')
           .style('display', 'none');
+        d3.select(params.root + ' .run_cluster_container')
+          .style('display', 'block')
 
         params.viz.current_panel = 'recluster'
 
@@ -69,6 +71,8 @@ module.exports = function build_tree_icon(cgm){
           .text('ROW')
         d3.selectAll(params.root + ' .reorder_buttons')
           .style('display', 'block');
+        d3.select(params.root + ' .run_cluster_container')
+          .style('display', 'none')
 
         // toggle_menu(cgm, 'tree_menu', 'close');
       }
@@ -192,8 +196,56 @@ module.exports = function build_tree_icon(cgm){
     })
     .attr('opacity', 0.0);
 
+  // var order_options = ['clust', 'sum', 'var'];
 
-  // Build reorder buttons
-  d3.select(params.root + ' .control_svg')
+  // Run Reorder Button
+  ///////////////////////////
+  var control_panel_color = 'white';
+  var text_color = '#47515b';
+  var button_color = '#eee';
+  var active_run_color = '#008000' //'#00FF75';
 
+  var button_dim = {};
+  button_dim.height = 32;
+  button_dim.width = 63;
+  button_dim.buffer = 12;
+  button_dim.x_trans = button_dim.width + button_dim.buffer;
+  button_dim.fs = 11;
+
+
+  run_cluster_container = d3.select(params.root + ' .control_svg')
+    .append('g')
+    .classed('run_cluster_container', true)
+    .attr('transform', 'translate('+ 350  +', '+ 91 +')')
+    .on('click', function(d){
+
+      console.log('clicking run button', d)
+
+    })
+    .style('display', 'none')
+
+  run_cluster_container
+    .append('rect')
+    .style('height', button_dim.height)
+    .style('width', button_dim.width)
+    .style('fill', control_panel_color)
+    .style('rx', 10)
+    .style('ry', 10)
+    .style('stroke', active_run_color)
+    .style('stroke-width', 2.5);
+
+  run_cluster_container
+    .append('text')
+    .classed('button-name', true)
+    .text('run'.toUpperCase())
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight', 400)
+    .style('font-size', button_dim.fs)
+    .style('text-anchor', 'middle')
+    .style('stroke', text_color)
+    .style('alignment-baseline', 'middle')
+    .style('letter-spacing', '2px')
+    .style('cursor', 'default')
+    .style('-webkit-user-select', 'none')
+    .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 };

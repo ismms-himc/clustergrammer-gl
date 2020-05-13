@@ -16,7 +16,7 @@ module.exports = function position_tree_icon(cgm){
   // }
 
   // tmp_top =  viz.clust.margin.top + 3 * viz.uni_margin - 50;
-  tmp_top =  30; // viz.clust.margin.top + 3 * viz.uni_margin + 90;
+  tmp_top =  40; // viz.clust.margin.top + 3 * viz.uni_margin + 90;
 
   // reposition tree icon
   d3.select(cgm.params.root + ' .tree_icon')

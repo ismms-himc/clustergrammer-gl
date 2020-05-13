@@ -198,7 +198,7 @@ module.exports = function build_control_panel(){
     reorder_buttons
       .classed(i_axis + '-reorder-buttons', true);
 
-    var active_button_color = '#0000FF75';
+    var active_button_color = '#8797ff' // '#0000FF75';
 
     // generate reorder buttons
     var button_group = reorder_buttons
@@ -234,12 +234,12 @@ module.exports = function build_control_panel(){
 
     button_group
       .append('rect')
-      .style('height', button_dim.height)
-      .style('width', button_dim.width)
-      .style('fill', control_panel_color)
-      .style('rx', 10)
-      .style('ry', 10)
-      .style('stroke', function(d){
+      .attr('height', button_dim.height)
+      .attr('width', button_dim.width)
+      .attr('fill', control_panel_color)
+      .attr('rx', 10)
+      .attr('ry', 10)
+      .attr('stroke', function(d){
         var i_color;
         if (params.order.inst[i_axis] == d){
           i_color = active_button_color;
@@ -248,7 +248,7 @@ module.exports = function build_control_panel(){
         }
         return i_color;
       })
-      .style('stroke-width', 2.5);
+      .attr('stroke-width', 2.5);
 
 
     button_group

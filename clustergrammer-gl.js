@@ -69079,6 +69079,41 @@ module.exports = function build_control_panel(){
   __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js")(regl, cgm);
   __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js")(cgm);
 
+  // row search
+  var search_container = d3.select(params.root + ' .control-container')
+    .append('div')
+    // .classed('row',true)
+    .classed('gene_search_container',true)
+    .style('padding-left','10px')
+    .style('padding-right','10px')
+    .style('margin-top','10px');
+
+  search_container
+    .append('input')
+    .classed('form-control',true)
+    .classed('gene_search_box',true)
+    .classed('sidebar_text', true)
+    .attr('type','text')
+    .attr('placeholder', 'something')
+    .style('height', '20px')
+    .style('margin-top', '10px');
+
+  search_container
+    .append('div')
+    .classed('gene_search_button',true)
+    .style('margin-top', '5px')
+    .attr('data-toggle','buttons')
+    .append('button')
+    .classed('sidebar_text', true)
+    .html('Search')
+    .attr('type','button')
+    .classed('btn',true)
+    .classed('btn-primary',true)
+    .classed('submit_gene_button',true)
+    .style('width', '100%')
+    .style('font-size', '14px');
+
+
 };
 
 /***/ }),

@@ -67742,6 +67742,8 @@ var get_cat_value = __webpack_require__(/*! ./get_cat_value */ "./src/cats/get_c
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
+  console.log('make_cat_args')
+
   var cat_index_name = 'cat-' + String(cat_index);
 
   /*
@@ -68246,6 +68248,28 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
   }
 
   return y_offset_array;
+
+}
+
+/***/ }),
+
+/***/ "./src/cats/manual_update_to_cats.js":
+/*!*******************************************!*\
+  !*** ./src/cats/manual_update_to_cats.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function manual_update_to_cats(new_cat){
+  console.log('manual_update_to_cats')
+
+  // console.log(this.params)
+
+  // simulate manual update to categories
+  cgm.params.network['row_nodes'].map(x => x['cat-0'] = new_cat)
+
+  // generate an ordred labels list
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(this.params);
 
 }
 
@@ -69964,6 +69988,8 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 /***/ (function(module, exports) {
 
 module.exports = function calc_dendro_triangles(params, inst_axis){
+
+  console.log('calc_dendro_triangles')
 
   var triangle_info = {};
 
@@ -71894,6 +71920,8 @@ function clustergrammer_gl(args, external_model=null){
     cgm.single_clicking = __webpack_require__(/*! ./interactions/single_clicking */ "./src/interactions/single_clicking.js");
     cgm.zoom_rules_high_mat = __webpack_require__(/*! ./zoom/zoom_rules_high_mat */ "./src/zoom/zoom_rules_high_mat.js");
 
+    cgm.gen_ordered_labels = __webpack_require__(/*! ./params/gen_label_par */ "./src/params/gen_label_par.js");
+
 
     if (typeof args.widget_callback !== 'undefined'){
       console.log('pass widget_callback to cgm  ')
@@ -71916,6 +71944,8 @@ function clustergrammer_gl(args, external_model=null){
     }
 
     cgm.recluster = __webpack_require__(/*! ./recluster/recluster */ "./src/recluster/recluster.js");
+
+    cgm.manual_update_to_cats = __webpack_require__(/*! ./cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js")
 
     return cgm;
 
@@ -72090,6 +72120,8 @@ module.exports = function make_matrix_args(regl, params){
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 module.exports = function make_opacity_arr(params){
+
+  console.log('make_opacity_arr')
 
   var mat_data = params.mat_data;
 
@@ -72323,20 +72355,25 @@ module.exports = function gather_text_triangles(params, inst_axis){
 module.exports = function gen_ordered_labels(params){
   // Generate lists of ordered label and category names for mouseover
 
+  console.log('---------------------------')
+  console.log('----- gen_ordered_labels --')
+  console.log(params.labels.queue)
+  console.log('---------------------------')
+
   var i_order;
-  var ol = {};
+  var ordered_labels = {}
   var axis_nodes;
   var i;
   var found_axis_cat;
 
   _.each(['row', 'col'], function(i_axis){
-    ol[i_axis + 's'] = [];
-    ol[i_axis + '_indices'] = [];
+    ordered_labels[i_axis + 's'] = [];
+    ordered_labels[i_axis + '_indices'] = [];
     axis_nodes = params.network[i_axis + '_nodes'];
     found_axis_cat = false;
 
     for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
-      ol[i_axis + '_cats-' + String(i)] = [];
+      ordered_labels[i_axis + '_cats-' + String(i)] = [];
     }
 
     if (params.cat_data.cat_num[i_axis] > 0){
@@ -72346,20 +72383,20 @@ module.exports = function gen_ordered_labels(params){
     _.each(axis_nodes, function(inst_node, inst_index){
       i_order = params.labels['num_' + i_axis] - 1 - inst_node[params.order.inst[i_axis]];
       // ordered names
-      ol[i_axis + 's'][i_order] = inst_node.name;
+      ordered_labels[i_axis + 's'][i_order] = inst_node.name;
       // ordered indices (for value retrieval)
-      ol[i_axis + '_indices'][i_order] = inst_index;
+      ordered_labels[i_axis + '_indices'][i_order] = inst_index;
 
       if (found_axis_cat){
         for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
-          ol[i_axis + '_cats-' + String(i)][i_order] = inst_node['cat-' + String(i)];
+          ordered_labels[i_axis + '_cats-' + String(i)][i_order] = inst_node['cat-' + String(i)];
         }
       }
     });
 
   });
 
-  params.labels.ordered_labels = ol;
+  params.labels.ordered_labels = ordered_labels;
 
 };
 
@@ -74803,16 +74840,10 @@ module.exports = function display_and_position_tooltip(params){
 
   params.d3_tip_width = d3_tip_width;
 
-  // console.log('position tooltip type', params.tooltip.tooltip_type);
-
-  // debugger;
-
   // need to set up custom positioning of the tooltip based on the mouseover type
   // upper left if on matrix-cell, upper right if on row label, lower left if on
   // column mouseover. Should be able to check params.tooltip.tooltip_type to
   // find out how to position the tooltip
-
-  // currently hardwiring positions
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 
@@ -75282,8 +75313,6 @@ var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./
 var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
 module.exports = function run_show_tooltip(params){
-
-  //console.log('show tooltip!!!')
 
   if (params.tooltip.permanent_tooltip === false){
 

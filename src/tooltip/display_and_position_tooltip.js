@@ -28,16 +28,10 @@ module.exports = function display_and_position_tooltip(params){
 
   params.d3_tip_width = d3_tip_width;
 
-  // console.log('position tooltip type', params.tooltip.tooltip_type);
-
-  // debugger;
-
   // need to set up custom positioning of the tooltip based on the mouseover type
   // upper left if on matrix-cell, upper right if on row label, lower left if on
   // column mouseover. Should be able to check params.tooltip.tooltip_type to
   // find out how to position the tooltip
-
-  // currently hardwiring positions
 
   if (params.tooltip.tooltip_type === 'matrix-cell'){
 

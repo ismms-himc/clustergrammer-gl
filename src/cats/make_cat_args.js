@@ -4,6 +4,8 @@ var get_cat_value = require('./get_cat_value');
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
+  console.log('make_cat_args')
+
   var cat_index_name = 'cat-' + String(cat_index);
 
   /*

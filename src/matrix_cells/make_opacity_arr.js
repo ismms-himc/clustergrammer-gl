@@ -1,6 +1,8 @@
 var d3 = require("d3");
 module.exports = function make_opacity_arr(params){
 
+  console.log('make_opacity_arr')
+
   var mat_data = params.mat_data;
 
   var opacity_arr = [].concat.apply([], mat_data);

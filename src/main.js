@@ -34,6 +34,8 @@ function clustergrammer_gl(args, external_model=null){
     cgm.single_clicking = require('./interactions/single_clicking');
     cgm.zoom_rules_high_mat = require('./zoom/zoom_rules_high_mat');
 
+    cgm.gen_ordered_labels = require('./params/gen_label_par');
+
 
     if (typeof args.widget_callback !== 'undefined'){
       console.log('pass widget_callback to cgm  ')
@@ -56,6 +58,8 @@ function clustergrammer_gl(args, external_model=null){
     }
 
     cgm.recluster = require('./recluster/recluster');
+
+    cgm.manual_update_to_cats = require('./cats/manual_update_to_cats')
 
     return cgm;
 

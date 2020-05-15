@@ -75177,26 +75177,57 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .style('margin-top', '10px')
     .text('Custom Category: ');
 
-  d3.select(params.tooltip_id)
-    .append('input')
-    .attr('placeholder', 'Custom Category')
-    .style('width', '200px')
-    .style('display', 'block')
-    .style('color', 'black');
-
-  // stacking input forms
-  /////////////////////////
-  // custom_cat_div = d3.select(params.tooltip_id)
-  //   .append('div')
-
-  // custom_cat_div
+  // d3.select(params.tooltip_id)
   //   .append('input')
-  //   .style('placeholder', 'Custom Category')
-  //   .style('width', '150px')
+  //   .attr('placeholder', 'Custom Category')
+  //   .style('width', '200px')
   //   .style('display', 'block')
-  //   .style('float', 'left')
   //   .style('color', 'black');
 
+  // stacking input forms
+  ///////////////////////
+  custom_cat_div = d3.select(params.tooltip_id)
+    .append('div')
+    // .style('padding', '3px')
+    // .style('flex-flow', 'row wrap')
+
+  custom_cat_div
+    .append('input')
+    .classed('custom-cat-input', true)
+    .attr('placeholder', 'Category')
+    .style('width', '165px')
+    .style('display', 'inline-block')
+    .style('color', 'black');
+
+  custom_cat_div
+    .append('input')
+    .classed('custom-cat-color', true)
+    .attr('placeholder', 'Color')
+    .style('width', '100px')
+    .style('display', 'inline-block')
+    .style('margin-left', '5px')
+    .style('color', 'black');
+
+  custom_cat_div
+    .append('button')
+    .style('display', 'inline-block')
+    .style('margin-left', '5px')
+
+    .style('padding', '2px 5px')
+    .style('background-color', 'dodgerblue')
+    .style('border', '1px solid #ddd')
+    .style('color', 'white')
+    .style('cursor', 'pointer')
+    .append('text')
+    .text('Set Category')
+    .on('click', d => {
+      let inst_input = d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value;
+      let inst_color = d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
+      console.log(inst_input, inst_color)
+    })
+
+  // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
+  // d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
 
   // custom_cat_div
   //   .append('input')
@@ -75205,8 +75236,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   //   .style('display', 'block')
   //   .style('float', 'left')
   //   .style('color', 'black');
-
-
 
   console.log(params.dendro.selected_clust_names)
 

@@ -27,7 +27,7 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 
   d3.select(params.tooltip_id)
     .append('text')
-    .text('Selcted ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
+    .text('Selected ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
 
   d3.select(params.tooltip_id)
     .append('input')
@@ -37,6 +37,46 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .style('width', '364px')
     .style('display', 'block')
     .style('color', 'black');
+
+  // Custom Category
+  ////////////////////////////
+  d3.select(params.tooltip_id)
+    .append('text')
+    .style('margin-top', '10px')
+    .text('Custom Category: ');
+
+  d3.select(params.tooltip_id)
+    .append('input')
+    .attr('placeholder', 'Custom Category')
+    .style('width', '200px')
+    .style('display', 'block')
+    .style('color', 'black');
+
+  // stacking input forms
+  /////////////////////////
+  // custom_cat_div = d3.select(params.tooltip_id)
+  //   .append('div')
+
+  // custom_cat_div
+  //   .append('input')
+  //   .style('placeholder', 'Custom Category')
+  //   .style('width', '150px')
+  //   .style('display', 'block')
+  //   .style('float', 'left')
+  //   .style('color', 'black');
+
+
+  // custom_cat_div
+  //   .append('input')
+  //   .style('placeholder', 'Custom Category')
+  //   .style('width', '50px')
+  //   .style('display', 'block')
+  //   .style('float', 'left')
+  //   .style('color', 'black');
+
+
+
+  console.log(params.dendro.selected_clust_names)
 
   // // working on adding crop functionality
   // /////////////////////////////////////////
@@ -50,18 +90,16 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   //   .append('text')
   //   .text('Crop to Selected Cluster')
 
-
-    // .append('div')
-    // .style('text-align', 'right')
-    // .style('cursor', 'default')
-    // .on('click', function(){
-    //   console.log('clicking close tooltip')
-    //   params.tooltip.permanent_tooltip = false;
-    //   run_hide_tooltip(params);
-    // })
-    // .append('text')
-    // .text('X')
-    // .style('font-size', '15px')
-
+  // .append('div')
+  // .style('text-align', 'right')
+  // .style('cursor', 'default')
+  // .on('click', function(){
+  //   console.log('clicking close tooltip')
+  //   params.tooltip.permanent_tooltip = false;
+  //   run_hide_tooltip(params);
+  // })
+  // .append('text')
+  // .text('X')
+  // .style('font-size', '15px')
 
 };

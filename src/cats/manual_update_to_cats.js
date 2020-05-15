@@ -1,10 +1,22 @@
-module.exports = function manual_update_to_cats(new_cat){
+module.exports = function manual_update_to_cats(inst_axis, new_cat, selected_labels){
+
   console.log('manual_update_to_cats')
 
-  // console.log(this.params)
-
   // simulate manual update to categories
-  cgm.params.network['row_nodes'].map(x => x['cat-0'] = new_cat)
+  cgm.params.network[inst_axis + '_nodes']
+     .map(x => {
+
+       inst_name = x.name
+
+       if ( inst_name.includes(': ') ){
+         inst_name = inst_name.split(': ')[1]
+       }
+
+       if (selected_labels.includes(inst_name)){
+         x['cat-0'] = new_cat
+       }
+
+     })
 
   params = this.params
   regl = this.regl

@@ -68268,8 +68268,19 @@ module.exports = function manual_update_to_cats(new_cat){
   // simulate manual update to categories
   cgm.params.network['row_nodes'].map(x => x['cat-0'] = new_cat)
 
+  params = this.params
+  regl = this.regl
+
   // generate an ordred labels list
-  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(this.params);
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
+
+  __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+
+  var draw_labels = params.labels.draw_labels;
+  __webpack_require__(/*! ./../draws/draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
+  __webpack_require__(/*! ./../draws/draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'row', draw_labels);
+  __webpack_require__(/*! ./../draws/draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'col', draw_labels);
+  __webpack_require__(/*! ./../draws/draw_static_components */ "./src/draws/draw_static_components.js")(regl, params);
 
 }
 
@@ -73652,7 +73663,7 @@ var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/ca
 
 module.exports = function generate_cat_args_arrs(regl, params){
 
-  // console.log('re-generate cat parameters because mousing over cats')
+  console.log('re-generate cat parameters because mousing over cats')
 
   params.cat_args = {};
   params.cat_args.row = [];

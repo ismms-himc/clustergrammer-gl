@@ -87,20 +87,20 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('border', '1px solid #ddd')
     .style('color', 'white')
     .style('cursor', 'pointer')
-    .append('text')
-    .text('Set Category')
     .on('click', d => {
       let inst_cat = d3.select(params.tooltip_id + ' .custom-cat-input').node().value;
       let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color').node().value;
 
-      console.log('****************************')
-      console.log(inst_cat, inst_color)
-
-      let inst_labels = params.dendro.selected_clust_names;
-      manual_update_to_cats(cgm, inst_axis, 'Category: ' + inst_cat, inst_labels);
-
+      if (inst_cat != ''){
+        console.log('****************************')
+        console.log(inst_cat, inst_color)
+        let inst_labels = params.dendro.selected_clust_names;
+        manual_update_to_cats(cgm, inst_axis, 'Category: ' + inst_cat, inst_labels);
+      }
 
     })
+    .append('text')
+    .text('Set Category')
 
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value

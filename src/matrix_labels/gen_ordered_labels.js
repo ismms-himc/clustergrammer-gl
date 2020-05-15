@@ -1,9 +1,15 @@
-module.exports = function gen_ordered_labels(params){
+module.exports = function gen_ordered_labels(cgm){
   // Generate lists of ordered label and category names for mouseover
+
+  let params = cgm.params
 
   console.log('---------------------------')
   console.log('----- gen_ordered_labels --')
-  console.log(params.labels.queue)
+
+  // console.log()
+  // console.log(params.labels.queue)
+
+  // debugger;
   console.log('---------------------------')
 
   var i_order;
@@ -17,6 +23,9 @@ module.exports = function gen_ordered_labels(params){
     ordered_labels[i_axis + '_indices'] = [];
     axis_nodes = params.network[i_axis + '_nodes'];
     found_axis_cat = false;
+
+
+    // debugger
 
     for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
       ordered_labels[i_axis + '_cats-' + String(i)] = [];

@@ -1,4 +1,4 @@
-module.exports = function make_inst_queue(params){
+module.exports = function make_label_queue(params){
 
   params.labels.queue = {}
   params.labels.queue.low = {}

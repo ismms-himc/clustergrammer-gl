@@ -1,4 +1,10 @@
-module.exports = function gen_label_par(params){
+module.exports = function gen_label_par(cgm){
+
+  let params = cgm.params;
+
+  console.log('-----------------------------------------')
+  console.log('gen_label_par')
+  console.log('-----------------------------------------')
 
   var labels = {};
   labels.num_row = params.mat_data.length;
@@ -31,6 +37,6 @@ module.exports = function gen_label_par(params){
   });
 
   params.labels = labels;
-  require('./../matrix_labels/gen_ordered_labels')(params);
+  require('./../matrix_labels/gen_ordered_labels')(cgm);
 
 };

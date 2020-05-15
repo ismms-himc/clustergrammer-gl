@@ -41,7 +41,7 @@ module.exports = function run_viz(external_model){
     if (params.ani.run_animation){
       start_animation(params);
     } else if (params.ani.time > params.ani.duration_end && params.ani.running === true){
-      end_animation(regl, params);
+      end_animation(cgm);
     }
 
     if (params.int.still_interacting == true ||
@@ -49,7 +49,7 @@ module.exports = function run_viz(external_model){
         params.ani.running == true||
         params.ani.update_viz == true){
 
-      draw_interacting(regl, params);
+      draw_interacting(cgm);
 
       params.ani.update_viz = false;
 

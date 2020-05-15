@@ -12,7 +12,7 @@ module.exports = function single_clicking(params, external_model){
 
   if (params.tooltip.tooltip_type.includes('-dendro')){
     if (params.tooltip.permanent_tooltip === false){
-      require('./../tooltip/run_show_tooltip')(params);
+      require('./../tooltip/run_show_tooltip')(cgm);
       params.tooltip.permanent_tooltip = true;
     }
   }

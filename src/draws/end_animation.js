@@ -1,5 +1,9 @@
 var d3 = require("d3");
-module.exports = function end_animation(regl, params){
+module.exports = function end_animation(cgm){
+
+
+  let regl = cgm.regl
+  let params = cgm.params
   params.ani.running = false;
   params.ani.run_animation = false;
 
@@ -35,5 +39,5 @@ module.exports = function end_animation(regl, params){
   });
 
   // update ordered_labels
-  require('./../matrix_labels/gen_ordered_labels')(params);
+  require('./../matrix_labels/gen_ordered_labels')(cgm);
 };

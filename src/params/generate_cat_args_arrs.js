@@ -7,6 +7,8 @@ module.exports = function generate_cat_args_arrs(regl, params){
 
   console.log('re-generate cat parameters because mousing over cats')
 
+  // debugger
+
   params.cat_args = {};
   params.cat_args.row = [];
   params.cat_args.col = [];

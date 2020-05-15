@@ -19,6 +19,11 @@ module.exports = function gen_cat_par(params){
 
   params.cat_data = cd;
 
+
+  console.log('******************')
+  console.log(params.cat_data)
+  console.log('******************')
+
   generate_cat_info(params);
 
 };

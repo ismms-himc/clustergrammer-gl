@@ -68260,9 +68260,13 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function manual_update_to_cats(inst_axis, new_cat, selected_labels){
+module.exports = function manual_update_to_cats(cgm, inst_axis, new_cat, selected_labels){
 
   console.log('manual_update_to_cats')
+
+  params = cgm.params
+  regl = cgm.regl
+
 
   // simulate manual update to categories
   cgm.params.network[inst_axis + '_nodes']
@@ -68280,11 +68284,8 @@ module.exports = function manual_update_to_cats(inst_axis, new_cat, selected_lab
 
      })
 
-  params = this.params
-  regl = this.regl
-
   // generate an ordred labels list
-  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(cgm);
 
   __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
 
@@ -70422,7 +70423,10 @@ module.exports = function draw_background_calculations(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function draw_commands(regl, params){
+module.exports = function draw_commands(cgm){
+
+  let regl = cgm.regl
+  let params = cgm.params
 
   // if mousing over categories initialize all categories to low opacity
   var mousing_over_cat = false;
@@ -70457,7 +70461,7 @@ module.exports = function draw_commands(regl, params){
 
   // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
-    __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
+    __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(cgm);
   }
   if (params.labels.draw_labels){
     params.labels.draw_labels = false;
@@ -70473,13 +70477,16 @@ module.exports = function draw_commands(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function draw_interacting(regl, params){
+module.exports = function draw_interacting(cgm){
+
+  let regl = cgm.regl
+  let params = cgm.params
 
   var wait_time_final_interact = 100;
 
   params.int.total = params.int.total + 1;
 
-  __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js")(regl, params);
+  __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js")(cgm);
 
   setTimeout(__webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js"),
              wait_time_final_interact, regl, params);
@@ -70510,7 +70517,7 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
 
   // turn back on draw_labels
   ///////////////////////////////
-  draw_commands(regl, params);
+  draw_commands(cgm);
 
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;
@@ -70629,7 +70636,11 @@ module.exports = function draw_static_components(regl, params){
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-module.exports = function end_animation(regl, params){
+module.exports = function end_animation(cgm){
+
+
+  let regl = cgm.regl
+  let params = cgm.params
   params.ani.running = false;
   params.ani.run_animation = false;
 
@@ -70665,7 +70676,7 @@ module.exports = function end_animation(regl, params){
   });
 
   // update ordered_labels
-  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(cgm);
 };
 
 /***/ }),
@@ -70777,7 +70788,7 @@ module.exports = function run_viz(external_model){
     if (params.ani.run_animation){
       start_animation(params);
     } else if (params.ani.time > params.ani.duration_end && params.ani.running === true){
-      end_animation(regl, params);
+      end_animation(cgm);
     }
 
     if (params.int.still_interacting == true ||
@@ -70785,7 +70796,7 @@ module.exports = function run_viz(external_model){
         params.ani.running == true||
         params.ani.update_viz == true){
 
-      draw_interacting(regl, params);
+      draw_interacting(cgm);
 
       params.ani.update_viz = false;
 
@@ -71783,7 +71794,7 @@ module.exports = function single_clicking(params, external_model){
 
   if (params.tooltip.tooltip_type.includes('-dendro')){
     if (params.tooltip.permanent_tooltip === false){
-      __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(params);
+      __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(cgm);
       params.tooltip.permanent_tooltip = true;
     }
   }
@@ -72375,12 +72386,18 @@ module.exports = function gather_text_triangles(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function gen_ordered_labels(params){
+module.exports = function gen_ordered_labels(cgm){
   // Generate lists of ordered label and category names for mouseover
+
+  let params = cgm.params
 
   console.log('---------------------------')
   console.log('----- gen_ordered_labels --')
-  console.log(params.labels.queue)
+
+  // console.log()
+  // console.log(params.labels.queue)
+
+  // debugger;
   console.log('---------------------------')
 
   var i_order;
@@ -72394,6 +72411,9 @@ module.exports = function gen_ordered_labels(params){
     ordered_labels[i_axis + '_indices'] = [];
     axis_nodes = params.network[i_axis + '_nodes'];
     found_axis_cat = false;
+
+
+    // debugger
 
     for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
       ordered_labels[i_axis + '_cats-' + String(i)] = [];
@@ -72596,7 +72616,7 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function make_inst_queue(params){
+module.exports = function make_label_queue(params){
 
   params.labels.queue = {}
   params.labels.queue.low = {}
@@ -73481,6 +73501,11 @@ module.exports = function gen_cat_par(params){
 
   params.cat_data = cd;
 
+
+  console.log('******************')
+  console.log(params.cat_data)
+  console.log('******************')
+
   generate_cat_info(params);
 
 };
@@ -73567,7 +73592,13 @@ module.exports = function gen_int_par(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function gen_label_par(params){
+module.exports = function gen_label_par(cgm){
+
+  let params = cgm.params;
+
+  console.log('-----------------------------------------')
+  console.log('gen_label_par')
+  console.log('-----------------------------------------')
 
   var labels = {};
   labels.num_row = params.mat_data.length;
@@ -73600,7 +73631,7 @@ module.exports = function gen_label_par(params){
   });
 
   params.labels = labels;
-  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(params);
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(cgm);
 
 };
 
@@ -73676,6 +73707,8 @@ var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/ca
 module.exports = function generate_cat_args_arrs(regl, params){
 
   console.log('re-generate cat parameters because mousing over cats')
+
+  // debugger
 
   params.cat_args = {};
   params.cat_args.row = [];
@@ -73886,16 +73919,17 @@ module.exports = function initialize_params(external_model){
 
   var network = this.network;
 
-  var params = {};
+  cgm.params = {};
+  let params = cgm.params;
   params.network = network;
 
   __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js")(params);
   __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js")(params)
   __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int_par.js")(params);
-  params.mat_data = params.network.mat;
   __webpack_require__(/*! ./gen_cat_par */ "./src/params/gen_cat_par.js")(params);
+  params.mat_data = params.network.mat;
   __webpack_require__(/*! ./generate_order_params */ "./src/params/generate_order_params.js")(params);
-  __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js")(params);
+  __webpack_require__(/*! ./gen_label_par */ "./src/params/gen_label_par.js")(cgm);
   var labels = params.labels;
 
   // console.log('generate_tooltip_params')
@@ -75135,8 +75169,11 @@ var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakd
 var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
 var run_hide_tooltip = __webpack_require__(/*! ./run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
 // var run_dendro_crop = require('./../crop/run_dendro_crop');
+var manual_update_to_cats = __webpack_require__(/*! ./../cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js");
 
-module.exports = function make_dendro_tooltip(params, inst_axis){
+module.exports = function make_dendro_tooltip(cgm, inst_axis){
+
+  var params = cgm.params;
 
   var mouseover = params.int.mouseover;
 
@@ -75174,7 +75211,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   ////////////////////////////
   d3.select(params.tooltip_id)
     .append('text')
-    .style('margin-top', '10px')
     .text('Custom Category: ');
 
   // d3.select(params.tooltip_id)
@@ -75212,7 +75248,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .append('button')
     .style('display', 'inline-block')
     .style('margin-left', '5px')
-
     .style('padding', '2px 5px')
     .style('background-color', 'dodgerblue')
     .style('border', '1px solid #ddd')
@@ -75221,9 +75256,16 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .append('text')
     .text('Set Category')
     .on('click', d => {
-      let inst_input = d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value;
-      let inst_color = d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
-      console.log(inst_input, inst_color)
+      let inst_cat = d3.select(params.tooltip_id + ' .custom-cat-input').node().value;
+      let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color').node().value;
+
+      console.log('****************************')
+      console.log(inst_cat, inst_color)
+
+      let inst_labels = params.dendro.selected_clust_names;
+      manual_update_to_cats(cgm, inst_axis, 'Category: ' + inst_cat, inst_labels);
+
+
     })
 
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
@@ -75277,8 +75319,9 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
 
-module.exports = function make_tooltip_text(params){
+module.exports = function make_tooltip_text(cgm){
 
+  let params = cgm.params;
   var inst_axis;
   var tooltip_text;
   var mouseover = params.int.mouseover;
@@ -75324,7 +75367,7 @@ module.exports = function make_tooltip_text(params){
     // Dendro Tooltip
     //////////////////
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
-    make_dendro_tooltip(params, inst_axis);
+    make_dendro_tooltip(cgm, inst_axis);
 
   } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
 
@@ -75402,13 +75445,15 @@ var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/to
 var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
 var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
-module.exports = function run_show_tooltip(params){
+module.exports = function run_show_tooltip(cgm){
+
+  let params = cgm.params;
 
   if (params.tooltip.permanent_tooltip === false){
 
     remove_lost_tooltips();
 
-    make_tooltip_text(params);
+    make_tooltip_text(cgm);
 
     display_and_position_tooltip(params);
 

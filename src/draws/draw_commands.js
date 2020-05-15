@@ -1,4 +1,7 @@
-module.exports = function draw_commands(regl, params){
+module.exports = function draw_commands(cgm){
+
+  let regl = cgm.regl
+  let params = cgm.params
 
   // if mousing over categories initialize all categories to low opacity
   var mousing_over_cat = false;
@@ -33,7 +36,7 @@ module.exports = function draw_commands(regl, params){
 
   // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
-    require('./../tooltip/run_show_tooltip')(params);
+    require('./../tooltip/run_show_tooltip')(cgm);
   }
   if (params.labels.draw_labels){
     params.labels.draw_labels = false;

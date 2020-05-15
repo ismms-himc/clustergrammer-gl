@@ -13,16 +13,17 @@ module.exports = function initialize_params(external_model){
 
   var network = this.network;
 
-  var params = {};
+  cgm.params = {};
+  let params = cgm.params;
   params.network = network;
 
   require('./gen_ani_par')(params);
   require('./calc_alpha_order')(params)
   require('./gen_int_par')(params);
-  params.mat_data = params.network.mat;
   require('./gen_cat_par')(params);
+  params.mat_data = params.network.mat;
   require('./generate_order_params')(params);
-  require('./gen_label_par')(params);
+  require('./gen_label_par')(cgm);
   var labels = params.labels;
 
   // console.log('generate_tooltip_params')

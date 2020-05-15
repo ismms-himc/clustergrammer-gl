@@ -3,8 +3,11 @@ var make_cat_breakdown_graph = require('./../cats/make_cat_breakdown_graph');
 var calc_cat_cluster_breakdown = require('./../cats/calc_cat_cluster_breakdown');
 var run_hide_tooltip = require('./run_hide_tooltip');
 // var run_dendro_crop = require('./../crop/run_dendro_crop');
+var manual_update_to_cats = require('./../cats/manual_update_to_cats');
 
-module.exports = function make_dendro_tooltip(params, inst_axis){
+module.exports = function make_dendro_tooltip(cgm, inst_axis){
+
+  var params = cgm.params;
 
   var mouseover = params.int.mouseover;
 
@@ -42,7 +45,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
   ////////////////////////////
   d3.select(params.tooltip_id)
     .append('text')
-    .style('margin-top', '10px')
     .text('Custom Category: ');
 
   // d3.select(params.tooltip_id)
@@ -80,7 +82,6 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .append('button')
     .style('display', 'inline-block')
     .style('margin-left', '5px')
-
     .style('padding', '2px 5px')
     .style('background-color', 'dodgerblue')
     .style('border', '1px solid #ddd')
@@ -89,9 +90,16 @@ module.exports = function make_dendro_tooltip(params, inst_axis){
     .append('text')
     .text('Set Category')
     .on('click', d => {
-      let inst_input = d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value;
-      let inst_color = d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
-      console.log(inst_input, inst_color)
+      let inst_cat = d3.select(params.tooltip_id + ' .custom-cat-input').node().value;
+      let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color').node().value;
+
+      console.log('****************************')
+      console.log(inst_cat, inst_color)
+
+      let inst_labels = params.dendro.selected_clust_names;
+      manual_update_to_cats(cgm, inst_axis, 'Category: ' + inst_cat, inst_labels);
+
+
     })
 
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value

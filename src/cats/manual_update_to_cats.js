@@ -1,6 +1,10 @@
-module.exports = function manual_update_to_cats(inst_axis, new_cat, selected_labels){
+module.exports = function manual_update_to_cats(cgm, inst_axis, new_cat, selected_labels){
 
   console.log('manual_update_to_cats')
+
+  params = cgm.params
+  regl = cgm.regl
+
 
   // simulate manual update to categories
   cgm.params.network[inst_axis + '_nodes']
@@ -18,11 +22,8 @@ module.exports = function manual_update_to_cats(inst_axis, new_cat, selected_lab
 
      })
 
-  params = this.params
-  regl = this.regl
-
   // generate an ordred labels list
-  require('./../matrix_labels/gen_ordered_labels')(params);
+  require('./../matrix_labels/gen_ordered_labels')(cgm);
 
   require('./../params/generate_cat_args_arrs')(regl, params);
 

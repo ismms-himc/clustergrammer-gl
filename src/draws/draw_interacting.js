@@ -1,10 +1,13 @@
-module.exports = function draw_interacting(regl, params){
+module.exports = function draw_interacting(cgm){
+
+  let regl = cgm.regl
+  let params = cgm.params
 
   var wait_time_final_interact = 100;
 
   params.int.total = params.int.total + 1;
 
-  require('./draw_commands')(regl, params);
+  require('./draw_commands')(cgm);
 
   setTimeout(require('./../interactions/final_interaction_frame'),
              wait_time_final_interact, regl, params);

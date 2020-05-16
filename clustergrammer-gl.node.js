@@ -71714,7 +71714,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.13.3
+  clustergrammer-gl version 0.13.4
 
  */
 
@@ -71723,7 +71723,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.3');
+  console.log('clustergrammer-gl version 0.13.4');
   console.log('#################################');
 
   var cgm = {};
@@ -71786,10 +71786,10 @@ function clustergrammer_gl(args, external_model=null){
       console.log('empty tooltip', d3.select(cgm.params.tooltip_id).empty())
       console.log('>>> -----------------------------------')
 
-      // Jupyter.keyboard_manager
-      //        .register_events(
-      //          document.getElementById(params.tooltip_id.replace('#', ''))
-      //          )
+      Jupyter.keyboard_manager
+             .register_events(
+               document.getElementById(cgm.params.tooltip_id.replace('#', ''))
+               )
     }
 
     return cgm;

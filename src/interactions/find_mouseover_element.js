@@ -115,6 +115,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
     });
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
+
+      // have a look at this later, console log errors occur sometimes when moving mouse around
       params.int.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
     }
 

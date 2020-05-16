@@ -1,3 +1,4 @@
+ var d3 = require("d3");
 var manual_update_to_cats = require('./../cats/manual_update_to_cats');
 
 module.exports = function manual_category_from_dendro(cgm, inst_axis){

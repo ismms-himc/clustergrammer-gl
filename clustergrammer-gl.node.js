@@ -70962,6 +70962,8 @@ module.exports = function find_mouseover_element(regl, params, ev){
     });
 
     if (params.tooltip.tooltip_type === 'matrix-cell'){
+
+      // have a look at this later, console log errors occur sometimes when moving mouse around
       params.int.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
     }
 
@@ -71711,7 +71713,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.13.0
+  clustergrammer-gl version 0.13.1
 
  */
 
@@ -71720,7 +71722,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.0');
+  console.log('clustergrammer-gl version 0.13.1');
   console.log('#################################');
 
   var cgm = {};
@@ -75141,6 +75143,7 @@ module.exports = function make_tooltip_text(cgm){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var manual_update_to_cats = __webpack_require__(/*! ./../cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js");
 
 module.exports = function manual_category_from_dendro(cgm, inst_axis){

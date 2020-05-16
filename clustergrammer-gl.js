@@ -73809,6 +73809,15 @@ module.exports = function initialize_params(external_model){
     // params.widget_model = null;
   }
 
+  params.cat_data.manual_category = {}
+  if ('manual_category' in params.network){
+    params.cat_data.manual_category.row = params.network.manual_category.row
+    params.cat_data.manual_category.col = params.network.manual_category.col
+  } else {
+    params.cat_data.manual_category.row = false
+    params.cat_data.manual_category.col = false
+  }
+
   this.params = params;
 };
 
@@ -75000,7 +75009,9 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('display', 'block')
     .style('color', 'black');
 
-  manual_category_from_dendro(cgm, inst_axis);
+  if (params.cat_data.manual_category[inst_axis]){
+    manual_category_from_dendro(cgm, inst_axis);
+  }
 
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
@@ -75157,7 +75168,6 @@ module.exports = function manual_category_from_dendro(cgm, inst_axis){
      '#ff9900','#ff5500', '#775544','#999999','#828080','#444']
 
   let select_color_from_pallet = function(inst_color){
-    console.log('select_color_from_pallet')
     d3.select(params.tooltip_id + ' .custom-cat-color')
       .attr('value', inst_color)
 
@@ -75220,11 +75230,8 @@ module.exports = function manual_category_from_dendro(cgm, inst_axis){
     .style('margin-left', '5px')
     .style('color', 'black')
     .on('input', function(d){
-      console.log(this.value)
-
       d3.select(params.tooltip_id + ' .color-preview')
         .style('background-color', this.value)
-
     })
 
   let color_picker_height = 45
@@ -75280,8 +75287,7 @@ module.exports = function manual_category_from_dendro(cgm, inst_axis){
       let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color').node().value;
 
       if (inst_cat != ''){
-        console.log('****************************')
-        console.log(inst_cat, inst_color)
+
         let inst_labels = params.dendro.selected_clust_names;
 
         // Only allowing custom naming of first column

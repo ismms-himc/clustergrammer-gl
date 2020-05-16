@@ -42,7 +42,9 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('display', 'block')
     .style('color', 'black');
 
-  manual_category_from_dendro(cgm, inst_axis);
+  if (params.cat_data.manual_category[inst_axis]){
+    manual_category_from_dendro(cgm, inst_axis);
+  }
 
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value

@@ -111,5 +111,14 @@ module.exports = function initialize_params(external_model){
     // params.widget_model = null;
   }
 
+  params.cat_data.manual_category = {}
+  if ('manual_category' in params.network){
+    params.cat_data.manual_category.row = params.network.manual_category.row
+    params.cat_data.manual_category.col = params.network.manual_category.col
+  } else {
+    params.cat_data.manual_category.row = false
+    params.cat_data.manual_category.col = false
+  }
+
   this.params = params;
 };

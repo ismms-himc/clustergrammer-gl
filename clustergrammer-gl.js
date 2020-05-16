@@ -68830,6 +68830,20 @@ module.exports = function build_control_panel(){
                       return '';
                     });
 
+  // this prevents Jupyter from listening to typing on the modal and
+  // misinterpreting as keyboard shortcuts
+  if (params.is_widget){
+
+    console.log('>>> -----------------------------------')
+    console.log('Found widget, preventing keyboard shortcuts on tooltip')
+    console.log('>>> -----------------------------------')
+
+    Jupyter.keyboard_manager
+           .register_events(
+             document.getElementById(params.tooltip_id.replace('#', ''))
+             )
+  }
+
   params.tooltip_fun = tooltip;
 
   // var control_container = d3.select(params.root + ' .control-container')[0][0];
@@ -71713,7 +71727,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.13.1
+  clustergrammer-gl version 0.13.2
 
  */
 
@@ -71722,7 +71736,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.1');
+  console.log('clustergrammer-gl version 0.13.2');
   console.log('#################################');
 
   var cgm = {};
@@ -71766,6 +71780,7 @@ function clustergrammer_gl(args, external_model=null){
 
     if (external_model != null){
 
+      // copy the cgm object to the external widget model
       external_model.cgm = cgm;
 
     }

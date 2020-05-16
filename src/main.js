@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.13.1
+  clustergrammer-gl version 0.13.2
 
  */
 
@@ -9,7 +9,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.1');
+  console.log('clustergrammer-gl version 0.13.2');
   console.log('#################################');
 
   var cgm = {};
@@ -53,6 +53,7 @@ function clustergrammer_gl(args, external_model=null){
 
     if (external_model != null){
 
+      // copy the cgm object to the external widget model
       external_model.cgm = cgm;
 
     }

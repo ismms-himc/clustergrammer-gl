@@ -71,6 +71,10 @@
       console.log('-------------------------------')
     }
 
+    // this represents the Jupyter Widget model that will have the cgm object
+    // added to itself
+    external_model = {'widget':'external-model'}
+
     // d3.json(filename, function(network){
 
     //   console.log('loaded JSON')
@@ -108,7 +112,8 @@
       // cgm = Clustergrammer2(args);
 
       // pass widget
-      cgm = CGM(args, {'widget':'external-model'});
+      // cgm = CGM(args, external_model);
+      cgm = CGM(args);
 
 
     });

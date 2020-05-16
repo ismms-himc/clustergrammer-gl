@@ -48,19 +48,15 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .append('text')
     .text('Custom Category: ');
 
-  // d3.select(params.tooltip_id)
-  //   .append('input')
-  //   .attr('placeholder', 'Custom Category')
-  //   .style('width', '200px')
-  //   .style('display', 'block')
-  //   .style('color', 'black');
+  d3.select(params.tooltip_id)
+    .append('div')
+    .classed('color_picker_div', true)
+    .style('height', '0px')
 
-  // stacking input forms
-  ///////////////////////
+  // custom category input secion
   custom_cat_div = d3.select(params.tooltip_id)
     .append('div')
-    // .style('padding', '3px')
-    // .style('flex-flow', 'row wrap')
+    .classed('custom_cat_div', true);
 
   custom_cat_div
     .append('input')
@@ -95,7 +91,30 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('height', '16px')
     .style('display', 'inline-block')
     .style('margin-left', '5px')
-    .style('background-color', 'blue')
+    .style('margin-right', '2px')
+    .style('background-color', 'white')
+    .on('click', (d) => {
+      let color_picker_height = 50
+
+      d3.select(params.tooltip_id + ' .color_picker_div')
+        .style('height', color_picker_height + 'px');
+
+      d3.select(params.tooltip_id)
+        .style('margin-top', function(){
+
+          let old_top_margin = d3.select(params.tooltip_id)
+                                 .style('margin-top').replace('px')
+
+          let new_top_margin = String(parseInt(old_top_margin) -
+                               color_picker_height) + 'px'
+
+          console.log(new_top_margin)
+
+          return new_top_margin
+        })
+
+    })
+
 
   custom_cat_div
     .append('button')

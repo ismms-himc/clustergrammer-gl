@@ -74961,7 +74961,7 @@ var make_cat_breakdown_graph = __webpack_require__(/*! ./../cats/make_cat_breakd
 var calc_cat_cluster_breakdown = __webpack_require__(/*! ./../cats/calc_cat_cluster_breakdown */ "./src/cats/calc_cat_cluster_breakdown.js");
 var run_hide_tooltip = __webpack_require__(/*! ./run_hide_tooltip */ "./src/tooltip/run_hide_tooltip.js");
 // var run_dendro_crop = require('./../crop/run_dendro_crop');
-var manual_update_to_cats = __webpack_require__(/*! ./../cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js");
+var manual_category_from_dendro = __webpack_require__(/*! ./manual_category_from_dendro */ "./src/tooltip/manual_category_from_dendro.js")
 
 module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
@@ -74999,6 +74999,142 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('width', '364px')
     .style('display', 'block')
     .style('color', 'black');
+
+  manual_category_from_dendro(cgm, inst_axis);
+
+  // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
+  // d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
+
+  // custom_cat_div
+  //   .append('input')
+  //   .style('placeholder', 'Custom Category')
+  //   .style('width', '50px')
+  //   .style('display', 'block')
+  //   .style('float', 'left')
+  //   .style('color', 'black');
+
+  // console.log(params.dendro.selected_clust_names)
+
+  // // working on adding crop functionality
+  // /////////////////////////////////////////
+  // d3.select(params.tooltip_id)
+  //   .append('div')
+  //   .style('cursor', 'default')
+  //   .style('padding-top', '7px')
+  //   .on('click', function(d){
+  //     run_dendro_crop(params, d);
+  //   })
+  //   .append('text')
+  //   .text('Crop to Selected Cluster')
+
+  // .append('div')
+  // .style('text-align', 'right')
+  // .style('cursor', 'default')
+  // .on('click', function(){
+  //   console.log('clicking close tooltip')
+  //   params.tooltip.permanent_tooltip = false;
+  //   run_hide_tooltip(params);
+  // })
+  // .append('text')
+  // .text('X')
+  // .style('font-size', '15px')
+
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/make_tooltip_text.js":
+/*!******************************************!*\
+  !*** ./src/tooltip/make_tooltip_text.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
+
+module.exports = function make_tooltip_text(cgm){
+
+  let params = cgm.params;
+  var inst_axis;
+  var tooltip_text;
+  var mouseover = params.int.mouseover;
+
+  if (params.tooltip.tooltip_type === 'matrix-cell'){
+
+    // Matrix-Cell Tooltip
+    ////////////////////////
+
+    // row name
+    tooltip_text = mouseover.row.name;
+    tooltip_text = tooltip_text + ' and ';
+
+    // col name
+    tooltip_text = tooltip_text + mouseover.col.name;
+    tooltip_text = tooltip_text + ' <br>value: ' + mouseover.value.toFixed(3);
+
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .style('text-align', 'left')
+      .html(tooltip_text);
+
+  } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
+
+    // Label Tooltip
+    //////////////////
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    tooltip_text = mouseover[inst_axis].name;
+
+    _.each(mouseover[inst_axis].cats, function(inst_cat){
+      tooltip_text = tooltip_text + '<br>' + inst_cat
+    });
+
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .style('text-align', 'left')
+      .html(tooltip_text);
+
+    params.hzome.gene_info(mouseover[inst_axis].name);
+
+  } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
+
+    // Dendro Tooltip
+    //////////////////
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    make_dendro_tooltip(cgm, inst_axis);
+
+  } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
+
+    // Category Tooltip
+    /////////////////////
+    inst_axis = params.tooltip.tooltip_type.split('-')[0];
+    var inst_index = params.tooltip.tooltip_type.split('-')[2];
+
+    tooltip_text = mouseover[inst_axis].cats[inst_index]
+
+    params.tooltip_fun.show('tooltip');
+    d3.select(params.tooltip_id)
+      .style('text-align', 'left')
+      .html(tooltip_text);
+
+  }
+
+};
+
+/***/ }),
+
+/***/ "./src/tooltip/manual_category_from_dendro.js":
+/*!****************************************************!*\
+  !*** ./src/tooltip/manual_category_from_dendro.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var manual_update_to_cats = __webpack_require__(/*! ./../cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js");
+
+module.exports = function manual_category_from_dendro(cgm, inst_axis){
+
+  let params = cgm.params
 
   // Custom Category
   ////////////////////////////
@@ -75128,7 +75264,8 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
     })
 
-
+  // update category button
+  ///////////////////////////////
   custom_cat_div
     .append('button')
     .style('display', 'inline-block')
@@ -75158,124 +75295,8 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .append('text')
     .text('Set Category')
 
-  // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
-  // d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
 
-  // custom_cat_div
-  //   .append('input')
-  //   .style('placeholder', 'Custom Category')
-  //   .style('width', '50px')
-  //   .style('display', 'block')
-  //   .style('float', 'left')
-  //   .style('color', 'black');
-
-  // console.log(params.dendro.selected_clust_names)
-
-  // // working on adding crop functionality
-  // /////////////////////////////////////////
-  // d3.select(params.tooltip_id)
-  //   .append('div')
-  //   .style('cursor', 'default')
-  //   .style('padding-top', '7px')
-  //   .on('click', function(d){
-  //     run_dendro_crop(params, d);
-  //   })
-  //   .append('text')
-  //   .text('Crop to Selected Cluster')
-
-  // .append('div')
-  // .style('text-align', 'right')
-  // .style('cursor', 'default')
-  // .on('click', function(){
-  //   console.log('clicking close tooltip')
-  //   params.tooltip.permanent_tooltip = false;
-  //   run_hide_tooltip(params);
-  // })
-  // .append('text')
-  // .text('X')
-  // .style('font-size', '15px')
-
-};
-
-/***/ }),
-
-/***/ "./src/tooltip/make_tooltip_text.js":
-/*!******************************************!*\
-  !*** ./src/tooltip/make_tooltip_text.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
-
-module.exports = function make_tooltip_text(cgm){
-
-  let params = cgm.params;
-  var inst_axis;
-  var tooltip_text;
-  var mouseover = params.int.mouseover;
-
-  if (params.tooltip.tooltip_type === 'matrix-cell'){
-
-    // Matrix-Cell Tooltip
-    ////////////////////////
-
-    // row name
-    tooltip_text = mouseover.row.name;
-    tooltip_text = tooltip_text + ' and ';
-
-    // col name
-    tooltip_text = tooltip_text + mouseover.col.name;
-    tooltip_text = tooltip_text + ' <br>value: ' + mouseover.value.toFixed(3);
-
-    params.tooltip_fun.show('tooltip');
-    d3.select(params.tooltip_id)
-      .style('text-align', 'left')
-      .html(tooltip_text);
-
-  } else if (params.tooltip.tooltip_type.indexOf('-label') > 0){
-
-    // Label Tooltip
-    //////////////////
-    inst_axis = params.tooltip.tooltip_type.split('-')[0];
-    tooltip_text = mouseover[inst_axis].name;
-
-    _.each(mouseover[inst_axis].cats, function(inst_cat){
-      tooltip_text = tooltip_text + '<br>' + inst_cat
-    });
-
-    params.tooltip_fun.show('tooltip');
-    d3.select(params.tooltip_id)
-      .style('text-align', 'left')
-      .html(tooltip_text);
-
-    params.hzome.gene_info(mouseover[inst_axis].name);
-
-  } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
-
-    // Dendro Tooltip
-    //////////////////
-    inst_axis = params.tooltip.tooltip_type.split('-')[0];
-    make_dendro_tooltip(cgm, inst_axis);
-
-  } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
-
-    // Category Tooltip
-    /////////////////////
-    inst_axis = params.tooltip.tooltip_type.split('-')[0];
-    var inst_index = params.tooltip.tooltip_type.split('-')[2];
-
-    tooltip_text = mouseover[inst_axis].cats[inst_index]
-
-    params.tooltip_fun.show('tooltip');
-    d3.select(params.tooltip_id)
-      .style('text-align', 'left')
-      .html(tooltip_text);
-
-  }
-
-};
+}
 
 /***/ }),
 

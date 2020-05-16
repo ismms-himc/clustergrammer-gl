@@ -3,26 +3,27 @@ var generate_cat_info = require('./../cats/generate_cat_info');
 
 module.exports = function gen_cat_par(params){
 
-  var cd = {};
-  cd.row = generate_cat_array(params, 'row');
-  cd.col = generate_cat_array(params, 'col');
+  var cat_data = {};
+  cat_data.row = generate_cat_array(params, 'row');
+  cat_data.col = generate_cat_array(params, 'col');
 
-  cd.cat_num = {};
-  cd.cat_num.row = cd.row.length;
-  cd.cat_num.col = cd.col.length;
+  cat_data.cat_num = {};
+  cat_data.cat_num.row = cat_data.row.length;
+  cat_data.cat_num.col = cat_data.col.length;
 
   var cat_room = {};
   cat_room.webgl = 0.0135;
   cat_room.x = cat_room.webgl;
   cat_room.y = cat_room.webgl;
-  cd.cat_room = cat_room;
+  cat_data.cat_room = cat_room;
 
-  params.cat_data = cd;
+  cat_data.showing_color_picker = false
 
+  params.cat_data = cat_data;
 
-  console.log('******************')
-  console.log(params.cat_data)
-  console.log('******************')
+  // console.log('******************')
+  // console.log(params.cat_data)
+  // console.log('******************')
 
   generate_cat_info(params);
 

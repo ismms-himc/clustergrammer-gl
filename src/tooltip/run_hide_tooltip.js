@@ -11,4 +11,6 @@ module.exports = function run_hide_tooltip(params, click_on_heatmap=false){
 
    }
 
+   params.cat_data.showing_color_picker = false
+
 }

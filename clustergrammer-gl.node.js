@@ -73276,26 +73276,27 @@ var generate_cat_info = __webpack_require__(/*! ./../cats/generate_cat_info */ "
 
 module.exports = function gen_cat_par(params){
 
-  var cd = {};
-  cd.row = generate_cat_array(params, 'row');
-  cd.col = generate_cat_array(params, 'col');
+  var cat_data = {};
+  cat_data.row = generate_cat_array(params, 'row');
+  cat_data.col = generate_cat_array(params, 'col');
 
-  cd.cat_num = {};
-  cd.cat_num.row = cd.row.length;
-  cd.cat_num.col = cd.col.length;
+  cat_data.cat_num = {};
+  cat_data.cat_num.row = cat_data.row.length;
+  cat_data.cat_num.col = cat_data.col.length;
 
   var cat_room = {};
   cat_room.webgl = 0.0135;
   cat_room.x = cat_room.webgl;
   cat_room.y = cat_room.webgl;
-  cd.cat_room = cat_room;
+  cat_data.cat_room = cat_room;
 
-  params.cat_data = cd;
+  cat_data.showing_color_picker = false
 
+  params.cat_data = cat_data;
 
-  console.log('******************')
-  console.log(params.cat_data)
-  console.log('******************')
+  // console.log('******************')
+  // console.log(params.cat_data)
+  // console.log('******************')
 
   generate_cat_info(params);
 
@@ -75019,6 +75020,15 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
   colors_array_2 = ['#88cc44','#ccdd22','#ffee11','#ffcc00',
      '#ff9900','#ff5500', '#775544','#999999','#828080','#444']
 
+  let select_color_from_pallet = function(inst_color){
+    console.log('select_color_from_pallet')
+    d3.select(params.tooltip_id + ' .custom-cat-color')
+      .attr('value', inst_color)
+
+    d3.select(params.tooltip_id + ' .color-preview')
+      .style('background-color', inst_color)
+  }
+
   color_picker_div
     .append('div')
     .selectAll('div')
@@ -75032,9 +75042,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('margin-right', '2px')
     .style('background-color', (d) => d)
     .on('click', (d) => {
-
-      console.log(d)
-
+      select_color_from_pallet(d)
     })
 
   color_picker_div
@@ -75050,9 +75058,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('margin-right', '2px')
     .style('background-color', (d) => d)
     .on('click', (d) => {
-
-      console.log(d)
-
+      select_color_from_pallet(d)
     })
 
   // custom category input secion
@@ -75085,7 +75091,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
     })
 
-  let color_picker_height = 40
+  let color_picker_height = 45
   // color preview
   custom_cat_div
     .append('div')
@@ -75098,22 +75104,27 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('background-color', 'white')
     .on('click', (d) => {
 
+      if (params.cat_data.showing_color_picker === false){
 
-      d3.select(params.tooltip_id + ' .color_picker_div')
-        .style('height', color_picker_height + 'px')
-        .style('display', 'block')
+        d3.select(params.tooltip_id + ' .color_picker_div')
+          .style('height', color_picker_height + 'px')
+          .style('display', 'block')
 
-      d3.select(params.tooltip_id)
-        .style('margin-top', function(){
+        d3.select(params.tooltip_id)
+          .style('margin-top', function(){
 
-          let old_top_margin = d3.select(params.tooltip_id)
-                                 .style('margin-top').replace('px')
+            let old_top_margin = d3.select(params.tooltip_id)
+                                   .style('margin-top').replace('px')
 
-          let new_top_margin = String(parseInt(old_top_margin) -
-                               color_picker_height) + 'px'
+            let new_top_margin = String(parseInt(old_top_margin) -
+                                 color_picker_height) + 'px'
 
-          return new_top_margin
-        })
+            return new_top_margin
+          })
+
+        params.cat_data.showing_color_picker = true
+
+      }
 
     })
 
@@ -75308,6 +75319,8 @@ module.exports = function run_hide_tooltip(params, click_on_heatmap=false){
      params.tooltip_fun.hide();
 
    }
+
+   params.cat_data.showing_color_picker = false
 
 }
 

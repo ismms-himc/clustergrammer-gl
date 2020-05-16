@@ -62,6 +62,15 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
   colors_array_2 = ['#88cc44','#ccdd22','#ffee11','#ffcc00',
      '#ff9900','#ff5500', '#775544','#999999','#828080','#444']
 
+  let select_color_from_pallet = function(inst_color){
+    console.log('select_color_from_pallet')
+    d3.select(params.tooltip_id + ' .custom-cat-color')
+      .attr('value', inst_color)
+
+    d3.select(params.tooltip_id + ' .color-preview')
+      .style('background-color', inst_color)
+  }
+
   color_picker_div
     .append('div')
     .selectAll('div')
@@ -75,9 +84,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('margin-right', '2px')
     .style('background-color', (d) => d)
     .on('click', (d) => {
-
-      console.log(d)
-
+      select_color_from_pallet(d)
     })
 
   color_picker_div
@@ -93,9 +100,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('margin-right', '2px')
     .style('background-color', (d) => d)
     .on('click', (d) => {
-
-      console.log(d)
-
+      select_color_from_pallet(d)
     })
 
   // custom category input secion
@@ -128,7 +133,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
     })
 
-  let color_picker_height = 40
+  let color_picker_height = 45
   // color preview
   custom_cat_div
     .append('div')
@@ -141,22 +146,27 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('background-color', 'white')
     .on('click', (d) => {
 
+      if (params.cat_data.showing_color_picker === false){
 
-      d3.select(params.tooltip_id + ' .color_picker_div')
-        .style('height', color_picker_height + 'px')
-        .style('display', 'block')
+        d3.select(params.tooltip_id + ' .color_picker_div')
+          .style('height', color_picker_height + 'px')
+          .style('display', 'block')
 
-      d3.select(params.tooltip_id)
-        .style('margin-top', function(){
+        d3.select(params.tooltip_id)
+          .style('margin-top', function(){
 
-          let old_top_margin = d3.select(params.tooltip_id)
-                                 .style('margin-top').replace('px')
+            let old_top_margin = d3.select(params.tooltip_id)
+                                   .style('margin-top').replace('px')
 
-          let new_top_margin = String(parseInt(old_top_margin) -
-                               color_picker_height) + 'px'
+            let new_top_margin = String(parseInt(old_top_margin) -
+                                 color_picker_height) + 'px'
 
-          return new_top_margin
-        })
+            return new_top_margin
+          })
+
+        params.cat_data.showing_color_picker = true
+
+      }
 
     })
 

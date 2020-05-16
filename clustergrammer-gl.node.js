@@ -75285,8 +75285,8 @@ module.exports = function manual_category_from_dendro(cgm, inst_axis){
         let inst_labels = params.dendro.selected_clust_names;
 
         // Only allowing custom naming of first column
-        let cat_title = params.cat_data.col[0].cat_title
-        params.network.cat_colors.col['cat-0'][cat_title + ': ' + inst_cat] = inst_color
+        let cat_title = params.cat_data[inst_axis][0].cat_title
+        params.network.cat_colors[inst_axis]['cat-0'][cat_title + ': ' + inst_cat] = inst_color
 
         manual_update_to_cats(cgm, inst_axis, cat_title + ': ' + inst_cat, inst_labels);
       }

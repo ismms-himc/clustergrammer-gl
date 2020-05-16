@@ -48,15 +48,60 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .append('text')
     .text('Custom Category: ');
 
-  d3.select(params.tooltip_id)
+  // color picker section
+  let color_picker_div = d3.select(params.tooltip_id)
     .append('div')
     .classed('color_picker_div', true)
     .style('height', '0px')
+    .style('display', 'none')
+
+  colors_array_1 = [
+     '#ff4422','#ee1166' ,'#9911bb' ,'#6633bb' ,'#3344bb' ,'#1199ff','#00aaff',
+     '#00bbdd','#009988','#44bb44']
+
+  colors_array_2 = ['#88cc44','#ccdd22','#ffee11','#ffcc00',
+     '#ff9900','#ff5500', '#775544','#999999','#828080','#444']
+
+  color_picker_div
+    .append('div')
+    .selectAll('div')
+    .data(colors_array_1)
+    .enter()
+    .append('div')
+    .style('width', '30px')
+    .style('height', '16px')
+    .style('display', 'inline-block')
+    .style('margin-left', '5px')
+    .style('margin-right', '2px')
+    .style('background-color', (d) => d)
+    .on('click', (d) => {
+
+      console.log(d)
+
+    })
+
+  color_picker_div
+    .append('div')
+    .selectAll('div')
+    .data(colors_array_2)
+    .enter()
+    .append('div')
+    .style('width', '30px')
+    .style('height', '16px')
+    .style('display', 'inline-block')
+    .style('margin-left', '5px')
+    .style('margin-right', '2px')
+    .style('background-color', (d) => d)
+    .on('click', (d) => {
+
+      console.log(d)
+
+    })
 
   // custom category input secion
   custom_cat_div = d3.select(params.tooltip_id)
     .append('div')
-    .classed('custom_cat_div', true);
+    .classed('custom_cat_div', true)
 
   custom_cat_div
     .append('input')
@@ -83,6 +128,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
     })
 
+  let color_picker_height = 40
   // color preview
   custom_cat_div
     .append('div')
@@ -94,10 +140,11 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('margin-right', '2px')
     .style('background-color', 'white')
     .on('click', (d) => {
-      let color_picker_height = 50
+
 
       d3.select(params.tooltip_id + ' .color_picker_div')
-        .style('height', color_picker_height + 'px');
+        .style('height', color_picker_height + 'px')
+        .style('display', 'block')
 
       d3.select(params.tooltip_id)
         .style('margin-top', function(){
@@ -107,8 +154,6 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
           let new_top_margin = String(parseInt(old_top_margin) -
                                color_picker_height) + 'px'
-
-          console.log(new_top_margin)
 
           return new_top_margin
         })

@@ -11,7 +11,7 @@ module.exports = function generate_cat_info(params){
   viz.cat_info = {};
 
   viz.cat_bar_width = 180;
-  viz.cat_bar_height = 20;
+  viz.cat_bar_height = 15;
 
   viz.cat_value_colors = ['#2F4F4F', '#9370DB'];
 

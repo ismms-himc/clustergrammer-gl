@@ -67209,7 +67209,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
-                                             title_height, bars_index, max_bars,
+                                             bars_index, max_bars,
                                              cat_bar_groups){
 
   var paragraph_string = '<p>';
@@ -67220,10 +67220,6 @@ module.exports = function cat_breakdown_bars(params, cat_data, cat_graph_group,
   var max_len = 25;
 
   var max_bar_value = cat_data.bar_data[0][bars_index];
-  // // only keep the top max_bars categories
-  // cat_data.bar_data = cat_data.bar_data.slice(0, max_bars);
-
-  // console.log('cat_data.length', cat_data.bar_data.length)
 
   var i_title = cat_data.type_name;
   if (i_title.length >= max_len){
@@ -67604,7 +67600,7 @@ module.exports = function generate_cat_info(params){
   viz.cat_info = {};
 
   viz.cat_bar_width = 180;
-  viz.cat_bar_height = 20;
+  viz.cat_bar_height = 15;
 
   viz.cat_value_colors = ['#2F4F4F', '#9370DB'];
 
@@ -68069,8 +68065,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
   if (cb.length > 0){
 
     var width = 370;
-    var title_height = 27;
-    var bar_offset = 23;
+    var bar_offset = params.viz.cat_bar_height + 2;
 
     // these are the indexes where the number-of-nodes and the number of downsampled
     // nodes are stored
@@ -68104,13 +68099,14 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
     var max_bars = 10;
 
     // calculate height needed for svg based on cb data
-    var svg_height = 20;
+    let svg_height = 10;
+    let shift_down_height = 18
     _.each(cb.slice(0,max_cats), function(tmp_break){
       var num_bars = tmp_break.bar_data.length;
       if (num_bars > max_bars){
         num_bars = max_bars;
       }
-      svg_height = svg_height + title_height * (num_bars + 1);
+      svg_height = svg_height + shift_down_height * (num_bars + 1);
     });
 
     var main_dendro_svg = d3.select(params.tooltip_id)
@@ -68142,7 +68138,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
                                .domain([0,100000]).range([20, 30]);
 
     // the total amout to shift down the next category
-    var shift_down = title_height;
+    var shift_down = 15;
+
 
     _.each(cb, function(cat_data){
 
@@ -68175,7 +68172,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
           });
 
       __webpack_require__(/*! ./cat_breakdown_bars */ "./src/cats/cat_breakdown_bars.js")(params, cat_data, cgg,
-                                      title_height, bars_index, max_bars,
+                                      bars_index, max_bars,
                                       cat_bar_groups);
 
       __webpack_require__(/*! ./cat_breakdown_values */ "./src/cats/cat_breakdown_values.js")(params, cgg, cat_bar_groups,
@@ -68183,7 +68180,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
                                         count_offset, bars_index, cluster_total);
 
       // shift down based on number of bars
-      shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
+      shift_down = shift_down + shift_down_height * (cat_data.bar_data.length + 1);
 
     });
 
@@ -68873,7 +68870,10 @@ module.exports = function build_control_panel(){
   d3.select(params.tooltip_id)
     .style('line-height', 1.5)
     .style('font-weight', 'bold')
-    .style('padding', '12px')
+    .style('padding-top', '3px')
+    .style('padding-bottom', '7px')
+    .style('padding-left', '10px')
+    .style('padding-right', '10px')
     .style('background', 'rgba(0, 0, 0, 0.8)')
     .style('color', '#fff')
     .style('border-radius', '2px')
@@ -69265,215 +69265,7 @@ module.exports = function build_tree_icon(cgm){
     .attr('cursor', 'default')
 
 
-  // var tree_icon_outer_group = d3.select(params.root +' .control-container svg')
-  //     .append('g')
-  //     .classed( 'tree_icon', true)
-  //     .on('mouseover', function(){
-  //       d3.selectAll(params.root + ' .tree_leaf_circle')
-  //         .style('opacity', high_opacity);
-  //     })
-  //     .on('mouseout', function(){
-  //       if (params.viz.current_panel !== 'recluster'){
-  //         d3.selectAll(params.root + ' .tree_leaf_circle')
-  //         .style('opacity', default_opacity);
-  //       }
-  //     })
-      // .call(tree_icon_tip);
 
-    // var tree_icon_group =  tree_icon_outer_group
-    //   .append('g')
-    //   .classed('dendro_tree_container', true)
-    //   .on('click', function(){
-
-    //     // show recluster menu
-    //     // if (d3.select(params.root + ' .control-container svg .tree_menu').empty()){
-
-    //     if (params.viz.current_panel === 'reorder'){
-
-    //       console.log('switch to recluster')
-
-    //       // modify buttons
-    //       d3.select(params.root + ' .panel_button_title')
-    //         .text('recluster'.toUpperCase())
-    //       d3.select(params.root + ' .top_button_title')
-    //         .text('DIST')
-    //       d3.select(params.root + ' .bottom_button_title')
-    //         .text('LINK')
-    //       d3.selectAll(params.root + ' .reorder_buttons')
-    //         .style('display', 'none');
-    //       d3.select(params.root + ' .run_cluster_container')
-    //         .style('display', 'block')
-
-    //       d3.selectAll(params.root + ' .dist_options')
-    //         .style('display', 'block')
-    //       d3.selectAll(params.root + ' .link_options_container')
-    //         .style('display', 'block')
-
-    //       params.viz.current_panel = 'recluster'
-
-    //       console.log(params.viz.current_panel)
-
-    //       // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
-
-    //     } else {
-
-    //       console.log('switch to reorder')
-
-    //       params.viz.current_panel = 'reorder'
-
-    //       // modify buttons
-    //       d3.select(params.root + ' .panel_button_title')
-    //         .text('reorder'.toUpperCase())
-    //       d3.select(params.root + ' .top_button_title')
-    //         .text('COL')
-    //       d3.select(params.root + ' .bottom_button_title')
-    //         .text('ROW')
-    //       d3.selectAll(params.root + ' .reorder_buttons')
-    //         .style('display', 'block');
-    //       d3.select(params.root + ' .run_cluster_container')
-    //         .style('display', 'none')
-
-    //       d3.selectAll(params.root + ' .dist_options')
-    //         .style('display', 'none')
-    //       d3.selectAll(params.root + ' .link_options_container')
-    //         .style('display', 'none')
-
-    //       // toggle_menu(cgm, 'tree_menu', 'close');
-    //     }
-
-
-
-    //   });
-
-    // d3.select(params.root + '  .control-container svg .dendro_tree_container')
-    //   .attr('transform', 'scale(0.9)');
-
-    // position_tree_icon(cgm);
-
-    // var offset_triangle = 0;
-    // var tree_width = 20;
-
-    // // main branch
-    // tree_icon_group
-    //   .append('path')
-    //   .style('fill', 'black')
-    //   .attr('transform', 'translate('+offset_triangle+', 0)')
-    //   .attr('d', function() {
-
-    //     // up triangle
-    //     var start_x = 0;
-    //     var start_y = slider_length;
-
-    //     var mid_x = tree_width/2;
-    //     var mid_y = 0;
-
-    //     var final_x = tree_width;
-    //     var final_y = slider_length;
-
-    //     var output_string = 'M' + start_x + ',' + start_y + ' L' +
-    //     mid_x + ', ' + mid_y +
-    //     ' L' + final_x + ','+ final_y +' Z';
-
-    //     return output_string;
-    //   })
-    //   .style('opacity', 0.35);
-
-    // // left branch
-    // var branch_height = 30;
-    // tree_icon_group
-    //   .append('path')
-    //   .style('fill', 'black')
-    //   .attr('transform', 'translate('+offset_triangle+', 0)')
-    //   .attr('d', function() {
-
-    //     // up triangle
-    //     var start_x = 4.3;
-    //     var start_y = 23;
-
-    //     var mid_x = -5;//left_x + slider_length/10;
-    //     var mid_y = branch_height/2.5;
-
-    //     var final_x = 5.8;//left_x + slider_length/5;
-    //     var final_y = branch_height/1.8;
-
-    //     var output_string = 'M' + start_x + ',' + start_y + ' L' +
-    //     mid_x + ', ' + mid_y +
-    //     ' L' + final_x + ','+ final_y +' Z';
-
-    //     return output_string;
-    //   })
-    //   .style('opacity', 0.35);
-
-    // // right branch
-    // tree_icon_group
-    //   .append('path')
-    //   .style('fill', 'black')
-    //   .attr('transform', 'translate('+offset_triangle+', 0)')
-    //   .attr('d', function() {
-
-    //     // up triangle
-    //     var start_x = 15.7;
-    //     var start_y = 23;
-
-    //     var mid_x = 25;//left_x + slider_length/10;
-    //     var mid_y = branch_height/2.5;
-
-    //     var final_x = 14.2;//left_x + slider_length/5;
-    //     var final_y = branch_height/1.8;
-
-    //     var output_string = 'M' + start_x + ',' + start_y + ' L' +
-    //     mid_x + ', ' + mid_y +
-    //     ' L' + final_x + ','+ final_y +' Z';
-
-    //     return output_string;
-    //   })
-    //   .style('opacity', 0.35);
-
-    // var small_leaf_offset = 13;
-    // var small_leaf_radius = 9.5;
-
-    // tree_icon_group
-    //   .selectAll()
-    //   .data([
-    //     [-3,small_leaf_offset,small_leaf_radius],
-    //     [tree_width/2,0, 17],
-    //     [23,small_leaf_offset,small_leaf_radius]])
-    //   .enter()
-    //   .append('circle')
-    //   .classed('tree_leaf_circle', true)
-    //   .attr('r', function(d){
-    //     return d[2];
-    //   })
-    //   .attr('transform', function(d){
-    //     return 'translate('+d[0]+', '+d[1]+')';
-    //   })
-    //   .attr('fill', 'blue')
-    //   .attr('opacity', default_opacity)
-    //   // .attr('');
-
-    // tree_icon_group
-    //   .append('rect')
-    //   .attr('width', 50)
-    //   .attr('height', 62)
-    //   .attr('transform', function(){
-    //     return 'translate('+ -15 +', '+ -19 +')';
-    //   })
-    //   .attr('opacity', 0.0);
-
-
-
-
-
-  ///////////////////////////
-  // Run Recluster Button
-  ///////////////////////////
-
-  // var button_info = {};
-  // // button_info.selection = tree_menu;
-  // // button_info.menu_width = menu_width;
-  // button_info.distance_metric = cgm.params.matrix.distance_metric;
-  // button_info.linkage_type = cgm.params.matrix.linkage_type;
-  // button_info.default_x_offset = x_offset;
 
   run_cluster_container = d3.select(params.root + ' .control_svg')
     .append('g')
@@ -75181,6 +74973,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
   d3.select(params.tooltip_id)
     .append('div')
+    .style('height', '16px')
     .style('text-align', 'right')
     .style('cursor', 'default')
     .on('click', function(){
@@ -75188,7 +74981,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
       run_hide_tooltip(params);
     })
     .append('text')
-    .text('X')
+    .text('x')
     .style('font-size', '15px')
 
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
@@ -75279,7 +75072,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
   //   .style('float', 'left')
   //   .style('color', 'black');
 
-  console.log(params.dendro.selected_clust_names)
+  // console.log(params.dendro.selected_clust_names)
 
   // // working on adding crop functionality
   // /////////////////////////////////////////

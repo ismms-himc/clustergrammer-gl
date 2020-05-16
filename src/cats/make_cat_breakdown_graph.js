@@ -4,8 +4,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
   if (cb.length > 0){
 
     var width = 370;
-    var title_height = 27;
-    var bar_offset = 23;
+    var bar_offset = params.viz.cat_bar_height + 2;
 
     // these are the indexes where the number-of-nodes and the number of downsampled
     // nodes are stored
@@ -39,13 +38,14 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
     var max_bars = 10;
 
     // calculate height needed for svg based on cb data
-    var svg_height = 20;
+    let svg_height = 10;
+    let shift_down_height = 18
     _.each(cb.slice(0,max_cats), function(tmp_break){
       var num_bars = tmp_break.bar_data.length;
       if (num_bars > max_bars){
         num_bars = max_bars;
       }
-      svg_height = svg_height + title_height * (num_bars + 1);
+      svg_height = svg_height + shift_down_height * (num_bars + 1);
     });
 
     var main_dendro_svg = d3.select(params.tooltip_id)
@@ -77,7 +77,8 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
                                .domain([0,100000]).range([20, 30]);
 
     // the total amout to shift down the next category
-    var shift_down = title_height;
+    var shift_down = 15;
+
 
     _.each(cb, function(cat_data){
 
@@ -110,7 +111,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
           });
 
       require('./cat_breakdown_bars')(params, cat_data, cgg,
-                                      title_height, bars_index, max_bars,
+                                      bars_index, max_bars,
                                       cat_bar_groups);
 
       require('./cat_breakdown_values')(params, cgg, cat_bar_groups,
@@ -118,7 +119,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
                                         count_offset, bars_index, cluster_total);
 
       // shift down based on number of bars
-      shift_down = shift_down + title_height * (cat_data.bar_data.length + 1);
+      shift_down = shift_down + shift_down_height * (cat_data.bar_data.length + 1);
 
     });
 

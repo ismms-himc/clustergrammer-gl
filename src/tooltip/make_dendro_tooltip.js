@@ -15,6 +15,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 
   d3.select(params.tooltip_id)
     .append('div')
+    .style('height', '16px')
     .style('text-align', 'right')
     .style('cursor', 'default')
     .on('click', function(){
@@ -22,7 +23,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
       run_hide_tooltip(params);
     })
     .append('text')
-    .text('X')
+    .text('x')
     .style('font-size', '15px')
 
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
@@ -113,7 +114,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
   //   .style('float', 'left')
   //   .style('color', 'black');
 
-  console.log(params.dendro.selected_clust_names)
+  // console.log(params.dendro.selected_clust_names)
 
   // // working on adding crop functionality
   // /////////////////////////////////////////

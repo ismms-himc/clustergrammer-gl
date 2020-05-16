@@ -17,19 +17,6 @@ module.exports = function build_control_panel(){
                       return '';
                     });
 
-  // this prevents Jupyter from listening to typing on the modal and
-  // misinterpreting as keyboard shortcuts
-  if (params.is_widget){
-
-    console.log('>>> -----------------------------------')
-    console.log('Found widget, preventing keyboard shortcuts on tooltip')
-    console.log('>>> -----------------------------------')
-
-    Jupyter.keyboard_manager
-           .register_events(
-             document.getElementById(params.tooltip_id.replace('#', ''))
-             )
-  }
 
   params.tooltip_fun = tooltip;
 

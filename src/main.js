@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.13.2
+  clustergrammer-gl version 0.13.3
 
  */
 
@@ -9,7 +9,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.2');
+  console.log('clustergrammer-gl version 0.13.3');
   console.log('#################################');
 
   var cgm = {};
@@ -61,6 +61,22 @@ function clustergrammer_gl(args, external_model=null){
     cgm.recluster = require('./recluster/recluster');
 
     cgm.manual_update_to_cats = require('./cats/manual_update_to_cats')
+
+    // this prevents Jupyter from listening to typing on the modal and
+    // misinterpreting as keyboard shortcuts
+    if (cgm.params.is_widget){
+
+      console.log('>>> -----------------------------------')
+      console.log('Found widget, preventing keyboard shortcuts on tooltip')
+      console.log('checking if tooltip is present')
+      console.log('empty tooltip', d3.select(cgm.params.tooltip_id).empty())
+      console.log('>>> -----------------------------------')
+
+      // Jupyter.keyboard_manager
+      //        .register_events(
+      //          document.getElementById(params.tooltip_id.replace('#', ''))
+      //          )
+    }
 
     return cgm;
 

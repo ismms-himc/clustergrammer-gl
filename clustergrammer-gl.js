@@ -67738,8 +67738,6 @@ var get_cat_value = __webpack_require__(/*! ./get_cat_value */ "./src/cats/get_c
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
-  console.log('make_cat_args')
-
   var cat_index_name = 'cat-' + String(cat_index);
 
   /*
@@ -67836,6 +67834,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         if (cat_index_name in params.network.cat_colors[inst_axis]){
           try {
             inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
+
           }
           catch(err){
             // get random colors from color dictionary
@@ -75024,18 +75023,36 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .append('input')
     .classed('custom-cat-input', true)
     .attr('placeholder', 'Category')
-    .style('width', '165px')
+    .style('width', '140px')
     .style('display', 'inline-block')
     .style('color', 'black');
 
+  // type color
   custom_cat_div
     .append('input')
     .classed('custom-cat-color', true)
     .attr('placeholder', 'Color')
-    .style('width', '100px')
+    .style('width', '80px')
     .style('display', 'inline-block')
     .style('margin-left', '5px')
-    .style('color', 'black');
+    .style('color', 'black')
+    .on('input', function(d){
+      console.log(this.value)
+
+      d3.select(params.tooltip_id + ' .color-preview')
+        .style('background-color', this.value)
+
+    })
+
+  // color preview
+  custom_cat_div
+    .append('div')
+    .classed('color-preview', true)
+    .style('width', '30px')
+    .style('height', '16px')
+    .style('display', 'inline-block')
+    .style('margin-left', '5px')
+    .style('background-color', 'blue')
 
   custom_cat_div
     .append('button')
@@ -75054,7 +75071,12 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
         console.log('****************************')
         console.log(inst_cat, inst_color)
         let inst_labels = params.dendro.selected_clust_names;
-        manual_update_to_cats(cgm, inst_axis, 'Category: ' + inst_cat, inst_labels);
+
+        // Only allowing custom naming of first column
+        let cat_title = params.cat_data.col[0].cat_title
+        params.network.cat_colors.col['cat-0'][cat_title + ': ' + inst_cat] = inst_color
+
+        manual_update_to_cats(cgm, inst_axis, cat_title + ': ' + inst_cat, inst_labels);
       }
 
     })

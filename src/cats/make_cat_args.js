@@ -4,8 +4,6 @@ var get_cat_value = require('./get_cat_value');
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
-  console.log('make_cat_args')
-
   var cat_index_name = 'cat-' + String(cat_index);
 
   /*
@@ -102,6 +100,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
         if (cat_index_name in params.network.cat_colors[inst_axis]){
           try {
             inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
+
           }
           catch(err){
             // get random colors from color dictionary

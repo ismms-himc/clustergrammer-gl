@@ -71711,7 +71711,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.12.0
+  clustergrammer-gl version 0.13.0
 
  */
 
@@ -71720,7 +71720,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.12.0');
+  console.log('clustergrammer-gl version 0.13.0');
   console.log('#################################');
 
   var cgm = {};
@@ -72182,14 +72182,14 @@ module.exports = function gen_ordered_labels(cgm){
 
   let params = cgm.params
 
-  console.log('---------------------------')
-  console.log('----- gen_ordered_labels --')
+  // console.log('---------------------------')
+  // console.log('----- gen_ordered_labels --')
 
   // console.log()
   // console.log(params.labels.queue)
 
   // debugger;
-  console.log('---------------------------')
+  // console.log('---------------------------')
 
   var i_order;
   var ordered_labels = {}

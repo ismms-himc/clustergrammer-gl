@@ -21,13 +21,6 @@ module.exports = function gen_cat_par(params){
 
   params.cat_data = cat_data;
 
-  // console.log('******************')
-  // console.log(params.cat_data)
-  // console.log('******************')
-
-  // initialize category
-  ////////////////////
-  // cgm.params.network.col_nodes.forEach((x)=> tmp[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1] )
 
   generate_cat_info(params);
 

@@ -73314,13 +73314,6 @@ module.exports = function gen_cat_par(params){
 
   params.cat_data = cat_data;
 
-  // console.log('******************')
-  // console.log(params.cat_data)
-  // console.log('******************')
-
-  // initialize category
-  ////////////////////
-  // cgm.params.network.col_nodes.forEach((x)=> tmp[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1] )
 
   generate_cat_info(params);
 
@@ -73835,9 +73828,33 @@ module.exports = function initialize_params(external_model){
   }
 
   params.cat_data.manual_category = {}
+
   if ('manual_category' in params.network){
+
     params.cat_data.manual_category.row = params.network.manual_category.row
     params.cat_data.manual_category.col = params.network.manual_category.col
+
+    // initialize category dictionary
+    ///////////////////////////////////
+    params.cat_data.manual_cat_dict = {}
+    let axes = ['col', 'row']
+    axes.forEach((axis) => {
+
+      inst_dict = {}
+
+      params
+         .network[axis + '_nodes']
+         .forEach(
+           (x) => {
+             inst_dict[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]
+           }
+         )
+
+      params.cat_data.manual_cat_dict[axis] = inst_dict
+
+    })
+
+
   } else {
     params.cat_data.manual_category.row = false
     params.cat_data.manual_category.col = false

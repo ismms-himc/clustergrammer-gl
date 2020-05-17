@@ -68256,7 +68256,7 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function manual_update_to_cats(cgm, inst_axis, new_cat, selected_labels){
+module.exports = function manual_update_to_cats(cgm, axis, new_cat, selected_labels){
 
   console.log('manual_update_to_cats')
 
@@ -68264,7 +68264,7 @@ module.exports = function manual_update_to_cats(cgm, inst_axis, new_cat, selecte
   regl = cgm.regl
 
   // manually updated categories in network
-  cgm.params.network[inst_axis + '_nodes']
+  cgm.params.network[axis + '_nodes']
      .map(x => {
 
        inst_name = x.name

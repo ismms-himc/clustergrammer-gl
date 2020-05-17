@@ -5,8 +5,7 @@ module.exports = function manual_update_to_cats(cgm, inst_axis, new_cat, selecte
   params = cgm.params
   regl = cgm.regl
 
-
-  // simulate manual update to categories
+  // manually updated categories in network
   cgm.params.network[inst_axis + '_nodes']
      .map(x => {
 
@@ -21,6 +20,18 @@ module.exports = function manual_update_to_cats(cgm, inst_axis, new_cat, selecte
        }
 
      })
+
+  // // update manual_cat_dict (will be synced to widget back-end)
+  // selected_labels.forEach((inst_label) => {
+  //   console.log('selected_labels', inst_label)
+  // })
+
+  // debugger;
+
+  selected_labels.forEach((x) => console.log('tmp', x))
+
+
+  params.cat_data.manual_cat_dict[axis]
 
   // generate an ordred labels list
   require('./../matrix_labels/gen_ordered_labels')(cgm);

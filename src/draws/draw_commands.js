@@ -1,4 +1,4 @@
-module.exports = function draw_commands(cgm){
+module.exports = function draw_commands(cgm, external_model){
 
   let regl = cgm.regl
   let params = cgm.params
@@ -36,7 +36,7 @@ module.exports = function draw_commands(cgm){
 
   // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
-    require('./../tooltip/run_show_tooltip')(cgm);
+    require('./../tooltip/run_show_tooltip')(cgm, external_model);
   }
   if (params.labels.draw_labels){
     params.labels.draw_labels = false;

@@ -8,7 +8,7 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
 
   // turn back on draw_labels
   ///////////////////////////////
-  draw_commands(cgm);
+  draw_commands(cgm, external_model);
 
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;

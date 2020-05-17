@@ -49,7 +49,7 @@ module.exports = function run_viz(external_model){
         params.ani.running == true||
         params.ani.update_viz == true){
 
-      draw_interacting(cgm);
+      draw_interacting(cgm, external_model);
 
       params.ani.update_viz = false;
 

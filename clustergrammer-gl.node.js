@@ -70215,7 +70215,7 @@ module.exports = function draw_background_calculations(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function draw_commands(cgm){
+module.exports = function draw_commands(cgm, external_model){
 
   let regl = cgm.regl
   let params = cgm.params
@@ -70253,7 +70253,7 @@ module.exports = function draw_commands(cgm){
 
   // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas){
-    __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(cgm);
+    __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(cgm, external_model);
   }
   if (params.labels.draw_labels){
     params.labels.draw_labels = false;
@@ -70269,7 +70269,7 @@ module.exports = function draw_commands(cgm){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function draw_interacting(cgm){
+module.exports = function draw_interacting(cgm, external_model){
 
   let regl = cgm.regl
   let params = cgm.params
@@ -70278,7 +70278,7 @@ module.exports = function draw_interacting(cgm){
 
   params.int.total = params.int.total + 1;
 
-  __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js")(cgm);
+  __webpack_require__(/*! ./draw_commands */ "./src/draws/draw_commands.js")(cgm, external_model);
 
   setTimeout(__webpack_require__(/*! ./../interactions/final_interaction_frame */ "./src/interactions/final_interaction_frame.js"),
              wait_time_final_interact, regl, params);
@@ -70309,7 +70309,7 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
 
   // turn back on draw_labels
   ///////////////////////////////
-  draw_commands(cgm);
+  draw_commands(cgm, external_model);
 
   if (params.tooltip.show_tooltip){
     params.tooltip.show_tooltip = false;
@@ -70588,7 +70588,7 @@ module.exports = function run_viz(external_model){
         params.ani.running == true||
         params.ani.update_viz == true){
 
-      draw_interacting(cgm);
+      draw_interacting(cgm, external_model);
 
       params.ani.update_viz = false;
 
@@ -71588,7 +71588,7 @@ module.exports = function single_clicking(params, external_model){
 
   if (params.tooltip.tooltip_type.includes('-dendro')){
     if (params.tooltip.permanent_tooltip === false){
-      __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(cgm);
+      __webpack_require__(/*! ./../tooltip/run_show_tooltip */ "./src/tooltip/run_show_tooltip.js")(cgm, external_model);
       params.tooltip.permanent_tooltip = true;
     }
   }
@@ -71766,7 +71766,6 @@ function clustergrammer_gl(args, external_model=null){
     cgm.viz_from_network(external_model);
 
     if (external_model != null){
-
       // copy the cgm object to the external widget model
       external_model.cgm = cgm;
 
@@ -71786,10 +71785,11 @@ function clustergrammer_gl(args, external_model=null){
       console.log('empty tooltip', d3.select(cgm.params.tooltip_id).empty())
       console.log('>>> -----------------------------------')
 
-      Jupyter.keyboard_manager
-             .register_events(
-               document.getElementById(cgm.params.tooltip_id.replace('#', ''))
-               )
+      let tooltip_id = cgm.params.tooltip_id.replace('#', '')
+
+      // Jupyter.keyboard_manager
+      //        .register_events(document.getElementById(tooltip_id))
+
     }
 
     return cgm;
@@ -73790,7 +73790,6 @@ module.exports = function initialize_params(external_model){
   params.max_zoom = min_dim/4.0;
   params.zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js")(params);
 
-  // require('./../zoom/zoom_rules_high_mat')(regl, params, external_model);
   cgm.zoom_rules_high_mat(regl, params, external_model);
 
 
@@ -74992,7 +74991,7 @@ var run_hide_tooltip = __webpack_require__(/*! ./run_hide_tooltip */ "./src/tool
 // var run_dendro_crop = require('./../crop/run_dendro_crop');
 var manual_category_from_dendro = __webpack_require__(/*! ./manual_category_from_dendro */ "./src/tooltip/manual_category_from_dendro.js")
 
-module.exports = function make_dendro_tooltip(cgm, inst_axis){
+module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
 
   var params = cgm.params;
 
@@ -75030,7 +75029,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('color', 'black');
 
   if (params.cat_data.manual_category[inst_axis]){
-    manual_category_from_dendro(cgm, inst_axis);
+    manual_category_from_dendro(cgm, external_model, inst_axis);
   }
 
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
@@ -75084,7 +75083,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
 
-module.exports = function make_tooltip_text(cgm){
+module.exports = function make_tooltip_text(cgm, external_model){
 
   let params = cgm.params;
   var inst_axis;
@@ -75132,7 +75131,7 @@ module.exports = function make_tooltip_text(cgm){
     // Dendro Tooltip
     //////////////////
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
-    make_dendro_tooltip(cgm, inst_axis);
+    make_dendro_tooltip(cgm, external_model, inst_axis);
 
   } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
 
@@ -75164,7 +75163,7 @@ module.exports = function make_tooltip_text(cgm){
  var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var manual_update_to_cats = __webpack_require__(/*! ./../cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js");
 
-module.exports = function manual_category_from_dendro(cgm, inst_axis){
+module.exports = function manual_category_from_dendro(cgm, external_model, inst_axis){
 
   let params = cgm.params
 
@@ -75181,12 +75180,11 @@ module.exports = function manual_category_from_dendro(cgm, inst_axis){
     .style('height', '0px')
     .style('display', 'none')
 
-  colors_array_1 = [
-     '#ff4422','#ee1166' ,'#9911bb' ,'#6633bb' ,'#3344bb' ,'#1199ff','#00aaff',
-     '#00bbdd','#009988','#44bb44']
+  colors_array_1 = ['#ff4422','#ee1166' ,'#9911bb' ,'#6633bb' ,'#3344bb' ,
+                    '#1199ff','#00aaff', '#00bbdd','#009988','#44bb44']
 
-  colors_array_2 = ['#88cc44','#ccdd22','#ffee11','#ffcc00',
-     '#ff9900','#ff5500', '#775544','#999999','#828080','#444']
+  colors_array_2 = ['#88cc44','#ccdd22', '#ffee11','#ffcc00', '#ff9900',
+                    '#ff5500', '#775544','#999999','#828080', '#444']
 
   let select_color_from_pallet = function(inst_color){
     d3.select(params.tooltip_id + ' .custom-cat-color')
@@ -75304,18 +75302,38 @@ module.exports = function manual_category_from_dendro(cgm, inst_axis){
     .style('color', 'white')
     .style('cursor', 'pointer')
     .on('click', d => {
-      let inst_cat = d3.select(params.tooltip_id + ' .custom-cat-input').node().value;
-      let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color').node().value;
+
+      let inst_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
+                       .node().value;
+
+      let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color')
+                         .node().value;
 
       if (inst_cat != ''){
+
+        console.log(inst_color)
+        if (inst_color === ''){
+          inst_color = 'white'
+        }
 
         let inst_labels = params.dendro.selected_clust_names;
 
         // Only allowing custom naming of first column
-        let cat_title = params.cat_data[inst_axis][0].cat_title
-        params.network.cat_colors[inst_axis]['cat-0'][cat_title + ': ' + inst_cat] = inst_color
+        // debugger;
 
-        manual_update_to_cats(cgm, inst_axis, cat_title + ': ' + inst_cat, inst_labels);
+        let cat_title = params.cat_data[inst_axis][0].cat_title
+
+
+        let full_cat = cat_title + ': ' + inst_cat
+        params.network.cat_colors[inst_axis]['cat-0'][full_cat] = inst_color
+
+        manual_update_to_cats(cgm, inst_axis, full_cat, inst_labels);
+
+        if (params.is_widget){
+          console.log('--> running widget callback on manual category update')
+          cgm.widget_callback(external_model);
+        }
+
       }
 
     })
@@ -75385,7 +75403,7 @@ var make_tooltip_text = __webpack_require__(/*! ./make_tooltip_text */ "./src/to
 var remove_lost_tooltips = __webpack_require__(/*! ./remove_lost_tooltips */ "./src/tooltip/remove_lost_tooltips.js");
 var display_and_position_tooltip = __webpack_require__(/*! ./display_and_position_tooltip */ "./src/tooltip/display_and_position_tooltip.js");
 
-module.exports = function run_show_tooltip(cgm){
+module.exports = function run_show_tooltip(cgm, external_model){
 
   let params = cgm.params;
 
@@ -75393,7 +75411,7 @@ module.exports = function run_show_tooltip(cgm){
 
     remove_lost_tooltips();
 
-    make_tooltip_text(cgm);
+    make_tooltip_text(cgm, external_model);
 
     display_and_position_tooltip(params);
 

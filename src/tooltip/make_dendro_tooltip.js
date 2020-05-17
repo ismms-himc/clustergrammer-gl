@@ -5,7 +5,7 @@ var run_hide_tooltip = require('./run_hide_tooltip');
 // var run_dendro_crop = require('./../crop/run_dendro_crop');
 var manual_category_from_dendro = require('./manual_category_from_dendro')
 
-module.exports = function make_dendro_tooltip(cgm, inst_axis){
+module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
 
   var params = cgm.params;
 
@@ -43,7 +43,7 @@ module.exports = function make_dendro_tooltip(cgm, inst_axis){
     .style('color', 'black');
 
   if (params.cat_data.manual_category[inst_axis]){
-    manual_category_from_dendro(cgm, inst_axis);
+    manual_category_from_dendro(cgm, external_model, inst_axis);
   }
 
   // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value

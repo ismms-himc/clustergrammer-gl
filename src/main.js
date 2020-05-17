@@ -52,7 +52,6 @@ function clustergrammer_gl(args, external_model=null){
     cgm.viz_from_network(external_model);
 
     if (external_model != null){
-
       // copy the cgm object to the external widget model
       external_model.cgm = cgm;
 
@@ -72,10 +71,11 @@ function clustergrammer_gl(args, external_model=null){
       console.log('empty tooltip', d3.select(cgm.params.tooltip_id).empty())
       console.log('>>> -----------------------------------')
 
-      Jupyter.keyboard_manager
-             .register_events(
-               document.getElementById(cgm.params.tooltip_id.replace('#', ''))
-               )
+      let tooltip_id = cgm.params.tooltip_id.replace('#', '')
+
+      // Jupyter.keyboard_manager
+      //        .register_events(document.getElementById(tooltip_id))
+
     }
 
     return cgm;

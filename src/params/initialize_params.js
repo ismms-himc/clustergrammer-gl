@@ -72,7 +72,6 @@ module.exports = function initialize_params(external_model){
   params.max_zoom = min_dim/4.0;
   params.zoom_restrict = require('./../zoom/ini_zoom_restrict')(params);
 
-  // require('./../zoom/zoom_rules_high_mat')(regl, params, external_model);
   cgm.zoom_rules_high_mat(regl, params, external_model);
 
 

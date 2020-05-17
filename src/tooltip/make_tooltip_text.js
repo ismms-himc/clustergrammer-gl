@@ -1,7 +1,7 @@
 var d3 = require("d3");
 var make_dendro_tooltip = require('./make_dendro_tooltip');
 
-module.exports = function make_tooltip_text(cgm){
+module.exports = function make_tooltip_text(cgm, external_model){
 
   let params = cgm.params;
   var inst_axis;
@@ -49,7 +49,7 @@ module.exports = function make_tooltip_text(cgm){
     // Dendro Tooltip
     //////////////////
     inst_axis = params.tooltip.tooltip_type.split('-')[0];
-    make_dendro_tooltip(cgm, inst_axis);
+    make_dendro_tooltip(cgm, external_model, inst_axis);
 
   } else if (params.tooltip.tooltip_type.indexOf('-cat-') > 0){
 

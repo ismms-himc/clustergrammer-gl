@@ -17,5 +17,7 @@ module.exports = function gen_int_par(params){
   interact.enable_viz_interact = true;
   // interact.wait_time_final_interact = 50;
 
+  interact.manual_update_cats = false;
+
   params.int = interact;
 };

@@ -71714,7 +71714,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.13.4
+  clustergrammer-gl version 0.13.5
 
  */
 
@@ -71723,7 +71723,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.4');
+  console.log('clustergrammer-gl version 0.13.5');
   console.log('#################################');
 
   var cgm = {};
@@ -73392,6 +73392,8 @@ module.exports = function gen_int_par(params){
   interact.enable_viz_interact = true;
   // interact.wait_time_final_interact = 50;
 
+  interact.manual_update_cats = false;
+
   params.int = interact;
 };
 
@@ -73836,6 +73838,7 @@ module.exports = function initialize_params(external_model){
     params.cat_data.manual_category.row = false
     params.cat_data.manual_category.col = false
   }
+
 
   this.params = params;
 };
@@ -75319,10 +75322,7 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
         let inst_labels = params.dendro.selected_clust_names;
 
         // Only allowing custom naming of first column
-        // debugger;
-
         let cat_title = params.cat_data[inst_axis][0].cat_title
-
 
         let full_cat = cat_title + ': ' + inst_cat
         params.network.cat_colors[inst_axis]['cat-0'][full_cat] = inst_color
@@ -75331,6 +75331,7 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
 
         if (params.is_widget){
           console.log('--> running widget callback on manual category update')
+          cgm.params.int.manual_update_cats = true
           cgm.widget_callback(external_model);
         }
 

@@ -114,8 +114,7 @@ module.exports = function initialize_params(external_model){
 
   if ('manual_category' in params.network){
 
-    params.cat_data.manual_category.row = params.network.manual_category.row
-    params.cat_data.manual_category.col = params.network.manual_category.col
+    // params.cat_data.manual_category.col = params.network.manual_category.col
 
     // initialize category dictionary
     ///////////////////////////////////
@@ -123,17 +122,23 @@ module.exports = function initialize_params(external_model){
     let axes = ['col', 'row']
     axes.forEach((axis) => {
 
-      inst_dict = {}
 
-      params
-         .network[axis + '_nodes']
-         .forEach(
-           (x) => {
-             inst_dict[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]
-           }
-         )
+      params.cat_data.manual_category[axis] = params.network.manual_category[axis]
 
-      params.cat_data.manual_cat_dict[axis] = inst_dict
+      if (params.cat_data.manual_category[axis]){
+
+        inst_dict = {}
+
+        params
+           .network[axis + '_nodes']
+           .forEach(
+             (x) => {
+               inst_dict[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]
+             }
+           )
+
+        params.cat_data.manual_cat_dict[axis] = inst_dict
+      }
 
     })
 

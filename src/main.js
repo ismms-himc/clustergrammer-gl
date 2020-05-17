@@ -1,6 +1,6 @@
 /*
 
-  clustergrammer-gl version 0.13.5
+  clustergrammer-gl version 0.13.6
 
  */
 
@@ -9,7 +9,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.5');
+  console.log('clustergrammer-gl version 0.13.6');
   console.log('#################################');
 
   var cgm = {};
@@ -73,8 +73,8 @@ function clustergrammer_gl(args, external_model=null){
 
       let tooltip_id = cgm.params.tooltip_id.replace('#', '')
 
-      // Jupyter.keyboard_manager
-      //        .register_events(document.getElementById(tooltip_id))
+      Jupyter.keyboard_manager
+             .register_events(document.getElementById(tooltip_id))
 
     }
 

@@ -73737,13 +73737,9 @@ var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ ".
 module.exports = function initialize_params(external_model){
 
   var cgm = this;
-
   var args = this.args;
-
   var canvas_container = this.canvas_container;
-
   var regl = this.regl;
-
   var network = this.network;
 
   cgm.params = {};
@@ -73876,14 +73872,13 @@ module.exports = function initialize_params(external_model){
 
     })
 
-
   } else {
     params.cat_data.manual_category.row = false
     params.cat_data.manual_category.col = false
   }
 
-
   this.params = params;
+
 };
 
 /***/ }),

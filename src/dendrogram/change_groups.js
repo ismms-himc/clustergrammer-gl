@@ -17,6 +17,9 @@ module.exports = function (regl, params, inst_axis, slider_value) {
   // this can probably be improved
   params.dendro.update_dendro = true;
 
+  console.log('dendro group level in calc_dendro_triangles')
+  console.log(slider_value)
+
   params.dendro.group_level[inst_axis] = slider_value;
   params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
   params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);

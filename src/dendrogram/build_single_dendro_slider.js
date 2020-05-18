@@ -4,6 +4,7 @@ var change_groups = require('./change_groups');
 
 module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
+  // n is the number of decimal points to round to
   function custom_round(x, n) {
     return n == null ? Math.round(x) : Math.round(x * (n = Math.pow(10, n))) / n;
   }
@@ -150,6 +151,8 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
   }
 
+  // convert from position along slider to a value that will be used to set
+  // the group level
   function get_slider_value(slider_position, slider_type='ten_slices'){
 
     let slider_value

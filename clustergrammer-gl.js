@@ -69817,7 +69817,6 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
   var triangle_info = {};
 
-  var inst_level = params.dendro.group_level[inst_axis];
   var inst_nodes = params.network[inst_axis + '_nodes'];
 
   var heat_shift;
@@ -69837,7 +69836,13 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
   _.each(inst_nodes, function(inst_node){
 
     var order_index = inst_node[inst_order];
-    var inst_group = inst_node.group[inst_level];
+
+    // // original way of getting group
+    // var inst_level = params.dendro.group_level[inst_axis];
+    // var inst_group = inst_node.group[inst_level];
+
+    // new way of getting group
+    var inst_group = inst_node.group_links;
 
     var inst_top;
     if (inst_axis === 'row'){
@@ -69857,6 +69862,7 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
       inst_name = inst_name.split(': ')[1];
     }
 
+    // initialize triangle info for a new group
     if ( _.has(triangle_info, inst_group) === false ){
       triangle_info[inst_group] = {};
       triangle_info[inst_group].name_top = inst_name;
@@ -71800,6 +71806,52 @@ function clustergrammer_gl(args, external_model=null){
 
     }
 
+    cgm.slice_linkage = function(axis, dist_thresh){
+      console.log('slice_linkage')
+
+      params = this.params
+      network = params.network
+      let clust_a
+      let clust_b
+
+      // initialize group_links
+      ['row', 'col'].forEach((axis) => {
+          network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
+        })
+
+      // the max individual cluster id
+      max_clust_id = params.network[axis + '_nodes'].length
+
+      params.network.linkage[axis].forEach((x, i) => {
+
+        if (x[2] < dist_thresh){
+
+          // get cluster that are being combined together
+          clust_a = x[0]
+          clust_b = x[1]
+
+          new_clust_id = max_clust_id + i
+
+          // console.log('index', i)
+          // console.log(new_clust_id)
+
+          // replace old cluster ids with new cluster id
+          // effectively merging clusters
+          network[axis + '_nodes'].forEach((x, i) => {
+            if (x.group_links == clust_a || x.group_links == clust_b){
+              x.group_links = new_clust_id
+            }
+          })
+
+
+        }
+
+      })
+
+      console.log(params.network.col_nodes.map((x) => x.group_links))
+
+    }
+
     return cgm;
 
   }
@@ -73734,6 +73786,12 @@ module.exports = function initialize_params(external_model){
   var regl = this.regl;
   var network = this.network;
 
+
+  // Initialze group_link
+  ['row', 'col'].forEach((axis) => {
+    network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
+  })
+
   cgm.params = {};
   let params = cgm.params;
   params.network = network;
@@ -73794,7 +73852,6 @@ module.exports = function initialize_params(external_model){
   params.zoom_restrict = __webpack_require__(/*! ./../zoom/ini_zoom_restrict */ "./src/zoom/ini_zoom_restrict.js")(params);
 
   cgm.zoom_rules_high_mat(regl, params, external_model);
-
 
   __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js")(regl, params);
 
@@ -74025,7 +74082,15 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
   // console.log(clusters.hc.dists_backup[0][5])
   // console.log(clusters.hc.dists_backup[0])
 
-  var max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists_backup);
+  // var max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists_backup);
+  var max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists);
+
+  // console.log('max_distance_in_dm', axis)
+  // console.log(max_distance_in_dm)
+
+  // manually setting max distance, which is different in JS and PY
+  // However, the linkage distances match exactly
+  // max_distance_in_dm = 1.3766397690561714
 
   // get order information from clusterfck tree
   ///////////////////////////////////////////////
@@ -74052,11 +74117,13 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
 
   for (var i = 0; i <= num_slices; i++) {
     cutoff_vals.push(max_distance_in_dm * i/num_slices);
-    // cutoff_vals.push(manual_cutoff);
     threshold_status.push('above');
     group.push(0);
     cutoff_indexes.push(i);
   }
+
+  console.log(axis)
+  console.log(cutoff_vals)
 
   underscore.each(['left','right'], function(side){
 

@@ -4,7 +4,6 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
   var triangle_info = {};
 
-  var inst_level = params.dendro.group_level[inst_axis];
   var inst_nodes = params.network[inst_axis + '_nodes'];
 
   var heat_shift;
@@ -24,7 +23,13 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
   _.each(inst_nodes, function(inst_node){
 
     var order_index = inst_node[inst_order];
-    var inst_group = inst_node.group[inst_level];
+
+    // // original way of getting group
+    // var inst_level = params.dendro.group_level[inst_axis];
+    // var inst_group = inst_node.group[inst_level];
+
+    // new way of getting group
+    var inst_group = inst_node.group_links;
 
     var inst_top;
     if (inst_axis === 'row'){
@@ -44,6 +49,7 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
       inst_name = inst_name.split(': ')[1];
     }
 
+    // initialize triangle info for a new group
     if ( _.has(triangle_info, inst_group) === false ){
       triangle_info[inst_group] = {};
       triangle_info[inst_group].name_top = inst_name;

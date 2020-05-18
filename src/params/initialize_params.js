@@ -9,6 +9,12 @@ module.exports = function initialize_params(external_model){
   var regl = this.regl;
   var network = this.network;
 
+
+  // Initialze group_link
+  ['row', 'col'].forEach((axis) => {
+    network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
+  })
+
   cgm.params = {};
   let params = cgm.params;
   params.network = network;
@@ -69,7 +75,6 @@ module.exports = function initialize_params(external_model){
   params.zoom_restrict = require('./../zoom/ini_zoom_restrict')(params);
 
   cgm.zoom_rules_high_mat(regl, params, external_model);
-
 
   require('./../cameras/make_cameras')(regl, params);
 

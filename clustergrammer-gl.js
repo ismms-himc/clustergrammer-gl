@@ -69778,7 +69778,8 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     slider_pos = custom_round(slider_pos, -1);
 
-    var slider_value = 10 - slider_pos/10;
+    // var slider_value = 10 - slider_pos/10;
+    var slider_value = get_slider_value(slider_pos, 'ten_slices')
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
@@ -69795,11 +69796,25 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
     d3.select(params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
-    var slider_value = 10 - rel_pos/10;
+    // var slider_value = 10 - rel_pos/10;
+    var slider_value = get_slider_value(rel_pos, 'ten_slices')
 
     change_groups(regl, params, inst_axis, slider_value);
 
   }
+
+  function get_slider_value(slider_position, slider_type='ten_slices'){
+
+    let slider_value
+    if (slider_type === 'ten_slices'){
+      slider_value = 10 - slider_position/10
+    } else if (slider_type === 'custom_slices'){
+      slider_value = 10 - slider_position/10
+    }
+
+    return slider_value
+  }
+
 };
 
 /***/ }),
@@ -69837,12 +69852,14 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
     var order_index = inst_node[inst_order];
 
-    // // original way of getting group
-    // var inst_level = params.dendro.group_level[inst_axis];
-    // var inst_group = inst_node.group[inst_level];
+    // original way of getting group
+    ////////////////////////////////////////////
+    var inst_level = params.dendro.group_level[inst_axis];
+    var inst_group = inst_node.group[inst_level];
 
-    // new way of getting group
-    var inst_group = inst_node.group_links;
+    // // new way of getting group
+    // ////////////////////////////////////////////
+    // var inst_group = inst_node.group_links;
 
     var inst_top;
     if (inst_axis === 'row'){

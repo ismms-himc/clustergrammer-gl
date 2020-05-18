@@ -68258,7 +68258,7 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 
 module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
 
-  console.log('manual_update_to_cats')
+  // console.log('manual_update_to_cats')
 
   params = cgm.params
   regl = cgm.regl
@@ -68283,14 +68283,13 @@ module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, s
 
   // update manual_cat_dict (will be synced to widget back-end)
   selected_labels.forEach((inst_label) => {
-    console.log('selected_labels', inst_label)
-
+    // console.log('selected_labels', inst_label)
     params.cat_data.manual_cat_dict[axis][inst_label] = new_cat
   })
 
   // debugger;
 
-  selected_labels.forEach((x) => console.log('tmp', x))
+  // selected_labels.forEach((x) => console.log('tmp', x))
 
 
   params.cat_data.manual_cat_dict[axis]
@@ -71729,7 +71728,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.13.7
+  clustergrammer-gl version 0.13.8
 
  */
 
@@ -71738,7 +71737,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.7');
+  console.log('clustergrammer-gl version 0.13.8');
   console.log('#################################');
 
   var cgm = {};
@@ -73846,7 +73845,8 @@ module.exports = function initialize_params(external_model){
 
   if ('manual_category' in params.network){
 
-    // params.cat_data.manual_category.col = params.network.manual_category.col
+    params.cat_data.manual_category.row = params.network.manual_category.row
+    params.cat_data.manual_category.col = params.network.manual_category.col
 
     // initialize category dictionary
     ///////////////////////////////////
@@ -73854,23 +73854,17 @@ module.exports = function initialize_params(external_model){
     let axes = ['col', 'row']
     axes.forEach((axis) => {
 
+      inst_dict = {}
 
-      params.cat_data.manual_category[axis] = params.network.manual_category[axis]
+      params
+         .network[axis + '_nodes']
+         .forEach(
+           (x) => {
+             inst_dict[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]
+           }
+         )
 
-      if (params.cat_data.manual_category[axis]){
-
-        inst_dict = {}
-
-        params
-           .network[axis + '_nodes']
-           .forEach(
-             (x) => {
-               inst_dict[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]
-             }
-           )
-
-        params.cat_data.manual_cat_dict[axis] = inst_dict
-      }
+      params.cat_data.manual_cat_dict[axis] = inst_dict
 
     })
 

@@ -25,16 +25,8 @@ module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, s
 
   // update manual_cat_dict (will be synced to widget back-end)
   selected_labels.forEach((inst_label) => {
-    // console.log('selected_labels', inst_label)
     params.cat_data.manual_cat_dict[axis][cat_title][inst_label] = new_cat
-
-
   })
-
-  // debugger;
-
-  // selected_labels.forEach((x) => console.log('tmp', x))
-
 
   params.cat_data.manual_cat_dict[axis]
 

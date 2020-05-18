@@ -1,7 +1,8 @@
 var get_max_distance_in_dm = require('./get_max_distance_in_dm');
 var underscore = require('underscore');
 
-module.exports = function get_order_and_groups_clusterfck_tree(clusters, names){
+module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
+                                                               cgm, axis){
 
   // console.log('**** checking in get_order ***********************')
   // console.log(clusters.hc.dists[0][5])
@@ -26,6 +27,8 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names){
   var tree = clusters.tree;
   var ini_level = 1;
   var tree_height = tree.dist;
+
+  cgm.params.tree[axis] = tree
 
   // var cutoff_fractions = [];
   var cutoff_vals = [];

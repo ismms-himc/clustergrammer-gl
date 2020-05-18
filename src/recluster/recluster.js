@@ -34,20 +34,21 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
   new_view.nodes.row_nodes = _.clone(cgm.params.network.row_nodes);
   new_view.nodes.col_nodes = _.clone(cgm.params.network.col_nodes);
 
-  _.each(['row', 'col'], function(inst_rc){
+  cgm.params.tree = {}
+  _.each(['row', 'col'], function(axis){
 
     var mat;
     var transpose = math.transpose;
     var names;
     var name_nodes;
 
-    if (inst_rc === 'row'){
+    if (axis === 'row'){
       mat = _.clone(cgm.params.network.mat);
 
       names = cgm.params.network.row_nodes.map(x => x.name.split(': ')[1]);
       name_nodes = 'row_nodes';
 
-    } else if (inst_rc === 'col'){
+    } else if (axis === 'col'){
       mat = _.clone(cgm.params.network.mat);
       mat = transpose(mat);
 
@@ -58,7 +59,7 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
     // average, single, complete
     var clusters = clusterfck.hcluster(mat, dist_fun[distance_metric], linkage_type);
 
-    var order_info = get_order_and_groups_clusterfck_tree(clusters, names);
+    var order_info = get_order_and_groups_clusterfck_tree(clusters, names, cgm, axis);
 
     var inst_node;
     var inst_order;
@@ -86,8 +87,9 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
   require('./../reorders/run_reorder')(cgm.regl, cgm.params, 'row', 'clust');
   require('./../reorders/run_reorder')(cgm.regl, cgm.params, 'col', 'clust');
 
-  change_groups(cgm.regl, cgm.params, 'row', cgm.params.dendro.group_level.row);
-  change_groups(cgm.regl, cgm.params, 'col', cgm.params.dendro.group_level.col);
+  let group_level = cgm.params.dendro.group_level
+  change_groups(cgm.regl, cgm.params, 'row', group_level.row);
+  change_groups(cgm.regl, cgm.params, 'col', group_level.col);
 
   // // add new view to views
   // cgm.config.network.views.push(new_view);

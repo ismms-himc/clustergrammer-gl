@@ -69764,6 +69764,9 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     var slider_pos = d3.event.y;
 
+    console.log('\n\n-------------------------------')
+    console.log('initial', slider_pos)
+
     if (slider_pos < 0){
       slider_pos = 0;
     }
@@ -69776,7 +69779,9 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
       this.parentNode.appendChild(this);
     }
 
+    console.log('pre-round', slider_pos)
     slider_pos = custom_round(slider_pos, -1);
+    console.log('post-round', slider_pos)
 
     // var slider_value = 10 - slider_pos/10;
     var slider_value = get_slider_value(slider_pos, 'ten_slices')
@@ -69790,6 +69795,9 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
   function click_dendro_slider(){
 
     var clicked_line_position = d3.mouse(this);
+
+
+    console.log('clicked_line_position', clicked_line_position)
 
     var rel_pos = custom_round(clicked_line_position[1], -1);
 
@@ -69811,6 +69819,8 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
     } else if (slider_type === 'custom_slices'){
       slider_value = 10 - slider_position/10
     }
+
+    console.log('slider_value', slider_value)
 
     return slider_value
   }

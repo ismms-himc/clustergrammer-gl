@@ -141,13 +141,13 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
     .style('cursor', 'pointer')
     .on('click', d => {
 
-      let inst_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
+      let new_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
                        .node().value;
 
       let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color')
                          .node().value;
 
-      if (inst_cat != ''){
+      if (new_cat != ''){
 
         console.log(inst_color)
         if (inst_color === ''){
@@ -159,10 +159,10 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
         // Only allowing custom naming of first column
         let cat_title = params.cat_data[inst_axis][0].cat_title
 
-        let full_cat = cat_title + ': ' + inst_cat
+        let full_cat = cat_title + ': ' + new_cat
         params.network.cat_colors[inst_axis]['cat-0'][full_cat] = inst_color
 
-        manual_update_to_cats(cgm, inst_axis, full_cat, inst_labels);
+        manual_update_to_cats(cgm, inst_axis, cat_title, new_cat, inst_labels);
 
         if (params.is_widget){
           console.log('--> running widget callback on manual category update')

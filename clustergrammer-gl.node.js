@@ -68256,12 +68256,14 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = function manual_update_to_cats(cgm, axis, new_cat, selected_labels){
+module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
 
   console.log('manual_update_to_cats')
 
   params = cgm.params
   regl = cgm.regl
+
+  let full_cat = cat_title + ': ' + new_cat
 
   // manually updated categories in network
   cgm.params.network[axis + '_nodes']
@@ -68274,15 +68276,17 @@ module.exports = function manual_update_to_cats(cgm, axis, new_cat, selected_lab
        }
 
        if (selected_labels.includes(inst_name)){
-         x['cat-0'] = new_cat
+         x['cat-0'] = full_cat
        }
 
      })
 
-  // // update manual_cat_dict (will be synced to widget back-end)
-  // selected_labels.forEach((inst_label) => {
-  //   console.log('selected_labels', inst_label)
-  // })
+  // update manual_cat_dict (will be synced to widget back-end)
+  selected_labels.forEach((inst_label) => {
+    console.log('selected_labels', inst_label)
+
+    params.cat_data.manual_cat_dict[axis][inst_label] = new_cat
+  })
 
   // debugger;
 
@@ -75343,13 +75347,13 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
     .style('cursor', 'pointer')
     .on('click', d => {
 
-      let inst_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
+      let new_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
                        .node().value;
 
       let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color')
                          .node().value;
 
-      if (inst_cat != ''){
+      if (new_cat != ''){
 
         console.log(inst_color)
         if (inst_color === ''){
@@ -75361,10 +75365,10 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
         // Only allowing custom naming of first column
         let cat_title = params.cat_data[inst_axis][0].cat_title
 
-        let full_cat = cat_title + ': ' + inst_cat
+        let full_cat = cat_title + ': ' + new_cat
         params.network.cat_colors[inst_axis]['cat-0'][full_cat] = inst_color
 
-        manual_update_to_cats(cgm, inst_axis, full_cat, inst_labels);
+        manual_update_to_cats(cgm, inst_axis, cat_title, new_cat, inst_labels);
 
         if (params.is_widget){
           console.log('--> running widget callback on manual category update')

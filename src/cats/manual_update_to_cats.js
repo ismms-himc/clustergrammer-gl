@@ -1,9 +1,11 @@
-module.exports = function manual_update_to_cats(cgm, axis, new_cat, selected_labels){
+module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
 
   console.log('manual_update_to_cats')
 
   params = cgm.params
   regl = cgm.regl
+
+  let full_cat = cat_title + ': ' + new_cat
 
   // manually updated categories in network
   cgm.params.network[axis + '_nodes']
@@ -16,15 +18,17 @@ module.exports = function manual_update_to_cats(cgm, axis, new_cat, selected_lab
        }
 
        if (selected_labels.includes(inst_name)){
-         x['cat-0'] = new_cat
+         x['cat-0'] = full_cat
        }
 
      })
 
-  // // update manual_cat_dict (will be synced to widget back-end)
-  // selected_labels.forEach((inst_label) => {
-  //   console.log('selected_labels', inst_label)
-  // })
+  // update manual_cat_dict (will be synced to widget back-end)
+  selected_labels.forEach((inst_label) => {
+    console.log('selected_labels', inst_label)
+
+    params.cat_data.manual_cat_dict[axis][inst_label] = new_cat
+  })
 
   // debugger;
 

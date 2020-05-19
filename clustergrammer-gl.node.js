@@ -71786,6 +71786,7 @@ var run_hide_tooltip = __webpack_require__(/*! ./../tooltip/run_hide_tooltip */ 
 module.exports = function single_clicking(params, external_model){
 
   params.ani.last_click = params.ani.time;
+  params.int.manual_update_cats = false;
 
   var cgm = this;
 
@@ -71921,7 +71922,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.14.0
+  clustergrammer-gl version 0.14.1
 
  */
 
@@ -71930,7 +71931,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.14.0');
+  console.log('clustergrammer-gl version 0.14.1');
   console.log('#################################');
 
   var cgm = {};
@@ -75608,11 +75609,11 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
         let full_cat = cat_title + ': ' + new_cat
         params.network.cat_colors[inst_axis]['cat-0'][full_cat] = inst_color
 
+        params.int.manual_update_cats = true
         manual_update_to_cats(cgm, inst_axis, cat_title, new_cat, inst_labels);
 
         if (params.is_widget){
           console.log('--> running widget callback on manual category update')
-          cgm.params.int.manual_update_cats = true
           cgm.widget_callback(external_model);
         }
 

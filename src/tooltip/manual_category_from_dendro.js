@@ -162,11 +162,11 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
         let full_cat = cat_title + ': ' + new_cat
         params.network.cat_colors[inst_axis]['cat-0'][full_cat] = inst_color
 
+        params.int.manual_update_cats = true
         manual_update_to_cats(cgm, inst_axis, cat_title, new_cat, inst_labels);
 
         if (params.is_widget){
           console.log('--> running widget callback on manual category update')
-          cgm.params.int.manual_update_cats = true
           cgm.widget_callback(external_model);
         }
 

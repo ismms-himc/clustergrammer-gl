@@ -13,6 +13,18 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
   var rect_height = slider_length + 20;
   var rect_width = 20;
 
+  let precalc_linkage
+  let round_level
+  if ('linkage' in params.network){
+    precalc_linkage = true
+    round_level = 3
+  } else {
+    precalc_linkage = false
+    round_level = -1
+  }
+
+  console.log('precalc_linkage', precalc_linkage)
+
   var drag = d3.drag()
       .on('drag', dragging)
       .on('end', function(){
@@ -104,8 +116,8 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     var slider_pos = d3.event.y;
 
-    console.log('\n\n-------------------------------')
-    console.log('initial', slider_pos)
+    // console.log('\n\n-------------------------------')
+    // console.log('initial', slider_pos)
 
     if (slider_pos < 0){
       slider_pos = 0;
@@ -119,12 +131,12 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
       this.parentNode.appendChild(this);
     }
 
-    console.log('pre-round', slider_pos)
-    slider_pos = custom_round(slider_pos, -1);
-    console.log('post-round', slider_pos)
+    // console.log('pre-round', slider_pos)
+    slider_pos = custom_round(slider_pos, round_level)
+    // console.log('post-round', slider_pos)
 
     // var slider_value = 10 - slider_pos/10;
-    var slider_value = get_slider_value(slider_pos, 'ten_slices')
+    var slider_value = get_slider_value(slider_pos, precalc_linkage)
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
@@ -136,16 +148,15 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     var clicked_line_position = d3.mouse(this);
 
+    // console.log('clicked_line_position', clicked_line_position)
 
-    console.log('clicked_line_position', clicked_line_position)
-
-    var rel_pos = custom_round(clicked_line_position[1], -1);
+    var rel_pos = custom_round(clicked_line_position[1], round_level)
 
     d3.select(params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     // var slider_value = 10 - rel_pos/10;
-    var slider_value = get_slider_value(rel_pos, 'ten_slices')
+    var slider_value = get_slider_value(rel_pos, precalc_linkage)
 
     change_groups(regl, params, inst_axis, slider_value);
 
@@ -153,12 +164,12 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
   // convert from position along slider to a value that will be used to set
   // the group level
-  function get_slider_value(slider_position, slider_type='ten_slices'){
+  function get_slider_value(slider_position, precalc_linkage){
 
     let slider_value
-    if (slider_type === 'ten_slices'){
-      slider_value = 10 - slider_position/10
-    } else if (slider_type === 'custom_slices'){
+    if (precalc_linkage){
+      slider_value = 1 - slider_position/100
+    } else{
       slider_value = 10 - slider_position/10
     }
 

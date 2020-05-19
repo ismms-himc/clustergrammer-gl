@@ -1,6 +1,6 @@
 module.exports = function calc_dendro_triangles(params, inst_axis){
 
-  console.log('calc_dendro_triangles')
+  // console.log('calc_dendro_triangles')
 
   var triangle_info = {};
 
@@ -24,14 +24,16 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
     var order_index = inst_node[inst_order];
 
-    // original way of getting group
-    ////////////////////////////////////////////
-    var inst_level = params.dendro.group_level[inst_axis];
-    var inst_group = inst_node.group[inst_level];
-
-    // // new way of getting group
-    // ////////////////////////////////////////////
-    // var inst_group = inst_node.group_links;
+    if ('linkage' in params.network){
+      // new way of getting group
+      ////////////////////////////////////////////
+      var inst_group = inst_node.group_links;
+    } else {
+      // original way of getting group
+      ////////////////////////////////////////////
+      var inst_level = params.dendro.group_level[inst_axis];
+      var inst_group = inst_node.group[inst_level];
+    }
 
     var inst_top;
     if (inst_axis === 'row'){

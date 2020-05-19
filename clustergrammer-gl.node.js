@@ -69674,6 +69674,18 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
   var rect_height = slider_length + 20;
   var rect_width = 20;
 
+  let precalc_linkage
+  let round_level
+  if ('linkage' in params.network){
+    precalc_linkage = true
+    round_level = 3
+  } else {
+    precalc_linkage = false
+    round_level = -1
+  }
+
+  console.log('precalc_linkage', precalc_linkage)
+
   var drag = d3.drag()
       .on('drag', dragging)
       .on('end', function(){
@@ -69765,8 +69777,8 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     var slider_pos = d3.event.y;
 
-    console.log('\n\n-------------------------------')
-    console.log('initial', slider_pos)
+    // console.log('\n\n-------------------------------')
+    // console.log('initial', slider_pos)
 
     if (slider_pos < 0){
       slider_pos = 0;
@@ -69780,12 +69792,12 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
       this.parentNode.appendChild(this);
     }
 
-    console.log('pre-round', slider_pos)
-    slider_pos = custom_round(slider_pos, -1);
-    console.log('post-round', slider_pos)
+    // console.log('pre-round', slider_pos)
+    slider_pos = custom_round(slider_pos, round_level)
+    // console.log('post-round', slider_pos)
 
     // var slider_value = 10 - slider_pos/10;
-    var slider_value = get_slider_value(slider_pos, 'ten_slices')
+    var slider_value = get_slider_value(slider_pos, precalc_linkage)
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
@@ -69797,16 +69809,15 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     var clicked_line_position = d3.mouse(this);
 
+    // console.log('clicked_line_position', clicked_line_position)
 
-    console.log('clicked_line_position', clicked_line_position)
-
-    var rel_pos = custom_round(clicked_line_position[1], -1);
+    var rel_pos = custom_round(clicked_line_position[1], round_level)
 
     d3.select(params.root+ ' .'+inst_axis+'_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     // var slider_value = 10 - rel_pos/10;
-    var slider_value = get_slider_value(rel_pos, 'ten_slices')
+    var slider_value = get_slider_value(rel_pos, precalc_linkage)
 
     change_groups(regl, params, inst_axis, slider_value);
 
@@ -69814,12 +69825,12 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
   // convert from position along slider to a value that will be used to set
   // the group level
-  function get_slider_value(slider_position, slider_type='ten_slices'){
+  function get_slider_value(slider_position, precalc_linkage){
 
     let slider_value
-    if (slider_type === 'ten_slices'){
-      slider_value = 10 - slider_position/10
-    } else if (slider_type === 'custom_slices'){
+    if (precalc_linkage){
+      slider_value = 1 - slider_position/100
+    } else{
       slider_value = 10 - slider_position/10
     }
 
@@ -69841,7 +69852,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
 module.exports = function calc_dendro_triangles(params, inst_axis){
 
-  console.log('calc_dendro_triangles')
+  // console.log('calc_dendro_triangles')
 
   var triangle_info = {};
 
@@ -69865,14 +69876,16 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
     var order_index = inst_node[inst_order];
 
-    // original way of getting group
-    ////////////////////////////////////////////
-    var inst_level = params.dendro.group_level[inst_axis];
-    var inst_group = inst_node.group[inst_level];
-
-    // // new way of getting group
-    // ////////////////////////////////////////////
-    // var inst_group = inst_node.group_links;
+    if ('linkage' in params.network){
+      // new way of getting group
+      ////////////////////////////////////////////
+      var inst_group = inst_node.group_links;
+    } else {
+      // original way of getting group
+      ////////////////////////////////////////////
+      var inst_level = params.dendro.group_level[inst_axis];
+      var inst_group = inst_node.group[inst_level];
+    }
 
     var inst_top;
     if (inst_axis === 'row'){
@@ -69945,26 +69958,16 @@ var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args 
 
 /* Changes the groupings (x- and y-axis color bars).
  */
-module.exports = function (regl, params, inst_axis, slider_value) {
+module.exports = function (regl, params, axis, slider_value) {
 
-  if (inst_axis==='row'){
-    params.dendro.group_level.row = slider_value;
-  } else if (inst_axis==='col'){
-    params.dendro.group_level.col = slider_value;
-  }
-
-  // var is_change_group = true;
-  // make_dendro_triangles(cgm, inst_axis, is_change_group);
-
-  // this can probably be improved
   params.dendro.update_dendro = true;
 
-  console.log('dendro group level in calc_dendro_triangles')
-  console.log(slider_value)
+  // console.log('dendro group level in calc_dendro_triangles')
+  // console.log(slider_value)
 
-  params.dendro.group_level[inst_axis] = slider_value;
-  params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
-  params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+  params.dendro.group_level[axis] = slider_value;
+  params.dendro.group_info[axis] = calc_dendro_triangles(params, axis);
+  params.dendro.dendro_args[axis] = make_dendro_args(regl, params, axis);
 
 };
 

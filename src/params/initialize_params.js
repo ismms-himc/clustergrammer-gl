@@ -9,11 +9,10 @@ module.exports = function initialize_params(external_model){
   var regl = this.regl;
   var network = this.network;
 
-
-  // Initialze group_link
-  ['row', 'col'].forEach((axis) => {
-    network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
-  })
+  // // Initialze group_link
+  // ['row', 'col'].forEach((axis) => {
+  //   network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
+  // })
 
   cgm.params = {};
   let params = cgm.params;
@@ -80,7 +79,7 @@ module.exports = function initialize_params(external_model){
 
   require('./../params/calc_mat_arr')(params);
   params.matrix_args = require('./../matrix_cells/make_matrix_args')(regl, params);
-  require('./gen_dendro_par')(regl, params);
+  require('./gen_dendro_par')(cgm);
   require('./generate_spillover_params')(regl, params);
 
   var allow_factor = d3.scaleLinear()

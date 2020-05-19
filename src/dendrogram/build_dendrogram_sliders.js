@@ -3,9 +3,9 @@ var build_single_dendro_slider = require('./build_single_dendro_slider');
 
 module.exports = function build_dendrogram_sliders(){
 
-  var params = this.params;
-
-  var regl = this.regl;
+  var cgm = this;
+  var params = cgm.params;
+  var regl = cgm.regl;
 
   // Add sliders on top of the canvas
   /////////////////////////////////////
@@ -52,7 +52,7 @@ module.exports = function build_dendrogram_sliders(){
       .style('width', '25px')
       .style('fill', 'white');
 
-    build_single_dendro_slider(regl, params, inst_axis);
+    build_single_dendro_slider(cgm, inst_axis);
   });
 
 }

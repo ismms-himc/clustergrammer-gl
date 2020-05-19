@@ -69596,9 +69596,9 @@ var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_s
 
 module.exports = function build_dendrogram_sliders(){
 
-  var params = this.params;
-
-  var regl = this.regl;
+  var cgm = this;
+  var params = cgm.params;
+  var regl = cgm.regl;
 
   // Add sliders on top of the canvas
   /////////////////////////////////////
@@ -69645,7 +69645,7 @@ module.exports = function build_dendrogram_sliders(){
       .style('width', '25px')
       .style('fill', 'white');
 
-    build_single_dendro_slider(regl, params, inst_axis);
+    build_single_dendro_slider(cgm, inst_axis);
   });
 
 }
@@ -69663,12 +69663,14 @@ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var change_groups = __webpack_require__(/*! ./change_groups */ "./src/dendrogram/change_groups.js");
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(regl, params, inst_axis){
+module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
   // n is the number of decimal points to round to
   function custom_round(x, n) {
     return n == null ? Math.round(x) : Math.round(x * (n = Math.pow(10, n))) / n;
   }
+  let regl = cgm.regl
+  let params = cgm.params
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
@@ -69796,7 +69798,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(regl, params, inst_axis, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 
@@ -69814,7 +69816,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
     // var slider_value = 10 - rel_pos/10;
     var slider_value = get_slider_value(rel_pos, params.dendro.precalc_linkage)
 
-    change_groups(regl, params, inst_axis, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 
@@ -69829,7 +69831,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
       slider_value = 10 - slider_position/10
     }
 
-    console.log('slider_value', slider_value)
+    // console.log('slider_value', slider_value)
 
     return slider_value
   }
@@ -69950,17 +69952,30 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
 var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+var slice_linkage = __webpack_require__(/*! ./slice_linkage */ "./src/dendrogram/slice_linkage.js");
 
 /* Changes the groupings (x- and y-axis color bars).
  */
-module.exports = function (regl, params, axis, slider_value) {
+module.exports = function change_groups(cgm, axis, slider_value) {
+
+  let regl = cgm.regl
+  let params = cgm.params
 
   params.dendro.update_dendro = true;
 
   // console.log('dendro group level in calc_dendro_triangles')
   // console.log(slider_value)
 
-  // params.dendro.group_level[axis] = slider_value;
+if (params.dendro.precalc_linkage){
+
+  // console.log('calculating new group_links parameter')
+
+  let dist_thresh = params.dendro.max_linkage_dist[axis] * slider_value
+  slice_linkage(params, axis, dist_thresh)
+
+} else {
+    params.dendro.group_level[axis] = slider_value;
+}
   params.dendro.group_info[axis] = calc_dendro_triangles(params, axis);
   params.dendro.dendro_args[axis] = make_dendro_args(regl, params, axis);
 
@@ -70138,6 +70153,57 @@ module.exports = function make_dendro_arr(params, inst_axis){
   // console.log(inst_axis, offset_array)
 
   return offset_array;
+}
+
+/***/ }),
+
+/***/ "./src/dendrogram/slice_linkage.js":
+/*!*****************************************!*\
+  !*** ./src/dendrogram/slice_linkage.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function slice_linkage(params, axis, dist_thresh){
+
+  // console.log('slice_linkage', axis, dist_thresh)
+
+  network = params.network
+  let clust_a
+  let clust_b
+
+  // initialize group_links
+  network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
+
+  // the max individual cluster id
+  max_clust_id = params.network[axis + '_nodes'].length
+
+  params.network.linkage[axis].forEach((x, i) => {
+
+    if (x[2] < dist_thresh){
+
+      // console.log('less than dist_thresh', x[2])
+
+      // get cluster that are being combined together
+      clust_a = x[0]
+      clust_b = x[1]
+
+      new_clust_id = max_clust_id + i
+
+      // replace old cluster ids with new cluster id
+      // effectively merging clusters
+      network[axis + '_nodes'].forEach((x, i) => {
+        if (x.group_links == clust_a || x.group_links == clust_b){
+          x.group_links = new_clust_id
+        }
+      })
+
+    }
+
+  })
+
+  // console.log(params.network[axis + '_nodes'].map((x) => x.group_links))
+
 }
 
 /***/ }),
@@ -71824,11 +71890,11 @@ function clustergrammer_gl(args, external_model=null){
     // misinterpreting as keyboard shortcuts
     if (cgm.params.is_widget){
 
-      console.log('>>> -----------------------------------')
-      console.log('Found widget, preventing keyboard shortcuts on tooltip')
-      console.log('checking if tooltip is present')
-      console.log('empty tooltip', d3.select(cgm.params.tooltip_id).empty())
-      console.log('>>> -----------------------------------')
+      // console.log('>>> -----------------------------------')
+      // console.log('Found widget, preventing keyboard shortcuts on tooltip')
+      // console.log('checking if tooltip is present')
+      // console.log('empty tooltip', d3.select(cgm.params.tooltip_id).empty())
+      // console.log('>>> -----------------------------------')
 
       let tooltip_id = cgm.params.tooltip_id.replace('#', '')
 
@@ -71837,51 +71903,6 @@ function clustergrammer_gl(args, external_model=null){
 
     }
 
-    cgm.slice_linkage = function(axis, dist_thresh){
-      console.log('slice_linkage')
-
-      params = this.params
-      network = params.network
-      let clust_a
-      let clust_b
-
-      // initialize group_links
-      ['row', 'col'].forEach((axis) => {
-          network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
-        })
-
-      // the max individual cluster id
-      max_clust_id = params.network[axis + '_nodes'].length
-
-      params.network.linkage[axis].forEach((x, i) => {
-
-        if (x[2] < dist_thresh){
-
-          // get cluster that are being combined together
-          clust_a = x[0]
-          clust_b = x[1]
-
-          new_clust_id = max_clust_id + i
-
-          // console.log('index', i)
-          // console.log(new_clust_id)
-
-          // replace old cluster ids with new cluster id
-          // effectively merging clusters
-          network[axis + '_nodes'].forEach((x, i) => {
-            if (x.group_links == clust_a || x.group_links == clust_b){
-              x.group_links = new_clust_id
-            }
-          })
-
-
-        }
-
-      })
-
-      console.log(params.network.col_nodes.map((x) => x.group_links))
-
-    }
 
     return cgm;
 
@@ -73421,8 +73442,12 @@ module.exports = function gen_cat_par(params){
 
 var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
+var slice_linkage = __webpack_require__(/*! ./../dendrogram/slice_linkage */ "./src/dendrogram/slice_linkage.js");
 
-module.exports = function gen_dendro_par(regl, params){
+module.exports = function gen_dendro_par(cgm){
+
+  var params = cgm.params;
+  var regl = cgm.regl;
 
   var dendro = {};
 
@@ -73441,18 +73466,36 @@ module.exports = function gen_dendro_par(regl, params){
 
   if ('linkage' in params.network){
     dendro.precalc_linkage = true
+
+    let link_mat
+    dendro.max_linkage_dist = {}
+    let dist_thresh
+    let axes = ['col', 'row']
+    axes.forEach((axis) => {
+
+      link_mat = params.network.linkage[axis]
+
+      // set maxiumu distance to above max linkage distance
+      dendro.max_linkage_dist[axis] = link_mat[link_mat.length-1][2] + 0.01
+
+      dist_thresh = dendro.max_linkage_dist[axis] * 0.5
+
+      slice_linkage(params, axis, dist_thresh)
+
+    })
+
   } else {
-    dendroprecalc_linkage = false
+    dendro.precalc_linkage = false
   }
 
   params.dendro = dendro;
 
-  _.each(['row', 'col'], function(inst_axis){
+  _.each(['row', 'col'], function(axis){
 
-    params.dendro.group_level[inst_axis] = params.dendro.default_level;
+    params.dendro.group_level[axis] = params.dendro.default_level;
 
-    params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
-    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+    params.dendro.group_info[axis] = calc_dendro_triangles(params, axis);
+    params.dendro.dendro_args[axis] = make_dendro_args(regl, params, axis);
 
   });
 
@@ -73823,11 +73866,10 @@ module.exports = function initialize_params(external_model){
   var regl = this.regl;
   var network = this.network;
 
-
-  // Initialze group_link
-  ['row', 'col'].forEach((axis) => {
-    network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
-  })
+  // // Initialze group_link
+  // ['row', 'col'].forEach((axis) => {
+  //   network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
+  // })
 
   cgm.params = {};
   let params = cgm.params;
@@ -73894,7 +73936,7 @@ module.exports = function initialize_params(external_model){
 
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
   params.matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js")(regl, params);
-  __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js")(regl, params);
+  __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js")(cgm);
   __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js")(regl, params);
 
   var allow_factor = d3.scaleLinear()
@@ -74356,8 +74398,8 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
   __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js")(cgm.regl, cgm.params, 'col', 'clust');
 
   let group_level = cgm.params.dendro.group_level
-  change_groups(cgm.regl, cgm.params, 'row', group_level.row);
-  change_groups(cgm.regl, cgm.params, 'col', group_level.col);
+  change_groups(cgm, 'row', group_level.row);
+  change_groups(cgm, 'col', group_level.col);
 
   // // add new view to views
   // cgm.config.network.views.push(new_view);

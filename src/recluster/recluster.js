@@ -88,8 +88,8 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
   require('./../reorders/run_reorder')(cgm.regl, cgm.params, 'col', 'clust');
 
   let group_level = cgm.params.dendro.group_level
-  change_groups(cgm.regl, cgm.params, 'row', group_level.row);
-  change_groups(cgm.regl, cgm.params, 'col', group_level.col);
+  change_groups(cgm, 'row', group_level.row);
+  change_groups(cgm, 'col', group_level.col);
 
   // // add new view to views
   // cgm.config.network.views.push(new_view);

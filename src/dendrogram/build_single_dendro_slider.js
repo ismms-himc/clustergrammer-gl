@@ -2,12 +2,14 @@ var d3 = require("d3");
 var change_groups = require('./change_groups');
 // var position_dendro_slider = require('./position_dendro_slider');
 
-module.exports = function build_single_dendro_slider(regl, params, inst_axis){
+module.exports = function build_single_dendro_slider(cgm, inst_axis){
 
   // n is the number of decimal points to round to
   function custom_round(x, n) {
     return n == null ? Math.round(x) : Math.round(x * (n = Math.pow(10, n))) / n;
   }
+  let regl = cgm.regl
+  let params = cgm.params
 
   var slider_length = 100;
   var rect_height = slider_length + 20;
@@ -135,7 +137,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(regl, params, inst_axis, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 
@@ -153,7 +155,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
     // var slider_value = 10 - rel_pos/10;
     var slider_value = get_slider_value(rel_pos, params.dendro.precalc_linkage)
 
-    change_groups(regl, params, inst_axis, slider_value);
+    change_groups(cgm, inst_axis, slider_value);
 
   }
 
@@ -168,7 +170,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
       slider_value = 10 - slider_position/10
     }
 
-    console.log('slider_value', slider_value)
+    // console.log('slider_value', slider_value)
 
     return slider_value
   }

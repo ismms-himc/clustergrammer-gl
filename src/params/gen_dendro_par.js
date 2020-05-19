@@ -1,7 +1,11 @@
 var calc_dendro_triangles = require('./../dendrogram/calc_dendro_triangles');
 var make_dendro_args = require('./../dendrogram/make_dendro_args');
+var slice_linkage = require('./../dendrogram/slice_linkage');
 
-module.exports = function gen_dendro_par(regl, params){
+module.exports = function gen_dendro_par(cgm){
+
+  var params = cgm.params;
+  var regl = cgm.regl;
 
   var dendro = {};
 
@@ -20,18 +24,36 @@ module.exports = function gen_dendro_par(regl, params){
 
   if ('linkage' in params.network){
     dendro.precalc_linkage = true
+
+    let link_mat
+    dendro.max_linkage_dist = {}
+    let dist_thresh
+    let axes = ['col', 'row']
+    axes.forEach((axis) => {
+
+      link_mat = params.network.linkage[axis]
+
+      // set maxiumu distance to above max linkage distance
+      dendro.max_linkage_dist[axis] = link_mat[link_mat.length-1][2] + 0.01
+
+      dist_thresh = dendro.max_linkage_dist[axis] * 0.5
+
+      slice_linkage(params, axis, dist_thresh)
+
+    })
+
   } else {
-    dendroprecalc_linkage = false
+    dendro.precalc_linkage = false
   }
 
   params.dendro = dendro;
 
-  _.each(['row', 'col'], function(inst_axis){
+  _.each(['row', 'col'], function(axis){
 
-    params.dendro.group_level[inst_axis] = params.dendro.default_level;
+    params.dendro.group_level[axis] = params.dendro.default_level;
 
-    params.dendro.group_info[inst_axis] = calc_dendro_triangles(params, inst_axis);
-    params.dendro.dendro_args[inst_axis] = make_dendro_args(regl, params, inst_axis);
+    params.dendro.group_info[axis] = calc_dendro_triangles(params, axis);
+    params.dendro.dendro_args[axis] = make_dendro_args(regl, params, axis);
 
   });
 

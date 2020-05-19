@@ -22,7 +22,7 @@ module.exports = function build_dendrogram_sliders(){
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
-      inst_top = 150;
+      inst_top = 175;
       inst_left = params.viz_width - 25 ;
     } else {
       inst_top = 795;

@@ -22,6 +22,8 @@ module.exports = function gen_dendro_par(cgm){
 
   dendro.group_info = {};
 
+  dendro.default_link_level = 0.5
+
   if ('linkage' in params.network){
     dendro.precalc_linkage = true
 
@@ -36,7 +38,7 @@ module.exports = function gen_dendro_par(cgm){
       // set maxiumu distance to above max linkage distance
       dendro.max_linkage_dist[axis] = link_mat[link_mat.length-1][2] + 0.01
 
-      dist_thresh = dendro.max_linkage_dist[axis] * 0.5
+      dist_thresh = dendro.max_linkage_dist[axis] * dendro.default_link_level
 
       slice_linkage(params, axis, dist_thresh)
 
@@ -45,6 +47,8 @@ module.exports = function gen_dendro_par(cgm){
   } else {
     dendro.precalc_linkage = false
   }
+
+  dendro.increment_buttons = false
 
   params.dendro = dendro;
 

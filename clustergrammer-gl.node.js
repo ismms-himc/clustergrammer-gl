@@ -71921,7 +71921,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
 /*
 
-  clustergrammer-gl version 0.13.8
+  clustergrammer-gl version 0.14.0
 
  */
 
@@ -71930,7 +71930,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.13.8');
+  console.log('clustergrammer-gl version 0.14.0');
   console.log('#################################');
 
   var cgm = {};

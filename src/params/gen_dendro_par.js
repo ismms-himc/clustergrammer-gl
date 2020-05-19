@@ -18,6 +18,12 @@ module.exports = function gen_dendro_par(regl, params){
 
   dendro.group_info = {};
 
+  if ('linkage' in params.network){
+    dendro.precalc_linkage = true
+  } else {
+    dendroprecalc_linkage = false
+  }
+
   params.dendro = dendro;
 
   _.each(['row', 'col'], function(inst_axis){

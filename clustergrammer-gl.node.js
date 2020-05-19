@@ -69674,17 +69674,12 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
   var rect_height = slider_length + 20;
   var rect_width = 20;
 
-  let precalc_linkage
   let round_level
-  if ('linkage' in params.network){
-    precalc_linkage = true
+  if (params.dendro.precalc_linkage){
     round_level = 3
   } else {
-    precalc_linkage = false
     round_level = -1
   }
-
-  console.log('precalc_linkage', precalc_linkage)
 
   var drag = d3.drag()
       .on('drag', dragging)
@@ -69797,7 +69792,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
     // console.log('post-round', slider_pos)
 
     // var slider_value = 10 - slider_pos/10;
-    var slider_value = get_slider_value(slider_pos, precalc_linkage)
+    var slider_value = get_slider_value(slider_pos, params.dendro.precalc_linkage)
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
@@ -69817,7 +69812,7 @@ module.exports = function build_single_dendro_slider(regl, params, inst_axis){
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     // var slider_value = 10 - rel_pos/10;
-    var slider_value = get_slider_value(rel_pos, precalc_linkage)
+    var slider_value = get_slider_value(rel_pos, params.dendro.precalc_linkage)
 
     change_groups(regl, params, inst_axis, slider_value);
 
@@ -69965,7 +69960,7 @@ module.exports = function (regl, params, axis, slider_value) {
   // console.log('dendro group level in calc_dendro_triangles')
   // console.log(slider_value)
 
-  params.dendro.group_level[axis] = slider_value;
+  // params.dendro.group_level[axis] = slider_value;
   params.dendro.group_info[axis] = calc_dendro_triangles(params, axis);
   params.dendro.dendro_args[axis] = make_dendro_args(regl, params, axis);
 
@@ -73443,6 +73438,12 @@ module.exports = function gen_dendro_par(regl, params){
   dendro.selected_clust_names = []
 
   dendro.group_info = {};
+
+  if ('linkage' in params.network){
+    dendro.precalc_linkage = true
+  } else {
+    dendroprecalc_linkage = false
+  }
 
   params.dendro = dendro;
 

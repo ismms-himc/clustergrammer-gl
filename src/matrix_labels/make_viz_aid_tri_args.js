@@ -5,8 +5,7 @@ var interp_fun = require('./../draws/interp_fun');
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
-  var inst_rgba = color_to_rgba('#eee', 1.0);
-  // var inst_rgba = color_to_rgba('red', 1.0);
+
   var num_labels = params.labels['num_' + inst_axis];
 
   var tri_height;
@@ -30,7 +29,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.viz_dim.heat_size.y;
-    tri_height = 0.0125;
+    // tri_height = 0.0125;
+    tri_height = 0.02;
     tri_width = mat_size/num_labels;
     top_offset = -params.viz_dim.mat_size.x - tri_height;
 
@@ -60,6 +60,22 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   var total_zoom = params.zoom_data.x.total_zoom;
 
+
+  var inst_rgba = color_to_rgba('#eee', 1.0);
+  // var inst_rgba = color_to_rgba('red', 1.0);
+
+  // want to be able to set color based on search status
+  let color_arr = Array(num_labels).fill(inst_rgba)
+
+  const color_buffer = regl.buffer({
+    length: num_labels,
+    'usage': 'dynamic'
+  })
+
+  color_buffer(color_arr);
+
+  params.viz_tri_color_arr = color_arr;
+
   var args = {
 
     vert: `
@@ -80,6 +96,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       varying vec3 vec_translate;
       varying vec2 viz_aid_pos;
 
+      attribute vec4 color_att;
+      varying vec4 color_vary;
+
       void main () {
 
         new_position = vec3(ini_position, 0);
@@ -99,19 +118,25 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
 
+        // pass attribute (in vert) to varying in frag
+        color_vary = color_att;
       }
     `,
 
     frag: `
 
       precision highp float;
-      uniform vec4 triangle_color;
+      // uniform vec4 triangle_color;
+      varying vec4 color_vary;
 
       // color triangle red
       void main () {
 
-        // defining the triangle color using a uniform
-        gl_FragColor = triangle_color;
+        // // defining the triangle color using a uniform
+        // gl_FragColor = triangle_color;
+
+        // define the triangle color using a varying
+        gl_FragColor = color_vary;
 
       }
 
@@ -136,6 +161,10 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
         buffer: regl.buffer(tri_offset_array_new),
         divisor: 1
       },
+      color_att: {
+        buffer: color_buffer,
+        divisor: 1
+      }
 
     },
 
@@ -144,7 +173,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       mat_rotate: mat_rotate,
       scale_y: scale_y,
       top_offset: top_offset,
-      triangle_color: inst_rgba,
+      // triangle_color: inst_rgba,
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),

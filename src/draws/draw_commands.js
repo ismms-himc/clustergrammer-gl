@@ -1,3 +1,5 @@
+let draw_webgl_layers = require('./draw_webgl_layers')
+
 module.exports = function draw_commands(cgm, external_model){
 
   let regl = cgm.regl
@@ -26,11 +28,7 @@ module.exports = function draw_commands(cgm, external_model){
   }
 
 
-  var draw_labels = params.labels.draw_labels;
-  require('./draw_matrix_components')(regl, params);
-  require('./draw_axis_components')(regl, params, 'row', draw_labels);
-  require('./draw_axis_components')(regl, params, 'col', draw_labels);
-  require('./draw_static_components')(regl, params);
+  draw_webgl_layers(cgm)
 
   var tooltip = params.tooltip;
 

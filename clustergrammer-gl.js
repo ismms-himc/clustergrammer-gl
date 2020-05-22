@@ -67884,7 +67884,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   const color_buffer = regl.buffer({
     length: num_labels,
-    // 'type': 'vec4',
     'usage': 'dynamic'
   })
 
@@ -67914,7 +67913,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       attribute vec2 ini_position;
       attribute vec2 cat_pos_att_inst;
       attribute vec2 cat_pos_att_new;
-      attribute vec4 color_att;
       uniform float interp_uni;
       uniform bool run_animation;
 
@@ -67929,6 +67927,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       varying vec2 cat_pos;
 
       // pass varying variable to fragment from vector
+      attribute vec4 color_att;
       varying vec4 color_vary;
 
       void main () {
@@ -67968,7 +67967,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       void main () {
 
         // gl_FragColor = vec4(0.6, 0.6, 0.6, opacity_vary);
-
         // defining the triangle color using a uniform
         // gl_FragColor = triangle_color;
 
@@ -68256,6 +68254,8 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+let draw_webgl_layers = __webpack_require__(/*! ./../draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
+
 module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
 
   params = cgm.params
@@ -68291,11 +68291,7 @@ module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, s
 
   __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
 
-  var draw_labels = params.labels.draw_labels;
-  __webpack_require__(/*! ./../draws/draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
-  __webpack_require__(/*! ./../draws/draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'row', draw_labels);
-  __webpack_require__(/*! ./../draws/draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'col', draw_labels);
-  __webpack_require__(/*! ./../draws/draw_static_components */ "./src/draws/draw_static_components.js")(regl, params);
+  draw_webgl_layers(cgm)
 
 }
 
@@ -69133,43 +69129,50 @@ module.exports = function build_control_panel(){
   __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js")(regl, cgm);
   __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js")(cgm);
 
-  // // row search
-  // ///////////////////
-  // var search_container = d3.select(params.root + ' .control-container')
-  //   .append('div')
-  //   // .classed('row',true)
-  //   .classed('gene_search_container',true)
-  //   .style('position', 'absolute')
-  //   .style('padding-left','10px')
-  //   .style('padding-right','10px')
-  //   .style('margin-top','10px')
-  //   .style('top', '0px')
-  //   .style('left', '100px')
+  // row search
+  ///////////////////
+  var search_container = d3.select(params.root + ' .control-container')
+    .append('div')
+    // .classed('row',true)
+    .classed('row_search_container',true)
+    .style('position', 'absolute')
+    .style('padding-left','10px')
+    .style('padding-right','10px')
+    .style('margin-top','10px')
+    .style('top', '0px')
+    .style('left', '100px')
 
-  // search_container
-  //   .append('input')
-  //   .classed('form-control',true)
-  //   .classed('gene_search_box',true)
-  //   .classed('sidebar_text', true)
-  //   .attr('type','text')
-  //   .attr('placeholder', 'something')
-  //   .style('height', '20px')
-  //   .style('margin-top', '10px');
+  search_container
+    .append('input')
+    .classed('form-control',true)
+    .classed('row_search_box',true)
+    .classed('sidebar_text', true)
+    .attr('type','text')
+    .attr('placeholder', 'something')
+    .style('height', '20px')
+    .style('margin-top', '10px');
 
-  // search_container
-  //   .append('div')
-  //   .classed('gene_search_button',true)
-  //   .style('margin-top', '5px')
-  //   .attr('data-toggle','buttons')
-  //   .append('button')
-  //   .classed('sidebar_text', true)
-  //   .html('Search')
-  //   .attr('type','button')
-  //   .classed('btn',true)
-  //   .classed('btn-primary',true)
-  //   .classed('submit_gene_button',true)
-  //   .style('width', '100%')
-  //   .style('font-size', '14px');
+  search_container
+    .append('div')
+    .classed('row_search_button',true)
+    .style('margin-top', '5px')
+    .attr('data-toggle','buttons')
+    .append('button')
+    .classed('sidebar_text', true)
+    .html('Search')
+    .attr('type','button')
+    .classed('btn',true)
+    .classed('btn-primary',true)
+    .classed('submit_gene_button',true)
+    .style('width', '100%')
+    .style('font-size', '14px')
+    .on('click', d => {
+      let inst_value = d3.select(params.root + ' .control-container .row_search_box')
+        .node().value
+
+      console.log('search box value: ', inst_value.split(', '))
+
+    })
 
 
 };
@@ -70420,6 +70423,8 @@ module.exports = function draw_background_calculations(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+let draw_webgl_layers = __webpack_require__(/*! ./draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
+
 module.exports = function draw_commands(cgm, external_model){
 
   let regl = cgm.regl
@@ -70448,11 +70453,7 @@ module.exports = function draw_commands(cgm, external_model){
   }
 
 
-  var draw_labels = params.labels.draw_labels;
-  __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
-  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'row', draw_labels);
-  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'col', draw_labels);
-  __webpack_require__(/*! ./draw_static_components */ "./src/draws/draw_static_components.js")(regl, params);
+  draw_webgl_layers(cgm)
 
   var tooltip = params.tooltip;
 
@@ -70622,6 +70623,30 @@ module.exports = function draw_static_components(regl, params){
     /* was drawing col text triangle args */
   });
 };
+
+/***/ }),
+
+/***/ "./src/draws/draw_webgl_layers.js":
+/*!****************************************!*\
+  !*** ./src/draws/draw_webgl_layers.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function draw_webgl_layers(cgm){
+
+  // console.log('draw_webgl_layers')
+
+  let regl = cgm.regl
+  let params = cgm.params
+
+  __webpack_require__(/*! ./draw_matrix_components */ "./src/draws/draw_matrix_components.js")(regl, params);
+  var draw_labels = params.labels.draw_labels;
+  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'row', draw_labels);
+  __webpack_require__(/*! ./draw_axis_components */ "./src/draws/draw_axis_components.js")(regl, params, 'col', draw_labels);
+  __webpack_require__(/*! ./draw_static_components */ "./src/draws/draw_static_components.js")(regl, params);
+
+}
 
 /***/ }),
 
@@ -71924,6 +71949,9 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 
  */
 
+
+let draw_webgl_layers = __webpack_require__(/*! ./draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
+
 function clustergrammer_gl(args, external_model=null){
 
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
@@ -71988,14 +72016,18 @@ function clustergrammer_gl(args, external_model=null){
     }
 
 
-    cgm.adjust_opacity = (opacity_scale) => {
+    function adjust_opacity(opacity_scale){
       console.log('adjust_opacity!!!!!!!!!!!!!!')
 
-      let params = this.cgm.params
+      let cgm = this
+      let params = cgm.params
 
       params.matrix.opacity_scale = opacity_scale
+      cgm.make_matrix_args()
+      draw_webgl_layers(cgm)
     }
 
+    cgm.adjust_opacity = adjust_opacity
 
     return cgm;
 
@@ -72017,8 +72049,9 @@ module.exports = clustergrammer_gl;
 var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/matrix_cells/make_opacity_arr.js");
 
-module.exports = function make_matrix_args(cgm){
+module.exports = function make_matrix_args(){
 
+  let cgm = this
   let regl = cgm.regl
   let params = cgm.params
 
@@ -72827,8 +72860,7 @@ var interp_fun = __webpack_require__(/*! ./../draws/interp_fun */ "./src/draws/i
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
-  var inst_rgba = color_to_rgba('#eee', 1.0);
-  // var inst_rgba = color_to_rgba('red', 1.0);
+
   var num_labels = params.labels['num_' + inst_axis];
 
   var tri_height;
@@ -72852,7 +72884,8 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
     // rows have fixed viz aid triangle 'heights'
     mat_size = params.viz_dim.heat_size.y;
-    tri_height = 0.0125;
+    // tri_height = 0.0125;
+    tri_height = 0.02;
     tri_width = mat_size/num_labels;
     top_offset = -params.viz_dim.mat_size.x - tri_height;
 
@@ -72882,6 +72915,22 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   var total_zoom = params.zoom_data.x.total_zoom;
 
+
+  var inst_rgba = color_to_rgba('#eee', 1.0);
+  // var inst_rgba = color_to_rgba('red', 1.0);
+
+  // want to be able to set color based on search status
+  let color_arr = Array(num_labels).fill(inst_rgba)
+
+  const color_buffer = regl.buffer({
+    length: num_labels,
+    'usage': 'dynamic'
+  })
+
+  color_buffer(color_arr);
+
+  params.viz_tri_color_arr = color_arr;
+
   var args = {
 
     vert: `
@@ -72902,6 +72951,9 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       varying vec3 vec_translate;
       varying vec2 viz_aid_pos;
 
+      attribute vec4 color_att;
+      varying vec4 color_vary;
+
       void main () {
 
         new_position = vec3(ini_position, 0);
@@ -72921,19 +72973,25 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
         // depth is being set to 0.45
         gl_Position = zoom * vec4( vec2(new_position), 0.45, 1);
 
+        // pass attribute (in vert) to varying in frag
+        color_vary = color_att;
       }
     `,
 
     frag: `
 
       precision highp float;
-      uniform vec4 triangle_color;
+      // uniform vec4 triangle_color;
+      varying vec4 color_vary;
 
       // color triangle red
       void main () {
 
-        // defining the triangle color using a uniform
-        gl_FragColor = triangle_color;
+        // // defining the triangle color using a uniform
+        // gl_FragColor = triangle_color;
+
+        // define the triangle color using a varying
+        gl_FragColor = color_vary;
 
       }
 
@@ -72958,6 +73016,10 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
         buffer: regl.buffer(tri_offset_array_new),
         divisor: 1
       },
+      color_att: {
+        buffer: color_buffer,
+        divisor: 1
+      }
 
     },
 
@@ -72966,7 +73028,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
       mat_rotate: mat_rotate,
       scale_y: scale_y,
       top_offset: top_offset,
-      triangle_color: inst_rgba,
+      // triangle_color: inst_rgba,
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
@@ -74051,9 +74113,9 @@ module.exports = function initialize_params(external_model){
 
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
 
+  // attach to cgm so it can be run without passing arguments
   cgm.make_matrix_args = make_matrix_args
-
-  make_matrix_args(cgm)
+  cgm.make_matrix_args()
 
   __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js")(cgm);
   __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js")(regl, params);

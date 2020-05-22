@@ -150,7 +150,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 
   const color_buffer = regl.buffer({
     length: num_labels,
-    // 'type': 'vec4',
     'usage': 'dynamic'
   })
 
@@ -180,7 +179,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       attribute vec2 ini_position;
       attribute vec2 cat_pos_att_inst;
       attribute vec2 cat_pos_att_new;
-      attribute vec4 color_att;
       uniform float interp_uni;
       uniform bool run_animation;
 
@@ -195,6 +193,7 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       varying vec2 cat_pos;
 
       // pass varying variable to fragment from vector
+      attribute vec4 color_att;
       varying vec4 color_vary;
 
       void main () {
@@ -234,7 +233,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       void main () {
 
         // gl_FragColor = vec4(0.6, 0.6, 0.6, opacity_vary);
-
         // defining the triangle color using a uniform
         // gl_FragColor = triangle_color;
 

@@ -1,8 +1,9 @@
 var make_position_arr = require('./make_position_arr');
 var make_opacity_arr = require('./make_opacity_arr');
 
-module.exports = function make_matrix_args(cgm){
+module.exports = function make_matrix_args(){
 
+  let cgm = this
   let regl = cgm.regl
   let params = cgm.params
 

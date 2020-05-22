@@ -314,43 +314,50 @@ module.exports = function build_control_panel(){
   require('../cats/build_reorder_cat_titles')(regl, cgm);
   require('./build_tree_icon')(cgm);
 
-  // // row search
-  // ///////////////////
-  // var search_container = d3.select(params.root + ' .control-container')
-  //   .append('div')
-  //   // .classed('row',true)
-  //   .classed('gene_search_container',true)
-  //   .style('position', 'absolute')
-  //   .style('padding-left','10px')
-  //   .style('padding-right','10px')
-  //   .style('margin-top','10px')
-  //   .style('top', '0px')
-  //   .style('left', '100px')
+  // row search
+  ///////////////////
+  var search_container = d3.select(params.root + ' .control-container')
+    .append('div')
+    // .classed('row',true)
+    .classed('row_search_container',true)
+    .style('position', 'absolute')
+    .style('padding-left','10px')
+    .style('padding-right','10px')
+    .style('margin-top','10px')
+    .style('top', '0px')
+    .style('left', '100px')
 
-  // search_container
-  //   .append('input')
-  //   .classed('form-control',true)
-  //   .classed('gene_search_box',true)
-  //   .classed('sidebar_text', true)
-  //   .attr('type','text')
-  //   .attr('placeholder', 'something')
-  //   .style('height', '20px')
-  //   .style('margin-top', '10px');
+  search_container
+    .append('input')
+    .classed('form-control',true)
+    .classed('row_search_box',true)
+    .classed('sidebar_text', true)
+    .attr('type','text')
+    .attr('placeholder', 'something')
+    .style('height', '20px')
+    .style('margin-top', '10px');
 
-  // search_container
-  //   .append('div')
-  //   .classed('gene_search_button',true)
-  //   .style('margin-top', '5px')
-  //   .attr('data-toggle','buttons')
-  //   .append('button')
-  //   .classed('sidebar_text', true)
-  //   .html('Search')
-  //   .attr('type','button')
-  //   .classed('btn',true)
-  //   .classed('btn-primary',true)
-  //   .classed('submit_gene_button',true)
-  //   .style('width', '100%')
-  //   .style('font-size', '14px');
+  search_container
+    .append('div')
+    .classed('row_search_button',true)
+    .style('margin-top', '5px')
+    .attr('data-toggle','buttons')
+    .append('button')
+    .classed('sidebar_text', true)
+    .html('Search')
+    .attr('type','button')
+    .classed('btn',true)
+    .classed('btn-primary',true)
+    .classed('submit_gene_button',true)
+    .style('width', '100%')
+    .style('font-size', '14px')
+    .on('click', d => {
+      let inst_value = d3.select(params.root + ' .control-container .row_search_box')
+        .node().value
+
+      console.log('search box value: ', inst_value.split(', '))
+
+    })
 
 
 };

@@ -1,3 +1,5 @@
+let draw_webgl_layers = require('./../draws/draw_webgl_layers')
+
 module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
 
   params = cgm.params
@@ -33,10 +35,6 @@ module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, s
 
   require('./../params/generate_cat_args_arrs')(regl, params);
 
-  var draw_labels = params.labels.draw_labels;
-  require('./../draws/draw_matrix_components')(regl, params);
-  require('./../draws/draw_axis_components')(regl, params, 'row', draw_labels);
-  require('./../draws/draw_axis_components')(regl, params, 'col', draw_labels);
-  require('./../draws/draw_static_components')(regl, params);
+  draw_webgl_layers(cgm)
 
 }

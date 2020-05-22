@@ -82,9 +82,9 @@ module.exports = function initialize_params(external_model){
 
   require('./../params/calc_mat_arr')(params);
 
+  // attach to cgm so it can be run without passing arguments
   cgm.make_matrix_args = make_matrix_args
-
-  make_matrix_args(cgm)
+  cgm.make_matrix_args()
 
   require('./gen_dendro_par')(cgm);
   require('./generate_spillover_params')(regl, params);

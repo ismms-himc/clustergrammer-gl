@@ -75317,8 +75317,26 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
     .style('display', 'inline-block')
     .classed('selected_label_container', true)
 
+
+  function make_output_string(d) {
+
+          let label_string
+          if (params.dendro.output_label_format === 'list'){
+            label_string = params.dendro.selected_clust_names.map(x => ` '${x}'`).join(',')
+          } else if (params.dendro.output_label_format === 'tsv'){
+            label_string = params.dendro.selected_clust_names.join('\t')
+          }
+          else if (params.dendro.output_label_format === 'csv'){
+            label_string = params.dendro.selected_clust_names.join(', ')
+          } else if (params.dendro.output_label_format === 'new-line'){
+            label_string = params.dendro.selected_clust_names.join('\n')
+          }
+          return label_string
+        }
+
   let selected_color = '#0198E1'
-  let format_options = ['list', 'csv', 'tsv', 'new-line']
+  // 'new-line'
+  let format_options = ['list', 'csv', 'tsv']
   selected_label_container
     .selectAll('text')
     .data(format_options)
@@ -75343,11 +75361,9 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
           return inst_color
         })
 
-      // debugger
-      // console.log(d)
-      // d3.select(this)
-      //   .select('text')
-      //   .style('color', selected_color)
+      d3.select(params.tooltip_id + ' input')
+        .attr('value', make_output_string)
+
     })
     .text((d, i) => {
       let inst_text = ''
@@ -75368,12 +75384,13 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
 
   d3.select(params.tooltip_id)
     .append('input')
-    .attr('value', function(){
-      // return params.dendro.selected_clust_names.join(', ');
-      let labels = params.dendro.selected_clust_names
-      labels = labels.map(x => ` '${x}'`).join(',');
-      return labels
-    })
+    // .attr('value', function(){
+    //   // return params.dendro.selected_clust_names.join(', ');
+    //   let label_string = params.dendro.selected_clust_names
+    //   label_string = label_string.map(x => ` '${x}'`).join(',')
+    //   return label_string
+    // })
+    .attr('value', make_output_string)
     .style('width', '364px')
     .style('display', 'block')
     .style('color', 'black');

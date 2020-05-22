@@ -1,7 +1,5 @@
 module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
 
-  // console.log('manual_update_to_cats')
-
   params = cgm.params
   regl = cgm.regl
 

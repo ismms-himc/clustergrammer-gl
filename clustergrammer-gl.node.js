@@ -68258,8 +68258,6 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 
 module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
 
-  // console.log('manual_update_to_cats')
-
   params = cgm.params
   regl = cgm.regl
 
@@ -71964,7 +71962,6 @@ function clustergrammer_gl(args, external_model=null){
       cgm.widget_callback = args.widget_callback;
     }
 
-
     // initialize network
     // cgm.decompress_network(args.network);
     cgm.network = args.network;
@@ -71973,28 +71970,18 @@ function clustergrammer_gl(args, external_model=null){
     // as a quick crop method
     cgm.viz_from_network(external_model);
 
+    // copy the cgm object to the external widget model
     if (external_model != null){
-      // copy the cgm object to the external widget model
       external_model.cgm = cgm;
-
     }
 
     cgm.recluster = __webpack_require__(/*! ./recluster/recluster */ "./src/recluster/recluster.js");
-
     cgm.manual_update_to_cats = __webpack_require__(/*! ./cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js")
 
     // this prevents Jupyter from listening to typing on the modal and
     // misinterpreting as keyboard shortcuts
     if (cgm.params.is_widget){
-
-      // console.log('>>> -----------------------------------')
-      // console.log('Found widget, preventing keyboard shortcuts on tooltip')
-      // console.log('checking if tooltip is present')
-      // console.log('empty tooltip', d3.select(cgm.params.tooltip_id).empty())
-      // console.log('>>> -----------------------------------')
-
       let tooltip_id = cgm.params.tooltip_id.replace('#', '')
-
       Jupyter.keyboard_manager
              .register_events(document.getElementById(tooltip_id))
 

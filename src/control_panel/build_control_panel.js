@@ -186,7 +186,7 @@ module.exports = function build_control_panel(){
       })
 
 
-  var order_options = ['clust', 'sum', 'var'];
+  var order_options = ['clust', 'sum', 'var', 'alpha'];
 
   control_svg
     .append('rect')

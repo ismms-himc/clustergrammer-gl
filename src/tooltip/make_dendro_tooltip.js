@@ -29,14 +29,77 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
   var cat_breakdown = calc_cat_cluster_breakdown(params, mouseover[inst_axis].dendro, inst_axis);
   make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
 
+  // title for selected rows input box
   d3.select(params.tooltip_id)
     .append('text')
-    .text('Selected ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns'));
+    .style('display', 'inline-block')
+    .style('cursor', 'default')
+    .text(
+      'Selected ' + inst_axis.replace('row', 'Rows').replace('col', 'Columns') + ': '
+      );
+
+  // selected output formats
+  selected_label_container = d3.select(params.tooltip_id)
+    .append('div')
+    .style('display', 'inline-block')
+    .classed('selected_label_container', true)
+
+  let selected_color = '#0198E1'
+  let format_options = ['list', 'csv', 'tsv', 'new-line']
+  selected_label_container
+    .selectAll('text')
+    .data(format_options)
+    .enter()
+    .append('text')
+    .classed('output_format', true)
+    .style('margin-left', '2px')
+    .style('display', 'inline-block')
+    .style('cursor', 'default')
+    .on('click', d => {
+
+      // console.log('clicking format')
+
+      params.dendro.output_label_format = d
+
+      d3.selectAll(params.tooltip_id + ' .selected_label_container .output_format')
+        .style('color', d => {
+          let inst_color = 'white'
+          if (d === params.dendro.output_label_format){
+            inst_color = selected_color
+          }
+          return inst_color
+        })
+
+      // debugger
+      // console.log(d)
+      // d3.select(this)
+      //   .select('text')
+      //   .style('color', selected_color)
+    })
+    .text((d, i) => {
+      let inst_text = ''
+      if (i < format_options.length - 1){
+        inst_text = d + ', '
+      } else {
+        inst_text = d
+      }
+      return inst_text
+    })
+    .style('color', d => {
+      let inst_color = 'white'
+      if (d === params.dendro.output_label_format){
+        inst_color = selected_color
+      }
+      return inst_color
+    })
 
   d3.select(params.tooltip_id)
     .append('input')
     .attr('value', function(){
-      return params.dendro.selected_clust_names.join(', ');
+      // return params.dendro.selected_clust_names.join(', ');
+      let labels = params.dendro.selected_clust_names
+      labels = labels.map(x => ` '${x}'`).join(',');
+      return labels
     })
     .style('width', '364px')
     .style('display', 'block')

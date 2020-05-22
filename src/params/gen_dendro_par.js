@@ -24,6 +24,8 @@ module.exports = function gen_dendro_par(cgm){
 
   dendro.default_link_level = 0.5
 
+  dendro.output_label_format = 'list'
+
   if ('linkage' in params.network){
     dendro.precalc_linkage = true
 

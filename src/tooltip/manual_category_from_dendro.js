@@ -5,11 +5,11 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
 
   let params = cgm.params
 
-  // Custom Category
+  // Manual Category
   ////////////////////////////
   d3.select(params.tooltip_id)
     .append('text')
-    .text('Custom Category: ');
+    .text('Manual Category: ');
 
   // color picker section
   let color_picker_div = d3.select(params.tooltip_id)

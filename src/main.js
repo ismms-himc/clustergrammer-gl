@@ -68,6 +68,15 @@ function clustergrammer_gl(args, external_model=null){
     }
 
 
+    cgm.adjust_opacity = (opacity_scale) => {
+      console.log('adjust_opacity!!!!!!!!!!!!!!')
+
+      let params = this.cgm.params
+
+      params.matrix.opacity_scale = opacity_scale
+    }
+
+
     return cgm;
 
   }

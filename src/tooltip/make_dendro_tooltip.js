@@ -49,7 +49,7 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
 
           let label_string
           if (params.dendro.output_label_format === 'list'){
-            label_string = params.dendro.selected_clust_names.map(x => ` '${x}'`).join(',')
+            label_string = '[' + params.dendro.selected_clust_names.map(x => ` '${x}'`).join(',') + ']'
           } else if (params.dendro.output_label_format === 'tsv'){
             label_string = params.dendro.selected_clust_names.join('\t')
           }

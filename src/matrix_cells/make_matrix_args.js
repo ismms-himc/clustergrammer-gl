@@ -1,7 +1,16 @@
 var make_position_arr = require('./make_position_arr');
 var make_opacity_arr = require('./make_opacity_arr');
 
-module.exports = function make_matrix_args(regl, params){
+module.exports = function make_matrix_args(cgm){
+
+  let regl = cgm.regl
+  let params = cgm.params
+
+  console.log('------------------------------------')
+  console.log('------------------------------------')
+  console.log('make_matrix_args')
+  console.log('------------------------------------')
+  console.log('------------------------------------')
 
   // make arrays
   params.arrs = {};
@@ -139,6 +148,8 @@ module.exports = function make_matrix_args(regl, params){
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
 
-  return matrix_args;
+  params.matrix_args = matrix_args
+
+  // return matrix_args;
 
 };

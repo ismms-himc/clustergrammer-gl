@@ -72021,7 +72021,16 @@ module.exports = clustergrammer_gl;
 var make_position_arr = __webpack_require__(/*! ./make_position_arr */ "./src/matrix_cells/make_position_arr.js");
 var make_opacity_arr = __webpack_require__(/*! ./make_opacity_arr */ "./src/matrix_cells/make_opacity_arr.js");
 
-module.exports = function make_matrix_args(regl, params){
+module.exports = function make_matrix_args(cgm){
+
+  let regl = cgm.regl
+  let params = cgm.params
+
+  console.log('------------------------------------')
+  console.log('------------------------------------')
+  console.log('make_matrix_args')
+  console.log('------------------------------------')
+  console.log('------------------------------------')
 
   // make arrays
   params.arrs = {};
@@ -72159,7 +72168,9 @@ module.exports = function make_matrix_args(regl, params){
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
 
-  return matrix_args;
+  params.matrix_args = matrix_args
+
+  // return matrix_args;
 
 };
 
@@ -72175,11 +72186,13 @@ module.exports = function make_matrix_args(regl, params){
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 module.exports = function make_opacity_arr(params){
 
+  console.log('************************************')
+  console.log('************************************')
   console.log('make_opacity_arr')
+  console.log('************************************')
+  console.log('************************************')
 
-  var mat_data = params.mat_data;
-
-  var opacity_arr = [].concat.apply([], mat_data);
+  var opacity_arr = [].concat.apply([], params.mat_data);
 
   var abs_max_val = Math.abs(_.max(opacity_arr, function(d){
     return Math.abs(d);
@@ -72187,7 +72200,7 @@ module.exports = function make_opacity_arr(params){
 
   var opacity_scale = d3.scaleLinear();
 
-  var opacity_domain = abs_max_val;
+  var opacity_domain = abs_max_val * params.matrix.opacity_scale;
   var opacity_range = 1.0;
 
   opacity_scale
@@ -73960,6 +73973,7 @@ module.exports = function generate_webgl_to_pix(params){
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
+var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js")
 
 module.exports = function initialize_params(external_model){
 
@@ -74015,6 +74029,8 @@ module.exports = function initialize_params(external_model){
   params.matrix.distance_metric = 'cosine'
   params.matrix.linkage_type = 'average'
 
+  params.matrix.opacity_scale = 1.0
+
   // initialize control panel in reorder mode
   params.viz.current_panel = 'reorder'
 
@@ -74038,7 +74054,11 @@ module.exports = function initialize_params(external_model){
   __webpack_require__(/*! ./../cameras/make_cameras */ "./src/cameras/make_cameras.js")(regl, params);
 
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
-  params.matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js")(regl, params);
+
+  cgm.make_matrix_args = make_matrix_args
+
+  make_matrix_args(cgm)
+
   __webpack_require__(/*! ./gen_dendro_par */ "./src/params/gen_dendro_par.js")(cgm);
   __webpack_require__(/*! ./generate_spillover_params */ "./src/params/generate_spillover_params.js")(regl, params);
 

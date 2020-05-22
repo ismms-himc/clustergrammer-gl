@@ -1,5 +1,6 @@
 var d3 = require("d3");
 var hzome_functions = require('./../tooltip/hzome_functions')
+var make_matrix_args = require('./../matrix_cells/make_matrix_args')
 
 module.exports = function initialize_params(external_model){
 
@@ -55,6 +56,8 @@ module.exports = function initialize_params(external_model){
   params.matrix.distance_metric = 'cosine'
   params.matrix.linkage_type = 'average'
 
+  params.matrix.opacity_scale = 1.0
+
   // initialize control panel in reorder mode
   params.viz.current_panel = 'reorder'
 
@@ -78,7 +81,11 @@ module.exports = function initialize_params(external_model){
   require('./../cameras/make_cameras')(regl, params);
 
   require('./../params/calc_mat_arr')(params);
-  params.matrix_args = require('./../matrix_cells/make_matrix_args')(regl, params);
+
+  cgm.make_matrix_args = make_matrix_args
+
+  make_matrix_args(cgm)
+
   require('./gen_dendro_par')(cgm);
   require('./generate_spillover_params')(regl, params);
 

@@ -56,7 +56,7 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
           else if (params.dendro.output_label_format === 'csv'){
             label_string = params.dendro.selected_clust_names.join(', ')
           } else if (params.dendro.output_label_format === 'new-line'){
-            label_string = params.dendro.selected_clust_names.join('\n')
+            label_string = params.dendro.selected_clust_names.join('<br/>')
           }
           return label_string
         }

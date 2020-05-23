@@ -155,6 +155,9 @@ module.exports = function initialize_params(external_model){
     params.cat_data.manual_category.col = false
   }
 
+  params.search = {}
+  params.search.searched_rows = []
+
   this.params = params;
 
 };

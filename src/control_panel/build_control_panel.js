@@ -1,4 +1,5 @@
 var d3 = require("d3");
+let draw_webgl_layers = require('./../draws/draw_webgl_layers')
 // var logo_url = require("file-loader!../graham_cracker_70.png");
 
 module.exports = function build_control_panel(){
@@ -320,7 +321,6 @@ module.exports = function build_control_panel(){
   ///////////////////
   var search_container = d3.select(params.root + ' .control-container')
     .append('div')
-    // .classed('row',true)
     .classed('row_search_container',true)
     .style('position', 'absolute')
     .style('padding-left','10px')
@@ -337,9 +337,10 @@ module.exports = function build_control_panel(){
     .attr('type','text')
     .attr('placeholder', 'row names')
     .attr('list', 'row_names')
-    .style('height', '20px')
+    .style('height', '25px')
     .style('margin-top', '10px')
     .style('display', 'inline-block')
+    .style('padding-left', '3px')
 
   let row_names = params.network.row_node_names
 
@@ -351,8 +352,6 @@ module.exports = function build_control_panel(){
     .enter()
     .append('option')
     .attr('value', d => d)
-
-  console.log(row_names)
 
   search_container
     .append('div')
@@ -370,12 +369,18 @@ module.exports = function build_control_panel(){
     .classed('submit_gene_button',true)
     .style('width', '100%')
     .style('font-size', '14px')
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight', 400)
     .on('click', d => {
 
       let inst_value = d3.select(params.root + ' .control-container .row_search_box')
         .node().value
 
-      console.log('search box value: ', inst_value.split(', '))
+      params.search.searched_rows = inst_value.split(', ')
+
+      console.log('search box value: ', params.search.searched_rows)
+
+      draw_webgl_layers(cgm)
 
     })
 

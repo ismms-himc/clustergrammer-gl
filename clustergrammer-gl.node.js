@@ -68814,6 +68814,7 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+let draw_webgl_layers = __webpack_require__(/*! ./../draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
 // var logo_url = require("file-loader!../graham_cracker_70.png");
 
 module.exports = function build_control_panel(){
@@ -69135,7 +69136,6 @@ module.exports = function build_control_panel(){
   ///////////////////
   var search_container = d3.select(params.root + ' .control-container')
     .append('div')
-    // .classed('row',true)
     .classed('row_search_container',true)
     .style('position', 'absolute')
     .style('padding-left','10px')
@@ -69152,9 +69152,10 @@ module.exports = function build_control_panel(){
     .attr('type','text')
     .attr('placeholder', 'row names')
     .attr('list', 'row_names')
-    .style('height', '20px')
+    .style('height', '25px')
     .style('margin-top', '10px')
     .style('display', 'inline-block')
+    .style('padding-left', '3px')
 
   let row_names = params.network.row_node_names
 
@@ -69166,8 +69167,6 @@ module.exports = function build_control_panel(){
     .enter()
     .append('option')
     .attr('value', d => d)
-
-  console.log(row_names)
 
   search_container
     .append('div')
@@ -69185,12 +69184,18 @@ module.exports = function build_control_panel(){
     .classed('submit_gene_button',true)
     .style('width', '100%')
     .style('font-size', '14px')
+    .style('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .style('font-weight', 400)
     .on('click', d => {
 
       let inst_value = d3.select(params.root + ' .control-container .row_search_box')
         .node().value
 
-      console.log('search box value: ', inst_value.split(', '))
+      params.search.searched_rows = inst_value.split(', ')
+
+      console.log('search box value: ', params.search.searched_rows)
+
+      draw_webgl_layers(cgm)
 
     })
 
@@ -72937,12 +72942,27 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   var total_zoom = params.zoom_data.x.total_zoom;
 
-
-  var inst_rgba = color_to_rgba('#eee', 1.0);
-  // var inst_rgba = color_to_rgba('red', 1.0);
+  var inst_rgba = color_to_rgba('#eee', 1.0)
+  // var inst_rgba = color_to_rgba('red', 1.0)
 
   // want to be able to set color based on search status
-  let color_arr = Array(num_labels).fill(inst_rgba)
+  let color_arr_ini = Array(num_labels).fill(inst_rgba)
+
+  // let color_arr = color_arr_ini
+
+  let searched_rows = params.search.searched_rows
+
+  // change color of selected rows
+  let color_arr = color_arr_ini.map((x,i) => {
+    if (inst_axis === 'row'){
+      let inst_name = cgm.params.network.row_node_names[i]
+      if (searched_rows.includes(inst_name)){
+        x = color_to_rgba('red', 1.0)
+      }
+    }
+    return x
+
+  })
 
   const color_buffer = regl.buffer({
     length: num_labels,
@@ -74214,6 +74234,9 @@ module.exports = function initialize_params(external_model){
     params.cat_data.manual_category.row = false
     params.cat_data.manual_category.col = false
   }
+
+  params.search = {}
+  params.search.searched_rows = []
 
   this.params = params;
 

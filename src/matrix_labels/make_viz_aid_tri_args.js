@@ -60,12 +60,27 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   var total_zoom = params.zoom_data.x.total_zoom;
 
-
-  var inst_rgba = color_to_rgba('#eee', 1.0);
-  // var inst_rgba = color_to_rgba('red', 1.0);
+  var inst_rgba = color_to_rgba('#eee', 1.0)
+  // var inst_rgba = color_to_rgba('red', 1.0)
 
   // want to be able to set color based on search status
-  let color_arr = Array(num_labels).fill(inst_rgba)
+  let color_arr_ini = Array(num_labels).fill(inst_rgba)
+
+  // let color_arr = color_arr_ini
+
+  let searched_rows = params.search.searched_rows
+
+  // change color of selected rows
+  let color_arr = color_arr_ini.map((x,i) => {
+    if (inst_axis === 'row'){
+      let inst_name = cgm.params.network.row_node_names[i]
+      if (searched_rows.includes(inst_name)){
+        x = color_to_rgba('red', 1.0)
+      }
+    }
+    return x
+
+  })
 
   const color_buffer = regl.buffer({
     length: num_labels,

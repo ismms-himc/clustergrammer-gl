@@ -10,10 +10,10 @@ module.exports = function initialize_params(external_model){
   var regl = this.regl;
   var network = this.network;
 
-  // // Initialze group_link
-  // ['row', 'col'].forEach((axis) => {
-  //   network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
-  // })
+  // fix initial ordering indexing (will fix in Python on nex release)
+  ['row', 'col'].forEach(axis => {
+    this.network[axis + '_nodes'].forEach(x => x.ini = x.ini - 1)
+  })
 
   cgm.params = {};
   let params = cgm.params;

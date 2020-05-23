@@ -185,8 +185,8 @@ module.exports = function build_control_panel(){
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
 
-
-  var order_options = ['clust', 'sum', 'var', 'alpha'];
+  // dropped alpha, will probably replace with ini
+  var order_options = ['clust', 'sum', 'var', 'ini'];
 
   control_svg
     .append('rect')
@@ -324,8 +324,8 @@ module.exports = function build_control_panel(){
     .style('padding-left','10px')
     .style('padding-right','10px')
     .style('margin-top','10px')
-    .style('top', '0px')
-    .style('left', '100px')
+    .style('top', '37px')
+    .style('left', '440px')
 
   search_container
     .append('input')
@@ -333,14 +333,21 @@ module.exports = function build_control_panel(){
     .classed('row_search_box',true)
     .classed('sidebar_text', true)
     .attr('type','text')
-    .attr('placeholder', 'something')
+    .attr('placeholder', 'row names')
     .style('height', '20px')
-    .style('margin-top', '10px');
+    .style('margin-top', '10px')
+    .style('display', 'inline-block')
+
+  let row_names = params.network.row_node_names
+
+  console.log(row_names)
 
   search_container
     .append('div')
     .classed('row_search_button',true)
     .style('margin-top', '5px')
+    .style('margin-left', '5px')
+    .style('display', 'inline-block')
     .attr('data-toggle','buttons')
     .append('button')
     .classed('sidebar_text', true)
@@ -352,6 +359,7 @@ module.exports = function build_control_panel(){
     .style('width', '100%')
     .style('font-size', '14px')
     .on('click', d => {
+
       let inst_value = d3.select(params.root + ' .control-container .row_search_box')
         .node().value
 

@@ -12,6 +12,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   function position_function(d, i){
     row_pos = canvas_pos.y_arr[num_row - 1 - row_nodes[Math.floor(i / num_col)][inst_row_order]];
     col_pos = canvas_pos.x_arr[num_col - 1 - col_nodes[i % num_col][inst_col_order]];
+
+    console.log(col_pos, row_pos)
     return [col_pos, row_pos];
   }
 

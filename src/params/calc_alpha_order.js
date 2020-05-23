@@ -13,14 +13,21 @@ module.exports = function calc_alpha_order(params){
   _.each(['row', 'col'], function(inst_axis){
 
     var inst_nodes = network[inst_axis + '_nodes'];
-    node_names = utils.pluck(inst_nodes, 'name');
+    // node_names = utils.pluck(inst_nodes, 'name');
 
-    // console.log(node_names, node_names[10])
+    node_names = inst_nodes
+                   .map(x => {
+                     let inst_name = x.name
+
+                     if (inst_name.includes(': ')){
+                       inst_name = inst_name.split(': ')[1]
+                     }
+                     return inst_name
+                   })
+
     network[inst_axis + '_node_names'] = node_names;
 
-    // tmp_names = node_names.sort();
     tmp_names = sort(node_names);
-    // console.log(node_names, node_names[10])
 
     _.map(inst_nodes, function(inst_node){
 

@@ -69000,8 +69000,8 @@ module.exports = function build_control_panel(){
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
 
-
-  var order_options = ['clust', 'sum', 'var', 'alpha'];
+  // dropped alpha, will probably replace with ini
+  var order_options = ['clust', 'sum', 'var', 'ini'];
 
   control_svg
     .append('rect')
@@ -69139,8 +69139,8 @@ module.exports = function build_control_panel(){
     .style('padding-left','10px')
     .style('padding-right','10px')
     .style('margin-top','10px')
-    .style('top', '0px')
-    .style('left', '100px')
+    .style('top', '37px')
+    .style('left', '440px')
 
   search_container
     .append('input')
@@ -69148,14 +69148,21 @@ module.exports = function build_control_panel(){
     .classed('row_search_box',true)
     .classed('sidebar_text', true)
     .attr('type','text')
-    .attr('placeholder', 'something')
+    .attr('placeholder', 'row names')
     .style('height', '20px')
-    .style('margin-top', '10px');
+    .style('margin-top', '10px')
+    .style('display', 'inline-block')
+
+  let row_names = params.network.row_node_names
+
+  console.log(row_names)
 
   search_container
     .append('div')
     .classed('row_search_button',true)
     .style('margin-top', '5px')
+    .style('margin-left', '5px')
+    .style('display', 'inline-block')
     .attr('data-toggle','buttons')
     .append('button')
     .classed('sidebar_text', true)
@@ -69167,6 +69174,7 @@ module.exports = function build_control_panel(){
     .style('width', '100%')
     .style('font-size', '14px')
     .on('click', d => {
+
       let inst_value = d3.select(params.root + ' .control-container .row_search_box')
         .node().value
 
@@ -72268,6 +72276,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   function position_function(d, i){
     row_pos = canvas_pos.y_arr[num_row - 1 - row_nodes[Math.floor(i / num_col)][inst_row_order]];
     col_pos = canvas_pos.x_arr[num_col - 1 - col_nodes[i % num_col][inst_col_order]];
+
+    console.log(col_pos, row_pos)
     return [col_pos, row_pos];
   }
 
@@ -73227,14 +73237,21 @@ module.exports = function calc_alpha_order(params){
   _.each(['row', 'col'], function(inst_axis){
 
     var inst_nodes = network[inst_axis + '_nodes'];
-    node_names = utils.pluck(inst_nodes, 'name');
+    // node_names = utils.pluck(inst_nodes, 'name');
 
-    // console.log(node_names, node_names[10])
+    node_names = inst_nodes
+                   .map(x => {
+                     let inst_name = x.name
+
+                     if (inst_name.includes(': ')){
+                       inst_name = inst_name.split(': ')[1]
+                     }
+                     return inst_name
+                   })
+
     network[inst_axis + '_node_names'] = node_names;
 
-    // tmp_names = node_names.sort();
     tmp_names = sort(node_names);
-    // console.log(node_names, node_names[10])
 
     _.map(inst_nodes, function(inst_node){
 
@@ -74041,10 +74058,10 @@ module.exports = function initialize_params(external_model){
   var regl = this.regl;
   var network = this.network;
 
-  // // Initialze group_link
-  // ['row', 'col'].forEach((axis) => {
-  //   network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
-  // })
+  // fix initial ordering indexing (will fix in Python on nex release)
+  ['row', 'col'].forEach(axis => {
+    this.network[axis + '_nodes'].forEach(x => x.ini = x.ini - 1)
+  })
 
   cgm.params = {};
   let params = cgm.params;
@@ -74610,12 +74627,14 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
 
   // update custom label order
   var full_name;
-  if (params.labels.titles[inst_axis] !== ''){
-    full_name = params.labels.titles[inst_axis] + ': ' +
-                params.int.mouseover[inst_axis].name;
-  } else {
-    full_name = params.int.mouseover[inst_axis].name;
-  }
+  // if (params.labels.titles[inst_axis] !== ''){
+  //   full_name = params.labels.titles[inst_axis] + ': ' +
+  //               params.int.mouseover[inst_axis].name;
+  // } else {
+  //   full_name = params.int.mouseover[inst_axis].name;
+  // }
+
+  full_name = params.int.mouseover[inst_axis].name;
 
   var found_label_index = _.indexOf(params.network[inst_axis + '_node_names'],
                                   full_name);
@@ -75685,7 +75704,7 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
     .style('display', 'inline-block')
     .style('color', 'black')
 
-  let preferred_cat_list = [] // params.network.row_node_names
+  let preferred_cat_list = []
 
   custom_cat_div
     .append('datalist')

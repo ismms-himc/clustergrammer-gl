@@ -5,12 +5,14 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
 
   // update custom label order
   var full_name;
-  if (params.labels.titles[inst_axis] !== ''){
-    full_name = params.labels.titles[inst_axis] + ': ' +
-                params.int.mouseover[inst_axis].name;
-  } else {
-    full_name = params.int.mouseover[inst_axis].name;
-  }
+  // if (params.labels.titles[inst_axis] !== ''){
+  //   full_name = params.labels.titles[inst_axis] + ': ' +
+  //               params.int.mouseover[inst_axis].name;
+  // } else {
+  //   full_name = params.int.mouseover[inst_axis].name;
+  // }
+
+  full_name = params.int.mouseover[inst_axis].name;
 
   var found_label_index = _.indexOf(params.network[inst_axis + '_node_names'],
                                   full_name);

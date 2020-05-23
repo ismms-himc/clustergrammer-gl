@@ -78,7 +78,7 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
     .style('display', 'inline-block')
     .style('color', 'black')
 
-  let preferred_cat_list = [] // params.network.row_node_names
+  let preferred_cat_list = []
 
   custom_cat_div
     .append('datalist')

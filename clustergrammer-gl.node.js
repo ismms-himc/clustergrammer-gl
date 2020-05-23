@@ -75680,9 +75680,21 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
     .append('input')
     .classed('custom-cat-input', true)
     .attr('placeholder', 'Category')
+    .attr('list', 'preferred_categories')
     .style('width', '140px')
     .style('display', 'inline-block')
-    .style('color', 'black');
+    .style('color', 'black')
+
+  let preferred_cat_list = [] // params.network.row_node_names
+
+  custom_cat_div
+    .append('datalist')
+    .attr('id', 'preferred_categories')
+    .selectAll('options')
+    .data(preferred_cat_list)
+    .enter()
+    .append('option')
+    .attr('value', d => d)
 
   // type color
   custom_cat_div

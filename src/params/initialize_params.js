@@ -82,6 +82,11 @@ module.exports = function initialize_params(external_model){
 
   require('./../params/calc_mat_arr')(params);
 
+  // matrix color paramters
+  params.viz.mat_colors = {}
+  params.viz.mat_colors.pos_rgb = [1, 0, 0]
+  params.viz.mat_colors.neg_rgb = [0, 0, 1]
+
   // attach to cgm so it can be run without passing arguments
   cgm.make_matrix_args = make_matrix_args
   cgm.make_matrix_args()
@@ -157,6 +162,7 @@ module.exports = function initialize_params(external_model){
 
   params.search = {}
   params.search.searched_rows = []
+
 
   this.params = params;
 

@@ -68091,7 +68091,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
     }
 
     // limit on the number of category types shown
-    var max_cats = 3;
+    var max_cats = 4;
     // limit the number of bars shown
     var max_bars = 10;
 
@@ -72160,15 +72160,20 @@ module.exports = function make_matrix_args(){
     // precision highp float;
     precision lowp float;
 
+    uniform vec3 pos_rgb;
+    uniform vec3 neg_rgb;
+
     // use the varying being passed from the vertex shader
     varying float opacity_vary;
 
     void main() {
 
       if (opacity_vary > 0.0){
-        gl_FragColor = vec4(1, 0, 0, abs(opacity_vary));
+        // gl_FragColor = vec4(1, 0, 0, abs(opacity_vary));
+        gl_FragColor = vec4(pos_rgb, abs(opacity_vary));
       } else {
-        gl_FragColor = vec4(0, 0, 1, abs(opacity_vary));
+        // gl_FragColor = vec4(0, 0, 1, abs(opacity_vary));
+        gl_FragColor = vec4(neg_rgb, abs(opacity_vary));
       }
 
     }`;
@@ -72212,7 +72217,9 @@ module.exports = function make_matrix_args(){
     uniforms: {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      run_animation: regl.prop('run_animation')
+      run_animation: regl.prop('run_animation'),
+      pos_rgb: params.viz.mat_colors.pos_rgb,
+      neg_rgb: params.viz.mat_colors.neg_rgb
     },
     instances: num_instances,
     depth: {
@@ -74166,6 +74173,11 @@ module.exports = function initialize_params(external_model){
 
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
 
+  // matrix color paramters
+  params.viz.mat_colors = {}
+  params.viz.mat_colors.pos_rgb = [1, 0, 0]
+  params.viz.mat_colors.neg_rgb = [0, 0, 1]
+
   // attach to cgm so it can be run without passing arguments
   cgm.make_matrix_args = make_matrix_args
   cgm.make_matrix_args()
@@ -74241,6 +74253,7 @@ module.exports = function initialize_params(external_model){
 
   params.search = {}
   params.search.searched_rows = []
+
 
   this.params = params;
 

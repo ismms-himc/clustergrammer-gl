@@ -33,7 +33,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
     }
 
     // limit on the number of category types shown
-    var max_cats = 3;
+    var max_cats = 4;
     // limit the number of bars shown
     var max_bars = 10;
 

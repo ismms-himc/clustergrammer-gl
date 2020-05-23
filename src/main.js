@@ -1,5 +1,5 @@
 /*
-  clustergrammer-gl version 0.15.0
+  clustergrammer-gl version 0.15.1
  */
 
 let draw_webgl_layers = require('./draws/draw_webgl_layers')
@@ -9,7 +9,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.15.0');
+  console.log('clustergrammer-gl version 0.15.1');
   console.log('#################################');
 
   var cgm = {};

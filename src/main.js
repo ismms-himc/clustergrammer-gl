@@ -1,9 +1,6 @@
 /*
-
-  clustergrammer-gl version 0.14.1
-
+  clustergrammer-gl version 0.15.0
  */
-
 
 let draw_webgl_layers = require('./draws/draw_webgl_layers')
 
@@ -12,7 +9,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.14.1');
+  console.log('clustergrammer-gl version 0.15.0');
   console.log('#################################');
 
   var cgm = {};
@@ -76,7 +73,6 @@ function clustergrammer_gl(args, external_model=null){
              .register_events(document.getElementById(root_id))
 
     }
-
 
     function adjust_opacity(opacity_scale){
       console.log('adjust_opacity!!!!!!!!!!!!!!')

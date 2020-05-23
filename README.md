@@ -34,6 +34,45 @@ For additional examples and tutorials please see:
 
 Single cell RNA-seq (scRNA-seq) is a powerful method to interrogate gene expression across thousands of single cells. This method produces thousands of measurements (single cells) across thousands of dimensions (genes). This notebook uses Clustergrammer2 to interactively explore an example dataset measuring the gene expression of 2,700 PBMCs obtained from [10X Genomics](https://www.10xgenomics.com/resources/datasets/). Bulk gene expression signatures of cell types from [CIBERSORT](https://cibersort.stanford.edu/) were used to obtain a tentative cell type for each cell. Please see the video tutorial above for more information.
 
+## Bundling
+
+We're using a local version of packd to make a bundle of Clustergrammer-GL:
+
+```
+➜  packd git:(master) npm start
+
+> packd@2.8.0 start /Users/nickfernandez/Documents/packd
+> node server
+
+packd debug started at Sat, 23 May 2020 17:15:21 GMT
+listening on localhost:9000
+packd info ::1 - - [Sat, 23 May 2020 17:15:30 GMT] "GET / HTTP/1.1"
+packd info ::1 - - [Sat, 23 May 2020 17:15:41 GMT] "GET /clustergrammer-gl HTTP/1.1"
+packd info ::1 - - [Sat, 23 May 2020 17:15:41 GMT] "GET /clustergrammer-gl@0.15.1 HTTP/1.1"
+packd info [clustergrammer-gl] requested package
+packd info [clustergrammer-gl] is not cached
+packd info [clustergrammer-gl] fetching https://registry.npmjs.org/clustergrammer-gl/-/clustergrammer-gl-0.15.1.tgz
+packd info [clustergrammer-gl] extracting to /Users/nickfernandez/Documents/packd/.tmp/ae4601021098ba82a59ab5c71569d10fa8897211/package
+packd info [clustergrammer-gl] running  /Users/nickfernandez/Documents/packd/node_modules/.bin/npm install --production
+packd info [clustergrammer-gl] added 168 packages from 123 contributors and audited 871 packages in 8.022s
+packd info [clustergrammer-gl] found 3 vulnerabilities (2 low, 1 high)
+packd info [clustergrammer-gl]   run `npm audit fix` to fix them, or `npm audit` for details
+packd info [clustergrammer-gl]
+packd info [clustergrammer-gl] npm WARN deprecated fsevents@1.2.13: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+packd info [clustergrammer-gl] npm WARN deprecated core-js@2.6.11: core-js@<3 is no longer maintained and not recommended for usage due to the number of issues. Please, upgrade your dependencies to the actual version of core-js@3.
+packd info [clustergrammer-gl] npm notice created a lockfile as package-lock.json. You should commit this file.
+packd info [clustergrammer-gl] npm WARN browser-sync-webpack-plugin@1.2.0 requires a peer of webpack@^1 || ^2 || ^3 but none is installed. You must install peer dependencies yourself.
+packd info [clustergrammer-gl] npm WARN babel-loader@6.4.1 requires a peer of webpack@1 || 2 || ^2.1.0-beta || ^2.2.0-rc but none is installed. You must install peer dependencies yourself.
+packd info [clustergrammer-gl]
+packd info [clustergrammer-gl]
+packd info [clustergrammer-gl] No ES2015 module found, using Browserify
+packd info [clustergrammer-gl] bundled using Browserify
+packd info [clustergrammer-gl] minifying
+packd info [clustergrammer-gl] serving 266469 bytes
+
+```
+
+This was discussed on the Observable discussion board (https://talk.observablehq.com/t/help-with-reactive-updates-from-custom-library/2907/11) - and we followed the instructions from: https://github.com/Rich-Harris/packd#hosting-an-instance.
 
 ## Licensing
 Clustergrammer-GL is being developed by the [Human Immune Monitoring Center](https://icahn.mssm.edu/research/human-immune-monitoring-center) and [Ma'ayan lab](http://labs.icahn.mssm.edu/maayanlab/) at the [Icahn School of Medicine at Mount Sinai](http://icahn.mssm.edu/). More information about Clustergrammer's license can be found in [Clustergrammer's Documentation](https://clustergrammer.readthedocs.io/license.html).

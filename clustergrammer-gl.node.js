@@ -72958,7 +72958,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
   // change color of selected rows
   let color_arr = color_arr_ini.map((x,i) => {
     if (inst_axis === 'row'){
-      let inst_name = cgm.params.network.row_node_names[i]
+      let inst_name = params.network.row_node_names[i]
       if (searched_rows.includes(inst_name)){
         x = color_to_rgba('red', 1.0)
       }

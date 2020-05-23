@@ -337,6 +337,7 @@ module.exports = function build_control_panel(){
     .attr('type','text')
     .attr('placeholder', 'row names')
     .attr('list', 'row_names')
+    .style('width', '125px')
     .style('height', '25px')
     .style('margin-top', '10px')
     .style('display', 'inline-block')

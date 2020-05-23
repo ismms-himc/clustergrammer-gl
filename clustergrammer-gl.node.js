@@ -72034,9 +72034,16 @@ function clustergrammer_gl(args, external_model=null){
     // this prevents Jupyter from listening to typing on the modal and
     // misinterpreting as keyboard shortcuts
     if (cgm.params.is_widget){
+
+      // tooltip input box
       let tooltip_id = cgm.params.tooltip_id.replace('#', '')
       Jupyter.keyboard_manager
              .register_events(document.getElementById(tooltip_id))
+
+      // control panel search box
+      let root_id = cgm.params.root.replace('#', '')
+      Jupyter.keyboard_manager
+             .register_events(document.getElementById(root_id))
 
     }
 

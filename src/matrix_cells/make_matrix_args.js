@@ -7,11 +7,11 @@ module.exports = function make_matrix_args(){
   let regl = cgm.regl
   let params = cgm.params
 
-  console.log('------------------------------------')
-  console.log('------------------------------------')
-  console.log('make_matrix_args')
-  console.log('------------------------------------')
-  console.log('------------------------------------')
+  // console.log('------------------------------------')
+  // console.log('------------------------------------')
+  // console.log('make_matrix_args')
+  // console.log('------------------------------------')
+  // console.log('------------------------------------')
 
   // make arrays
   params.arrs = {};

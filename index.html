@@ -47,7 +47,7 @@
       .style('margin-left', x_offset + 'px')
       .style('margin-top', y_offset + 'px');
 
-    // var filename = 'data/big_data/default-gl-viz.json';
+    var filename = 'data/big_data/default-gl-viz.json';
     // var filename = 'data/big_data/rc_two_cats.json';
     // var filename = 'data/mult_view.json';
     // var filename = 'data/big_data/compressed.json';
@@ -57,7 +57,7 @@
     // var filename = 'data/big_data/cytof_25k.json';
     // var filename = 'data/big_data/ccle_1000x200.json';
     // var filename = 'data/big_data/ccle_2000x200.json';
-    var filename = 'data/big_data/ccle_1000x1037.json';
+    // var filename = 'data/big_data/ccle_1000x1037.json';
     // var filename = 'data/big_data/ccle_3000x1037.json';
     // var filename = 'data/big_data/ccle_5000x1037.json';
     // var filename = 'data/big_data/ccle_7000x1037.json';
@@ -98,10 +98,14 @@
 
     d3.json(filename).then(function(network) {
 
-      // "manual_category": {"col": "Cell Type", "row": null}
-      network.manual_category = {
-        'col': 'Cell Type'
-      }
+      // hardwire manual category
+      network.manual_category = {}
+      network.manual_category.col = 'Cell Type'
+
+      // set matrix colors
+      network.matrix_colors = {}
+      network.matrix_colors.pos = 'red'
+      network.matrix_colors.neg = 'blue'
 
       args = {};
       args.network = network;

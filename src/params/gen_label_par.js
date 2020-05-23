@@ -2,9 +2,9 @@ module.exports = function gen_label_par(cgm){
 
   let params = cgm.params;
 
-  console.log('-----------------------------------------')
-  console.log('gen_label_par')
-  console.log('-----------------------------------------')
+  // console.log('-----------------------------------------')
+  // console.log('gen_label_par')
+  // console.log('-----------------------------------------')
 
   var labels = {};
   labels.num_row = params.mat_data.length;

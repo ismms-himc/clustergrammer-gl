@@ -1,6 +1,7 @@
 var d3 = require("d3");
 var hzome_functions = require('./../tooltip/hzome_functions')
 var make_matrix_args = require('./../matrix_cells/make_matrix_args')
+var color_to_rgba = require('./../colors/color_to_rgba');
 
 module.exports = function initialize_params(external_model){
 
@@ -83,9 +84,23 @@ module.exports = function initialize_params(external_model){
   require('./../params/calc_mat_arr')(params);
 
   // matrix color paramters
-  params.viz.mat_colors = {}
-  params.viz.mat_colors.pos_rgb = [1, 0, 0]
-  params.viz.mat_colors.neg_rgb = [0, 0, 1]
+  let mat_colors = {}
+
+  if ('matrix_colors' in params.network){
+
+    console.log('found custom colors for pos/neg')
+
+    let pos_color = params.network.matrix_colors.pos
+    let neg_color = params.network.matrix_colors.neg
+
+    mat_colors.pos_rgb = color_to_rgba(pos_color).slice(0, 3)
+    mat_colors.neg_rgb = color_to_rgba(neg_color).slice(0, 3)
+  } else {
+    mat_colors.pos_rgb = [1, 0, 0]
+    mat_colors.neg_rgb = [0, 0, 1]
+  }
+
+  params.viz.mat_colors = mat_colors
 
   // attach to cgm so it can be run without passing arguments
   cgm.make_matrix_args = make_matrix_args

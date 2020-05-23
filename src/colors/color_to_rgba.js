@@ -1,22 +1,19 @@
 /* eslint-disable */
 var color_table = require('./color_table.js');
 
-module.exports = function color_to_rgbs(hex, alpha=1.0){
+module.exports = function color_to_rgbs(hex_or_name, alpha=1.0){
 
   /*
   Later adjust the
   */
 
-  // hex = hex.replace('#','');
-
   var max_val = 256;
 
-  // console.log(hex)
   var inst_rgba;
 
-  if (hex in color_table) {
+  if (hex_or_name in color_table) {
 
-    var inst_rgb = color_table[hex];
+    var inst_rgb = color_table[hex_or_name];
     inst_rgb.push(alpha)
 
     inst_rgba = [inst_rgb[0], inst_rgb[1], inst_rgb[2], alpha];
@@ -25,11 +22,11 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 
     var c;
 
-    // console.log('check hex: ' , /^#([A-Fa-f0-9]{3}){1,2}$/.test(hex))
+    // console.log('check hex_or_name: ' , /^#([A-Fa-f0-9]{3}){1,2}$/.test(hex_or_name))
 
-    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex_or_name)){
 
-        c = hex.substring(1).split('');
+        c = hex_or_name.substring(1).split('');
         if (c.length== 3){
             c= [c[0], c[0], c[1], c[1], c[2], c[2]];
         }
@@ -47,10 +44,10 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 
     } else {
 
-      // bad hex, return black
+      // bad hex_or_name, return black
       inst_rgba = [0, 0, 0, alpha];
 
-      // console.log('bad hex')
+      // console.log('bad hex_or_name')
     }
 
 

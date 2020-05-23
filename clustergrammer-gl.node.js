@@ -68745,22 +68745,19 @@ module.exports = {"aliceblue":[240,248,255],"antiquewhite":[250,235,215],"aqua":
 /* eslint-disable */
 var color_table = __webpack_require__(/*! ./color_table.js */ "./src/colors/color_table.js");
 
-module.exports = function color_to_rgbs(hex, alpha=1.0){
+module.exports = function color_to_rgbs(hex_or_name, alpha=1.0){
 
   /*
   Later adjust the
   */
 
-  // hex = hex.replace('#','');
-
   var max_val = 256;
 
-  // console.log(hex)
   var inst_rgba;
 
-  if (hex in color_table) {
+  if (hex_or_name in color_table) {
 
-    var inst_rgb = color_table[hex];
+    var inst_rgb = color_table[hex_or_name];
     inst_rgb.push(alpha)
 
     inst_rgba = [inst_rgb[0], inst_rgb[1], inst_rgb[2], alpha];
@@ -68769,11 +68766,11 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 
     var c;
 
-    // console.log('check hex: ' , /^#([A-Fa-f0-9]{3}){1,2}$/.test(hex))
+    // console.log('check hex_or_name: ' , /^#([A-Fa-f0-9]{3}){1,2}$/.test(hex_or_name))
 
-    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex_or_name)){
 
-        c = hex.substring(1).split('');
+        c = hex_or_name.substring(1).split('');
         if (c.length== 3){
             c= [c[0], c[0], c[1], c[1], c[2], c[2]];
         }
@@ -68791,10 +68788,10 @@ module.exports = function color_to_rgbs(hex, alpha=1.0){
 
     } else {
 
-      // bad hex, return black
+      // bad hex_or_name, return black
       inst_rgba = [0, 0, 0, alpha];
 
-      // console.log('bad hex')
+      // console.log('bad hex_or_name')
     }
 
 
@@ -72084,11 +72081,11 @@ module.exports = function make_matrix_args(){
   let regl = cgm.regl
   let params = cgm.params
 
-  console.log('------------------------------------')
-  console.log('------------------------------------')
-  console.log('make_matrix_args')
-  console.log('------------------------------------')
-  console.log('------------------------------------')
+  // console.log('------------------------------------')
+  // console.log('------------------------------------')
+  // console.log('make_matrix_args')
+  // console.log('------------------------------------')
+  // console.log('------------------------------------')
 
   // make arrays
   params.arrs = {};
@@ -72251,11 +72248,11 @@ module.exports = function make_matrix_args(){
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 module.exports = function make_opacity_arr(params){
 
-  console.log('************************************')
-  console.log('************************************')
-  console.log('make_opacity_arr')
-  console.log('************************************')
-  console.log('************************************')
+  // console.log('************************************')
+  // console.log('************************************')
+  // console.log('make_opacity_arr')
+  // console.log('************************************')
+  // console.log('************************************')
 
   var opacity_arr = [].concat.apply([], params.mat_data);
 
@@ -73781,9 +73778,9 @@ module.exports = function gen_label_par(cgm){
 
   let params = cgm.params;
 
-  console.log('-----------------------------------------')
-  console.log('gen_label_par')
-  console.log('-----------------------------------------')
+  // console.log('-----------------------------------------')
+  // console.log('gen_label_par')
+  // console.log('-----------------------------------------')
 
   var labels = {};
   labels.num_row = params.mat_data.length;
@@ -74092,6 +74089,7 @@ module.exports = function generate_webgl_to_pix(params){
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js")
+var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
 
 module.exports = function initialize_params(external_model){
 
@@ -74174,9 +74172,23 @@ module.exports = function initialize_params(external_model){
   __webpack_require__(/*! ./../params/calc_mat_arr */ "./src/params/calc_mat_arr.js")(params);
 
   // matrix color paramters
-  params.viz.mat_colors = {}
-  params.viz.mat_colors.pos_rgb = [1, 0, 0]
-  params.viz.mat_colors.neg_rgb = [0, 0, 1]
+  let mat_colors = {}
+
+  if ('matrix_colors' in params.network){
+
+    console.log('found custom colors for pos/neg')
+
+    let pos_color = params.network.matrix_colors.pos
+    let neg_color = params.network.matrix_colors.neg
+
+    mat_colors.pos_rgb = color_to_rgba(pos_color).slice(0, 3)
+    mat_colors.neg_rgb = color_to_rgba(neg_color).slice(0, 3)
+  } else {
+    mat_colors.pos_rgb = [1, 0, 0]
+    mat_colors.neg_rgb = [0, 0, 1]
+  }
+
+  params.viz.mat_colors = mat_colors
 
   // attach to cgm so it can be run without passing arguments
   cgm.make_matrix_args = make_matrix_args

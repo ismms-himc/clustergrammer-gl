@@ -68951,7 +68951,9 @@ module.exports = function build_control_panel(){
     .classed('panel_button_titles', true)
     .classed('reorder_button_title', true)
     .on('click', function(){
-      console.log('choose reordering panel')
+
+      // console.log('choose reordering panel')
+
       d3.selectAll(params.root + ' .panel_button_titles')
         .attr('opacity', 0.5)
       d3.select(this)
@@ -68959,7 +68961,7 @@ module.exports = function build_control_panel(){
 
       if (params.viz.current_panel == 'recluster') {
 
-        console.log('switch to reorder')
+        // console.log('switch to reorder')
 
         params.viz.current_panel = 'reorder'
 
@@ -69149,11 +69151,21 @@ module.exports = function build_control_panel(){
     .classed('sidebar_text', true)
     .attr('type','text')
     .attr('placeholder', 'row names')
+    .attr('list', 'row_names')
     .style('height', '20px')
     .style('margin-top', '10px')
     .style('display', 'inline-block')
 
   let row_names = params.network.row_node_names
+
+  search_container
+    .append('datalist')
+    .attr('id', 'row_names')
+    .selectAll('options')
+    .data(row_names)
+    .enter()
+    .append('option')
+    .attr('value', d => d)
 
   console.log(row_names)
 
@@ -72273,14 +72285,14 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
 
   var row_pos;
   var col_pos;
+
   function position_function(d, i){
     row_pos = canvas_pos.y_arr[num_row - 1 - row_nodes[Math.floor(i / num_col)][inst_row_order]];
     col_pos = canvas_pos.x_arr[num_col - 1 - col_nodes[i % num_col][inst_col_order]];
-
-    console.log(col_pos, row_pos)
     return [col_pos, row_pos];
   }
 
+  // generate new array with position elements
   var pos_arr = Array(num_row * num_col)
             .fill()
             .map(position_function);

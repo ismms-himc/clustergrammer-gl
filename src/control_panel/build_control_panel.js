@@ -136,7 +136,9 @@ module.exports = function build_control_panel(){
     .classed('panel_button_titles', true)
     .classed('reorder_button_title', true)
     .on('click', function(){
-      console.log('choose reordering panel')
+
+      // console.log('choose reordering panel')
+
       d3.selectAll(params.root + ' .panel_button_titles')
         .attr('opacity', 0.5)
       d3.select(this)
@@ -144,7 +146,7 @@ module.exports = function build_control_panel(){
 
       if (params.viz.current_panel == 'recluster') {
 
-        console.log('switch to reorder')
+        // console.log('switch to reorder')
 
         params.viz.current_panel = 'reorder'
 
@@ -334,11 +336,21 @@ module.exports = function build_control_panel(){
     .classed('sidebar_text', true)
     .attr('type','text')
     .attr('placeholder', 'row names')
+    .attr('list', 'row_names')
     .style('height', '20px')
     .style('margin-top', '10px')
     .style('display', 'inline-block')
 
   let row_names = params.network.row_node_names
+
+  search_container
+    .append('datalist')
+    .attr('id', 'row_names')
+    .selectAll('options')
+    .data(row_names)
+    .enter()
+    .append('option')
+    .attr('value', d => d)
 
   console.log(row_names)
 

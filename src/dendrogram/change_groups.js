@@ -19,10 +19,10 @@ module.exports = function change_groups(cgm, axis, slider_value) {
     let dist_thresh = params.dendro.max_linkage_dist[axis] * slider_value
     slice_linkage(params, axis, dist_thresh)
 
-    let rounede_slider_value = Math.round(slider_value * 100 )/100
+    let rounded_slider_value = Math.round(slider_value * 100 )/100
     // update slider
     d3.select(params.root + ' .'+ axis +'_dendro_slider_svg .dendro_level_text')
-      .text(rounede_slider_value)
+      .text(rounded_slider_value)
 
   } else {
       params.dendro.group_level[axis] = slider_value;

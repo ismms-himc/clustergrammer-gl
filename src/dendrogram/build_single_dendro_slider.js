@@ -4,11 +4,6 @@ let custom_round = require('./../utils/custom_round')
 
 module.exports = function build_single_dendro_slider(cgm, axis){
 
-  // // n is the number of decimal points to round to
-  // function custom_round(x, n) {
-  //   return n == null ? Math.round(x) : Math.round(x * (n = Math.pow(10, n))) / n;
-  // }
-
   let regl = cgm.regl
   let params = cgm.params
 

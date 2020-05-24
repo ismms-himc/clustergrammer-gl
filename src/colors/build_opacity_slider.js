@@ -11,7 +11,6 @@ module.exports = function build_opacity_slider(cgm){
   var slider_length = 100;
   var rect_height = slider_length + 20;
   var rect_width = 20;
-  var text_color = '#47515b';
 
   let round_level = 0
 
@@ -53,7 +52,7 @@ module.exports = function build_opacity_slider(cgm){
     .attr('y2', function(){
       return slider_length-2;
     })
-    .on('click', click_dendro_slider);
+    .on('click', click_opacity_slider);
 
   var offset_triangle = -slider_length/40;
   slider_group
@@ -79,7 +78,7 @@ module.exports = function build_opacity_slider(cgm){
       return output_string;
     })
     .attr('opacity', 0.35)
-    .on('click', click_dendro_slider);
+    .on('click', click_opacity_slider);
 
 
   var default_opacity = 0.35;
@@ -101,106 +100,48 @@ module.exports = function build_opacity_slider(cgm){
     })
     .call(drag);
 
-  // add dendrogram level text
+  var text_color = '#47515b';
+  var button_dim = {};
+  button_dim.height = 32;
+  button_dim.width = 63;
+  button_dim.buffer = 12;
+  button_dim.x_trans = button_dim.width + button_dim.buffer;
+  button_dim.fs = 11;
+
+  // add opacity level text
   ///////////////////////////////
   slider_group
     .append('text')
-    .classed('dendro_level_text', true)
-    .text(params.dendro.default_link_level)
-    .attr('transform', 'translate(0, 120) rotate(90)')
+    .text('opacity'.toUpperCase())
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
-    .attr('font-size', 15)
+    .attr('font-size', button_dim.fs)
     .attr('text-anchor', 'middle')
     .attr('stroke', text_color)
     .attr('alignment-baseline', 'middle')
     .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', 'translate(10, 140), rotate(90)')
+
+  slider_group
+    .append('text')
+    .classed('opacity_level_text', true)
+    .text(params.dendro.default_link_level)
+    .attr('transform', 'translate(-5, 145) rotate(90)')
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', 11)
+    .attr('text-anchor', 'right')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
     .attr('cursor', 'default');
-
-
-  // // Add Increment Buttons
-  // if (params.dendro.increment_buttons){
-
-  //   // increment up button
-  //   slider_group
-  //     .append('path')
-  //     // .classed(axis+'_group_circle', true)
-  //     .attr('d', function() {
-
-  //       // up triangle
-  //       var start_x = 0;
-  //       var start_y = 10;
-
-  //       var mid_x = 10;
-  //       var mid_y = 0;
-
-  //       var final_x = 20;
-  //       var final_y = 10;
-
-  //       var output_string = 'M' + start_x + ',' + start_y + ' L' +
-  //       mid_x + ', ' + mid_y + ' L' +
-  //       final_x + ','+ final_y +' Z';
-
-  //       return output_string;
-  //     })
-  //     .attr('transform', function(){
-  //       return 'translate(-10, -13)';
-  //     })
-  //     .attr('fill', 'blue')
-  //     .attr('opacity', default_opacity)
-  //     .on('mouseover', function(){
-  //       d3.select(this).attr('opacity', high_opacity);
-  //     })
-  //     .on('mouseout', function(){
-  //       d3.select(this).attr('opacity', default_opacity);
-  //     })
-  //     .on('click', (d) => console.log('increment up'))
-
-  //   // increment down button
-  //   slider_group
-  //     .append('path')
-  //     // .classed(axis+'_group_circle', true)
-  //     .attr('d', function() {
-
-  //       // up triangle
-  //       var start_x = 0;
-  //       var start_y = 0;
-
-  //       var mid_x = 10;
-  //       var mid_y = 10;
-
-  //       var final_x = 20;
-  //       var final_y = 0;
-
-  //       var output_string = 'M' + start_x + ',' + start_y + ' L' +
-  //       mid_x + ', ' + mid_y + ' L' +
-  //       final_x + ','+ final_y +' Z';
-
-  //       return output_string;
-  //     })
-  //     .attr('transform', function(){
-  //       return 'translate(-10, '+slider_length+')';
-  //     })
-  //     .attr('fill', 'blue')
-  //     .attr('opacity', default_opacity)
-  //     .on('mouseover', function(){
-  //       d3.select(this).attr('opacity', high_opacity);
-  //     })
-  //     .on('mouseout', function(){
-  //       d3.select(this).attr('opacity', default_opacity);
-  //     })
-  //     .on('click', (d) => console.log('increment down'))
-
-  // }
 
   function dragging() {
 
     params.is_opacity_drag = true;
 
     var slider_pos = d3.event.y;
-
-    // console.log('\n\n-------------------------------')
-    // console.log('initial', slider_pos)
 
     if (slider_pos < 0){
       slider_pos = 0;
@@ -214,12 +155,9 @@ module.exports = function build_opacity_slider(cgm){
       this.parentNode.appendChild(this);
     }
 
-    // console.log('pre-round', slider_pos)
     slider_pos = custom_round(slider_pos, round_level)
-    // console.log('post-round', slider_pos)
 
-    // var slider_value = 10 - slider_pos/10;
-    var slider_value = get_slider_value(slider_pos, params.dendro.precalc_linkage)
+    var slider_value = get_slider_value(slider_pos)
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
@@ -227,7 +165,7 @@ module.exports = function build_opacity_slider(cgm){
 
   }
 
-  function click_dendro_slider(){
+  function click_opacity_slider(){
 
     var clicked_line_position = d3.mouse(this);
 
@@ -236,7 +174,7 @@ module.exports = function build_opacity_slider(cgm){
     d3.select(params.root + ' .' + 'opacity_group_circle')
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
-    var slider_value = get_slider_value(rel_pos, params.dendro.precalc_linkage)
+    var slider_value = get_slider_value(rel_pos)
 
     // change_groups(cgm, axis, slider_value);
 
@@ -244,18 +182,7 @@ module.exports = function build_opacity_slider(cgm){
 
   // convert from position along slider to a value that will be used to set
   // the group level
-  function get_slider_value(slider_position, precalc_linkage){
-
-    let slider_value
-    if (precalc_linkage){
-      slider_value = 1 - slider_position/100
-    } else{
-      slider_value = 10 - slider_position/10
-    }
-
-    // console.log('slider_value', slider_value)
-
-    return slider_value
+  function get_slider_value(slider_position){
   }
 
 };

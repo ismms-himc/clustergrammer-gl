@@ -130,7 +130,7 @@ module.exports = function build_opacity_slider(cgm){
     .append('text')
     .classed('opacity_level_text', true)
     .text('1.0')
-    .attr('transform', 'translate(-5, 150) rotate(90)')
+    .attr('transform', 'translate(-5, 140) rotate(90)')
     .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr('font-weight', 400)
     .attr('font-size', 11)
@@ -190,8 +190,8 @@ module.exports = function build_opacity_slider(cgm){
   // the group level
   function get_slider_value(slider_position){
 
-    // get to -1 and 1 range
-    let inst_x = slider_position/50 - 1
+    // get to -2 and 2 range
+    let inst_x = (slider_position/50 - 1 ) * 2
 
     // take inverse log2 to get opacity scale
     let inst_y = Math.pow(2, inst_x)
@@ -214,7 +214,7 @@ module.exports = function build_opacity_slider(cgm){
 
   function change_opacity(slider_value){
 
-    slider_value = custom_round(slider_value, 1)
+    slider_value = custom_round(slider_value, 2)
 
     console.log(slider_value)
 

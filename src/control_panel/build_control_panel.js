@@ -1,6 +1,7 @@
 var d3 = require("d3");
 let draw_webgl_layers = require('./../draws/draw_webgl_layers')
 // var logo_url = require("file-loader!../graham_cracker_70.png");
+let build_opacity_slider = require('./../colors/build_opacity_slider')
 
 module.exports = function build_control_panel(){
 
@@ -147,8 +148,6 @@ module.exports = function build_control_panel(){
 
       if (params.viz.current_panel == 'recluster') {
 
-        // console.log('switch to reorder')
-
         params.viz.current_panel = 'reorder'
 
         // modify buttons
@@ -167,8 +166,6 @@ module.exports = function build_control_panel(){
           .style('display', 'none')
         d3.selectAll(params.root + ' .link_options_container')
           .style('display', 'none')
-
-        // toggle_menu(cgm, 'tree_menu', 'close');
       }
 
     })
@@ -194,7 +191,7 @@ module.exports = function build_control_panel(){
   control_svg
     .append('rect')
     .attr('height', '1px')
-    .attr('width', '220px')
+    .attr('width', '290px')
     .attr('position', 'absolute')
     .attr('stroke', '#eee')
     .attr('stroke-width', 2)
@@ -385,5 +382,8 @@ module.exports = function build_control_panel(){
 
     })
 
+  // opacity slider
+  ////////////////////////////
+  build_opacity_slider(cgm)
 
 };

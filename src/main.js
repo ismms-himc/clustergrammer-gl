@@ -87,6 +87,18 @@ function clustergrammer_gl(args, external_model=null){
 
     cgm.adjust_opacity = adjust_opacity
 
+    function toggle_zscore(){
+
+      let cgm = this
+      let params = cgm.params
+
+      console.log('toggle_zscore')
+      // cgm.make_matrix_args()
+      // draw_webgl_layers(cgm)
+    }
+
+    cgm.toggle_zscore = toggle_zscore
+
     return cgm;
 
   }

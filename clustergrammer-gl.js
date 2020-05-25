@@ -73044,6 +73044,18 @@ function clustergrammer_gl(args, external_model=null){
 
     cgm.adjust_opacity = adjust_opacity
 
+    function toggle_zscore(){
+
+      let cgm = this
+      let params = cgm.params
+
+      console.log('toggle_zscore')
+      // cgm.make_matrix_args()
+      // draw_webgl_layers(cgm)
+    }
+
+    cgm.toggle_zscore = toggle_zscore
+
     return cgm;
 
   }
@@ -75188,7 +75200,6 @@ module.exports = function initialize_params(external_model){
   // initialize control panel in reorder mode
   params.viz.current_panel = 'reorder'
 
-
   params.matrix.potential_recluster = {}
   params.matrix.potential_recluster.distance_metric = params.matrix.distance_metric
   params.matrix.potential_recluster.linkage_type = params.matrix.linkage_type
@@ -75304,6 +75315,11 @@ module.exports = function initialize_params(external_model){
   params.search = {}
   params.search.searched_rows = []
 
+  if ('pre_zscore' in params.network){
+    params.toggle_zscore = 'zscored'
+  } else {
+    params.toggle_zscore = 'raw'
+  }
 
   this.params = params;
 

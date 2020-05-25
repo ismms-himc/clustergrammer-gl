@@ -69940,8 +69940,6 @@ module.exports = function build_control_panel(){
     .classed('reorder_button_title', true)
     .on('click', function(){
 
-      // console.log('choose reordering panel')
-
       d3.selectAll(params.root + ' .panel_button_titles')
         .attr('opacity', 0.5)
       d3.select(this)
@@ -69981,7 +69979,7 @@ module.exports = function build_control_panel(){
     .attr('letter-spacing', '2px')
     .attr('cursor', 'default')
     .attr('transform', function(){
-        var x_offset = 130 + cracker_room;
+        var x_offset = 120 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
@@ -70265,7 +70263,7 @@ module.exports = function build_recluster_section(cgm){
 
     })
     .attr('transform', function(){
-        var x_offset = 220 + cracker_room;
+        var x_offset = 210 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
      })

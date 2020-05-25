@@ -65,7 +65,7 @@ module.exports = function build_recluster_section(cgm){
 
     })
     .attr('transform', function(){
-        var x_offset = 220 + cracker_room;
+        var x_offset = 210 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
      })

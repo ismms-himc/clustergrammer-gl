@@ -4,11 +4,11 @@ var standard_deviation = require('./../utils/standard_deviation')
 
 module.exports = function make_opacity_arr(params){
 
-  // console.log('************************************')
-  // console.log('************************************')
-  // console.log('make_opacity_arr')
-  // console.log('************************************')
-  // console.log('************************************')
+  console.log('************************************')
+  console.log('************************************')
+  console.log('make_opacity_arr')
+  console.log('************************************')
+  console.log('************************************')
 
   console.log('make_opacity_arr')
 
@@ -18,6 +18,7 @@ module.exports = function make_opacity_arr(params){
   mat_data = params.mat_data
 
   // // Z-score data
+  // //////////////////////////////////////////////
   // let mat_data_z = mat_data.map(inst_row => {
 
   //   inst_avg = average(inst_row)
@@ -33,10 +34,27 @@ module.exports = function make_opacity_arr(params){
 
   //   return inst_row_z
   // })
-
-  // console.log(mat_data_z)
-
   // params.mat_data = mat_data_z
+
+  // // Inv-Z-score data
+  // //////////////////////////////////////////////
+  // let mat_data_iz = mat_data.map((inst_row, i) => {
+
+  //   inst_avg = params.network.pre_zscore.mean[i]
+  //   inst_std = params.network.pre_zscore.std[i]
+
+  //   // console.log(inst_avg, inst_std)
+
+  //   // z-score data
+  //   inst_row_iz = inst_row.map(x => {
+  //     x = x * inst_std + inst_avg
+  //     return x
+  //   })
+
+  //   return inst_row_iz
+  // })
+
+  // params.mat_data_iz = mat_data_iz
 
   var opacity_arr = [].concat.apply([], mat_data);
 

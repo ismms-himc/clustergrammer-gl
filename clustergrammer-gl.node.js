@@ -72204,6 +72204,10 @@ module.exports = function find_mouseover_element(regl, params, ev){
 
       // have a look at this later, console log errors occur sometimes when moving mouse around
       params.int.mouseover.value = params.mat_data[axis_indices.row][axis_indices.col];
+
+      if ('mat_data_iz' in params){
+        params.int.mouseover.value_iz = params.mat_data_iz[axis_indices.row][axis_indices.col];
+      }
     }
 
   }
@@ -73236,11 +73240,11 @@ var standard_deviation = __webpack_require__(/*! ./../utils/standard_deviation *
 
 module.exports = function make_opacity_arr(params){
 
-  // console.log('************************************')
-  // console.log('************************************')
-  // console.log('make_opacity_arr')
-  // console.log('************************************')
-  // console.log('************************************')
+  console.log('************************************')
+  console.log('************************************')
+  console.log('make_opacity_arr')
+  console.log('************************************')
+  console.log('************************************')
 
   console.log('make_opacity_arr')
 
@@ -73250,6 +73254,7 @@ module.exports = function make_opacity_arr(params){
   mat_data = params.mat_data
 
   // // Z-score data
+  // //////////////////////////////////////////////
   // let mat_data_z = mat_data.map(inst_row => {
 
   //   inst_avg = average(inst_row)
@@ -73265,10 +73270,27 @@ module.exports = function make_opacity_arr(params){
 
   //   return inst_row_z
   // })
-
-  // console.log(mat_data_z)
-
   // params.mat_data = mat_data_z
+
+  // // Inv-Z-score data
+  // //////////////////////////////////////////////
+  // let mat_data_iz = mat_data.map((inst_row, i) => {
+
+  //   inst_avg = params.network.pre_zscore.mean[i]
+  //   inst_std = params.network.pre_zscore.std[i]
+
+  //   // console.log(inst_avg, inst_std)
+
+  //   // z-score data
+  //   inst_row_iz = inst_row.map(x => {
+  //     x = x * inst_std + inst_avg
+  //     return x
+  //   })
+
+  //   return inst_row_iz
+  // })
+
+  // params.mat_data_iz = mat_data_iz
 
   var opacity_arr = [].concat.apply([], mat_data);
 
@@ -76642,6 +76664,10 @@ module.exports = function make_tooltip_text(cgm, external_model){
     // col name
     tooltip_text = tooltip_text + mouseover.col.name;
     tooltip_text = tooltip_text + ' <br>value: ' + mouseover.value.toFixed(3);
+
+    if ('value_iz' in params.int.mouseover){
+      tooltip_text = tooltip_text + ' <br>value Pre-Zscore: ' + mouseover.value_iz.toFixed(3);
+    }
 
     params.tooltip_fun.show('tooltip');
     d3.select(params.tooltip_id)

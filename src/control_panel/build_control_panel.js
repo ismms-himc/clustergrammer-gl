@@ -312,7 +312,7 @@ module.exports = function build_control_panel(){
   })
 
   require('../cats/build_reorder_cat_titles')(regl, cgm);
-  require('./build_tree_icon')(cgm);
+  require('./build_recluster_section')(cgm);
 
   // row search
   ///////////////////

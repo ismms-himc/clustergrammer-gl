@@ -70113,7 +70113,7 @@ module.exports = function build_control_panel(){
   })
 
   __webpack_require__(/*! ../cats/build_reorder_cat_titles */ "./src/cats/build_reorder_cat_titles.js")(regl, cgm);
-  __webpack_require__(/*! ./build_tree_icon */ "./src/control_panel/build_tree_icon.js")(cgm);
+  __webpack_require__(/*! ./build_recluster_section */ "./src/control_panel/build_recluster_section.js")(cgm);
 
   // row search
   ///////////////////
@@ -70191,10 +70191,10 @@ module.exports = function build_control_panel(){
 
 /***/ }),
 
-/***/ "./src/control_panel/build_tree_icon.js":
-/*!**********************************************!*\
-  !*** ./src/control_panel/build_tree_icon.js ***!
-  \**********************************************/
+/***/ "./src/control_panel/build_recluster_section.js":
+/*!******************************************************!*\
+  !*** ./src/control_panel/build_recluster_section.js ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -70203,7 +70203,7 @@ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
 // var make_tree_menu = require('./make_tree_menu');
 
-module.exports = function build_tree_icon(cgm){
+module.exports = function build_recluster_section(cgm){
 
   var slider_length = 40;
   var params = cgm.params;

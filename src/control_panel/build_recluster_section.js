@@ -3,7 +3,7 @@ var d3 = require("d3");
 var toggle_menu = require('./toggle_menu');
 // var make_tree_menu = require('./make_tree_menu');
 
-module.exports = function build_tree_icon(cgm){
+module.exports = function build_recluster_section(cgm){
 
   var slider_length = 40;
   var params = cgm.params;

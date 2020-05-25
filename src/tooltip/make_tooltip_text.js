@@ -22,7 +22,7 @@ module.exports = function make_tooltip_text(cgm, external_model){
     tooltip_text = tooltip_text + ' <br>value: ' + mouseover.value.toFixed(3);
 
     if ('value_iz' in params.int.mouseover){
-      tooltip_text = tooltip_text + ' <br>value Pre-Zscore: ' + mouseover.value_iz.toFixed(3);
+      tooltip_text = tooltip_text + ' <br>Pre-Zscore value: ' + mouseover.value_iz.toFixed(3);
     }
 
     params.tooltip_fun.show('tooltip');

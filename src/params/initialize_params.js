@@ -178,9 +178,9 @@ module.exports = function initialize_params(external_model){
   params.search.searched_rows = []
 
   if ('pre_zscore' in params.network){
-    params.toggle_zscore = 'zscored'
+    params.zscore_status = 'zscored'
   } else {
-    params.toggle_zscore = 'raw'
+    params.zscore_status = 'raw'
   }
 
   this.params = params;

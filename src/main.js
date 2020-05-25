@@ -92,7 +92,13 @@ function clustergrammer_gl(args, external_model=null){
       let cgm = this
       let params = cgm.params
 
-      console.log('toggle_zscore')
+      if (params.zscore_status === 'raw'){
+        params.zscore_status = 'zscored'
+      } else {
+        params.zscore_status = 'raw'
+      }
+
+      console.log('zscore_status', params.zscore_status)
       // cgm.make_matrix_args()
       // draw_webgl_layers(cgm)
     }

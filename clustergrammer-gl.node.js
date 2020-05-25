@@ -70199,7 +70199,7 @@ module.exports = function build_control_panel(){
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-var position_tree_icon = __webpack_require__(/*! ./position_tree_icon */ "./src/control_panel/position_tree_icon.js");
+// var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
 // var make_tree_menu = require('./make_tree_menu');
 
@@ -70261,10 +70261,6 @@ module.exports = function build_tree_icon(cgm){
 
         params.viz.current_panel = 'recluster'
 
-        // console.log(params.viz.current_panel)
-
-        // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
-
       }
 
     })
@@ -70284,8 +70280,6 @@ module.exports = function build_tree_icon(cgm){
     .attr('alignment-baseline', 'middle')
     .attr('letter-spacing', '2px')
     .attr('cursor', 'default')
-
-
 
 
   run_cluster_container = d3.select(params.root + ' .control_svg')
@@ -70516,45 +70510,6 @@ module.exports = function build_tree_icon(cgm){
 };
 
 
-
-/***/ }),
-
-/***/ "./src/control_panel/position_tree_icon.js":
-/*!*************************************************!*\
-  !*** ./src/control_panel/position_tree_icon.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-module.exports = function position_tree_icon(cgm){
-
-  // var viz = cgm.params.viz;
-  var tmp_left;
-  var tmp_top;
-
-  // keep slider near clustergram
-  // var max_room = 100; // viz.svg_dim.width - 3 * viz.uni_margin;
-
-  // position close to row dendrogram trapezoids
-  tmp_left = 375; // viz.clust.margin.left + viz.clust.dim.width + 5.25  * viz.dendro_room.row;
-
-  // if (tmp_left > max_room){
-  //   tmp_left = max_room;
-  // }
-
-  // tmp_top =  viz.clust.margin.top + 3 * viz.uni_margin - 50;
-  tmp_top =  40; // viz.clust.margin.top + 3 * viz.uni_margin + 90;
-
-  // reposition tree icon
-  d3.select(cgm.params.root + ' .tree_icon')
-    .attr('transform', function() {
-      var inst_translation;
-      inst_translation = 'translate(' + tmp_left + ',' + tmp_top + ')';
-      return inst_translation;
-    })
-    .style('opacity', 1);
-};
 
 /***/ }),
 
@@ -73049,7 +73004,13 @@ function clustergrammer_gl(args, external_model=null){
       let cgm = this
       let params = cgm.params
 
-      console.log('toggle_zscore')
+      if (params.zscore_status === 'raw'){
+        params.zscore_status = 'zscored'
+      } else {
+        params.zscore_status = 'raw'
+      }
+
+      console.log('zscore_status', params.zscore_status)
       // cgm.make_matrix_args()
       // draw_webgl_layers(cgm)
     }
@@ -75316,9 +75277,9 @@ module.exports = function initialize_params(external_model){
   params.search.searched_rows = []
 
   if ('pre_zscore' in params.network){
-    params.toggle_zscore = 'zscored'
+    params.zscore_status = 'zscored'
   } else {
-    params.toggle_zscore = 'raw'
+    params.zscore_status = 'raw'
   }
 
   this.params = params;

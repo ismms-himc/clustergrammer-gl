@@ -1,5 +1,5 @@
 var d3 = require("d3");
-var position_tree_icon = require('./position_tree_icon');
+// var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = require('./toggle_menu');
 // var make_tree_menu = require('./make_tree_menu');
 
@@ -61,10 +61,6 @@ module.exports = function build_tree_icon(cgm){
 
         params.viz.current_panel = 'recluster'
 
-        // console.log(params.viz.current_panel)
-
-        // toggle_menu(cgm, 'tree_menu', 'open', make_tree_menu);
-
       }
 
     })
@@ -84,8 +80,6 @@ module.exports = function build_tree_icon(cgm){
     .attr('alignment-baseline', 'middle')
     .attr('letter-spacing', '2px')
     .attr('cursor', 'default')
-
-
 
 
   run_cluster_container = d3.select(params.root + ' .control_svg')

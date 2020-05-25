@@ -38,7 +38,6 @@ module.exports = function make_opacity_arr(params){
 
   // params.mat_data = mat_data_z
 
-
   var opacity_arr = [].concat.apply([], mat_data);
 
   var abs_max_val = Math.abs(_.max(opacity_arr, function(d){

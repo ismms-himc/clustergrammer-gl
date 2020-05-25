@@ -23,6 +23,8 @@ module.exports = function make_opacity_arr(params){
   //   inst_avg = average(inst_row)
   //   inst_std = standard_deviation(inst_row)
 
+  //   console.log(inst_avg, inst_std)
+
   //   // z-score data
   //   inst_row_z = inst_row.map(x => {
   //     x = (x - inst_avg)/inst_std
@@ -33,6 +35,9 @@ module.exports = function make_opacity_arr(params){
   // })
 
   // console.log(mat_data_z)
+
+  // params.mat_data = mat_data_z
+
 
   var opacity_arr = [].concat.apply([], mat_data);
 

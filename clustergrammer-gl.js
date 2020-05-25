@@ -73255,6 +73255,8 @@ module.exports = function make_opacity_arr(params){
   //   inst_avg = average(inst_row)
   //   inst_std = standard_deviation(inst_row)
 
+  //   console.log(inst_avg, inst_std)
+
   //   // z-score data
   //   inst_row_z = inst_row.map(x => {
   //     x = (x - inst_avg)/inst_std
@@ -73265,6 +73267,9 @@ module.exports = function make_opacity_arr(params){
   // })
 
   // console.log(mat_data_z)
+
+  // params.mat_data = mat_data_z
+
 
   var opacity_arr = [].concat.apply([], mat_data);
 
@@ -76975,11 +76980,31 @@ module.exports = function run_show_tooltip(cgm, external_model){
 /***/ (function(module, exports) {
 
 module.exports = function average(data){
+
   var sum = data.reduce(function(sum, value){
     return sum + value;
   }, 0);
 
   var avg = sum / data.length;
+  return avg;
+}
+
+/***/ }),
+
+/***/ "./src/utils/average_n_minus_1.js":
+/*!****************************************!*\
+  !*** ./src/utils/average_n_minus_1.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function average_n_minus_1(data){
+
+  var sum = data.reduce(function(sum, value){
+    return sum + value;
+  }, 0);
+
+  var avg = sum / (data.length  - 1);
   return avg;
 }
 
@@ -77009,8 +77034,12 @@ module.exports = function custom_round(x, n) {
 /***/ (function(module, exports, __webpack_require__) {
 
 let average = __webpack_require__(/*! ./average */ "./src/utils/average.js")
+let average_n_minus_1 = __webpack_require__(/*! ./average_n_minus_1 */ "./src/utils/average_n_minus_1.js")
+
+// https://derickbailey.com/2014/09/21/calculating-standard-deviation-with-array-map-and-array-reduce-in-javascript/
 
 module.exports = function standard_deviation(data){
+
   var avg = average(data);
 
   var squareDiffs = data.map(function(value){
@@ -77019,7 +77048,7 @@ module.exports = function standard_deviation(data){
     return sqrDiff;
   });
 
-  var avgSquareDiff = average(squareDiffs);
+  var avgSquareDiff = average_n_minus_1(squareDiffs);
 
   var stdDev = Math.sqrt(avgSquareDiff);
   return stdDev;

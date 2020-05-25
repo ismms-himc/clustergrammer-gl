@@ -73231,6 +73231,9 @@ module.exports = function make_matrix_args(){
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+var average = __webpack_require__(/*! ./../utils/average */ "./src/utils/average.js")
+var standard_deviation = __webpack_require__(/*! ./../utils/standard_deviation */ "./src/utils/standard_deviation.js")
+
 module.exports = function make_opacity_arr(params){
 
   // console.log('************************************')
@@ -73239,7 +73242,31 @@ module.exports = function make_opacity_arr(params){
   // console.log('************************************')
   // console.log('************************************')
 
-  var opacity_arr = [].concat.apply([], params.mat_data);
+  console.log('make_opacity_arr')
+
+  let inst_avg
+  let inst_std
+
+  mat_data = params.mat_data
+
+  // // Z-score data
+  // let mat_data_z = mat_data.map(inst_row => {
+
+  //   inst_avg = average(inst_row)
+  //   inst_std = standard_deviation(inst_row)
+
+  //   // z-score data
+  //   inst_row_z = inst_row.map(x => {
+  //     x = (x - inst_avg)/inst_std
+  //     return x
+  //   })
+
+  //   return inst_row_z
+  // })
+
+  // console.log(mat_data_z)
+
+  var opacity_arr = [].concat.apply([], mat_data);
 
   var abs_max_val = Math.abs(_.max(opacity_arr, function(d){
     return Math.abs(d);
@@ -75688,20 +75715,16 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
   var found_label_index = _.indexOf(params.network[inst_axis + '_node_names'],
                                   full_name);
 
-  var mat = params.mat_data;
-
   var tmp_arr = [];
   var other_axis;
   if (inst_axis === 'col'){
     other_axis = 'row';
-    // console.log('col')
-    _.each(mat, function(inst_row){
+    _.each(params.mat_data, function(inst_row){
       tmp_arr.push(inst_row[found_label_index]);
     });
   } else {
-    // console.log('row')
     other_axis = 'col';
-    tmp_arr = mat[found_label_index]
+    tmp_arr = params.mat_data[found_label_index]
   }
 
   var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {
@@ -76944,6 +76967,24 @@ module.exports = function run_show_tooltip(cgm, external_model){
 
 /***/ }),
 
+/***/ "./src/utils/average.js":
+/*!******************************!*\
+  !*** ./src/utils/average.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function average(data){
+  var sum = data.reduce(function(sum, value){
+    return sum + value;
+  }, 0);
+
+  var avg = sum / data.length;
+  return avg;
+}
+
+/***/ }),
+
 /***/ "./src/utils/custom_round.js":
 /*!***********************************!*\
   !*** ./src/utils/custom_round.js ***!
@@ -76955,6 +76996,34 @@ module.exports = function custom_round(x, n) {
   // n is the number of decimal points to round to
   return n == null ? Math.round(x) : Math.round(x * (n = Math.pow(10, n))) / n;
   }
+
+
+
+/***/ }),
+
+/***/ "./src/utils/standard_deviation.js":
+/*!*****************************************!*\
+  !*** ./src/utils/standard_deviation.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+let average = __webpack_require__(/*! ./average */ "./src/utils/average.js")
+
+module.exports = function standard_deviation(data){
+  var avg = average(data);
+
+  var squareDiffs = data.map(function(value){
+    var diff = value - avg;
+    var sqrDiff = diff * diff;
+    return sqrDiff;
+  });
+
+  var avgSquareDiff = average(squareDiffs);
+
+  var stdDev = Math.sqrt(avgSquareDiff);
+  return stdDev;
+}
 
 
 

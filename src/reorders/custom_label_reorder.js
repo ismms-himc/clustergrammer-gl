@@ -17,20 +17,16 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
   var found_label_index = _.indexOf(params.network[inst_axis + '_node_names'],
                                   full_name);
 
-  var mat = params.mat_data;
-
   var tmp_arr = [];
   var other_axis;
   if (inst_axis === 'col'){
     other_axis = 'row';
-    // console.log('col')
-    _.each(mat, function(inst_row){
+    _.each(params.mat_data, function(inst_row){
       tmp_arr.push(inst_row[found_label_index]);
     });
   } else {
-    // console.log('row')
     other_axis = 'col';
-    tmp_arr = mat[found_label_index]
+    tmp_arr = params.mat_data[found_label_index]
   }
 
   var tmp_sort = d3.range(tmp_arr.length).sort(function(a, b) {

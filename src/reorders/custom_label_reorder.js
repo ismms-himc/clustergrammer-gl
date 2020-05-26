@@ -5,17 +5,15 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
 
   // update custom label order
   var full_name;
-  // if (params.labels.titles[inst_axis] !== ''){
-  //   full_name = params.labels.titles[inst_axis] + ': ' +
-  //               params.int.mouseover[inst_axis].name;
-  // } else {
-  //   full_name = params.int.mouseover[inst_axis].name;
-  // }
 
   full_name = params.int.mouseover[inst_axis].name;
 
   var found_label_index = _.indexOf(params.network[inst_axis + '_node_names'],
                                   full_name);
+
+
+
+  params.search.searched_rows = full_name.split(', ')
 
   var tmp_arr = [];
   var other_axis;
@@ -33,9 +31,9 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
     return tmp_arr[b] - tmp_arr[a];
   });
 
-
+  let num_other_labels = params.labels['num_' + other_axis]
   _.map(params.network[other_axis + '_nodes'], function(inst_node, node_index){
-    inst_node.custom = params.labels['num_' + other_axis] - tmp_sort[node_index]
+    inst_node.custom = num_other_labels - tmp_sort[node_index]
   })
 
   // sort array says which index contains highest lowest values
@@ -46,7 +44,7 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
   })
 
   params.network[other_axis + '_nodes'].forEach(function(node){
-    node.custom = params.labels['num_' + other_axis] - _.indexOf(ordered_names, node.name) - 1;
+    node.custom = num_other_labels - ordered_names.indexOf(node.name) - 1;
   })
 
   run_reorder(regl, params, other_axis, 'custom');

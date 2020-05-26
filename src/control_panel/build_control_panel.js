@@ -373,9 +373,6 @@ module.exports = function build_control_panel(){
         .node().value
 
       params.search.searched_rows = inst_value.split(', ')
-
-      console.log('search box value: ', params.search.searched_rows)
-
       draw_webgl_layers(cgm)
 
     })

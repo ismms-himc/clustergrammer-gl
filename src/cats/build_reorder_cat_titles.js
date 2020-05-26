@@ -6,6 +6,12 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
   var params = cgm.params;
   var button_color = '#eee';
 
+  let fieldSorter = (fields) => (a, b) => fields.map(o => {
+          let dir = 1;
+          if (o[0] === '-') { dir = -1; o=o.substring(1); }
+          return a[o] > b[o] ? dir : a[o] < b[o] ? -(dir) : 0;
+      }).reduce((p, n) => p ? p : n, 0);
+
   // Column Titles
   var pos_x = 845;
   var pos_y = 125;
@@ -62,9 +68,53 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('opacity', 0.0)
     .on('dblclick', function(d, i){
 
-      run_reorder(regl, params, 'col', 'cat_' + String(i) + '_index');
+      // // Original Category Reordering
+      // ////////////////////////////////////////
+      // let inst_reorder = 'cat_' + String(i) + '_index'
+      // run_reorder(regl, params, 'col', inst_reorder)
+      // params.order.inst.col = inst_reorder
 
-      params.order.inst.col = 'cat_' + String(i) + '_index';
+      // New Category Reordering
+      ////////////////////////////////////////
+      let axis = 'col'
+      let inst_nodes = params.network[axis + '_nodes'].map(x => x)
+      let cat_primary = 'cat-' + String(i)
+      let cat_secondary = 'cat-' + String(i + 1)
+
+      // should look for adjacent categories
+
+      console.log('pre correction')
+      console.log(cat_primary, cat_secondary)
+      if (cat_secondary in params.network[axis + '_nodes'][0] === false){
+        cat_secondary = cat_primary
+      }
+      console.log('post correction')
+      console.log(cat_primary, cat_secondary)
+
+      let sorted_nodes = inst_nodes.sort(fieldSorter([cat_primary, cat_secondary]));
+      let order_dict = {}
+      let inst_name
+      let inst_order
+      sorted_nodes.forEach((d, i) => {
+        inst_name = d.name
+        if (inst_name.includes(': ')){
+          inst_name = inst_name.split(': ')[1]
+        }
+        order_dict[inst_name] = i
+      })
+
+      params.network[axis + '_nodes'].forEach((d,i) => {
+        inst_name = d.name
+        if (inst_name.includes(': ')){
+          inst_name = inst_name.split(': ')[1]
+        }
+
+        d.custom = order_dict[inst_name]
+      })
+
+      require('./../params/generate_cat_args_arrs')(regl, params);
+      run_reorder(regl, params, axis, 'custom');
+      params.order.inst.col = 'custom'
 
       d3.select(params.root + ' .col-reorder-buttons')
         .selectAll('rect')
@@ -140,9 +190,9 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('opacity', 0.0)
     .on('dblclick', function(d, i){
 
-      run_reorder(regl, params, 'row', 'cat_' + String(i) + '_index');
-
-      params.order.inst.row = 'cat_' + String(i) + '_index';
+      let inst_reorder = 'cat_' + String(i) + '_index'
+      run_reorder(regl, params, 'row', inst_reorder);
+      params.order.inst.row = inst_reorder;
 
       d3.select(params.root + ' .row-reorder-buttons')
         .selectAll('rect')

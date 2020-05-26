@@ -5,7 +5,7 @@ var make_cat_args = require('./../cats/make_cat_args');
 
 module.exports = function generate_cat_args_arrs(regl, params){
 
-  console.log('re-generate cat parameters because mousing over cats')
+  // console.log('re-generate cat parameters because mousing over cats')
 
   // debugger
 

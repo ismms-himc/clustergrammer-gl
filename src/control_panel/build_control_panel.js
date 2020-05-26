@@ -256,6 +256,7 @@ module.exports = function build_control_panel(){
                            .replace('var', 'rankvar')
 
         if (params.order.inst[i_axis] != clean_order){
+          console.log('>>>>>>>>', params.order.inst[i_axis], clean_order)
 
           /* category order is already calculated */
           require('./../reorders/run_reorder')(regl, params, i_axis, d);

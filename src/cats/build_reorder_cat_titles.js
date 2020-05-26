@@ -12,6 +12,49 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
           return a[o] > b[o] ? dir : a[o] < b[o] ? -(dir) : 0;
       }).reduce((p, n) => p ? p : n, 0);
 
+  function stable_reorder_cats(axis, i){
+    let inst_nodes = params.network[axis + '_nodes'].map(x => x)
+    let cat_primary = 'cat-' + String(i)
+    let cat_secondary_up = 'cat-' + String(i - 1)
+    let cat_secondary_down = 'cat-' + String(i + 1)
+    if (cat_secondary_down in params.network[axis + '_nodes'][0]){
+      console.log('found down')
+      cat_secondary = cat_secondary_down
+    } else if (cat_secondary_up in params.network[axis + '_nodes'][0]){
+      console.log('found up')
+      cat_secondary = cat_secondary_up
+    } else {
+      // single category reordering
+      console.log('did not find cat_secondary')
+      cat_secondary = cat_primary
+    }
+
+    let sorted_nodes = inst_nodes.sort(fieldSorter([cat_primary, cat_secondary]));
+    let order_dict = {}
+    let inst_name
+    let inst_order
+    sorted_nodes.forEach((d, i) => {
+      inst_name = d.name
+      if (inst_name.includes(': ')){
+        inst_name = inst_name.split(': ')[1]
+      }
+      order_dict[inst_name] = i
+    })
+
+    params.network[axis + '_nodes'].forEach((d,i) => {
+      inst_name = d.name
+      if (inst_name.includes(': ')){
+        inst_name = inst_name.split(': ')[1]
+      }
+
+      d.custom = order_dict[inst_name]
+    })
+
+    require('./../params/generate_cat_args_arrs')(regl, params);
+    run_reorder(regl, params, axis, 'custom');
+    params.order.inst.col = 'custom'
+  }
+
   // Column Titles
   var pos_x = 845;
   var pos_y = 125;
@@ -76,54 +119,12 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
 
       // New Category Reordering
       ////////////////////////////////////////
-      let axis = 'col'
-      let inst_nodes = params.network[axis + '_nodes'].map(x => x)
-      let cat_primary = 'cat-' + String(i)
-      let cat_secondary_up = 'cat-' + String(i - 1)
-      let cat_secondary_down = 'cat-' + String(i + 1)
-
-      // should look for adjacent categories
-
-      if (cat_secondary_down in params.network[axis + '_nodes'][0]){
-        console.log('found down')
-        cat_secondary = cat_secondary_down
-      } else if (cat_secondary_up in params.network[axis + '_nodes'][0]){
-        console.log('found up')
-        cat_secondary = cat_secondary_up
-      } else {
-        // single category reordering
-        console.log('did not find cat_secondary')
-        cat_secondary = cat_primary
-      }
-
-      let sorted_nodes = inst_nodes.sort(fieldSorter([cat_primary, cat_secondary]));
-      let order_dict = {}
-      let inst_name
-      let inst_order
-      sorted_nodes.forEach((d, i) => {
-        inst_name = d.name
-        if (inst_name.includes(': ')){
-          inst_name = inst_name.split(': ')[1]
-        }
-        order_dict[inst_name] = i
-      })
-
-      params.network[axis + '_nodes'].forEach((d,i) => {
-        inst_name = d.name
-        if (inst_name.includes(': ')){
-          inst_name = inst_name.split(': ')[1]
-        }
-
-        d.custom = order_dict[inst_name]
-      })
-
-      require('./../params/generate_cat_args_arrs')(regl, params);
-      run_reorder(regl, params, axis, 'custom');
+      stable_reorder_cats('col', i)
       params.order.inst.col = 'custom'
 
       d3.select(params.root + ' .col-reorder-buttons')
         .selectAll('rect')
-        .style('stroke', button_color);
+        .attr('stroke', button_color);
 
     })
     .attr('transform', function(d, i){
@@ -195,13 +196,16 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
     .style('opacity', 0.0)
     .on('dblclick', function(d, i){
 
-      let inst_reorder = 'cat_' + String(i) + '_index'
-      run_reorder(regl, params, 'row', inst_reorder);
-      params.order.inst.row = inst_reorder;
+      // let inst_reorder = 'cat_' + String(i) + '_index'
+      // run_reorder(regl, params, 'row', inst_reorder);
+      // params.order.inst.row = inst_reorder;
+
+      stable_reorder_cats('row', i)
+      params.order.inst.row = 'custom';
 
       d3.select(params.root + ' .row-reorder-buttons')
         .selectAll('rect')
-        .style('stroke', button_color);
+        .attr('stroke', button_color);
 
     })
     .attr('transform', function(d, i){

@@ -79,17 +79,22 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
       let axis = 'col'
       let inst_nodes = params.network[axis + '_nodes'].map(x => x)
       let cat_primary = 'cat-' + String(i)
-      let cat_secondary = 'cat-' + String(i + 1)
+      let cat_secondary_up = 'cat-' + String(i - 1)
+      let cat_secondary_down = 'cat-' + String(i + 1)
 
       // should look for adjacent categories
 
-      console.log('pre correction')
-      console.log(cat_primary, cat_secondary)
-      if (cat_secondary in params.network[axis + '_nodes'][0] === false){
+      if (cat_secondary_down in params.network[axis + '_nodes'][0]){
+        console.log('found down')
+        cat_secondary = cat_secondary_down
+      } else if (cat_secondary_up in params.network[axis + '_nodes'][0]){
+        console.log('found up')
+        cat_secondary = cat_secondary_up
+      } else {
+        // single category reordering
+        console.log('did not find cat_secondary')
         cat_secondary = cat_primary
       }
-      console.log('post correction')
-      console.log(cat_primary, cat_secondary)
 
       let sorted_nodes = inst_nodes.sort(fieldSorter([cat_primary, cat_secondary]));
       let order_dict = {}

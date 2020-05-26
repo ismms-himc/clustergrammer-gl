@@ -99,8 +99,8 @@ function clustergrammer_gl(args, external_model=null){
       }
 
       console.log('zscore_status', params.norm.zscore_status)
-      // cgm.make_matrix_args()
-      // draw_webgl_layers(cgm)
+      cgm.make_matrix_args()
+      draw_webgl_layers(cgm)
     }
 
     cgm.toggle_zscore = toggle_zscore

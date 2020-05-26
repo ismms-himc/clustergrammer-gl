@@ -19,9 +19,26 @@ module.exports = function make_opacity_arr(params){
 
   // run one or the other
   // calc_zscore(params)
-  calc_inverse_zscore(params)
 
-  let viz_mat_data = params.mat_data_iz
+  // Initially Z-scored
+  let viz_mat_data
+  if (params.norm.initial_status === 'zscored'){
+
+    if (params.norm.zscore_status === 'zscored'){
+      viz_mat_data = params.mat_data
+    }
+    else if (params.norm.zscore_status === 'non-zscored'){
+      calc_inverse_zscore(params)
+      viz_mat_data = params.mat_data_iz
+    }
+
+  // Not Initially Z-scored
+  } else {
+
+    // always visualize mat_data
+    viz_mat_data = params.mat_data
+  }
+
 
   var opacity_arr = [].concat.apply([], viz_mat_data);
 

@@ -20,6 +20,16 @@ module.exports = function initialize_params(external_model){
   let params = cgm.params;
   params.network = network;
 
+  params.norm = {}
+
+  if ('pre_zscore' in params.network){
+    params.norm.initial_status = 'zscored'
+    params.norm.zscore_status = 'zscored'
+  } else {
+    params.norm.initial_status = 'non-zscored'
+    params.norm.zscore_status = 'non-zscored'
+  }
+
   require('./gen_ani_par')(params);
   require('./calc_alpha_order')(params)
   require('./gen_int_par')(params);
@@ -176,18 +186,6 @@ module.exports = function initialize_params(external_model){
 
   params.search = {}
   params.search.searched_rows = []
-
-
-  params.norm = {}
-
-  if ('pre_zscore' in params.network){
-    params.norm.initial_status = 'zscored'
-    params.norm.zscore_status = 'zscored'
-  } else {
-    params.norm.initial_status = 'non-zscored'
-    params.norm.zscore_status = 'non-zscored'
-  }
-
 
 
   this.params = params;

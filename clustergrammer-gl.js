@@ -73009,8 +73009,8 @@ function clustergrammer_gl(args, external_model=null){
       }
 
       console.log('zscore_status', params.norm.zscore_status)
-      // cgm.make_matrix_args()
-      // draw_webgl_layers(cgm)
+      cgm.make_matrix_args()
+      draw_webgl_layers(cgm)
     }
 
     cgm.toggle_zscore = toggle_zscore
@@ -73226,9 +73226,26 @@ module.exports = function make_opacity_arr(params){
 
   // run one or the other
   // calc_zscore(params)
-  calc_inverse_zscore(params)
 
-  let viz_mat_data = params.mat_data_iz
+  // Initially Z-scored
+  let viz_mat_data
+  if (params.norm.initial_status === 'zscored'){
+
+    if (params.norm.zscore_status === 'zscored'){
+      viz_mat_data = params.mat_data
+    }
+    else if (params.norm.zscore_status === 'non-zscored'){
+      calc_inverse_zscore(params)
+      viz_mat_data = params.mat_data_iz
+    }
+
+  // Not Initially Z-scored
+  } else {
+
+    // always visualize mat_data
+    viz_mat_data = params.mat_data
+  }
+
 
   var opacity_arr = [].concat.apply([], viz_mat_data);
 
@@ -75084,6 +75101,16 @@ module.exports = function initialize_params(external_model){
   let params = cgm.params;
   params.network = network;
 
+  params.norm = {}
+
+  if ('pre_zscore' in params.network){
+    params.norm.initial_status = 'zscored'
+    params.norm.zscore_status = 'zscored'
+  } else {
+    params.norm.initial_status = 'non-zscored'
+    params.norm.zscore_status = 'non-zscored'
+  }
+
   __webpack_require__(/*! ./gen_ani_par */ "./src/params/gen_ani_par.js")(params);
   __webpack_require__(/*! ./calc_alpha_order */ "./src/params/calc_alpha_order.js")(params)
   __webpack_require__(/*! ./gen_int_par */ "./src/params/gen_int_par.js")(params);
@@ -75240,18 +75267,6 @@ module.exports = function initialize_params(external_model){
 
   params.search = {}
   params.search.searched_rows = []
-
-
-  params.norm = {}
-
-  if ('pre_zscore' in params.network){
-    params.norm.initial_status = 'zscored'
-    params.norm.zscore_status = 'zscored'
-  } else {
-    params.norm.initial_status = 'non-zscored'
-    params.norm.zscore_status = 'non-zscored'
-  }
-
 
 
   this.params = params;

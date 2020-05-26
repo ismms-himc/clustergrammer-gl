@@ -69979,7 +69979,7 @@ module.exports = function build_control_panel(){
     .attr('letter-spacing', '2px')
     .attr('cursor', 'default')
     .attr('transform', function(){
-        var x_offset = 120 + cracker_room;
+        var x_offset = 110 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })
@@ -70200,6 +70200,7 @@ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 // var position_tree_icon = require('./position_tree_icon');
 var toggle_menu = __webpack_require__(/*! ./toggle_menu */ "./src/control_panel/toggle_menu.js");
 // var make_tree_menu = require('./make_tree_menu');
+let draw_webgl_layers = __webpack_require__(/*! ./../draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
 
 module.exports = function build_recluster_section(cgm){
 
@@ -70263,7 +70264,7 @@ module.exports = function build_recluster_section(cgm){
 
     })
     .attr('transform', function(){
-        var x_offset = 210 + cracker_room;
+        var x_offset = 200 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
      })
@@ -70504,6 +70505,91 @@ module.exports = function build_recluster_section(cgm){
     .style('-webkit-user-select', 'none')
     .attr('transform', 'translate('+ button_dim.width/2 +', '+ button_dim.height/2 +')');
 
+
+  // Normalize Section
+  ///////////////////////////////////////////////
+
+    control_svg
+      .append('g')
+      .classed('panel_button_titles', true)
+      .classed('normalize_button_title', true)
+      .on('click', function(){
+
+        console.log('clicked Z-score Button')
+
+        let params = cgm.params
+
+        if (params.norm.zscore_status === 'non-zscored'){
+
+          params.norm.zscore_status = 'zscored'
+
+          d3.select(this)
+            .select('text')
+            .text('z-scored'.toUpperCase())
+
+        } else {
+
+          params.norm.zscore_status = 'non-zscored'
+
+          d3.select(this)
+            .select('text')
+            .text('raw'.toUpperCase())
+
+        }
+
+        console.log('zscore_status', params.norm.zscore_status)
+        cgm.make_matrix_args()
+        draw_webgl_layers(cgm)
+
+
+
+        // d3.selectAll(params.root + ' .panel_button_titles')
+        //   .attr('opacity', 0.5)
+        // d3.select(this)
+        //   .attr('opacity', 1.0)
+
+        // if (params.viz.current_panel === 'reorder'){
+
+        //   // console.log('switch to recluster')
+
+        //   // modify buttons
+        //   d3.select(params.root + ' .panel_button_title')
+        //     .text('recluster'.toUpperCase())
+        //   d3.select(params.root + ' .top_button_title')
+        //     .text('DIST')
+        //   d3.select(params.root + ' .bottom_button_title')
+        //     .text('LINK')
+        //   d3.selectAll(params.root + ' .reorder_buttons')
+        //     .style('display', 'none');
+        //   d3.select(params.root + ' .run_cluster_container')
+        //     .style('display', 'block')
+
+        //   d3.selectAll(params.root + ' .dist_options')
+        //     .style('display', 'block')
+        //   d3.selectAll(params.root + ' .link_options_container')
+        //     .style('display', 'block')
+
+        //   params.viz.current_panel = 'recluster'
+
+        // }
+
+      })
+      .attr('transform', function(){
+          var x_offset = 290 + cracker_room;
+          var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+          return 'translate( '+ x_offset +', '+ y_trans +')';
+       })
+      .attr('opacity', 1.0)
+      .append('text')
+      .text('z-scored'.toUpperCase())
+      .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+      .attr('font-weight', 400)
+      .attr('font-size', button_dim.fs)
+      .attr('text-anchor', 'middle')
+      .attr('stroke', text_color)
+      .attr('alignment-baseline', 'middle')
+      .attr('letter-spacing', '2px')
+      .attr('cursor', 'default')
 
 };
 
@@ -72912,7 +72998,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
   clustergrammer-gl version 0.17.0
  */
 
-let draw_webgl_layers = __webpack_require__(/*! ./draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
 
 function clustergrammer_gl(args, external_model=null){
 
@@ -72997,23 +73082,9 @@ function clustergrammer_gl(args, external_model=null){
 
     cgm.adjust_opacity = adjust_opacity
 
-    function toggle_zscore(){
 
-      let cgm = this
-      let params = cgm.params
 
-      if (params.norm.zscore_status === 'non-zscored'){
-        params.norm.zscore_status = 'zscored'
-      } else {
-        params.norm.zscore_status = 'non-zscored'
-      }
-
-      console.log('zscore_status', params.norm.zscore_status)
-      cgm.make_matrix_args()
-      draw_webgl_layers(cgm)
-    }
-
-    cgm.toggle_zscore = toggle_zscore
+    // cgm.toggle_zscore = toggle_zscore
 
     return cgm;
 
@@ -73235,7 +73306,10 @@ module.exports = function make_opacity_arr(params){
       viz_mat_data = params.mat_data
     }
     else if (params.norm.zscore_status === 'non-zscored'){
-      calc_inverse_zscore(params)
+
+      if ('mat_data_iz' in params === false){
+        calc_inverse_zscore(params)
+      }
       viz_mat_data = params.mat_data_iz
     }
 

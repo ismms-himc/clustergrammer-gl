@@ -28,7 +28,10 @@ module.exports = function make_opacity_arr(params){
       viz_mat_data = params.mat_data
     }
     else if (params.norm.zscore_status === 'non-zscored'){
-      calc_inverse_zscore(params)
+
+      if ('mat_data_iz' in params === false){
+        calc_inverse_zscore(params)
+      }
       viz_mat_data = params.mat_data_iz
     }
 

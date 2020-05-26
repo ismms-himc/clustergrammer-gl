@@ -2,7 +2,6 @@
   clustergrammer-gl version 0.17.0
  */
 
-let draw_webgl_layers = require('./draws/draw_webgl_layers')
 
 function clustergrammer_gl(args, external_model=null){
 
@@ -87,23 +86,9 @@ function clustergrammer_gl(args, external_model=null){
 
     cgm.adjust_opacity = adjust_opacity
 
-    function toggle_zscore(){
 
-      let cgm = this
-      let params = cgm.params
 
-      if (params.norm.zscore_status === 'non-zscored'){
-        params.norm.zscore_status = 'zscored'
-      } else {
-        params.norm.zscore_status = 'non-zscored'
-      }
-
-      console.log('zscore_status', params.norm.zscore_status)
-      cgm.make_matrix_args()
-      draw_webgl_layers(cgm)
-    }
-
-    cgm.toggle_zscore = toggle_zscore
+    // cgm.toggle_zscore = toggle_zscore
 
     return cgm;
 

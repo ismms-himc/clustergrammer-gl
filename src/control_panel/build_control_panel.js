@@ -178,7 +178,7 @@ module.exports = function build_control_panel(){
     .attr('letter-spacing', '2px')
     .attr('cursor', 'default')
     .attr('transform', function(){
-        var x_offset = 120 + cracker_room;
+        var x_offset = 110 + cracker_room;
         var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return 'translate( '+ x_offset +', '+ y_trans +')';
       })

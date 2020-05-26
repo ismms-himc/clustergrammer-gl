@@ -70508,7 +70508,7 @@ module.exports = function build_recluster_section(cgm){
 
   // Normalize Section
   ///////////////////////////////////////////////
-
+  if (params.norm.initial_status === 'zscored'){
     control_svg
       .append('g')
       .classed('panel_button_titles', true)
@@ -70541,38 +70541,6 @@ module.exports = function build_recluster_section(cgm){
         cgm.make_matrix_args()
         draw_webgl_layers(cgm)
 
-
-
-        // d3.selectAll(params.root + ' .panel_button_titles')
-        //   .attr('opacity', 0.5)
-        // d3.select(this)
-        //   .attr('opacity', 1.0)
-
-        // if (params.viz.current_panel === 'reorder'){
-
-        //   // console.log('switch to recluster')
-
-        //   // modify buttons
-        //   d3.select(params.root + ' .panel_button_title')
-        //     .text('recluster'.toUpperCase())
-        //   d3.select(params.root + ' .top_button_title')
-        //     .text('DIST')
-        //   d3.select(params.root + ' .bottom_button_title')
-        //     .text('LINK')
-        //   d3.selectAll(params.root + ' .reorder_buttons')
-        //     .style('display', 'none');
-        //   d3.select(params.root + ' .run_cluster_container')
-        //     .style('display', 'block')
-
-        //   d3.selectAll(params.root + ' .dist_options')
-        //     .style('display', 'block')
-        //   d3.selectAll(params.root + ' .link_options_container')
-        //     .style('display', 'block')
-
-        //   params.viz.current_panel = 'recluster'
-
-        // }
-
       })
       .attr('transform', function(){
           var x_offset = 290 + cracker_room;
@@ -70590,6 +70558,7 @@ module.exports = function build_recluster_section(cgm){
       .attr('alignment-baseline', 'middle')
       .attr('letter-spacing', '2px')
       .attr('cursor', 'default')
+  }
 
 };
 
@@ -72995,7 +72964,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.17.0
+  clustergrammer-gl version 0.18.0
  */
 
 
@@ -73004,7 +72973,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.17.0');
+  console.log('clustergrammer-gl version 0.18.0');
   console.log('#################################');
 
   var cgm = {};

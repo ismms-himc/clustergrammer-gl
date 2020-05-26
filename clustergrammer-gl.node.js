@@ -73002,13 +73002,13 @@ function clustergrammer_gl(args, external_model=null){
       let cgm = this
       let params = cgm.params
 
-      if (params.zscore_status === 'raw'){
-        params.zscore_status = 'zscored'
+      if (params.norm.zscore_status === 'non-zscored'){
+        params.norm.zscore_status = 'zscored'
       } else {
-        params.zscore_status = 'raw'
+        params.norm.zscore_status = 'non-zscored'
       }
 
-      console.log('zscore_status', params.zscore_status)
+      console.log('zscore_status', params.norm.zscore_status)
       // cgm.make_matrix_args()
       // draw_webgl_layers(cgm)
     }
@@ -73206,8 +73206,8 @@ module.exports = function make_matrix_args(){
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-var average = __webpack_require__(/*! ./../utils/average */ "./src/utils/average.js")
-var standard_deviation = __webpack_require__(/*! ./../utils/standard_deviation */ "./src/utils/standard_deviation.js")
+var calc_inverse_zscore = __webpack_require__(/*! ./../utils/calc_inverse_zscore */ "./src/utils/calc_inverse_zscore.js")
+var calc_zscore = __webpack_require__(/*! ./../utils/calc_zscore */ "./src/utils/calc_zscore.js")
 
 module.exports = function make_opacity_arr(params){
 
@@ -73224,46 +73224,13 @@ module.exports = function make_opacity_arr(params){
 
   mat_data = params.mat_data
 
-  // // Z-score data
-  // //////////////////////////////////////////////
-  // let mat_data_z = mat_data.map(inst_row => {
+  // run one or the other
+  // calc_zscore(params)
+  calc_inverse_zscore(params)
 
-  //   inst_avg = average(inst_row)
-  //   inst_std = standard_deviation(inst_row)
+  let viz_mat_data = params.mat_data_iz
 
-  //   console.log(inst_avg, inst_std)
-
-  //   // z-score data
-  //   inst_row_z = inst_row.map(x => {
-  //     x = (x - inst_avg)/inst_std
-  //     return x
-  //   })
-
-  //   return inst_row_z
-  // })
-  // params.mat_data = mat_data_z
-
-  // // Inv-Z-score data
-  // //////////////////////////////////////////////
-  // let mat_data_iz = mat_data.map((inst_row, i) => {
-
-  //   inst_avg = params.network.pre_zscore.mean[i]
-  //   inst_std = params.network.pre_zscore.std[i]
-
-  //   // console.log(inst_avg, inst_std)
-
-  //   // z-score data
-  //   inst_row_iz = inst_row.map(x => {
-  //     x = x * inst_std + inst_avg
-  //     return x
-  //   })
-
-  //   return inst_row_iz
-  // })
-
-  // params.mat_data_iz = mat_data_iz
-
-  var opacity_arr = [].concat.apply([], mat_data);
+  var opacity_arr = [].concat.apply([], viz_mat_data);
 
   var abs_max_val = Math.abs(_.max(opacity_arr, function(d){
     return Math.abs(d);
@@ -75274,11 +75241,18 @@ module.exports = function initialize_params(external_model){
   params.search = {}
   params.search.searched_rows = []
 
+
+  params.norm = {}
+
   if ('pre_zscore' in params.network){
-    params.zscore_status = 'zscored'
+    params.norm.initial_status = 'zscored'
+    params.norm.zscore_status = 'zscored'
   } else {
-    params.zscore_status = 'raw'
+    params.norm.initial_status = 'non-zscored'
+    params.norm.zscore_status = 'non-zscored'
   }
+
+
 
   this.params = params;
 
@@ -76638,10 +76612,10 @@ module.exports = function make_tooltip_text(cgm, external_model){
 
     // col name
     tooltip_text = tooltip_text + mouseover.col.name;
-    tooltip_text = tooltip_text + ' <br>value: ' + mouseover.value.toFixed(3);
+    tooltip_text = tooltip_text + ' <br>Value: ' + mouseover.value.toFixed(3);
 
     if ('value_iz' in params.int.mouseover){
-      tooltip_text = tooltip_text + ' <br>Pre-Zscore value: ' + mouseover.value_iz.toFixed(3);
+      tooltip_text = tooltip_text + ' <br>Original value: ' + mouseover.value_iz.toFixed(3);
     }
 
     params.tooltip_fun.show('tooltip');
@@ -77006,6 +76980,82 @@ module.exports = function average_n_minus_1(data){
 
   var avg = sum / (data.length  - 1);
   return avg;
+}
+
+/***/ }),
+
+/***/ "./src/utils/calc_inverse_zscore.js":
+/*!******************************************!*\
+  !*** ./src/utils/calc_inverse_zscore.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function calc_inverse_zscore(params){
+
+  console.log('calc_inverse_zscore!!!!!!!!!!!!!!')
+
+  mat_data = params.mat_data
+
+  // Inv-Z-score data
+  //////////////////////////////////////////////
+  let mat_data_iz = mat_data.map((inst_row, i) => {
+
+    inst_avg = params.network.pre_zscore.mean[i]
+    inst_std = params.network.pre_zscore.std[i]
+
+    // console.log(inst_avg, inst_std)
+
+    // z-score data
+    inst_row_iz = inst_row.map(x => {
+      x = x * inst_std + inst_avg
+      return x
+    })
+
+    return inst_row_iz
+  })
+
+  params.mat_data_iz = mat_data_iz
+
+}
+
+/***/ }),
+
+/***/ "./src/utils/calc_zscore.js":
+/*!**********************************!*\
+  !*** ./src/utils/calc_zscore.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var average = __webpack_require__(/*! ./average */ "./src/utils/average.js")
+var standard_deviation = __webpack_require__(/*! ./standard_deviation */ "./src/utils/standard_deviation.js")
+module.exports = function calc_zscore(params){
+
+  console.log('calc_zscore ????????????  ')
+
+  mat_data = params.mat_data
+
+  // Z-score data
+  //////////////////////////////////////////////
+  let mat_data_z = mat_data.map(inst_row => {
+
+    inst_avg = average(inst_row)
+    inst_std = standard_deviation(inst_row)
+
+    // console.log(inst_avg, inst_std)
+
+    // z-score data
+    inst_row_z = inst_row.map(x => {
+      x = (x - inst_avg)/inst_std
+      return x
+    })
+
+    return inst_row_z
+  })
+
+  params.mat_data_z = mat_data_z
+
 }
 
 /***/ }),

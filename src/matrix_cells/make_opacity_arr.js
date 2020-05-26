@@ -1,6 +1,6 @@
 var d3 = require("d3");
-var average = require('./../utils/average')
-var standard_deviation = require('./../utils/standard_deviation')
+var calc_inverse_zscore = require('./../utils/calc_inverse_zscore')
+var calc_zscore = require('./../utils/calc_zscore')
 
 module.exports = function make_opacity_arr(params){
 
@@ -17,46 +17,13 @@ module.exports = function make_opacity_arr(params){
 
   mat_data = params.mat_data
 
-  // // Z-score data
-  // //////////////////////////////////////////////
-  // let mat_data_z = mat_data.map(inst_row => {
+  // run one or the other
+  // calc_zscore(params)
+  calc_inverse_zscore(params)
 
-  //   inst_avg = average(inst_row)
-  //   inst_std = standard_deviation(inst_row)
+  let viz_mat_data = params.mat_data_iz
 
-  //   console.log(inst_avg, inst_std)
-
-  //   // z-score data
-  //   inst_row_z = inst_row.map(x => {
-  //     x = (x - inst_avg)/inst_std
-  //     return x
-  //   })
-
-  //   return inst_row_z
-  // })
-  // params.mat_data = mat_data_z
-
-  // // Inv-Z-score data
-  // //////////////////////////////////////////////
-  // let mat_data_iz = mat_data.map((inst_row, i) => {
-
-  //   inst_avg = params.network.pre_zscore.mean[i]
-  //   inst_std = params.network.pre_zscore.std[i]
-
-  //   // console.log(inst_avg, inst_std)
-
-  //   // z-score data
-  //   inst_row_iz = inst_row.map(x => {
-  //     x = x * inst_std + inst_avg
-  //     return x
-  //   })
-
-  //   return inst_row_iz
-  // })
-
-  // params.mat_data_iz = mat_data_iz
-
-  var opacity_arr = [].concat.apply([], mat_data);
+  var opacity_arr = [].concat.apply([], viz_mat_data);
 
   var abs_max_val = Math.abs(_.max(opacity_arr, function(d){
     return Math.abs(d);

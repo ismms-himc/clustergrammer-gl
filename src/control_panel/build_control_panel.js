@@ -334,10 +334,10 @@ module.exports = function build_control_panel(){
     .attr('placeholder', 'row names')
     .attr('list', 'row_names')
     .style('width', '125px')
-    .style('height', '25px')
-    .style('margin-top', '10px')
+    .style('height', '20px')
+    .style('margin-top', '5px')
     .style('display', 'inline-block')
-    .style('padding-left', '3px')
+    .style('padding', '1pt 2pt')
 
   let row_names = params.network.row_node_names
 

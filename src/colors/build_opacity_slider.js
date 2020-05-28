@@ -216,7 +216,7 @@ module.exports = function build_opacity_slider(cgm){
 
     slider_value = custom_round(slider_value, 2)
 
-    console.log(slider_value)
+    // console.log(slider_value)
 
     params.matrix.opacity_scale = slider_value
     cgm.make_matrix_args()

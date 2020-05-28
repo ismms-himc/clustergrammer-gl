@@ -69007,7 +69007,7 @@ module.exports = function build_opacity_slider(cgm){
 
     slider_value = custom_round(slider_value, 2)
 
-    console.log(slider_value)
+    // console.log(slider_value)
 
     params.matrix.opacity_scale = slider_value
     cgm.make_matrix_args()
@@ -70194,10 +70194,10 @@ module.exports = function build_control_panel(){
     .attr('placeholder', 'row names')
     .attr('list', 'row_names')
     .style('width', '125px')
-    .style('height', '25px')
-    .style('margin-top', '10px')
+    .style('height', '20px')
+    .style('margin-top', '5px')
     .style('display', 'inline-block')
-    .style('padding-left', '3px')
+    .style('padding', '1pt 2pt')
 
   let row_names = params.network.row_node_names
 
@@ -73021,7 +73021,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.19.0
+  clustergrammer-gl version 0.19.1
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73029,7 +73029,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.19.0');
+  console.log('clustergrammer-gl version 0.19.1');
   console.log('#################################');
 
   var cgm = {};

@@ -73021,7 +73021,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.19.1
+  clustergrammer-gl version 0.19.2
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73029,7 +73029,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.19.1');
+  console.log('clustergrammer-gl version 0.19.2');
   console.log('#################################');
 
   var cgm = {};
@@ -75344,14 +75344,14 @@ module.exports = function initialize_params(external_model){
           manual_category[axis + '_cats'] = params.network.manual_category[axis + '_cats']
         }
 
-        color_dict = {}
-        if ('color' in params.network.manual_category[axis + '_cats'][0]){
-
-          manual_category[axis + '_cats']
-            .map(x => color_dict[x.name] = x.color)
-
+        if (axis + '_cats' in params.network.manual_category){
+          color_dict = {}
+          if ('color' in params.network.manual_category[axis + '_cats'][0]){
+            manual_category[axis + '_cats']
+              .map(x => color_dict[x.name] = x.color)
+          }
+          manual_category[axis + '_color_dict'] = color_dict
         }
-        manual_category[axis + '_color_dict'] = color_dict
 
       }
 

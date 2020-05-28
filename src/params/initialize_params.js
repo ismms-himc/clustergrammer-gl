@@ -164,14 +164,14 @@ module.exports = function initialize_params(external_model){
           manual_category[axis + '_cats'] = params.network.manual_category[axis + '_cats']
         }
 
-        color_dict = {}
-        if ('color' in params.network.manual_category[axis + '_cats'][0]){
-
-          manual_category[axis + '_cats']
-            .map(x => color_dict[x.name] = x.color)
-
+        if (axis + '_cats' in params.network.manual_category){
+          color_dict = {}
+          if ('color' in params.network.manual_category[axis + '_cats'][0]){
+            manual_category[axis + '_cats']
+              .map(x => color_dict[x.name] = x.color)
+          }
+          manual_category[axis + '_color_dict'] = color_dict
         }
-        manual_category[axis + '_color_dict'] = color_dict
 
       }
 

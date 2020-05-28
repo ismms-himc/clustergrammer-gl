@@ -75326,31 +75326,63 @@ module.exports = function initialize_params(external_model){
     // params.widget_model = null;
   }
 
-  params.cat_data.manual_category = {}
+  let axes = ['col', 'row']
+  manual_category = {}
 
   if ('manual_category' in params.network){
 
     // copy from network to cat data
-    params.cat_data.manual_category.row = params.network.manual_category.row
-    params.cat_data.manual_category.col = params.network.manual_category.col
+
+    axes.forEach(axis => {
+
+      if (axis in params.network.manual_category){
+
+        manual_category[axis] = params.network.manual_category[axis]
+
+        // make list of cats
+        if (axis + '_cats' in params.network.manual_category){
+          manual_category[axis + '_cats'] = params.network.manual_category[axis + '_cats']
+        }
+
+        color_dict = {}
+        if ('color' in params.network.manual_category[axis + '_cats'][0]){
+
+          manual_category[axis + '_cats']
+            .map(x => color_dict[x.name] = x.color)
+
+        }
+        manual_category[axis + '_color_dict'] = color_dict
+
+      }
+
+    })
+
+    // params.cat_data
+    //   .manual_category[axis + '_cats']
+    //   .map(x => x.name)
 
     // initialize category dictionary
     ///////////////////////////////////
     params.cat_data.manual_cat_dict = {}
 
-    let axes = ['col', 'row']
-    axes.forEach((axis) => {
+    axes.forEach(axis => {
 
-      if (params.cat_data.manual_category[axis]){
+      if (manual_category[axis]){
         let cat_title = cgm.params.cat_data[axis][0].cat_title
         let inst_dict = {}
         inst_dict[cat_title] = {}
 
+        let inst_name
         params
            .network[axis + '_nodes']
            .forEach(
              (x) => {
-               inst_dict[cat_title][x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]
+               if (x.name.includes(': ')){
+                 inst_name = x.name.split(': ')[1]
+               } else {
+                 inst_name = x.name
+               }
+               inst_dict[cat_title][inst_name] = x['cat-0'].split(': ')[1]
              }
            )
 
@@ -75360,9 +75392,11 @@ module.exports = function initialize_params(external_model){
     })
 
   } else {
-    params.cat_data.manual_category.row = false
-    params.cat_data.manual_category.col = false
+    manual_category.row = false
+    manual_category.col = false
   }
+
+  params.cat_data.manual_category = manual_category
 
   params.search = {}
   params.search.searched_rows = []
@@ -76790,7 +76824,7 @@ module.exports = function make_tooltip_text(cgm, external_model){
  var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var manual_update_to_cats = __webpack_require__(/*! ./../cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js");
 
-module.exports = function manual_category_from_dendro(cgm, external_model, inst_axis){
+module.exports = function manual_category_from_dendro(cgm, external_model, axis){
 
   let params = cgm.params
 
@@ -76866,8 +76900,23 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
     .style('width', '140px')
     .style('display', 'inline-block')
     .style('color', 'black')
+    .on('change', (d) => {
 
-  let preferred_cat_list = []
+      // if input matches color key, set color to pre-defined cat color
+      let new_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
+                       .node().value;
+
+      let new_color
+      if (new_cat in params.cat_data.manual_category.col_color_dict){
+        new_color = params.cat_data.manual_category.col_color_dict[new_cat]
+        select_color_from_pallet(new_color)
+      }
+
+    })
+
+  let preferred_cat_list = params.cat_data
+                                 .manual_category[axis + '_cats']
+                                 .map(x => x.name)
 
   custom_cat_div
     .append('datalist')
@@ -76950,6 +76999,9 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
 
       if (new_cat != ''){
 
+        // save category and color to dictionary
+        params.cat_data.manual_category.col_color_dict[new_cat] = inst_color
+
         console.log(inst_color)
         if (inst_color === ''){
           inst_color = 'white'
@@ -76958,13 +77010,13 @@ module.exports = function manual_category_from_dendro(cgm, external_model, inst_
         let inst_labels = params.dendro.selected_clust_names;
 
         // Only allowing custom naming of first column
-        let cat_title = params.cat_data[inst_axis][0].cat_title
-
+        let cat_title = params.cat_data[axis][0].cat_title
         let full_cat = cat_title + ': ' + new_cat
-        params.network.cat_colors[inst_axis]['cat-0'][full_cat] = inst_color
+        params.network.cat_colors[axis]['cat-0'][full_cat] = inst_color
+
 
         params.int.manual_update_cats = true
-        manual_update_to_cats(cgm, inst_axis, cat_title, new_cat, inst_labels);
+        manual_update_to_cats(cgm, axis, cat_title, new_cat, inst_labels);
 
         if (params.is_widget){
           console.log('--> running widget callback on manual category update')

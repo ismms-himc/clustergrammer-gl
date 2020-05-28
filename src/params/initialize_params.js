@@ -146,31 +146,63 @@ module.exports = function initialize_params(external_model){
     // params.widget_model = null;
   }
 
-  params.cat_data.manual_category = {}
+  let axes = ['col', 'row']
+  manual_category = {}
 
   if ('manual_category' in params.network){
 
     // copy from network to cat data
-    params.cat_data.manual_category.row = params.network.manual_category.row
-    params.cat_data.manual_category.col = params.network.manual_category.col
+
+    axes.forEach(axis => {
+
+      if (axis in params.network.manual_category){
+
+        manual_category[axis] = params.network.manual_category[axis]
+
+        // make list of cats
+        if (axis + '_cats' in params.network.manual_category){
+          manual_category[axis + '_cats'] = params.network.manual_category[axis + '_cats']
+        }
+
+        color_dict = {}
+        if ('color' in params.network.manual_category[axis + '_cats'][0]){
+
+          manual_category[axis + '_cats']
+            .map(x => color_dict[x.name] = x.color)
+
+        }
+        manual_category[axis + '_color_dict'] = color_dict
+
+      }
+
+    })
+
+    // params.cat_data
+    //   .manual_category[axis + '_cats']
+    //   .map(x => x.name)
 
     // initialize category dictionary
     ///////////////////////////////////
     params.cat_data.manual_cat_dict = {}
 
-    let axes = ['col', 'row']
-    axes.forEach((axis) => {
+    axes.forEach(axis => {
 
-      if (params.cat_data.manual_category[axis]){
+      if (manual_category[axis]){
         let cat_title = cgm.params.cat_data[axis][0].cat_title
         let inst_dict = {}
         inst_dict[cat_title] = {}
 
+        let inst_name
         params
            .network[axis + '_nodes']
            .forEach(
              (x) => {
-               inst_dict[cat_title][x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]
+               if (x.name.includes(': ')){
+                 inst_name = x.name.split(': ')[1]
+               } else {
+                 inst_name = x.name
+               }
+               inst_dict[cat_title][inst_name] = x['cat-0'].split(': ')[1]
              }
            )
 
@@ -180,9 +212,11 @@ module.exports = function initialize_params(external_model){
     })
 
   } else {
-    params.cat_data.manual_category.row = false
-    params.cat_data.manual_category.col = false
+    manual_category.row = false
+    manual_category.col = false
   }
+
+  params.cat_data.manual_category = manual_category
 
   params.search = {}
   params.search.searched_rows = []

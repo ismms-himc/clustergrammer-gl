@@ -73021,7 +73021,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.19.2
+  clustergrammer-gl version 0.19.3
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73029,7 +73029,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.19.2');
+  console.log('clustergrammer-gl version 0.19.3');
   console.log('#################################');
 
   var cgm = {};
@@ -76903,29 +76903,35 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
     .on('change', (d) => {
 
       // if input matches color key, set color to pre-defined cat color
+      ///////////////////////////////////////////////////////////////////
       let new_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
-                       .node().value;
+                       .node().value.trim();
 
       let new_color
-      if (new_cat in params.cat_data.manual_category.col_color_dict){
-        new_color = params.cat_data.manual_category.col_color_dict[new_cat]
-        select_color_from_pallet(new_color)
+      if (axis + '_color_dict' in params.cat_data.manual_category){
+        if (new_cat in params.cat_data.manual_category[axis + '_color_dict']){
+          new_color = params.cat_data.manual_category[axis + '_color_dict'][new_cat]
+          select_color_from_pallet(new_color)
+        }
       }
 
     })
 
-  let preferred_cat_list = params.cat_data
-                                 .manual_category[axis + '_cats']
-                                 .map(x => x.name)
+  if (axis + '_cats' in params.cat_data.manual_category){
+    let preferred_cat_list = params.cat_data
+                                   .manual_category[axis + '_cats']
+                                   .map(x => x.name)
+    custom_cat_div
+      .append('datalist')
+      .attr('id', 'preferred_categories')
+      .selectAll('options')
+      .data(preferred_cat_list)
+      .enter()
+      .append('option')
+      .attr('value', d => d)
 
-  custom_cat_div
-    .append('datalist')
-    .attr('id', 'preferred_categories')
-    .selectAll('options')
-    .data(preferred_cat_list)
-    .enter()
-    .append('option')
-    .attr('value', d => d)
+  }
+
 
   // type color
   custom_cat_div
@@ -76992,15 +76998,17 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
     .on('click', d => {
 
       let new_cat = d3.select(params.tooltip_id + ' .custom-cat-input')
-                       .node().value;
+                       .node().value.trim();
 
       let inst_color = d3.select(params.tooltip_id + ' .custom-cat-color')
-                         .node().value;
+                         .node().value.trim();
 
       if (new_cat != ''){
 
         // save category and color to dictionary
-        params.cat_data.manual_category.col_color_dict[new_cat] = inst_color
+        if (axis + '_color_dict' in params.cat_data.manual_category){
+          params.cat_data.manual_category[axis + '_color_dict'][new_cat] = inst_color
+        }
 
         console.log(inst_color)
         if (inst_color === ''){

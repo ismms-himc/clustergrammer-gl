@@ -12,7 +12,7 @@ module.exports = function save_matrix(){
   // console.log(matrix_string)
 
   var blob = new Blob([matrix_string], {type: 'text/plain;charset=utf-8'});
-  saveAs(blob, 'clustergrammer.txt');
+  saveAs(blob, 'clustergrammer.csv');
 
   console.log('download matrix')
 

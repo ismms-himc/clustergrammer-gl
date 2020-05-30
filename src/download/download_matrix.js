@@ -9,10 +9,10 @@ module.exports = function save_matrix(){
 
   var matrix_string = make_matrix_string(params);
 
-  console.log(matrix_string)
+  // console.log(matrix_string)
 
-  // var blob = new Blob([matrix_string], {type: 'text/plain;charset=utf-8'});
-  // saveAs(blob, 'clustergrammer.txt');
+  var blob = new Blob([matrix_string], {type: 'text/plain;charset=utf-8'});
+  saveAs(blob, 'clustergrammer.txt');
 
   console.log('download matrix')
 

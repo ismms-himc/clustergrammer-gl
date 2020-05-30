@@ -56,6 +56,8 @@ function clustergrammer_gl(args, external_model=null){
     cgm.recluster = require('./recluster/recluster');
     cgm.manual_update_to_cats = require('./cats/manual_update_to_cats')
 
+    cgm.download_matrix = require('./download/download_matrix')
+
     // this prevents Jupyter from listening to typing on the modal and
     // misinterpreting as keyboard shortcuts
     if (cgm.params.is_widget){

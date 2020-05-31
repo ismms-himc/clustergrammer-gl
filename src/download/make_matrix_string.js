@@ -62,7 +62,7 @@ module.exports = function make_matrix_string(params){
 
   params.norm.zscore_status
 
-  if (params.norm.zscore_status === 'non-zscored' && 'mat_data_iz' in cgm.params){
+  if (params.norm.zscore_status === 'non-zscored' && 'mat_data_iz' in params){
     inst_mat_data = params.mat_data_iz
   } else {
     inst_mat_data = params.mat_data

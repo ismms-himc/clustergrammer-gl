@@ -221,6 +221,16 @@ module.exports = function initialize_params(external_model){
   params.search = {}
   params.search.searched_rows = []
 
+  let download = {}
+  // default delimiter
+  download.delimiter_name = 'csv'
+
+  download.delimiter_key = {}
+  download.delimiter_key.csv = ','
+  download.delimiter_key.tsv = '\t'
+  download.delimiter_key.tuple = '\t'
+
+  params.download = download
 
   this.params = params;
 

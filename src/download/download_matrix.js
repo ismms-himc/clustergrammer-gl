@@ -9,10 +9,15 @@ module.exports = function save_matrix(){
 
   var matrix_string = make_matrix_string(params);
 
-  // console.log(matrix_string)
-
   var blob = new Blob([matrix_string], {type: 'text/plain;charset=utf-8'});
-  saveAs(blob, 'clustergrammer.csv');
+
+  let file_type = params.download.delimiter_name
+
+  if (file_type === 'tuple'){
+    file_type = 'tsv'
+  }
+
+  saveAs(blob, 'clustergrammer.' + file_type);
 
   console.log('download matrix')
 

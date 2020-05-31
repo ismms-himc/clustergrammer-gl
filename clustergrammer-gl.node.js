@@ -71980,9 +71980,18 @@ module.exports = function make_matrix_string(params){
   var inst_row
   // write matrix rows
   ////////////////////////
+
+  params.norm.zscore_status
+
+  if (params.norm.zscore_status === 'non-zscored' && 'mat_data_iz' in cgm.params){
+    inst_mat_data = params.mat_data_iz
+  } else {
+    inst_mat_data = params.mat_data
+  }
+
   matrix_string = matrix_string + '\n'
   order_indexes.row.forEach(inst_index => {
-    row_data = params.mat_data[inst_index]
+    row_data = inst_mat_data[inst_index]
     inst_row = row_nodes[inst_index];
 
     if (params.download.delimiter_name === 'tuple'){
@@ -73732,7 +73741,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.20.0
+  clustergrammer-gl version 0.20.1
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73740,7 +73749,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.20.0');
+  console.log('clustergrammer-gl version 0.20.1');
   console.log('#################################');
 
   var cgm = {};

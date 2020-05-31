@@ -59,9 +59,18 @@ module.exports = function make_matrix_string(params){
   var inst_row
   // write matrix rows
   ////////////////////////
+
+  params.norm.zscore_status
+
+  if (params.norm.zscore_status === 'non-zscored' && 'mat_data_iz' in cgm.params){
+    inst_mat_data = params.mat_data_iz
+  } else {
+    inst_mat_data = params.mat_data
+  }
+
   matrix_string = matrix_string + '\n'
   order_indexes.row.forEach(inst_index => {
-    row_data = params.mat_data[inst_index]
+    row_data = inst_mat_data[inst_index]
     inst_row = row_nodes[inst_index];
 
     if (params.download.delimiter_name === 'tuple'){

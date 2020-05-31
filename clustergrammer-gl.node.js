@@ -69862,6 +69862,8 @@ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 let draw_webgl_layers = __webpack_require__(/*! ./../draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
 // var logo_url = require("file-loader!../graham_cracker_70.png");
 let build_opacity_slider = __webpack_require__(/*! ./../colors/build_opacity_slider */ "./src/colors/build_opacity_slider.js")
+let download_matrix = __webpack_require__(/*! ./../download/download_matrix */ "./src/download/download_matrix.js")
+let download_metadata = __webpack_require__(/*! ./../download/download_metadata */ "./src/download/download_metadata.js")
 
 module.exports = function build_control_panel(){
 
@@ -69956,7 +69958,7 @@ module.exports = function build_control_panel(){
   button_groups.row = {};
   button_groups.col = {};
 
-  var cracker_room = 65;
+  var cracker_room = 60;
 
   // control_svg
   //   .append('image')
@@ -70242,7 +70244,203 @@ module.exports = function build_control_panel(){
   ////////////////////////////
   build_opacity_slider(cgm)
 
+  // download buttons
+  control_svg
+    .append('text')
+    .classed('download_section_title', true)
+    .text('download'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 715
+        var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  // download section border
+  control_svg
+    .append('rect')
+    .classed('download_section_border', true)
+    .attr('height', '1px')
+    .attr('width', '145px')
+    .attr('position', 'absolute')
+    .attr('stroke', '#eee')
+    .attr('stroke-width', 2)
+    .attr('transform', function(){
+      var x_offset = cracker_room + 645
+      var y_trans = y_offset_buttons - button_dim.buffer + 2;
+      return 'translate( '+ x_offset +', '+ y_trans +')';
+    });
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.delimiter_name = 'csv'
+      download_matrix(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('csv'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  let shift_download = 40
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.delimiter_name = 'tsv'
+      download_matrix(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('tsv'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55 + 40
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.delimiter_name = 'tuple'
+      download_matrix(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('tuple'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55 + 90
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+
+  control_svg
+    .append('text')
+    .classed('download_section_type', true)
+    .text('matrix'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 615
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  control_svg
+    .append('text')
+    .classed('download_section_type', true)
+    .text('meta'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 615
+        var y_trans = 107
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.meta_type = 'col'
+      download_metadata(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('col'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55
+        var y_trans = 107
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.meta_type = 'row'
+      download_metadata(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('row'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55 + 40
+        var y_trans = 107
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+
 };
+
+
 
 /***/ }),
 
@@ -71388,25 +71586,55 @@ module.exports = function slice_linkage(params, axis, dist_thresh){
 var file_saver = __webpack_require__(/*! ./file_saver */ "./src/download/file_saver.js");
 var make_matrix_string = __webpack_require__(/*! ./make_matrix_string */ "./src/download/make_matrix_string.js");
 
-module.exports = function save_matrix(){
+module.exports = function download_matrix(params){
 
   var saveAs = file_saver();
 
-  var params = this.params;
-
   var matrix_string = make_matrix_string(params);
 
-  var blob = new Blob([matrix_string], {type: 'text/plain;charset=utf-8'});
+  var blob = new Blob(
+        [matrix_string],
+        {type: 'text/plain;charset=utf-8'}
+      )
 
   let file_type = params.download.delimiter_name
-
   if (file_type === 'tuple'){
     file_type = 'tsv'
   }
-
   saveAs(blob, 'clustergrammer.' + file_type);
 
   console.log('download matrix')
+
+};
+
+/***/ }),
+
+/***/ "./src/download/download_metadata.js":
+/*!*******************************************!*\
+  !*** ./src/download/download_metadata.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var file_saver = __webpack_require__(/*! ./file_saver */ "./src/download/file_saver.js");
+var make_meta_string = __webpack_require__(/*! ./make_meta_string */ "./src/download/make_meta_string.js");
+
+module.exports = function download_metadata(params){
+
+  var saveAs = file_saver();
+
+  let matrix_string = make_meta_string(params)
+
+  var blob = new Blob(
+        [matrix_string],
+        {type: 'text/plain;charset=utf-8'}
+      )
+
+  let file_type = 'csv'
+  let meta_type = params.download.meta_type
+  saveAs(blob, 'meta_' + meta_type + '.' + file_type);
+
+  console.log('download metadata')
 
 };
 
@@ -71734,7 +71962,6 @@ module.exports = function make_matrix_string(params){
        col_name = make_full_name(params, inst_col, 'col');
     } else {
       col_name = inst_col.name
-
       if (col_name.includes(': ')){
         col_name = col_name.split(': ')[1]
       }
@@ -71782,6 +72009,83 @@ module.exports = function make_matrix_string(params){
   return matrix_string;
 
 };
+
+/***/ }),
+
+/***/ "./src/download/make_meta_string.js":
+/*!******************************************!*\
+  !*** ./src/download/make_meta_string.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function make_meta_string(params){
+
+  // metadata will only be a CSV
+
+  console.log('make_meta_string')
+  let delimiter = ','
+  let meta_string =  ','
+
+  let meta_type = params.download.meta_type
+
+  let nodes = params.network[meta_type + '_nodes']
+  let inst_name
+
+  // // write columns
+  params.cat_data[meta_type]
+        .forEach((x, i) => {
+
+          if (i < params.cat_data[meta_type].length - 1){
+            meta_string = meta_string + x.cat_title + delimiter
+          } else {
+            meta_string = meta_string + x.cat_title
+          }
+
+        })
+
+  console.log(meta_string)
+
+  meta_string = meta_string + '\n'
+  // write rows
+  let inst_cat
+  nodes.forEach((node, node_index) => {
+
+    inst_name = node.name
+
+    if (inst_name.includes(': ')){
+      inst_name = inst_name.split(': ')[1]
+    }
+
+    // add node name
+    meta_string = meta_string + inst_name + delimiter
+
+    // add node categories
+    params.cat_data[meta_type]
+          .forEach((tmp, i) => {
+
+            inst_cat = node['cat-' + String(i)]
+
+            if (inst_cat.includes(': ')){
+              inst_cat = inst_cat.split(': ')[1]
+            }
+
+            if (i < params.cat_data[meta_type].length - 1){
+              meta_string = meta_string + inst_cat + delimiter
+            } else {
+              meta_string = meta_string + inst_cat
+            }
+
+          })
+
+    // move to new line
+    meta_string = meta_string + '\n'
+
+  })
+
+  return meta_string
+
+}
 
 /***/ }),
 
@@ -73428,7 +73732,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.19.3
+  clustergrammer-gl version 0.20.0
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73436,7 +73740,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.19.3');
+  console.log('clustergrammer-gl version 0.20.0');
   console.log('#################################');
 
   var cgm = {};
@@ -73486,6 +73790,7 @@ function clustergrammer_gl(args, external_model=null){
     cgm.manual_update_to_cats = __webpack_require__(/*! ./cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js")
 
     cgm.download_matrix = __webpack_require__(/*! ./download/download_matrix */ "./src/download/download_matrix.js")
+    cgm.download_metadata = __webpack_require__(/*! ./download/download_metadata */ "./src/download/download_metadata.js")
 
     // this prevents Jupyter from listening to typing on the modal and
     // misinterpreting as keyboard shortcuts
@@ -73716,13 +74021,12 @@ var calc_zscore = __webpack_require__(/*! ./../utils/calc_zscore */ "./src/utils
 
 module.exports = function make_opacity_arr(params){
 
-  console.log('************************************')
-  console.log('************************************')
-  console.log('make_opacity_arr')
-  console.log('************************************')
-  console.log('************************************')
-
-  console.log('make_opacity_arr')
+  // console.log('************************************')
+  // console.log('************************************')
+  // console.log('make_opacity_arr')
+  // console.log('************************************')
+  // console.log('************************************')
+  // console.log('make_opacity_arr')
 
   let inst_avg
   let inst_std
@@ -75818,6 +76122,8 @@ module.exports = function initialize_params(external_model){
   download.delimiter_key.csv = ','
   download.delimiter_key.tsv = '\t'
   download.delimiter_key.tuple = '\t'
+
+  download.meta_type = 'col'
 
   params.download = download
 

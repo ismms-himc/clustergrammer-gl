@@ -2,6 +2,8 @@ var d3 = require("d3");
 let draw_webgl_layers = require('./../draws/draw_webgl_layers')
 // var logo_url = require("file-loader!../graham_cracker_70.png");
 let build_opacity_slider = require('./../colors/build_opacity_slider')
+let download_matrix = require('./../download/download_matrix')
+let download_metadata = require('./../download/download_metadata')
 
 module.exports = function build_control_panel(){
 
@@ -96,7 +98,7 @@ module.exports = function build_control_panel(){
   button_groups.row = {};
   button_groups.col = {};
 
-  var cracker_room = 65;
+  var cracker_room = 60;
 
   // control_svg
   //   .append('image')
@@ -382,4 +384,199 @@ module.exports = function build_control_panel(){
   ////////////////////////////
   build_opacity_slider(cgm)
 
+  // download buttons
+  control_svg
+    .append('text')
+    .classed('download_section_title', true)
+    .text('download'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 715
+        var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  // download section border
+  control_svg
+    .append('rect')
+    .classed('download_section_border', true)
+    .attr('height', '1px')
+    .attr('width', '145px')
+    .attr('position', 'absolute')
+    .attr('stroke', '#eee')
+    .attr('stroke-width', 2)
+    .attr('transform', function(){
+      var x_offset = cracker_room + 645
+      var y_trans = y_offset_buttons - button_dim.buffer + 2;
+      return 'translate( '+ x_offset +', '+ y_trans +')';
+    });
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.delimiter_name = 'csv'
+      download_matrix(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('csv'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  let shift_download = 40
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.delimiter_name = 'tsv'
+      download_matrix(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('tsv'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55 + 40
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.delimiter_name = 'tuple'
+      download_matrix(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('tuple'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55 + 90
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+
+  control_svg
+    .append('text')
+    .classed('download_section_type', true)
+    .text('matrix'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 615
+        var y_trans = 63
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  control_svg
+    .append('text')
+    .classed('download_section_type', true)
+    .text('meta'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', text_color)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 615
+        var y_trans = 107
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.meta_type = 'col'
+      download_metadata(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('col'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55
+        var y_trans = 107
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+  control_svg
+    .append('g')
+    .on('click', x => {
+      params.download.meta_type = 'row'
+      download_metadata(params)
+    })
+    .append('text')
+    .classed('download_section_type', true)
+    .text('row'.toUpperCase())
+    .attr('font-family', '"Helvetica Neue", Helvetica, Arial, sans-serif')
+    .attr('font-weight', 400)
+    .attr('font-size', button_dim.fs)
+    .attr('text-anchor', 'middle')
+    .attr('stroke', 'blue')
+    .attr('opacity', 0.75)
+    .attr('alignment-baseline', 'middle')
+    .attr('letter-spacing', '2px')
+    .attr('cursor', 'default')
+    .attr('transform', function(){
+        var x_offset = cracker_room + 610 + 55 + 40
+        var y_trans = 107
+        return 'translate( '+ x_offset +', '+ y_trans +')'
+      })
+
+
 };
+

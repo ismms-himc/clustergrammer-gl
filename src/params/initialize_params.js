@@ -230,6 +230,8 @@ module.exports = function initialize_params(external_model){
   download.delimiter_key.tsv = '\t'
   download.delimiter_key.tuple = '\t'
 
+  download.meta_type = 'col'
+
   params.download = download
 
   this.params = params;

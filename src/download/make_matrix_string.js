@@ -41,7 +41,6 @@ module.exports = function make_matrix_string(params){
        col_name = make_full_name(params, inst_col, 'col');
     } else {
       col_name = inst_col.name
-
       if (col_name.includes(': ')){
         col_name = col_name.split(': ')[1]
       }

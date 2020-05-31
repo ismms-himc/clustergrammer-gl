@@ -4,13 +4,12 @@ var calc_zscore = require('./../utils/calc_zscore')
 
 module.exports = function make_opacity_arr(params){
 
-  console.log('************************************')
-  console.log('************************************')
-  console.log('make_opacity_arr')
-  console.log('************************************')
-  console.log('************************************')
-
-  console.log('make_opacity_arr')
+  // console.log('************************************')
+  // console.log('************************************')
+  // console.log('make_opacity_arr')
+  // console.log('************************************')
+  // console.log('************************************')
+  // console.log('make_opacity_arr')
 
   let inst_avg
   let inst_std

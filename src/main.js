@@ -1,5 +1,5 @@
 /*
-  clustergrammer-gl version 0.19.3
+  clustergrammer-gl version 0.20.0
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -7,7 +7,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.19.3');
+  console.log('clustergrammer-gl version 0.20.0');
   console.log('#################################');
 
   var cgm = {};
@@ -57,6 +57,7 @@ function clustergrammer_gl(args, external_model=null){
     cgm.manual_update_to_cats = require('./cats/manual_update_to_cats')
 
     cgm.download_matrix = require('./download/download_matrix')
+    cgm.download_metadata = require('./download/download_metadata')
 
     // this prevents Jupyter from listening to typing on the modal and
     // misinterpreting as keyboard shortcuts

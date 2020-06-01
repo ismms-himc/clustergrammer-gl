@@ -22,6 +22,7 @@ module.exports = function build_single_dendro_slider(cgm, axis){
   var drag = d3.drag()
       .on('drag', dragging)
       .on('end', function(){
+        change_groups(cgm, axis, params[axis + '_dendro_slider_value']);
         params.is_slider_drag = false;
       });
 
@@ -228,7 +229,10 @@ module.exports = function build_single_dendro_slider(cgm, axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(cgm, axis, slider_value);
+    // changing too quickly for large datasets
+    // change_groups(cgm, axis, slider_value);
+
+    params[axis + '_dendro_slider_value'] = slider_value
 
   }
 
@@ -242,6 +246,8 @@ module.exports = function build_single_dendro_slider(cgm, axis){
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     var slider_value = get_slider_value(rel_pos, params.dendro.precalc_linkage)
+
+    params[axis + '_dendro_slider_value'] = slider_value
 
     change_groups(cgm, axis, slider_value);
 

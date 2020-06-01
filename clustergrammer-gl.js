@@ -68973,6 +68973,8 @@ module.exports = function build_opacity_slider(cgm){
       .attr('transform', 'translate(0, '+ rel_pos + ')')
 
     var slider_value = get_slider_value(rel_pos)
+    params.opacity_slider_value = slider_value
+
     console.log('click opacity: ', slider_value)
     change_opacity(slider_value)
   }
@@ -70959,6 +70961,7 @@ module.exports = function build_single_dendro_slider(cgm, axis){
   var drag = d3.drag()
       .on('drag', dragging)
       .on('end', function(){
+        change_groups(cgm, axis, params[axis + '_dendro_slider_value']);
         params.is_slider_drag = false;
       });
 
@@ -71165,7 +71168,10 @@ module.exports = function build_single_dendro_slider(cgm, axis){
 
     d3.select(this).attr('transform', 'translate(0, ' + slider_pos + ')');
 
-    change_groups(cgm, axis, slider_value);
+    // changing too quickly for large datasets
+    // change_groups(cgm, axis, slider_value);
+
+    params[axis + '_dendro_slider_value'] = slider_value
 
   }
 
@@ -71179,6 +71185,8 @@ module.exports = function build_single_dendro_slider(cgm, axis){
       .attr('transform', 'translate(0, '+ rel_pos + ')');
 
     var slider_value = get_slider_value(rel_pos, params.dendro.precalc_linkage)
+
+    params[axis + '_dendro_slider_value'] = slider_value
 
     change_groups(cgm, axis, slider_value);
 
@@ -73741,7 +73749,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.20.2
+  clustergrammer-gl version 0.20.3
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73749,7 +73757,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.20.2');
+  console.log('clustergrammer-gl version 0.20.3');
   console.log('#################################');
 
   var cgm = {};

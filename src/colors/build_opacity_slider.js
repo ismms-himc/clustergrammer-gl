@@ -182,6 +182,8 @@ module.exports = function build_opacity_slider(cgm){
       .attr('transform', 'translate(0, '+ rel_pos + ')')
 
     var slider_value = get_slider_value(rel_pos)
+    params.opacity_slider_value = slider_value
+
     console.log('click opacity: ', slider_value)
     change_opacity(slider_value)
   }

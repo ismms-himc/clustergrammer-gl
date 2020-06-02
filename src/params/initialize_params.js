@@ -188,25 +188,28 @@ module.exports = function initialize_params(external_model){
     axes.forEach(axis => {
 
       if (manual_category[axis]){
-        let cat_title = cgm.params.cat_data[axis][0].cat_title
-        let inst_dict = {}
-        inst_dict[cat_title] = {}
+        if ('cat_title' in cgm.params.cat_data[axis][0]){
 
-        let inst_name
-        params
-           .network[axis + '_nodes']
-           .forEach(
-             (x) => {
-               if (x.name.includes(': ')){
-                 inst_name = x.name.split(': ')[1]
-               } else {
-                 inst_name = x.name
+          let cat_title = cgm.params.cat_data[axis][0].cat_title
+          let inst_dict = {}
+          inst_dict[cat_title] = {}
+
+          let inst_name
+          params
+             .network[axis + '_nodes']
+             .forEach(
+               (x) => {
+                 if (x.name.includes(': ')){
+                   inst_name = x.name.split(': ')[1]
+                 } else {
+                   inst_name = x.name
+                 }
+                 inst_dict[cat_title][inst_name] = x['cat-0'].split(': ')[1]
                }
-               inst_dict[cat_title][inst_name] = x['cat-0'].split(': ')[1]
-             }
-           )
+             )
 
-        params.cat_data.manual_cat_dict[axis] = inst_dict
+          params.cat_data.manual_cat_dict[axis] = inst_dict
+        }
       }
 
     })

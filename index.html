@@ -47,7 +47,8 @@
       .style('margin-left', x_offset + 'px')
       .style('margin-top', y_offset + 'px');
 
-    var filename = 'data/big_data/default-gl-viz.json';
+    var filename = 'data/big_data/downsample_bug.json';
+    // var filename = 'data/big_data/default-gl-viz.json';
     // var filename = 'data/big_data/no-cats.json';
     // var filename = 'data/big_data/citeseq_man_cat.json';
     // var filename = 'data/big_data/rc_two_cats.json';
@@ -103,31 +104,31 @@
 
     d3.json(filename).then(function(network) {
 
-      // hardwire manual category
-      network.manual_category = {}
-      network.manual_category.col = 'Cell Type'
-      network.manual_category.col_cats = [
-        {
-          'name':'Cat',
-          'color':'red'
-        },
-        {
-          'name': 'Dog',
-          'color': 'yellow'
-        },
-        {
-          'name': 'Shark',
-          'color': 'black'
-        },
-        {
-          'name': 'Snake',
-          'color': 'blue'
-        },
-        {
-          'name': 'Lizard',
-          'color': 'green'
-        }
-      ]
+      // // hardwire manual category
+      // network.manual_category = {}
+      // network.manual_category.col = 'Cell Type'
+      // network.manual_category.col_cats = [
+      //   {
+      //     'name':'Cat',
+      //     'color':'red'
+      //   },
+      //   {
+      //     'name': 'Dog',
+      //     'color': 'yellow'
+      //   },
+      //   {
+      //     'name': 'Shark',
+      //     'color': 'black'
+      //   },
+      //   {
+      //     'name': 'Snake',
+      //     'color': 'blue'
+      //   },
+      //   {
+      //     'name': 'Lizard',
+      //     'color': 'green'
+      //   }
+      // ]
 
       // set matrix colors
       network.matrix_colors = {}

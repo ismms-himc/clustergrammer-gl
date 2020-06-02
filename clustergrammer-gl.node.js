@@ -71331,13 +71331,12 @@ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
  */
 module.exports = function change_groups(cgm, axis, slider_value) {
 
+  console.log('change_groups!!!!!!')
+
   let regl = cgm.regl
   let params = cgm.params
 
   params.dendro.update_dendro = true;
-
-  // console.log('dendro group level in calc_dendro_triangles')
-  // console.log(slider_value)
 
   if (params.dendro.precalc_linkage){
     let dist_thresh = params.dendro.max_linkage_dist[axis] * slider_value
@@ -73749,7 +73748,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.20.3
+  clustergrammer-gl version 0.20.4
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73757,7 +73756,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.20.3');
+  console.log('clustergrammer-gl version 0.20.4');
   console.log('#################################');
 
   var cgm = {};
@@ -76098,25 +76097,28 @@ module.exports = function initialize_params(external_model){
     axes.forEach(axis => {
 
       if (manual_category[axis]){
-        let cat_title = cgm.params.cat_data[axis][0].cat_title
-        let inst_dict = {}
-        inst_dict[cat_title] = {}
+        if ('cat_title' in cgm.params.cat_data[axis][0]){
 
-        let inst_name
-        params
-           .network[axis + '_nodes']
-           .forEach(
-             (x) => {
-               if (x.name.includes(': ')){
-                 inst_name = x.name.split(': ')[1]
-               } else {
-                 inst_name = x.name
+          let cat_title = cgm.params.cat_data[axis][0].cat_title
+          let inst_dict = {}
+          inst_dict[cat_title] = {}
+
+          let inst_name
+          params
+             .network[axis + '_nodes']
+             .forEach(
+               (x) => {
+                 if (x.name.includes(': ')){
+                   inst_name = x.name.split(': ')[1]
+                 } else {
+                   inst_name = x.name
+                 }
+                 inst_dict[cat_title][inst_name] = x['cat-0'].split(': ')[1]
                }
-               inst_dict[cat_title][inst_name] = x['cat-0'].split(': ')[1]
-             }
-           )
+             )
 
-        params.cat_data.manual_cat_dict[axis] = inst_dict
+          params.cat_data.manual_cat_dict[axis] = inst_dict
+        }
       }
 
     })

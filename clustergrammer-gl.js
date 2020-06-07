@@ -68315,7 +68315,8 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 
 let draw_webgl_layers = __webpack_require__(/*! ./../draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
 
-module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, selected_labels){
+module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat,
+                                                selected_labels){
 
   params = cgm.params
   regl = cgm.regl
@@ -68343,13 +68344,63 @@ module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat, s
     params.cat_data.manual_cat_dict[axis][cat_title][inst_label] = new_cat
   })
 
-  params.cat_data.manual_cat_dict[axis]
+  // params.cat_data.manual_cat_dict[axis]
 
   // generate an ordred labels list
   __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(cgm);
-
   __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
+  draw_webgl_layers(cgm)
 
+}
+
+/***/ }),
+
+/***/ "./src/cats/update_all_cats.js":
+/*!*************************************!*\
+  !*** ./src/cats/update_all_cats.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+let draw_webgl_layers = __webpack_require__(/*! ./../draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
+
+module.exports = function update_all_cats(cgm, axis, cat_title, new_cat_dict){
+
+  // make test new_cat_dict
+  // new_cat_dict = {}
+  // cgm.params.network.col_nodes.forEach(x => { new_cat_dict[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]})
+
+  params = cgm.params
+  regl = cgm.regl
+
+
+  // manually updated categories in network
+  cgm.params.network[axis + '_nodes']
+     .map(x => {
+
+       inst_name = x.name
+
+       if ( inst_name.includes(': ') ){
+         inst_name = inst_name.split(': ')[1]
+       }
+
+       let new_cat = new_cat_dict[inst_name]
+       let full_cat = cat_title + ': ' + new_cat
+       x['cat-0'] = full_cat
+
+     })
+
+  // update manual_cat_dict (will be synced to widget back-end)
+  cgm.params.network[axis + '_node_names'].forEach((inst_name) => {
+    let new_cat = new_cat_dict[inst_name]
+    params.cat_data.manual_cat_dict[axis][cat_title][inst_name] = new_cat
+  })
+
+  // params.cat_data.manual_cat_dict[axis]
+
+  // generate an ordred labels list
+  __webpack_require__(/*! ./../matrix_labels/gen_ordered_labels */ "./src/matrix_labels/gen_ordered_labels.js")(cgm);
+  __webpack_require__(/*! ./../params/generate_cat_args_arrs */ "./src/params/generate_cat_args_arrs.js")(regl, params);
   draw_webgl_layers(cgm)
 
 }
@@ -73748,7 +73799,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.20.5
+  clustergrammer-gl version 0.21.0
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73756,7 +73807,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.20.5');
+  console.log('clustergrammer-gl version 0.21.0');
   console.log('#################################');
 
   var cgm = {};
@@ -73804,6 +73855,7 @@ function clustergrammer_gl(args, external_model=null){
 
     cgm.recluster = __webpack_require__(/*! ./recluster/recluster */ "./src/recluster/recluster.js");
     cgm.manual_update_to_cats = __webpack_require__(/*! ./cats/manual_update_to_cats */ "./src/cats/manual_update_to_cats.js")
+    cgm.update_all_cats = __webpack_require__(/*! ./cats/update_all_cats */ "./src/cats/update_all_cats.js")
 
     cgm.download_matrix = __webpack_require__(/*! ./download/download_matrix */ "./src/download/download_matrix.js")
     cgm.download_metadata = __webpack_require__(/*! ./download/download_metadata */ "./src/download/download_metadata.js")

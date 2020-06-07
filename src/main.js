@@ -1,5 +1,5 @@
 /*
-  clustergrammer-gl version 0.20.5
+  clustergrammer-gl version 0.21.0
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -7,7 +7,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.20.5');
+  console.log('clustergrammer-gl version 0.21.0');
   console.log('#################################');
 
   var cgm = {};
@@ -55,6 +55,7 @@ function clustergrammer_gl(args, external_model=null){
 
     cgm.recluster = require('./recluster/recluster');
     cgm.manual_update_to_cats = require('./cats/manual_update_to_cats')
+    cgm.update_all_cats = require('./cats/update_all_cats')
 
     cgm.download_matrix = require('./download/download_matrix')
     cgm.download_metadata = require('./download/download_metadata')

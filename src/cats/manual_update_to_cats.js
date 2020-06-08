@@ -34,6 +34,9 @@ module.exports = function manual_update_to_cats(cgm, axis, cat_title, new_cat,
   // generate an ordred labels list
   require('./../matrix_labels/gen_ordered_labels')(cgm);
   require('./../params/generate_cat_args_arrs')(regl, params);
-  draw_webgl_layers(cgm)
+
+  if (params.is_widget === false){
+    draw_webgl_layers(cgm)
+  }
 
 }

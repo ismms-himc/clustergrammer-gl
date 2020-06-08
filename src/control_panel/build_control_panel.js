@@ -327,6 +327,8 @@ module.exports = function build_control_panel(){
     .style('top', '37px')
     .style('left', '440px')
 
+  let root_id = cgm.params.root.replace('#', '')
+
   search_container
     .append('input')
     .classed('form-control',true)
@@ -334,7 +336,7 @@ module.exports = function build_control_panel(){
     .classed('sidebar_text', true)
     .attr('type','text')
     .attr('placeholder', 'row names')
-    .attr('list', 'row_names')
+    .attr('list', 'row_names_' + root_id)
     .style('width', '125px')
     .style('height', '20px')
     .style('margin-top', '5px')
@@ -343,9 +345,10 @@ module.exports = function build_control_panel(){
 
   let row_names = params.network.row_node_names
 
+
   search_container
     .append('datalist')
-    .attr('id', 'row_names')
+    .attr('id', 'row_names_' + root_id)
     .selectAll('options')
     .data(row_names)
     .enter()

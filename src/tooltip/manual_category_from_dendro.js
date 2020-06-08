@@ -69,11 +69,14 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
     .append('div')
     .classed('custom_cat_div', true)
 
+
+  let root_id = cgm.params.root.replace('#', '')
+
   custom_cat_div
     .append('input')
     .classed('custom-cat-input', true)
     .attr('placeholder', 'Category')
-    .attr('list', 'preferred_categories')
+    .attr('list', 'preferred_categories_' + root_id)
     .style('width', '140px')
     .style('display', 'inline-block')
     .style('color', 'black')
@@ -100,7 +103,7 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
                                    .map(x => x.name)
     custom_cat_div
       .append('datalist')
-      .attr('id', 'preferred_categories')
+      .attr('id', 'preferred_categories_' + root_id)
       .selectAll('options')
       .data(preferred_cat_list)
       .enter()

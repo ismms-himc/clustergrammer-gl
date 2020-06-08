@@ -70243,6 +70243,8 @@ module.exports = function build_control_panel(){
     .style('top', '37px')
     .style('left', '440px')
 
+  let root_id = cgm.params.root.replace('#', '')
+
   search_container
     .append('input')
     .classed('form-control',true)
@@ -70250,7 +70252,7 @@ module.exports = function build_control_panel(){
     .classed('sidebar_text', true)
     .attr('type','text')
     .attr('placeholder', 'row names')
-    .attr('list', 'row_names')
+    .attr('list', 'row_names_' + root_id)
     .style('width', '125px')
     .style('height', '20px')
     .style('margin-top', '5px')
@@ -70259,9 +70261,10 @@ module.exports = function build_control_panel(){
 
   let row_names = params.network.row_node_names
 
+
   search_container
     .append('datalist')
-    .attr('id', 'row_names')
+    .attr('id', 'row_names_' + root_id)
     .selectAll('options')
     .data(row_names)
     .enter()
@@ -73802,7 +73805,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
-  clustergrammer-gl version 0.21.2
+  clustergrammer-gl version 0.21.3
  */
 
 function clustergrammer_gl(args, external_model=null){
@@ -73810,7 +73813,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.21.2');
+  console.log('clustergrammer-gl version 0.21.3');
   console.log('#################################');
 
   var cgm = {};
@@ -77701,11 +77704,14 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
     .append('div')
     .classed('custom_cat_div', true)
 
+
+  let root_id = cgm.params.root.replace('#', '')
+
   custom_cat_div
     .append('input')
     .classed('custom-cat-input', true)
     .attr('placeholder', 'Category')
-    .attr('list', 'preferred_categories')
+    .attr('list', 'preferred_categories_' + root_id)
     .style('width', '140px')
     .style('display', 'inline-block')
     .style('color', 'black')
@@ -77732,7 +77738,7 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
                                    .map(x => x.name)
     custom_cat_div
       .append('datalist')
-      .attr('id', 'preferred_categories')
+      .attr('id', 'preferred_categories_' + root_id)
       .selectAll('options')
       .data(preferred_cat_list)
       .enter()

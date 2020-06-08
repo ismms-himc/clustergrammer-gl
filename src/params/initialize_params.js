@@ -142,6 +142,9 @@ module.exports = function initialize_params(external_model){
   if (external_model !== null){
     // console.log('found widget')
     params.is_widget = true;
+    // used to improve widget linking behavior
+    // when positive, prevents excessive re-drawing
+    params.self_update = false
   } else {
     // params.widget_model = null;
   }
@@ -242,6 +245,8 @@ module.exports = function initialize_params(external_model){
   download.meta_type = 'col'
 
   params.download = download
+
+
 
   this.params = params;
 

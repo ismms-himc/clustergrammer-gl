@@ -190,7 +190,7 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
           params.cat_data.manual_category[axis + '_color_dict'][new_cat] = inst_color
         }
 
-        console.log(inst_color)
+        // console.log(inst_color)
         if (inst_color === ''){
           inst_color = 'white'
         }
@@ -200,14 +200,15 @@ module.exports = function manual_category_from_dendro(cgm, external_model, axis)
         // Only allowing custom naming of first column
         let cat_title = params.cat_data[axis][0].cat_title
         let full_cat = cat_title + ': ' + new_cat
-        params.network.cat_colors[axis]['cat-0'][full_cat] = inst_color
+        // params.network.cat_colors[axis]['cat-0'][full_cat] = inst_color
+        params.network.global_cat_colors[new_cat] = inst_color
 
 
         params.int.manual_update_cats = true
         manual_update_to_cats(cgm, axis, cat_title, new_cat, inst_labels);
 
         if (params.is_widget){
-          console.log('--> running widget callback on manual category update')
+          // console.log('--> running widget callback on manual category update')
           cgm.widget_callback(external_model);
         }
 

@@ -122,6 +122,10 @@ module.exports = function generate_cat_info(params){
         })
       })
     })
+
+    // save back to network
+    params.network.global_cat_colors = viz.global_cat_colors
+
   } else {
 
     viz.global_cat_colors = params.network.global_cat_colors

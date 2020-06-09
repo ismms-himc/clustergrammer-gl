@@ -67236,7 +67236,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
             num_nodes_ds = null;
           }
 
-          bar_color = params.viz.cat_colors[inst_rc][tmp_cat_index][cat_title_and_name];
+          bar_color = params.viz.global_cat_colors[i_cat];
 
           bar_data.push([ tmp_cat_index, cat_title_and_name, i_run_count[i_cat], bar_color, num_nodes, num_nodes_ds, pval]);
         }
@@ -67753,6 +67753,29 @@ module.exports = function generate_cat_info(params){
   viz.cat_colors.opacity = 0.6;
   viz.cat_colors.active_opacity = 0.9;
 
+  // switching to simpler global cat colors
+
+  console.log(params.network)
+  if ('global_cat_colors' in params.network === false){
+    viz.global_cat_colors = {}
+    let axes = ['row', 'col']
+    axes.forEach(axis => {
+      Object.keys(viz.cat_colors[axis]).forEach(cat_index => {
+        Object.keys(viz.cat_colors[axis][cat_index]).forEach(cat_name => {
+          let inst_cat_color = viz.cat_colors[axis][cat_index][cat_name]
+          if (cat_name.includes(': ')){
+            cat_name = cat_name.split(': ')[1]
+          }
+          viz.global_cat_colors[cat_name] = inst_cat_color
+        })
+      })
+    })
+  } else {
+
+    viz.global_cat_colors = params.network.global_cat_colors
+
+  }
+
   params.viz = viz;
 
 }
@@ -67892,8 +67915,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       if ('cat_colors' in params.network){
         if (cat_index_name in params.network.cat_colors[inst_axis]){
           try {
-            inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
-
+            // inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
+            inst_color = params.viz.global_cat_colors[inst_cat.split(': ')[1]];
           }
           catch(err){
             // get random colors from color dictionary
@@ -76093,7 +76116,7 @@ module.exports = function initialize_params(external_model){
   params.allow_zoom.col = allow_factor(labels.num_col);
   params.allow_zoom.row = allow_factor(labels.num_col);
   params.text_scale = {};
-  params.cat_colors = params.network.cat_colors;
+
 
   params.hzome = hzome_functions(params);
 
@@ -76110,6 +76133,7 @@ module.exports = function initialize_params(external_model){
     // console.log('found widget')
     params.is_widget = true;
     // used to improve widget linking behavior
+    // when positive, prevents excessive re-drawing
     params.self_update = false
   } else {
     // params.widget_model = null;

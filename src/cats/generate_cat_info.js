@@ -105,6 +105,29 @@ module.exports = function generate_cat_info(params){
   viz.cat_colors.opacity = 0.6;
   viz.cat_colors.active_opacity = 0.9;
 
+  // switching to simpler global cat colors
+
+  console.log(params.network)
+  if ('global_cat_colors' in params.network === false){
+    viz.global_cat_colors = {}
+    let axes = ['row', 'col']
+    axes.forEach(axis => {
+      Object.keys(viz.cat_colors[axis]).forEach(cat_index => {
+        Object.keys(viz.cat_colors[axis][cat_index]).forEach(cat_name => {
+          let inst_cat_color = viz.cat_colors[axis][cat_index][cat_name]
+          if (cat_name.includes(': ')){
+            cat_name = cat_name.split(': ')[1]
+          }
+          viz.global_cat_colors[cat_name] = inst_cat_color
+        })
+      })
+    })
+  } else {
+
+    viz.global_cat_colors = params.network.global_cat_colors
+
+  }
+
   params.viz = viz;
 
 }

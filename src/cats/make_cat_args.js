@@ -99,8 +99,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       if ('cat_colors' in params.network){
         if (cat_index_name in params.network.cat_colors[inst_axis]){
           try {
-            inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
-
+            // inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
+            inst_color = params.viz.global_cat_colors[inst_cat.split(': ')[1]];
           }
           catch(err){
             // get random colors from color dictionary

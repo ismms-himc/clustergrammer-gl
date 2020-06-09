@@ -180,7 +180,7 @@ module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc)
             num_nodes_ds = null;
           }
 
-          bar_color = params.viz.cat_colors[inst_rc][tmp_cat_index][cat_title_and_name];
+          bar_color = params.viz.global_cat_colors[i_cat];
 
           bar_data.push([ tmp_cat_index, cat_title_and_name, i_run_count[i_cat], bar_color, num_nodes, num_nodes_ds, pval]);
         }

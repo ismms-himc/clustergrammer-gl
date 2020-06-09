@@ -126,7 +126,7 @@ module.exports = function initialize_params(external_model){
   params.allow_zoom.col = allow_factor(labels.num_col);
   params.allow_zoom.row = allow_factor(labels.num_col);
   params.text_scale = {};
-  params.cat_colors = params.network.cat_colors;
+
 
   params.hzome = hzome_functions(params);
 

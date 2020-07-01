@@ -4,8 +4,14 @@ module.exports = function generate_order_params(params){
   _.each(['inst', 'new'], function(inst_state){
 
     params.order[inst_state] = {};
-    params.order[inst_state].row = 'clust';
-    params.order[inst_state].col = 'clust';
+
+    if ('order' in params.network){
+      params.order[inst_state].row = params.network.order.row
+      params.order[inst_state].col = params.network.order.col
+    } else {
+      params.order[inst_state].row = 'clust'
+      params.order[inst_state].col = 'clust'
+    }
 
   });
 

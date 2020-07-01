@@ -107,7 +107,6 @@ module.exports = function generate_cat_info(params){
 
   // switching to simpler global cat colors
 
-  console.log(params.network)
   if ('global_cat_colors' in params.network === false){
     viz.global_cat_colors = {}
     let axes = ['row', 'col']

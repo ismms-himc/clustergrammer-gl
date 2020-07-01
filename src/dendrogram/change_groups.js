@@ -16,7 +16,7 @@ module.exports = function change_groups(cgm, axis, slider_value) {
 
   if (params.dendro.precalc_linkage){
     let dist_thresh = params.dendro.max_linkage_dist[axis] * slider_value
-    slice_linkage(params, axis, dist_thresh)
+    slice_linkage(params, axis, dist_thresh, params.dendro.min_dist[axis])
 
     let rounded_slider_value = Math.round(slider_value * 100 )/100
     // update slider

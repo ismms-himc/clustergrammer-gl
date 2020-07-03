@@ -70945,6 +70945,86 @@ module.exports = function toggle_menu(cgm, menu_type, toggle, make_menu=null){
 
 /***/ }),
 
+/***/ "./src/dendrogram/alt_slice_linkage.js":
+/*!*********************************************!*\
+  !*** ./src/dendrogram/alt_slice_linkage.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function alt_slice_linkage(params, axis, dist_thresh, min_dist=0){
+
+  // console.log(axis, 'alternate slice linkage!!!!!!!!!!')
+
+  network = params.network
+  let clust_a
+  let clust_b
+
+  let group_dict = {}
+
+  // initialize group_links and dictionary
+  network[axis + '_nodes'].forEach((x, i) => {
+
+    group_dict[i] = [i]
+    x.group_links = i
+
+  })
+
+  // the max individual cluster id
+  max_clust_id = params.network[axis + '_nodes'].length
+
+  params.network.linkage[axis].forEach((x, i) => {
+
+    if (x[2] > min_dist && x[2] < dist_thresh){
+
+      // get cluster that are being combined together
+      clust_a = x[0]
+      clust_b = x[1]
+
+      new_clust_id = max_clust_id + i
+
+      // make new array, concat lower level cluster, delete lower level clusters
+      group_dict[new_clust_id] = []
+      group_dict[new_clust_id] = group_dict[new_clust_id].concat(
+          group_dict[clust_a],
+          group_dict[clust_b]
+        )
+
+      delete group_dict[clust_a]
+      delete group_dict[clust_b]
+
+      // // replace cluster ids with new cluster id - effectively merging clusters
+      // network[axis + '_nodes'].forEach((x, i) => {
+      //   if (x.group_links == clust_a || x.group_links == clust_b){
+      //     x.group_links = new_clust_id
+      //   }
+      // })
+
+    }
+
+  })
+
+  // Make flat dictionary
+  let flat_group_dict = {}
+  Object.entries(group_dict).forEach(([inst_cluster, nodes]) => {
+    nodes.forEach(x => {
+      flat_group_dict[x] = inst_cluster
+    })
+
+  })
+
+  // transfer to network group_links
+  network[axis + '_nodes'].forEach((x, i) => {
+    x.group_links = flat_group_dict[i]
+  })
+
+  // console.log(group_dict)
+  // console.log(flat_group_dict)
+
+}
+
+/***/ }),
+
 /***/ "./src/dendrogram/build_dendrogram_sliders.js":
 /*!****************************************************!*\
   !*** ./src/dendrogram/build_dendrogram_sliders.js ***!
@@ -71407,7 +71487,7 @@ module.exports = function calc_dendro_triangles(params, inst_axis){
 
 var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js");
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js");
-var slice_linkage = __webpack_require__(/*! ./slice_linkage */ "./src/dendrogram/slice_linkage.js");
+var alt_slice_linkage = __webpack_require__(/*! ./alt_slice_linkage */ "./src/dendrogram/alt_slice_linkage.js");
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
 /* Changes the groupings (x- and y-axis color bars).
@@ -71423,7 +71503,7 @@ module.exports = function change_groups(cgm, axis, slider_value) {
 
   if (params.dendro.precalc_linkage){
     let dist_thresh = params.dendro.max_linkage_dist[axis] * slider_value
-    slice_linkage(params, axis, dist_thresh, params.dendro.min_dist[axis])
+    alt_slice_linkage(params, axis, dist_thresh, params.dendro.min_dist[axis])
 
     let rounded_slider_value = Math.round(slider_value * 100 )/100
     // update slider
@@ -71439,90 +71519,6 @@ module.exports = function change_groups(cgm, axis, slider_value) {
 
 };
 
-
-/***/ }),
-
-/***/ "./src/dendrogram/ini_slice_linkage.js":
-/*!*********************************************!*\
-  !*** ./src/dendrogram/ini_slice_linkage.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function ini_slice_linkage(params, axis, min_dist=0){
-
-  console.log(axis, 'initialize slice linkage!!!!!!!!!!')
-
-  network = params.network
-  let clust_a
-  let clust_b
-
-  let group_dict = {}
-
-  // initialize group_links and dictionary
-  network[axis + '_nodes'].forEach((x, i) => {
-
-    group_dict[i] = i
-    x.group_links = i
-
-  })
-
-  // the max individual cluster id
-  max_clust_id = params.network[axis + '_nodes'].length
-
-  params.network.linkage[axis].forEach((x, i) => {
-
-    if (x[2] < min_dist){
-
-      // get cluster that are being combined together
-      clust_a = x[0]
-      clust_b = x[1]
-
-      new_clust_id = max_clust_id + i
-
-      // console.log(new_clust_id)
-
-      // increment original cluster ids
-      if (clust_a in group_dict){
-        group_dict[clust_a] = new_clust_id
-      } else {
-
-        // increment new cluster values
-        Object.entries(group_dict).forEach(([key,value]) => {
-          if (clust_a == value){
-            group_dict[key] = new_clust_id
-          }
-        })
-
-      }
-
-      if (clust_b in group_dict){
-        group_dict[clust_b] = new_clust_id
-      } else {
-
-        // increment new cluster values
-        Object.entries(group_dict).forEach(([key,value]) => {
-          if (clust_b == value){
-            group_dict[key] = new_clust_id
-          }
-        })
-
-      }
-
-      // // replace cluster ids with new cluster id - effectively merging clusters
-      // network[axis + '_nodes'].forEach((x, i) => {
-      //   if (x.group_links == clust_a || x.group_links == clust_b){
-      //     x.group_links = new_clust_id
-      //   }
-      // })
-
-    }
-
-  })
-
-  console.log(group_dict)
-
-}
 
 /***/ }),
 
@@ -71695,54 +71691,6 @@ module.exports = function make_dendro_arr(params, inst_axis){
   // console.log(inst_axis, offset_array)
 
   return offset_array;
-}
-
-/***/ }),
-
-/***/ "./src/dendrogram/slice_linkage.js":
-/*!*****************************************!*\
-  !*** ./src/dendrogram/slice_linkage.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function slice_linkage(params, axis, dist_thresh, min_dist=0){
-
-  network = params.network
-  let clust_a
-  let clust_b
-
-  // // initialize group_links
-  // network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
-
-  // initialize group_links and dictionary
-  network[axis + '_nodes'].forEach((x, i) => {x.group_links = i})
-
-  // the max individual cluster id
-  max_clust_id = params.network[axis + '_nodes'].length
-
-  params.network.linkage[axis].forEach((x, i) => {
-
-    if (x[2] > min_dist && x[2] < dist_thresh){
-
-      // get cluster that are being combined together
-      clust_a = x[0]
-      clust_b = x[1]
-
-      new_clust_id = max_clust_id + i
-
-      // replace cluster ids with new cluster id - effectively merging clusters
-      network[axis + '_nodes'].forEach((x, i) => {
-        if (x.group_links == clust_a || x.group_links == clust_b){
-          x.group_links = new_clust_id
-        }
-      })
-
-    }
-
-  })
-
-
 }
 
 /***/ }),
@@ -75653,8 +75601,7 @@ module.exports = function gen_cat_par(params){
 
 var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js")
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js")
-var slice_linkage = __webpack_require__(/*! ./../dendrogram/slice_linkage */ "./src/dendrogram/slice_linkage.js")
-var ini_slice_linkage = __webpack_require__(/*! ./../dendrogram/ini_slice_linkage */ "./src/dendrogram/ini_slice_linkage.js")
+var alt_slice_linkage = __webpack_require__(/*! ./../dendrogram/alt_slice_linkage */ "./src/dendrogram/alt_slice_linkage.js")
 
 module.exports = function gen_dendro_par(cgm){
 
@@ -75702,14 +75649,9 @@ module.exports = function gen_dendro_par(cgm){
       dendro.max_linkage_dist[axis] = link_mat[link_mat.length-1][2] + 0.01
       dist_thresh = dendro.max_linkage_dist[axis] * dendro.default_link_level
 
-      // // initialize most granular clutser of necessary
-      // if (dendro.min_dist[axis] > 0){
-      //   // initialize maximum granularity clusters
-      //   ini_slice_linkage(params, axis, dendro.min_dist[axis], 0)
-      // }
+      // alternate linkage slicing code
+      alt_slice_linkage(params, axis, dist_thresh, dendro.min_dist[axis])
 
-      // slice matrix at default level
-      slice_linkage(params, axis, dist_thresh, dendro.min_dist[axis])
     })
 
   } else {
@@ -76285,7 +76227,7 @@ module.exports = function initialize_params(external_model){
 
       if (manual_category[axis]){
 
-        if (axis in cgm.params.cat_data){
+        if (axis in cgm.params.cat_data && cgm.params.cat_data[axis].length > 0){
 
           if ('cat_title' in cgm.params.cat_data[axis][0]){
 

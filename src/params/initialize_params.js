@@ -192,7 +192,7 @@ module.exports = function initialize_params(external_model){
 
       if (manual_category[axis]){
 
-        if (axis in cgm.params.cat_data){
+        if (axis in cgm.params.cat_data && cgm.params.cat_data[axis].length > 0){
 
           if ('cat_title' in cgm.params.cat_data[axis][0]){
 

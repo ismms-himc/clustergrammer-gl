@@ -1,7 +1,6 @@
 var calc_dendro_triangles = require('./../dendrogram/calc_dendro_triangles')
 var make_dendro_args = require('./../dendrogram/make_dendro_args')
-var slice_linkage = require('./../dendrogram/slice_linkage')
-var ini_slice_linkage = require('./../dendrogram/ini_slice_linkage')
+var alt_slice_linkage = require('./../dendrogram/alt_slice_linkage')
 
 module.exports = function gen_dendro_par(cgm){
 
@@ -49,14 +48,9 @@ module.exports = function gen_dendro_par(cgm){
       dendro.max_linkage_dist[axis] = link_mat[link_mat.length-1][2] + 0.01
       dist_thresh = dendro.max_linkage_dist[axis] * dendro.default_link_level
 
-      // // initialize most granular clutser of necessary
-      // if (dendro.min_dist[axis] > 0){
-      //   // initialize maximum granularity clusters
-      //   ini_slice_linkage(params, axis, dendro.min_dist[axis], 0)
-      // }
+      // alternate linkage slicing code
+      alt_slice_linkage(params, axis, dist_thresh, dendro.min_dist[axis])
 
-      // slice matrix at default level
-      slice_linkage(params, axis, dist_thresh, dendro.min_dist[axis])
     })
 
   } else {

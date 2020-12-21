@@ -50,13 +50,25 @@ module.exports = function alt_slice_linkage(params, axis, dist_thresh, min_dist=
 
   })
 
+  // // making dictionary of lists of clusters
+  // {
+  //   1: ['a', 'b', 'c'],
+  //   2: ['d', 'e'],
+  // }
+
+  // // making flat dictionary of row/col to cluster
+  // {
+  //   'a': 1,
+  //   'b': 1
+  //    ...
+  // }
+
   // Make flat dictionary
   let flat_group_dict = {}
   Object.entries(group_dict).forEach(([inst_cluster, nodes]) => {
     nodes.forEach(x => {
       flat_group_dict[x] = inst_cluster
     })
-
   })
 
   // transfer to network group_links

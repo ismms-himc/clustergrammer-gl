@@ -70279,7 +70279,7 @@ module.exports = function build_control_panel(){
     .attr('type','text')
     .attr('placeholder', 'row names')
     .attr('list', 'row_names_' + root_id)
-    .style('width', '125px')
+    .style('width', '100px')
     .style('height', '20px')
     .style('margin-top', '5px')
     .style('display', 'inline-block')
@@ -70306,7 +70306,7 @@ module.exports = function build_control_panel(){
     .attr('data-toggle','buttons')
     .append('button')
     .classed('sidebar_text', true)
-    .html('Search')
+    .html('Find')
     .attr('type','button')
     .classed('btn',true)
     .classed('btn-primary',true)
@@ -71004,13 +71004,25 @@ module.exports = function alt_slice_linkage(params, axis, dist_thresh, min_dist=
 
   })
 
+  // // making dictionary of lists of clusters
+  // {
+  //   1: ['a', 'b', 'c'],
+  //   2: ['d', 'e'],
+  // }
+
+  // // making flat dictionary of row/col to cluster
+  // {
+  //   'a': 1,
+  //   'b': 1
+  //    ...
+  // }
+
   // Make flat dictionary
   let flat_group_dict = {}
   Object.entries(group_dict).forEach(([inst_cluster, nodes]) => {
     nodes.forEach(x => {
       flat_group_dict[x] = inst_cluster
     })
-
   })
 
   // transfer to network group_links
@@ -74667,8 +74679,12 @@ module.exports = function make_label_queue(params){
 
     var inst_labels = params.labels.ordered_labels[inst_axis + 's'];
 
+    // console.log(inst_labels)
+
     _.each(inst_labels, function(inst_label){
 
+
+      // console.log(inst_axis, inst_label)
       if (inst_label.indexOf(': ') >= 0){
           inst_label = inst_label.split(': ')[1];
       }

@@ -76071,6 +76071,11 @@ module.exports = function initialize_params(external_model){
   let params = cgm.params;
   params.network = network;
 
+  params.use_hzome = false;
+
+  if ('use_hzome' in cgm.args){
+    params.use_hzome = cgm.args.use_hzome
+  }
   params.norm = {}
 
   if ('pre_zscore' in params.network){
@@ -77682,7 +77687,9 @@ module.exports = function make_tooltip_text(cgm, external_model){
       .style('text-align', 'left')
       .html(tooltip_text);
 
-    params.hzome.gene_info(mouseover[inst_axis].name);
+    if (params.use_hzome === true){
+      params.hzome.gene_info(mouseover[inst_axis].name);
+    }
 
   } else if (params.tooltip.tooltip_type.indexOf('-dendro') > 0){
 

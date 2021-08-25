@@ -20,6 +20,11 @@ module.exports = function initialize_params(external_model){
   let params = cgm.params;
   params.network = network;
 
+  params.use_hzome = false;
+
+  if ('use_hzome' in cgm.args){
+    params.use_hzome = cgm.args.use_hzome
+  }
   params.norm = {}
 
   if ('pre_zscore' in params.network){

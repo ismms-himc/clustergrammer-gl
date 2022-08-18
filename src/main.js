@@ -72,7 +72,6 @@ function clustergrammer_gl(args, external_model=null) {
     clustergrammerModel.adjust_opacity = adjust_opacity
 
     return clustergrammerModel;
-
   }
 }
 

@@ -1,0 +1,12 @@
+{
+    "standard.enable": true,
+    "standard.run": "onSave",
+    "standard.autoFixOnSave": true,
+    "standard.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "files.autoSave": "off"
+}

@@ -57,21 +57,11 @@ sftp-config.json
 
 # webpack
 *.js.map
-# .eslint*
 
 # python
 *.ipynb_checkpoints
 clustergrammer
 
-.eslintrc.json
-
 big_data
 
-# # eslint
-# .eslint*
-
-# how to retroactively use
-############################
-# git rm -r --cached .
-# git add .
-# git commit -m "fixing .gitignore"
+dist/

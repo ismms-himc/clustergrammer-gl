@@ -13,7 +13,7 @@ function clustergrammer_gl(args, external_model=null){
   var cgm = {};
 
   // check if container is defined
-  if (args.container !=null){
+  if (args.container !== null){
 
     cgm.args = args;
 

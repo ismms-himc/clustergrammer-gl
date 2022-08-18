@@ -1,4 +1,4 @@
-/* global __dirname:false */
+/* global `${__dirname}/dist`:false */
 
 var DEBUG = process.argv.indexOf('-p') === -1;
 var webpack = require('webpack')
@@ -11,7 +11,7 @@ module.exports = [
     devtool: DEBUG ? 'cheap-module-source-map' : false,
     target: 'web',
     output: {
-      path: __dirname,
+      path: `${__dirname}/dist`,
       filename: 'clustergrammer-gl.js',
       libraryTarget: 'var',
       library: 'CGM'
@@ -53,10 +53,10 @@ module.exports = [
         }
       })
     ],
-    "mode": "development",
-    node: {
-       fs: "empty"
-    }
+    mode: "development",
+    // node: {
+    //    fs: "empty"
+    // }
   },
   {
       entry: './src/main.js',
@@ -64,7 +64,7 @@ module.exports = [
       devtool: DEBUG ? 'cheap-module-source-map' : false,
       target: 'web',
       output: {
-        path: __dirname,
+        path: `${__dirname}/dist`,
         filename: 'clustergrammer-gl.node.js',
         libraryTarget: 'commonjs2',
         library: 'CGM'
@@ -95,9 +95,9 @@ module.exports = [
         ]
       },
       "mode": "development",
-      node: {
-         fs: "empty"
-      }
+      // node: {
+      //    fs: "empty"
+      // }
   },
   {
       entry: './src/main.js',
@@ -105,7 +105,7 @@ module.exports = [
       devtool: DEBUG ? 'cheap-module-source-map' : false,
       target: 'web',
       output: {
-        path: __dirname,
+        path: `${__dirname}/dist`,
         filename: 'clustergrammer-gl.min.js',
         libraryTarget: 'var',
         library: 'CGM'
@@ -139,9 +139,9 @@ module.exports = [
         ]
       },
       "mode": "production",
-      node: {
-         fs: "empty"
-      }
+      // node: {
+      //    fs: "empty"
+      // }
   },
   {
       entry: './src/main.js',
@@ -149,7 +149,7 @@ module.exports = [
       devtool: DEBUG ? 'cheap-module-source-map' : false,
       target: 'web',
       output: {
-        path: __dirname,
+        path: `${__dirname}/dist`,
         filename: 'clustergrammer-gl.node.min.js',
         libraryTarget: 'commonjs2',
         library: 'CGM'
@@ -183,8 +183,8 @@ module.exports = [
           }
         ]
       },
-      node: {
-         fs: "empty"
-      }
+      // node: {
+      //    fs: "empty"
+      // }
   }
 ];

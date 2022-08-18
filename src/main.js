@@ -17,7 +17,7 @@ import initialize_regl from "./params/initialize_regl";
 import recluster from "./recluster/recluster";
 import zoom_rules_high_mat from "./zoom/zoom_rules_high_mat";
 
-function clustergrammer_gl(args, external_model = null) {
+export default function CGM(args, external_model = null) {
   var clustergrammerModel = {};
 
   // check if container is defined
@@ -73,5 +73,3 @@ function clustergrammer_gl(args, external_model = null) {
     return clustergrammerModel;
   }
 }
-
-export default clustergrammer_gl;

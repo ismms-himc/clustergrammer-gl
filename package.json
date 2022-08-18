@@ -1,20 +1,19 @@
 {
-  "name": "clustergrammer-gl",
-  "version": "0.23.0",
-  "description": "Rebuilding Clustergrammer with WebGL and regl",
+  "name": "@moromis/clustergrammer-gl",
+  "version": "0.0.1",
+  "description": "Clustergrammer-GL with WebGL and regl for Javascript",
   "main": "dist/clustergrammer-gl.node.js",
   "module": "dist/clustergrammer-gl.esm.js",
   "scripts": {
-    "start": "budo --open --live --force-default-index --host localhost index.js -- -g es2040 -t glslify",
-    "build": "browserify index.js -g es2040 -t glslify | uglifyjs -cm| indexhtmlify | metadataify | github-cornerify > index.html",
+    "watch": "webpack --watch",
     "lint": "eslint src/",
     "lint-fix": "eslint --fix src/"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cornhundred/clustergrammer-gl"
+    "url": "https://github.com/moromis/clustergrammer-gl"
   },
-  "keywords": [],
+  "keywords": ["clustergrammer", "regl", "opengl", "clustering", "clustergram"],
   "author": "Nicolas Fernandez",
   "contributors": [
     "Kevin Ulrich"

@@ -1,94 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-<head>
+    <title>clustergrammer-gl</title>
+  </head>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <body>
+    <!-- supporting packages -->
+    <script src="../node_modules/d3/dist/d3.min.js"></script>
+    <script src="../node_modules/underscore/underscore-min.js"></script>
+    <script src="../dist/clustergrammer-gl.js"></script>
 
-  <title>clustergrammer-gl</title>
+    <!-- data -->
+    <script
+      type="text/javascript"
+      language="javascript"
+      src="../example/data/mult_view.js"
+    ></script>
 
-</head>
+    <script>
+      var inst_div = document.createElement("div");
+      inst_div.setAttribute("id", "something");
+      document.body.appendChild(inst_div);
 
-<body>
+      var inst_container = document.getElementById("something");
 
-  <!-- supporting packages -->
-  <script src="../node_modules/d3/dist/d3.js"></script>
-  <script src='../node_modules/underscore/underscore-min.js'></script>
-  <script src="../dist/clustergrammer-gl.js"></script>
+      // the control panel is 135 pixels high
+      var inst_height = 1035;
+      var inst_width = 900;
 
-  <!-- data -->
-  <script type="text/javascript" language="javascript" src="data/mult_view.js"></script>
+      var x_offset = 10;
+      var y_offset = 10;
 
-  <script>
-    var inst_div = document.createElement('div')
-    inst_div.setAttribute('id', 'something')
-    document.body.appendChild(inst_div);
+      d3.select("#something")
+        .style("height", inst_height + "px")
+        .style("width", inst_width + "px")
+        .style("background", "white")
+        .style("margin-left", x_offset + "px")
+        .style("margin-top", y_offset + "px");
 
-    var inst_container = document.getElementById('something');
+      // hardwire manual category
+      network.manual_category = {};
+      network.manual_category.col = "Cell Type";
 
-    // the control panel is 135 pixels high
-    var inst_height = 1035;
-    var inst_width = 900;
+      network.manual_category.col_cats = [
+        {
+          name: "Cat",
+          color: "red"
+        },
+        {
+          name: "Dog",
+          color: "yellow"
+        },
+        {
+          name: "Shark",
+          color: "black"
+        },
+        {
+          name: "Snake",
+          color: "blue"
+        },
+        {
+          name: "Lizard",
+          color: "green"
+        }
+      ];
 
-    var x_offset = 10;
-    var y_offset = 10;
+      // set matrix colors
+      network.matrix_colors = {};
+      network.matrix_colors.pos = "red";
+      network.matrix_colors.neg = "blue";
 
-    d3.select('#something')
-      .style('height', inst_height + 'px')
-      .style('width', inst_width + 'px')
-      .style('background', 'white')
-      .style('margin-left', x_offset + 'px')
-      .style('margin-top', y_offset + 'px');
+      args = {};
+      args.network = network;
+      args.container = inst_container;
+      args.viz_width = inst_width;
+      args.viz_height = inst_width;
+      args.use_hzome = true;
 
-    var filename = 'data/mult_view.json';
-
-    // hardwire manual category
-    network.manual_category = {}
-    network.manual_category.col = 'Cell Type'
-
-    network.manual_category.col_cats = [
-      {
-        'name': 'Cat',
-        'color': 'red'
-      },
-      {
-        'name': 'Dog',
-        'color': 'yellow'
-      },
-      {
-        'name': 'Shark',
-        'color': 'black'
-      },
-      {
-        'name': 'Snake',
-        'color': 'blue'
-      },
-      {
-        'name': 'Lizard',
-        'color': 'green'
-      }
-    ]
-
-    // set matrix colors
-    network.matrix_colors = {}
-    network.matrix_colors.pos = 'red'
-    network.matrix_colors.neg = 'blue'
-
-    args = {};
-    args.network = network;
-    args.container = inst_container;
-    args.viz_width = inst_width;
-    args.viz_height = inst_width;
-    args.use_hzome = true
-
-    cgm = CGM(args);
-
-  </script>
-
-</body>
-
+      cgm = CGM(args);
+    </script>
+  </body>
 </html>

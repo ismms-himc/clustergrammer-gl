@@ -7,8 +7,8 @@
   "scripts": {
     "start": "budo --open --live --force-default-index --host localhost index.js -- -g es2040 -t glslify",
     "build": "browserify index.js -g es2040 -t glslify | uglifyjs -cm| indexhtmlify | metadataify | github-cornerify > index.html",
-    "lint": "eslint",
-    "lint-fix": "eslint --fix"
+    "lint": "eslint src/",
+    "lint-fix": "eslint --fix src/"
   },
   "repository": {
     "type": "git",

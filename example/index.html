@@ -3,29 +3,27 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>clustergrammer-gl</title>
+  <title>clustergrammer-gl</title>
 
 </head>
 
 <body>
 
-  <!-- <script src="bundle.js"></script> -->
-  <!--<script>console.log('loading webpack built bundle')</script>-->
-  <!-- <script src="lib/js/d3.js"></script> -->
-  <script src="lib/js/d3.js"></script>
-  <script src='lib/js/underscore-min.js'></script>
-  <script src="clustergrammer-gl.js"></script>
+  <!-- supporting packages -->
+  <script src="../node_modules/d3/dist/d3.js"></script>
+  <script src='../node_modules/underscore/underscore-min.js'></script>
+  <script src="../dist/clustergrammer-gl.js"></script>
 
-
+  <!-- data -->
+  <script type="text/javascript" language="javascript" src="data/mult_view.js"></script>
 
   <script>
-
     var inst_div = document.createElement('div')
     inst_div.setAttribute('id', 'something')
     document.body.appendChild(inst_div);
@@ -40,141 +38,54 @@
     var y_offset = 10;
 
     d3.select('#something')
-      .style('height',inst_height + 'px')
-      .style('width',inst_width+'px')
-      .style('background','white')
-      // .style('border', '2px solid #eee')
+      .style('height', inst_height + 'px')
+      .style('width', inst_width + 'px')
+      .style('background', 'white')
       .style('margin-left', x_offset + 'px')
       .style('margin-top', y_offset + 'px');
 
-    // var filename = 'data/big_data/hdbscan.json';
+    var filename = 'data/mult_view.json';
 
-    // var filename = 'data/big_data/ccle_500x1037.json';
-    // var filename = 'data/big_data/ccle_1000x1037.json';
-    // var filename = 'data/big_data/ccle_5000x1037.json';
-    // var filename = 'data/big_data/ccle_10000x50.json';
-    // var filename = 'data/big_data/ccle_18875x50.json';
+    // hardwire manual category
+    network.manual_category = {}
+    network.manual_category.col = 'Cell Type'
 
-    // var filename = 'data/big_data/cytof_43x100000.json';
-    // var filename = 'data/big_data/cytof_43x75000.json';
-    // var filename = 'data/big_data/cytof_43x50000.json';
-    // var filename = 'data/big_data/cytof_43x30000.json';
-    // var filename = 'data/big_data/cytof_43x20000.json';
+    network.manual_category.col_cats = [
+      {
+        'name': 'Cat',
+        'color': 'red'
+      },
+      {
+        'name': 'Dog',
+        'color': 'yellow'
+      },
+      {
+        'name': 'Shark',
+        'color': 'black'
+      },
+      {
+        'name': 'Snake',
+        'color': 'blue'
+      },
+      {
+        'name': 'Lizard',
+        'color': 'green'
+      }
+    ]
 
-    // var filename = 'data/big_data/random_30000x50.json';
+    // set matrix colors
+    network.matrix_colors = {}
+    network.matrix_colors.pos = 'red'
+    network.matrix_colors.neg = 'blue'
 
-    var filename = 'data/big_data/default-gl-viz.json';
-    // var filename = 'data/big_data/downsample_bug.json';
-    // var filename = 'data/big_data/no-cats.json';
-    // var filename = 'data/big_data/citeseq_man_cat.json';
-    // var filename = 'data/big_data/rc_two_cats.json';
-    // var filename = 'data/mult_view.json';
-    // var filename = 'data/big_data/compressed.json';
-    // var filename = 'data/big_data/round_compressed.json';
-    // var filename = 'data/big_data/custom.json';
-    // var filename = 'data/big_data/custom-z.json';
-    // var filename = 'data/big_data/mnist.json';
-    // var filename = 'data/big_data/cytof_25k.json';
-    // var filename = 'data/big_data/CCLE_500x1037.json';
-    // var filename = 'data/big_data/CCLE_500x1037-z.json';
-    // var filename = 'data/big_data/ccle_1000x200.json';
-    // var filename = 'data/big_data/ccle_2000x200.json';
-    // var filename = 'data/big_data/ccle_1000x1037.json';
-    // var filename = 'data/big_data/ccle_3000x1037.json';
-    // var filename = 'data/big_data/ccle_5000x1037.json';
-    // var filename = 'data/big_data/ccle_7000x1037.json';
+    args = {};
+    args.network = network;
+    args.container = inst_container;
+    args.viz_width = inst_width;
+    args.viz_height = inst_width;
+    args.use_hzome = true
 
-    // console.log('passing network to clustergrammer-gl')
-
-    var my_widget_callback = function(external_model){
-      console.log('-------------------------------')
-      console.log('RUNNING MY WIDGET CALLBACK')
-      // console.log(external_model.cgm.params.int.manual_update_cats)
-      console.log('-------------------------------')
-    }
-
-    // this represents the Jupyter Widget model that will have the cgm object
-    // added to itself
-    external_model = {'widget':'external-model'}
-
-    // d3.json(filename, function(network){
-
-    //   console.log('loaded JSON')
-
-    //   args = {};
-    //   args.network = network;
-    //   args.container=inst_container;
-    //   args.viz_width=inst_width;
-    //   args.viz_height=inst_width;
-    //   // args.widget_model = 'my-widget-model';
-    //   args.widget_callback = my_widget_callback
-
-    //   // // do not pass widget
-    //   // cgm = Clustergrammer2(args);
-
-    //   // pass widget
-    //   cgm = Clustergrammer2(args, {'widget':'external-model'});
-
-    // });
-
-
-    d3.json(filename).then(function(network) {
-
-      // hardwire manual category
-      network.manual_category = {}
-      network.manual_category.col = 'Cell Type'
-
-      network.manual_category.col_cats = [
-        {
-          'name':'Cat',
-          'color':'red'
-        },
-        {
-          'name': 'Dog',
-          'color': 'yellow'
-        },
-        {
-          'name': 'Shark',
-          'color': 'black'
-        },
-        {
-          'name': 'Snake',
-          'color': 'blue'
-        },
-        {
-          'name': 'Lizard',
-          'color': 'green'
-        }
-      ]
-
-      // set matrix colors
-      network.matrix_colors = {}
-      network.matrix_colors.pos = 'red'
-      network.matrix_colors.neg = 'blue'
-
-      // network.order = {}
-      // network.order.row = 'clust'
-      // network.order.col = 'clust'
-
-      args = {};
-      args.network = network;
-      args.container=inst_container;
-      args.viz_width=inst_width;
-      args.viz_height=inst_width;
-      // args.widget_model = 'my-widget-model';
-      args.widget_callback = my_widget_callback
-      args.use_hzome = true
-
-      // // do not pass widget
-      // cgm = Clustergrammer2(args);
-
-      // do not pass widget
-      cgm = CGM(args);
-
-      // // pass widget
-      // cgm = CGM(args, external_model);
-
-    });
+    cgm = CGM(args);
 
   </script>
 

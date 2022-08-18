@@ -16,12 +16,6 @@ module.exports = [
       libraryTarget: 'var',
       library: 'CGM'
     },
-    externals: {
-      // 'jQuery': 'jquery',
-      // 'lodash': '_',
-      // 'underscore': '_',
-      // 'd3': 'd3'
-    },
     module: {
         rules: [
           // This applies the loader to all of your dependencies,
@@ -69,12 +63,6 @@ module.exports = [
         libraryTarget: 'commonjs2',
         library: 'CGM'
       },
-      externals: {
-        // 'jQuery': 'jQuery',
-        // 'lodash': '_',
-        // 'underscore': '_',
-        // 'd3': 'd3'
-      },
       module: {
         rules: [
           // This applies the loader to all of your dependencies,
@@ -109,12 +97,6 @@ module.exports = [
         filename: 'clustergrammer-gl.min.js',
         libraryTarget: 'var',
         library: 'CGM'
-      },
-      externals: {
-        'jQuery': 'jQuery',
-        // 'lodash': '_',
-        // 'underscore': '_',
-        // 'd3': 'd3'
       },
       optimization: {
         minimize: true
@@ -153,12 +135,6 @@ module.exports = [
         filename: 'clustergrammer-gl.node.min.js',
         libraryTarget: 'commonjs2',
         library: 'CGM'
-      },
-      externals: {
-        'jQuery': 'jQuery',
-        // 'lodash': '_',
-        // 'underscore': '_',
-        // 'd3': 'd3'
       },
       optimization: {
         minimize: true

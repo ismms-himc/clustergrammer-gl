@@ -15,7 +15,7 @@ const getConfig = (type, fileExtension, mode, exportType) => ({
     path: filePath,
     filename: `${packageFilename}.${fileExtension}`,
     library: {
-      name: "CGM",
+      name: type === "module" ? undefined : "CGM",
       type,
       ...(exportType ? { export: exportType } : {}),
     },
@@ -61,4 +61,16 @@ module.exports = [
   getConfig("var", "min.js", "production"),
   getConfig("commonjs2", "node.js", "development"),
   getConfig("commonjs2", "node.min.js", "production"),
+  {
+    ...getConfig("module", "esm.js", "development"),
+    experiments: {
+      outputModule: true,
+    },
+  },
+  {
+    ...getConfig("module", "esm.min.js", "production"),
+    experiments: {
+      outputModule: true,
+    },
+  },
 ];

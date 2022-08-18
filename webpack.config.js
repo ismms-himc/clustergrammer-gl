@@ -1,166 +1,60 @@
-/* global `${__dirname}/dist`:false */
+const DEBUG = process.argv.indexOf('-p') === -1;
+const webpack = require('webpack')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
-var DEBUG = process.argv.indexOf('-p') === -1;
-var webpack = require('webpack')
-var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+const ENTRY_POINT = './src/main.js';
+const path = `${__dirname}/dist`
+const packageFilename = 'clustergrammer-gl'
 
-module.exports = [
-  {
-    entry: './src/main.js',
-    // devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
+const getConfig = (libaryTarget, fileExtension, mode) => ({
+    entry: ENTRY_POINT,
     devtool: DEBUG ? 'cheap-module-source-map' : false,
     target: 'web',
     output: {
-      path: `${__dirname}/dist`,
-      filename: 'clustergrammer-gl.js',
-      libraryTarget: 'var',
+      path,
+      filename: `${packageFilename}.${fileExtension}`,
+      libraryTarget: libaryTarget,
       library: 'CGM'
     },
     module: {
-        rules: [
-          // This applies the loader to all of your dependencies,
-          // and not any of the source files in your project:
-          {
-            test: /node_modules/,
-            loader: 'ify-loader'
-          },
-          {
-            test: /\.(png|jpg|gif)$/,
-            use: [
-              {
-                loader: 'file-loader',
-                options: {}
-              }
-            ]
-          }
-        ]
+      rules: [
+        // This applies the loader to all of your dependencies,
+        // and not any of the source files in your project:
+        {
+          test: /node_modules/,
+          loader: 'ify-loader'
+        },
+        {
+          test: /\.(png|jpg|gif)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {}
+            }
+          ]
+        }
+      ]
     },
+    mode,
+});
+
+module.exports = [
+  {
+    ...getConfig('var', '.js'),
     plugins: [
       new BrowserSyncPlugin({
-        // browse to http://localhost:3000/ during development,
-        // ./public directory is being served
+        // browse to http://localhost:3100/ during development,
+        // ./example directory is being served
         host: 'localhost',
-        port: 3000,
+        port: 3100,
         server: {
-          baseDir: './',
+          baseDir: './example/',
           index: 'index.html'
         }
       })
     ],
-    mode: "development",
-    // node: {
-    //    fs: "empty"
-    // }
   },
-  {
-      entry: './src/main.js',
-      // devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
-      devtool: DEBUG ? 'cheap-module-source-map' : false,
-      target: 'web',
-      output: {
-        path: `${__dirname}/dist`,
-        filename: 'clustergrammer-gl.node.js',
-        libraryTarget: 'commonjs2',
-        library: 'CGM'
-      },
-      module: {
-        rules: [
-          // This applies the loader to all of your dependencies,
-          // and not any of the source files in your project:
-          {
-            test: /node_modules/,
-            loader: 'ify-loader'
-          },
-          {
-            test: /\.(png|jpg|gif)$/,
-            use: [
-              {
-                loader: 'file-loader',
-                options: {}
-              }
-            ]
-          }
-        ]
-      },
-      "mode": "development",
-      // node: {
-      //    fs: "empty"
-      // }
-  },
-  {
-      entry: './src/main.js',
-      // devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
-      devtool: DEBUG ? 'cheap-module-source-map' : false,
-      target: 'web',
-      output: {
-        path: `${__dirname}/dist`,
-        filename: 'clustergrammer-gl.min.js',
-        libraryTarget: 'var',
-        library: 'CGM'
-      },
-      optimization: {
-        minimize: true
-      },
-      module: {
-        rules: [
-          // This applies the loader to all of your dependencies,
-          // and not any of the source files in your project:
-          {
-            test: /node_modules/,
-            loader: 'ify-loader'
-          },
-          {
-            test: /\.(png|jpg|gif)$/,
-            use: [
-              {
-                loader: 'file-loader',
-                options: {}
-              }
-            ]
-          }
-        ]
-      },
-      "mode": "production",
-      // node: {
-      //    fs: "empty"
-      // }
-  },
-  {
-      entry: './src/main.js',
-      // devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
-      devtool: DEBUG ? 'cheap-module-source-map' : false,
-      target: 'web',
-      output: {
-        path: `${__dirname}/dist`,
-        filename: 'clustergrammer-gl.node.min.js',
-        libraryTarget: 'commonjs2',
-        library: 'CGM'
-      },
-      optimization: {
-        minimize: true
-      },
-      "mode": "production",
-      module: {
-        rules: [
-          // This applies the loader to all of your dependencies,
-          // and not any of the source files in your project:
-          {
-            test: /node_modules/,
-            loader: 'ify-loader'
-          },
-          {
-            test: /\.(png|jpg|gif)$/,
-            use: [
-              {
-                loader: 'file-loader',
-                options: {}
-              }
-            ]
-          }
-        ]
-      },
-      // node: {
-      //    fs: "empty"
-      // }
-  }
+  getConfig('var', '.min.js', 'production'),
+  getConfig('commonjs2', '.node.js', 'development'),
+  getConfig('commonjs2', '.node.min.js', 'production'),
 ];

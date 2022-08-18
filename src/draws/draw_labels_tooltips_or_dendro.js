@@ -1,7 +1,6 @@
-var draw_commands = require('./draw_commands');
+var draw_commands = require("./draw_commands");
 
-module.exports = function draw_labels_tooltips_or_dendro(external_model){
-
+module.exports = function draw_labels_tooltips_or_dendro(external_model) {
   var cgm = this;
   var regl = cgm.regl;
   var params = cgm.params;
@@ -10,12 +9,12 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
   ///////////////////////////////
   draw_commands(cgm, external_model);
 
-  if (params.tooltip.show_tooltip){
+  if (params.tooltip.show_tooltip) {
     params.tooltip.show_tooltip = false;
   }
 
   // turn back off draw dendro
-  if (params.dendro.update_dendro){
+  if (params.dendro.update_dendro) {
     params.dendro.update_dendro = false;
   }
 
@@ -23,5 +22,4 @@ module.exports = function draw_labels_tooltips_or_dendro(external_model){
   //   console.log('--> running widget callback on mouseend')
   //   cgm.widget_callback(external_model);
   // }
-
 };

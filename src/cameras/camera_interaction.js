@@ -1,18 +1,24 @@
-var vec4 = require('gl-vec4');
+var vec4 = require("gl-vec4");
 
-module.exports = function camera_interaction(zoom_data, ev, viz_component,
-                                             mInvViewport, mat4, mView, emitter,
-                                             dViewport, mViewport){
-
+module.exports = function camera_interaction(
+  zoom_data,
+  ev,
+  viz_component,
+  mInvViewport,
+  mat4,
+  mView,
+  emitter,
+  dViewport,
+  mViewport
+) {
   switch (ev.type) {
-    case 'wheel':
+    case "wheel":
       ev.dsx = ev.dsy = Math.exp(-ev.dy / 100);
       ev.dx = ev.dy = 0;
       break;
   }
 
-  if (ev.buttons || ['wheel', 'touch', 'pinch'].indexOf(ev.type) !== -1)  {
-
+  if (ev.buttons || ["wheel", "touch", "pinch"].indexOf(ev.type) !== -1) {
     /*
     Sanitize zoom data components
     */
@@ -27,19 +33,19 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
     var inst_y_pan_by_zoom = zoom_data.y.pan_by_zoom;
     var inst_y_pan_by_drag = zoom_data.y.pan_by_drag;
 
-    if (viz_component === 'row-labels'){
+    if (viz_component === "row-labels") {
       inst_x_zoom = 1;
       inst_x_pan_by_drag = 0;
       inst_x_pan_by_zoom = 0;
     }
 
-    if (viz_component === 'col-labels'){
+    if (viz_component === "col-labels") {
       inst_y_zoom = 1;
       inst_y_pan_by_drag = 0;
       inst_y_pan_by_zoom = 0;
     }
 
-    if (viz_component === 'static'){
+    if (viz_component === "static") {
       inst_x_zoom = 1;
       inst_x_pan_by_drag = 0;
       inst_x_pan_by_zoom = 0;
@@ -71,10 +77,10 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
     mat4.multiply(dViewport, mInvViewport, dViewport);
     mat4.multiply(mView, dViewport, mView);
     // var dirty = true;
-
   }
 
-  var xy = vec4.transformMat4([],
+  var xy = vec4.transformMat4(
+    [],
     vec4.transformMat4([], [ev.x0, ev.y0, 0, 1], mInvViewport),
     mat4.invert([], mView)
   );
@@ -82,5 +88,5 @@ module.exports = function camera_interaction(zoom_data, ev, viz_component,
   ev.x = xy[0];
   ev.y = xy[1];
 
-  emitter.emit('move', ev);
-}
+  emitter.emit("move", ev);
+};

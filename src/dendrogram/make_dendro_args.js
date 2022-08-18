@@ -1,36 +1,35 @@
-var m3 = require('./../draws/mat3_transform');
-var color_to_rgba = require('./../colors/color_to_rgba');
-var make_dendro_arr = require('./make_dendro_arr');
+var m3 = require("./../draws/mat3_transform");
+var color_to_rgba = require("./../colors/color_to_rgba");
+var make_dendro_arr = require("./make_dendro_arr");
 
-module.exports = function make_dendro_args(regl, params, inst_axis){
-
+module.exports = function make_dendro_args(regl, params, inst_axis) {
   var rotation_radians;
   var heat_size;
   var mat_size_offset;
-  if (inst_axis === 'row'){
+  if (inst_axis === "row") {
     rotation_radians = 0;
     heat_size = params.viz_dim.heat_size.y;
     mat_size_offset = params.viz_dim.mat_size.x;
-  } else if (inst_axis === 'col'){
-    rotation_radians = Math.PI/2;
+  } else if (inst_axis === "col") {
+    rotation_radians = Math.PI / 2;
     heat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
   }
 
-  var num_labels = params.labels['num_' + inst_axis];
+  var num_labels = params.labels["num_" + inst_axis];
   var dendro_width = params.dendro.tri_height;
-  var tri_width = heat_size/num_labels;
+  var tri_width = heat_size / num_labels;
 
   var dendro_arr = make_dendro_arr(params, inst_axis);
 
-  var zoom_function = function(context){
+  var zoom_function = function (context) {
     return context.view;
   };
 
   const dendro_buffer = regl.buffer({
     length: dendro_arr.length,
-    type: 'float',
-    usage: 'dynamic'
+    type: "float",
+    usage: "dynamic",
   });
 
   dendro_buffer(dendro_arr);
@@ -38,10 +37,9 @@ module.exports = function make_dendro_args(regl, params, inst_axis){
   var mat_scale = m3.scaling(1, 1);
 
   var mat_rotate = m3.rotation(rotation_radians);
-  var inst_rgba = color_to_rgba('black', 0.35);
+  var inst_rgba = color_to_rgba("black", 0.35);
 
   var args = {
-
     vert: `
       precision highp float;
       attribute vec2 position;
@@ -85,14 +83,14 @@ module.exports = function make_dendro_args(regl, params, inst_axis){
 
     attributes: {
       position: [
-        [      params.dendro.trap_float, 2*tri_width],
+        [params.dendro.trap_float, 2 * tri_width],
         [dendro_width, tri_width],
-        [      params.dendro.trap_float, 0],
+        [params.dendro.trap_float, 0],
       ],
       dendro_att: {
         buffer: dendro_buffer,
-        divisor: 1
-      }
+        divisor: 1,
+      },
     },
 
     uniforms: {
@@ -100,7 +98,7 @@ module.exports = function make_dendro_args(regl, params, inst_axis){
       mat_rotate: mat_rotate,
       mat_scale: mat_scale,
       mat_size_offset: mat_size_offset,
-      triangle_color: inst_rgba
+      triangle_color: inst_rgba,
     },
 
     count: 3,
@@ -108,13 +106,11 @@ module.exports = function make_dendro_args(regl, params, inst_axis){
     depth: {
       enable: true,
       mask: true,
-      func: 'less',
+      func: "less",
       // func: 'greater',
-      range: [0, 1]
+      range: [0, 1],
     },
-
   };
 
   return args;
-
 };

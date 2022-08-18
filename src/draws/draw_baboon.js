@@ -1,36 +1,32 @@
+module.exports = function draw_baboon(regl, params) {
+  var baboon = params.baboon;
 
-module.exports = function draw_baboon(regl, params){
+  // // overwrite baboon with custom data
+  // data_for_texture = [];
 
-var baboon = params.baboon;
+  // num_cells = 100000
+  // // overwriting data_for_texture
+  // for (i = 0; i < num_cells * 4; i++) {
 
-// // overwrite baboon with custom data
-// data_for_texture = [];
+  //   // make rbg
+  //   // inst_data = 100;
+  //   inst_data = (i/(4*num_cells))*250
 
-// num_cells = 100000
-// // overwriting data_for_texture
-// for (i = 0; i < num_cells * 4; i++) {
+  //   if (i%4 === 0 || i%4 === 1){
+  //     inst_data = 0;
+  //   }
 
-//   // make rbg
-//   // inst_data = 100;
-//   inst_data = (i/(4*num_cells))*250
+  //   data_for_texture.push(inst_data);
 
-//   if (i%4 === 0 || i%4 === 1){
-//     inst_data = 0;
-//   }
+  // }
 
-//   data_for_texture.push(inst_data);
+  // u8a = new Uint8Array(data_for_texture)
 
-// }
+  // baboon.data = u8a
 
-// u8a = new Uint8Array(data_for_texture)
-
-// baboon.data = u8a
-
-var zoom_function = params.zoom_data.zoom_function;
+  var zoom_function = params.zoom_data.zoom_function;
 
   regl({
-
-
     vert: `
     precision mediump float;
     attribute vec2 position;
@@ -51,13 +47,7 @@ var zoom_function = params.zoom_data.zoom_function;
 
     // two triangles
     attributes: {
-      position: [
-         -1,  1,
-          1, -1,
-          1,  1,
-          1, -1,
-         -1,  1,
-         -1, -1,]
+      position: [-1, 1, 1, -1, 1, 1, 1, -1, -1, 1, -1, -1],
     },
 
     uniforms: {
@@ -67,8 +57,7 @@ var zoom_function = params.zoom_data.zoom_function;
     },
     count: 6,
     depth: {
-      enable: false
+      enable: false,
     },
-  })()
-
+  })();
 };

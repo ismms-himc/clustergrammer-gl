@@ -57,7 +57,6 @@
 //   //   .attr('cursor', 'default')
 //   //   .text('Clustering Parameters');
 
-
 //   // cgm.params.matrix = {}
 //   // cgm.params.matrix.distance_metric = 'cosine'
 //   // cgm.params.matrix.linkage_type = 'average'

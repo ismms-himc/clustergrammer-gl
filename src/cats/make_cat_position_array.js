@@ -1,17 +1,20 @@
-module.exports = function make_cat_position_array(params, inst_axis, cat_index, inst_order){
-
-  var num_labels = params.labels['num_'+inst_axis];
+module.exports = function make_cat_position_array(
+  params,
+  inst_axis,
+  cat_index,
+  inst_order
+) {
+  var num_labels = params.labels["num_" + inst_axis];
   // category tiles have fixed heights
   // category widths depend on the number of labels
   var cat_width;
   var mat_size;
-  if (inst_axis === 'col'){
+  if (inst_axis === "col") {
     mat_size = params.viz_dim.heat_size.x;
-    cat_width = (mat_size/0.5)/num_labels;
-
+    cat_width = mat_size / 0.5 / num_labels;
   } else {
     mat_size = params.viz_dim.heat_size.y;
-    cat_width = (params.viz_dim.heat_size.y/0.5)/num_labels;
+    cat_width = params.viz_dim.heat_size.y / 0.5 / num_labels;
   }
 
   /////////////////////////////////
@@ -23,18 +26,20 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
 
   var y_offset_array = [];
   var i;
-  for (i = 0; i < num_labels; i++){
-
+  for (i = 0; i < num_labels; i++) {
     // emperically found rules
     var order_id;
     var shift_mat_heat;
-    if (inst_axis == 'row'){
-      order_id = num_labels - params.network[inst_axis + '_nodes'][i][inst_order] - 1;
+    if (inst_axis == "row") {
+      order_id =
+        num_labels - params.network[inst_axis + "_nodes"][i][inst_order] - 1;
       // vertical shift
-      shift_mat_heat = -(params.viz_dim.mat_size.y - params.viz_dim.heat_size.y)
+      shift_mat_heat = -(
+        params.viz_dim.mat_size.y - params.viz_dim.heat_size.y
+      );
     } else {
-      order_id = params.network[inst_axis + '_nodes'][i][inst_order] ;
-      shift_mat_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x
+      order_id = params.network[inst_axis + "_nodes"][i][inst_order];
+      shift_mat_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
     }
 
     /* need to position based on clustering order */
@@ -42,9 +47,11 @@ module.exports = function make_cat_position_array(params, inst_axis, cat_index, 
     // of the heatmap vs the general matrix area
 
     // make 2d array
-    y_offset_array[i] = [mat_size - cat_width/2 - order_id * cat_width + shift_mat_heat, 0];
+    y_offset_array[i] = [
+      mat_size - cat_width / 2 - order_id * cat_width + shift_mat_heat,
+      0,
+    ];
   }
 
   return y_offset_array;
-
-}
+};

@@ -1,6 +1,5 @@
-module.exports = function ini_zoom_data(){
-
-  var zoom_function = function(context){
+module.exports = function ini_zoom_data() {
+  var zoom_function = function (context) {
     return context.view;
   };
 
@@ -9,8 +8,7 @@ module.exports = function ini_zoom_data(){
 
   zoom_data.zoom_function = zoom_function;
 
-  _.each(['x', 'y'], function(inst_dim){
-
+  _.each(["x", "y"], function (inst_dim) {
     var inst_data = {};
     // total zooming (formerly tsx)
     inst_data.total_zoom = 1;
@@ -53,5 +51,4 @@ module.exports = function ini_zoom_data(){
   });
 
   return zoom_data;
-
 };

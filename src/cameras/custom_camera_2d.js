@@ -1,12 +1,12 @@
 // © 2016 Ricky Reusser. MIT License.
 // 'use strict';
 
-var interactionEvents = require('./../interactions/interaction-events');
+var interactionEvents = require("./../interactions/interaction-events");
 // var normalizedInteractionEvents = require('normalized-interaction-events');
-var extend = require('xtend/mutable');
-var mat4 = require('gl-mat4');
-var EventEmitter = require('event-emitter');
-var camera_interaction = require('./camera_interaction');
+var extend = require("xtend/mutable");
+var mat4 = require("gl-mat4");
+var EventEmitter = require("event-emitter");
+var camera_interaction = require("./camera_interaction");
 // var track_interaction_zoom_data = require('./../interactions/track_interaction_zoom_data');
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
@@ -29,26 +29,43 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   return out;
 };
 
-module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_component) {
-
+module.exports = function makeCamera2D(
+  regl,
+  params,
+  opts,
+  zoom_data,
+  viz_component
+) {
   opts = opts || {};
 
-  var options = extend({
-    element: opts.element || regl._gl.canvas,
-  }, opts || {});
+  var options = extend(
+    {
+      element: opts.element || regl._gl.canvas,
+    },
+    opts || {}
+  );
 
   var element = options.element;
 
   var dirty = true;
 
-  var getWidth = element === window ?
+  var getWidth =
+    element === window
+      ? function () {
+          return element.innerWidth;
+        }
+      : function () {
+          return element.offsetWidth;
+        };
 
-
-  function () { return element.innerWidth; } : function () { return element.offsetWidth; };
-
-  var getHeight = element === window ?
-
-  function () { return element.innerHeight; } : function () { return element.offsetHeight; };
+  var getHeight =
+    element === window
+      ? function () {
+          return element.innerHeight;
+        }
+      : function () {
+          return element.offsetHeight;
+        };
 
   var xrange = opts.xrange === undefined ? [-1, 1] : opts.xrange;
   var yrange = opts.yrange === undefined ? [-1, 1] : opts.yrange;
@@ -60,7 +77,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var xcen = 0.5 * (xrange[1] + xrange[0]) + params.viz_dim.shift_camera.x;
   var ycen = 0.5 * (yrange[1] + yrange[0]) + params.viz_dim.shift_camera.y;
   var xrng = 0.5 * (xrange[1] - xrange[0]);
-  var yrng = xrng / aspectRatio / width * height;
+  var yrng = (xrng / aspectRatio / width) * height;
 
   var mView = mat4.identity([]);
   mView[0] = 1 / xrng;
@@ -71,7 +88,7 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   var mViewport = mat4.identity([]);
   var mInvViewport = mat4.identity([]);
 
-  function computeViewport () {
+  function computeViewport() {
     width = getWidth();
     height = getHeight();
 
@@ -90,19 +107,29 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
   /////////////////////////////////////////
   interactionEvents({
     element: element,
-  }).on('interactionstart', function (ev) {
-    ev.preventDefault();
-  }).on('interactionend', function (ev) {
-    ev.preventDefault();
-  }).on('interaction', function (ev) {
-    if (params.int.enable_viz_interact){
-
-      // console.log(zoom_data.x.cursor_position, zoom_data.y.cursor_position)
-      camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
-                         emitter, dViewport, mViewport);
-    }
-  });
-
+  })
+    .on("interactionstart", function (ev) {
+      ev.preventDefault();
+    })
+    .on("interactionend", function (ev) {
+      ev.preventDefault();
+    })
+    .on("interaction", function (ev) {
+      if (params.int.enable_viz_interact) {
+        // console.log(zoom_data.x.cursor_position, zoom_data.y.cursor_position)
+        camera_interaction(
+          zoom_data,
+          ev,
+          viz_component,
+          mInvViewport,
+          mat4,
+          mView,
+          emitter,
+          dViewport,
+          mViewport
+        );
+      }
+    });
 
   // console.log('empty?', d3.select(params.root + ' .canvas-container canvas').empty());
 
@@ -136,19 +163,22 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
 
   var setProps = regl({
     context: {
-      view: regl.prop('view'),
-    }
+      view: regl.prop("view"),
+    },
   });
 
   var inst_camera = {
     draw: function (cb) {
-      setProps({
-        view: mView,
-      }, function () {
-        cb({
-          dirty: dirty
-        });
-      });
+      setProps(
+        {
+          view: mView,
+        },
+        function () {
+          cb({
+            dirty: dirty,
+          });
+        }
+      );
       dirty = false;
     },
     on: function (eventName, callback) {
@@ -164,12 +194,10 @@ module.exports = function makeCamera2D (regl, params, opts, zoom_data, viz_compo
       computeViewport();
 
       // Reapply the aspect ratio:
-      mView[5] = mView[0] * aspectRatio * width / height;
+      mView[5] = (mView[0] * aspectRatio * width) / height;
       dirty = true;
-
-    }
+    },
   };
 
   return inst_camera;
-
 };

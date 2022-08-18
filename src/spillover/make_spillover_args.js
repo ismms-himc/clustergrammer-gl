@@ -1,6 +1,8 @@
-module.exports = function make_spillover_args(regl, inst_depth,
-                                               inst_color=[1, 1, 1, 1]){
-
+module.exports = function make_spillover_args(
+  regl,
+  inst_depth,
+  inst_color = [1, 1, 1, 1]
+) {
   // fix heatmap bleedthrough with variable opacity categories
 
   // Spillover Arguments
@@ -24,39 +26,38 @@ module.exports = function make_spillover_args(regl, inst_depth,
     }`,
 
     attributes: {
-      position: regl.prop('pos')
+      position: regl.prop("pos"),
     },
 
     uniforms: {
       color: inst_color,
-      inst_depth: inst_depth
+      inst_depth: inst_depth,
     },
 
     blend: {
-        enable: true,
-        func: {
-          srcRGB: 'src alpha',
-          srcAlpha: 1,
-          dstRGB: 'one minus src alpha',
-          dstAlpha: 1
-        },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
-        color: [0, 0, 0, 0]
+      enable: true,
+      func: {
+        srcRGB: "src alpha",
+        srcAlpha: 1,
+        dstRGB: "one minus src alpha",
+        dstAlpha: 1,
       },
+      equation: {
+        rgb: "add",
+        alpha: "add",
+      },
+      color: [0, 0, 0, 0],
+    },
 
     count: 3,
     depth: {
       enable: true,
       mask: true,
-      func: 'less',
+      func: "less",
       // func: 'greater',
-      range: [0, 1]
+      range: [0, 1],
     },
   };
 
   return args;
-
 };

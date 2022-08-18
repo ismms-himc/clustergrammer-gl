@@ -21,23 +21,26 @@
 
 module.exports = interactionEvents;
 
-var extend = require('util-extend');
-var mouse = require('mouse-event');
-var mouseChange = require('mouse-change');
-var eventOffset = require('mouse-event-offset');
-var eventEmitter = require('event-emitter');
+var extend = require("util-extend");
+var mouse = require("mouse-event");
+var mouseChange = require("mouse-change");
+var eventOffset = require("mouse-event-offset");
+var eventEmitter = require("event-emitter");
 
-function Finger () {
+function Finger() {
   this.position = [0, 0];
   this.touch = null;
 }
 
 // can pass in callback as second argument
-function interactionEvents (opts) {
-  var options = extend({
-    element: window,
-    constrainZoom: false,
-  }, opts || {});
+function interactionEvents(opts) {
+  var options = extend(
+    {
+      element: window,
+      constrainZoom: false,
+    },
+    opts || {}
+  );
 
   var emitter = eventEmitter({});
 
@@ -57,7 +60,7 @@ function interactionEvents (opts) {
 
   var buttons = 0;
   var mods = {};
-  var changeListener = mouseChange(element, function(pbuttons, px, py, pmods) {
+  var changeListener = mouseChange(element, function (pbuttons, px, py, pmods) {
     buttons = pbuttons;
     mods = pmods;
   });
@@ -68,13 +71,12 @@ function interactionEvents (opts) {
     return evOut;
   }
 
-  function onWheel (event) {
+  function onWheel(event) {
     // var dx, dy, dz, x0, y0;
 
     /*
     Working on improving behavior for offset canvas
     */
-
 
     // var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
 
@@ -83,14 +85,12 @@ function interactionEvents (opts) {
     // console.log('THIS', this)
     var canvas_rect = this.getBoundingClientRect();
 
-
-    ev.type = 'wheel';
+    ev.type = "wheel";
     ev.buttons = buttons;
     ev.mods = mods;
 
     // ev.x0 = event.x - event.target.offsetLeft;
     // ev.y0 = event.y - event.target.offsetTop + scrollTop;
-
 
     ev.x0 = event.x - canvas_rect.left;
     ev.y0 = event.y - canvas_rect.top;
@@ -104,14 +104,14 @@ function interactionEvents (opts) {
     ev.theta = 0;
     ev.dtheta = 0;
 
-    emitter.emit('interaction', forward(ev, event));
+    emitter.emit("interaction", forward(ev, event));
   }
 
-  function onMouseDown (event) {
+  function onMouseDown(event) {
     xprev = mouse.x(event);
     yprev = mouse.y(event);
 
-    ev.type = 'mousedown';
+    ev.type = "mousedown";
     ev.buttons = buttons;
     ev.mods = mods;
     ev.x0 = xprev;
@@ -125,14 +125,14 @@ function interactionEvents (opts) {
     ev.theta = 0;
     ev.dtheta = 0;
 
-    emitter.emit('interactionend', forward(ev, event));
+    emitter.emit("interactionend", forward(ev, event));
   }
 
-  function onMouseMove (event) {
+  function onMouseMove(event) {
     var x = mouse.x(event);
     var y = mouse.y(event);
 
-    ev.type = 'mousemove';
+    ev.type = "mousemove";
     ev.buttons = buttons;
     ev.mods = mods;
     ev.x0 = x;
@@ -149,22 +149,24 @@ function interactionEvents (opts) {
     xprev = x;
     yprev = y;
 
-    emitter.emit('interaction', forward(ev, event));
+    emitter.emit("interaction", forward(ev, event));
   }
 
-  function indexOfTouch (touch) {
+  function indexOfTouch(touch) {
     var id = touch.identifier;
     for (var i = 0; i < fingers.length; i++) {
-      if (fingers[i] &&
+      if (
+        fingers[i] &&
         fingers[i].touch &&
-        fingers[i].touch.identifier === id) {
+        fingers[i].touch.identifier === id
+      ) {
         return i;
       }
     }
     return -1;
   }
 
-  function onTouchStart (event) {
+  function onTouchStart(event) {
     pPos = [null, null];
     for (var i = 0; i < event.changedTouches.length; i++) {
       var newTouch = event.changedTouches[i];
@@ -198,7 +200,7 @@ function interactionEvents (opts) {
     }
 
     if (activeCount > 0) {
-      ev.type = activeCount === 1 ? 'touchstart' : 'pinchstart';
+      ev.type = activeCount === 1 ? "touchstart" : "pinchstart";
       ev.buttons = 0;
       ev.mods = {};
       ev.x0 = 0;
@@ -212,14 +214,14 @@ function interactionEvents (opts) {
       ev.theta = 0;
       ev.dtheta = 0;
 
-      emitter.emit('interactionstart', forward(ev, event));
+      emitter.emit("interactionstart", forward(ev, event));
     }
   }
 
   // var px0 = null;
   // var py0 = null;
 
-  function onTouchMove (event) {
+  function onTouchMove(event) {
     var idx;
     var changed = false;
     for (var i = 0; i < event.changedTouches.length; i++) {
@@ -235,7 +237,9 @@ function interactionEvents (opts) {
     if (changed) {
       if (activeCount === 1) {
         for (idx = 0; idx < fingers.length; idx++) {
-          if (fingers[idx]) {break;}
+          if (fingers[idx]) {
+            break;
+          }
         }
 
         if (fingers[idx] && pPos[idx]) {
@@ -245,7 +249,7 @@ function interactionEvents (opts) {
           var dx = x - pPos[idx][0];
           var dy = y - pPos[idx][1];
 
-          ev.type = 'touch';
+          ev.type = "touch";
           ev.buttons = 0;
           ev.mods = {};
           ev.x0 = x;
@@ -259,7 +263,7 @@ function interactionEvents (opts) {
           ev.theta = 0;
           ev.dtheta = 0;
 
-          emitter.emit('interaction', forward(ev, event));
+          emitter.emit("interaction", forward(ev, event));
         }
       } else if (activeCount === 2) {
         if (pPos[0] && pPos[1]) {
@@ -290,7 +294,7 @@ function interactionEvents (opts) {
           var dr = r1 / r0;
           var dtheta = theta1 - theta0;
 
-          ev.type = 'pinch';
+          ev.type = "pinch";
           ev.buttons = 0;
           ev.mods = {};
           ev.x0 = x0;
@@ -304,7 +308,7 @@ function interactionEvents (opts) {
           ev.theta = theta1;
           ev.dtheta = dtheta;
 
-          emitter.emit('interaction', forward(ev, event));
+          emitter.emit("interaction", forward(ev, event));
 
           // var px0 = x0;
           // var py0 = y0;
@@ -321,7 +325,7 @@ function interactionEvents (opts) {
     }
   }
 
-  function onTouchRemoved (event) {
+  function onTouchRemoved(event) {
     for (var i = 0; i < event.changedTouches.length; i++) {
       var removed = event.changedTouches[i];
       var idx = indexOfTouch(removed);
@@ -342,7 +346,7 @@ function interactionEvents (opts) {
     }
 
     if (activeCount < 2) {
-      ev.type = activeCount === 0 ? 'touchend' : 'pinchend';
+      ev.type = activeCount === 0 ? "touchend" : "pinchend";
       ev.buttons = 0;
       ev.mods = {};
       ev.x0 = 0;
@@ -356,37 +360,40 @@ function interactionEvents (opts) {
       ev.theta = 0;
       ev.dtheta = 0;
 
-      emitter.emit('interactionend', forward(ev, event));
+      emitter.emit("interactionend", forward(ev, event));
     }
   }
 
-
-  function enable () {
-    if (enabled) {return;}
+  function enable() {
+    if (enabled) {
+      return;
+    }
     enabled = true;
     changeListener.enabled = true;
-    element.addEventListener('wheel', onWheel, false);
-    element.addEventListener('mousedown', onMouseDown, false);
-    element.addEventListener('mousemove', onMouseMove, false);
+    element.addEventListener("wheel", onWheel, false);
+    element.addEventListener("mousedown", onMouseDown, false);
+    element.addEventListener("mousemove", onMouseMove, false);
 
-    element.addEventListener('touchstart', onTouchStart, false);
-    element.addEventListener('touchmove', onTouchMove, false);
-    element.addEventListener('touchend', onTouchRemoved, false);
-    element.addEventListener('touchcancel', onTouchRemoved, false);
+    element.addEventListener("touchstart", onTouchStart, false);
+    element.addEventListener("touchmove", onTouchMove, false);
+    element.addEventListener("touchend", onTouchRemoved, false);
+    element.addEventListener("touchcancel", onTouchRemoved, false);
   }
 
-  function disable () {
-    if (!enabled) {return;}
+  function disable() {
+    if (!enabled) {
+      return;
+    }
     enabled = false;
     changeListener.enabled = false;
-    element.removeEventListener('wheel', onWheel, false);
-    element.removeEventListener('mousedown', onMouseDown, false);
-    element.removeEventListener('mousemove', onMouseMove, false);
+    element.removeEventListener("wheel", onWheel, false);
+    element.removeEventListener("mousedown", onMouseDown, false);
+    element.removeEventListener("mousemove", onMouseMove, false);
 
-    element.removeEventListener('touchstart', onTouchStart, false);
-    element.removeEventListener('touchmove', onTouchMove, false);
-    element.removeEventListener('touchend', onTouchRemoved, false);
-    element.removeEventListener('touchcancel', onTouchRemoved, false);
+    element.removeEventListener("touchstart", onTouchStart, false);
+    element.removeEventListener("touchmove", onTouchMove, false);
+    element.removeEventListener("touchend", onTouchRemoved, false);
+    element.removeEventListener("touchcancel", onTouchRemoved, false);
   }
 
   enable();

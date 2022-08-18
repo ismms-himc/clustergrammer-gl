@@ -1,7 +1,6 @@
-var run_hide_tooltip = require('./../tooltip/run_hide_tooltip');
+var run_hide_tooltip = require("./../tooltip/run_hide_tooltip");
 
-module.exports = function single_clicking(params, external_model){
-
+module.exports = function single_clicking(params, external_model) {
   params.ani.last_click = params.ani.time;
   params.int.manual_update_cats = false;
 
@@ -11,16 +10,15 @@ module.exports = function single_clicking(params, external_model){
 
   // debugger
 
-  if (params.tooltip.tooltip_type.includes('-dendro')){
-    if (params.tooltip.permanent_tooltip === false){
-      require('./../tooltip/run_show_tooltip')(cgm, external_model);
+  if (params.tooltip.tooltip_type.includes("-dendro")) {
+    if (params.tooltip.permanent_tooltip === false) {
+      require("./../tooltip/run_show_tooltip")(cgm, external_model);
       params.tooltip.permanent_tooltip = true;
     }
   }
 
-  if (params.is_widget){
-    console.log('--> running widget callback on click')
+  if (params.is_widget) {
+    console.log("--> running widget callback on click");
     cgm.widget_callback(external_model);
   }
-
-}
+};

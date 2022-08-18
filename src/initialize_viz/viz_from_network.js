@@ -1,5 +1,4 @@
-module.exports = function viz_from_network(external_model){
-
+module.exports = function viz_from_network(external_model) {
   this.initialize_containers();
   this.initialize_regl();
 

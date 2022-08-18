@@ -1,5 +1,4 @@
-module.exports = function gen_int_par(params){
-
+module.exports = function gen_int_par(params) {
   var interact = {};
   interact.total = 0;
   interact.still_interacting = false;
@@ -7,7 +6,7 @@ module.exports = function gen_int_par(params){
   interact.need_reset_cat_opacity = false;
   interact.mouseover = {};
 
-  _.each(['row', 'col'], function(inst_axis){
+  _.each(["row", "col"], function (inst_axis) {
     interact.mouseover[inst_axis] = {};
     interact.mouseover[inst_axis].name = null;
     interact.mouseover[inst_axis].cats = [];

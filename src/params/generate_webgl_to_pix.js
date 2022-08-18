@@ -1,6 +1,5 @@
 var d3 = require("d3");
-module.exports = function generate_webgl_to_pix(params){
-
+module.exports = function generate_webgl_to_pix(params) {
   var webgl_to_pix = {};
   webgl_to_pix.x = d3.scaleLinear();
   webgl_to_pix.x
@@ -15,5 +14,4 @@ module.exports = function generate_webgl_to_pix(params){
     .clamp(true);
 
   params.webgl_to_pix = webgl_to_pix;
-
 };

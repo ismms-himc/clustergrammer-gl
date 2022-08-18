@@ -1,5 +1,4 @@
-module.exports = function calc_pan_by_zoom(zd, cursor_relative){
-
+module.exports = function calc_pan_by_zoom(zd, cursor_relative) {
   // pan_by_zoom relative to matrix max and min
   // zooming in causes negative panning
   // net positive panning is not allowed
@@ -10,5 +9,4 @@ module.exports = function calc_pan_by_zoom(zd, cursor_relative){
   // if (axis === 'x'){
   //   console.log(cursor_relative.min, cursor_relative.max, zd.pbz_relative_min, zd.pbz_relative_max);
   // }
-
 };

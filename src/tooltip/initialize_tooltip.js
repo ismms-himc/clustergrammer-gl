@@ -13,17 +13,14 @@
 //                                .style('width')
 //                                .replace('px',''));
 
-
 //   var d3_tip_height = parseFloat(d3.select(params.tooltip_id)
 //                                .style('height')
 //                                .replace('px',''));
-
 
 //   params.tooltip_ini_width = d3_tip_width;
 //   params.tooltip_ini_height = d3_tip_height;
 
 //   params.tooltip_fun.hide();
-
 
 //   console.log('initialize_tooltip')
 

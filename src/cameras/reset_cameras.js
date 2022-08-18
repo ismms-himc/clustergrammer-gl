@@ -1,8 +1,7 @@
-var ini_zoom_data = require('./../zoom/ini_zoom_data');
-var make_cameras = require('./make_cameras');
+var ini_zoom_data = require("./../zoom/ini_zoom_data");
+var make_cameras = require("./make_cameras");
 
-module.exports = function reset_cameras(regl, params){
-
+module.exports = function reset_cameras(regl, params) {
   // console.log('reset_cameras\n-------------------')
   params.reset_cameras = false;
 
@@ -11,7 +10,5 @@ module.exports = function reset_cameras(regl, params){
 
   params.labels.draw_labels = false;
   params.ani.ini_viz = true;
-  params.int.total = 0
-
-
+  params.int.total = 0;
 };

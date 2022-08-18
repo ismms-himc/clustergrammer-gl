@@ -1,10 +1,9 @@
-var m3 = require('./../draws/mat3_transform');
-var color_to_rgba = require('./../colors/color_to_rgba');
-var get_cat_value = require('./get_cat_value');
+var m3 = require("./../draws/mat3_transform");
+var color_to_rgba = require("./../colors/color_to_rgba");
+var get_cat_value = require("./get_cat_value");
 
-module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
-
-  var cat_index_name = 'cat-' + String(cat_index);
+module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
+  var cat_index_name = "cat-" + String(cat_index);
 
   /*
 
@@ -16,8 +15,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   */
 
   // var inst_rgba = color_to_rgba('#ff0000', 0.5);
-  var inst_rgba = color_to_rgba('purple', 0.95);
-  var num_labels = params.labels['num_'+inst_axis];
+  var inst_rgba = color_to_rgba("purple", 0.95);
+  var num_labels = params.labels["num_" + inst_axis];
 
   // category tiles have fixed heights
   var cat_height;
@@ -26,18 +25,17 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var mat_size;
   var top_shift_triangles;
   cat_height = 0.04;
-  if (inst_axis === 'col'){
+  if (inst_axis === "col") {
     mat_size = params.viz_dim.heat_size.x;
     top_shift_triangles = params.viz_dim.mat_size.y;
-    cat_width = (mat_size/0.5)/num_labels;
-
+    cat_width = mat_size / 0.5 / num_labels;
   } else {
     mat_size = params.viz_dim.heat_size.y;
     top_shift_triangles = params.viz_dim.mat_size.x;
-    cat_width = (params.viz_dim.heat_size.y/0.5)/num_labels;
+    cat_width = params.viz_dim.heat_size.y / 0.5 / num_labels;
   }
 
-  var zoom_function = function(context){
+  var zoom_function = function (context) {
     return context.view;
   };
 
@@ -52,16 +50,17 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var mousing_over_cat;
 
   // if mousing over categories initialize all categories to low opacity
-  if (params.tooltip.tooltip_type){
-    if (params.tooltip.tooltip_type.includes('-cat-')){
+  if (params.tooltip.tooltip_type) {
+    if (params.tooltip.tooltip_type.includes("-cat-")) {
       is_mousing_over_cat = true;
-      var mouseover_cat_index = params.tooltip.tooltip_type.split('-')[2]
-      mousing_over_cat = params.int.mouseover[inst_axis].cats[mouseover_cat_index]
+      var mouseover_cat_index = params.tooltip.tooltip_type.split("-")[2];
+      mousing_over_cat =
+        params.int.mouseover[inst_axis].cats[mouseover_cat_index];
     }
   }
 
   var is_cat_value = false;
-  if (params.viz.cat_info[inst_axis][cat_index_name].type == 'cat_values'){
+  if (params.viz.cat_info[inst_axis][cat_index_name].type == "cat_values") {
     is_cat_value = true;
   }
 
@@ -72,47 +71,47 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var color_arr = [];
   var inst_value_color;
   var ini_cat_value;
-  for (var i = 0; i < num_labels; i++){
-
-    var inst_cat = params.network[inst_axis + '_nodes'][i][cat_index_name];
+  for (var i = 0; i < num_labels; i++) {
+    var inst_cat = params.network[inst_axis + "_nodes"][i][cat_index_name];
 
     // Check if value-based category
-    if (is_cat_value){
-      ini_cat_value = get_cat_value(inst_cat)
-      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name]
-                            .cat_scale(Math.abs(ini_cat_value));
+    if (is_cat_value) {
+      ini_cat_value = get_cat_value(inst_cat);
+      inst_opacity = params.viz.cat_info[inst_axis][cat_index_name].cat_scale(
+        Math.abs(ini_cat_value)
+      );
       // get positive and negative colors
-      if (ini_cat_value > 0){
+      if (ini_cat_value > 0) {
         ini_value_color = params.viz.cat_value_colors[0];
       } else {
         ini_value_color = params.viz.cat_value_colors[1];
       }
       // inst_value_color = params.viz.cat_value_colors[0];
-      inst_value_color = color_to_rgba(ini_value_color)
-                           .map((x) => x * inst_opacity + (1 - inst_opacity));
+      inst_value_color = color_to_rgba(ini_value_color).map(
+        (x) => x * inst_opacity + (1 - inst_opacity)
+      );
     }
 
     // Set Category Colors
     ///////////////////////////
     var inst_color;
-    if (is_cat_value === false){
-      if ('cat_colors' in params.network){
-        if (cat_index_name in params.network.cat_colors[inst_axis]){
+    if (is_cat_value === false) {
+      if ("cat_colors" in params.network) {
+        if (cat_index_name in params.network.cat_colors[inst_axis]) {
           try {
             // inst_color = params.network.cat_colors[inst_axis][cat_index_name][inst_cat];
-            inst_color = params.viz.global_cat_colors[inst_cat.split(': ')[1]];
-          }
-          catch(err){
+            inst_color = params.viz.global_cat_colors[inst_cat.split(": ")[1]];
+          } catch (err) {
             // get random colors from color dictionary
-            inst_color = 'white';
+            inst_color = "white";
           }
         } else {
           // get random colors from color dictionary
-          inst_color = 'white';
+          inst_color = "white";
         }
       } else {
         // get random colors from color dictionary
-        inst_color = 'white';
+        inst_color = "white";
       }
     } else {
       inst_color = inst_value_color;
@@ -123,35 +122,32 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     // switch non-highlighted colors to white (avoid opacity bug)
     inst_opacity = 1.0;
     var blend_fraction = 0.25;
-    if (is_mousing_over_cat){
-      if (mousing_over_cat == inst_cat){
-        if (is_cat_value === false){
-          inst_color = color_to_rgba(inst_color, inst_opacity)
+    if (is_mousing_over_cat) {
+      if (mousing_over_cat == inst_cat) {
+        if (is_cat_value === false) {
+          inst_color = color_to_rgba(inst_color, inst_opacity);
         }
       } else {
-
         // not currently selected category
-        if (is_cat_value === false){
-          inst_color = color_to_rgba(inst_color, inst_opacity)
-                         .map((x) => x * blend_fraction  + (1 - blend_fraction));
+        if (is_cat_value === false) {
+          inst_color = color_to_rgba(inst_color, inst_opacity).map(
+            (x) => x * blend_fraction + (1 - blend_fraction)
+          );
         }
       }
     } else {
-
-      if (is_cat_value === false){
-        inst_color = color_to_rgba(inst_color, inst_opacity)
+      if (is_cat_value === false) {
+        inst_color = color_to_rgba(inst_color, inst_opacity);
       }
-
     }
 
-    color_arr[i] = inst_color
-
+    color_arr[i] = inst_color;
   }
 
   const color_buffer = regl.buffer({
     length: num_labels,
-    'usage': 'dynamic'
-  })
+    usage: "dynamic",
+  });
 
   color_buffer(color_arr);
 
@@ -164,16 +160,15 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
   var scale_y = m3.scaling(2, 1);
 
   var rotation_radians;
-  if (inst_axis === 'row'){
+  if (inst_axis === "row") {
     rotation_radians = 0;
-  } else if (inst_axis === 'col'){
-    rotation_radians = Math.PI/2;
+  } else if (inst_axis === "col") {
+    rotation_radians = Math.PI / 2;
   }
 
   var mat_rotate = m3.rotation(rotation_radians);
 
   var args = {
-
     vert: `
       precision highp float;
       attribute vec2 ini_position;
@@ -245,31 +240,30 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
-        [cat_height,  cat_width/2],
-        [cat_height/2,  cat_width/2],
-        [cat_height, -cat_width/2],
+        [cat_height, cat_width / 2],
+        [cat_height / 2, cat_width / 2],
+        [cat_height, -cat_width / 2],
 
-        [cat_height/2,  -cat_width/2],
-        [cat_height,  -cat_width/2],
-        [cat_height/2, cat_width/2],
+        [cat_height / 2, -cat_width / 2],
+        [cat_height, -cat_width / 2],
+        [cat_height / 2, cat_width / 2],
       ],
 
       cat_pos_att_inst: {
         buffer: regl.buffer(params.cat_arrs.inst[inst_axis][cat_index]),
-        divisor: 1
+        divisor: 1,
       },
 
       cat_pos_att_new: {
         buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
-        divisor: 1
+        divisor: 1,
       },
 
       // pass color buffer
       color_att: {
         buffer: color_buffer,
-        divisor: 1
+        divisor: 1,
       },
-
     },
 
     uniforms: {
@@ -279,36 +273,34 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
       top_offset: top_offset,
       triangle_color: inst_rgba,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
-      run_animation: regl.prop('run_animation')
+      run_animation: regl.prop("run_animation"),
     },
 
     blend: {
-        enable: true,
-        func: {
-          srcRGB: 'src alpha',
-          srcAlpha: 1,
-          dstRGB: 'one minus src alpha',
-          dstAlpha: 1
-        },
-        equation: {
-          rgb: 'add',
-          alpha: 'add'
-        },
-        color: [0, 0, 0, 0]
+      enable: true,
+      func: {
+        srcRGB: "src alpha",
+        srcAlpha: 1,
+        dstRGB: "one minus src alpha",
+        dstAlpha: 1,
       },
+      equation: {
+        rgb: "add",
+        alpha: "add",
+      },
+      color: [0, 0, 0, 0],
+    },
 
     count: 6,
     instances: num_labels,
     depth: {
       enable: true,
       mask: true,
-      func: 'less',
+      func: "less",
       // func: 'greater',
-      range: [0, 1]
+      range: [0, 1],
     },
-
   };
 
   return args;
-
 };

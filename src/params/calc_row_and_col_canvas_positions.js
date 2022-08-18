@@ -1,9 +1,8 @@
-module.exports = function calc_row_and_col_canvas_positions(params){
-
-  var inst_axis = 'row';
-  var num_row = params.labels['num_' + inst_axis];
-  inst_axis = 'col';
-  var num_col = params.labels['num_' + inst_axis];
+module.exports = function calc_row_and_col_canvas_positions(params) {
+  var inst_axis = "row";
+  var num_row = params.labels["num_" + inst_axis];
+  inst_axis = "col";
+  var num_col = params.labels["num_" + inst_axis];
 
   // draw matrix cells
   /////////////////////////////////////////
@@ -13,14 +12,16 @@ module.exports = function calc_row_and_col_canvas_positions(params){
   offset.y = params.viz_dim.center.y;
 
   // generate x position array
-  var x_arr = Array(num_col).fill()
-    .map(function(_, i){
-      return i/num_col - offset.x;
+  var x_arr = Array(num_col)
+    .fill()
+    .map(function (_, i) {
+      return i / num_col - offset.x;
     });
 
-  var y_arr = Array(num_row).fill()
-    .map(function(_, i){
-      return -i/num_row + offset.y - 1/num_row;
+  var y_arr = Array(num_row)
+    .fill()
+    .map(function (_, i) {
+      return -i / num_row + offset.y - 1 / num_row;
     });
 
   var canvas_pos = {};
@@ -28,5 +29,4 @@ module.exports = function calc_row_and_col_canvas_positions(params){
   canvas_pos.y_arr = y_arr;
 
   return canvas_pos;
-
 };

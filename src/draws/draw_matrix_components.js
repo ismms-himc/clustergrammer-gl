@@ -1,10 +1,8 @@
-var interp_fun = require('./interp_fun');
+var interp_fun = require("./interp_fun");
 
-module.exports = function draw_matrix_components(regl, params){
-
+module.exports = function draw_matrix_components(regl, params) {
   /* Matrix */
   params.cameras.mat.draw(() => {
-
     /*
       Disabling this, prevents the screen from flashing when working with very
       large datasets
@@ -27,9 +25,7 @@ module.exports = function draw_matrix_components(regl, params){
 
     regl(params.matrix_args.regl_props.rects)({
       interp_prop: interp_fun(params),
-      run_animation: params.ani.running
+      run_animation: params.ani.running,
     });
-
   });
-
 };

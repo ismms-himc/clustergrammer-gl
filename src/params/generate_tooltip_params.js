@@ -1,5 +1,4 @@
-module.exports = function generate_tooltip_params(regl, params){
-
+module.exports = function generate_tooltip_params(regl, params) {
   var tooltip = {};
   tooltip.show_tooltip = false;
   tooltip.in_bounds_tooltip = false;
@@ -14,4 +13,4 @@ module.exports = function generate_tooltip_params(regl, params){
   tooltip.permanent_tooltip = false;
 
   params.tooltip = tooltip;
-}
+};

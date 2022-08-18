@@ -1,5 +1,4 @@
-module.exports = function gen_ani_par(params){
-
+module.exports = function gen_ani_par(params) {
   var ani = {};
   ani.time_remain = 0;
   ani.running = false;

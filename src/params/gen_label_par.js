@@ -1,5 +1,4 @@
-module.exports = function gen_label_par(cgm){
-
+module.exports = function gen_label_par(cgm) {
   let params = cgm.params;
 
   // console.log('-----------------------------------------')
@@ -20,23 +19,20 @@ module.exports = function gen_label_par(cgm){
   // generate titles if necessary
   var inst_label;
   labels.titles = {};
-  labels.precalc = {}
-  _.each(['row', 'col'], function(inst_axis){
-
+  labels.precalc = {};
+  _.each(["row", "col"], function (inst_axis) {
     // initialize with empty title
-    labels.titles[inst_axis] = '';
+    labels.titles[inst_axis] = "";
 
-    inst_label = params.network[inst_axis + '_nodes'][0].name;
-    if (inst_label.indexOf(': ') > 0){
-      labels.titles[inst_axis] = inst_label.split(': ')[0];
+    inst_label = params.network[inst_axis + "_nodes"][0].name;
+    if (inst_label.indexOf(": ") > 0) {
+      labels.titles[inst_axis] = inst_label.split(": ")[0];
     }
 
     // pre-calc text triangles if low enough number of labels
     labels.precalc[inst_axis] = false;
-
   });
 
   params.labels = labels;
-  require('./../matrix_labels/gen_ordered_labels')(cgm);
-
+  require("./../matrix_labels/gen_ordered_labels")(cgm);
 };

@@ -1,9 +1,8 @@
-module.exports = function get_mouseover_type(params){
-
+module.exports = function get_mouseover_type(params) {
   // switch to using absolute cursor position to determine mouseover type
   // emperically found pixel parameters
   // cats are ~12px wide
-  var cat_width = 12  ;
+  var cat_width = 12;
   var edim = {};
   edim.x = {};
   edim.x.heat_min = 125 + cat_width * params.cat_data.row.length;
@@ -27,76 +26,71 @@ module.exports = function get_mouseover_type(params){
   var cat_index;
 
   params.tooltip.in_bounds_tooltip = false;
-  params.tooltip.tooltip_type = 'out-of-bounds';
+  params.tooltip.tooltip_type = "out-of-bounds";
 
-  if (inst_pix.x > edim.x.heat_min &&
-      inst_pix.x < edim.x.dendro_start &&
-      inst_pix.y > edim.y.heat_min &&
-      inst_pix.y < edim.y.dendro_start){
-
+  if (
+    inst_pix.x > edim.x.heat_min &&
+    inst_pix.x < edim.x.dendro_start &&
+    inst_pix.y > edim.y.heat_min &&
+    inst_pix.y < edim.y.dendro_start
+  ) {
     params.tooltip.in_bounds_tooltip = true;
-    params.tooltip.tooltip_type = 'matrix-cell';
-
-  } else if (inst_pix.x <= edim.x.heat_min &&
-             inst_pix.y > edim.y.heat_min &&
-             inst_pix.y < edim.y.dendro_start){
-
+    params.tooltip.tooltip_type = "matrix-cell";
+  } else if (
+    inst_pix.x <= edim.x.heat_min &&
+    inst_pix.y > edim.y.heat_min &&
+    inst_pix.y < edim.y.dendro_start
+  ) {
     params.tooltip.in_bounds_tooltip = true;
-    if (params.cat_data.row.length > 0){
+    if (params.cat_data.row.length > 0) {
+      cat_index = Math.floor((edim.x.heat_min - inst_pix.x) / cat_width);
 
-      cat_index = Math.floor( ((edim.x.heat_min - inst_pix.x)/cat_width) );
-
-      if (cat_index + 1 <= params.cat_data.row.length){
-        params.tooltip.tooltip_type = 'row-cat-' + String(params.cat_data.row.length - cat_index - 1);
+      if (cat_index + 1 <= params.cat_data.row.length) {
+        params.tooltip.tooltip_type =
+          "row-cat-" + String(params.cat_data.row.length - cat_index - 1);
       } else {
-        params.tooltip.tooltip_type = 'row-label';
+        params.tooltip.tooltip_type = "row-label";
       }
-
     } else {
-      params.tooltip.tooltip_type = 'row-label';
+      params.tooltip.tooltip_type = "row-label";
     }
-
-
-  } else if (inst_pix.y <= edim.y.heat_min &&
-             inst_pix.x > edim.x.heat_min &&
-             inst_pix.x < edim.x.dendro_start){
-
+  } else if (
+    inst_pix.y <= edim.y.heat_min &&
+    inst_pix.x > edim.x.heat_min &&
+    inst_pix.x < edim.x.dendro_start
+  ) {
     params.tooltip.in_bounds_tooltip = true;
-    if (params.cat_data.col.length > 0){
+    if (params.cat_data.col.length > 0) {
+      cat_index = Math.floor((edim.y.heat_min - inst_pix.y) / cat_width);
 
-      cat_index = Math.floor( ((edim.y.heat_min - inst_pix.y)/cat_width) );
-
-      if (cat_index + 1 <= params.cat_data.col.length){
-        params.tooltip.tooltip_type = 'col-cat-' + String(params.cat_data.col.length - cat_index - 1);
+      if (cat_index + 1 <= params.cat_data.col.length) {
+        params.tooltip.tooltip_type =
+          "col-cat-" + String(params.cat_data.col.length - cat_index - 1);
       } else {
-        params.tooltip.tooltip_type = 'col-label';
+        params.tooltip.tooltip_type = "col-label";
       }
-
     } else {
-      params.tooltip.tooltip_type = 'col-label';
+      params.tooltip.tooltip_type = "col-label";
     }
-
-  } else if (inst_pix.x >= edim.x.dendro_start &&
-             inst_pix.x < edim.x.dendro_end &&
-             inst_pix.y > edim.y.heat_min &&
-             inst_pix.y < edim.y.dendro_start){
-
-    if (params.order.inst.row == 'clust'){
-      params.tooltip.tooltip_type = 'row-dendro';
+  } else if (
+    inst_pix.x >= edim.x.dendro_start &&
+    inst_pix.x < edim.x.dendro_end &&
+    inst_pix.y > edim.y.heat_min &&
+    inst_pix.y < edim.y.dendro_start
+  ) {
+    if (params.order.inst.row == "clust") {
+      params.tooltip.tooltip_type = "row-dendro";
       params.tooltip.in_bounds_tooltip = true;
     }
-
-  } else if (inst_pix.y >= edim.y.dendro_start &&
-             inst_pix.y < edim.y.dendro_end &&
-             inst_pix.x > edim.x.heat_min &&
-             inst_pix.x < edim.x.dendro_start){
-
-    if (params.order.inst.col == 'clust'){
-      params.tooltip.tooltip_type = 'col-dendro';
+  } else if (
+    inst_pix.y >= edim.y.dendro_start &&
+    inst_pix.y < edim.y.dendro_end &&
+    inst_pix.x > edim.x.heat_min &&
+    inst_pix.x < edim.x.dendro_start
+  ) {
+    if (params.order.inst.col == "clust") {
+      params.tooltip.tooltip_type = "col-dendro";
       params.tooltip.in_bounds_tooltip = true;
     }
-
   }
-
-
-}
+};

@@ -41,7 +41,6 @@
 //       tooltip_lines.push(inst_name)
 //     });
 
-
 //   } else if (params.tooltip.tooltip_type === 'col-dendro'){
 //     tooltip_lines[0] = 'col-dendro';
 //     _.each(mouseover.col.dendro.all_names, function(inst_name){
@@ -175,7 +174,6 @@
 //       // .style('top', pos_y + 'px')
 //       // .style('left', pos_x + 'px')
 //       .classed('group-svg-tooltip', true);
-
 
 //     if (params.tooltip.tooltip_type === 'row-dendro'){
 //       cat_breakdown = calc_cat_cluster_breakdown(params, mouseover.row.dendro, 'row');

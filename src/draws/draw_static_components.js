@@ -1,5 +1,4 @@
-module.exports = function draw_static_components(regl, params){
-
+module.exports = function draw_static_components(regl, params) {
   params.cameras.static.draw(() => {
     var args = params.spillover_args;
     var triangles = params.spillover_triangles;

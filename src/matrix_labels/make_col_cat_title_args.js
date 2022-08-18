@@ -1,24 +1,23 @@
-var m3 = require('./../draws/mat3_transform');
-var interp_fun = require('./../draws/interp_fun');
+var m3 = require("./../draws/mat3_transform");
+var interp_fun = require("./../draws/interp_fun");
 
-module.exports = function make_col_cat_title_args(regl, params, zoom_function){
-
-  var inst_axis = 'row';
-  var num_row = params.labels['num_' + inst_axis];
+module.exports = function make_col_cat_title_args(regl, params, zoom_function) {
+  var inst_axis = "row";
+  var num_row = params.labels["num_" + inst_axis];
 
   var scale_text = num_row;
 
-  var webgl_fs = (1/num_row) * params.zoom_data.y.total_zoom;
+  var webgl_fs = (1 / num_row) * params.zoom_data.y.total_zoom;
 
   var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
 
   var scale_down_fs;
-  if (webgl_fs > max_webgl_fs){
-    scale_down_fs = webgl_fs/max_webgl_fs;
+  if (webgl_fs > max_webgl_fs) {
+    scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
 
-  var mat_rotate = m3.rotation(Math.PI/2);
+  var mat_rotate = m3.rotation(Math.PI / 2);
 
   var x_offset = params.viz_dim.mat_size.x + 0.02;
 
@@ -77,7 +76,7 @@ module.exports = function make_col_cat_title_args(regl, params, zoom_function){
                            1.0);
       }`;
 
-  var frag_arg =  `
+  var frag_arg = `
       precision mediump float;
       void main () {
         gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
@@ -87,13 +86,13 @@ module.exports = function make_col_cat_title_args(regl, params, zoom_function){
     vert: vert_arg,
     frag: frag_arg,
     attributes: {
-      position: regl.prop('positions')
+      position: regl.prop("positions"),
     },
-    elements: regl.prop('cells'),
+    elements: regl.prop("cells"),
     uniforms: {
       zoom: zoom_function,
-      inst_offset: regl.prop('inst_offset'),
-      new_offset: regl.prop('new_offset'),
+      inst_offset: regl.prop("inst_offset"),
+      new_offset: regl.prop("new_offset"),
       scale_text: scale_text,
       x_offset: x_offset,
       heat_size: params.viz_dim.heat_size.y,
@@ -102,16 +101,15 @@ module.exports = function make_col_cat_title_args(regl, params, zoom_function){
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.ani.running
+      run_animation: params.ani.running,
     },
     depth: {
       enable: true,
       mask: true,
-      func: 'less',
-      range: [0, 1]
+      func: "less",
+      range: [0, 1],
     },
   };
 
   return args;
-
 };

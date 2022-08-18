@@ -1,11 +1,9 @@
 var d3 = require("d3");
-var final_mouseover_frame = require('./../interactions/final_mouseover_frame');
+var final_mouseover_frame = require("./../interactions/final_mouseover_frame");
 var wait_time_final_mouseover = 100;
 
-module.exports = function draw_mouseover(regl, params){
-
-  d3.selectAll(params.root + ' .group-svg-tooltip')
-    .remove();
+module.exports = function draw_mouseover(regl, params) {
+  d3.selectAll(params.root + " .group-svg-tooltip").remove();
 
   params.zoom_data.x.total_mouseover = params.zoom_data.x.total_mouseover + 1;
 

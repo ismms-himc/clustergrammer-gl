@@ -1,65 +1,81 @@
-import manual_update_to_cats from "./cats/manual_update_to_cats";
-import update_all_cats from "./cats/update_all_cats";
-import build_control_panel from "./control_panel/build_control_panel";
-import build_dendrogram_sliders from "./dendrogram/build_dendrogram_sliders";
-import download_matrix from "./download/download_matrix";
-import download_metadata from "./download/download_metadata";
-import draw_labels_tooltips_or_dendro from "./draws/draw_labels_tooltips_or_dendro";
-import run_viz from "./draws/run_viz";
-import destroy_viz from "./initialize_viz/destroy_viz";
-import initialize_containers from "./initialize_viz/initialize_containers";
-import ini_canvas_mouseover from "./initialize_viz/ini_canvas_mouseover";
-import viz_from_network from "./initialize_viz/viz_from_network";
-import single_clicking from "./interactions/single_clicking";
-import gen_ordered_labels from "./matrix_labels/gen_ordered_labels";
-import initialize_params from "./params/initialize_params";
-import initialize_regl from "./params/initialize_regl";
-import recluster from "./recluster/recluster";
-import zoom_rules_high_mat from "./zoom/zoom_rules_high_mat";
+/*
+  clustergrammer-gl version 0.23.0
+ */
 
-export default function CGM(args, external_model = null) {
-  var clustergrammerModel = {};
+function clustergrammer_gl(args, external_model = null) {
+  var d3 = require("d3");
+
+  console.log("#################################");
+  console.log("clustergrammer-gl version 0.23.0");
+  console.log("#################################");
+
+  var cgm = {};
 
   // check if container is defined
   if (args.container !== null) {
-    clustergrammerModel.args = args;
+    cgm.args = args;
 
-    clustergrammerModel.initialize_params = initialize_params;
-    clustergrammerModel.initialize_regl = initialize_regl;
-    clustergrammerModel.initialize_containers = initialize_containers;
-    clustergrammerModel.build_dendrogram_sliders = build_dendrogram_sliders;
-    clustergrammerModel.build_control_panel = build_control_panel;
-    clustergrammerModel.run_viz = run_viz;
-    clustergrammerModel.destroy_viz = destroy_viz;
-    clustergrammerModel.ini_canvas_mouseover = ini_canvas_mouseover;
-    clustergrammerModel.draw_labels_tooltips_or_dendro =
-      draw_labels_tooltips_or_dendro;
+    cgm.initialize_params = require("./params/initialize_params");
+    // cgm.decompress_network = require('./params/decompress_network');
+    cgm.initialize_regl = require("./params/initialize_regl");
+    cgm.initialize_containers = require("./initialize_viz/initialize_containers");
+    cgm.build_dendrogram_sliders = require("./dendrogram/build_dendrogram_sliders");
+    cgm.build_control_panel = require("./control_panel/build_control_panel");
+    cgm.run_viz = require("./draws/run_viz");
+    cgm.destroy_viz = require("./initialize_viz/destroy_viz");
+    cgm.ini_canvas_mouseover = require("./initialize_viz/ini_canvas_mouseover");
+    cgm.viz_from_network = require("./initialize_viz/viz_from_network");
+    cgm.draw_labels_tooltips_or_dendro = require("./draws/draw_labels_tooltips_or_dendro");
 
-    clustergrammerModel.single_clicking = single_clicking;
-    clustergrammerModel.zoom_rules_high_mat = zoom_rules_high_mat;
+    cgm.single_clicking = require("./interactions/single_clicking");
+    cgm.zoom_rules_high_mat = require("./zoom/zoom_rules_high_mat");
 
-    clustergrammerModel.gen_ordered_labels = gen_ordered_labels;
+    cgm.gen_ordered_labels = require("./params/gen_label_par");
+
+    if (typeof args.widget_callback !== "undefined") {
+      console.log("pass widget_callback to cgm  ");
+      cgm.widget_callback = args.widget_callback;
+    }
 
     // initialize network
-    clustergrammerModel.network = args.network;
+    // cgm.decompress_network(args.network);
+    cgm.network = args.network;
 
     // going to work on passing in filtered network in place of full network
     // as a quick crop method
-    viz_from_network(external_model);
+    cgm.viz_from_network(external_model);
 
     // copy the cgm object to the external widget model
     if (external_model != null) {
-      external_model.cgm = clustergrammerModel;
+      external_model.cgm = cgm;
     }
 
-    clustergrammerModel.recluster = recluster;
-    clustergrammerModel.manual_update_to_cats = manual_update_to_cats;
-    clustergrammerModel.update_all_cats = update_all_cats;
+    cgm.recluster = require("./recluster/recluster");
+    cgm.manual_update_to_cats = require("./cats/manual_update_to_cats");
+    cgm.update_all_cats = require("./cats/update_all_cats");
 
-    clustergrammerModel.download_matrix = download_matrix;
-    clustergrammerModel.download_metadata = download_metadata;
+    cgm.download_matrix = require("./download/download_matrix");
+    cgm.download_metadata = require("./download/download_metadata");
+
+    // this prevents Jupyter from listening to typing on the modal and
+    // misinterpreting as keyboard shortcuts
+    if (cgm.params.is_widget) {
+      // tooltip input box
+      let tooltip_id = cgm.params.tooltip_id.replace("#", "");
+      Jupyter.keyboard_manager.register_events(
+        document.getElementById(tooltip_id)
+      );
+
+      // control panel search box
+      let root_id = cgm.params.root.replace("#", "");
+      Jupyter.keyboard_manager.register_events(
+        document.getElementById(root_id)
+      );
+    }
 
     function adjust_opacity(opacity_scale) {
+      console.log("adjust_opacity!!!!!!!!!!!!!!");
+
       let cgm = this;
       let params = cgm.params;
 
@@ -68,8 +84,13 @@ export default function CGM(args, external_model = null) {
       draw_webgl_layers(cgm);
     }
 
-    clustergrammerModel.adjust_opacity = adjust_opacity;
+    cgm.adjust_opacity = adjust_opacity;
 
-    return clustergrammerModel;
+    // cgm.toggle_zscore = toggle_zscore
+
+    return cgm;
   }
 }
+
+// necessary for exporting function
+module.exports = clustergrammer_gl;

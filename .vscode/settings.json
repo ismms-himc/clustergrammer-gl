@@ -1,6 +1,7 @@
 {
     // formatting
     "editor.formatOnSave": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
     "editor.codeActionsOnSave": {
         "source.organizeImports": true,
     },

@@ -10,7 +10,7 @@ const packageFilename = "clustergrammer-gl";
 const getConfig = (type, fileExtension, mode, exportType) => ({
   entry: ENTRY_POINT,
   devtool: DEBUG ? "cheap-module-source-map" : false,
-  target: ["web", "es5"],
+  target: "web",
   output: {
     path: filePath,
     filename: `${packageFilename}.${fileExtension}`,
@@ -44,7 +44,7 @@ const getConfig = (type, fileExtension, mode, exportType) => ({
 
 module.exports = [
   {
-    ...getConfig("var", "js", "development", "default"),
+    ...getConfig("var", "js", "development"),
     plugins: [
       new BrowserSyncPlugin({
         // browse to http://localhost:3100/ during development,

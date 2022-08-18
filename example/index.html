@@ -76,12 +76,14 @@
       network.matrix_colors.pos = "red";
       network.matrix_colors.neg = "blue";
 
-      args = {};
-      args.network = network;
-      args.container = inst_container;
-      args.viz_width = inst_width;
-      args.viz_height = inst_width;
-      args.use_hzome = true;
+      args = {
+        network,
+        container: inst_container,
+        viz_width: inst_width,
+        viz_height: inst_height,
+        use_hzome: true,
+        showControlPanel: false
+      };
 
       cgm = CGM(args);
     </script>

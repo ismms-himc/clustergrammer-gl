@@ -20,4 +20,5 @@
     "[typescriptreact]": {
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
+    "python.formatting.provider": "black",
 }

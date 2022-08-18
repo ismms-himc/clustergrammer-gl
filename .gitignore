@@ -64,4 +64,6 @@ clustergrammer
 
 big_data
 
+*.py
+
 dist/

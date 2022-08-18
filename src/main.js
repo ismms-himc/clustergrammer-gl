@@ -15,12 +15,19 @@ function clustergrammer_gl(args, external_model = null) {
   if (args.container !== null) {
     cgm.args = args;
 
+    // always do these
     cgm.initialize_params = require("./params/initialize_params");
-    // cgm.decompress_network = require('./params/decompress_network');
     cgm.initialize_regl = require("./params/initialize_regl");
     cgm.initialize_containers = require("./initialize_viz/initialize_containers");
+    cgm.initialize_tooltip = require("./tooltip/initialize_d3_tip");
+
+    // maybe do these
     cgm.build_dendrogram_sliders = require("./dendrogram/build_dendrogram_sliders");
-    cgm.build_control_panel = require("./control_panel/build_control_panel");
+    if (args.showControlPanel) {
+      cgm.build_control_panel = require("./control_panel/build_control_panel");
+    } else {
+      cgm.build_control_panel = () => {};
+    }
     cgm.run_viz = require("./draws/run_viz");
     cgm.destroy_viz = require("./initialize_viz/destroy_viz");
     cgm.ini_canvas_mouseover = require("./initialize_viz/ini_canvas_mouseover");

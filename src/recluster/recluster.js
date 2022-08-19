@@ -2,6 +2,7 @@ import * as core from "mathjs/core";
 import * as transpose from "mathjs/lib/function/matrix/transpose";
 import matrix from "mathjs/lib/type/matrix";
 import * as cf from "tayden-clusterfck";
+import * as _ from "underscore";
 import change_groups from "../dendrogram/changeGroups";
 import runReorder from "../reorders/runReorder";
 import dist_fun from "./distanceFunctions";

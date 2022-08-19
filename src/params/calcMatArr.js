@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function calc_mat_arr(params) {
   const num_row = params.labels.num_row;
   const num_col = params.labels.num_col;

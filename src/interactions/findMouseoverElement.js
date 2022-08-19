@@ -1,4 +1,6 @@
+import * as _ from "underscore";
 import getMouseoverType from "./getMouseoverType";
+
 export default (function find_mouseover_element(regl, params, ev) {
   /*
   

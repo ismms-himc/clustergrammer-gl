@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function calc_viz_area(params) {
   const zoom_data = params.zoom_data;
   const pix_to_webgl = params.pix_to_webgl;

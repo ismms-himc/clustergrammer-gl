@@ -1,6 +1,7 @@
 import color_to_rgba from "../colors/colorToRgba";
-import m3 from "../draws/mat3Transform";
+import { rotation, scaling } from "../draws/mat3Transform";
 import make_dendro_arr from "./makeDendroArr";
+
 export default (function make_dendro_args(regl, params, inst_axis) {
   let rotation_radians;
   let heat_size;
@@ -27,8 +28,8 @@ export default (function make_dendro_args(regl, params, inst_axis) {
     usage: "dynamic",
   });
   dendro_buffer(dendro_arr);
-  const mat_scale = m3.scaling(1, 1);
-  const mat_rotate = m3.rotation(rotation_radians);
+  const mat_scale = scaling(1, 1);
+  const mat_rotate = rotation(rotation_radians);
   const inst_rgba = color_to_rgba("black", 0.35);
   const args = {
     vert: `

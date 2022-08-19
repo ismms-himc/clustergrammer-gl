@@ -1,5 +1,7 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import extend from "xtend/mutable";
+
 export default (function calc_vd(regl, params) {
   const vd = {};
   const opts = opts || {};

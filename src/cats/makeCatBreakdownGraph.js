@@ -1,6 +1,8 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import catBreakdownBars from "./catBreakdownBars";
 import catBreakdownValues from "./catBreakdownValues";
+
 export default (function make_cat_breakdown_graph(params, dendro_info, cb) {
   if (cb.length > 0) {
     let width = 370;

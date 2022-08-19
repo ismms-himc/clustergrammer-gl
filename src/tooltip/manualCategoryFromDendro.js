@@ -13,7 +13,7 @@ export default function manual_category_from_dendro(cgm, external_model, axis) {
     .classed("color_picker_div", true)
     .style("height", "0px")
     .style("display", "none");
-  colors_array_1 = [
+  const colors_array_1 = [
     "#ff4422",
     "#ee1166",
     "#9911bb",
@@ -25,7 +25,7 @@ export default function manual_category_from_dendro(cgm, external_model, axis) {
     "#009988",
     "#44bb44",
   ];
-  colors_array_2 = [
+  const colors_array_2 = [
     "#88cc44",
     "#ccdd22",
     "#ffee11",
@@ -78,7 +78,7 @@ export default function manual_category_from_dendro(cgm, external_model, axis) {
       select_color_from_pallet(d);
     });
   // custom category input secion
-  custom_cat_div = d3
+  const custom_cat_div = d3
     .select(params.tooltip_id)
     .append("div")
     .classed("custom_cat_div", true);

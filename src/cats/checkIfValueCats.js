@@ -1,4 +1,6 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
+
 export default (function check_if_value_cats(cat_states) {
   let tmp_cat = cat_states[0];
   let has_title = false;

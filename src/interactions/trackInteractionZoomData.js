@@ -64,6 +64,5 @@ export default (function track_interaction_zoom_data(regl, params, ev) {
     // trying to keep track of interactions for mouseovers
     keep_track_of_mouseovers(params);
     find_mouseover_element(regl, params, ev);
-  } else {
   }
 });

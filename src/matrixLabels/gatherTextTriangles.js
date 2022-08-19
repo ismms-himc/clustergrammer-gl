@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 import vectorize_label from "./vectorizeLabel";
 
 export default function gather_text_triangles(params, inst_axis) {

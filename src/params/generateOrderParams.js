@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function generate_order_params(params) {
   params.order = {};
   _.each(["inst", "new"], function (inst_state) {

@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function gen_int_par(params) {
   const interact = {};
   interact.total = 0;
@@ -12,7 +14,6 @@ export default (function gen_int_par(params) {
   });
   interact.mouseover.value = null;
   interact.enable_viz_interact = true;
-  // interact.wait_time_final_interact = 50;
   interact.manual_update_cats = false;
   params.int = interact;
 });

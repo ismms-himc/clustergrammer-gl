@@ -20,6 +20,7 @@ export default (function build_reorder_cat_titles(regl, cgm) {
     const cat_primary = "cat-" + String(i);
     const cat_secondary_up = "cat-" + String(i - 1);
     const cat_secondary_down = "cat-" + String(i + 1);
+    let cat_secondary;
     if (cat_secondary_down in params.network[axis + "_nodes"][0]) {
       cat_secondary = cat_secondary_down;
     } else if (cat_secondary_up in params.network[axis + "_nodes"][0]) {

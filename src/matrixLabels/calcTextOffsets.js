@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function calc_text_offsets(params, inst_axis) {
   params.labels.offset_dict[inst_axis] = {};
   _.each(params.network[inst_axis + "_nodes"], function (inst_label, inst_id) {

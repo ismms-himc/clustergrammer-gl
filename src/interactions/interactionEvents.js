@@ -217,8 +217,8 @@ function interactionEvents(opts) {
           const theta1 = Math.atan2(dy1, dx1);
           const x0 = (pos0B[0] + pos0A[0]) * 0.5;
           const y0 = (pos0B[1] + pos0A[1]) * 0.5;
-          dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0]);
-          dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1]);
+          const dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0]);
+          const dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1]);
           const dr = r1 / r0;
           const dtheta = theta1 - theta0;
           ev.type = "pinch";

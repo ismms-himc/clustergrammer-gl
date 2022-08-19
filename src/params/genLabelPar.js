@@ -1,4 +1,6 @@
+import * as _ from "underscore";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels";
+
 export default (function gen_label_par(cgm) {
   const params = cgm.params;
   const labels = {};

@@ -6,8 +6,6 @@ export default (function final_interaction_frame(regl, params) {
     if (params.ani.first_frame == false) {
       // run draw commands
       params.labels.draw_labels = true;
-      if (params.zoom_data.x.total_mouseover == 0) {
-      }
     } else {
       params.ani.first_frame = false;
     }

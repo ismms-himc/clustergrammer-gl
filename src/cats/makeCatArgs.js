@@ -1,6 +1,7 @@
 import color_to_rgba from "../colors/colorToRgba";
-import m3 from "../draws/mat3Transform";
+import { rotation, scaling } from "../draws/mat3Transform";
 import get_cat_value from "./getCatValue";
+
 export default (function make_cat_args(regl, params, inst_axis, cat_index) {
   const cat_index_name = "cat-" + String(cat_index);
   /*
@@ -68,6 +69,7 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
         Math.abs(ini_cat_value)
       );
       // get positive and negative colors
+      let ini_value_color;
       if (ini_cat_value > 0) {
         ini_value_color = params.viz.cat_value_colors[0];
       } else {
@@ -136,14 +138,14 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
   // ///////////////////////////////
   // Rotation and Scaling
   // ///////////////////////////////
-  const scale_y = m3.scaling(2, 1);
+  const scale_y = scaling(2, 1);
   let rotation_radians;
   if (inst_axis === "row") {
     rotation_radians = 0;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
   }
-  const mat_rotate = m3.rotation(rotation_radians);
+  const mat_rotate = rotation(rotation_radians);
   const args = {
     vert: `
       precision highp float;

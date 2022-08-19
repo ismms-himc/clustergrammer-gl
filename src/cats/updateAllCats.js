@@ -3,11 +3,11 @@ import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 import generateCatArgsArrs from "../params/generateCatArgsArrs";
 
 export default function update_all_cats(cgm, axis, cat_title, new_cat_dict) {
-  params = cgm.params;
-  regl = cgm.regl;
+  const params = cgm.params;
+  const regl = cgm.regl;
   // manually updated categories in network
   cgm.params.network[axis + "_nodes"].map((x) => {
-    inst_name = x.name;
+    let inst_name = x.name;
     if (inst_name.includes(": ")) {
       inst_name = inst_name.split(": ")[1];
     }

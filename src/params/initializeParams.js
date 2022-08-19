@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import makeCameras from "../cameras/makeCameras";
 import color_to_rgba from "../colors/colorToRgba";
 import make_matrix_args from "../matrixCells/makeMatrixArgs";
@@ -134,7 +135,7 @@ export default function initialize_params(cgm, external_model) {
     // params.widget_model = null;
   }
   const axes = ["col", "row"];
-  manual_category = {};
+  const manual_category = {};
   if ("manual_category" in params.network) {
     // copy from network to cat data
     axes.forEach((axis) => {
@@ -146,7 +147,7 @@ export default function initialize_params(cgm, external_model) {
             params.network.manual_category[axis + "_cats"];
         }
         if (axis + "_cats" in params.network.manual_category) {
-          color_dict = {};
+          const color_dict = {};
           if ("color" in params.network.manual_category[axis + "_cats"][0]) {
             manual_category[axis + "_cats"].map(
               (x) => (color_dict[x.name] = x.color)

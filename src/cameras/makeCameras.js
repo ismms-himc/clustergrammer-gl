@@ -1,4 +1,4 @@
-import custom_camera_2d from "./customCamera2d";
+import custom_camera_2d from "./customCamera2D";
 
 export default function make_cameras(regl, params) {
   const zoom_data = params.zoom_data;

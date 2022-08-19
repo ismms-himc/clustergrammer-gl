@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import interp_fun from "../draws/interpFun";
-import m3 from "../draws/mat3Transform";
+import { rotation, scaling } from "../draws/mat3Transform";
 
 export default function make_col_text_args(regl, params, zoom_function) {
   const inst_axis = "col";
@@ -24,8 +24,8 @@ export default function make_col_text_args(regl, params, zoom_function) {
     scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
-  const mat_rotate = m3.rotation(Math.PI / 4);
-  const text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
+  const mat_rotate = rotation(Math.PI / 4);
+  const text_y_scale = scaling(1, params.zoom_data.x.total_zoom);
   // need to shift col labels up to counteract the rotation by 45%
   const rh_tri_hyp = col_width;
   const rh_tri_side = rh_tri_hyp / Math.sqrt(2);

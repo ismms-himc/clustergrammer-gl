@@ -1,7 +1,9 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import calcTextOffsets from "../matrixLabels/calcTextOffsets";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 import updateTextTriangleOrder from "../matrixLabels/updateTextTriangleOrder";
+
 export default (function end_animation(cgm) {
   const regl = cgm.regl;
   const params = cgm.params;

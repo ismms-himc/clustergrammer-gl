@@ -1,5 +1,7 @@
-import * as d3 from "d3";
 import * as axios from "axios";
+import * as d3 from "d3";
+import * as _ from "underscore";
+
 export default (function hzome_functions(params) {
   function get_request(ini_gene_symbol) {
     let gene_symbol;

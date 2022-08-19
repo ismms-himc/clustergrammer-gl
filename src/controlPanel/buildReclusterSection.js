@@ -18,7 +18,7 @@ export default (function build_recluster_section(cgm) {
   const button_color = "#eee";
   const active_run_color = "#00FF75";
   const active_button_color = "#008000";
-  control_svg = d3.select(params.root + " .control-container svg");
+  const control_svg = d3.select(params.root + " .control-container svg");
   control_svg
     .append("g")
     .classed("panel_button_titles", true)
@@ -65,7 +65,7 @@ export default (function build_recluster_section(cgm) {
     .attr("alignment-baseline", "middle")
     .attr("letter-spacing", "2px")
     .attr("cursor", "default");
-  run_cluster_container = d3
+  const run_cluster_container = d3
     .select(params.root + " .control_svg")
     .append("g")
     .classed("run_cluster_container", true)
@@ -217,7 +217,7 @@ export default (function build_recluster_section(cgm) {
   link_dict["average"] = "avg";
   link_dict["single"] = "single";
   link_dict["complete"] = "cmplt";
-  link_options_container = d3
+  const link_options_container = d3
     .select(params.root + " .control_svg")
     .append("g")
     .classed("link_option_container", true)

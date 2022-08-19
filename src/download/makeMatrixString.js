@@ -1,4 +1,5 @@
 import make_full_name from "./makeFullName";
+
 export default (function make_matrix_string(params) {
   const delimiter =
     params.download.delimiter_key[params.download.delimiter_name];
@@ -32,7 +33,7 @@ export default (function make_matrix_string(params) {
   let row_name;
   // write matrix rows
   // //////////////////////
-  params.norm.zscore_status;
+  let inst_mat_data;
   if (params.norm.zscore_status === "non-zscored" && "mat_data_iz" in params) {
     inst_mat_data = params.mat_data_iz;
   } else {

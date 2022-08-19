@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function update_text_triangle_order(params, inst_axis) {
   // Here we are updating the positions of the existing text triangles that
   // we have already pre-calculated. This needs to be better harmonized with

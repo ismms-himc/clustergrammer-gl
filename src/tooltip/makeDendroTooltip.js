@@ -3,6 +3,7 @@ import calc_cat_cluster_breakdown from "../cats/calcCatClusterBreakdown";
 import make_cat_breakdown_graph from "../cats/makeCatBreakdownGraph";
 import manual_category_from_dendro from "./manualCategoryFromDendro";
 import run_hide_tooltip from "./runHideTooltip";
+
 export default (function make_dendro_tooltip(cgm, external_model, inst_axis) {
   const params = cgm.params;
   const mouseover = params.int.mouseover;
@@ -36,7 +37,7 @@ export default (function make_dendro_tooltip(cgm, external_model, inst_axis) {
         ": "
     );
   // selected output formats
-  selected_label_container = d3
+  const selected_label_container = d3
     .select(params.tooltip_id)
     .append("div")
     .style("display", "inline-block")

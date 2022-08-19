@@ -1,6 +1,7 @@
 /* eslint-disable no-invalid-this */
 import * as d3 from "d3";
 import d3Tip from "d3-tip";
+import * as _ from "underscore";
 import buildReorderCatTitles from "../cats/buildReorderCatTitles";
 import build_opacity_slider from "../colors/buildOpacitySlider";
 import download_matrix from "../download/downloadMatrix";

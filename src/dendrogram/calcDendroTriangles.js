@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function calc_dendro_triangles(params, inst_axis) {
   const triangle_info = {};
   const inst_nodes = params.network[inst_axis + "_nodes"];

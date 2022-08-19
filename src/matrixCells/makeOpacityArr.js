@@ -1,9 +1,8 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import calc_inverse_zscore from "../utils/calcInverseZscore";
+
 export default (function make_opacity_arr(params) {
-  mat_data = params.mat_data;
-  // run one or the other
-  // calc_zscore(params)
   // Initially Z-scored
   let viz_mat_data;
   if (params.norm.initial_status === "zscored") {
@@ -11,9 +10,8 @@ export default (function make_opacity_arr(params) {
       viz_mat_data = params.mat_data;
     } else if (params.norm.zscore_status === "non-zscored") {
       if ("mat_data_iz" in params === false) {
-        calc_inverse_zscore(params);
+        viz_mat_data = calc_inverse_zscore(params);
       }
-      viz_mat_data = params.mat_data_iz;
     }
     // Not Initially Z-scored
   } else {

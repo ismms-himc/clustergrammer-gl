@@ -1,5 +1,7 @@
+import * as _ from "underscore";
 import drop_label_from_queue from "../matrixLabels/dropLabelFromQueue";
 import vectorize_label from "../matrixLabels/vectorizeLabel";
+
 export default (function draw_background_calculations(regl, params) {
   _.each(["row", "col"], function (inst_axis) {
     if (params.labels.queue.high[inst_axis].length > 0) {

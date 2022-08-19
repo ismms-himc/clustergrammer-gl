@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import build_single_dendro_slider from "./buildSingleDendroSlider";
 
 export default function build_dendrogram_sliders(cgm) {

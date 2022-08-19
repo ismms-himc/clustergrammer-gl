@@ -1,6 +1,8 @@
+import * as _ from "underscore";
 import alt_slice_linkage from "../dendrogram/altSliceLinkage";
 import calc_dendro_triangles from "../dendrogram/calcDendroTriangles";
 import make_dendro_args from "../dendrogram/makeDendroArgs";
+
 export default (function gen_dendro_par(cgm) {
   const params = cgm.params;
   const regl = cgm.regl;

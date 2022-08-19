@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import make_cat_args from "../cats/makeCatArgs";
 import make_cat_position_array from "../cats/makeCatPositionArray";
 

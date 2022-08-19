@@ -9,12 +9,12 @@ export default function manual_update_to_cats(
   new_cat,
   selected_labels
 ) {
-  params = cgm.params;
-  regl = cgm.regl;
+  const params = cgm.params;
+  const regl = cgm.regl;
   const full_cat = cat_title + ": " + new_cat;
   // manually updated categories in network
   cgm.params.network[axis + "_nodes"].map((x) => {
-    inst_name = x.name;
+    let inst_name = x.name;
     if (inst_name.includes(": ")) {
       inst_name = inst_name.split(": ")[1];
     }

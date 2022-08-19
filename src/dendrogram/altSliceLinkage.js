@@ -4,7 +4,7 @@ export default (function alt_slice_linkage(
   dist_thresh,
   min_dist = 0
 ) {
-  network = params.network;
+  const network = params.network;
   let clust_a;
   let clust_b;
   const group_dict = {};
@@ -14,13 +14,13 @@ export default (function alt_slice_linkage(
     x.group_links = i;
   });
   // the max individual cluster id
-  max_clust_id = params.network[axis + "_nodes"].length;
+  const max_clust_id = params.network[axis + "_nodes"].length;
   params.network.linkage[axis].forEach((x, i) => {
     if (x[2] > min_dist && x[2] < dist_thresh) {
       // get cluster that are being combined together
       clust_a = x[0];
       clust_b = x[1];
-      new_clust_id = max_clust_id + i;
+      const new_clust_id = max_clust_id + i;
       // make new array, concat lower level cluster, delete lower level clusters
       group_dict[new_clust_id] = [];
       group_dict[new_clust_id] = group_dict[new_clust_id].concat(

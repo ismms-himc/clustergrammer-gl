@@ -1,6 +1,5 @@
 import * as core from "mathjs/core";
 import * as factorial from "mathjs/lib/function/probability/factorial";
-import p_dict from "./binomPropPvalLookup";
 const math = core.create();
 math.import(factorial);
 
@@ -32,8 +31,8 @@ export default (function binom_test(actual_k, n, p) {
     // how many standard deviations is the actual_k away
     // from the expected value
     const z = (actual_k - mu) / sigma;
-    const z_vals = p_dict.z;
-    const p_vals = p_dict.p;
+    const z_vals = z;
+    const p_vals = p;
     let found_index = -1;
     let found = false;
     for (let index = 0; index < z_vals.length; index++) {

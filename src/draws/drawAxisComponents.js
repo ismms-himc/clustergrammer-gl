@@ -1,9 +1,11 @@
+import * as _ from "underscore";
 import gatherTextTriangles from "../matrixLabels/gatherTextTriangles";
 import makeColTextArgs from "../matrixLabels/makeColTextArgs";
 import makeRowTextArgs from "../matrixLabels/makeRowTextArgs";
 import makeVizAidTriArgs from "../matrixLabels/makeVizAidTriArgs";
 import calcVizArea from "../params/calcVizArea";
 import interpFun from "./interpFun";
+
 export default (function draw_axis_components(
   regl,
   params,

@@ -1,5 +1,7 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import make_dendro_tooltip from "./makeDendroTooltip";
+
 export default (function make_tooltip_text(cgm, external_model) {
   const params = cgm.params;
   let inst_axis;

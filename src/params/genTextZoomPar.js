@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function gen_text_zoom_par(params) {
   const text_zoom = {};
   const max_webgl_fs = {};

@@ -1,6 +1,7 @@
+import * as _ from "underscore";
+
 export default (function generate_cat_array(params, inst_axis) {
   const title_sep = ": ";
-  current_cats = {};
   const cat_data = [];
   const check_node = params.network[inst_axis + "_nodes"][0];
   const node_keys = _.keys(check_node);

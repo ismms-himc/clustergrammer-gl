@@ -1,5 +1,5 @@
 import interp_fun from "../draws/interpFun";
-import m3 from "../draws/mat3Transform";
+import { rotation } from "../draws/mat3Transform";
 
 export default function make_row_text_args(regl, params, zoom_function) {
   const inst_axis = "row";
@@ -12,7 +12,7 @@ export default function make_row_text_args(regl, params, zoom_function) {
     scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
-  const mat_rotate = m3.rotation(Math.PI / 2);
+  const mat_rotate = rotation(Math.PI / 2);
   const x_offset = params.viz_dim.mat_size.x + 0.02;
   const vert_arg = `
       precision mediump float;

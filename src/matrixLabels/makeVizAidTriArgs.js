@@ -1,7 +1,8 @@
 import color_to_rgba from "../colors/colorToRgba";
 import interp_fun from "../draws/interpFun";
-import m3 from "../draws/mat3Transform";
+import { rotation, scaling } from "../draws/mat3Transform";
 import make_viz_aid_tri_pos_arr from "./makeVizAidTriPosArr";
+
 export default (function make_viz_aid_tri_args(regl, params, inst_axis) {
   const num_labels = params.labels["num_" + inst_axis];
   let tri_height;
@@ -41,14 +42,14 @@ export default (function make_viz_aid_tri_args(regl, params, inst_axis) {
   // ///////////////////////////////
   // Rotation and Scaling
   // ///////////////////////////////
-  const scale_y = m3.scaling(2, 1);
+  const scale_y = scaling(2, 1);
   let rotation_radians;
   if (inst_axis === "row") {
     rotation_radians = 0;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
   }
-  const mat_rotate = m3.rotation(rotation_radians);
+  const mat_rotate = rotation(rotation_radians);
   const total_zoom = params.zoom_data.x.total_zoom;
   const inst_rgba = color_to_rgba("#eee", 1.0);
   // var inst_rgba = color_to_rgba('red', 1.0)

@@ -5,6 +5,7 @@ import build_dendrogram_sliders from "./dendrogram/buildDendrogramSliders";
 import download_matrix from "./download/downloadMatrix";
 import download_metadata from "./download/downloadMetadata";
 import draw_labels_tooltips_or_dendro from "./draws/drawLabelsTooltipsOrDendro";
+import draw_webgl_layers from "./draws/drawWebglLayers";
 import run_viz from "./draws/runViz";
 import destroy_viz from "./initializeViz/destroyViz";
 import ini_canvas_mouseover from "./initializeViz/iniCanvasMouseover";
@@ -17,6 +18,13 @@ import initialize_regl from "./params/initializeRegl";
 import recluster from "./recluster/recluster";
 import initialize_tooltip from "./tooltip/initializeD3Tip";
 import zoom_rules_high_mat from "./zoom/zoomRulesHighMat";
+
+function adjust_opacity(cgm, opacity_scale) {
+  const params = cgm.params;
+  params.matrix.opacity_scale = opacity_scale;
+  cgm.make_matrix_args(cgm);
+  draw_webgl_layers(cgm);
+}
 
 function clustergrammer_gl(args, external_model = null) {
   let cgm = {};
@@ -44,10 +52,10 @@ function clustergrammer_gl(args, external_model = null) {
     cgm.zoom_rules_high_mat = zoom_rules_high_mat;
     cgm.gen_ordered_labels = gen_ordered_labels;
     if (typeof args.widget_callback !== "undefined") {
-      cgm.widget_callback = widget_callback;
+      cgm.widget_callback = args.widget_callback;
     }
     // initialize network
-    cgm.network = network;
+    cgm.network = args.network;
     // going to work on passing in filtered network in place of full network
     // as a quick crop method
     cgm = cgm.viz_from_network(cgm, external_model);
@@ -60,26 +68,7 @@ function clustergrammer_gl(args, external_model = null) {
     cgm.update_all_cats = update_all_cats;
     cgm.download_matrix = download_matrix;
     cgm.download_metadata = download_metadata;
-    // this prevents Jupyter from listening to typing on the modal and
-    // misinterpreting as keyboard shortcuts
-    if (cgm.params.is_widget) {
-      // tooltip input box
-      const tooltip_id = cgm.params.tooltip_id.replace("#", "");
-      Jupyter.keyboard_manager.register_events(
-        document.getElementById(tooltip_id)
-      );
-      // control panel search box
-      const root_id = cgm.params.root.replace("#", "");
-      Jupyter.keyboard_manager.register_events(
-        document.getElementById(root_id)
-      );
-    }
-    function adjust_opacity(cgm, opacity_scale) {
-      const params = cgm.params;
-      params.matrix.opacity_scale = opacity_scale;
-      cgm.make_matrix_args(cgm);
-      draw_webgl_layers(cgm);
-    }
+
     cgm.adjust_opacity = () => adjust_opacity(cgm);
     return cgm;
   }

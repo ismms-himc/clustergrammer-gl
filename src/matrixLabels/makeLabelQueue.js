@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function make_label_queue(params) {
   params.labels.queue = {};
   params.labels.queue.low = {};

@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default function gen_ordered_labels(cgm) {
   // Generate lists of ordered label and category names for mouseover
   const params = cgm.params;

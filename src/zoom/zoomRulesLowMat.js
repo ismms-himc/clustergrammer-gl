@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import calc_cursor_relative from "./calcCursorRelative";
 import calc_pan_by_zoom from "./calcPanByZoom";
 import calc_potential_total_pan from "./calcPotentialTotalPan";
@@ -5,6 +6,7 @@ import pan_by_drag_rules from "./panByDragRules";
 import run_zoom_restrictions from "./runZoomRestrictions";
 import sanitize_inst_zoom from "./sanitizeInstZoom";
 import sanitize_potential_zoom from "./sanitizePotentialZoom";
+
 export default (function zoom_rules_low_mat(
   params,
   zoom_restrict,

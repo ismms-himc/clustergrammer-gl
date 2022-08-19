@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function make_dendro_arr(params, inst_axis) {
   let inst_trap;
   let group_info;

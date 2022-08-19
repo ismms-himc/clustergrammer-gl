@@ -1,5 +1,7 @@
+import * as _ from "underscore";
 import calc_spillover_triangles from "../spillover/calcSpilloverTriangles";
 import make_spillover_args from "../spillover/makeSpilloverArgs";
+
 export default (function generate_spillover_params(regl, params) {
   const spillover_args = {};
   // inst_depth is passed to spillover rects

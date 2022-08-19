@@ -1,4 +1,6 @@
+import * as _ from "underscore";
 import binom_test from "./binomTest";
+
 export default (function calc_cat_cluster_breakdown(
   params,
   inst_data,

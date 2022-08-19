@@ -1,5 +1,7 @@
 import * as d3 from "d3";
+import * as _ from "underscore";
 import run_reorder from "./runReorder";
+
 export default (function custom_label_reorder(regl, params, inst_axis) {
   // update custom label order
   const full_name = params.int.mouseover[inst_axis].name;

@@ -1,3 +1,5 @@
+import * as _ from "underscore";
+
 export default (function calc_alpha_order(params) {
   const network = params.network;
   // https://stackoverflow.com/questions/9592740/how-can-you-sort-an-array-without-mutating-the-original-array

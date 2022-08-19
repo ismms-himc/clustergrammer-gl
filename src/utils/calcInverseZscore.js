@@ -1,16 +1,16 @@
 export default (function calc_inverse_zscore(params) {
-  mat_data = params.mat_data;
+  const mat_data = params.mat_data;
   // Inv-Z-score data
   // ////////////////////////////////////////////
   const mat_data_iz = mat_data.map((inst_row, i) => {
-    inst_avg = params.network.pre_zscore.mean[i];
-    inst_std = params.network.pre_zscore.std[i];
+    const inst_avg = params.network.pre_zscore.mean[i];
+    const inst_std = params.network.pre_zscore.std[i];
     // z-score data
-    inst_row_iz = inst_row.map((x) => {
+    const inst_row_iz = inst_row.map((x) => {
       x = x * inst_std + inst_avg;
       return x;
     });
     return inst_row_iz;
   });
-  params.mat_data_iz = mat_data_iz;
+  return mat_data_iz;
 });

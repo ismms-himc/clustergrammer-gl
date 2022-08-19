@@ -4,7 +4,7 @@ export default function viz_from_network(cgm, external_model) {
   newCgm = newCgm.initialize_regl(newCgm);
   // define parameters and run visualization
   newCgm = newCgm.initialize_params(newCgm, external_model);
-  newCgm = newCgm.build_control_panel(cgm_with_params);
+  newCgm = newCgm.build_control_panel(newCgm);
   newCgm.build_dendrogram_sliders(newCgm);
   newCgm.ini_canvas_mouseover(newCgm);
   newCgm.run_viz(newCgm, external_model);

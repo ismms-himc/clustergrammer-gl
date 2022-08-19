@@ -11,37 +11,27 @@ module.exports = function build_dendrogram_sliders() {
 
   // slider containers
   var axis_slider_container;
-  var inst_top;
-  var inst_left;
-  var inst_rotate;
 
   // hardwiring dendro slider position
   _.each(["row", "col"], function (inst_axis) {
-    if (inst_axis === "row") {
-      inst_top = 175;
-      inst_left = params.viz_width - 25;
-    } else {
-      inst_top = 795;
-      inst_left = 55;
-    }
-
     axis_slider_container = d3
       .select(params.root + " .canvas-container")
       .append("svg")
       .style("height", slider_length + "px")
       .style("width", "20px")
       .style("position", "absolute")
-      .style("top", inst_top + "px")
-      .style("left", inst_left + "px")
       .attr("class", inst_axis + "_dendro_slider_svg")
       .attr("transform", function () {
-        if (inst_axis === "row") {
-          inst_rotate = 0;
-        } else {
-          inst_rotate = -90;
+        if (inst_axis === "col") {
+          return "rotate(-90) scale(-1,1)";
         }
-        return "rotate(" + inst_rotate + ")";
       });
+
+    if (inst_axis === "row") {
+      axis_slider_container.style("right", "-10px").style("top", "45px");
+    } else {
+      axis_slider_container.style("left", "110px").style("bottom", "-65px");
+    }
 
     axis_slider_container
       .append("rect")

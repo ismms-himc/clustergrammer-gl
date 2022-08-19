@@ -12,15 +12,10 @@ module.exports = function initialize_containers() {
   d3.select(base_container)
     .append("div")
     .attr("class", "canvas-container")
-    .style("position", "absolute")
+    .style("position", "relative")
+    .style("margin-right", "-25px")
+    .style("margin-bottom", "-25px")
     .style("cursor", "default");
-
-  // debugger
-
-  // var canvas_container = d3.select(base_container)
-  //                          .select('.canvas-container')[0][0];
-
-  // var canvas_container = d3.select('#' + base_container.id + ' .canvas_container');
 
   var canvas_container = d3.select(base_container).select(".canvas-container")
     ._groups[0][0];
@@ -29,9 +24,8 @@ module.exports = function initialize_containers() {
   var inst_width = this.args.viz_width;
 
   d3.select(canvas_container)
-    .style("height", inst_height + "px")
-    .style("width", inst_width + "px");
+    .style("height", inst_height)
+    .style("width", inst_width);
 
   this.canvas_container = canvas_container;
-  // return canvas_container;
 };

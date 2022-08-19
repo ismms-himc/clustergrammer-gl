@@ -13,10 +13,10 @@ function clustergrammer_gl(args, external_model = null) {
 
     // maybe do these
     cgm.build_dendrogram_sliders = require("./dendrogram/buildDendrogramSliders");
-    if (args.showControlPanel) {
-      cgm.build_control_panel = require("./controlPanel/buildControlPanel");
-    } else {
+    if (!args.showControlPanel) {
       cgm.build_control_panel = () => {};
+    } else {
+      cgm.build_control_panel = require("./controlPanel/buildControlPanel");
     }
     cgm.run_viz = require("./draws/runViz");
     cgm.destroy_viz = require("./initializeViz/destroyViz");

@@ -26,23 +26,10 @@
     <script>
       var inst_div = document.createElement("div");
       inst_div.setAttribute("id", "something");
+      inst_div.setAttribute("style", "height: 800px; width: 800px;");
       document.body.appendChild(inst_div);
 
       var inst_container = document.getElementById("something");
-
-      // the control panel is 135 pixels high
-      var inst_height = 1035;
-      var inst_width = 900;
-
-      var x_offset = 10;
-      var y_offset = 10;
-
-      d3.select("#something")
-        .style("height", inst_height + "px")
-        .style("width", inst_width + "px")
-        .style("background", "white")
-        .style("margin-left", x_offset + "px")
-        .style("margin-top", y_offset + "px");
 
       // hardwire manual category
       network.manual_category = {};
@@ -79,10 +66,10 @@
       args = {
         network,
         container: inst_container,
-        viz_width: inst_width,
-        viz_height: inst_height,
+        viz_width: "100%",
+        viz_height: "100%",
         use_hzome: true,
-        showControlPanel: true
+        showControlPanel: false
       };
 
       cgm = CGM(args);

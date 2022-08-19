@@ -128,9 +128,6 @@ module.exports = function initialize_params(external_model) {
 
   params.hzome = hzome_functions(params);
 
-  params.viz_height = 1035; //inst_height;
-  params.viz_width = 900; // inst_width;
-
   params.root = "#" + args.container.id;
   params.canvas_root = params.root + " .canvas-container";
   params.base_container = args.container;
@@ -173,10 +170,6 @@ module.exports = function initialize_params(external_model) {
         }
       }
     });
-
-    // params.cat_data
-    //   .manual_category[axis + '_cats']
-    //   .map(x => x.name)
 
     // initialize category dictionary
     ///////////////////////////////////

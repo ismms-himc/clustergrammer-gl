@@ -1,4 +1,4 @@
-var interactionEvents = require("./../interactions/interaction-events");
+var interactionEvents = require("./../interactions/interactionEvents");
 var extend = require("xtend/mutable");
 var track_interaction_zoom_data = require("./../interactions/trackInteractionZoomData");
 var run_hide_tooltip = require("./../tooltip/runHideTooltip");

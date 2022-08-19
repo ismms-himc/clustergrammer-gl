@@ -77,20 +77,11 @@ function interactionEvents(opts) {
     /*
     Working on improving behavior for offset canvas
     */
-
-    // var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-
-    // try to better define canvas position
-    // inst_canvas = document.querySelector('#something canvas')
-
     var canvas_rect = this.getBoundingClientRect();
 
     ev.type = "wheel";
     ev.buttons = buttons;
     ev.mods = mods;
-
-    // ev.x0 = event.x - event.target.offsetLeft;
-    // ev.y0 = event.y - event.target.offsetTop + scrollTop;
 
     ev.x0 = event.x - canvas_rect.left;
     ev.y0 = event.y - canvas_rect.top;
@@ -178,7 +169,6 @@ function interactionEvents(opts) {
 
         // newest and previous finger (previous may be undefined)
         var newIndex = fingers[0] ? 1 : 0;
-        // var oldIndex = fingers[0] ? 0 : 1;
         var newFinger = new Finger();
 
         // add to stack
@@ -190,8 +180,6 @@ function interactionEvents(opts) {
         // update touch event & position
         newFinger.touch = newTouch;
         eventOffset(newTouch, element, newFinger.position);
-
-        // var oldTouch = fingers[oldIndex] ? fingers[oldIndex].touch : undefined;
 
         if (!first) {
           ended = false;
@@ -217,9 +205,6 @@ function interactionEvents(opts) {
       emitter.emit("interactionstart", forward(ev, event));
     }
   }
-
-  // var px0 = null;
-  // var py0 = null;
 
   function onTouchMove(event) {
     var idx;
@@ -309,9 +294,6 @@ function interactionEvents(opts) {
           ev.dtheta = dtheta;
 
           emitter.emit("interaction", forward(ev, event));
-
-          // var px0 = x0;
-          // var py0 = y0;
         }
       }
     }
@@ -332,12 +314,7 @@ function interactionEvents(opts) {
 
       if (idx !== -1) {
         fingers[idx] = null;
-
-        // activeCount--
         activeCount = activeCount - 1;
-
-        // var otherIdx = idx === 0 ? 1 : 0;
-        // var otherTouch = fingers[otherIdx] ? fingers[otherIdx].touch : undefined;
       }
     }
 

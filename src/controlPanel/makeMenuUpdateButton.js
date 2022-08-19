@@ -8,9 +8,6 @@ module.exports = function make_menu_update_button(
 
   var update_button_width = cgm.params.viz.update_button_width;
 
-  // var menu_width = button_info.menu_width;
-  // var button_x = menu_width/2 + button_info.default_x_offset;
-
   var default_opacity = 0.35;
   var high_opacity = 0.5;
 

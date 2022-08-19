@@ -10,10 +10,8 @@ module.exports = function calc_cursor_relative(zd, viz_dim_heat) {
   // restrict cursor_relative.min
   if (cursor_relative.min < 0) {
     cursor_relative.min = 0;
-    // console.log('LOWER than min ############################')
   } else if (cursor_relative.min > viz_dim_heat.max) {
     cursor_relative.min = viz_dim_heat.max;
-    // console.log('HIGHER than min ############################')
   }
 
   // tracking cursor position relative to the maximum
@@ -24,10 +22,8 @@ module.exports = function calc_cursor_relative(zd, viz_dim_heat) {
   // restrict cursor_relative.max
   if (cursor_relative.max < 0) {
     cursor_relative.max = 0;
-    // console.log('LOWER than max ############################')
   } else if (cursor_relative.max > viz_dim_heat.max + zd.heat_offset) {
     cursor_relative.max = viz_dim_heat.max + zd.heat_offset;
-    // console.log('HIGHER than max ############################')
   }
 
   return cursor_relative;

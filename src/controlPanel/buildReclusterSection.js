@@ -1,14 +1,8 @@
 var d3 = require("d3");
-// var position_tree_icon = require('./positionTreeIcon');
-var toggle_menu = require("./toggleMenu");
-// var make_tree_menu = require('./makeTreeMenu');
 let draw_webgl_layers = require("./../draws/drawWebglLayers");
 
 module.exports = function build_recluster_section(cgm) {
-  var slider_length = 40;
   var params = cgm.params;
-  var default_opacity = 0.35;
-  var high_opacity = 0.6;
   var y_offset_buttons = 47;
   var cracker_room = 65;
 
@@ -32,13 +26,10 @@ module.exports = function build_recluster_section(cgm) {
     .classed("panel_button_titles", true)
     .classed("recluster_button_title", true)
     .on("click", function () {
-      // console.log('choose recluster panel')
       d3.selectAll(params.root + " .panel_button_titles").attr("opacity", 0.5);
       d3.select(this).attr("opacity", 1.0);
 
       if (params.viz.current_panel === "reorder") {
-        // console.log('switch to recluster')
-
         // modify buttons
         d3.select(params.root + " .panel_button_title").text(
           "recluster".toUpperCase()
@@ -86,8 +77,6 @@ module.exports = function build_recluster_section(cgm) {
     .classed("run_cluster_container", true)
     .attr("transform", "translate(" + 350 + ", " + 91 + ")")
     .on("click", function () {
-      // console.log('click run button!!!!!!!')
-
       if (
         params.matrix.potential_recluster.distance_metric !=
           cgm.params.matrix.distance_metric ||
@@ -161,7 +150,6 @@ module.exports = function build_recluster_section(cgm) {
 
   var cracker_room = 65;
   var shift_x_order_buttons = 65 + cracker_room;
-  // button_groups.col.y_trans + button_dim.height + button_dim.buffer;
 
   let y_offset_top = 47;
   let y_offset_bottom = 91;
@@ -182,8 +170,6 @@ module.exports = function build_recluster_section(cgm) {
       return "translate(" + x_offset + ", " + y_offset_top + ")";
     })
     .on("click", function (d) {
-      // console.log('clicking distance button', d.full)
-
       params.matrix.potential_recluster.distance_metric = d.full;
 
       d3.select(params.root + " .dist_option_container")
@@ -265,7 +251,6 @@ module.exports = function build_recluster_section(cgm) {
       return "translate(" + x_offset + ", " + y_offset_bottom + ")";
     })
     .on("click", function (d) {
-      // console.log('clicking linkage button', d.full)
       params.matrix.potential_recluster.linkage_type = d.full;
 
       d3.select(params.root + " .link_option_container")
@@ -320,8 +305,6 @@ module.exports = function build_recluster_section(cgm) {
       .classed("panel_button_titles", true)
       .classed("normalize_button_title", true)
       .on("click", function () {
-        console.log("clicked Z-score Button");
-
         let params = cgm.params;
 
         if (params.norm.zscore_status === "non-zscored") {
@@ -333,8 +316,6 @@ module.exports = function build_recluster_section(cgm) {
 
           d3.select(this).select("text").text("raw".toUpperCase());
         }
-
-        console.log("zscore_status", params.norm.zscore_status);
         cgm.make_matrix_args();
         draw_webgl_layers(cgm);
       })

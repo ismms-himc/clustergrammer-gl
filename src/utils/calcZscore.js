@@ -1,8 +1,6 @@
 var average = require("./average");
 var standard_deviation = require("./standardDeviation");
 module.exports = function calc_zscore(params) {
-  console.log("calc_zscore ????????????  ");
-
   mat_data = params.mat_data;
 
   // Z-score data
@@ -10,8 +8,6 @@ module.exports = function calc_zscore(params) {
   let mat_data_z = mat_data.map((inst_row) => {
     inst_avg = average(inst_row);
     inst_std = standard_deviation(inst_row);
-
-    // console.log(inst_avg, inst_std)
 
     // z-score data
     inst_row_z = inst_row.map((x) => {

@@ -1,11 +1,8 @@
-// var clusterfck = require('cornhundred-clusterfck');
 var clusterfck = require("../clusterfckLocal/clusterfck");
 var core = require("mathjs/core");
 var math = core.create();
 var dist_fun = require("./distanceFunctions");
 var get_order_and_groups_clusterfck_tree = require("./getOrderAndGroupsClusterfckTree");
-// var update_view = require('../update/updateView');
-// var underscore = require('underscore');
 
 var change_groups = require("./../dendrogram/changeGroups");
 
@@ -18,8 +15,6 @@ module.exports = function recluster(
 ) {
   var cgm = this;
 
-  console.log("reclustering\n----------------------------------");
-
   var new_view = {};
   new_view.N_row_sum = "null";
   new_view.N_row_var = "null";
@@ -31,7 +26,6 @@ module.exports = function recluster(
   new_view.name = view_name;
 
   // constructing new nodes from old view (does not work when filtering)
-
   new_view.nodes = {};
   new_view.nodes.row_nodes = _.clone(cgm.params.network.row_nodes);
   new_view.nodes.col_nodes = _.clone(cgm.params.network.col_nodes);
@@ -80,14 +74,10 @@ module.exports = function recluster(
       inst_node = rc_nodes[index];
       inst_order = order_info.info[index];
 
-      // console.log(inst_node.name, inst_node.clust)
-
       inst_node.clust = inst_order.order;
       inst_node.group = inst_order.group;
     }
   });
-
-  // cgm.new_view = new_view
 
   // run reordering
   require("./../reorders/runReorder")(cgm.regl, cgm.params, "row", "clust");
@@ -96,14 +86,4 @@ module.exports = function recluster(
   let group_level = cgm.params.dendro.group_level;
   change_groups(cgm, "row", group_level.row);
   change_groups(cgm, "col", group_level.col);
-
-  // // add new view to views
-  // cgm.config.network.views.push(new_view);
-
-  // // delay update if menu has not been removed
-  // if (d3.select(cgm.params.root+' .tree_menu').empty()){
-  //   update_view(cgm, 'name', view_name);
-  // } else {
-  //   setTimeout(update_view, 500, cgm, 'name', view_name);
-  // }
 };

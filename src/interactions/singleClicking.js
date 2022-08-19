@@ -18,7 +18,6 @@ module.exports = function single_clicking(params, external_model) {
   }
 
   if (params.is_widget) {
-    console.log("--> running widget callback on click");
     cgm.widget_callback(external_model);
   }
 };

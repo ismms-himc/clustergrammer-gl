@@ -2,7 +2,6 @@ module.exports = function run_zoom_restrictions(
   zd,
   ptp,
   viz_dim_heat,
-  axis,
   zd_copy
 ) {
   /*

@@ -13,13 +13,9 @@ module.exports = function run_viz(external_model) {
   var regl = cgm.regl;
   var params = cgm.params;
 
-  // console.log('run_viz, using this')
-
   params.ani.first_frame = true;
 
   regl.frame(function ({ time }) {
-    // console.log('tick')
-
     params.ani.time = time;
 
     if (params.int.total > 1) {
@@ -53,10 +49,7 @@ module.exports = function run_viz(external_model) {
       draw_interacting(cgm, external_model);
 
       params.ani.update_viz = false;
-
-      // console.log('still interacting')
     } else if (params.int.still_mouseover == true) {
-      // console.log('still_mouseover')
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);

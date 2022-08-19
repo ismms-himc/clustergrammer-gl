@@ -14,7 +14,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
 
   */
 
-  // var inst_rgba = color_to_rgba('#ff0000', 0.5);
   var inst_rgba = color_to_rgba("purple", 0.95);
   var num_labels = params.labels["num_" + inst_axis];
 
@@ -297,7 +296,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
       enable: true,
       mask: true,
       func: "less",
-      // func: 'greater',
       range: [0, 1],
     },
   };

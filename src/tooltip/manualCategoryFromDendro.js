@@ -106,7 +106,7 @@ module.exports = function manual_category_from_dendro(
     .style("width", "140px")
     .style("display", "inline-block")
     .style("color", "black")
-    .on("change", (d) => {
+    .on("change", () => {
       // if input matches color key, set color to pre-defined cat color
       ///////////////////////////////////////////////////////////////////
       let new_cat = d3
@@ -147,7 +147,7 @@ module.exports = function manual_category_from_dendro(
     .style("display", "inline-block")
     .style("margin-left", "5px")
     .style("color", "black")
-    .on("input", function (d) {
+    .on("input", function () {
       d3.select(params.tooltip_id + " .color-preview").style(
         "background-color",
         this.value
@@ -165,7 +165,7 @@ module.exports = function manual_category_from_dendro(
     .style("margin-left", "5px")
     .style("margin-right", "2px")
     .style("background-color", "white")
-    .on("click", (d) => {
+    .on("click", () => {
       if (params.cat_data.showing_color_picker === false) {
         d3.select(params.tooltip_id + " .color_picker_div")
           .style("height", color_picker_height + "px")
@@ -198,7 +198,7 @@ module.exports = function manual_category_from_dendro(
     .style("border", "1px solid #ddd")
     .style("color", "white")
     .style("cursor", "pointer")
-    .on("click", (d) => {
+    .on("click", () => {
       let new_cat = d3
         .select(params.tooltip_id + " .custom-cat-input")
         .node()
@@ -216,7 +216,6 @@ module.exports = function manual_category_from_dendro(
             inst_color;
         }
 
-        // console.log(inst_color)
         if (inst_color === "") {
           inst_color = "white";
         }
@@ -225,15 +224,12 @@ module.exports = function manual_category_from_dendro(
 
         // Only allowing custom naming of first column
         let cat_title = params.cat_data[axis][0].cat_title;
-        let full_cat = cat_title + ": " + new_cat;
-        // params.network.cat_colors[axis]['cat-0'][full_cat] = inst_color
         params.network.global_cat_colors[new_cat] = inst_color;
 
         params.int.manual_update_cats = true;
         manual_update_to_cats(cgm, axis, cat_title, new_cat, inst_labels);
 
         if (params.is_widget) {
-          // console.log('--> running widget callback on manual category update')
           cgm.widget_callback(external_model);
         }
       }

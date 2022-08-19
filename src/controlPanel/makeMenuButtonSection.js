@@ -6,7 +6,6 @@ module.exports = function make_menu_button_section(
   button_info,
   button_names
 ) {
-  // var cgm = button_info.cgm;
   var menu_width = button_info.menu_width;
   var button_offset = 35;
 

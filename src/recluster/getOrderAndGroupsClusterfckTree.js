@@ -7,23 +7,7 @@ module.exports = function get_order_and_groups_clusterfck_tree(
   cgm,
   axis
 ) {
-  // console.log('**** checking in get_order ***********************')
-  // console.log(clusters.hc.dists[0][5])
-  // console.log(clusters.hc.dists[0])
-
-  // console.log('**** checking dists_backup get_order ***********************')
-  // console.log(clusters.hc.dists_backup[0][5])
-  // console.log(clusters.hc.dists_backup[0])
-
-  // var max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists_backup);
   var max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists);
-
-  // console.log('max_distance_in_dm', axis)
-  // console.log(max_distance_in_dm)
-
-  // manually setting max distance, which is different in JS and PY
-  // However, the linkage distances match exactly
-  // max_distance_in_dm = 1.3766397690561714
 
   // get order information from clusterfck tree
   ///////////////////////////////////////////////
@@ -54,9 +38,6 @@ module.exports = function get_order_and_groups_clusterfck_tree(
     group.push(0);
     cutoff_indexes.push(i);
   }
-
-  console.log(axis);
-  console.log(cutoff_vals);
 
   underscore.each(["left", "right"], function (side) {
     get_leaves(tree[side], side, ini_level, tree_height, threshold_status);

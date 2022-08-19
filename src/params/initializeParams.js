@@ -43,7 +43,6 @@ module.exports = function initialize_params(external_model) {
   require("./genLabelPar")(cgm);
   var labels = params.labels;
 
-  // console.log('generate_tooltip_params')
   require("./generateTooltipParams")(regl, params);
 
   require("./calcVizDim")(regl, params);
@@ -101,8 +100,6 @@ module.exports = function initialize_params(external_model) {
   let mat_colors = {};
 
   if ("matrix_colors" in params.network) {
-    console.log("found custom colors for pos/neg");
-
     let pos_color = params.network.matrix_colors.pos;
     let neg_color = params.network.matrix_colors.neg;
 
@@ -141,7 +138,6 @@ module.exports = function initialize_params(external_model) {
 
   params.is_widget = false;
   if (external_model !== null) {
-    // console.log('found widget')
     params.is_widget = true;
     // used to improve widget linking behavior
     // when positive, prevents excessive re-drawing

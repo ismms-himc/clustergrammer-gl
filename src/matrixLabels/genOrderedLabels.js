@@ -3,14 +3,7 @@ module.exports = function gen_ordered_labels(cgm) {
 
   let params = cgm.params;
 
-  // console.log('---------------------------')
-  // console.log('----- gen_ordered_labels --')
-
-  // console.log()
-  // console.log(params.labels.queue)
-
   // debugger;
-  // console.log('---------------------------')
 
   var i_order;
   var ordered_labels = {};

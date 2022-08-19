@@ -82,7 +82,7 @@ function interactionEvents(opts) {
 
     // try to better define canvas position
     // inst_canvas = document.querySelector('#something canvas')
-    // console.log('THIS', this)
+
     var canvas_rect = this.getBoundingClientRect();
 
     ev.type = "wheel";

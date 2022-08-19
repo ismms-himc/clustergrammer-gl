@@ -13,6 +13,4 @@ module.exports = function download_matrix(params) {
     file_type = "tsv";
   }
   saveAs(blob, "clustergrammer." + file_type);
-
-  console.log("download matrix");
 };

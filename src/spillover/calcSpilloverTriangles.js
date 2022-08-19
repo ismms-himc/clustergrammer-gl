@@ -1,6 +1,3 @@
-/* eslint-disable array-bracket-newline */
-/* eslint-disable object-curly-newline */
-
 module.exports = function calc_spillover_triangles(params) {
   var viz_dim = params.viz_dim;
   var ofc = viz_dim.offcenter;

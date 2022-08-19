@@ -4,8 +4,6 @@ var keep_track_of_interactions = require("./keepTrackOfInteractions");
 var keep_track_of_mouseovers = require("./keepTrackOfMouseovers");
 
 module.exports = function track_interaction_zoom_data(regl, params, ev) {
-  // console.log('track interaction zoom data')
-
   var zoom_data = params.zoom_data;
   var zoom_restrict = params.zoom_restrict;
   var viz_dim = params.viz_dim;
@@ -35,7 +33,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev) {
     */
     // set up two-stage zooming
     if (zoom_data.y.total_zoom < zoom_restrict.y.ratio) {
-      // console.log('restrict X zoom')
       zoom_data.x.inst_zoom = 1;
 
       potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
@@ -43,12 +40,10 @@ module.exports = function track_interaction_zoom_data(regl, params, ev) {
       // check potential_zoom
       if (potential_zoom > zoom_restrict.y.ratio) {
         // bump x inst_zoom
-        // console.log('tall: bump x inst_zoom')
+
         zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
       }
     } else if (zoom_data.x.total_zoom < zoom_restrict.x.ratio) {
-      // console.log('restrict Y zoom')
-
       zoom_data.y.inst_zoom = 1;
 
       potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
@@ -56,7 +51,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev) {
       // check potential_zoom
       if (potential_zoom > zoom_restrict.x.ratio) {
         // bump x inst_zoom
-        // console.log('wide: bump y inst_zoom')
+
         zoom_data.y.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
       }
     }
@@ -84,9 +79,6 @@ module.exports = function track_interaction_zoom_data(regl, params, ev) {
     keep_track_of_mouseovers(params);
 
     find_mouseover_element(regl, params, ev);
-
-    // console.log('dragging', ev.type)
   } else {
-    // console.log('not tracking anything')
   }
 };

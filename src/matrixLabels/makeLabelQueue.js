@@ -16,10 +16,7 @@ module.exports = function make_label_queue(params) {
 
     var inst_labels = params.labels.ordered_labels[inst_axis + "s"];
 
-    // console.log(inst_labels)
-
     _.each(inst_labels, function (inst_label) {
-      // console.log(inst_axis, inst_label)
       if (inst_label.indexOf(": ") >= 0) {
         inst_label = inst_label.split(": ")[1];
       }

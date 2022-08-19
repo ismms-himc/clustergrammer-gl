@@ -22,9 +22,6 @@ module.exports = function camera_interaction(
     /*
     Sanitize zoom data components
     */
-
-    // console.log('camera interaction')
-
     var inst_x_zoom = zoom_data.x.inst_zoom;
     var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
     var inst_x_pan_by_drag = zoom_data.x.pan_by_drag;

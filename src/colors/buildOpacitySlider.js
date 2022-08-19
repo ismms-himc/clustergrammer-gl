@@ -3,9 +3,6 @@ let custom_round = require("./../utils/customRound");
 let draw_webgl_layers = require("./../draws/drawWebglLayers");
 
 module.exports = function build_opacity_slider(cgm) {
-  console.log("build_opacity_slider!!");
-
-  let regl = cgm.regl;
   let params = cgm.params;
 
   var slider_length = 100;
@@ -174,12 +171,7 @@ module.exports = function build_opacity_slider(cgm) {
 
     d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
 
-    // change_groups(cgm, axis, slider_value);
-
-    // console.log(slider_value)
     params.opacity_slider_value = slider_value;
-    // change_opacity(slider_value)
-    // throttled(100, change_opacity(slider_value))
   }
 
   function click_opacity_slider() {
@@ -194,7 +186,6 @@ module.exports = function build_opacity_slider(cgm) {
     var slider_value = get_slider_value(rel_pos);
     params.opacity_slider_value = slider_value;
 
-    console.log("click opacity: ", slider_value);
     change_opacity(slider_value);
   }
 
@@ -210,22 +201,8 @@ module.exports = function build_opacity_slider(cgm) {
     return inst_y;
   }
 
-  function throttled(delay, fn) {
-    let lastCall = 0;
-    return function (...args) {
-      const now = new Date().getTime();
-      if (now - lastCall < delay) {
-        return;
-      }
-      lastCall = now;
-      return fn(...args);
-    };
-  }
-
   function change_opacity(slider_value) {
     slider_value = custom_round(slider_value, 2);
-
-    // console.log(slider_value)
 
     params.matrix.opacity_scale = slider_value;
     cgm.make_matrix_args();

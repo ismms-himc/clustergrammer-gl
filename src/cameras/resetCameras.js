@@ -2,7 +2,6 @@ var ini_zoom_data = require("./../zoom/iniZoomData");
 var make_cameras = require("./makeCameras");
 
 module.exports = function reset_cameras(regl, params) {
-  // console.log('reset_cameras\n-------------------')
   params.reset_cameras = false;
 
   params.zoom_data = ini_zoom_data();

@@ -2,7 +2,6 @@ var d3 = require("d3");
 var make_cat_breakdown_graph = require("./../cats/makeCatBreakdownGraph");
 var calc_cat_cluster_breakdown = require("./../cats/calcCatClusterBreakdown");
 var run_hide_tooltip = require("./runHideTooltip");
-// var run_dendro_crop = require('./../crop/runDendroCrop');
 var manual_category_from_dendro = require("./manualCategoryFromDendro");
 
 module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis) {
@@ -50,7 +49,7 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis) {
     .style("display", "inline-block")
     .classed("selected_label_container", true);
 
-  function make_output_string(d) {
+  function make_output_string() {
     let label_string;
     if (params.dendro.output_label_format === "list") {
       label_string =
@@ -68,7 +67,6 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis) {
   }
 
   let selected_color = "#0198E1";
-  // 'new-line'
   let format_options = ["list", "csv", "tsv"];
   selected_label_container
     .selectAll("text")
@@ -80,8 +78,6 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis) {
     .style("display", "inline-block")
     .style("cursor", "default")
     .on("click", (d) => {
-      // console.log('clicking format')
-
       params.dendro.output_label_format = d;
 
       d3.selectAll(
@@ -115,12 +111,6 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis) {
 
   d3.select(params.tooltip_id)
     .append("input")
-    // .attr('value', function(){
-    //   // return params.dendro.selected_clust_names.join(', ');
-    //   let label_string = params.dendro.selected_clust_names
-    //   label_string = label_string.map(x => ` '${x}'`).join(',')
-    //   return label_string
-    // })
     .attr("value", make_output_string)
     .style("width", "364px")
     .style("display", "block")
@@ -129,41 +119,4 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis) {
   if (params.cat_data.manual_category[inst_axis]) {
     manual_category_from_dendro(cgm, external_model, inst_axis);
   }
-
-  // d3.select(cgm.params.tooltip_id + ' .custom-cat-input').node().value
-  // d3.select(cgm.params.tooltip_id + ' .custom-cat-color').node().value
-
-  // custom_cat_div
-  //   .append('input')
-  //   .style('placeholder', 'Custom Category')
-  //   .style('width', '50px')
-  //   .style('display', 'block')
-  //   .style('float', 'left')
-  //   .style('color', 'black');
-
-  // console.log(params.dendro.selected_clust_names)
-
-  // // working on adding crop functionality
-  // /////////////////////////////////////////
-  // d3.select(params.tooltip_id)
-  //   .append('div')
-  //   .style('cursor', 'default')
-  //   .style('padding-top', '7px')
-  //   .on('click', function(d){
-  //     run_dendro_crop(params, d);
-  //   })
-  //   .append('text')
-  //   .text('Crop to Selected Cluster')
-
-  // .append('div')
-  // .style('text-align', 'right')
-  // .style('cursor', 'default')
-  // .on('click', function(){
-  //   console.log('clicking close tooltip')
-  //   params.tooltip.permanent_tooltip = false;
-  //   run_hide_tooltip(params);
-  // })
-  // .append('text')
-  // .text('X')
-  // .style('font-size', '15px')
 };

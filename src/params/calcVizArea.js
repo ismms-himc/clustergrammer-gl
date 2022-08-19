@@ -1,6 +1,4 @@
 module.exports = function calc_viz_area(params) {
-  // console.log('calc_viz_area!!!!!!!!!!!!')
-
   var zoom_data = params.zoom_data;
   var pix_to_webgl = params.pix_to_webgl;
 

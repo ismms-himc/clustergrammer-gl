@@ -11,6 +11,4 @@ module.exports = function download_metadata(params) {
   let file_type = "csv";
   let meta_type = params.download.meta_type;
   saveAs(blob, "meta_" + meta_type + "." + file_type);
-
-  console.log("download metadata");
 };

@@ -3,7 +3,6 @@ var change_groups = require("./changeGroups");
 let custom_round = require("./../utils/customRound");
 
 module.exports = function build_single_dendro_slider(cgm, axis) {
-  let regl = cgm.regl;
   let params = cgm.params;
 
   var slider_length = 100;
@@ -139,7 +138,6 @@ module.exports = function build_single_dendro_slider(cgm, axis) {
     // increment up button
     slider_group
       .append("path")
-      // .classed(axis+'_group_circle', true)
       .attr("d", function () {
         // up triangle
         var start_x = 0;
@@ -178,13 +176,11 @@ module.exports = function build_single_dendro_slider(cgm, axis) {
       })
       .on("mouseout", function () {
         d3.select(this).attr("opacity", default_opacity);
-      })
-      .on("click", (d) => console.log("increment up"));
+      });
 
     // increment down button
     slider_group
       .append("path")
-      // .classed(axis+'_group_circle', true)
       .attr("d", function () {
         // up triangle
         var start_x = 0;
@@ -223,17 +219,13 @@ module.exports = function build_single_dendro_slider(cgm, axis) {
       })
       .on("mouseout", function () {
         d3.select(this).attr("opacity", default_opacity);
-      })
-      .on("click", (d) => console.log("increment down"));
+      });
   }
 
   function dragging() {
     params.is_slider_drag = true;
 
     var slider_pos = d3.event.y;
-
-    // console.log('\n\n-------------------------------')
-    // console.log('initial', slider_pos)
 
     if (slider_pos < 0) {
       slider_pos = 0;
@@ -247,9 +239,7 @@ module.exports = function build_single_dendro_slider(cgm, axis) {
       this.parentNode.appendChild(this);
     }
 
-    // console.log('pre-round', slider_pos)
     slider_pos = custom_round(slider_pos, round_level);
-    // console.log('post-round', slider_pos)
 
     // var slider_value = 10 - slider_pos/10;
     var slider_value = get_slider_value(
@@ -291,8 +281,6 @@ module.exports = function build_single_dendro_slider(cgm, axis) {
     } else {
       slider_value = 10 - slider_position / 10;
     }
-
-    // console.log('slider_value', slider_value)
 
     return slider_value;
   }

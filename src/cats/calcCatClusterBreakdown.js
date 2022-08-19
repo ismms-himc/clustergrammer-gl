@@ -1,5 +1,3 @@
-/* eslint-disable guard-for-in */
-
 var binom_test = require("./binomTest");
 
 module.exports = function calc_cat_cluster_breakdown(
@@ -54,8 +52,6 @@ module.exports = function calc_cat_cluster_breakdown(
     var cat_index;
     for (var i = 0; i < tmp_types_index.length; i++) {
       cat_index = "cat-" + String(i);
-
-      // debugger;
 
       if (params.viz.cat_info[inst_rc][cat_index].type === "cat_strings") {
         type_name = params.viz.cat_names[inst_rc][cat_index];

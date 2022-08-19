@@ -49,7 +49,7 @@ module.exports = function zoom_rules_low_mat(
   // Potential Total Pan
   //////////////////////////////////////////////////////////////////////////////
   var ptp = calc_potential_total_pan(zoom_data);
-  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, axis, zoom_data_copy);
+  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, zoom_data_copy);
 
   return zoom_data;
 };

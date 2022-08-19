@@ -15,11 +15,7 @@ module.exports = function draw_axis_components(
   params.cameras[inst_axis + "-labels"].draw(() => {
     // viz aid triangles
     params.viz_aid_tri_args[inst_axis] =
-      require("./../matrixLabels/makeVizAidTriArgs")(
-        regl,
-        params,
-        inst_axis
-      );
+      require("./../matrixLabels/makeVizAidTriArgs")(regl, params, inst_axis);
     regl(params.viz_aid_tri_args[inst_axis])();
 
     // drawing the label categories and dendrogram using the same camera as the
@@ -68,10 +64,7 @@ module.exports = function draw_axis_components(
 
         // only regather if there are more labels than can be shown at once
         if (params.labels["num_" + inst_axis] >= params.max_num_text) {
-          require("./../matrixLabels/gatherTextTriangles")(
-            params,
-            inst_axis
-          );
+          require("./../matrixLabels/gatherTextTriangles")(params, inst_axis);
         }
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }

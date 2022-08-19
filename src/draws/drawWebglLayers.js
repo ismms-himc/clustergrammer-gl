@@ -1,6 +1,4 @@
 module.exports = function draw_webgl_layers(cgm) {
-  // console.log('draw_webgl_layers')
-
   let regl = cgm.regl;
   let params = cgm.params;
 

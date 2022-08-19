@@ -1,7 +1,6 @@
 module.exports = function make_meta_string(params) {
   // metadata will only be a CSV
 
-  console.log("make_meta_string");
   let delimiter = ",";
   let meta_string = ",";
 
@@ -18,8 +17,6 @@ module.exports = function make_meta_string(params) {
       meta_string = meta_string + x.cat_title;
     }
   });
-
-  console.log(meta_string);
 
   meta_string = meta_string + "\n";
   // write rows

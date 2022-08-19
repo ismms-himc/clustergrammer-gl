@@ -64,8 +64,6 @@ module.exports = function display_and_position_tooltip(params) {
         return total_y_offset + "px";
       });
   } else if (params.tooltip.tooltip_type === "col-dendro") {
-    // console.log('col-dendro')
-
     d3.select(params.tooltip_id)
       .style("margin-left", function () {
         var total_x_offset =
@@ -92,8 +90,6 @@ module.exports = function display_and_position_tooltip(params) {
         return total_y_offset + "px";
       });
   } else if (params.tooltip.tooltip_type.includes("col-cat-")) {
-    // console.log('col-dendro')
-
     d3.select(params.tooltip_id)
       .style("margin-left", function () {
         var total_x_offset =

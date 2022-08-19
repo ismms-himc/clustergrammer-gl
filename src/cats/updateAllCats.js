@@ -1,10 +1,6 @@
 let draw_webgl_layers = require("./../draws/drawWebglLayers");
 
 module.exports = function update_all_cats(cgm, axis, cat_title, new_cat_dict) {
-  // make test new_cat_dict
-  // new_cat_dict = {}
-  // cgm.params.network.col_nodes.forEach(x => { new_cat_dict[x.name.split(': ')[1]] = x['cat-0'].split(': ')[1]})
-
   params = cgm.params;
   regl = cgm.regl;
 
@@ -26,8 +22,6 @@ module.exports = function update_all_cats(cgm, axis, cat_title, new_cat_dict) {
     let new_cat = new_cat_dict[inst_name];
     params.cat_data.manual_cat_dict[axis][cat_title][inst_name] = new_cat;
   });
-
-  // params.cat_data.manual_cat_dict[axis]
 
   // generate an ordred labels list
   require("./../matrixLabels/genOrderedLabels")(cgm);

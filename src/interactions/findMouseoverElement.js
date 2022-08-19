@@ -51,8 +51,6 @@ module.exports = function find_mouseover_element(regl, params, ev) {
 
   require("./getMouseoverType")(params);
 
-  // console.log('tooltip_type', params.tooltip.tooltip_type)
-
   var axis_indices = {};
 
   if (params.tooltip.in_bounds_tooltip) {
@@ -71,14 +69,10 @@ module.exports = function find_mouseover_element(regl, params, ev) {
       // the shift is equal to the height above the column labels
       // however, this should be dimished based on how far zoomed out the user is
 
-      // console.log(( params.zoom_data.x.total_zoom/params.zoom_restrict.x.max ))
-
       // only shift if zooming is greater than 1% of total zoom available in x
       if (params.zoom_data.x.total_zoom / params.zoom_restrict.x.max > 0.01) {
         var y_heat_min = 126;
         var i_pix_y = params.zoom_data.y.cursor_position;
-
-        // console.log('shifting col label to account for 45% angle')
 
         var shift_col_label = y_heat_min - i_pix_y;
 
@@ -121,7 +115,6 @@ module.exports = function find_mouseover_element(regl, params, ev) {
     });
 
     if (params.tooltip.tooltip_type === "matrix-cell") {
-      // have a look at this later, console log errors occur sometimes when moving mouse around
       params.int.mouseover.value =
         params.mat_data[axis_indices.row][axis_indices.col];
 

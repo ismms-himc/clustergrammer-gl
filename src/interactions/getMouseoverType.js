@@ -15,13 +15,9 @@ module.exports = function get_mouseover_type(params) {
   edim.y.dendro_start = 845;
   edim.y.dendro_end = 860;
 
-  // console.log(params.zoom_data.x.cursor_position, params.zoom_data.y.cursor_position)
-
   var inst_pix = {};
   inst_pix.x = params.zoom_data.x.cursor_position;
   inst_pix.y = params.zoom_data.y.cursor_position;
-
-  // console.log(inst_pix.y)
 
   var cat_index;
 

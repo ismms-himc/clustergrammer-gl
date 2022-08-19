@@ -1,13 +1,10 @@
 // © 2016 Ricky Reusser. MIT License.
-// 'use strict';
-
+"use strict";
 var interactionEvents = require("./../interactions/interaction-events");
-// var normalizedInteractionEvents = require('normalized-interaction-events');
 var extend = require("xtend/mutable");
 var mat4 = require("gl-mat4");
 var EventEmitter = require("event-emitter");
 var camera_interaction = require("./cameraInteraction");
-// var track_interaction_zoom_data = require('./../interactions/trackInteractionZoomData');
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;
@@ -116,7 +113,6 @@ module.exports = function makeCamera2D(
     })
     .on("interaction", function (ev) {
       if (params.int.enable_viz_interact) {
-        // console.log(zoom_data.x.cursor_position, zoom_data.y.cursor_position)
         camera_interaction(
           zoom_data,
           ev,
@@ -130,36 +126,6 @@ module.exports = function makeCamera2D(
         );
       }
     });
-
-  // console.log('empty?', d3.select(params.root + ' .canvas-container canvas').empty());
-
-  // d3.select(params.root + ' .canvas-container canvas')
-  //   .on('mouseover', function(){
-  //     params.tooltip.on_canvas = true;
-  //     console.log(params.root, 'on canvas')
-  //   })
-  //   .on('mouseout', function(){
-  //     // disable off canvas
-  //     // params.tooltip.on_canvas = false;
-  //     console.log(params.root, 'off canvas');
-  //   });
-
-  // /////////////////////////////////////////
-  // // Alternate interaction tracking
-  // /////////////////////////////////////////
-  // debugger
-  // // console.log(element)
-  // console.log(regl._gl.canvas)
-  // normalizedInteractionEvents({
-  //   element: regl._gl.canvas
-  // })
-  // .on('wheel', function (ev) {
-  //   console.log('norm interact: camera');
-  //   if (params.int.enable_viz_interact){
-  //     camera_interaction(zoom_data, ev, viz_component, mInvViewport, mat4, mView,
-  //                        emitter, dViewport, mViewport);
-  //   }
-  // });
 
   var setProps = regl({
     context: {

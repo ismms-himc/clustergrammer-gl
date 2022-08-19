@@ -1,11 +1,7 @@
 var make_cat_position_array = require("./../cats/makeCatPositionArray");
 var make_cat_args = require("./../cats/makeCatArgs");
 
-/* eslint-disable no-loop-func */
-
 module.exports = function generate_cat_args_arrs(regl, params) {
-  // console.log('re-generate cat parameters because mousing over cats')
-
   // debugger
 
   params.cat_args = {};
@@ -35,8 +31,6 @@ module.exports = function generate_cat_args_arrs(regl, params) {
             params.order[inst_state][inst_axis]
           );
       });
-
-      // console.log('make_cat_args')
 
       params.cat_args[inst_axis][cat_index] = make_cat_args(
         regl,

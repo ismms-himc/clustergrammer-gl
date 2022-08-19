@@ -8,9 +8,6 @@ module.exports = function slice_linkage(
   let clust_a;
   let clust_b;
 
-  // // initialize group_links
-  // network[axis + '_nodes'].forEach((x, i) => { x.group_links = i})
-
   // initialize group_links and dictionary
   network[axis + "_nodes"].forEach((x, i) => {
     x.group_links = i;
@@ -28,7 +25,7 @@ module.exports = function slice_linkage(
       new_clust_id = max_clust_id + i;
 
       // replace cluster ids with new cluster id - effectively merging clusters
-      network[axis + "_nodes"].forEach((x, i) => {
+      network[axis + "_nodes"].forEach((x) => {
         if (x.group_links == clust_a || x.group_links == clust_b) {
           x.group_links = new_clust_id;
         }

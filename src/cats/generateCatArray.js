@@ -23,8 +23,6 @@ module.exports = function generate_cat_array(params, inst_axis) {
         tmp_title = inst_prop;
       }
 
-      // current_cats.push(tmp_title);
-
       current_cats[cat_index] = tmp_title;
     }
   });

@@ -1,8 +1,6 @@
 var vectorize_label = require("./vectorizeLabel");
 
 module.exports = function gather_text_triangles(params, inst_axis) {
-  // console.log('gather_text_triangles')
-
   var inst_dim;
   if (inst_axis === "col") {
     inst_dim = "x";
@@ -27,8 +25,6 @@ module.exports = function gather_text_triangles(params, inst_axis) {
       if (inst_name.indexOf(": ") >= 0) {
         inst_name = inst_label.name.split(": ")[1];
       }
-
-      // console.log(inst_name)
 
       var inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]) {

@@ -1,9 +1,6 @@
 var custom_camera_2d = require("./customCamera2d");
 
 module.exports = function make_cameras(regl, params) {
-  // console.log('---------------------------------------------')
-  // console.log('make_cameras total pan x min', params.zoom_data.x.total_pan_max)
-
   var zoom_data = params.zoom_data;
 
   const cameras = {};

@@ -23,14 +23,12 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     let cat_secondary_up = "cat-" + String(i - 1);
     let cat_secondary_down = "cat-" + String(i + 1);
     if (cat_secondary_down in params.network[axis + "_nodes"][0]) {
-      console.log("found down");
       cat_secondary = cat_secondary_down;
     } else if (cat_secondary_up in params.network[axis + "_nodes"][0]) {
-      console.log("found up");
       cat_secondary = cat_secondary_up;
     } else {
       // single category reordering
-      console.log("did not find cat_secondary");
+
       cat_secondary = cat_primary;
     }
 
@@ -39,7 +37,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     );
     let order_dict = {};
     let inst_name;
-    let inst_order;
     sorted_nodes.forEach((d, i) => {
       inst_name = d.name;
       if (inst_name.includes(": ")) {
@@ -48,7 +45,7 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       order_dict[inst_name] = i;
     });
 
-    params.network[axis + "_nodes"].forEach((d, i) => {
+    params.network[axis + "_nodes"].forEach((d) => {
       inst_name = d.name;
       if (inst_name.includes(": ")) {
         inst_name = inst_name.split(": ")[1];
@@ -118,14 +115,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     .style("fill", "white")
     .style("opacity", 0.0)
     .on("dblclick", function (d, i) {
-      // // Original Category Reordering
-      // ////////////////////////////////////////
-      // let inst_reorder = 'cat_' + String(i) + '_index'
-      // run_reorder(regl, params, 'col', inst_reorder)
-      // params.order.inst.col = inst_reorder
-
-      // New Category Reordering
-      ////////////////////////////////////////
       stable_reorder_cats("col", i);
       params.order.inst.col = "custom";
 
@@ -201,10 +190,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     .style("fill", "white")
     .style("opacity", 0.0)
     .on("dblclick", function (d, i) {
-      // let inst_reorder = 'cat_' + String(i) + '_index'
-      // run_reorder(regl, params, 'row', inst_reorder);
-      // params.order.inst.row = inst_reorder;
-
       stable_reorder_cats("row", i);
       params.order.inst.row = "custom";
 

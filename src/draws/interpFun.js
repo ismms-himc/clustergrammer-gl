@@ -5,6 +5,5 @@ module.exports = function interp_fun(params) {
     (params.ani.time - params.ani.last_switch_time) / params.ani.ani_duration
   );
 
-  // console.log(inst_ease)
   return inst_ease;
 };

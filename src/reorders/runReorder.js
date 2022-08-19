@@ -20,10 +20,7 @@ module.exports = function run_reorder(regl, params, inst_axis, ini_new_order) {
     params.labels["num_" + inst_axis] <= params.max_num_text
   ) {
     params.text_triangles.draw[inst_axis] =
-      require("./../matrixLabels/updateTextTriangleOrder")(
-        params,
-        inst_axis
-      );
+      require("./../matrixLabels/updateTextTriangleOrder")(params, inst_axis);
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }

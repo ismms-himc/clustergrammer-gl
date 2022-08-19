@@ -1,24 +1,10 @@
 var make_full_name = require("./makeFullName");
 
 module.exports = function make_matrix_string(params) {
-  var inst_matrix = params.matrix;
-
-  // let delimiter = '\t'
-  // let delimiter = ','
-
   let delimiter = params.download.delimiter_key[params.download.delimiter_name];
 
   // get order indexes
   var order_indexes = {};
-  var inst_name;
-  var axis;
-  var axes = ["row", "col"].forEach((axis) => {
-    order_indexes[axis] = params.network[axis + "_nodes"].map((x) => {
-      let inst_num_labels = params.labels["num_" + axis] - 1;
-      let new_index = inst_num_labels - x.ini;
-      return new_index;
-    });
-  });
 
   // write first matrix row (e.g. column names)
   ////////////////////////////////////////////////

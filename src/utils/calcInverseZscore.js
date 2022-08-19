@@ -1,6 +1,4 @@
 module.exports = function calc_inverse_zscore(params) {
-  console.log("calc_inverse_zscore!!!!!!!!!!!!!!");
-
   mat_data = params.mat_data;
 
   // Inv-Z-score data
@@ -8,8 +6,6 @@ module.exports = function calc_inverse_zscore(params) {
   let mat_data_iz = mat_data.map((inst_row, i) => {
     inst_avg = params.network.pre_zscore.mean[i];
     inst_std = params.network.pre_zscore.std[i];
-
-    // console.log(inst_avg, inst_std)
 
     // z-score data
     inst_row_iz = inst_row.map((x) => {

@@ -1,6 +1,4 @@
 module.exports = function calc_dendro_triangles(params, inst_axis) {
-  // console.log('calc_dendro_triangles')
-
   var triangle_info = {};
 
   var inst_nodes = params.network[inst_axis + "_nodes"];

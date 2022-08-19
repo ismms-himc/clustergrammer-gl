@@ -1,6 +1,5 @@
 var d3 = require("d3");
 let draw_webgl_layers = require("./../draws/drawWebglLayers");
-// var logo_url = require("file-loader!../grahamCracker70.png");
 let build_opacity_slider = require("./../colors/buildOpacitySlider");
 let download_matrix = require("./../download/downloadMatrix");
 let download_metadata = require("./../download/downloadMetadata");
@@ -23,7 +22,6 @@ module.exports = function build_control_panel() {
 
   params.tooltip_fun = tooltip;
 
-  // var control_container = d3.select(params.root + ' .control-container')[0][0];
   var control_container = d3.select(params.root + " .control-container")
     ._groups[0][0];
   var i_height = 135;
@@ -100,35 +98,24 @@ module.exports = function build_control_panel() {
 
   var cracker_room = 60;
 
-  // control_svg
-  //   .append('image')
-  //   .image('https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
-
   control_svg
     .append("svg:a")
-    // .attr('xlink:href', 'https://clustergrammer.readthedocs.io/clustergrammer2.html')
-    // .attr('xlink:target', '_blank')
     .append("svg:image")
     .classed("cgm-logo", true)
     .attr("x", 15)
     .attr("y", 55)
     .attr("width", 50)
     .attr("height", 50)
-    // .attr('xlink:href', 'https://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png')
     .attr(
       "xlink:href",
       "https://raw.githubusercontent.com/ismms-himc/clustergrammer-gl/master/img/graham_cracker_144.png"
     )
-    .on("click", function (d) {
+    .on("click", function () {
       window.open(
         "https://clustergrammer.readthedocs.io/",
         "_blank" // <- This is what makes it open in a new window.
       );
     });
-  // .attr('cursor', 'pointer');
-  // .attr("xlink:href", logo_url)
-
-  // console.log(logo_url)
 
   var shift_x_order_buttons = 65 + cracker_room;
   button_groups.row.x_trans = shift_x_order_buttons;
@@ -261,8 +248,6 @@ module.exports = function build_control_panel() {
         var clean_order = d.replace("sum", "rank").replace("var", "rankvar");
 
         if (params.order.inst[i_axis] != clean_order) {
-          console.log(">>>>>>>>", params.order.inst[i_axis], clean_order);
-
           /* category order is already calculated */
           require("./../reorders/runReorder")(regl, params, i_axis, d);
 
@@ -374,7 +359,7 @@ module.exports = function build_control_panel() {
     .style("font-size", "14px")
     .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style("font-weight", 400)
-    .on("click", (d) => {
+    .on("click", () => {
       let inst_value = d3
         .select(params.root + " .control-container .row_search_box")
         .node().value;
@@ -423,7 +408,7 @@ module.exports = function build_control_panel() {
 
   control_svg
     .append("g")
-    .on("click", (x) => {
+    .on("click", () => {
       params.download.delimiter_name = "csv";
       download_matrix(params);
     })
@@ -445,10 +430,9 @@ module.exports = function build_control_panel() {
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
 
-  let shift_download = 40;
   control_svg
     .append("g")
-    .on("click", (x) => {
+    .on("click", () => {
       params.download.delimiter_name = "tsv";
       download_matrix(params);
     })
@@ -472,7 +456,7 @@ module.exports = function build_control_panel() {
 
   control_svg
     .append("g")
-    .on("click", (x) => {
+    .on("click", () => {
       params.download.delimiter_name = "tuple";
       download_matrix(params);
     })
@@ -532,7 +516,7 @@ module.exports = function build_control_panel() {
 
   control_svg
     .append("g")
-    .on("click", (x) => {
+    .on("click", () => {
       params.download.meta_type = "col";
       download_metadata(params);
     })
@@ -556,7 +540,7 @@ module.exports = function build_control_panel() {
 
   control_svg
     .append("g")
-    .on("click", (x) => {
+    .on("click", () => {
       params.download.meta_type = "row";
       download_metadata(params);
     })

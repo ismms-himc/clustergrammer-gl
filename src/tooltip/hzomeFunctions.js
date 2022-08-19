@@ -2,8 +2,6 @@ var d3 = require("d3");
 var axios = require("axios");
 module.exports = function hzome_functions(params) {
   function get_request(ini_gene_symbol) {
-    // console.log('get_request');
-
     var gene_symbol;
     if (ini_gene_symbol.indexOf(" ") > 0) {
       gene_symbol = ini_gene_symbol.split(" ")[0];
@@ -37,7 +35,7 @@ module.exports = function hzome_functions(params) {
       })
       // .catch(function (error) {
       //   // handle error
-      //   console.log(error);
+
       // })
       .finally(function () {
         // always executed
@@ -45,8 +43,6 @@ module.exports = function hzome_functions(params) {
   }
 
   function set_tooltip(data, gene_symbol) {
-    // console.log('set_tooltip');
-
     if (data.name != undefined) {
       // assign html
       d3.select(params.tooltip_id).html(function () {
@@ -62,17 +58,14 @@ module.exports = function hzome_functions(params) {
   }
 
   function gene_info(gene_symbol) {
-    // console.log('gene_info');
-
     // var gene_symbol = gene_info.name;
 
     if (_.has(params.hzome.gene_data, gene_symbol)) {
-      // console.log('found in params.hzome.gene_data')
       var inst_data = params.hzome.gene_data[gene_symbol];
       set_tooltip(inst_data, gene_symbol);
     } else {
       // setTimeout(get_request, 250, gene_symbol);
-      // console.log('make get request for data')
+
       get_request(gene_symbol);
     }
   }

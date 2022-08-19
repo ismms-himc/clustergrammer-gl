@@ -4,14 +4,12 @@ var build_single_dendro_slider = require("./buildSingleDendroSlider");
 module.exports = function build_dendrogram_sliders() {
   var cgm = this;
   var params = cgm.params;
-  var regl = cgm.regl;
 
   // Add sliders on top of the canvas
   /////////////////////////////////////
   var slider_length = 130;
 
   // slider containers
-
   var axis_slider_container;
   var inst_top;
   var inst_left;

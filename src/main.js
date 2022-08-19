@@ -1,14 +1,4 @@
-/*
-  clustergrammer-gl version 0.23.0
- */
-
 function clustergrammer_gl(args, external_model = null) {
-  var d3 = require("d3");
-
-  console.log("#################################");
-  console.log("clustergrammer-gl version 0.23.0");
-  console.log("#################################");
-
   var cgm = {};
 
   // check if container is defined
@@ -40,12 +30,10 @@ function clustergrammer_gl(args, external_model = null) {
     cgm.gen_ordered_labels = require("./params/genLabelPar");
 
     if (typeof args.widget_callback !== "undefined") {
-      console.log("pass widget_callback to cgm  ");
       cgm.widget_callback = args.widget_callback;
     }
 
     // initialize network
-    // cgm.decompress_network(args.network);
     cgm.network = args.network;
 
     // going to work on passing in filtered network in place of full network
@@ -81,8 +69,6 @@ function clustergrammer_gl(args, external_model = null) {
     }
 
     function adjust_opacity(opacity_scale) {
-      console.log("adjust_opacity!!!!!!!!!!!!!!");
-
       let cgm = this;
       let params = cgm.params;
 
@@ -92,8 +78,6 @@ function clustergrammer_gl(args, external_model = null) {
     }
 
     cgm.adjust_opacity = adjust_opacity;
-
-    // cgm.toggle_zscore = toggle_zscore
 
     return cgm;
   }

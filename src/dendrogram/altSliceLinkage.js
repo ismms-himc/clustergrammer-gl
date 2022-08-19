@@ -4,8 +4,6 @@ module.exports = function alt_slice_linkage(
   dist_thresh,
   min_dist = 0
 ) {
-  // console.log(axis, 'alternate slice linkage!!!!!!!!!!')
-
   network = params.network;
   let clust_a;
   let clust_b;
@@ -38,13 +36,6 @@ module.exports = function alt_slice_linkage(
 
       delete group_dict[clust_a];
       delete group_dict[clust_b];
-
-      // // replace cluster ids with new cluster id - effectively merging clusters
-      // network[axis + '_nodes'].forEach((x, i) => {
-      //   if (x.group_links == clust_a || x.group_links == clust_b){
-      //     x.group_links = new_clust_id
-      //   }
-      // })
     }
   });
 
@@ -73,7 +64,4 @@ module.exports = function alt_slice_linkage(
   network[axis + "_nodes"].forEach((x, i) => {
     x.group_links = flat_group_dict[i];
   });
-
-  // console.log(group_dict)
-  // console.log(flat_group_dict)
 };

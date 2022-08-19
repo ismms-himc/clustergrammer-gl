@@ -6,8 +6,6 @@ var d3 = require("d3");
 /* Changes the groupings (x- and y-axis color bars).
  */
 module.exports = function change_groups(cgm, axis, slider_value) {
-  console.log("change_groups!!!!!!");
-
   let regl = cgm.regl;
   let params = cgm.params;
 

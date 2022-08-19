@@ -39,7 +39,7 @@ export default (function run_zoom_restrictions(zd, ptp, viz_dim_heat, zd_copy) {
     const new_pbz_relative_max = -zd.inst_eff_zoom * new_cursor_relative_max;
     zd.total_pan_max = zd.total_pan_max + new_pbz_relative_max / zd.total_zoom;
     // prevent push if fully zoomed out (&& zd.inst_eff_zoom <=0)
-    if (zd.fully_zoomed_out == true) {
+    if (zd.fully_zoomed_out === true) {
       zd.pan_by_zoom = 0;
       zd.total_pan_max = 0;
     }
@@ -62,7 +62,7 @@ export default (function run_zoom_restrictions(zd, ptp, viz_dim_heat, zd_copy) {
     const new_pbz_relative_min = -zd.inst_eff_zoom * new_cursor_relative_min;
     zd.total_pan_min = zd.total_pan_min + new_pbz_relative_min / zd.total_zoom;
     // prevent push if fully zoomed out
-    if (zd.fully_zoomed_out == true) {
+    if (zd.fully_zoomed_out === true) {
       zd.pan_by_zoom = 0;
       zd.total_pan_min = 0;
     }

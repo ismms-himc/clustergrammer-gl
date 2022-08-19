@@ -9,15 +9,15 @@ export const is_supported_order = function (order) {
     order === "rank_var" ||
     order === "rank" ||
     order === "class" ||
-    order == "alpha"
+    order === "alpha"
   );
 };
 export const has = function (obj, key) {
-  return obj != null && hasOwnProperty.call(obj, key);
+  return obj !== null && hasOwnProperty.call(obj, key);
 };
 export const property = function (key) {
   return function (obj) {
-    return obj == null ? void 0 : obj[key];
+    return obj === null ? void 0 : obj[key];
   };
 };
 export const is_undefined = function (obj) {

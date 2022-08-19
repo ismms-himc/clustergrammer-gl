@@ -1,12 +1,12 @@
 import zoom_rules_low_mat from "../zoom/zoomRulesLowMat";
-import find_mouseover_element from "./findMouseoverElement";
-import keep_track_of_interactions from "./keepTrackOfInteractions";
-import keep_track_of_mouseovers from "./keepTrackOfMouseovers";
-export default (function track_interaction_zoom_data(regl, params, ev) {
+import findMouseoverElement from "./findMouseoverElement";
+
+export default (function track_interaction_zoom_data(params, ev) {
   const zoom_data = params.zoom_data;
   const zoom_restrict = params.zoom_restrict;
   const viz_dim = params.viz_dim;
   const interaction_types = ["wheel", "touch", "pinch"];
+  const interactionData = {};
   if (ev.buttons || interaction_types.indexOf(ev.type) !== -1) {
     switch (ev.type) {
       case "wheel":
@@ -59,10 +59,14 @@ export default (function track_interaction_zoom_data(regl, params, ev) {
       viz_dim.mat.y,
       "y"
     );
-    keep_track_of_interactions(params);
+    // TODO: reimplement so that whoever needs this info actually gets it
+    // keep_track_of_interactions(params);
   } else if (ev.type === "mousemove") {
     // trying to keep track of interactions for mouseovers
-    keep_track_of_mouseovers(params);
-    find_mouseover_element(regl, params, ev);
+    // TODO: reimplement so that whoever needs this info actually gets it
+    // keep_track_of_mouseovers(params);
+    interactionData.mouseover = findMouseoverElement(params, ev);
   }
+
+  return interactionData;
 });

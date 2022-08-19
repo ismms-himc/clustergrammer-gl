@@ -21,7 +21,7 @@ export default function update_all_cats(cgm, axis, cat_title, new_cat_dict) {
     params.cat_data.manual_cat_dict[axis][cat_title][inst_name] = new_cat;
   });
   // generate an ordred labels list
-  genOrderedLabels(cgm);
+  genOrderedLabels(params);
   generateCatArgsArrs(regl, params);
-  draw_webgl_layers(cgm);
+  draw_webgl_layers(regl, params);
 }

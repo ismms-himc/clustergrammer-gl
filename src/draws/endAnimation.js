@@ -44,5 +44,5 @@ export default (function end_animation(cgm) {
     calcTextOffsets(params, i_axis);
   });
   // update ordered_labels
-  genOrderedLabels(cgm);
+  genOrderedLabels(params);
 });

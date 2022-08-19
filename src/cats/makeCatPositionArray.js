@@ -28,7 +28,7 @@ export default (function make_cat_position_array(
     // emperically found rules
     let order_id;
     let shift_mat_heat;
-    if (inst_axis == "row") {
+    if (inst_axis === "row") {
       order_id =
         num_labels - params.network[inst_axis + "_nodes"][i][inst_order] - 1;
       // vertical shift

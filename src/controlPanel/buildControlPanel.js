@@ -122,7 +122,7 @@ export default function build_control_panel(cgm) {
     .on("click", function () {
       d3.selectAll(params.root + " .panel_button_titles").attr("opacity", 0.5);
       d3.select(this).attr("opacity", 1.0);
-      if (params.viz.current_panel == "recluster") {
+      if (params.viz.current_panel === "recluster") {
         params.viz.current_panel = "reorder";
         // modify buttons
         d3.select(params.root + " .panel_button_title").text(
@@ -223,7 +223,7 @@ export default function build_control_panel(cgm) {
       })
       .on("click", function (d) {
         const clean_order = d.replace("sum", "rank").replace("var", "rankvar");
-        if (params.order.inst[i_axis] != clean_order) {
+        if (params.order.inst[i_axis] !== clean_order) {
           /* category order is already calculated */
           runReorder(regl, params, i_axis, d);
           d3.select(params.root + " ." + i_axis + "-reorder-buttons")
@@ -241,7 +241,7 @@ export default function build_control_panel(cgm) {
       .attr("ry", 10)
       .attr("stroke", function (d) {
         let i_color;
-        if (params.order.inst[i_axis] == d) {
+        if (params.order.inst[i_axis] === d) {
           i_color = active_button_color;
         } else {
           i_color = button_color;
@@ -329,7 +329,7 @@ export default function build_control_panel(cgm) {
         .select(params.root + " .control-container .row_search_box")
         .node().value;
       params.search.searched_rows = inst_value.split(", ");
-      draw_webgl_layers(cgm);
+      draw_webgl_layers(regl, params);
     });
   // opacity slider
   // //////////////////////////

@@ -16,7 +16,7 @@ export default (function check_if_value_cats(cat_states) {
       tmp_cat = tmp_cat.split(super_string)[1];
     }
   }
-  if (isNaN(tmp_cat) == false) {
+  if (isNaN(tmp_cat) === false) {
     might_have_values = true;
   }
   // check each value for number

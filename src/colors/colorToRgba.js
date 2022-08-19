@@ -10,7 +10,7 @@ export default (function color_to_rgbs(hex_or_name, alpha = 1.0) {
     let c;
     if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex_or_name)) {
       c = hex_or_name.substring(1).split("");
-      if (c.length == 3) {
+      if (c.length === 3) {
         c = [c[0], c[0], c[1], c[1], c[2], c[2]];
       }
       c = "0x" + c.join("");

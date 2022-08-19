@@ -4,9 +4,13 @@ import make_cat_breakdown_graph from "../cats/makeCatBreakdownGraph";
 import manual_category_from_dendro from "./manualCategoryFromDendro";
 import run_hide_tooltip from "./runHideTooltip";
 
-export default (function make_dendro_tooltip(cgm, external_model, inst_axis) {
-  const params = cgm.params;
-  const mouseover = params.int.mouseover;
+export default (function make_dendro_tooltip(
+  regl,
+  params,
+  mouseover,
+  external_model,
+  inst_axis
+) {
   params.tooltip_fun.show("tooltip");
   d3.select(params.tooltip_id)
     .append("div")
@@ -105,6 +109,6 @@ export default (function make_dendro_tooltip(cgm, external_model, inst_axis) {
     .style("display", "block")
     .style("color", "black");
   if (params.cat_data.manual_category[inst_axis]) {
-    manual_category_from_dendro(cgm, external_model, inst_axis);
+    manual_category_from_dendro(regl, params, external_model, inst_axis);
   }
 });

@@ -1,10 +1,14 @@
 import draw_commands from "./drawCommands";
 
-export default function draw_labels_tooltips_or_dendro(cgm, external_model) {
+export default function draw_labels_tooltips_or_dendro(
+  cgm,
+  mouseover,
+  external_model
+) {
   const params = cgm.params;
   // turn back on draw_labels
   // /////////////////////////////
-  draw_commands(cgm, external_model);
+  draw_commands(cgm, mouseover, external_model);
   if (params.tooltip.show_tooltip) {
     params.tooltip.show_tooltip = false;
   }

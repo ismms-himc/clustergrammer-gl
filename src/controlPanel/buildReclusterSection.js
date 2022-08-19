@@ -172,7 +172,7 @@ export default (function build_recluster_section(cgm) {
     .style("ry", 10)
     .attr("stroke", function (d) {
       let i_color;
-      if (dist_dict[params.matrix.distance_metric] == d.short) {
+      if (dist_dict[params.matrix.distance_metric] === d.short) {
         i_color = active_button_color;
       } else {
         i_color = button_color;
@@ -247,7 +247,7 @@ export default (function build_recluster_section(cgm) {
     .style("ry", 10)
     .attr("stroke", function (d) {
       let i_color;
-      if (link_dict[params.matrix.linkage_type] == d.short) {
+      if (link_dict[params.matrix.linkage_type] === d.short) {
         i_color = active_button_color;
       } else {
         i_color = button_color;
@@ -289,7 +289,7 @@ export default (function build_recluster_section(cgm) {
           d3.select(this).select("text").text("raw".toUpperCase());
         }
         cgm.make_matrix_args(cgm);
-        draw_webgl_layers(cgm);
+        draw_webgl_layers(cgm.regl, params);
       })
       .attr("transform", function () {
         const x_offset = 290 + cracker_room;

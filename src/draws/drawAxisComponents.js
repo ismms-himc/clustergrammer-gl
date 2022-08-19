@@ -63,7 +63,7 @@ export default (function draw_axis_components(
         params.zoom_data[axis_dim].total_zoom;
       if (
         num_viz_labels < params.max_num_text &&
-        params.labels.queue.high[inst_axis].length == 0
+        params.labels.queue.high[inst_axis].length === 0
       ) {
         calcVizArea(params);
         // only regather if there are more labels than can be shown at once
@@ -73,7 +73,7 @@ export default (function draw_axis_components(
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     } else {
-      if (params.text_triangles.draw[inst_axis] != false) {
+      if (params.text_triangles.draw[inst_axis] !== false) {
         regl(text_triangle_args)(params.text_triangles.draw[inst_axis]);
       }
     }

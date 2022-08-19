@@ -1,12 +1,12 @@
 import * as d3 from "d3";
 import reset_cameras from "../cameras/resetCameras";
 import draw_background_calculations from "./drawBackgroundCalculations";
-import draw_interacting from "./drawInteracting";
+import draw_labels_tooltips_or_dendro from "./drawLabelsTooltipsOrDendro";
 import draw_mouseover from "./drawMouseover";
 import end_animation from "./endAnimation";
 import start_animation from "./startAnimation";
 
-export default function run_viz(cgm, external_model) {
+export default function run_viz(cgm, mouseover, external_model) {
   const regl = cgm.regl;
   const params = cgm.params;
   params.ani.first_frame = true;
@@ -31,14 +31,15 @@ export default function run_viz(cgm, external_model) {
       end_animation(cgm);
     }
     if (
-      params.int.still_interacting == true ||
-      params.ani.ini_viz == true ||
-      params.ani.running == true ||
-      params.ani.update_viz == true
+      params.int.still_interacting === true ||
+      params.ani.ini_viz === true ||
+      params.ani.running === true ||
+      params.ani.update_viz === true
     ) {
-      draw_interacting(cgm, external_model);
+      // const { mouseover } = track_interaction_zoom_data(regl, params, ev);
+      // draw_interacting(cgm, mouseover, external_model);
       params.ani.update_viz = false;
-    } else if (params.int.still_mouseover == true) {
+    } else if (params.int.still_mouseover === true) {
       // mouseover may result in draw command
       draw_mouseover(regl, params);
       draw_background_calculations(regl, params);
@@ -47,7 +48,7 @@ export default function run_viz(cgm, external_model) {
       params.tooltip.show_tooltip ||
       params.dendro.update_dendro
     ) {
-      cgm.draw_labels_tooltips_or_dendro(cgm, external_model);
+      draw_labels_tooltips_or_dendro(cgm, mouseover, external_model);
     } else {
       // run background calculations
       draw_background_calculations(regl, params);

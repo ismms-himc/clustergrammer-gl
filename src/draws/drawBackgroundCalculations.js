@@ -14,8 +14,8 @@ export default (function draw_background_calculations(regl, params) {
         inst_name
       );
       if (
-        params.labels.queue.high[inst_axis].length == 0 &&
-        params.labels.precalc[inst_axis] == false
+        params.labels.queue.high[inst_axis].length === 0 &&
+        params.labels.precalc[inst_axis] === false
       ) {
         params.ani.update_viz = true;
       }

@@ -22,7 +22,7 @@ export default (function calc_viz_area(params) {
     total_pan[inst_axis + "_max"] =
       params.viz_dim.heat[inst_dim] + zoom_data[inst_axis].total_pan_max;
     // x and y axis viz area is defined differently
-    if (inst_axis == "x") {
+    if (inst_axis === "x") {
       viz_area[inst_axis + "_min"] =
         pix_to_webgl[inst_axis](total_pan[inst_axis + "_min"]) - buffer_width;
       viz_area[inst_axis + "_max"] =

@@ -175,7 +175,7 @@ export default (function build_opacity_slider(cgm) {
     slider_value = custom_round(slider_value, 2);
     params.matrix.opacity_scale = slider_value;
     cgm.make_matrix_args(cgm);
-    draw_webgl_layers(cgm);
+    draw_webgl_layers(cgm.regl, params);
     d3.select(params.root + " .opacity_level_text").text(slider_value);
   }
 });

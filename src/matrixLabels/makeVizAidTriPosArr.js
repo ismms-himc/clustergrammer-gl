@@ -26,7 +26,7 @@ export default (function make_viz_aid_tri_pos_arr(
   let order_index;
   for (i = 0; i < num_labels; i++) {
     order_index = params.network[inst_axis + "_nodes"][i][inst_order];
-    if (inst_axis == "row") {
+    if (inst_axis === "row") {
       inst_index = num_labels - order_index - 1;
     } else {
       inst_index = order_index;

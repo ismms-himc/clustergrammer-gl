@@ -21,4 +21,6 @@
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
     "python.formatting.provider": "black",
+    // other
+    "javascript.preferences.importModuleSpecifier": "relative",
 }

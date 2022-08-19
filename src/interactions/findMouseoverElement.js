@@ -1,7 +1,7 @@
 import * as _ from "underscore";
 import getMouseoverType from "./getMouseoverType";
 
-export default (function find_mouseover_element(regl, params, ev) {
+export default function findMouseoverElement(params, ev) {
   /*
   
       Need to improve behavior for categories and dendrogram. This info will be
@@ -121,4 +121,6 @@ export default (function find_mouseover_element(regl, params, ev) {
       });
     }
   }
-});
+
+  return mouseover;
+}

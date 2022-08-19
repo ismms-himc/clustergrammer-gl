@@ -3,17 +3,16 @@ import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 import generateCatArgsArrs from "../params/generateCatArgsArrs";
 
 export default function manual_update_to_cats(
-  cgm,
+  regl,
+  params,
   axis,
   cat_title,
   new_cat,
   selected_labels
 ) {
-  const params = cgm.params;
-  const regl = cgm.regl;
   const full_cat = cat_title + ": " + new_cat;
   // manually updated categories in network
-  cgm.params.network[axis + "_nodes"].map((x) => {
+  params.network[axis + "_nodes"].map((x) => {
     let inst_name = x.name;
     if (inst_name.includes(": ")) {
       inst_name = inst_name.split(": ")[1];
@@ -28,9 +27,9 @@ export default function manual_update_to_cats(
   });
   // params.cat_data.manual_cat_dict[axis]
   // generate an ordred labels list
-  genOrderedLabels(cgm);
+  genOrderedLabels(params);
   generateCatArgsArrs(regl, params);
   if (params.is_widget === false) {
-    draw_webgl_layers(cgm);
+    draw_webgl_layers(regl, params);
   }
 }

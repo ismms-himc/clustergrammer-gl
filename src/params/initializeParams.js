@@ -57,7 +57,7 @@ export default function initialize_params(cgm, external_model) {
   genCatPar(params);
   params.mat_data = params.network.mat;
   generateOrderParams(params);
-  genLabelPar(cgm);
+  genLabelPar(params);
   const labels = params.labels;
   generateTooltipParams(regl, params);
   calcVizDim(regl, params);

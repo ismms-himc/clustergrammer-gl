@@ -2,11 +2,14 @@ import * as d3 from "d3";
 import * as _ from "underscore";
 import make_dendro_tooltip from "./makeDendroTooltip";
 
-export default (function make_tooltip_text(cgm, external_model) {
-  const params = cgm.params;
+export default (function make_tooltip_text(
+  regl,
+  params,
+  mouseover,
+  external_model
+) {
   let inst_axis;
   let tooltip_text;
-  const mouseover = params.int.mouseover;
   if (params.tooltip.tooltip_type === "matrix-cell") {
     // Matrix-Cell Tooltip
     // //////////////////////
@@ -39,7 +42,7 @@ export default (function make_tooltip_text(cgm, external_model) {
     // Dendro Tooltip
     // ////////////////
     inst_axis = params.tooltip.tooltip_type.split("-")[0];
-    make_dendro_tooltip(cgm, external_model, inst_axis);
+    make_dendro_tooltip(regl, params, mouseover, external_model, inst_axis);
   } else if (params.tooltip.tooltip_type.indexOf("-cat-") > 0) {
     // Category Tooltip
     // ///////////////////

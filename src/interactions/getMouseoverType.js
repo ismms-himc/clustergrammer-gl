@@ -67,7 +67,7 @@ export default (function get_mouseover_type(params) {
     inst_pix.y > edim.y.heat_min &&
     inst_pix.y < edim.y.dendro_start
   ) {
-    if (params.order.inst.row == "clust") {
+    if (params.order.inst.row === "clust") {
       params.tooltip.tooltip_type = "row-dendro";
       params.tooltip.in_bounds_tooltip = true;
     }
@@ -77,7 +77,7 @@ export default (function get_mouseover_type(params) {
     inst_pix.x > edim.x.heat_min &&
     inst_pix.x < edim.x.dendro_start
   ) {
-    if (params.order.inst.col == "clust") {
+    if (params.order.inst.col === "clust") {
       params.tooltip.tooltip_type = "col-dendro";
       params.tooltip.in_bounds_tooltip = true;
     }

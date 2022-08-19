@@ -12,6 +12,7 @@
     "lint-fix": "eslint --fix src/",
     "prebuild": "rimraf dist",
     "build": "tsc",
+    "build-for-example": "rimraf example/example-app/src/cg && tsc -p ./tsconfig-for-example.json",
     "prepare": "npm run build"
   },
   "repository": {
@@ -70,7 +71,6 @@
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "3.0.2",
     "normalized-interaction-events": "2.0.1",
-    "pako": "1.0.6",
     "regl": "^1.3.7",
     "tayden-clusterfck": "^0.7.0",
     "underscore": "1.8.3",

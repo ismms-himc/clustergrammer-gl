@@ -1,8 +1,7 @@
 import * as _ from "underscore";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 
-export default (function gen_label_par(cgm) {
-  const params = cgm.params;
+export default (function gen_label_par(params) {
   const labels = {};
   labels.num_row = params.mat_data.length;
   labels.num_col = params.mat_data[0].length;
@@ -26,5 +25,5 @@ export default (function gen_label_par(cgm) {
     labels.precalc[inst_axis] = false;
   });
   params.labels = labels;
-  genOrderedLabels(cgm);
+  genOrderedLabels(params);
 });

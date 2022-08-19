@@ -2,8 +2,7 @@ import * as EventEmitter from "event-emitter";
 import mat4 from "gl-mat4";
 import interactionEvents from "../interactions/interactionEvents";
 import camera_interaction from "./cameraInteraction";
-// © 2016 Ricky Reusser. MIT License.
-("use strict");
+
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;
   out[1] = 0;

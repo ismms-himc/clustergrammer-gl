@@ -50,7 +50,7 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
     }
   }
   let is_cat_value = false;
-  if (params.viz.cat_info[inst_axis][cat_index_name].type == "cat_values") {
+  if (params.viz.cat_info[inst_axis][cat_index_name].type === "cat_values") {
     is_cat_value = true;
   }
   /* Category Colors */
@@ -110,7 +110,7 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
     inst_opacity = 1.0;
     const blend_fraction = 0.25;
     if (is_mousing_over_cat) {
-      if (mousing_over_cat == inst_cat) {
+      if (mousing_over_cat === inst_cat) {
         if (is_cat_value === false) {
           inst_color = color_to_rgba(inst_color, inst_opacity);
         }
@@ -174,7 +174,7 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
         new_position = vec3(ini_position, 0);
 
         // interpolate between the two positions using the interpolate uniform
-        if (run_animation == true){
+        if (run_animation === true){
           cat_pos = mix(cat_pos_att_inst, cat_pos_att_new, interp_uni);
         } else {
           cat_pos = cat_pos_att_inst;

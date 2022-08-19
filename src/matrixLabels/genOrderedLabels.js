@@ -1,9 +1,7 @@
 import * as _ from "underscore";
 
-export default function gen_ordered_labels(cgm) {
+export default function genOrderedLabels(params) {
   // Generate lists of ordered label and category names for mouseover
-  const params = cgm.params;
-  // debugger;
   let i_order;
   const ordered_labels = {};
   let axis_nodes;
@@ -14,7 +12,6 @@ export default function gen_ordered_labels(cgm) {
     ordered_labels[i_axis + "_indices"] = [];
     axis_nodes = params.network[i_axis + "_nodes"];
     found_axis_cat = false;
-    // debugger
     for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
       ordered_labels[i_axis + "_cats-" + String(i)] = [];
     }

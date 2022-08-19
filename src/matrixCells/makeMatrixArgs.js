@@ -49,7 +49,7 @@ export default function make_matrix_args(cgm) {
     void main() {
 
       // interpolate between the two positions using the interpolate uniform
-      if (run_animation == true){
+      if (run_animation === true){
         pos = mix(pos_att_ini, pos_att_new, interp_uni);
       } else {
         pos = pos_att_ini;

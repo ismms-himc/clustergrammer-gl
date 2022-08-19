@@ -15,7 +15,7 @@ export default (function calc_mat_arr(params) {
   let tri_width;
   let heat_shift;
   _.each(["x", "y"], function (inst_axis) {
-    if (inst_axis == "x") {
+    if (inst_axis === "x") {
       num_labels = num_col;
     } else {
       num_labels = num_row;

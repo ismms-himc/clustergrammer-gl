@@ -67,3 +67,5 @@ big_data
 *.py
 
 dist/
+
+example/example-app/src/cg

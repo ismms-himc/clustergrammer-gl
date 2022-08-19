@@ -1,18 +1,13 @@
 import manual_update_to_cats from "./cats/manualUpdateToCats";
 import update_all_cats from "./cats/updateAllCats";
 import build_control_panel from "./controlPanel/buildControlPanel";
-import build_dendrogram_sliders from "./dendrogram/buildDendrogramSliders";
 import download_matrix from "./download/downloadMatrix";
 import download_metadata from "./download/downloadMetadata";
-import draw_labels_tooltips_or_dendro from "./draws/drawLabelsTooltipsOrDendro";
 import draw_webgl_layers from "./draws/drawWebglLayers";
-import run_viz from "./draws/runViz";
 import destroy_viz from "./initializeViz/destroyViz";
-import ini_canvas_mouseover from "./initializeViz/iniCanvasMouseover";
 import initialize_containers from "./initializeViz/initializeContainers";
 import viz_from_network from "./initializeViz/vizFromNetwork";
-import single_clicking from "./interactions/singleClicking";
-import gen_ordered_labels from "./params/genLabelPar";
+import genOrderedLabels from "./params/genLabelPar";
 import initialize_params from "./params/initializeParams";
 import initialize_regl from "./params/initializeRegl";
 import recluster from "./recluster/recluster";
@@ -23,7 +18,7 @@ function adjust_opacity(cgm, opacity_scale) {
   const params = cgm.params;
   params.matrix.opacity_scale = opacity_scale;
   cgm.make_matrix_args(cgm);
-  draw_webgl_layers(cgm);
+  draw_webgl_layers(cgm.regl, params);
 }
 
 function clustergrammer_gl(args, external_model = null) {
@@ -37,20 +32,15 @@ function clustergrammer_gl(args, external_model = null) {
     cgm.initialize_containers = initialize_containers;
     cgm.initialize_tooltip = initialize_tooltip;
     // maybe do these
-    cgm.build_dendrogram_sliders = build_dendrogram_sliders;
     if (!args.showControlPanel) {
       cgm.build_control_panel = (cgm) => cgm;
     } else {
       cgm.build_control_panel = build_control_panel;
     }
-    cgm.run_viz = run_viz;
     cgm.destroy_viz = () => destroy_viz(cgm);
-    cgm.ini_canvas_mouseover = ini_canvas_mouseover;
     cgm.viz_from_network = viz_from_network;
-    cgm.draw_labels_tooltips_or_dendro = draw_labels_tooltips_or_dendro;
-    cgm.single_clicking = single_clicking;
     cgm.zoom_rules_high_mat = zoom_rules_high_mat;
-    cgm.gen_ordered_labels = gen_ordered_labels;
+    cgm.gen_ordered_labels = genOrderedLabels;
     if (typeof args.widget_callback !== "undefined") {
       cgm.widget_callback = args.widget_callback;
     }
@@ -60,7 +50,7 @@ function clustergrammer_gl(args, external_model = null) {
     // as a quick crop method
     cgm = cgm.viz_from_network(cgm, external_model);
     // copy the cgm object to the external widget model
-    if (external_model != null) {
+    if (external_model !== null) {
       external_model.cgm = cgm;
     }
     cgm.recluster = recluster;

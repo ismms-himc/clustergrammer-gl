@@ -39,7 +39,7 @@ export default (function hzome_functions(params) {
       });
   }
   function set_tooltip(data, gene_symbol) {
-    if (data.name != undefined) {
+    if (data.name !== undefined) {
       // assign html
       d3.select(params.tooltip_id).html(function () {
         const sym_name = gene_symbol + ": " + data.name;

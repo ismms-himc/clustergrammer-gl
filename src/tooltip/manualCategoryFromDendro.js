@@ -1,8 +1,12 @@
 import * as d3 from "d3";
 import manual_update_to_cats from "../cats/manualUpdateToCats";
 
-export default function manual_category_from_dendro(cgm, external_model, axis) {
-  const params = cgm.params;
+export default function manual_category_from_dendro(
+  regl,
+  params,
+  external_model,
+  axis
+) {
   // Manual Category
   // //////////////////////////
   d3.select(params.tooltip_id).append("text").text("Manual Category: ");
@@ -82,7 +86,7 @@ export default function manual_category_from_dendro(cgm, external_model, axis) {
     .select(params.tooltip_id)
     .append("div")
     .classed("custom_cat_div", true);
-  const root_id = cgm.params.root.replace("#", "");
+  const root_id = params.root.replace("#", "");
   custom_cat_div
     .append("input")
     .classed("custom-cat-input", true)
@@ -185,7 +189,7 @@ export default function manual_category_from_dendro(cgm, external_model, axis) {
         .select(params.tooltip_id + " .custom-cat-color")
         .node()
         .value.trim();
-      if (new_cat != "") {
+      if (new_cat !== "") {
         // save category and color to dictionary
         if (axis + "_color_dict" in params.cat_data.manual_category) {
           params.cat_data.manual_category[axis + "_color_dict"][new_cat] =
@@ -199,10 +203,14 @@ export default function manual_category_from_dendro(cgm, external_model, axis) {
         const cat_title = params.cat_data[axis][0].cat_title;
         params.network.global_cat_colors[new_cat] = inst_color;
         params.int.manual_update_cats = true;
-        manual_update_to_cats(cgm, axis, cat_title, new_cat, inst_labels);
-        if (params.is_widget) {
-          cgm.widget_callback(external_model);
-        }
+        manual_update_to_cats(
+          regl,
+          params,
+          axis,
+          cat_title,
+          new_cat,
+          inst_labels
+        );
       }
     })
     .append("text")

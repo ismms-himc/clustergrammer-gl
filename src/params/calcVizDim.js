@@ -54,7 +54,7 @@ export default (function calc_vd(regl, params) {
     vd.heat[inst_axis].min =
       vd.canvas[inst_dim] / 2 - vd.heat[inst_dim] / 2 + offset_heat[inst_axis];
     // need to figure out if this is necessary
-    if (inst_axis == "x") {
+    if (inst_axis === "x") {
       vd.heat[inst_axis].max = vd.canvas[inst_dim] / 2 + vd.heat[inst_dim] / 2; //  + offset_heat.x;
     } else {
       vd.heat[inst_axis].max =

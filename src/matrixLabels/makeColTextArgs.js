@@ -1,49 +1,37 @@
-var d3 = require("d3");
-var m3 = require("./../draws/mat3Transform");
-var interp_fun = require("./../draws/interpFun");
-
-module.exports = function make_col_text_args(regl, params, zoom_function) {
+import * as d3 from "d3";
+import m3 from "../draws/mat3Transform.js";
+import interp_fun from "../draws/interpFun.js";
+export default (function make_col_text_args(regl, params, zoom_function) {
   var inst_axis = "col";
   var num_col = params.labels["num_" + inst_axis];
-
   var col_width = params.viz_dim.heat_size.x / num_col;
-
   params.text_scale.col = d3
     .scaleLinear()
     .domain([1, 10])
     .range([1, 10 / params.allow_zoom.col]);
-
   // 17.5, lowering makes larger text
   var final_increase_font_size = num_col / 5.0;
   params.text_scale.col = d3
     .scaleLinear()
     .domain([1, params.max_zoom])
     .range([1, final_increase_font_size]);
-
   var scale_text = num_col;
-
   var webgl_fs = (1 / num_col) * params.zoom_data.x.total_zoom;
-
   var max_webgl_fs = params.text_zoom.col.max_webgl_fs;
-
   var scale_down_fs;
   if (webgl_fs > max_webgl_fs) {
     scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
-
   var mat_rotate = m3.rotation(Math.PI / 4);
   var text_y_scale = m3.scaling(1, params.zoom_data.x.total_zoom);
-
   // need to shift col labels up to counteract the rotation by 45%
   var rh_tri_hyp = col_width;
   var rh_tri_side = rh_tri_hyp / Math.sqrt(2);
-
   var shift_text_out = 0.0;
   var shift_text_right = col_width;
   // make up for rotating text
   var shift_text_up = -0.5 * rh_tri_side;
-
   var vert_arg = `
       precision mediump float;
       attribute vec2 position;
@@ -109,13 +97,11 @@ module.exports = function make_col_text_args(regl, params, zoom_function) {
         gl_Position = zoom * vec4( xy_positions, 1.0);
 
       }`;
-
   var frag_arg = `
       precision mediump float;
       void main () {
         gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
       }`;
-
   var args = {
     vert: vert_arg,
     frag: frag_arg,
@@ -149,6 +135,5 @@ module.exports = function make_col_text_args(regl, params, zoom_function) {
       range: [0, 1],
     },
   };
-
   return args;
-};
+});

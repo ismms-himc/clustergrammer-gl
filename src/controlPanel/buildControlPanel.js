@@ -1,17 +1,19 @@
-var d3 = require("d3");
-let draw_webgl_layers = require("./../draws/drawWebglLayers");
-let build_opacity_slider = require("./../colors/buildOpacitySlider");
-let download_matrix = require("./../download/downloadMatrix");
-let download_metadata = require("./../download/downloadMetadata");
-
-module.exports = function build_control_panel() {
+import * as d3 from "d3";
+import draw_webgl_layers from "../draws/drawWebglLayers.js";
+import build_opacity_slider from "../colors/buildOpacitySlider.js";
+import download_matrix from "../download/downloadMatrix.js";
+import download_metadata from "../download/downloadMetadata.js";
+import d3Tip from "d3-tip";
+import initializeD3Tip from "../tooltip/initializeD3Tip.js";
+import runReorder from "../reorders/runReorder.js";
+import buildReorderCatTitles from "../cats/buildReorderCatTitles.js";
+import buildReclusterSection from "./buildReclusterSection.js";
+export default (function build_control_panel() {
   var cgm = this;
   var regl = cgm.regl;
-
   var params = cgm.params;
   params.tooltip_id = "#d3-tip_" + params.root.replace("#", "");
-
-  var tooltip = require("d3-tip")
+  var tooltip = d3Tip
     .default()
     .attr("id", params.tooltip_id.replace("#", ""))
     .attr("class", "cgm-tooltip")
@@ -19,18 +21,14 @@ module.exports = function build_control_panel() {
     .html(function () {
       return "";
     });
-
   params.tooltip_fun = tooltip;
-
   var control_container = d3.select(params.root + " .control-container")
     ._groups[0][0];
   var i_height = 135;
   var i_width = params.viz_width;
-
   var control_panel_color = "white";
   var text_color = "#47515b";
   var button_color = "#eee";
-
   var control_svg = d3
     .select(control_container)
     .attr("height", i_height + "px")
@@ -42,7 +40,6 @@ module.exports = function build_control_panel() {
     .on("mouseover", function () {
       params.tooltip.in_bounds_tooltip = false;
     });
-
   control_svg
     .append("rect")
     .attr("height", i_height + "px")
@@ -51,9 +48,7 @@ module.exports = function build_control_panel() {
     .attr("fill", control_panel_color)
     .attr("class", "control-panel-background")
     .call(tooltip);
-
-  require("./../tooltip/initializeD3Tip")(params);
-
+  initializeD3Tip(params);
   // tooltip style
   //////////////////////////
   d3.select(params.tooltip_id)
@@ -69,7 +64,6 @@ module.exports = function build_control_panel() {
     .style("pointer-events", "none")
     .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style("font-size", "12px");
-
   // control panel border
   var border_height = 1;
   control_svg
@@ -84,20 +78,16 @@ module.exports = function build_control_panel() {
       var y_trans = i_height - border_height;
       return "translate( 0, " + y_trans + ")";
     });
-
   var button_dim = {};
   button_dim.height = 32;
   button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
   button_dim.fs = 11;
-
   var button_groups = {};
   button_groups.row = {};
   button_groups.col = {};
-
   var cracker_room = 60;
-
   control_svg
     .append("svg:a")
     .append("svg:image")
@@ -116,16 +106,13 @@ module.exports = function build_control_panel() {
         "_blank" // <- This is what makes it open in a new window.
       );
     });
-
   var shift_x_order_buttons = 65 + cracker_room;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
-
   var y_offset_buttons = 47;
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans =
     button_groups.col.y_trans + button_dim.height + button_dim.buffer;
-
   control_svg
     .append("g")
     .classed("panel_button_titles", true)
@@ -133,10 +120,8 @@ module.exports = function build_control_panel() {
     .on("click", function () {
       d3.selectAll(params.root + " .panel_button_titles").attr("opacity", 0.5);
       d3.select(this).attr("opacity", 1.0);
-
       if (params.viz.current_panel == "recluster") {
         params.viz.current_panel = "reorder";
-
         // modify buttons
         d3.select(params.root + " .panel_button_title").text(
           "reorder".toUpperCase()
@@ -151,7 +136,6 @@ module.exports = function build_control_panel() {
           "display",
           "none"
         );
-
         d3.selectAll(params.root + " .dist_options").style("display", "none");
         d3.selectAll(params.root + " .link_options_container").style(
           "display",
@@ -174,10 +158,8 @@ module.exports = function build_control_panel() {
       var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   // dropped alpha, will probably replace with ini
   var order_options = ["clust", "sum", "var", "ini"];
-
   control_svg
     .append("rect")
     .attr("height", "1px")
@@ -190,11 +172,9 @@ module.exports = function build_control_panel() {
       var y_trans = y_offset_buttons - button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   let name_dict = {};
   name_dict["col"] = "top";
   name_dict["row"] = "bottom";
-
   _.each(["row", "col"], function (i_axis) {
     var axis_title = control_svg
       .append("g")
@@ -204,9 +184,7 @@ module.exports = function build_control_panel() {
         var y_offset = button_groups[i_axis].y_trans;
         return "translate(" + x_offset + ", " + y_offset + ")";
       });
-
     var axis_title_offset = 35 + cracker_room;
-
     axis_title
       .append("text")
       .classed(name_dict[i_axis] + "_button_title", true)
@@ -224,13 +202,9 @@ module.exports = function build_control_panel() {
         "transform",
         "translate(" + axis_title_offset + ", " + button_dim.height / 2 + ")"
       );
-
     var reorder_buttons = control_svg.append("g");
-
     reorder_buttons.classed(i_axis + "-reorder-buttons", true);
-
     var active_button_color = "#8797ff"; // '#0000FF75';
-
     // generate reorder buttons
     var button_group = reorder_buttons
       .selectAll("g")
@@ -246,19 +220,15 @@ module.exports = function build_control_panel() {
       })
       .on("click", function (d) {
         var clean_order = d.replace("sum", "rank").replace("var", "rankvar");
-
         if (params.order.inst[i_axis] != clean_order) {
           /* category order is already calculated */
-          require("./../reorders/runReorder")(regl, params, i_axis, d);
-
+          runReorder(regl, params, i_axis, d);
           d3.select(params.root + " ." + i_axis + "-reorder-buttons")
             .selectAll("rect")
             .attr("stroke", button_color);
-
           d3.select(this).select("rect").attr("stroke", active_button_color);
         }
       });
-
     button_group
       .append("rect")
       .attr("height", button_dim.height)
@@ -276,7 +246,6 @@ module.exports = function build_control_panel() {
         return i_color;
       })
       .attr("stroke-width", 2.5);
-
     button_group
       .append("text")
       .classed("button-name", true)
@@ -297,10 +266,8 @@ module.exports = function build_control_panel() {
         "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
       );
   });
-
-  require("../cats/buildReorderCatTitles")(regl, cgm);
-  require("./buildReclusterSection")(cgm);
-
+  buildReorderCatTitles(regl, cgm);
+  buildReclusterSection(cgm);
   // row search
   ///////////////////
   var search_container = d3
@@ -313,9 +280,7 @@ module.exports = function build_control_panel() {
     .style("margin-top", "10px")
     .style("top", "37px")
     .style("left", "440px");
-
   let root_id = cgm.params.root.replace("#", "");
-
   search_container
     .append("input")
     .classed("form-control", true)
@@ -329,9 +294,7 @@ module.exports = function build_control_panel() {
     .style("margin-top", "5px")
     .style("display", "inline-block")
     .style("padding", "1pt 2pt");
-
   let row_names = params.network.row_node_names;
-
   search_container
     .append("datalist")
     .attr("id", "row_names_" + root_id)
@@ -340,7 +303,6 @@ module.exports = function build_control_panel() {
     .enter()
     .append("option")
     .attr("value", (d) => d);
-
   search_container
     .append("div")
     .classed("row_search_button", true)
@@ -363,15 +325,12 @@ module.exports = function build_control_panel() {
       let inst_value = d3
         .select(params.root + " .control-container .row_search_box")
         .node().value;
-
       params.search.searched_rows = inst_value.split(", ");
       draw_webgl_layers(cgm);
     });
-
   // opacity slider
   ////////////////////////////
   build_opacity_slider(cgm);
-
   // download buttons
   control_svg
     .append("text")
@@ -390,7 +349,6 @@ module.exports = function build_control_panel() {
       var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   // download section border
   control_svg
     .append("rect")
@@ -405,7 +363,6 @@ module.exports = function build_control_panel() {
       var y_trans = y_offset_buttons - button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   control_svg
     .append("g")
     .on("click", () => {
@@ -429,7 +386,6 @@ module.exports = function build_control_panel() {
       var y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   control_svg
     .append("g")
     .on("click", () => {
@@ -453,7 +409,6 @@ module.exports = function build_control_panel() {
       var y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   control_svg
     .append("g")
     .on("click", () => {
@@ -477,7 +432,6 @@ module.exports = function build_control_panel() {
       var y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   control_svg
     .append("text")
     .classed("download_section_type", true)
@@ -495,7 +449,6 @@ module.exports = function build_control_panel() {
       var y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   control_svg
     .append("text")
     .classed("download_section_type", true)
@@ -513,7 +466,6 @@ module.exports = function build_control_panel() {
       var y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   control_svg
     .append("g")
     .on("click", () => {
@@ -537,7 +489,6 @@ module.exports = function build_control_panel() {
       var y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
   control_svg
     .append("g")
     .on("click", () => {
@@ -561,4 +512,4 @@ module.exports = function build_control_panel() {
       var y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-};
+});

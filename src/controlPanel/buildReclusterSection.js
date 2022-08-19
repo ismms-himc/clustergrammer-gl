@@ -1,26 +1,21 @@
-var d3 = require("d3");
-let draw_webgl_layers = require("./../draws/drawWebglLayers");
-
-module.exports = function build_recluster_section(cgm) {
+import * as d3 from "d3";
+import draw_webgl_layers from "../draws/drawWebglLayers.js";
+export default (function build_recluster_section(cgm) {
   var params = cgm.params;
   var y_offset_buttons = 47;
   var cracker_room = 65;
-
   var button_dim = {};
   button_dim.height = 32;
   button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
   button_dim.fs = 11;
-
   var control_panel_color = "white";
   var text_color = "#47515b";
   var button_color = "#eee";
   var active_run_color = "#00FF75";
   let active_button_color = "#008000";
-
   control_svg = d3.select(params.root + " .control-container svg");
-
   control_svg
     .append("g")
     .classed("panel_button_titles", true)
@@ -28,7 +23,6 @@ module.exports = function build_recluster_section(cgm) {
     .on("click", function () {
       d3.selectAll(params.root + " .panel_button_titles").attr("opacity", 0.5);
       d3.select(this).attr("opacity", 1.0);
-
       if (params.viz.current_panel === "reorder") {
         // modify buttons
         d3.select(params.root + " .panel_button_title").text(
@@ -44,13 +38,11 @@ module.exports = function build_recluster_section(cgm) {
           "display",
           "block"
         );
-
         d3.selectAll(params.root + " .dist_options").style("display", "block");
         d3.selectAll(params.root + " .link_options_container").style(
           "display",
           "block"
         );
-
         params.viz.current_panel = "recluster";
       }
     })
@@ -70,7 +62,6 @@ module.exports = function build_recluster_section(cgm) {
     .attr("alignment-baseline", "middle")
     .attr("letter-spacing", "2px")
     .attr("cursor", "default");
-
   run_cluster_container = d3
     .select(params.root + " .control_svg")
     .append("g")
@@ -95,7 +86,6 @@ module.exports = function build_recluster_section(cgm) {
       }
     })
     .style("display", "none");
-
   run_cluster_container
     .append("rect")
     .style("height", button_dim.height)
@@ -105,7 +95,6 @@ module.exports = function build_recluster_section(cgm) {
     .style("ry", 10)
     .style("stroke", active_run_color)
     .style("stroke-width", 2.5);
-
   run_cluster_container
     .append("text")
     .classed("button-name", true)
@@ -123,11 +112,9 @@ module.exports = function build_recluster_section(cgm) {
       "transform",
       "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
     );
-
   ///////////////////////////
   // Recluster Options
   ///////////////////////////
-
   var dist_options = [
     {
       short: "cos",
@@ -142,18 +129,14 @@ module.exports = function build_recluster_section(cgm) {
       full: "euclidean",
     },
   ];
-
   let dist_dict = {};
   dist_dict["cosine"] = "cos";
   dist_dict["correlation"] = "corr";
   dist_dict["euclidean"] = "eucl";
-
   var cracker_room = 65;
   var shift_x_order_buttons = 65 + cracker_room;
-
   let y_offset_top = 47;
   let y_offset_bottom = 91;
-
   // Distance Options Container
   ////////////////////////////////
   dist_options = d3
@@ -171,15 +154,12 @@ module.exports = function build_recluster_section(cgm) {
     })
     .on("click", function (d) {
       params.matrix.potential_recluster.distance_metric = d.full;
-
       d3.select(params.root + " .dist_option_container")
         .selectAll("rect")
         .attr("stroke", button_color);
-
       d3.select(this).select("rect").attr("stroke", active_button_color);
     })
     .style("display", "none");
-
   dist_options
     .append("rect")
     .style("height", button_dim.height)
@@ -197,7 +177,6 @@ module.exports = function build_recluster_section(cgm) {
       return i_color;
     })
     .style("stroke-width", 2.5);
-
   dist_options
     .append("text")
     .classed("button-name", true)
@@ -215,7 +194,6 @@ module.exports = function build_recluster_section(cgm) {
       "transform",
       "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
     );
-
   // Linkage Options Container
   ////////////////////////////////
   var link_options = [
@@ -236,7 +214,6 @@ module.exports = function build_recluster_section(cgm) {
   link_dict["average"] = "avg";
   link_dict["single"] = "single";
   link_dict["complete"] = "cmplt";
-
   link_options_container = d3
     .select(params.root + " .control_svg")
     .append("g")
@@ -252,15 +229,12 @@ module.exports = function build_recluster_section(cgm) {
     })
     .on("click", function (d) {
       params.matrix.potential_recluster.linkage_type = d.full;
-
       d3.select(params.root + " .link_option_container")
         .selectAll("rect")
         .attr("stroke", button_color);
-
       d3.select(this).select("rect").attr("stroke", active_button_color);
     })
     .style("display", "none");
-
   link_options_container
     .append("rect")
     .style("height", button_dim.height)
@@ -278,7 +252,6 @@ module.exports = function build_recluster_section(cgm) {
       return i_color;
     })
     .style("stroke-width", 2.5);
-
   link_options_container
     .append("text")
     .classed("button-name", true)
@@ -296,7 +269,6 @@ module.exports = function build_recluster_section(cgm) {
       "transform",
       "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
     );
-
   // Normalize Section
   ///////////////////////////////////////////////
   if (params.norm.initial_status === "zscored") {
@@ -306,14 +278,11 @@ module.exports = function build_recluster_section(cgm) {
       .classed("normalize_button_title", true)
       .on("click", function () {
         let params = cgm.params;
-
         if (params.norm.zscore_status === "non-zscored") {
           params.norm.zscore_status = "zscored";
-
           d3.select(this).select("text").text("z-scored".toUpperCase());
         } else {
           params.norm.zscore_status = "non-zscored";
-
           d3.select(this).select("text").text("raw".toUpperCase());
         }
         cgm.make_matrix_args();
@@ -336,4 +305,4 @@ module.exports = function build_recluster_section(cgm) {
       .attr("letter-spacing", "2px")
       .attr("cursor", "default");
   }
-};
+});

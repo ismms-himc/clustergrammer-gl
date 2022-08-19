@@ -1,22 +1,18 @@
-var m3 = require("./../draws/mat3Transform");
-var color_to_rgba = require("./../colors/colorToRgba");
-var get_cat_value = require("./getCatValue");
-
-module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
+import m3 from "../draws/mat3Transform.js";
+import color_to_rgba from "../colors/colorToRgba.js";
+import get_cat_value from "./getCatValue.js";
+export default (function make_cat_args(regl, params, inst_axis, cat_index) {
   var cat_index_name = "cat-" + String(cat_index);
-
   /*
-
-  Hacking Categories Plan
-  ------------------------
-  Make a buffer of vec4's that will pass rgba data for the different category
-  colors. Then pass this as an attribute (or varying?) to the fragment shader.
-
-  */
-
+  
+    Hacking Categories Plan
+    ------------------------
+    Make a buffer of vec4's that will pass rgba data for the different category
+    colors. Then pass this as an attribute (or varying?) to the fragment shader.
+  
+    */
   var inst_rgba = color_to_rgba("purple", 0.95);
   var num_labels = params.labels["num_" + inst_axis];
-
   // category tiles have fixed heights
   var cat_height;
   // category widths depend on the number of labels
@@ -33,21 +29,17 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
     top_shift_triangles = params.viz_dim.mat_size.x;
     cat_width = params.viz_dim.heat_size.y / 0.5 / num_labels;
   }
-
   var zoom_function = function (context) {
     return context.view;
   };
-
   var shift_cat = 0.025 * (cat_index + 1);
   var top_offset = -top_shift_triangles - cat_height + shift_cat;
-
   /////////////////////////////////
   // Label Color Buffer
   /////////////////////////////////
   var is_mousing_over_cat = false;
   var inst_opacity = 1.0;
   var mousing_over_cat;
-
   // if mousing over categories initialize all categories to low opacity
   if (params.tooltip.tooltip_type) {
     if (params.tooltip.tooltip_type.includes("-cat-")) {
@@ -57,12 +49,10 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
         params.int.mouseover[inst_axis].cats[mouseover_cat_index];
     }
   }
-
   var is_cat_value = false;
   if (params.viz.cat_info[inst_axis][cat_index_name].type == "cat_values") {
     is_cat_value = true;
   }
-
   /* Category Colors */
   ////////////////////////////
   // String based categories are working
@@ -72,7 +62,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
   var ini_cat_value;
   for (var i = 0; i < num_labels; i++) {
     var inst_cat = params.network[inst_axis + "_nodes"][i][cat_index_name];
-
     // Check if value-based category
     if (is_cat_value) {
       ini_cat_value = get_cat_value(inst_cat);
@@ -90,7 +79,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
         (x) => x * inst_opacity + (1 - inst_opacity)
       );
     }
-
     // Set Category Colors
     ///////////////////////////
     var inst_color;
@@ -115,7 +103,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
     } else {
       inst_color = inst_value_color;
     }
-
     // Mouseover highlight
     ///////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
@@ -139,34 +126,25 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
         inst_color = color_to_rgba(inst_color, inst_opacity);
       }
     }
-
     color_arr[i] = inst_color;
   }
-
   const color_buffer = regl.buffer({
     length: num_labels,
     usage: "dynamic",
   });
-
   color_buffer(color_arr);
-
   params.color_arr = color_arr;
-
   /////////////////////////////////
   // Rotation and Scaling
   /////////////////////////////////
-
   var scale_y = m3.scaling(2, 1);
-
   var rotation_radians;
   if (inst_axis === "row") {
     rotation_radians = 0;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
   }
-
   var mat_rotate = m3.rotation(rotation_radians);
-
   var args = {
     vert: `
       precision highp float;
@@ -214,7 +192,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
 
       }
     `,
-
     frag: `
 
       precision mediump float;
@@ -235,36 +212,30 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
       }
 
     `,
-
     // passing a fixed value for the triangle position
     attributes: {
       ini_position: [
         [cat_height, cat_width / 2],
         [cat_height / 2, cat_width / 2],
         [cat_height, -cat_width / 2],
-
         [cat_height / 2, -cat_width / 2],
         [cat_height, -cat_width / 2],
         [cat_height / 2, cat_width / 2],
       ],
-
       cat_pos_att_inst: {
         buffer: regl.buffer(params.cat_arrs.inst[inst_axis][cat_index]),
         divisor: 1,
       },
-
       cat_pos_att_new: {
         buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
         divisor: 1,
       },
-
       // pass color buffer
       color_att: {
         buffer: color_buffer,
         divisor: 1,
       },
     },
-
     uniforms: {
       zoom: zoom_function,
       mat_rotate: mat_rotate,
@@ -274,7 +245,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop("run_animation"),
     },
-
     blend: {
       enable: true,
       func: {
@@ -289,7 +259,6 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
       },
       color: [0, 0, 0, 0],
     },
-
     count: 6,
     instances: num_labels,
     depth: {
@@ -299,6 +268,5 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
       range: [0, 1],
     },
   };
-
   return args;
-};
+});

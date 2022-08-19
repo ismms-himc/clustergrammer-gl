@@ -1,10 +1,9 @@
-module.exports = function make_spillover_args(
+export default (function make_spillover_args(
   regl,
   inst_depth,
   inst_color = [1, 1, 1, 1]
 ) {
   // fix heatmap bleedthrough with variable opacity categories
-
   // Spillover Arguments
   ///////////////////////////////
   var args = {
@@ -15,7 +14,6 @@ module.exports = function make_spillover_args(
     void main () {
       gl_FragColor = color;
     }`,
-
     vert: `
     precision mediump float;
     attribute vec2 position;
@@ -24,16 +22,13 @@ module.exports = function make_spillover_args(
       // positioned further up (matrix is lower at 0.)
       gl_Position = vec4(position, inst_depth, 1);
     }`,
-
     attributes: {
       position: regl.prop("pos"),
     },
-
     uniforms: {
       color: inst_color,
       inst_depth: inst_depth,
     },
-
     blend: {
       enable: true,
       func: {
@@ -48,7 +43,6 @@ module.exports = function make_spillover_args(
       },
       color: [0, 0, 0, 0],
     },
-
     count: 3,
     depth: {
       enable: true,
@@ -58,6 +52,5 @@ module.exports = function make_spillover_args(
       range: [0, 1],
     },
   };
-
   return args;
-};
+});

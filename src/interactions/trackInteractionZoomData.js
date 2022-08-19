@@ -1,15 +1,12 @@
-var zoom_rules_low_mat = require("./../zoom/zoomRulesLowMat");
-var find_mouseover_element = require("./findMouseoverElement");
-var keep_track_of_interactions = require("./keepTrackOfInteractions");
-var keep_track_of_mouseovers = require("./keepTrackOfMouseovers");
-
-module.exports = function track_interaction_zoom_data(regl, params, ev) {
+import zoom_rules_low_mat from "../zoom/zoomRulesLowMat.js";
+import find_mouseover_element from "./findMouseoverElement.js";
+import keep_track_of_interactions from "./keepTrackOfInteractions.js";
+import keep_track_of_mouseovers from "./keepTrackOfMouseovers.js";
+export default (function track_interaction_zoom_data(regl, params, ev) {
   var zoom_data = params.zoom_data;
   var zoom_restrict = params.zoom_restrict;
   var viz_dim = params.viz_dim;
-
   var interaction_types = ["wheel", "touch", "pinch"];
-
   if (ev.buttons || interaction_types.indexOf(ev.type) !== -1) {
     switch (ev.type) {
       case "wheel":
@@ -17,45 +14,35 @@ module.exports = function track_interaction_zoom_data(regl, params, ev) {
         ev.dx = ev.dy = 0;
         break;
     }
-
     // transfer data from ev to zoom_data
     zoom_data.x.inst_zoom = ev.dsx;
     zoom_data.x.pan_by_drag = ev.dx;
     zoom_data.x.cursor_position = ev.x0;
-
     zoom_data.y.inst_zoom = ev.dsy;
     zoom_data.y.pan_by_drag = ev.dy;
     zoom_data.y.cursor_position = ev.y0;
-
     var potential_zoom;
     /*
-      Zoom Switch: adjust x/y zooming based on non-square matrices
-    */
+          Zoom Switch: adjust x/y zooming based on non-square matrices
+        */
     // set up two-stage zooming
     if (zoom_data.y.total_zoom < zoom_restrict.y.ratio) {
       zoom_data.x.inst_zoom = 1;
-
       potential_zoom = zoom_data.y.total_zoom * zoom_data.y.inst_zoom;
-
       // check potential_zoom
       if (potential_zoom > zoom_restrict.y.ratio) {
         // bump x inst_zoom
-
         zoom_data.x.inst_zoom = potential_zoom / zoom_restrict.y.ratio;
       }
     } else if (zoom_data.x.total_zoom < zoom_restrict.x.ratio) {
       zoom_data.y.inst_zoom = 1;
-
       potential_zoom = zoom_data.x.total_zoom * zoom_data.x.inst_zoom;
-
       // check potential_zoom
       if (potential_zoom > zoom_restrict.x.ratio) {
         // bump x inst_zoom
-
         zoom_data.y.inst_zoom = potential_zoom / zoom_restrict.x.ratio;
       }
     }
-
     zoom_data.x = zoom_rules_low_mat(
       params,
       zoom_restrict.x,
@@ -72,13 +59,11 @@ module.exports = function track_interaction_zoom_data(regl, params, ev) {
       viz_dim.mat.y,
       "y"
     );
-
     keep_track_of_interactions(params);
   } else if (ev.type === "mousemove") {
     // trying to keep track of interactions for mouseovers
     keep_track_of_mouseovers(params);
-
     find_mouseover_element(regl, params, ev);
   } else {
   }
-};
+});

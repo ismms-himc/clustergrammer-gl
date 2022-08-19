@@ -1,4 +1,4 @@
-module.exports = function gen_ani_par(params) {
+export default (function gen_ani_par(params) {
   var ani = {};
   ani.time_remain = 0;
   ani.running = false;
@@ -12,6 +12,5 @@ module.exports = function gen_ani_par(params) {
   ani.last_click = 0;
   ani.dblclick_duration = 0.5;
   ani.update_viz = false;
-
   params.ani = ani;
-};
+});

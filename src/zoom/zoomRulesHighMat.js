@@ -1,10 +1,9 @@
-var interactionEvents = require("./../interactions/interactionEvents");
-var extend = require("xtend/mutable");
-var track_interaction_zoom_data = require("./../interactions/trackInteractionZoomData");
-var run_hide_tooltip = require("./../tooltip/runHideTooltip");
-var double_clicking = require("./../interactions/doubleClicking");
-
-module.exports = function zoom_rules_high_mat(regl, params, external_model) {
+import interactionEvents from "../interactions/interactionEvents.js";
+import extend from "xtend/mutable";
+import track_interaction_zoom_data from "../interactions/trackInteractionZoomData.js";
+import run_hide_tooltip from "../tooltip/runHideTooltip.js";
+import double_clicking from "../interactions/doubleClicking.js";
+export default (function zoom_rules_high_mat(regl, params, external_model) {
   var cgm = this;
   var opts = opts || {};
   var options = extend(
@@ -13,19 +12,15 @@ module.exports = function zoom_rules_high_mat(regl, params, external_model) {
     },
     opts || {}
   );
-
   var element = options.element;
-
   /////////////////////////////////////////
   // Original interaction tracking
   /////////////////////////////////////////
-
   interactionEvents({
     element: element,
   })
     .on("interaction", function (ev) {
       track_interaction_zoom_data(regl, params, ev);
-
       run_hide_tooltip(params);
     })
     .on("interactionend", function () {
@@ -38,4 +33,4 @@ module.exports = function zoom_rules_high_mat(regl, params, external_model) {
         cgm.single_clicking(params, external_model);
       }
     });
-};
+});

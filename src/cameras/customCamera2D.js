@@ -1,11 +1,10 @@
+import interactionEvents from "../interactions/interactionEvents.js";
+import extend from "xtend/mutable";
+import mat4 from "gl-mat4";
+import * as EventEmitter from "event-emitter";
+import camera_interaction from "./cameraInteraction.js";
 // © 2016 Ricky Reusser. MIT License.
-"use strict";
-var interactionEvents = require("../interactions/interactionEvents");
-var extend = require("xtend/mutable");
-var mat4 = require("gl-mat4");
-var EventEmitter = require("event-emitter");
-var camera_interaction = require("./cameraInteraction");
-
+("use strict");
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;
   out[1] = 0;
@@ -25,8 +24,7 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[15] = 1;
   return out;
 };
-
-module.exports = function makeCamera2D(
+export default (function makeCamera2D(
   regl,
   params,
   opts,
@@ -34,18 +32,14 @@ module.exports = function makeCamera2D(
   viz_component
 ) {
   opts = opts || {};
-
   var options = extend(
     {
       element: opts.element || regl._gl.canvas,
     },
     opts || {}
   );
-
   var element = options.element;
-
   var dirty = true;
-
   var getWidth =
     element === window
       ? function () {
@@ -54,7 +48,6 @@ module.exports = function makeCamera2D(
       : function () {
           return element.offsetWidth;
         };
-
   var getHeight =
     element === window
       ? function () {
@@ -63,42 +56,31 @@ module.exports = function makeCamera2D(
       : function () {
           return element.offsetHeight;
         };
-
   var xrange = opts.xrange === undefined ? [-1, 1] : opts.xrange;
   var yrange = opts.yrange === undefined ? [-1, 1] : opts.yrange;
   var aspectRatio = opts.aspectRatio === undefined ? 1 : opts.aspectRatio;
-
   var width = getWidth();
   var height = getHeight();
-
   var xcen = 0.5 * (xrange[1] + xrange[0]) + params.viz_dim.shift_camera.x;
   var ycen = 0.5 * (yrange[1] + yrange[0]) + params.viz_dim.shift_camera.y;
   var xrng = 0.5 * (xrange[1] - xrange[0]);
   var yrng = (xrng / aspectRatio / width) * height;
-
   var mView = mat4.identity([]);
   mView[0] = 1 / xrng;
   mView[5] = 1 / yrng;
   mView[12] = -xcen / xrng;
   mView[13] = -ycen / yrng;
-
   var mViewport = mat4.identity([]);
   var mInvViewport = mat4.identity([]);
-
   function computeViewport() {
     width = getWidth();
     height = getHeight();
-
     mat4.viewport(mViewport, 0, height, width, -height, 0, 1);
     mat4.invert(mInvViewport, mViewport);
   }
-
   computeViewport();
-
   var dViewport = [];
-
   var emitter = new EventEmitter();
-
   /////////////////////////////////////////
   // Original interaction tracking
   /////////////////////////////////////////
@@ -126,13 +108,11 @@ module.exports = function makeCamera2D(
         );
       }
     });
-
   var setProps = regl({
     context: {
       view: regl.prop("view"),
     },
   });
-
   var inst_camera = {
     draw: function (cb) {
       setProps(
@@ -158,12 +138,10 @@ module.exports = function makeCamera2D(
     },
     resize: function () {
       computeViewport();
-
       // Reapply the aspect ratio:
       mView[5] = (mView[0] * aspectRatio * width) / height;
       dirty = true;
     },
   };
-
   return inst_camera;
-};
+});

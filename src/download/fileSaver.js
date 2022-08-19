@@ -1,4 +1,4 @@
-module.exports = function file_saver() {
+export default (function file_saver() {
   /* FileSaver.js
    * A saveAs() FileSaver implementation.
    * 2013-01-23
@@ -7,13 +7,10 @@ module.exports = function file_saver() {
    * License: X11/MIT
    *   See LICENSE.md
    */
-
   /*global self */
   /*jslint bitwise: true, regexp: true, confusion: true, es5: true, vars: true, white: true,
-  plusplus: true */
-
+    plusplus: true */
   /*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
-
   var saveAs =
     saveAs ||
     (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator)) ||
@@ -243,7 +240,6 @@ module.exports = function file_saver() {
       FS_proto.readyState = FS_proto.INIT = 0;
       FS_proto.WRITING = 1;
       FS_proto.DONE = 2;
-
       FS_proto.error =
         FS_proto.onwritestart =
         FS_proto.onprogress =
@@ -252,10 +248,8 @@ module.exports = function file_saver() {
         FS_proto.onerror =
         FS_proto.onwriteend =
           null;
-
       view.addEventListener("unload", process_deletion_queue, false);
       return saveAs;
     })(self);
-
   return saveAs;
-};
+});

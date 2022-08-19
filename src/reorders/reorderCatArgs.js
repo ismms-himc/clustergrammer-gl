@@ -1,8 +1,6 @@
-var make_cat_position_array = require("./../cats/makeCatPositionArray");
-
-module.exports = function reorder_cat_args(regl, params) {
+import make_cat_position_array from "../cats/makeCatPositionArray.js";
+export default (function reorder_cat_args(regl, params) {
   // can make more efficient by only checking which axis needs to be reordered
-
   _.each(["row", "col"], function (inst_axis) {
     // update cat position arrays
     for (
@@ -16,7 +14,6 @@ module.exports = function reorder_cat_args(regl, params) {
         cat_index,
         params.order.new[inst_axis]
       );
-
       // update the attribute
       params.cat_args[inst_axis][cat_index].attributes.cat_pos_att_new = {
         buffer: regl.buffer(params.cat_arrs.new[inst_axis][cat_index]),
@@ -24,4 +21,4 @@ module.exports = function reorder_cat_args(regl, params) {
       };
     }
   });
-};
+});

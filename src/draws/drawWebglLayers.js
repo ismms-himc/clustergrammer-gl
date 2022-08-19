@@ -1,10 +1,12 @@
-module.exports = function draw_webgl_layers(cgm) {
+import drawMatrixComponents from "./drawMatrixComponents.js";
+import drawAxisComponents from "./drawAxisComponents.js";
+import drawStaticComponents from "./drawStaticComponents.js";
+export default (function draw_webgl_layers(cgm) {
   let regl = cgm.regl;
   let params = cgm.params;
-
-  require("./drawMatrixComponents")(regl, params);
+  drawMatrixComponents(regl, params);
   var draw_labels = params.labels.draw_labels;
-  require("./drawAxisComponents")(regl, params, "row", draw_labels);
-  require("./drawAxisComponents")(regl, params, "col", draw_labels);
-  require("./drawStaticComponents")(regl, params);
-};
+  drawAxisComponents(regl, params, "row", draw_labels);
+  drawAxisComponents(regl, params, "col", draw_labels);
+  drawStaticComponents(regl, params);
+});

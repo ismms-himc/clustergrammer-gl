@@ -1,4 +1,4 @@
-module.exports = function make_cat_position_array(
+export default (function make_cat_position_array(
   params,
   inst_axis,
   cat_index,
@@ -16,14 +16,12 @@ module.exports = function make_cat_position_array(
     mat_size = params.viz_dim.heat_size.y;
     cat_width = params.viz_dim.heat_size.y / 0.5 / num_labels;
   }
-
   /////////////////////////////////
   // Cat Offset Buffer
   /////////////////////////////////
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
   // vertical shift
-
   var y_offset_array = [];
   var i;
   for (i = 0; i < num_labels; i++) {
@@ -41,17 +39,14 @@ module.exports = function make_cat_position_array(
       order_id = params.network[inst_axis + "_nodes"][i][inst_order];
       shift_mat_heat = params.viz_dim.mat_size.x - params.viz_dim.heat_size.x;
     }
-
     /* need to position based on clustering order */
     // the last part is necessary to shfit the viz aid triangles down to make up for the smaller size
     // of the heatmap vs the general matrix area
-
     // make 2d array
     y_offset_array[i] = [
       mat_size - cat_width / 2 - order_id * cat_width + shift_mat_heat,
       0,
     ];
   }
-
   return y_offset_array;
-};
+});

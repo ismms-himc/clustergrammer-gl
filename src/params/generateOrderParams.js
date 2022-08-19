@@ -1,8 +1,7 @@
-module.exports = function generate_order_params(params) {
+export default (function generate_order_params(params) {
   params.order = {};
   _.each(["inst", "new"], function (inst_state) {
     params.order[inst_state] = {};
-
     if ("order" in params.network) {
       params.order[inst_state].row = params.network.order.row;
       params.order[inst_state].col = params.network.order.col;
@@ -11,4 +10,4 @@ module.exports = function generate_order_params(params) {
       params.order[inst_state].col = "clust";
     }
   });
-};
+});

@@ -1,5 +1,5 @@
-var d3 = require("d3");
-module.exports = function cat_breakdown_bars(
+import * as d3 from "d3";
+export default (function cat_breakdown_bars(
   params,
   cat_data,
   cat_graph_group,
@@ -9,18 +9,14 @@ module.exports = function cat_breakdown_bars(
 ) {
   var paragraph_string = "<p>";
   var super_string = ": ";
-
   var bar_width = params.viz.cat_bar_width;
   var bar_height = params.viz.cat_bar_height;
   var max_len = 25;
-
   var max_bar_value = cat_data.bar_data[0][bars_index];
-
   var i_title = cat_data.type_name;
   if (i_title.length >= max_len) {
     i_title = i_title.slice(0, max_len) + "..";
   }
-
   // make title
   cat_graph_group
     .append("text")
@@ -28,7 +24,6 @@ module.exports = function cat_breakdown_bars(
     .text(i_title)
     .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style("font-weight", 800);
-
   var line_y = 4;
   cat_graph_group
     .append("line")
@@ -39,14 +34,12 @@ module.exports = function cat_breakdown_bars(
     .attr("stroke", "blue")
     .attr("stroke-width", 1)
     .attr("opacity", 1.0);
-
   // bar length is max when all nodes in cluster are of
   // a single cat
   var bar_scale = d3
     .scaleLinear()
     .domain([0, max_bar_value])
     .range([0, bar_width]);
-
   // make bars
   cat_bar_groups
     .append("rect")
@@ -62,7 +55,6 @@ module.exports = function cat_breakdown_bars(
     .attr("opacity", params.viz.cat_colors.opacity)
     .attr("stroke", "grey")
     .attr("stroke-width", "0.5px");
-
   // make bar labels
   cat_bar_groups
     .append("text")
@@ -88,4 +80,4 @@ module.exports = function cat_breakdown_bars(
     .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr("font-weight", 400)
     .attr("text-anchor", "right");
-};
+});

@@ -1,4 +1,4 @@
-module.exports = function cat_breakdown_values(
+export default (function cat_breakdown_values(
   params,
   cat_graph_group,
   cat_bar_groups,
@@ -12,7 +12,6 @@ module.exports = function cat_breakdown_values(
   var bar_height = params.viz.cat_bar_height;
   var offset_ds_count = 150;
   var binom_pval_index = 6;
-
   // Count Title
   cat_graph_group
     .append("text")
@@ -21,7 +20,6 @@ module.exports = function cat_breakdown_values(
       var i_x = bar_width + count_offset;
       return "translate(" + i_x + ", 0)";
     });
-
   // Percentage Title
   cat_graph_group
     .append("text")
@@ -30,7 +28,6 @@ module.exports = function cat_breakdown_values(
       var i_x = bar_width + count_offset + 60;
       return "translate(" + i_x + ", 0)";
     });
-
   // Percentage Title
   cat_graph_group
     .append("text")
@@ -39,7 +36,6 @@ module.exports = function cat_breakdown_values(
       var i_x = bar_width + count_offset + 115;
       return "translate(" + i_x + ", 0)";
     });
-
   // Count Downsampled Title
   if (is_downsampled) {
     cat_graph_group
@@ -50,11 +46,9 @@ module.exports = function cat_breakdown_values(
         return "translate(" + i_x + ", 0)";
       });
   }
-
   // Counts
   /////////////////////////////
   var shift_count_num = 35;
-
   cat_bar_groups
     .append("text")
     .classed("count_labels", true)
@@ -71,7 +65,6 @@ module.exports = function cat_breakdown_values(
     .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr("font-weight", 400)
     .attr("text-anchor", "end");
-
   // Percentage
   //////////////////////
   cat_bar_groups
@@ -92,14 +85,12 @@ module.exports = function cat_breakdown_values(
     .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr("font-weight", 400)
     .attr("text-anchor", "end");
-
   // Binomial Test Pvals
   cat_bar_groups
     .append("text")
     .classed("count_labels", true)
     .text(function (d) {
       var i_count = d[binom_pval_index];
-
       if (i_count < 0.001) {
         i_count = parseFloat(i_count.toPrecision(3));
         i_count = i_count.toExponential();
@@ -116,7 +107,6 @@ module.exports = function cat_breakdown_values(
     .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr("font-weight", 400)
     .attr("text-anchor", "end");
-
   if (is_downsampled) {
     cat_bar_groups
       .append("text")
@@ -134,4 +124,4 @@ module.exports = function cat_breakdown_values(
       .attr("font-weight", 400)
       .attr("text-anchor", "end");
   }
-};
+});

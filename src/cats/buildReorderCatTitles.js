@@ -1,10 +1,9 @@
-var d3 = require("d3");
-var run_reorder = require("./../reorders/runReorder");
-
-module.exports = function build_reorder_cat_titles(regl, cgm) {
+import * as d3 from "d3";
+import run_reorder from "../reorders/runReorder.js";
+import generateCatArgsArrs from "../params/generateCatArgsArrs.js";
+export default (function build_reorder_cat_titles(regl, cgm) {
   var params = cgm.params;
   var button_color = "#eee";
-
   let fieldSorter = (fields) => (a, b) =>
     fields
       .map((o) => {
@@ -16,7 +15,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
         return a[o] > b[o] ? dir : a[o] < b[o] ? -dir : 0;
       })
       .reduce((p, n) => (p ? p : n), 0);
-
   function stable_reorder_cats(axis, i) {
     let inst_nodes = params.network[axis + "_nodes"].map((x) => x);
     let cat_primary = "cat-" + String(i);
@@ -28,10 +26,8 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       cat_secondary = cat_secondary_up;
     } else {
       // single category reordering
-
       cat_secondary = cat_primary;
     }
-
     let sorted_nodes = inst_nodes.sort(
       fieldSorter([cat_primary, cat_secondary])
     );
@@ -44,21 +40,17 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       }
       order_dict[inst_name] = i;
     });
-
     params.network[axis + "_nodes"].forEach((d) => {
       inst_name = d.name;
       if (inst_name.includes(": ")) {
         inst_name = inst_name.split(": ")[1];
       }
-
       d.custom = order_dict[inst_name];
     });
-
-    require("./../params/generateCatArgsArrs")(regl, params);
+    generateCatArgsArrs(regl, params);
     run_reorder(regl, params, axis, "custom");
     params.order.inst.col = "custom";
   }
-
   // Column Titles
   var pos_x = 845;
   var pos_y = 125;
@@ -69,10 +61,8 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     .style("top", pos_y + "px")
     .style("left", pos_x + "px")
     .classed("col-cat-title-group", true);
-
   var dim_x = 55;
   var dim_y = 10;
-
   var col_cat_title_svg = col_cat_title_group
     .append("svg")
     .style("height", function () {
@@ -81,11 +71,9 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     })
     .style("width", dim_x + "px")
     .classed("col-cat-title-svg", true);
-
   var col_cat_reorder_group = col_cat_title_svg
     .append("g")
     .classed("col-cat-reorder-group", true);
-
   col_cat_reorder_group
     .selectAll("rect")
     .data(params.cat_data.col)
@@ -101,7 +89,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       var y_trans = (dim_y + 1) * i + 10;
       return "translate( 0, " + y_trans + ")";
     });
-
   col_cat_reorder_group
     .selectAll("rect")
     .data(params.cat_data.col)
@@ -117,7 +104,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     .on("dblclick", function (d, i) {
       stable_reorder_cats("col", i);
       params.order.inst.col = "custom";
-
       d3.select(params.root + " .col-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);
@@ -127,7 +113,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       return "translate( 0, " + y_trans + ")";
     })
     .style("user-select", "none");
-
   // Row Titles
   pos_x = 125;
   // var pos_y = 98; // 60 with no cats, 72 with one cat, 85 with two cats
@@ -139,10 +124,8 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     .style("top", pos_y + "px")
     .style("left", pos_x + "px")
     .classed("row-cat-title-group", true);
-
   var row_dim_x = 60;
   var row_dim_y = 10;
-
   var row_cat_title_svg = row_cat_title_group
     .append("svg")
     .style("width", function () {
@@ -151,7 +134,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     })
     .style("height", row_dim_x + "px")
     .classed("row-cat-title-svg", true);
-
   var inst_rotate;
   var row_cat_reorder_group = row_cat_title_svg
     .append("g")
@@ -160,7 +142,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       inst_rotate = -90;
       return "translate(0," + row_dim_x + "), rotate(" + inst_rotate + ")";
     });
-
   row_cat_reorder_group
     .selectAll("rect")
     .data(params.cat_data.row)
@@ -176,7 +157,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       var y_trans = (row_dim_y + 1) * i + 10;
       return "translate( 0, " + y_trans + ")";
     });
-
   row_cat_reorder_group
     .selectAll("rect")
     .data(params.cat_data.row)
@@ -192,7 +172,6 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
     .on("dblclick", function (d, i) {
       stable_reorder_cats("row", i);
       params.order.inst.row = "custom";
-
       d3.select(params.root + " .row-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);
@@ -202,4 +181,4 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       return "translate( 0, " + y_trans + ")";
     })
     .style("user-select", "none");
-};
+});

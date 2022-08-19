@@ -1,36 +1,29 @@
-var d3 = require("d3");
-module.exports = function display_and_position_tooltip(params) {
+import * as d3 from "d3";
+export default (function display_and_position_tooltip(params) {
   // Display Tooltip
   ////////////////////////////////
   d3.selectAll(".cgm-tooltip").style("display", "none");
-
   // display tooltip
   d3.select(params.tooltip_id)
     .style("opacity", 1)
     .style("display", "block")
     .style("z-index", 99);
-
   // Position Tooltip
   ////////////////////////////////
   // this is necessary to offset the tooltip correctly, probably due to the
   // padding in the tooltip or some related paramters
   var magic_x_offset = 22;
-
   var d3_tip_width = parseFloat(
     d3.select(params.tooltip_id).style("width").replace("px", "")
   );
-
   var d3_tip_height = parseFloat(
     d3.select(params.tooltip_id).style("height").replace("px", "")
   );
-
   params.d3_tip_width = d3_tip_width;
-
   // need to set up custom positioning of the tooltip based on the mouseover type
   // upper left if on matrix-cell, upper right if on row label, lower left if on
   // column mouseover. Should be able to check params.tooltip.tooltip_type to
   // find out how to position the tooltip
-
   if (params.tooltip.tooltip_type === "matrix-cell") {
     d3.select(params.tooltip_id)
       .style("margin-left", function () {
@@ -81,7 +74,6 @@ module.exports = function display_and_position_tooltip(params) {
       .style("margin-left", function () {
         // var total_x_offset = params.zoom_data.x.cursor_position - d3_tip_width +
         //                      magic_x_offset;
-
         var total_x_offset = 870 - d3_tip_width;
         return total_x_offset + "px";
       })
@@ -111,4 +103,4 @@ module.exports = function display_and_position_tooltip(params) {
         return total_y_offset + "px";
       });
   }
-};
+});

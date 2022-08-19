@@ -1,4 +1,4 @@
-module.exports = function drop_label_from_queue(
+export default (function drop_label_from_queue(
   inst_queue,
   inst_axis,
   inst_name
@@ -7,4 +7,4 @@ module.exports = function drop_label_from_queue(
   if (index > -1) {
     inst_queue.splice(index, 1);
   }
-};
+});

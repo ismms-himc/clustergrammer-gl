@@ -1,32 +1,24 @@
-module.exports = function gen_ordered_labels(cgm) {
+export default (function gen_ordered_labels(cgm) {
   // Generate lists of ordered label and category names for mouseover
-
   let params = cgm.params;
-
   // debugger;
-
   var i_order;
   var ordered_labels = {};
   var axis_nodes;
   var i;
   var found_axis_cat;
-
   _.each(["row", "col"], function (i_axis) {
     ordered_labels[i_axis + "s"] = [];
     ordered_labels[i_axis + "_indices"] = [];
     axis_nodes = params.network[i_axis + "_nodes"];
     found_axis_cat = false;
-
     // debugger
-
     for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
       ordered_labels[i_axis + "_cats-" + String(i)] = [];
     }
-
     if (params.cat_data.cat_num[i_axis] > 0) {
       found_axis_cat = true;
     }
-
     _.each(axis_nodes, function (inst_node, inst_index) {
       i_order =
         params.labels["num_" + i_axis] -
@@ -36,7 +28,6 @@ module.exports = function gen_ordered_labels(cgm) {
       ordered_labels[i_axis + "s"][i_order] = inst_node.name;
       // ordered indices (for value retrieval)
       ordered_labels[i_axis + "_indices"][i_order] = inst_index;
-
       if (found_axis_cat) {
         for (i = 0; i < params.cat_data.cat_num[i_axis]; i++) {
           ordered_labels[i_axis + "_cats-" + String(i)][i_order] =
@@ -45,6 +36,5 @@ module.exports = function gen_ordered_labels(cgm) {
       }
     });
   });
-
   params.labels.ordered_labels = ordered_labels;
-};
+});

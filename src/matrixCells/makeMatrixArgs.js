@@ -1,37 +1,29 @@
-var make_position_arr = require("./makePositionArr");
-var make_opacity_arr = require("./makeOpacityArr");
-
-module.exports = function make_matrix_args() {
+import make_position_arr from "./makePositionArr.js";
+import make_opacity_arr from "./makeOpacityArr.js";
+export default (function make_matrix_args() {
   let cgm = this;
   let regl = cgm.regl;
   let params = cgm.params;
-
   // make arrays
   params.arrs = {};
   params.arrs.opacity_arr = make_opacity_arr(params);
-
   params.arrs.position_arr = {};
-
   params.arrs.position_arr.ini = make_position_arr(
     params,
     params.order.inst.row,
     params.order.inst.col
   );
-
   params.arrs.position_arr.new = make_position_arr(
     params,
     params.order.new.row,
     params.order.new.col
   );
-
   var opacity_buffer = regl.buffer({
     type: "float",
     usage: "dynamic",
   })(params.arrs.opacity_arr);
-
   var tile_width = params.viz_dim.tile_width;
   var tile_height = params.viz_dim.tile_height;
-
   var triangle_verts = [
     [tile_width, 0.0],
     [tile_width, tile_height],
@@ -40,7 +32,6 @@ module.exports = function make_matrix_args() {
     [0.0, 0.0],
     [0.0, tile_height],
   ];
-
   var vert_string = `
     // precision highp float;
     precision lowp float;
@@ -75,7 +66,6 @@ module.exports = function make_matrix_args() {
       opacity_vary = opacity_att;
 
     }`;
-
   var frag_string = `
     // precision highp float;
     precision lowp float;
@@ -97,10 +87,8 @@ module.exports = function make_matrix_args() {
       }
 
     }`;
-
   var num_instances = params.arrs.position_arr.ini.length;
   var zoom_function = params.zoom_data.zoom_function;
-
   var inst_properties = {
     vert: vert_string,
     frag: frag_string,
@@ -146,14 +134,11 @@ module.exports = function make_matrix_args() {
       enable: false,
     },
   };
-
   // draw top and bottom of matrix cells
   //////////////////////////////////////
   var matrix_args = {};
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
-
   params.matrix_args = matrix_args;
-
   // return matrix_args;
-};
+});

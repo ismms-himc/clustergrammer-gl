@@ -1,8 +1,7 @@
-var m3 = require("./../draws/mat3Transform");
-var color_to_rgba = require("./../colors/colorToRgba");
-var make_dendro_arr = require("./makeDendroArr");
-
-module.exports = function make_dendro_args(regl, params, inst_axis) {
+import m3 from "../draws/mat3Transform.js";
+import color_to_rgba from "../colors/colorToRgba.js";
+import make_dendro_arr from "./makeDendroArr.js";
+export default (function make_dendro_args(regl, params, inst_axis) {
   var rotation_radians;
   var heat_size;
   var mat_size_offset;
@@ -15,30 +14,22 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
     heat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
   }
-
   var num_labels = params.labels["num_" + inst_axis];
   var dendro_width = params.dendro.tri_height;
   var tri_width = heat_size / num_labels;
-
   var dendro_arr = make_dendro_arr(params, inst_axis);
-
   var zoom_function = function (context) {
     return context.view;
   };
-
   const dendro_buffer = regl.buffer({
     length: dendro_arr.length,
     type: "float",
     usage: "dynamic",
   });
-
   dendro_buffer(dendro_arr);
-
   var mat_scale = m3.scaling(1, 1);
-
   var mat_rotate = m3.rotation(rotation_radians);
   var inst_rgba = color_to_rgba("black", 0.35);
-
   var args = {
     vert: `
       precision highp float;
@@ -68,7 +59,6 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
 
       }
     `,
-
     frag: `
 
       precision highp float;
@@ -80,7 +70,6 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
       }
 
     `,
-
     attributes: {
       position: [
         [params.dendro.trap_float, 2 * tri_width],
@@ -92,7 +81,6 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
         divisor: 1,
       },
     },
-
     uniforms: {
       zoom: zoom_function,
       mat_rotate: mat_rotate,
@@ -100,7 +88,6 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
       mat_size_offset: mat_size_offset,
       triangle_color: inst_rgba,
     },
-
     count: 3,
     instances: dendro_arr.length,
     depth: {
@@ -111,6 +98,5 @@ module.exports = function make_dendro_args(regl, params, inst_axis) {
       range: [0, 1],
     },
   };
-
   return args;
-};
+});

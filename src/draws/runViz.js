@@ -1,36 +1,28 @@
-var d3 = require("d3");
+import * as d3 from "d3";
+import reset_cameras from "../cameras/resetCameras.js";
+import start_animation from "./startAnimation.js";
+import end_animation from "./endAnimation.js";
+import draw_interacting from "./drawInteracting.js";
+import draw_mouseover from "./drawMouseover.js";
+import draw_background_calculations from "./drawBackgroundCalculations.js";
 _ = require("underscore");
-var reset_cameras = require("./../cameras/resetCameras");
-var start_animation = require("./startAnimation");
-var end_animation = require("./endAnimation");
-var draw_interacting = require("./drawInteracting");
-var draw_mouseover = require("./drawMouseover");
-
-var draw_background_calculations = require("./drawBackgroundCalculations");
-
-module.exports = function run_viz(external_model) {
+export default (function run_viz(external_model) {
   var cgm = this;
   var regl = cgm.regl;
   var params = cgm.params;
-
   params.ani.first_frame = true;
-
   regl.frame(function ({ time }) {
     params.ani.time = time;
-
     if (params.int.total > 1) {
       d3.selectAll(params.root + " .group-svg-tooltip").remove();
     }
-
     // prevent this from being negative, can happen when resetting zoom
     if (params.int.total < 0) {
       params.int.total = 0;
     }
-
     if (params.reset_cameras) {
       reset_cameras(regl, params);
     }
-
     if (params.ani.run_animation) {
       start_animation(params);
     } else if (
@@ -39,7 +31,6 @@ module.exports = function run_viz(external_model) {
     ) {
       end_animation(cgm);
     }
-
     if (
       params.int.still_interacting == true ||
       params.ani.ini_viz == true ||
@@ -47,7 +38,6 @@ module.exports = function run_viz(external_model) {
       params.ani.update_viz == true
     ) {
       draw_interacting(cgm, external_model);
-
       params.ani.update_viz = false;
     } else if (params.int.still_mouseover == true) {
       // mouseover may result in draw command
@@ -64,4 +54,4 @@ module.exports = function run_viz(external_model) {
       draw_background_calculations(regl, params);
     }
   });
-};
+});

@@ -1,7 +1,7 @@
 /**
  * @type function
  */
-function clustergrammer_gl(args, external_model = null) {
+export default function clustergrammer_gl(args, external_model = null) {
   var cgm = {};
 
   // check if container is defined
@@ -85,6 +85,3 @@ function clustergrammer_gl(args, external_model = null) {
     return cgm;
   }
 }
-
-// necessary for exporting function
-module.exports = clustergrammer_gl;

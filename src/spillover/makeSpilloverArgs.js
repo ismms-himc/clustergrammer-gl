@@ -5,8 +5,8 @@ export default (function make_spillover_args(
 ) {
   // fix heatmap bleedthrough with variable opacity categories
   // Spillover Arguments
-  ///////////////////////////////
-  var args = {
+  // /////////////////////////////
+  const args = {
     // In a draw call, we can pass the shader source code to regl
     frag: `
     precision mediump float;

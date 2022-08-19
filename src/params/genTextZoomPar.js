@@ -1,6 +1,6 @@
 export default (function gen_text_zoom_par(params) {
-  var text_zoom = {};
-  var max_webgl_fs = {};
+  const text_zoom = {};
+  const max_webgl_fs = {};
   max_webgl_fs.row = 0.05;
   max_webgl_fs.col = 0.06;
   _.each(["row", "col"], function (inst_axis) {

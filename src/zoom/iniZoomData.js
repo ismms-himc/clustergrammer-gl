@@ -1,12 +1,12 @@
 export default (function ini_zoom_data() {
-  var zoom_function = function (context) {
+  const zoom_function = function (context) {
     return context.view;
   };
   // organize zoom rules into x and y components
-  var zoom_data = {};
+  const zoom_data = {};
   zoom_data.zoom_function = zoom_function;
   _.each(["x", "y"], function (inst_dim) {
-    var inst_data = {};
+    const inst_data = {};
     // total zooming (formerly tsx)
     inst_data.total_zoom = 1;
     // position of cursor (formerly x0)

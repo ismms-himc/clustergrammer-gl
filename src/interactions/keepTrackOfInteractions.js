@@ -1,5 +1,5 @@
 export default (function keep_track_of_interactions(params) {
-  var wait_time_final_interact = 100;
+  const wait_time_final_interact = 100;
   // keep track of interactions
   if (params.int.still_interacting == false) {
     params.int.still_interacting = true;

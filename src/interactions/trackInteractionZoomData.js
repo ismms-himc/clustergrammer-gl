@@ -1,12 +1,12 @@
-import zoom_rules_low_mat from "../zoom/zoomRulesLowMat.js";
-import find_mouseover_element from "./findMouseoverElement.js";
-import keep_track_of_interactions from "./keepTrackOfInteractions.js";
-import keep_track_of_mouseovers from "./keepTrackOfMouseovers.js";
+import zoom_rules_low_mat from "../zoom/zoomRulesLowMat";
+import find_mouseover_element from "./findMouseoverElement";
+import keep_track_of_interactions from "./keepTrackOfInteractions";
+import keep_track_of_mouseovers from "./keepTrackOfMouseovers";
 export default (function track_interaction_zoom_data(regl, params, ev) {
-  var zoom_data = params.zoom_data;
-  var zoom_restrict = params.zoom_restrict;
-  var viz_dim = params.viz_dim;
-  var interaction_types = ["wheel", "touch", "pinch"];
+  const zoom_data = params.zoom_data;
+  const zoom_restrict = params.zoom_restrict;
+  const viz_dim = params.viz_dim;
+  const interaction_types = ["wheel", "touch", "pinch"];
   if (ev.buttons || interaction_types.indexOf(ev.type) !== -1) {
     switch (ev.type) {
       case "wheel":
@@ -21,7 +21,7 @@ export default (function track_interaction_zoom_data(regl, params, ev) {
     zoom_data.y.inst_zoom = ev.dsy;
     zoom_data.y.pan_by_drag = ev.dy;
     zoom_data.y.cursor_position = ev.y0;
-    var potential_zoom;
+    let potential_zoom;
     /*
           Zoom Switch: adjust x/y zooming based on non-square matrices
         */

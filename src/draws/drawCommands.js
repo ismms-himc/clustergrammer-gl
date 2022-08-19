@@ -1,11 +1,11 @@
-import draw_webgl_layers from "./drawWebglLayers.js";
-import generateCatArgsArrs from "../params/generateCatArgsArrs.js";
-import runShowTooltip from "../tooltip/runShowTooltip.js";
+import generateCatArgsArrs from "../params/generateCatArgsArrs";
+import runShowTooltip from "../tooltip/runShowTooltip";
+import draw_webgl_layers from "./drawWebglLayers";
 export default (function draw_commands(cgm, external_model) {
-  let regl = cgm.regl;
-  let params = cgm.params;
+  const regl = cgm.regl;
+  const params = cgm.params;
   // if mousing over categories initialize all categories to low opacity
-  var mousing_over_cat = false;
+  let mousing_over_cat = false;
   if (params.tooltip.tooltip_type) {
     if (params.tooltip.tooltip_type.includes("-cat-")) {
       // This is required to updated category opacity when mousing over
@@ -19,7 +19,7 @@ export default (function draw_commands(cgm, external_model) {
     params.int.need_reset_cat_opacity = false;
   }
   draw_webgl_layers(cgm);
-  var tooltip = params.tooltip;
+  const tooltip = params.tooltip;
   // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas) {
     runShowTooltip(cgm, external_model);

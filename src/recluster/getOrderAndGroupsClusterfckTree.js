@@ -1,5 +1,5 @@
 import * as underscore from "underscore";
-import get_max_distance_in_dm from "./getMaxDistanceInDm.js";
+import get_max_distance_in_dm from "./getMaxDistanceInDm";
 
 export default function get_order_and_groups_clusterfck_tree(
   clusters,
@@ -7,26 +7,26 @@ export default function get_order_and_groups_clusterfck_tree(
   cgm,
   axis
 ) {
-  var max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists);
+  const max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists);
   // get order information from clusterfck tree
-  ///////////////////////////////////////////////
-  var inst_order = 0;
-  var group = [];
-  var order_array = [];
-  var order_list = [];
-  var inst_leaf;
-  var inst_key;
+  // /////////////////////////////////////////////
+  let inst_order = 0;
+  const group = [];
+  const order_array = [];
+  const order_list = [];
+  let inst_leaf;
+  let inst_key;
   // start hierarchy
-  var tree = clusters.tree;
-  var ini_level = 1;
-  var tree_height = tree.dist;
+  const tree = clusters.tree;
+  const ini_level = 1;
+  const tree_height = tree.dist;
   cgm.params.tree[axis] = tree;
   // var cutoff_fractions = [];
-  var cutoff_vals = [];
-  var cutoff_indexes = [];
-  var threshold_status = [];
-  let num_slices = 10;
-  for (var i = 0; i <= num_slices; i++) {
+  const cutoff_vals = [];
+  const cutoff_indexes = [];
+  const threshold_status = [];
+  const num_slices = 10;
+  for (let i = 0; i <= num_slices; i++) {
     cutoff_vals.push((max_distance_in_dm * i) / num_slices);
     threshold_status.push("above");
     group.push(0);
@@ -85,13 +85,13 @@ export default function get_order_and_groups_clusterfck_tree(
     return a.key - b.key;
   });
   // generate ordered names
-  var inst_name;
-  var ordered_names = [];
+  let inst_name;
+  const ordered_names = [];
   underscore.each(order_list, function (index) {
     inst_name = names[index];
     ordered_names.push(inst_name);
   });
-  var order_info = {};
+  const order_info = {};
   order_info.info = order_array;
   order_info.order = order_list;
   order_info.ordered_names = ordered_names;

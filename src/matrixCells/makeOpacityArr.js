@@ -1,9 +1,6 @@
 import * as d3 from "d3";
-import calc_inverse_zscore from "../utils/calcInverseZscore.js";
-import calc_zscore from "../utils/calcZscore.js";
+import calc_inverse_zscore from "../utils/calcInverseZscore";
 export default (function make_opacity_arr(params) {
-  let inst_avg;
-  let inst_std;
   mat_data = params.mat_data;
   // run one or the other
   // calc_zscore(params)
@@ -23,15 +20,15 @@ export default (function make_opacity_arr(params) {
     // always visualize mat_data
     viz_mat_data = params.mat_data;
   }
-  var opacity_arr = [].concat.apply([], viz_mat_data);
-  var abs_max_val = Math.abs(
+  let opacity_arr = [].concat(...viz_mat_data);
+  const abs_max_val = Math.abs(
     _.max(opacity_arr, function (d) {
       return Math.abs(d);
     })
   );
-  var opacity_scale = d3.scaleLinear();
-  var opacity_domain = abs_max_val * params.matrix.opacity_scale;
-  var opacity_range = 1.0;
+  const opacity_scale = d3.scaleLinear();
+  const opacity_domain = abs_max_val * params.matrix.opacity_scale;
+  const opacity_range = 1.0;
   opacity_scale
     .domain([-opacity_domain, opacity_domain])
     .range([-opacity_range, opacity_range])

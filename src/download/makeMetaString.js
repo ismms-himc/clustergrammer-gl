@@ -1,9 +1,9 @@
 export default (function make_meta_string(params) {
   // metadata will only be a CSV
-  let delimiter = ",";
+  const delimiter = ",";
   let meta_string = ",";
-  let meta_type = params.download.meta_type;
-  let nodes = params.network[meta_type + "_nodes"];
+  const meta_type = params.download.meta_type;
+  const nodes = params.network[meta_type + "_nodes"];
   let inst_name;
   // // write columns
   params.cat_data[meta_type].forEach((x, i) => {

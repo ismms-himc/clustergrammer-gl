@@ -1,28 +1,28 @@
 import * as d3 from "d3";
 import extend from "xtend/mutable";
 export default (function calc_vd(regl, params) {
-  var vd = {};
-  var opts = opts || {};
-  var options = extend(
+  const vd = {};
+  const opts = opts || {};
+  const options = extend(
     {
       element: opts.element || regl._gl.canvas,
     },
     opts || {}
   );
-  var element = options.element;
+  const element = options.element;
   vd.canvas = {};
   _.each(["width", "height"], function (inst_dim) {
     vd.canvas[inst_dim] = Number.parseFloat(
       d3.select(element).style(inst_dim).replace("px", "")
     );
   });
-  var label = {};
+  const label = {};
   label.x = "row";
   label.y = "col";
-  var other_label = {};
+  const other_label = {};
   other_label.x = "col";
   other_label.y = "row";
-  var dim = {};
+  const dim = {};
   dim.x = "width";
   dim.y = "height";
   vd.mat = {};
@@ -32,11 +32,11 @@ export default (function calc_vd(regl, params) {
   vd.offcenter = {};
   vd.shift_camera = {};
   vd.mat_size = {};
-  var inst_label;
-  var inst_other_label;
-  var inst_dim;
-  var offset_heat = {};
-  var offcenter_magnitude = 0.075;
+  let inst_label;
+  let inst_other_label;
+  let inst_dim;
+  const offset_heat = {};
+  const offcenter_magnitude = 0.075;
   _.each(["x", "y"], function (inst_axis) {
     inst_label = label[inst_axis];
     inst_other_label = other_label[inst_axis];

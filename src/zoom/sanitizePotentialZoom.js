@@ -1,9 +1,9 @@
 export default (function sanitize_potential_zoom(zd, zoom_restrict) {
-  var max_zoom = zoom_restrict.max;
-  var min_zoom = zoom_restrict.min;
+  const max_zoom = zoom_restrict.max;
+  const min_zoom = zoom_restrict.min;
   // calc unsanitized ptz (potential-total-zoom)
   // checking this prevents the real total_zoom from going out of bounds
-  var ptz = zd.total_zoom * zd.inst_zoom;
+  const ptz = zd.total_zoom * zd.inst_zoom;
   // zooming within allowed range
   if (ptz < max_zoom && ptz > min_zoom) {
     zd.total_zoom = ptz;

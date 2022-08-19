@@ -21,12 +21,12 @@ export default function camera_interaction(
     /*
         Sanitize zoom data components
         */
-    var inst_x_zoom = zoom_data.x.inst_zoom;
-    var inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
-    var inst_x_pan_by_drag = zoom_data.x.pan_by_drag;
-    var inst_y_zoom = zoom_data.y.inst_zoom;
-    var inst_y_pan_by_zoom = zoom_data.y.pan_by_zoom;
-    var inst_y_pan_by_drag = zoom_data.y.pan_by_drag;
+    let inst_x_zoom = zoom_data.x.inst_zoom;
+    let inst_x_pan_by_zoom = zoom_data.x.pan_by_zoom;
+    let inst_x_pan_by_drag = zoom_data.x.pan_by_drag;
+    let inst_y_zoom = zoom_data.y.inst_zoom;
+    let inst_y_pan_by_zoom = zoom_data.y.pan_by_zoom;
+    let inst_y_pan_by_drag = zoom_data.y.pan_by_drag;
     if (viz_component === "row-labels") {
       inst_x_zoom = 1;
       inst_x_pan_by_drag = 0;
@@ -67,7 +67,7 @@ export default function camera_interaction(
     mat4.multiply(mView, dViewport, mView);
     // var dirty = true;
   }
-  var xy = vec4.transformMat4(
+  const xy = vec4.transformMat4(
     [],
     vec4.transformMat4([], [ev.x0, ev.y0, 0, 1], mInvViewport),
     mat4.invert([], mView)

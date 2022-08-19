@@ -1,13 +1,13 @@
 import * as d3 from "d3";
-import build_single_dendro_slider from "./buildSingleDendroSlider.js";
+import build_single_dendro_slider from "./buildSingleDendroSlider";
 
 export default function build_dendrogram_sliders(cgm) {
-  var params = cgm.params;
+  const params = cgm.params;
   // Add sliders on top of the canvas
-  /////////////////////////////////////
-  var slider_length = 130;
+  // ///////////////////////////////////
+  const slider_length = 130;
   // slider containers
-  var axis_slider_container;
+  let axis_slider_container;
   // hardwiring dendro slider position
   _.each(["row", "col"], function (inst_axis) {
     axis_slider_container = d3

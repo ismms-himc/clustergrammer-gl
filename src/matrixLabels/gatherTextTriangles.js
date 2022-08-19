@@ -1,6 +1,7 @@
-import vectorize_label from "./vectorizeLabel.js";
-export default (function gather_text_triangles(params, inst_axis) {
-  var inst_dim;
+import vectorize_label from "./vectorizeLabel";
+
+export default function gather_text_triangles(params, inst_axis) {
+  let inst_dim;
   if (inst_axis === "col") {
     inst_dim = "x";
   } else {
@@ -8,19 +9,19 @@ export default (function gather_text_triangles(params, inst_axis) {
   }
   // generating array with text triangles and y-offsets
   params.text_triangles.draw[inst_axis] = [];
-  var viz_area = params.viz_area;
-  var min_viz = viz_area[inst_dim + "_min"];
-  var max_viz = viz_area[inst_dim + "_max"];
+  const viz_area = params.viz_area;
+  const min_viz = viz_area[inst_dim + "_min"];
+  const max_viz = viz_area[inst_dim + "_max"];
   _.each(params.network[inst_axis + "_nodes"], function (inst_label) {
     if (
       inst_label.offsets.inst > min_viz &&
       inst_label.offsets.inst < max_viz
     ) {
-      var inst_name = inst_label.name;
+      let inst_name = inst_label.name;
       if (inst_name.indexOf(": ") >= 0) {
         inst_name = inst_label.name.split(": ")[1];
       }
-      var inst_text_vect;
+      let inst_text_vect;
       if (inst_name in params.text_triangles[inst_axis]) {
         // add to text_triangles.draw if pre-calculated
         inst_text_vect = params.text_triangles[inst_axis][inst_name];
@@ -43,4 +44,4 @@ export default (function gather_text_triangles(params, inst_axis) {
       }
     }
   });
-});
+}

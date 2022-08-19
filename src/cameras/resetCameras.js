@@ -1,5 +1,5 @@
-import ini_zoom_data from "../zoom/iniZoomData.js";
-import make_cameras from "./makeCameras.js";
+import ini_zoom_data from "../zoom/iniZoomData";
+import make_cameras from "./makeCameras";
 
 export default (function reset_cameras(regl, params) {
   params.reset_cameras = false;

@@ -1,4 +1,4 @@
-import gather_text_triangles from "../matrixLabels/gatherTextTriangles.js";
+import gather_text_triangles from "../matrixLabels/gatherTextTriangles";
 export default (function generate_text_triangle_params(params) {
   // save text triangles for later use
   params.text_triangles = {};

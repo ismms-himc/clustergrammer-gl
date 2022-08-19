@@ -1,10 +1,10 @@
-import custom_camera_2d from "./customCamera2d.js";
+import custom_camera_2d from "./customCamera2d";
 
 export default function make_cameras(regl, params) {
-  var zoom_data = params.zoom_data;
+  const zoom_data = params.zoom_data;
   const cameras = {};
-  var ini_scale = 1.0;
-  var zoom_range = {
+  const ini_scale = 1.0;
+  const zoom_range = {
     xrange: [-ini_scale, ini_scale],
     yrange: [-ini_scale, ini_scale],
   };

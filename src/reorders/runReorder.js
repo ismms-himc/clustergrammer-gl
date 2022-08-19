@@ -1,9 +1,9 @@
 import * as d3 from "d3";
-import updateTextTriangleOrder from "matrixLabels/updateTextTriangleOrder.js";
-import reorderCatArgs from "./reorderCatArgs.js";
-import reorderMatrixArgs from "./reorderMatrixArgs.js";
+import updateTextTriangleOrder from "matrixLabels/updateTextTriangleOrder";
+import reorderCatArgs from "./reorderCatArgs";
+import reorderMatrixArgs from "./reorderMatrixArgs";
 export default (function run_reorder(regl, params, inst_axis, ini_new_order) {
-  var new_order = ini_new_order
+  const new_order = ini_new_order
     .replace("sum", "rank")
     .replace("var", "rankvar");
   if (new_order != "clust") {

@@ -1,5 +1,5 @@
 module.exports = function draw_baboon(regl, params) {
-  var baboon = params.baboon;
+  const baboon = params.baboon;
 
   // // overwrite baboon with custom data
   // data_for_texture = [];
@@ -24,7 +24,7 @@ module.exports = function draw_baboon(regl, params) {
 
   // baboon.data = u8a
 
-  var zoom_function = params.zoom_data.zoom_function;
+  const zoom_function = params.zoom_data.zoom_function;
 
   regl({
     vert: `

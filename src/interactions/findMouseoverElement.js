@@ -1,4 +1,4 @@
-import getMouseoverType from "./getMouseoverType.js";
+import getMouseoverType from "./getMouseoverType";
 export default (function find_mouseover_element(regl, params, ev) {
   /*
   
@@ -6,8 +6,8 @@ export default (function find_mouseover_element(regl, params, ev) {
       used to reorder on double click.
   
     */
-  var viz_dim_heat = params.viz_dim.heat;
-  var mouseover = params.int.mouseover;
+  const viz_dim_heat = params.viz_dim.heat;
+  const mouseover = params.int.mouseover;
   // reset mouseover params
   _.each(["row", "col"], function (inst_axis) {
     params.int.mouseover[inst_axis] = {};
@@ -15,12 +15,12 @@ export default (function find_mouseover_element(regl, params, ev) {
     params.int.mouseover[inst_axis].cats = [];
   });
   params.int.mouseover.value = null;
-  var offcenter = {};
-  var inst_cat_name;
-  var dim_dict = {};
+  const offcenter = {};
+  let inst_cat_name;
+  const dim_dict = {};
   dim_dict.x = "width";
   dim_dict.y = "height";
-  var cursor_rel_min = {};
+  const cursor_rel_min = {};
   _.each(["x", "y"], function (inst_axis) {
     // try updating mouseover position
     params.zoom_data[inst_axis].cursor_position = ev[inst_axis + "0"];
@@ -42,10 +42,10 @@ export default (function find_mouseover_element(regl, params, ev) {
     params.zoom_data[inst_axis].cursor_rel_min = cursor_rel_min[inst_axis];
   });
   getMouseoverType(params);
-  var axis_indices = {};
+  const axis_indices = {};
   if (params.tooltip.in_bounds_tooltip) {
-    var axis_index;
-    var inst_dims = [];
+    let axis_index;
+    let inst_dims = [];
     if (params.tooltip.tooltip_type === "matrix-cell") {
       inst_dims = ["row", "col"];
     } else if (params.tooltip.tooltip_type.indexOf("row") >= 0) {
@@ -53,14 +53,14 @@ export default (function find_mouseover_element(regl, params, ev) {
     } else if (params.tooltip.tooltip_type.indexOf("col") >= 0) {
       inst_dims = ["col"];
       // shift found column label to reflect slanted column labels
-      ///////////////////////////////////////////////////////////////
+      // /////////////////////////////////////////////////////////////
       // the shift is equal to the height above the column labels
       // however, this should be dimished based on how far zoomed out the user is
       // only shift if zooming is greater than 1% of total zoom available in x
       if (params.zoom_data.x.total_zoom / params.zoom_restrict.x.max > 0.01) {
-        var y_heat_min = 126;
-        var i_pix_y = params.zoom_data.y.cursor_position;
-        var shift_col_label = y_heat_min - i_pix_y;
+        const y_heat_min = 126;
+        const i_pix_y = params.zoom_data.y.cursor_position;
+        const shift_col_label = y_heat_min - i_pix_y;
         if (shift_col_label > 0) {
           cursor_rel_min.x =
             cursor_rel_min.x - shift_col_label / params.zoom_data.x.total_zoom;

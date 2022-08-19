@@ -1,20 +1,23 @@
+// TODO: fix
+/* eslint-disable no-invalid-this */
 import * as d3 from "d3";
-import draw_webgl_layers from "../draws/drawWebglLayers.js";
+import draw_webgl_layers from "../draws/drawWebglLayers";
+
 export default (function build_recluster_section(cgm) {
-  var params = cgm.params;
-  var y_offset_buttons = 47;
-  var cracker_room = 65;
-  var button_dim = {};
+  const params = cgm.params;
+  const y_offset_buttons = 47;
+  const cracker_room = 65;
+  const button_dim = {};
   button_dim.height = 32;
   button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
   button_dim.fs = 11;
-  var control_panel_color = "white";
-  var text_color = "#47515b";
-  var button_color = "#eee";
-  var active_run_color = "#00FF75";
-  let active_button_color = "#008000";
+  const control_panel_color = "white";
+  const text_color = "#47515b";
+  const button_color = "#eee";
+  const active_run_color = "#00FF75";
+  const active_button_color = "#008000";
   control_svg = d3.select(params.root + " .control-container svg");
   control_svg
     .append("g")
@@ -47,8 +50,8 @@ export default (function build_recluster_section(cgm) {
       }
     })
     .attr("transform", function () {
-      var x_offset = 200 + cracker_room;
-      var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+      const x_offset = 200 + cracker_room;
+      const y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     })
     .attr("opacity", 0.5)
@@ -113,10 +116,10 @@ export default (function build_recluster_section(cgm) {
       "transform",
       "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
     );
-  ///////////////////////////
+  // /////////////////////////
   // Recluster Options
-  ///////////////////////////
-  var dist_options = [
+  // /////////////////////////
+  let dist_options = [
     {
       short: "cos",
       full: "cosine",
@@ -130,16 +133,15 @@ export default (function build_recluster_section(cgm) {
       full: "euclidean",
     },
   ];
-  let dist_dict = {};
+  const dist_dict = {};
   dist_dict["cosine"] = "cos";
   dist_dict["correlation"] = "corr";
   dist_dict["euclidean"] = "eucl";
-  var cracker_room = 65;
-  var shift_x_order_buttons = 65 + cracker_room;
-  let y_offset_top = 47;
-  let y_offset_bottom = 91;
+  const shift_x_order_buttons = 65 + cracker_room;
+  const y_offset_top = 47;
+  const y_offset_bottom = 91;
   // Distance Options Container
-  ////////////////////////////////
+  // //////////////////////////////
   dist_options = d3
     .select(params.root + " .control_svg")
     .append("g")
@@ -150,7 +152,7 @@ export default (function build_recluster_section(cgm) {
     .append("g")
     .classed("dist_options", true)
     .attr("transform", function (d, i) {
-      var x_offset = button_dim.x_trans * i + shift_x_order_buttons;
+      const x_offset = button_dim.x_trans * i + shift_x_order_buttons;
       return "translate(" + x_offset + ", " + y_offset_top + ")";
     })
     .on("click", function (d) {
@@ -169,7 +171,7 @@ export default (function build_recluster_section(cgm) {
     .style("rx", 10)
     .style("ry", 10)
     .attr("stroke", function (d) {
-      var i_color;
+      let i_color;
       if (dist_dict[params.matrix.distance_metric] == d.short) {
         i_color = active_button_color;
       } else {
@@ -196,8 +198,8 @@ export default (function build_recluster_section(cgm) {
       "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
     );
   // Linkage Options Container
-  ////////////////////////////////
-  var link_options = [
+  // //////////////////////////////
+  const link_options = [
     {
       short: "avg",
       full: "average",
@@ -211,7 +213,7 @@ export default (function build_recluster_section(cgm) {
       full: "complete",
     },
   ];
-  let link_dict = {};
+  const link_dict = {};
   link_dict["average"] = "avg";
   link_dict["single"] = "single";
   link_dict["complete"] = "cmplt";
@@ -225,7 +227,7 @@ export default (function build_recluster_section(cgm) {
     .append("g")
     .classed("link_options_container", true)
     .attr("transform", function (d, i) {
-      var x_offset = button_dim.x_trans * i + shift_x_order_buttons;
+      const x_offset = button_dim.x_trans * i + shift_x_order_buttons;
       return "translate(" + x_offset + ", " + y_offset_bottom + ")";
     })
     .on("click", function (d) {
@@ -244,7 +246,7 @@ export default (function build_recluster_section(cgm) {
     .style("rx", 10)
     .style("ry", 10)
     .attr("stroke", function (d) {
-      var i_color;
+      let i_color;
       if (link_dict[params.matrix.linkage_type] == d.short) {
         i_color = active_button_color;
       } else {
@@ -271,14 +273,14 @@ export default (function build_recluster_section(cgm) {
       "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
     );
   // Normalize Section
-  ///////////////////////////////////////////////
+  // /////////////////////////////////////////////
   if (params.norm.initial_status === "zscored") {
     control_svg
       .append("g")
       .classed("panel_button_titles", true)
       .classed("normalize_button_title", true)
       .on("click", function () {
-        let params = cgm.params;
+        const params = cgm.params;
         if (params.norm.zscore_status === "non-zscored") {
           params.norm.zscore_status = "zscored";
           d3.select(this).select("text").text("z-scored".toUpperCase());
@@ -290,8 +292,8 @@ export default (function build_recluster_section(cgm) {
         draw_webgl_layers(cgm);
       })
       .attr("transform", function () {
-        var x_offset = 290 + cracker_room;
-        var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+        const x_offset = 290 + cracker_room;
+        const y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return "translate( " + x_offset + ", " + y_trans + ")";
       })
       .attr("opacity", 1.0)

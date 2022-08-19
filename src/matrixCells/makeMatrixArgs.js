@@ -1,9 +1,9 @@
-import make_opacity_arr from "./makeOpacityArr.js";
-import make_position_arr from "./makePositionArr.js";
+import make_opacity_arr from "./makeOpacityArr";
+import make_position_arr from "./makePositionArr";
 
 export default function make_matrix_args(cgm) {
-  let regl = cgm.regl;
-  let params = cgm.params;
+  const regl = cgm.regl;
+  const params = cgm.params;
   // make arrays
   params.arrs = {};
   params.arrs.opacity_arr = make_opacity_arr(params);
@@ -18,13 +18,13 @@ export default function make_matrix_args(cgm) {
     params.order.new.row,
     params.order.new.col
   );
-  var opacity_buffer = regl.buffer({
+  const opacity_buffer = regl.buffer({
     type: "float",
     usage: "dynamic",
   })(params.arrs.opacity_arr);
-  var tile_width = params.viz_dim.tile_width;
-  var tile_height = params.viz_dim.tile_height;
-  var triangle_verts = [
+  const tile_width = params.viz_dim.tile_width;
+  const tile_height = params.viz_dim.tile_height;
+  const triangle_verts = [
     [tile_width, 0.0],
     [tile_width, tile_height],
     [0.0, tile_height],
@@ -32,7 +32,7 @@ export default function make_matrix_args(cgm) {
     [0.0, 0.0],
     [0.0, tile_height],
   ];
-  var vert_string = `
+  const vert_string = `
     // precision highp float;
     precision lowp float;
     attribute vec2 position;
@@ -66,7 +66,7 @@ export default function make_matrix_args(cgm) {
       opacity_vary = opacity_att;
 
     }`;
-  var frag_string = `
+  const frag_string = `
     // precision highp float;
     precision lowp float;
 
@@ -87,9 +87,9 @@ export default function make_matrix_args(cgm) {
       }
 
     }`;
-  var num_instances = params.arrs.position_arr.ini.length;
-  var zoom_function = params.zoom_data.zoom_function;
-  var inst_properties = {
+  const num_instances = params.arrs.position_arr.ini.length;
+  const zoom_function = params.zoom_data.zoom_function;
+  const inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
@@ -135,8 +135,8 @@ export default function make_matrix_args(cgm) {
     },
   };
   // draw top and bottom of matrix cells
-  //////////////////////////////////////
-  var matrix_args = {};
+  // ////////////////////////////////////
+  const matrix_args = {};
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
   params.matrix_args = matrix_args;

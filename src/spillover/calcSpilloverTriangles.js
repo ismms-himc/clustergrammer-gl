@@ -1,19 +1,19 @@
 export default (function calc_spillover_triangles(params) {
-  var viz_dim = params.viz_dim;
-  var ofc = viz_dim.offcenter;
-  var ini_mat = viz_dim.mat_size;
-  var ini_heat = viz_dim.heat_size;
-  var height_to_width = viz_dim.canvas.height / viz_dim.canvas.width;
-  var scaled_mat = {};
+  const viz_dim = params.viz_dim;
+  const ofc = viz_dim.offcenter;
+  const ini_mat = viz_dim.mat_size;
+  const ini_heat = viz_dim.heat_size;
+  const height_to_width = viz_dim.canvas.height / viz_dim.canvas.width;
+  const scaled_mat = {};
   scaled_mat.x = ini_mat.x / height_to_width;
   scaled_mat.y = ini_mat.y / height_to_width;
-  var scaled_heat = {};
+  const scaled_heat = {};
   scaled_heat.x = ini_heat.x / height_to_width;
   scaled_heat.y = ini_heat.y / height_to_width;
-  var spillover_triangles = {};
-  var dendro_trap = params.dendro.trap_height + params.dendro.trap_float;
+  const spillover_triangles = {};
+  const dendro_trap = params.dendro.trap_height + params.dendro.trap_float;
   // trying to shift based on diff between mat and heat size
-  var inst_shift = {};
+  const inst_shift = {};
   inst_shift.x = viz_dim.mat_size.x - viz_dim.heat_size.x;
   inst_shift.y = viz_dim.mat_size.y - viz_dim.heat_size.y;
   spillover_triangles.mat_sides = [

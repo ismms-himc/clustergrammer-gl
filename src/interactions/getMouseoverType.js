@@ -2,8 +2,8 @@ export default (function get_mouseover_type(params) {
   // switch to using absolute cursor position to determine mouseover type
   // emperically found pixel parameters
   // cats are ~12px wide
-  var cat_width = 12;
-  var edim = {};
+  const cat_width = 12;
+  const edim = {};
   edim.x = {};
   edim.x.heat_min = 125 + cat_width * params.cat_data.row.length;
   edim.x.dendro_start = 845;
@@ -13,10 +13,10 @@ export default (function get_mouseover_type(params) {
   edim.y.heat_min = 126 + cat_width * params.cat_data.col.length;
   edim.y.dendro_start = 845;
   edim.y.dendro_end = 860;
-  var inst_pix = {};
+  const inst_pix = {};
   inst_pix.x = params.zoom_data.x.cursor_position;
   inst_pix.y = params.zoom_data.y.cursor_position;
-  var cat_index;
+  let cat_index;
   params.tooltip.in_bounds_tooltip = false;
   params.tooltip.tooltip_type = "out-of-bounds";
   if (

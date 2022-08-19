@@ -1,4 +1,4 @@
-import binom_test from "./binomTest.js";
+import binom_test from "./binomTest";
 export default (function calc_cat_cluster_breakdown(
   params,
   inst_data,
@@ -10,13 +10,13 @@ export default (function calc_cat_cluster_breakdown(
   }
   // 1: get information for nodes in cluster
   // names of nodes in cluster
-  var clust_names = inst_data.all_names;
+  const clust_names = inst_data.all_names;
   params.dendro.selected_clust_names = clust_names;
-  var clust_nodes = [];
-  var all_nodes = params.network[inst_rc + "_nodes"];
-  var num_in_clust_index = null;
-  var is_downsampled = false;
-  var i_name;
+  const clust_nodes = [];
+  const all_nodes = params.network[inst_rc + "_nodes"];
+  let num_in_clust_index = null;
+  let is_downsampled = false;
+  let i_name;
   _.each(all_nodes, function (i_node) {
     i_name = i_node.name;
     if (i_name.indexOf(": ") >= 0) {
@@ -27,19 +27,19 @@ export default (function calc_cat_cluster_breakdown(
     }
   });
   // 2: find category-types that are string-type: cat_breakdown
-  var c_bd = [];
+  const c_bd = [];
   if (params.viz.cat_info[inst_rc] !== null) {
-    var i_cat_info = params.viz.cat_info[inst_rc];
+    const i_cat_info = params.viz.cat_info[inst_rc];
     // tmp list of all categories
-    var tmp_types_index = _.keys(i_cat_info);
+    const tmp_types_index = _.keys(i_cat_info);
     // this will hold the indexes of string-type categories
-    var cat_types_index = [];
+    const cat_types_index = [];
     // get category names (only include string-type categories)
-    var cat_types_names = [];
-    var type_name;
-    var i_index;
-    var cat_index;
-    for (var i = 0; i < tmp_types_index.length; i++) {
+    const cat_types_names = [];
+    let type_name;
+    let i_index;
+    let cat_index;
+    for (let i = 0; i < tmp_types_index.length; i++) {
       cat_index = "cat-" + String(i);
       if (params.viz.cat_info[inst_rc][cat_index].type === "cat_strings") {
         type_name = params.viz.cat_names[inst_rc][cat_index];
@@ -53,16 +53,16 @@ export default (function calc_cat_cluster_breakdown(
         }
       }
     }
-    var t_run_count = {};
-    var i_bd = {};
-    var bar_data;
-    var radix_param = 10;
+    const t_run_count = {};
+    let i_bd = {};
+    let bar_data;
+    const radix_param = 10;
     // sort by actual counts (rather than cluster counts)
-    var sorting_index = 4;
+    let sorting_index = 4;
     if (is_downsampled) {
       sorting_index = 5;
     }
-    var no_title_given;
+    let no_title_given;
     if (type_name === cat_index) {
       no_title_given = true;
     } else {
@@ -70,14 +70,14 @@ export default (function calc_cat_cluster_breakdown(
     }
     if (cat_types_names.length > 0) {
       // 3: count instances of each category name for each category-type
-      var cat_name;
-      var num_in_clust = clust_names.length;
+      let cat_name;
+      const num_in_clust = clust_names.length;
       _.each(cat_types_index, function (tmp_cat_index) {
         i_index = tmp_cat_index.split("-")[1];
         type_name = cat_types_names[i_index];
         if (no_title_given) {
           if (tmp_cat_index.indexOf("-") >= 0) {
-            var tmp_num =
+            const tmp_num =
               parseInt(tmp_cat_index.split("-")[1], radix_param) + 1;
             type_name = "Category " + String(tmp_num);
           } else {
@@ -119,14 +119,17 @@ export default (function calc_cat_cluster_breakdown(
         i_bd.num_in_clust = num_in_clust;
         // sort cat info in c_bd
         bar_data = [];
-        var bar_color;
-        var cat_title_and_name;
-        var i_run_count = t_run_count[type_name];
-        for (var i_cat in i_run_count) {
-          var tot_num_cat =
+        let bar_color;
+        let cat_title_and_name;
+        const i_run_count = t_run_count[type_name];
+
+        // TODO: fix
+        // eslint-disable-next-line guard-for-in
+        for (const i_cat in i_run_count) {
+          const tot_num_cat =
             params.viz.cat_info[inst_rc][tmp_cat_index].cat_hist[i_cat];
-          var total_nodes = params.network[inst_rc + "_nodes"].length;
-          var expect_prob = tot_num_cat / total_nodes;
+          const total_nodes = params.network[inst_rc + "_nodes"].length;
+          const expect_prob = tot_num_cat / total_nodes;
           // if no cat-title given
           if (no_title_given) {
             cat_title_and_name = i_cat;
@@ -134,13 +137,14 @@ export default (function calc_cat_cluster_breakdown(
             cat_title_and_name = type_name + ": " + i_cat;
           }
           // num_nodes: number of cat-nodes drawn in cluster
-          var num_nodes = i_run_count[i_cat].num_nodes;
-          var actual_k = num_nodes;
-          var pval = binom_test(actual_k, num_in_clust, expect_prob);
+          const num_nodes = i_run_count[i_cat].num_nodes;
+          const actual_k = num_nodes;
+          const pval = binom_test(actual_k, num_in_clust, expect_prob);
           // working on tracking the 'real' number of nodes, which is only different
           // if downsampling has been done
+          let num_nodes_ds;
           if (_.has(i_run_count[i_cat], "num_nodes_ds")) {
-            var num_nodes_ds = i_run_count[i_cat].num_nodes_ds;
+            num_nodes_ds = i_run_count[i_cat].num_nodes_ds;
           } else {
             num_nodes_ds = null;
           }

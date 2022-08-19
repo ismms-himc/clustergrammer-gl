@@ -18,11 +18,8 @@ import recluster from "./recluster/recluster";
 import initialize_tooltip from "./tooltip/initializeD3Tip";
 import zoom_rules_high_mat from "./zoom/zoomRulesHighMat";
 
-/**
- * @type function
- */
 function clustergrammer_gl(args, external_model = null) {
-  var cgm = {};
+  let cgm = {};
   // check if container is defined
   if (args.container !== null) {
     cgm.args = args;
@@ -67,18 +64,18 @@ function clustergrammer_gl(args, external_model = null) {
     // misinterpreting as keyboard shortcuts
     if (cgm.params.is_widget) {
       // tooltip input box
-      let tooltip_id = cgm.params.tooltip_id.replace("#", "");
+      const tooltip_id = cgm.params.tooltip_id.replace("#", "");
       Jupyter.keyboard_manager.register_events(
         document.getElementById(tooltip_id)
       );
       // control panel search box
-      let root_id = cgm.params.root.replace("#", "");
+      const root_id = cgm.params.root.replace("#", "");
       Jupyter.keyboard_manager.register_events(
         document.getElementById(root_id)
       );
     }
     function adjust_opacity(cgm, opacity_scale) {
-      let params = cgm.params;
+      const params = cgm.params;
       params.matrix.opacity_scale = opacity_scale;
       cgm.make_matrix_args(cgm);
       draw_webgl_layers(cgm);

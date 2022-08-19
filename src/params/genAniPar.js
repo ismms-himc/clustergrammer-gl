@@ -1,5 +1,5 @@
 export default (function gen_ani_par(params) {
-  var ani = {};
+  const ani = {};
   ani.time_remain = 0;
   ani.running = false;
   ani.run_animation = false;

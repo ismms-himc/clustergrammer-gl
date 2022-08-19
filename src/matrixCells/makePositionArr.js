@@ -3,13 +3,13 @@ export default (function make_position_arr(
   inst_row_order,
   inst_col_order
 ) {
-  var num_row = params.labels.num_row;
-  var num_col = params.labels.num_col;
-  var canvas_pos = params.node_canvas_pos;
-  var row_nodes = params.network.row_nodes;
-  var col_nodes = params.network.col_nodes;
-  var row_pos;
-  var col_pos;
+  const num_row = params.labels.num_row;
+  const num_col = params.labels.num_col;
+  const canvas_pos = params.node_canvas_pos;
+  const row_nodes = params.network.row_nodes;
+  const col_nodes = params.network.col_nodes;
+  let row_pos;
+  let col_pos;
   function position_function(d, i) {
     row_pos =
       canvas_pos.y_arr[
@@ -20,7 +20,7 @@ export default (function make_position_arr(
     return [col_pos, row_pos];
   }
   // generate new array with position elements
-  var pos_arr = Array(num_row * num_col)
+  const pos_arr = Array(num_row * num_col)
     .fill()
     .map(position_function);
   return pos_arr;

@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import * as axios from "axios";
 export default (function hzome_functions(params) {
   function get_request(ini_gene_symbol) {
-    var gene_symbol;
+    let gene_symbol;
     if (ini_gene_symbol.indexOf(" ") > 0) {
       gene_symbol = ini_gene_symbol.split(" ")[0];
     } else if (ini_gene_symbol.indexOf("_") > 0) {
@@ -10,8 +10,8 @@ export default (function hzome_functions(params) {
     } else {
       gene_symbol = ini_gene_symbol;
     }
-    var base_url = "https://amp.pharm.mssm.edu/Harmonizome/api/1.0/gene/";
-    var url = base_url + gene_symbol;
+    const base_url = "https://amp.pharm.mssm.edu/Harmonizome/api/1.0/gene/";
+    const url = base_url + gene_symbol;
     // // get request using Jquery
     // $.get(url, function(data) {
     //   data = JSON.parse(data);
@@ -40,26 +40,26 @@ export default (function hzome_functions(params) {
     if (data.name != undefined) {
       // assign html
       d3.select(params.tooltip_id).html(function () {
-        var sym_name = gene_symbol + ": " + data.name;
-        var full_html =
+        const sym_name = gene_symbol + ": " + data.name;
+        const full_html =
           "<p>" + sym_name + "</p> <p>" + data.description + "</p>";
         return full_html;
       });
-      //set width
+      // set width
       d3.select(params.tooltip_id).selectAll("p").style("width", "500px");
     }
   }
   function gene_info(gene_symbol) {
     // var gene_symbol = gene_info.name;
     if (_.has(params.hzome.gene_data, gene_symbol)) {
-      var inst_data = params.hzome.gene_data[gene_symbol];
+      const inst_data = params.hzome.gene_data[gene_symbol];
       set_tooltip(inst_data, gene_symbol);
     } else {
       // setTimeout(get_request, 250, gene_symbol);
       get_request(gene_symbol);
     }
   }
-  var hzome = {};
+  const hzome = {};
   hzome.gene_info = gene_info;
   hzome.gene_data = {};
   hzome.get_request = get_request;

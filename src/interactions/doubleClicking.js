@@ -1,4 +1,4 @@
-import custom_label_reorder from "../reorders/customLabelReorder.js";
+import custom_label_reorder from "../reorders/customLabelReorder";
 export default (function double_clicking(regl, params) {
   // params.tooltip.tooltip_type
   if (params.tooltip.tooltip_type === "col-label") {

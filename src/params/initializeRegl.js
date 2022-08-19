@@ -1,10 +1,12 @@
 import _regl from "regl";
 
-export default function initialize_regl() {
-  var canvas_container = this.canvas_container;
-  var regl = _regl({
+export default function initialize_regl(cgm) {
+  const canvas_container = cgm.canvas_container;
+  const regl = _regl({
     extensions: ["angle_instanced_arrays"],
     container: canvas_container,
   });
-  return regl;
+
+  cgm.regl = regl;
+  return cgm;
 }

@@ -1,5 +1,5 @@
 export default (function generate_tooltip_params(regl, params) {
-  var tooltip = {};
+  const tooltip = {};
   tooltip.show_tooltip = false;
   tooltip.in_bounds_tooltip = false;
   tooltip.background_opacity = 0.75;

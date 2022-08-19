@@ -4,11 +4,11 @@ export default (function make_cat_position_array(
   cat_index,
   inst_order
 ) {
-  var num_labels = params.labels["num_" + inst_axis];
+  const num_labels = params.labels["num_" + inst_axis];
   // category tiles have fixed heights
   // category widths depend on the number of labels
-  var cat_width;
-  var mat_size;
+  let cat_width;
+  let mat_size;
   if (inst_axis === "col") {
     mat_size = params.viz_dim.heat_size.x;
     cat_width = mat_size / 0.5 / num_labels;
@@ -16,18 +16,18 @@ export default (function make_cat_position_array(
     mat_size = params.viz_dim.heat_size.y;
     cat_width = params.viz_dim.heat_size.y / 0.5 / num_labels;
   }
-  /////////////////////////////////
+  // ///////////////////////////////
   // Cat Offset Buffer
-  /////////////////////////////////
+  // ///////////////////////////////
   // row width is required to place the triangles on the 'top' of the matrix and
   // not to overlap with the matrix
   // vertical shift
-  var y_offset_array = [];
-  var i;
+  const y_offset_array = [];
+  let i;
   for (i = 0; i < num_labels; i++) {
     // emperically found rules
-    var order_id;
-    var shift_mat_heat;
+    let order_id;
+    let shift_mat_heat;
     if (inst_axis == "row") {
       order_id =
         num_labels - params.network[inst_axis + "_nodes"][i][inst_order] - 1;

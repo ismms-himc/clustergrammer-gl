@@ -1,13 +1,13 @@
-import average from "./average.js";
-import average_n_minus_1 from "./averageNMinus1.js";
+import average from "./average";
+import average_n_minus_1 from "./averageNMinus1";
 export default (function standard_deviation(data) {
-  var avg = average(data);
-  var squareDiffs = data.map(function (value) {
-    var diff = value - avg;
-    var sqrDiff = diff * diff;
+  const avg = average(data);
+  const squareDiffs = data.map(function (value) {
+    const diff = value - avg;
+    const sqrDiff = diff * diff;
     return sqrDiff;
   });
-  var avgSquareDiff = average_n_minus_1(squareDiffs);
-  var stdDev = Math.sqrt(avgSquareDiff);
+  const avgSquareDiff = average_n_minus_1(squareDiffs);
+  const stdDev = Math.sqrt(avgSquareDiff);
   return stdDev;
 });

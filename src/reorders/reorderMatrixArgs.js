@@ -1,4 +1,4 @@
-import make_position_arr from "../matrixCells/makePositionArr.js";
+import make_position_arr from "../matrixCells/makePositionArr";
 export default (function reorder_matrix_args(regl, params) {
   // calculate new ordering
   params.arrs.position_arr.new = make_position_arr(

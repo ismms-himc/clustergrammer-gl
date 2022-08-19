@@ -1,13 +1,14 @@
-import make_full_name from "./makeFullName.js";
+import make_full_name from "./makeFullName";
 export default (function make_matrix_string(params) {
-  let delimiter = params.download.delimiter_key[params.download.delimiter_name];
+  const delimiter =
+    params.download.delimiter_key[params.download.delimiter_name];
   // get order indexes
-  var order_indexes = {};
+  const order_indexes = {};
   // write first matrix row (e.g. column names)
-  ////////////////////////////////////////////////
-  var matrix_string = delimiter;
-  var row_nodes = params.network.row_nodes;
-  var col_nodes = params.network.col_nodes;
+  // //////////////////////////////////////////////
+  let matrix_string = delimiter;
+  const row_nodes = params.network.row_nodes;
+  const col_nodes = params.network.col_nodes;
   order_indexes.row = row_nodes;
   order_indexes.col = col_nodes;
   // alternate column entry
@@ -27,10 +28,10 @@ export default (function make_matrix_string(params) {
       matrix_string = matrix_string + col_name;
     }
   });
-  var row_data;
+  let row_data;
   let row_name;
   // write matrix rows
-  ////////////////////////
+  // //////////////////////
   params.norm.zscore_status;
   if (params.norm.zscore_status === "non-zscored" && "mat_data_iz" in params) {
     inst_mat_data = params.mat_data_iz;

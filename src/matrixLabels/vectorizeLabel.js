@@ -1,7 +1,8 @@
 import vectorize_text from "vectorize-text";
-import drop_label_from_queue from "./dropLabelFromQueue.js";
-export default (function vectorize_label(params, inst_axis, inst_name) {
-  var vect_text_attrs = {
+import drop_label_from_queue from "./dropLabelFromQueue";
+
+export default function vectorize_label(params, inst_axis, inst_name) {
+  const vect_text_attrs = {
     textAlign: "left",
     triangles: true,
     size: params.labels.font_detail,
@@ -20,4 +21,4 @@ export default (function vectorize_label(params, inst_axis, inst_name) {
     inst_name
   );
   return vectorize_text(inst_name, vect_text_attrs);
-});
+}

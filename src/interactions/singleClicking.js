@@ -1,5 +1,5 @@
-import run_hide_tooltip from "../tooltip/runHideTooltip.js";
-import runShowTooltip from "../tooltip/runShowTooltip.js";
+import run_hide_tooltip from "../tooltip/runHideTooltip";
+import runShowTooltip from "../tooltip/runShowTooltip";
 
 export default function single_clicking(cgm, params, external_model) {
   params.ani.last_click = params.ani.time;

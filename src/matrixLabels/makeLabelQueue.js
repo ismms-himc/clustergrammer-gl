@@ -3,13 +3,13 @@ export default (function make_label_queue(params) {
   params.labels.queue.low = {};
   params.labels.queue.high = {};
   params.labels.max_label_queue = 2000;
-  var inst_queue;
+  let inst_queue;
   _.each(["row", "col"], function (inst_axis) {
     // the high priority queue is empty initially
     params.labels.queue.high[inst_axis] = [];
     // the low priority queue
     inst_queue = [];
-    var inst_labels = params.labels.ordered_labels[inst_axis + "s"];
+    const inst_labels = params.labels.ordered_labels[inst_axis + "s"];
     _.each(inst_labels, function (inst_label) {
       if (inst_label.indexOf(": ") >= 0) {
         inst_label = inst_label.split(": ")[1];

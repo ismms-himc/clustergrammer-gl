@@ -1,7 +1,7 @@
 export default (function average(data) {
-  var sum = data.reduce(function (sum, value) {
+  const sum = data.reduce(function (sum, value) {
     return sum + value;
   }, 0);
-  var avg = sum / data.length;
+  const avg = sum / data.length;
   return avg;
 });

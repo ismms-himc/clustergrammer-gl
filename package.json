@@ -43,6 +43,7 @@
     "browser-sync-webpack-plugin": "^2.3.0",
     "buffer": "^6.0.3",
     "eslint": "^8.22.0",
+    "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.2.4",

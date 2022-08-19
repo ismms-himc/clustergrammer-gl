@@ -1,5 +1,5 @@
 export const normal_name = function (d) {
-  var inst_name = d.name.replace(/_/g, " ").split("#")[0];
+  const inst_name = d.name.replace(/_/g, " ").split("#")[0];
   return inst_name;
 };
 export const is_supported_order = function (order) {
@@ -34,7 +34,7 @@ const moduleExports = {
    */
   extend: function (target, source) {
     target = target || {};
-    for (var prop in source) {
+    for (const prop in source) {
       if (typeof source[prop] === "object") {
         target[prop] = this.extend(target[prop], source[prop]);
       } else {

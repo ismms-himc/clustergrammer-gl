@@ -1,19 +1,20 @@
+/* eslint-disable no-invalid-this */
 import * as d3 from "d3";
 import d3Tip from "d3-tip";
-import buildReorderCatTitles from "../cats/buildReorderCatTitles.js";
-import build_opacity_slider from "../colors/buildOpacitySlider.js";
-import download_matrix from "../download/downloadMatrix.js";
-import download_metadata from "../download/downloadMetadata.js";
-import draw_webgl_layers from "../draws/drawWebglLayers.js";
-import runReorder from "../reorders/runReorder.js";
-import initializeD3Tip from "../tooltip/initializeD3Tip.js";
-import buildReclusterSection from "./buildReclusterSection.js";
+import buildReorderCatTitles from "../cats/buildReorderCatTitles";
+import build_opacity_slider from "../colors/buildOpacitySlider";
+import download_matrix from "../download/downloadMatrix";
+import download_metadata from "../download/downloadMetadata";
+import draw_webgl_layers from "../draws/drawWebglLayers";
+import runReorder from "../reorders/runReorder";
+import initializeD3Tip from "../tooltip/initializeD3Tip";
+import buildReclusterSection from "./buildReclusterSection";
 
 export default function build_control_panel(cgm) {
-  var regl = cgm.regl;
-  var params = cgm.params;
+  const regl = cgm.regl;
+  const params = cgm.params;
   params.tooltip_id = "#d3-tip_" + params.root.replace("#", "");
-  var tooltip = d3Tip
+  const tooltip = d3Tip
     .default()
     .attr("id", params.tooltip_id.replace("#", ""))
     .attr("class", "cgm-tooltip")
@@ -22,14 +23,14 @@ export default function build_control_panel(cgm) {
       return "";
     });
   params.tooltip_fun = tooltip;
-  var control_container = d3.select(params.root + " .control-container")
+  const control_container = d3.select(params.root + " .control-container")
     ._groups[0][0];
-  var i_height = 135;
-  var i_width = params.viz_width;
-  var control_panel_color = "white";
-  var text_color = "#47515b";
-  var button_color = "#eee";
-  var control_svg = d3
+  const i_height = 135;
+  const i_width = params.viz_width;
+  const control_panel_color = "white";
+  const text_color = "#47515b";
+  const button_color = "#eee";
+  const control_svg = d3
     .select(control_container)
     .attr("height", i_height + "px")
     .attr("width", i_width + "px")
@@ -50,7 +51,7 @@ export default function build_control_panel(cgm) {
     .call(tooltip);
   initializeD3Tip(params);
   // tooltip style
-  //////////////////////////
+  // ////////////////////////
   d3.select(params.tooltip_id)
     .style("line-height", 1.5)
     .style("font-weight", "bold")
@@ -65,7 +66,7 @@ export default function build_control_panel(cgm) {
     .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style("font-size", "12px");
   // control panel border
-  var border_height = 1;
+  const border_height = 1;
   control_svg
     .append("rect")
     .classed("north_border", true)
@@ -75,19 +76,19 @@ export default function build_control_panel(cgm) {
     .attr("stroke", "#eee")
     .attr("stroke-width", 3)
     .attr("transform", function () {
-      var y_trans = i_height - border_height;
+      const y_trans = i_height - border_height;
       return "translate( 0, " + y_trans + ")";
     });
-  var button_dim = {};
+  const button_dim = {};
   button_dim.height = 32;
   button_dim.width = 63;
   button_dim.buffer = 12;
   button_dim.x_trans = button_dim.width + button_dim.buffer;
   button_dim.fs = 11;
-  var button_groups = {};
+  const button_groups = {};
   button_groups.row = {};
   button_groups.col = {};
-  var cracker_room = 60;
+  const cracker_room = 60;
   control_svg
     .append("svg:a")
     .append("svg:image")
@@ -106,10 +107,10 @@ export default function build_control_panel(cgm) {
         "_blank" // <- This is what makes it open in a new window.
       );
     });
-  var shift_x_order_buttons = 65 + cracker_room;
+  const shift_x_order_buttons = 65 + cracker_room;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
-  var y_offset_buttons = 47;
+  const y_offset_buttons = 47;
   button_groups.col.y_trans = y_offset_buttons;
   button_groups.row.y_trans =
     button_groups.col.y_trans + button_dim.height + button_dim.buffer;
@@ -154,12 +155,12 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = 110 + cracker_room;
-      var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+      const x_offset = 110 + cracker_room;
+      const y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   // dropped alpha, will probably replace with ini
-  var order_options = ["clust", "sum", "var", "ini"];
+  const order_options = ["clust", "sum", "var", "ini"];
   control_svg
     .append("rect")
     .attr("height", "1px")
@@ -168,23 +169,24 @@ export default function build_control_panel(cgm) {
     .attr("stroke", "#eee")
     .attr("stroke-width", 2)
     .attr("transform", function () {
-      var x_offset = button_dim.x_trans - button_dim.buffer + 1 + cracker_room;
-      var y_trans = y_offset_buttons - button_dim.buffer + 2;
+      const x_offset =
+        button_dim.x_trans - button_dim.buffer + 1 + cracker_room;
+      const y_trans = y_offset_buttons - button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-  let name_dict = {};
+  const name_dict = {};
   name_dict["col"] = "top";
   name_dict["row"] = "bottom";
   _.each(["row", "col"], function (i_axis) {
-    var axis_title = control_svg
+    const axis_title = control_svg
       .append("g")
       .classed(name_dict[i_axis] + "_button_title_container", true)
       .attr("transform", function () {
-        var x_offset = 0;
-        var y_offset = button_groups[i_axis].y_trans;
+        const x_offset = 0;
+        const y_offset = button_groups[i_axis].y_trans;
         return "translate(" + x_offset + ", " + y_offset + ")";
       });
-    var axis_title_offset = 35 + cracker_room;
+    const axis_title_offset = 35 + cracker_room;
     axis_title
       .append("text")
       .classed(name_dict[i_axis] + "_button_title", true)
@@ -202,24 +204,24 @@ export default function build_control_panel(cgm) {
         "transform",
         "translate(" + axis_title_offset + ", " + button_dim.height / 2 + ")"
       );
-    var reorder_buttons = control_svg.append("g");
+    const reorder_buttons = control_svg.append("g");
     reorder_buttons.classed(i_axis + "-reorder-buttons", true);
-    var active_button_color = "#8797ff"; // '#0000FF75';
+    const active_button_color = "#8797ff"; // '#0000FF75';
     // generate reorder buttons
-    var button_group = reorder_buttons
+    const button_group = reorder_buttons
       .selectAll("g")
       .data(order_options)
       .enter()
       .append("g")
       .classed("reorder_buttons", true)
       .attr("transform", function (d, i) {
-        var x_offset = button_dim.x_trans * i + button_groups[i_axis].x_trans;
+        const x_offset = button_dim.x_trans * i + button_groups[i_axis].x_trans;
         return (
           "translate(" + x_offset + ", " + button_groups[i_axis].y_trans + ")"
         );
       })
       .on("click", function (d) {
-        var clean_order = d.replace("sum", "rank").replace("var", "rankvar");
+        const clean_order = d.replace("sum", "rank").replace("var", "rankvar");
         if (params.order.inst[i_axis] != clean_order) {
           /* category order is already calculated */
           runReorder(regl, params, i_axis, d);
@@ -237,7 +239,7 @@ export default function build_control_panel(cgm) {
       .attr("rx", 10)
       .attr("ry", 10)
       .attr("stroke", function (d) {
-        var i_color;
+        let i_color;
         if (params.order.inst[i_axis] == d) {
           i_color = active_button_color;
         } else {
@@ -269,8 +271,8 @@ export default function build_control_panel(cgm) {
   buildReorderCatTitles(regl, cgm);
   buildReclusterSection(cgm);
   // row search
-  ///////////////////
-  var search_container = d3
+  // /////////////////
+  const search_container = d3
     .select(params.root + " .control-container")
     .append("div")
     .classed("row_search_container", true)
@@ -280,7 +282,7 @@ export default function build_control_panel(cgm) {
     .style("margin-top", "10px")
     .style("top", "37px")
     .style("left", "440px");
-  let root_id = cgm.params.root.replace("#", "");
+  const root_id = cgm.params.root.replace("#", "");
   search_container
     .append("input")
     .classed("form-control", true)
@@ -294,7 +296,7 @@ export default function build_control_panel(cgm) {
     .style("margin-top", "5px")
     .style("display", "inline-block")
     .style("padding", "1pt 2pt");
-  let row_names = params.network.row_node_names;
+  const row_names = params.network.row_node_names;
   search_container
     .append("datalist")
     .attr("id", "row_names_" + root_id)
@@ -322,14 +324,14 @@ export default function build_control_panel(cgm) {
     .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style("font-weight", 400)
     .on("click", () => {
-      let inst_value = d3
+      const inst_value = d3
         .select(params.root + " .control-container .row_search_box")
         .node().value;
       params.search.searched_rows = inst_value.split(", ");
       draw_webgl_layers(cgm);
     });
   // opacity slider
-  ////////////////////////////
+  // //////////////////////////
   build_opacity_slider(cgm);
   // download buttons
   control_svg
@@ -345,8 +347,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 715;
-      var y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
+      const x_offset = cracker_room + 715;
+      const y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   // download section border
@@ -359,8 +361,8 @@ export default function build_control_panel(cgm) {
     .attr("stroke", "#eee")
     .attr("stroke-width", 2)
     .attr("transform", function () {
-      var x_offset = cracker_room + 645;
-      var y_trans = y_offset_buttons - button_dim.buffer + 2;
+      const x_offset = cracker_room + 645;
+      const y_trans = y_offset_buttons - button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   control_svg
@@ -382,8 +384,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 610 + 55;
-      var y_trans = 63;
+      const x_offset = cracker_room + 610 + 55;
+      const y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   control_svg
@@ -405,8 +407,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 610 + 55 + 40;
-      var y_trans = 63;
+      const x_offset = cracker_room + 610 + 55 + 40;
+      const y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   control_svg
@@ -428,8 +430,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 610 + 55 + 90;
-      var y_trans = 63;
+      const x_offset = cracker_room + 610 + 55 + 90;
+      const y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   control_svg
@@ -445,8 +447,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 615;
-      var y_trans = 63;
+      const x_offset = cracker_room + 615;
+      const y_trans = 63;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   control_svg
@@ -462,8 +464,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 615;
-      var y_trans = 107;
+      const x_offset = cracker_room + 615;
+      const y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   control_svg
@@ -485,8 +487,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 610 + 55;
-      var y_trans = 107;
+      const x_offset = cracker_room + 610 + 55;
+      const y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
   control_svg
@@ -508,8 +510,8 @@ export default function build_control_panel(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", function () {
-      var x_offset = cracker_room + 610 + 55 + 40;
-      var y_trans = 107;
+      const x_offset = cracker_room + 610 + 55 + 40;
+      const y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
 }

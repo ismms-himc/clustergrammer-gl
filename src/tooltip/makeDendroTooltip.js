@@ -1,11 +1,11 @@
 import * as d3 from "d3";
-import make_cat_breakdown_graph from "../cats/makeCatBreakdownGraph.js";
-import calc_cat_cluster_breakdown from "../cats/calcCatClusterBreakdown.js";
-import run_hide_tooltip from "./runHideTooltip.js";
-import manual_category_from_dendro from "./manualCategoryFromDendro.js";
+import calc_cat_cluster_breakdown from "../cats/calcCatClusterBreakdown";
+import make_cat_breakdown_graph from "../cats/makeCatBreakdownGraph";
+import manual_category_from_dendro from "./manualCategoryFromDendro";
+import run_hide_tooltip from "./runHideTooltip";
 export default (function make_dendro_tooltip(cgm, external_model, inst_axis) {
-  var params = cgm.params;
-  var mouseover = params.int.mouseover;
+  const params = cgm.params;
+  const mouseover = params.int.mouseover;
   params.tooltip_fun.show("tooltip");
   d3.select(params.tooltip_id)
     .append("div")
@@ -19,7 +19,7 @@ export default (function make_dendro_tooltip(cgm, external_model, inst_axis) {
     .append("text")
     .text("x")
     .style("font-size", "15px");
-  var cat_breakdown = calc_cat_cluster_breakdown(
+  const cat_breakdown = calc_cat_cluster_breakdown(
     params,
     mouseover[inst_axis].dendro,
     inst_axis
@@ -57,8 +57,8 @@ export default (function make_dendro_tooltip(cgm, external_model, inst_axis) {
     }
     return label_string;
   }
-  let selected_color = "#0198E1";
-  let format_options = ["list", "csv", "tsv"];
+  const selected_color = "#0198E1";
+  const format_options = ["list", "csv", "tsv"];
   selected_label_container
     .selectAll("text")
     .data(format_options)

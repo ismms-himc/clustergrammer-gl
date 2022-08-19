@@ -1,5 +1,5 @@
 export default (function gen_int_par(params) {
-  var interact = {};
+  const interact = {};
   interact.total = 0;
   interact.still_interacting = false;
   interact.still_mouseover = false;

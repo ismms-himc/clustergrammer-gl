@@ -1,7 +1,7 @@
-import genOrderedLabels from "../matrixLabels/genOrderedLabels.js";
+import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 export default (function gen_label_par(cgm) {
-  let params = cgm.params;
-  var labels = {};
+  const params = cgm.params;
+  const labels = {};
   labels.num_row = params.mat_data.length;
   labels.num_col = params.mat_data[0].length;
   labels.offset_dict = {};
@@ -10,7 +10,7 @@ export default (function gen_label_par(cgm) {
   // usable range: 14-30 (was using 25)
   labels.font_detail = 40;
   // generate titles if necessary
-  var inst_label;
+  let inst_label;
   labels.titles = {};
   labels.precalc = {};
   _.each(["row", "col"], function (inst_axis) {

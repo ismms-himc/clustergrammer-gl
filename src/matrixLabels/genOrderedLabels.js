@@ -1,12 +1,12 @@
-export default (function gen_ordered_labels(cgm) {
+export default function gen_ordered_labels(cgm) {
   // Generate lists of ordered label and category names for mouseover
-  let params = cgm.params;
+  const params = cgm.params;
   // debugger;
-  var i_order;
-  var ordered_labels = {};
-  var axis_nodes;
-  var i;
-  var found_axis_cat;
+  let i_order;
+  const ordered_labels = {};
+  let axis_nodes;
+  let i;
+  let found_axis_cat;
   _.each(["row", "col"], function (i_axis) {
     ordered_labels[i_axis + "s"] = [];
     ordered_labels[i_axis + "_indices"] = [];
@@ -37,4 +37,4 @@ export default (function gen_ordered_labels(cgm) {
     });
   });
   params.labels.ordered_labels = ordered_labels;
-});
+}

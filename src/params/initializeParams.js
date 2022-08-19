@@ -1,42 +1,42 @@
 import * as d3 from "d3";
-import iniZoomData from "zoom/iniZoomData.js";
-import iniZoomRestrict from "zoom/iniZoomRestrict.js";
-import makeCameras from "../cameras/makeCameras.js";
-import color_to_rgba from "../colors/colorToRgba.js";
-import make_matrix_args from "../matrixCells/makeMatrixArgs.js";
-import calcTextOffsets from "../matrixLabels/calcTextOffsets.js";
-import makeLabelQueue from "../matrixLabels/makeLabelQueue.js";
-import hzome_functions from "../tooltip/hzomeFunctions.js";
-import calcAlphaOrder from "./calcAlphaOrder.js";
-import calcMatArr from "./calcMatArr.js";
-import calcRowAndColCanvasPositions from "./calcRowAndColCanvasPositions.js";
-import calcVizArea from "./calcVizArea.js";
-import calcVizDim from "./calcVizDim.js";
-import genAniPar from "./genAniPar.js";
-import genCatPar from "./genCatPar.js";
-import genDendroPar from "./genDendroPar.js";
-import generateCatArgsArrs from "./generateCatArgsArrs.js";
-import generateOrderParams from "./generateOrderParams.js";
-import generateSpilloverParams from "./generateSpilloverParams.js";
-import generateTextTriangleParams from "./generateTextTriangleParams.js";
-import generateTooltipParams from "./generateTooltipParams.js";
-import generateWebglToPix from "./generateWebglToPix.js";
-import genIntPar from "./genIntPar.js";
-import genLabelPar from "./genLabelPar.js";
-import genPixToWebgl from "./genPixToWebgl.js";
-import genTextZoomPar from "./genTextZoomPar.js";
+import iniZoomData from "zoom/iniZoomData";
+import iniZoomRestrict from "zoom/iniZoomRestrict";
+import makeCameras from "../cameras/makeCameras";
+import color_to_rgba from "../colors/colorToRgba";
+import make_matrix_args from "../matrixCells/makeMatrixArgs";
+import calcTextOffsets from "../matrixLabels/calcTextOffsets";
+import makeLabelQueue from "../matrixLabels/makeLabelQueue";
+import hzome_functions from "../tooltip/hzomeFunctions";
+import calcAlphaOrder from "./calcAlphaOrder";
+import calcMatArr from "./calcMatArr";
+import calcRowAndColCanvasPositions from "./calcRowAndColCanvasPositions";
+import calcVizArea from "./calcVizArea";
+import calcVizDim from "./calcVizDim";
+import genAniPar from "./genAniPar";
+import genCatPar from "./genCatPar";
+import genDendroPar from "./genDendroPar";
+import generateCatArgsArrs from "./generateCatArgsArrs";
+import generateOrderParams from "./generateOrderParams";
+import generateSpilloverParams from "./generateSpilloverParams";
+import generateTextTriangleParams from "./generateTextTriangleParams";
+import generateTooltipParams from "./generateTooltipParams";
+import generateWebglToPix from "./generateWebglToPix";
+import genIntPar from "./genIntPar";
+import genLabelPar from "./genLabelPar";
+import genPixToWebgl from "./genPixToWebgl";
+import genTextZoomPar from "./genTextZoomPar";
 
 export default function initialize_params(cgm, external_model) {
-  var args = cgm.args;
-  var canvas_container = cgm.canvas_container;
-  var regl = cgm.regl;
-  var network = cgm.network;
+  const args = cgm.args;
+  const canvas_container = cgm.canvas_container;
+  const regl = cgm.regl;
+  const network = cgm.network;
   // fix initial ordering indexing (will fix in Python on nex release)
   ["row", "col"].forEach((axis) => {
     cgm.network[axis + "_nodes"].forEach((x) => (x.ini = x.ini - 1));
   });
   cgm.params = {};
-  let params = cgm.params;
+  const params = cgm.params;
   params.network = network;
   params.use_hzome = false;
   if ("use_hzome" in cgm.args) {
@@ -57,7 +57,7 @@ export default function initialize_params(cgm, external_model) {
   params.mat_data = params.network.mat;
   generateOrderParams(params);
   genLabelPar(cgm);
-  var labels = params.labels;
+  const labels = params.labels;
   generateTooltipParams(regl, params);
   calcVizDim(regl, params);
   generateCatArgsArrs(regl, params);
@@ -86,7 +86,7 @@ export default function initialize_params(cgm, external_model) {
   params.matrix.potential_recluster.distance_metric =
     params.matrix.distance_metric;
   params.matrix.potential_recluster.linkage_type = params.matrix.linkage_type;
-  var min_dim;
+  let min_dim;
   if (labels.num_col < labels.num_row) {
     min_dim = labels.num_col;
   } else {
@@ -98,10 +98,10 @@ export default function initialize_params(cgm, external_model) {
   makeCameras(regl, params);
   calcMatArr(params);
   // matrix color paramters
-  let mat_colors = {};
+  const mat_colors = {};
   if ("matrix_colors" in params.network) {
-    let pos_color = params.network.matrix_colors.pos;
-    let neg_color = params.network.matrix_colors.neg;
+    const pos_color = params.network.matrix_colors.pos;
+    const neg_color = params.network.matrix_colors.neg;
     mat_colors.pos_rgb = color_to_rgba(pos_color).slice(0, 3);
     mat_colors.neg_rgb = color_to_rgba(neg_color).slice(0, 3);
   } else {
@@ -114,7 +114,7 @@ export default function initialize_params(cgm, external_model) {
   cgm.make_matrix_args(cgm);
   genDendroPar(cgm);
   generateSpilloverParams(regl, params);
-  var allow_factor = d3.scaleLinear().domain([10, 1000]).range([2, 30]);
+  const allow_factor = d3.scaleLinear().domain([10, 1000]).range([2, 30]);
   params.allow_zoom = {};
   params.allow_zoom.col = allow_factor(labels.num_col);
   params.allow_zoom.row = allow_factor(labels.num_col);
@@ -133,7 +133,7 @@ export default function initialize_params(cgm, external_model) {
   } else {
     // params.widget_model = null;
   }
-  let axes = ["col", "row"];
+  const axes = ["col", "row"];
   manual_category = {};
   if ("manual_category" in params.network) {
     // copy from network to cat data
@@ -157,7 +157,7 @@ export default function initialize_params(cgm, external_model) {
       }
     });
     // initialize category dictionary
-    ///////////////////////////////////
+    // /////////////////////////////////
     params.cat_data.manual_cat_dict = {};
     axes.forEach((axis) => {
       if (manual_category[axis]) {
@@ -166,8 +166,8 @@ export default function initialize_params(cgm, external_model) {
           cgm.params.cat_data[axis].length > 0
         ) {
           if ("cat_title" in cgm.params.cat_data[axis][0]) {
-            let cat_title = cgm.params.cat_data[axis][0].cat_title;
-            let inst_dict = {};
+            const cat_title = cgm.params.cat_data[axis][0].cat_title;
+            const inst_dict = {};
             inst_dict[cat_title] = {};
             let inst_name;
             params.network[axis + "_nodes"].forEach((x) => {
@@ -190,7 +190,7 @@ export default function initialize_params(cgm, external_model) {
   params.cat_data.manual_category = manual_category;
   params.search = {};
   params.search.searched_rows = [];
-  let download = {};
+  const download = {};
   // default delimiter
   download.delimiter_name = "csv";
   download.delimiter_key = {};

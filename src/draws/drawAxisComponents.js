@@ -1,16 +1,16 @@
-import makeColTextArgs from "matrixLabels/makeColTextArgs.js";
-import makeRowTextArgs from "matrixLabels/makeRowTextArgs.js";
-import makeVizAidTriArgs from "matrixLabels/makeVizAidTriArgs.js";
-import gatherTextTriangles from "../matrixLabels/gatherTextTriangles.js";
-import calcVizArea from "../params/calcVizArea.js";
-import interpFun from "./interpFun.js";
+import makeColTextArgs from "matrixLabels/makeColTextArgs";
+import makeRowTextArgs from "matrixLabels/makeRowTextArgs";
+import makeVizAidTriArgs from "matrixLabels/makeVizAidTriArgs";
+import gatherTextTriangles from "../matrixLabels/gatherTextTriangles";
+import calcVizArea from "../params/calcVizArea";
+import interpFun from "./interpFun";
 export default (function draw_axis_components(
   regl,
   params,
   inst_axis,
   calc_text_tri = false
 ) {
-  var axis_dim;
+  let axis_dim;
   if (inst_axis === "col") {
     axis_dim = "x";
   } else {
@@ -41,7 +41,7 @@ export default (function draw_axis_components(
       regl(params.dendro.dendro_args[inst_axis])();
     }
     // make the arguments for the draw command
-    var text_triangle_args;
+    let text_triangle_args;
     if (inst_axis === "col") {
       text_triangle_args = makeColTextArgs(
         regl,
@@ -56,7 +56,7 @@ export default (function draw_axis_components(
       );
     }
     if (calc_text_tri) {
-      var num_viz_labels =
+      const num_viz_labels =
         params.labels["num_" + inst_axis] /
         params.zoom_data[axis_dim].total_zoom;
       if (

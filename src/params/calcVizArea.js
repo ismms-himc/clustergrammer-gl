@@ -1,16 +1,16 @@
 export default (function calc_viz_area(params) {
-  var zoom_data = params.zoom_data;
-  var pix_to_webgl = params.pix_to_webgl;
-  var buffer_width = 0.0;
-  var total_pan = {};
-  var viz_area = {};
-  var dim = {};
-  var inst_dim;
-  var label_name;
-  var found_label;
+  const zoom_data = params.zoom_data;
+  const pix_to_webgl = params.pix_to_webgl;
+  const buffer_width = 0.0;
+  const total_pan = {};
+  const viz_area = {};
+  const dim = {};
+  let inst_dim;
+  let label_name;
+  let found_label;
   dim.x = "width";
   dim.y = "height";
-  var label_dict = {};
+  const label_dict = {};
   label_dict.x = "col";
   label_dict.y = "row";
   params.labels.visible_labels = {};
@@ -33,8 +33,8 @@ export default (function calc_viz_area(params) {
     }
     label_name = label_dict[inst_axis];
     params.labels.visible_labels[label_dict[inst_axis]] = [];
-    var min_viz = viz_area[inst_axis + "_min"];
-    var max_viz = viz_area[inst_axis + "_max"];
+    const min_viz = viz_area[inst_axis + "_min"];
+    const max_viz = viz_area[inst_axis + "_max"];
     _.each(params.network[label_name + "_nodes"], function (inst_label) {
       if (
         inst_label.offsets.inst > min_viz &&

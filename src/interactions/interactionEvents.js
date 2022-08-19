@@ -1,39 +1,44 @@
-import extend from "util-extend";
-import * as mouse from "mouse-event";
-import mouseChange from "mouse-change";
-import eventOffset from "mouse-event-offset";
 import * as eventEmitter from "event-emitter";
+import mouseChange from "mouse-change";
+import * as mouse from "mouse-event";
+import eventOffset from "mouse-event-offset";
+import extend from "util-extend";
+
 function Finger() {
   this.position = [0, 0];
   this.touch = null;
 }
+
 // can pass in callback as second argument
 function interactionEvents(opts) {
-  var options = extend(
+  const options = extend(
     {
       element: window,
       constrainZoom: false,
     },
     opts || {}
   );
-  var emitter = eventEmitter({});
-  var element = options.element;
-  var enabled = false;
+  const emitter = eventEmitter({});
+  const element = options.element;
+  let enabled = false;
   // var mouseDown = false;
   // var wheelSpeed = 0.01;
-  var pPos = [null, null];
-  var fingers = [null, null];
-  var ended = false;
-  var activeCount = 0;
-  var xprev;
-  var yprev;
-  var ev = {};
-  var buttons = 0;
-  var mods = {};
-  var changeListener = mouseChange(element, function (pbuttons, px, py, pmods) {
-    buttons = pbuttons;
-    mods = pmods;
-  });
+  let pPos = [null, null];
+  const fingers = [null, null];
+  let ended = false;
+  let activeCount = 0;
+  let xprev;
+  let yprev;
+  const ev = {};
+  let buttons = 0;
+  let mods = {};
+  const changeListener = mouseChange(
+    element,
+    function (pbuttons, px, py, pmods) {
+      buttons = pbuttons;
+      mods = pmods;
+    }
+  );
   function forward(evOut, evIn) {
     evOut.preventDefault = evIn.preventDefault.bind(evIn);
     evOut.stopPropagation = evIn.stopPropagation.bind(evIn);
@@ -44,7 +49,9 @@ function interactionEvents(opts) {
     /*
         Working on improving behavior for offset canvas
         */
-    var canvas_rect = this.getBoundingClientRect();
+    // TODO: fix invalid this
+    // eslint-disable-next-line no-invalid-this
+    const canvas_rect = this.getBoundingClientRect();
     ev.type = "wheel";
     ev.buttons = buttons;
     ev.mods = mods;
@@ -79,8 +86,8 @@ function interactionEvents(opts) {
     emitter.emit("interactionend", forward(ev, event));
   }
   function onMouseMove(event) {
-    var x = mouse.x(event);
-    var y = mouse.y(event);
+    const x = mouse.x(event);
+    const y = mouse.y(event);
     ev.type = "mousemove";
     ev.buttons = buttons;
     ev.mods = mods;
@@ -99,8 +106,8 @@ function interactionEvents(opts) {
     emitter.emit("interaction", forward(ev, event));
   }
   function indexOfTouch(touch) {
-    var id = touch.identifier;
-    for (var i = 0; i < fingers.length; i++) {
+    const id = touch.identifier;
+    for (let i = 0; i < fingers.length; i++) {
       if (
         fingers[i] &&
         fingers[i].touch &&
@@ -113,15 +120,15 @@ function interactionEvents(opts) {
   }
   function onTouchStart(event) {
     pPos = [null, null];
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var newTouch = event.changedTouches[i];
-      var id = newTouch.identifier;
-      var idx = indexOfTouch(id);
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      const newTouch = event.changedTouches[i];
+      const id = newTouch.identifier;
+      const idx = indexOfTouch(id);
       if (idx === -1 && activeCount < 2) {
-        var first = activeCount === 0;
+        const first = activeCount === 0;
         // newest and previous finger (previous may be undefined)
-        var newIndex = fingers[0] ? 1 : 0;
-        var newFinger = new Finger();
+        const newIndex = fingers[0] ? 1 : 0;
+        const newFinger = new Finger();
         // add to stack
         fingers[newIndex] = newFinger;
         // activeCount++
@@ -152,10 +159,10 @@ function interactionEvents(opts) {
     }
   }
   function onTouchMove(event) {
-    var idx;
-    var changed = false;
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var movedTouch = event.changedTouches[i];
+    let idx;
+    let changed = false;
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      const movedTouch = event.changedTouches[i];
       idx = indexOfTouch(movedTouch);
       if (idx !== -1) {
         changed = true;
@@ -171,10 +178,10 @@ function interactionEvents(opts) {
           }
         }
         if (fingers[idx] && pPos[idx]) {
-          var x = fingers[idx].position[0];
-          var y = fingers[idx].position[1];
-          var dx = x - pPos[idx][0];
-          var dy = y - pPos[idx][1];
+          const x = fingers[idx].position[0];
+          const y = fingers[idx].position[1];
+          const dx = x - pPos[idx][0];
+          const dy = y - pPos[idx][1];
           ev.type = "touch";
           ev.buttons = 0;
           ev.mods = {};
@@ -193,27 +200,27 @@ function interactionEvents(opts) {
       } else if (activeCount === 2) {
         if (pPos[0] && pPos[1]) {
           // Previous two-finger vector:
-          var pos0A = pPos[0];
-          var pos0B = pPos[1];
-          var dx0 = pos0B[0] - pos0A[0];
-          var dy0 = pos0B[1] - pos0A[1];
+          const pos0A = pPos[0];
+          const pos0B = pPos[1];
+          const dx0 = pos0B[0] - pos0A[0];
+          const dy0 = pos0B[1] - pos0A[1];
           // Current two-finger vector:
-          var pos1A = fingers[0].position;
-          var pos1B = fingers[1].position;
-          var dx1 = pos1B[0] - pos1A[0];
-          var dy1 = pos1B[1] - pos1A[1];
+          const pos1A = fingers[0].position;
+          const pos1B = fingers[1].position;
+          const dx1 = pos1B[0] - pos1A[0];
+          const dy1 = pos1B[1] - pos1A[1];
           // r, theta for the previous two-finger touch:
-          var r0 = Math.sqrt(dx0 * dx0 + dy0 * dy0);
-          var theta0 = Math.atan2(dy0, dx0);
+          const r0 = Math.sqrt(dx0 * dx0 + dy0 * dy0);
+          const theta0 = Math.atan2(dy0, dx0);
           // r, theta for the current two-finger touch:
-          var r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-          var theta1 = Math.atan2(dy1, dx1);
-          var x0 = (pos0B[0] + pos0A[0]) * 0.5;
-          var y0 = (pos0B[1] + pos0A[1]) * 0.5;
+          const r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+          const theta1 = Math.atan2(dy1, dx1);
+          const x0 = (pos0B[0] + pos0A[0]) * 0.5;
+          const y0 = (pos0B[1] + pos0A[1]) * 0.5;
           dx = 0.5 * (pos1B[0] + pos1A[0] - pos0A[0] - pos0B[0]);
           dy = 0.5 * (pos1B[1] + pos1A[1] - pos0A[1] - pos0B[1]);
-          var dr = r1 / r0;
-          var dtheta = theta1 - theta0;
+          const dr = r1 / r0;
+          const dtheta = theta1 - theta0;
           ev.type = "pinch";
           ev.buttons = 0;
           ev.mods = {};
@@ -239,9 +246,9 @@ function interactionEvents(opts) {
     }
   }
   function onTouchRemoved(event) {
-    for (var i = 0; i < event.changedTouches.length; i++) {
-      var removed = event.changedTouches[i];
-      var idx = indexOfTouch(removed);
+    for (let i = 0; i < event.changedTouches.length; i++) {
+      const removed = event.changedTouches[i];
+      const idx = indexOfTouch(removed);
       if (idx !== -1) {
         fingers[idx] = null;
         activeCount = activeCount - 1;
@@ -300,4 +307,5 @@ function interactionEvents(opts) {
   emitter.disable = disable;
   return emitter;
 }
+
 export default interactionEvents;

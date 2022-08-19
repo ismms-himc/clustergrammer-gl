@@ -1,6 +1,7 @@
-import make_cat_position_array from "../cats/makeCatPositionArray.js";
-import make_cat_args from "../cats/makeCatArgs.js";
-export default (function generate_cat_args_arrs(regl, params) {
+import make_cat_args from "../cats/makeCatArgs";
+import make_cat_position_array from "../cats/makeCatPositionArray";
+
+export default function generate_cat_args_arrs(regl, params) {
   // debugger
   params.cat_args = {};
   params.cat_args.row = [];
@@ -13,7 +14,7 @@ export default (function generate_cat_args_arrs(regl, params) {
   });
   _.each(["row", "col"], function (inst_axis) {
     for (
-      var cat_index = 0;
+      let cat_index = 0;
       cat_index < params.cat_data.cat_num[inst_axis];
       cat_index++
     ) {
@@ -34,4 +35,4 @@ export default (function generate_cat_args_arrs(regl, params) {
       );
     }
   });
-});
+}

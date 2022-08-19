@@ -1,17 +1,17 @@
 export default (function calc_mat_arr(params) {
-  var num_row = params.labels.num_row;
-  var num_col = params.labels.num_col;
+  const num_row = params.labels.num_row;
+  const num_col = params.labels.num_col;
   // draw matrix cells
-  /////////////////////////////////////////
+  // ///////////////////////////////////////
   // generate x position array
   params.node_canvas_pos = {};
-  var inst_pos;
-  var heat_size;
-  var num_labels;
-  var inst_index;
-  var inst_direct;
-  var tri_width;
-  var heat_shift;
+  let inst_pos;
+  let heat_size;
+  let num_labels;
+  let inst_index;
+  let inst_direct;
+  let tri_width;
+  let heat_shift;
   _.each(["x", "y"], function (inst_axis) {
     if (inst_axis == "x") {
       num_labels = num_col;

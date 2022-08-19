@@ -1,4 +1,4 @@
-import interp_fun from "./interpFun.js";
+import interp_fun from "./interpFun";
 export default (function draw_matrix_components(regl, params) {
   /* Matrix */
   params.cameras.mat.draw(() => {

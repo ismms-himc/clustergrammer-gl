@@ -3,10 +3,10 @@ export default (function make_viz_aid_tri_pos_arr(
   inst_axis,
   inst_order
 ) {
-  var num_labels = params.labels["num_" + inst_axis];
-  var heat_size;
-  var tri_width;
-  var heat_shift;
+  const num_labels = params.labels["num_" + inst_axis];
+  let heat_size;
+  let tri_width;
+  let heat_shift;
   // keep positioned at matrix not heatmap (make room for categories)
   // making triangle smaller
   if (inst_axis === "row") {
@@ -19,11 +19,11 @@ export default (function make_viz_aid_tri_pos_arr(
     heat_shift = -(params.viz_dim.mat_size.x - params.viz_dim.heat_size.x);
   }
   // make viz_aid triangle array
-  /////////////////////////////////
-  var tri_offset_array = [];
-  var i;
-  var inst_index;
-  var order_index;
+  // ///////////////////////////////
+  const tri_offset_array = [];
+  let i;
+  let inst_index;
+  let order_index;
   for (i = 0; i < num_labels; i++) {
     order_index = params.network[inst_axis + "_nodes"][i][inst_order];
     if (inst_axis == "row") {

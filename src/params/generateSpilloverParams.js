@@ -1,10 +1,10 @@
-import make_spillover_args from "../spillover/makeSpilloverArgs.js";
-import calc_spillover_triangles from "../spillover/calcSpilloverTriangles.js";
+import calc_spillover_triangles from "../spillover/calcSpilloverTriangles";
+import make_spillover_args from "../spillover/makeSpilloverArgs";
 export default (function generate_spillover_params(regl, params) {
-  var spillover_args = {};
+  const spillover_args = {};
   // inst_depth is passed to spillover rects
   // var inst_color = [1, 0, 0, 1];
-  var inst_color = [1, 1, 1, 1];
+  const inst_color = [1, 1, 1, 1];
   // lower depth can be thought of as closer to the screen/user, e.g. on top
   // of other elements
   params.spill_depth = {};
@@ -12,7 +12,7 @@ export default (function generate_spillover_params(regl, params) {
   params.spill_depth.cats = 0.5;
   params.spill_depth.mat_corners = 0.2;
   params.spill_depth.label_corners = 0.001;
-  var spillover_elements = [
+  const spillover_elements = [
     "mat_sides",
     "cats",
     "mat_corners",

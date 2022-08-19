@@ -1,16 +1,13 @@
 import * as d3 from "d3";
-import manual_update_to_cats from "../cats/manualUpdateToCats.js";
-export default (function manual_category_from_dendro(
-  cgm,
-  external_model,
-  axis
-) {
-  let params = cgm.params;
+import manual_update_to_cats from "../cats/manualUpdateToCats";
+
+export default function manual_category_from_dendro(cgm, external_model, axis) {
+  const params = cgm.params;
   // Manual Category
-  ////////////////////////////
+  // //////////////////////////
   d3.select(params.tooltip_id).append("text").text("Manual Category: ");
   // color picker section
-  let color_picker_div = d3
+  const color_picker_div = d3
     .select(params.tooltip_id)
     .append("div")
     .classed("color_picker_div", true)
@@ -40,7 +37,7 @@ export default (function manual_category_from_dendro(
     "#828080",
     "#444",
   ];
-  let select_color_from_pallet = function (inst_color) {
+  const select_color_from_pallet = function (inst_color) {
     d3.select(params.tooltip_id + " .custom-cat-color").attr(
       "value",
       inst_color
@@ -85,7 +82,7 @@ export default (function manual_category_from_dendro(
     .select(params.tooltip_id)
     .append("div")
     .classed("custom_cat_div", true);
-  let root_id = cgm.params.root.replace("#", "");
+  const root_id = cgm.params.root.replace("#", "");
   custom_cat_div
     .append("input")
     .classed("custom-cat-input", true)
@@ -96,8 +93,8 @@ export default (function manual_category_from_dendro(
     .style("color", "black")
     .on("change", () => {
       // if input matches color key, set color to pre-defined cat color
-      ///////////////////////////////////////////////////////////////////
-      let new_cat = d3
+      // /////////////////////////////////////////////////////////////////
+      const new_cat = d3
         .select(params.tooltip_id + " .custom-cat-input")
         .node()
         .value.trim();
@@ -111,7 +108,7 @@ export default (function manual_category_from_dendro(
       }
     });
   if (axis + "_cats" in params.cat_data.manual_category) {
-    let preferred_cat_list = params.cat_data.manual_category[
+    const preferred_cat_list = params.cat_data.manual_category[
       axis + "_cats"
     ].map((x) => x.name);
     custom_cat_div
@@ -135,10 +132,12 @@ export default (function manual_category_from_dendro(
     .on("input", function () {
       d3.select(params.tooltip_id + " .color-preview").style(
         "background-color",
+        // TODO: fix this usage here
+        // eslint-disable-next-line no-invalid-this
         this.value
       );
     });
-  let color_picker_height = 45;
+  const color_picker_height = 45;
   // color preview
   custom_cat_div
     .append("div")
@@ -155,11 +154,11 @@ export default (function manual_category_from_dendro(
           .style("height", color_picker_height + "px")
           .style("display", "block");
         d3.select(params.tooltip_id).style("margin-top", function () {
-          let old_top_margin = d3
+          const old_top_margin = d3
             .select(params.tooltip_id)
             .style("margin-top")
             .replace("px");
-          let new_top_margin =
+          const new_top_margin =
             String(parseInt(old_top_margin) - color_picker_height) + "px";
           return new_top_margin;
         });
@@ -167,7 +166,7 @@ export default (function manual_category_from_dendro(
       }
     });
   // update category button
-  ///////////////////////////////
+  // /////////////////////////////
   custom_cat_div
     .append("button")
     .style("display", "inline-block")
@@ -178,7 +177,7 @@ export default (function manual_category_from_dendro(
     .style("color", "white")
     .style("cursor", "pointer")
     .on("click", () => {
-      let new_cat = d3
+      const new_cat = d3
         .select(params.tooltip_id + " .custom-cat-input")
         .node()
         .value.trim();
@@ -195,9 +194,9 @@ export default (function manual_category_from_dendro(
         if (inst_color === "") {
           inst_color = "white";
         }
-        let inst_labels = params.dendro.selected_clust_names;
+        const inst_labels = params.dendro.selected_clust_names;
         // Only allowing custom naming of first column
-        let cat_title = params.cat_data[axis][0].cat_title;
+        const cat_title = params.cat_data[axis][0].cat_title;
         params.network.global_cat_colors[new_cat] = inst_color;
         params.int.manual_update_cats = true;
         manual_update_to_cats(cgm, axis, cat_title, new_cat, inst_labels);
@@ -208,4 +207,4 @@ export default (function manual_category_from_dendro(
     })
     .append("text")
     .text("Set Category");
-});
+}

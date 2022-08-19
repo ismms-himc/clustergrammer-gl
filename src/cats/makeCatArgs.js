@@ -1,8 +1,8 @@
-import m3 from "../draws/mat3Transform.js";
-import color_to_rgba from "../colors/colorToRgba.js";
-import get_cat_value from "./getCatValue.js";
+import color_to_rgba from "../colors/colorToRgba";
+import m3 from "../draws/mat3Transform";
+import get_cat_value from "./getCatValue";
 export default (function make_cat_args(regl, params, inst_axis, cat_index) {
-  var cat_index_name = "cat-" + String(cat_index);
+  const cat_index_name = "cat-" + String(cat_index);
   /*
   
     Hacking Categories Plan
@@ -11,15 +11,14 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
     colors. Then pass this as an attribute (or varying?) to the fragment shader.
   
     */
-  var inst_rgba = color_to_rgba("purple", 0.95);
-  var num_labels = params.labels["num_" + inst_axis];
-  // category tiles have fixed heights
-  var cat_height;
+  const inst_rgba = color_to_rgba("purple", 0.95);
+  const num_labels = params.labels["num_" + inst_axis];
   // category widths depend on the number of labels
-  var cat_width;
-  var mat_size;
-  var top_shift_triangles;
-  cat_height = 0.04;
+  let cat_width;
+  let mat_size;
+  let top_shift_triangles;
+  // category tiles have fixed heights
+  const cat_height = 0.04;
   if (inst_axis === "col") {
     mat_size = params.viz_dim.heat_size.x;
     top_shift_triangles = params.viz_dim.mat_size.y;
@@ -29,39 +28,39 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
     top_shift_triangles = params.viz_dim.mat_size.x;
     cat_width = params.viz_dim.heat_size.y / 0.5 / num_labels;
   }
-  var zoom_function = function (context) {
+  const zoom_function = function (context) {
     return context.view;
   };
-  var shift_cat = 0.025 * (cat_index + 1);
-  var top_offset = -top_shift_triangles - cat_height + shift_cat;
-  /////////////////////////////////
+  const shift_cat = 0.025 * (cat_index + 1);
+  const top_offset = -top_shift_triangles - cat_height + shift_cat;
+  // ///////////////////////////////
   // Label Color Buffer
-  /////////////////////////////////
-  var is_mousing_over_cat = false;
-  var inst_opacity = 1.0;
-  var mousing_over_cat;
+  // ///////////////////////////////
+  let is_mousing_over_cat = false;
+  let inst_opacity = 1.0;
+  let mousing_over_cat;
   // if mousing over categories initialize all categories to low opacity
   if (params.tooltip.tooltip_type) {
     if (params.tooltip.tooltip_type.includes("-cat-")) {
       is_mousing_over_cat = true;
-      var mouseover_cat_index = params.tooltip.tooltip_type.split("-")[2];
+      const mouseover_cat_index = params.tooltip.tooltip_type.split("-")[2];
       mousing_over_cat =
         params.int.mouseover[inst_axis].cats[mouseover_cat_index];
     }
   }
-  var is_cat_value = false;
+  let is_cat_value = false;
   if (params.viz.cat_info[inst_axis][cat_index_name].type == "cat_values") {
     is_cat_value = true;
   }
   /* Category Colors */
-  ////////////////////////////
+  // //////////////////////////
   // String based categories are working
   // Working on value-based categories
-  var color_arr = [];
-  var inst_value_color;
-  var ini_cat_value;
-  for (var i = 0; i < num_labels; i++) {
-    var inst_cat = params.network[inst_axis + "_nodes"][i][cat_index_name];
+  const color_arr = [];
+  let inst_value_color;
+  let ini_cat_value;
+  for (let i = 0; i < num_labels; i++) {
+    const inst_cat = params.network[inst_axis + "_nodes"][i][cat_index_name];
     // Check if value-based category
     if (is_cat_value) {
       ini_cat_value = get_cat_value(inst_cat);
@@ -80,8 +79,8 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
       );
     }
     // Set Category Colors
-    ///////////////////////////
-    var inst_color;
+    // /////////////////////////
+    let inst_color;
     if (is_cat_value === false) {
       if ("cat_colors" in params.network) {
         if (cat_index_name in params.network.cat_colors[inst_axis]) {
@@ -104,10 +103,10 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
       inst_color = inst_value_color;
     }
     // Mouseover highlight
-    ///////////////////////////
+    // /////////////////////////
     // switch non-highlighted colors to white (avoid opacity bug)
     inst_opacity = 1.0;
-    var blend_fraction = 0.25;
+    const blend_fraction = 0.25;
     if (is_mousing_over_cat) {
       if (mousing_over_cat == inst_cat) {
         if (is_cat_value === false) {
@@ -134,18 +133,18 @@ export default (function make_cat_args(regl, params, inst_axis, cat_index) {
   });
   color_buffer(color_arr);
   params.color_arr = color_arr;
-  /////////////////////////////////
+  // ///////////////////////////////
   // Rotation and Scaling
-  /////////////////////////////////
-  var scale_y = m3.scaling(2, 1);
-  var rotation_radians;
+  // ///////////////////////////////
+  const scale_y = m3.scaling(2, 1);
+  let rotation_radians;
   if (inst_axis === "row") {
     rotation_radians = 0;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
   }
-  var mat_rotate = m3.rotation(rotation_radians);
-  var args = {
+  const mat_rotate = m3.rotation(rotation_radians);
+  const args = {
     vert: `
       precision highp float;
       attribute vec2 ini_position;

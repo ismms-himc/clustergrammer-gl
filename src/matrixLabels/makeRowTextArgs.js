@@ -1,19 +1,20 @@
-import m3 from "../draws/mat3Transform.js";
-import interp_fun from "../draws/interpFun.js";
-export default (function make_row_text_args(regl, params, zoom_function) {
-  var inst_axis = "row";
-  var num_row = params.labels["num_" + inst_axis];
-  var scale_text = num_row;
-  var webgl_fs = (1 / num_row) * params.zoom_data.y.total_zoom;
-  var max_webgl_fs = params.text_zoom.row.max_webgl_fs;
-  var scale_down_fs;
+import interp_fun from "../draws/interpFun";
+import m3 from "../draws/mat3Transform";
+
+export default function make_row_text_args(regl, params, zoom_function) {
+  const inst_axis = "row";
+  const num_row = params.labels["num_" + inst_axis];
+  let scale_text = num_row;
+  const webgl_fs = (1 / num_row) * params.zoom_data.y.total_zoom;
+  const max_webgl_fs = params.text_zoom.row.max_webgl_fs;
+  let scale_down_fs;
   if (webgl_fs > max_webgl_fs) {
     scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
-  var mat_rotate = m3.rotation(Math.PI / 2);
-  var x_offset = params.viz_dim.mat_size.x + 0.02;
-  var vert_arg = `
+  const mat_rotate = m3.rotation(Math.PI / 2);
+  const x_offset = params.viz_dim.mat_size.x + 0.02;
+  const vert_arg = `
       precision mediump float;
       attribute vec2 position;
       uniform mat4 zoom;
@@ -67,12 +68,12 @@ export default (function make_row_text_args(regl, params, zoom_function) {
                            0.50,
                            1.0);
       }`;
-  var frag_arg = `
+  const frag_arg = `
       precision mediump float;
       void main () {
         gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
       }`;
-  var args = {
+  const args = {
     vert: vert_arg,
     frag: frag_arg,
     attributes: {
@@ -101,4 +102,4 @@ export default (function make_row_text_args(regl, params, zoom_function) {
     },
   };
   return args;
-});
+}

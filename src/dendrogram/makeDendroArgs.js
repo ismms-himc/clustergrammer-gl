@@ -1,10 +1,10 @@
-import m3 from "../draws/mat3Transform.js";
-import color_to_rgba from "../colors/colorToRgba.js";
-import make_dendro_arr from "./makeDendroArr.js";
+import color_to_rgba from "../colors/colorToRgba";
+import m3 from "../draws/mat3Transform";
+import make_dendro_arr from "./makeDendroArr";
 export default (function make_dendro_args(regl, params, inst_axis) {
-  var rotation_radians;
-  var heat_size;
-  var mat_size_offset;
+  let rotation_radians;
+  let heat_size;
+  let mat_size_offset;
   if (inst_axis === "row") {
     rotation_radians = 0;
     heat_size = params.viz_dim.heat_size.y;
@@ -14,11 +14,11 @@ export default (function make_dendro_args(regl, params, inst_axis) {
     heat_size = params.viz_dim.heat_size.x;
     mat_size_offset = params.viz_dim.mat_size.y;
   }
-  var num_labels = params.labels["num_" + inst_axis];
-  var dendro_width = params.dendro.tri_height;
-  var tri_width = heat_size / num_labels;
-  var dendro_arr = make_dendro_arr(params, inst_axis);
-  var zoom_function = function (context) {
+  const num_labels = params.labels["num_" + inst_axis];
+  const dendro_width = params.dendro.tri_height;
+  const tri_width = heat_size / num_labels;
+  const dendro_arr = make_dendro_arr(params, inst_axis);
+  const zoom_function = function (context) {
     return context.view;
   };
   const dendro_buffer = regl.buffer({
@@ -27,10 +27,10 @@ export default (function make_dendro_args(regl, params, inst_axis) {
     usage: "dynamic",
   });
   dendro_buffer(dendro_arr);
-  var mat_scale = m3.scaling(1, 1);
-  var mat_rotate = m3.rotation(rotation_radians);
-  var inst_rgba = color_to_rgba("black", 0.35);
-  var args = {
+  const mat_scale = m3.scaling(1, 1);
+  const mat_rotate = m3.rotation(rotation_radians);
+  const inst_rgba = color_to_rgba("black", 0.35);
+  const args = {
     vert: `
       precision highp float;
       attribute vec2 position;

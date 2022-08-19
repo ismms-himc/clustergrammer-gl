@@ -1,10 +1,10 @@
-import calc_dendro_triangles from "../dendrogram/calcDendroTriangles.js";
-import make_dendro_args from "../dendrogram/makeDendroArgs.js";
-import alt_slice_linkage from "../dendrogram/altSliceLinkage.js";
+import alt_slice_linkage from "../dendrogram/altSliceLinkage";
+import calc_dendro_triangles from "../dendrogram/calcDendroTriangles";
+import make_dendro_args from "../dendrogram/makeDendroArgs";
 export default (function gen_dendro_par(cgm) {
-  var params = cgm.params;
-  var regl = cgm.regl;
-  var dendro = {};
+  const params = cgm.params;
+  const regl = cgm.regl;
+  const dendro = {};
   dendro.default_level = 5;
   dendro.tri_height = 0.1;
   dendro.trap_height = 0.03;
@@ -22,11 +22,11 @@ export default (function gen_dendro_par(cgm) {
   if ("linkage" in params.network) {
     dendro.precalc_linkage = true;
     // initial slices of linkage matrix
-    //////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////
     let link_mat;
     dendro.max_linkage_dist = {};
     let dist_thresh;
-    let axes = ["col", "row"];
+    const axes = ["col", "row"];
     axes.forEach((axis) => {
       link_mat = params.network.linkage[axis];
       dendro.max_linkage_dist[axis] = link_mat[link_mat.length - 1][2] + 0.01;

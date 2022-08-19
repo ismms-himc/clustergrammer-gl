@@ -1,5 +1,5 @@
 export default (function calc_cursor_relative(zd, viz_dim_heat) {
-  var cursor_relative = {};
+  const cursor_relative = {};
   // tracking cursor position relative to the minimum
   cursor_relative.min =
     zd.cursor_position - viz_dim_heat.min - zd.viz_offcenter;

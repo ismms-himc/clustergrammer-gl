@@ -7,7 +7,7 @@ export default (function alt_slice_linkage(
   network = params.network;
   let clust_a;
   let clust_b;
-  let group_dict = {};
+  const group_dict = {};
   // initialize group_links and dictionary
   network[axis + "_nodes"].forEach((x, i) => {
     group_dict[i] = [i];
@@ -43,7 +43,7 @@ export default (function alt_slice_linkage(
   //    ...
   // }
   // Make flat dictionary
-  let flat_group_dict = {};
+  const flat_group_dict = {};
   Object.entries(group_dict).forEach(([inst_cluster, nodes]) => {
     nodes.forEach((x) => {
       flat_group_dict[x] = inst_cluster;

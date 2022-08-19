@@ -1,32 +1,34 @@
+// TODO: fix invalid this
+/* eslint-disable no-invalid-this */
 import * as d3 from "d3";
-import change_groups from "./changeGroups.js";
-import custom_round from "../utils/customRound.js";
-export default (function build_single_dendro_slider(cgm, axis) {
-  let params = cgm.params;
-  var slider_length = 100;
-  var rect_height = slider_length + 20;
-  var rect_width = 20;
-  var text_color = "#47515b";
+import custom_round from "../utils/customRound";
+import change_groups from "./changeGroups";
+
+export default function build_single_dendro_slider(cgm, axis) {
+  const params = cgm.params;
+  const slider_length = 100;
+  const rect_height = slider_length + 20;
+  const rect_width = 20;
+  const text_color = "#47515b";
   let round_level;
   if (params.dendro.precalc_linkage) {
     round_level = 3;
   } else {
     round_level = -1;
   }
-  var drag = d3
+  const drag = d3
     .drag()
     .on("drag", dragging)
     .on("end", function () {
       change_groups(cgm, axis, params[axis + "_dendro_slider_value"]);
       params.is_slider_drag = false;
     });
-  var slider_group = d3
+  const slider_group = d3
     .select(params.root + " ." + axis + "_dendro_slider_svg")
     .append("g")
     .classed(axis + "_slider_group", true)
     .attr("transform", function () {
-      var inst_translation;
-      inst_translation =
+      const inst_translation =
         "translate(" + rect_width / 2 + ", " + rect_height / 10 + ")";
       return inst_translation;
     });
@@ -37,7 +39,7 @@ export default (function build_single_dendro_slider(cgm, axis) {
     .attr("width", rect_width + "px")
     .attr("fill", "red")
     .attr("transform", function () {
-      var translate_string = "translate(-10, -5)";
+      const translate_string = "translate(-10, -5)";
       return translate_string;
     })
     .attr("opacity", 0);
@@ -52,20 +54,20 @@ export default (function build_single_dendro_slider(cgm, axis) {
       return slider_length - 2;
     })
     .on("click", click_dendro_slider);
-  var offset_triangle = -slider_length / 40;
+  const offset_triangle = -slider_length / 40;
   slider_group
     .append("path")
     .attr("fill", "black")
     .attr("transform", "translate(" + offset_triangle + ", 0)")
     .attr("d", function () {
       // up triangle
-      var start_x = 0;
-      var start_y = 0;
-      var mid_x = 0;
-      var mid_y = slider_length;
-      var final_x = slider_length / 10;
-      var final_y = 0;
-      var output_string =
+      const start_x = 0;
+      const start_y = 0;
+      const mid_x = 0;
+      const mid_y = slider_length;
+      const final_x = slider_length / 10;
+      const final_y = 0;
+      const output_string =
         "M" +
         start_x +
         "," +
@@ -83,8 +85,8 @@ export default (function build_single_dendro_slider(cgm, axis) {
     })
     .attr("opacity", 0.35)
     .on("click", click_dendro_slider);
-  var default_opacity = 0.35;
-  var high_opacity = 0.6;
+  const default_opacity = 0.35;
+  const high_opacity = 0.6;
   slider_group
     .append("circle")
     .classed(axis + "_group_circle", true)
@@ -102,7 +104,7 @@ export default (function build_single_dendro_slider(cgm, axis) {
     })
     .call(drag);
   // add dendrogram level text
-  ///////////////////////////////
+  // /////////////////////////////
   if (params.dendro.precalc_linkage) {
     slider_group
       .append("text")
@@ -125,13 +127,13 @@ export default (function build_single_dendro_slider(cgm, axis) {
       .append("path")
       .attr("d", function () {
         // up triangle
-        var start_x = 0;
-        var start_y = 10;
-        var mid_x = 10;
-        var mid_y = 0;
-        var final_x = 20;
-        var final_y = 10;
-        var output_string =
+        const start_x = 0;
+        const start_y = 10;
+        const mid_x = 10;
+        const mid_y = 0;
+        const final_x = 20;
+        const final_y = 10;
+        const output_string =
           "M" +
           start_x +
           "," +
@@ -163,13 +165,13 @@ export default (function build_single_dendro_slider(cgm, axis) {
       .append("path")
       .attr("d", function () {
         // up triangle
-        var start_x = 0;
-        var start_y = 0;
-        var mid_x = 10;
-        var mid_y = 10;
-        var final_x = 20;
-        var final_y = 0;
-        var output_string =
+        const start_x = 0;
+        const start_y = 0;
+        const mid_x = 10;
+        const mid_y = 10;
+        const final_x = 20;
+        const final_y = 0;
+        const output_string =
           "M" +
           start_x +
           "," +
@@ -199,7 +201,7 @@ export default (function build_single_dendro_slider(cgm, axis) {
   }
   function dragging() {
     params.is_slider_drag = true;
-    var slider_pos = d3.event.y;
+    let slider_pos = d3.event.y;
     if (slider_pos < 0) {
       slider_pos = 0;
     }
@@ -211,7 +213,7 @@ export default (function build_single_dendro_slider(cgm, axis) {
     }
     slider_pos = custom_round(slider_pos, round_level);
     // var slider_value = 10 - slider_pos/10;
-    var slider_value = get_slider_value(
+    const slider_value = get_slider_value(
       slider_pos,
       params.dendro.precalc_linkage
     );
@@ -221,13 +223,16 @@ export default (function build_single_dendro_slider(cgm, axis) {
     params[axis + "_dendro_slider_value"] = slider_value;
   }
   function click_dendro_slider() {
-    var clicked_line_position = d3.mouse(this);
-    var rel_pos = custom_round(clicked_line_position[1], round_level);
+    const clicked_line_position = d3.mouse(this);
+    const rel_pos = custom_round(clicked_line_position[1], round_level);
     d3.select(params.root + " ." + axis + "_group_circle").attr(
       "transform",
       "translate(0, " + rel_pos + ")"
     );
-    var slider_value = get_slider_value(rel_pos, params.dendro.precalc_linkage);
+    const slider_value = get_slider_value(
+      rel_pos,
+      params.dendro.precalc_linkage
+    );
     params[axis + "_dendro_slider_value"] = slider_value;
     change_groups(cgm, axis, slider_value);
   }
@@ -242,4 +247,4 @@ export default (function build_single_dendro_slider(cgm, axis) {
     }
     return slider_value;
   }
-});
+}

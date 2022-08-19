@@ -1,10 +1,10 @@
 import * as d3 from "d3";
-import updateTextTriangleOrder from "matrixLabels/updateTextTriangleOrder.js";
-import calcTextOffsets from "../matrixLabels/calcTextOffsets.js";
-import genOrderedLabels from "../matrixLabels/genOrderedLabels.js";
+import updateTextTriangleOrder from "matrixLabels/updateTextTriangleOrder";
+import calcTextOffsets from "../matrixLabels/calcTextOffsets";
+import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 export default (function end_animation(cgm) {
-  let regl = cgm.regl;
-  let params = cgm.params;
+  const regl = cgm.regl;
+  const params = cgm.params;
   params.ani.running = false;
   params.ani.run_animation = false;
   // transfer the new positions to the matrix args attributes
@@ -15,7 +15,7 @@ export default (function end_animation(cgm) {
   // transfer the new category positions to the cat args attributes
   _.each(["row", "col"], function (i_axis) {
     for (
-      var cat_index = 0;
+      let cat_index = 0;
       cat_index < params.cat_data.cat_num[i_axis];
       cat_index++
     ) {

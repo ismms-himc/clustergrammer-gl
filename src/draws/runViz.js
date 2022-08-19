@@ -1,14 +1,14 @@
 import * as d3 from "d3";
-import reset_cameras from "../cameras/resetCameras.js";
-import draw_background_calculations from "./drawBackgroundCalculations.js";
-import draw_interacting from "./drawInteracting.js";
-import draw_mouseover from "./drawMouseover.js";
-import end_animation from "./endAnimation.js";
-import start_animation from "./startAnimation.js";
+import reset_cameras from "../cameras/resetCameras";
+import draw_background_calculations from "./drawBackgroundCalculations";
+import draw_interacting from "./drawInteracting";
+import draw_mouseover from "./drawMouseover";
+import end_animation from "./endAnimation";
+import start_animation from "./startAnimation";
 
 export default function run_viz(cgm, external_model) {
-  var regl = cgm.regl;
-  var params = cgm.params;
+  const regl = cgm.regl;
+  const params = cgm.params;
   params.ani.first_frame = true;
   regl.frame(function ({ time }) {
     params.ani.time = time;

@@ -1,6 +1,6 @@
-import draw_webgl_layers from "../draws/drawWebglLayers.js";
-import genOrderedLabels from "../matrixLabels/genOrderedLabels.js";
-import generateCatArgsArrs from "../params/generateCatArgsArrs.js";
+import draw_webgl_layers from "../draws/drawWebglLayers";
+import genOrderedLabels from "../matrixLabels/genOrderedLabels";
+import generateCatArgsArrs from "../params/generateCatArgsArrs";
 
 export default function manual_update_to_cats(
   cgm,
@@ -11,7 +11,7 @@ export default function manual_update_to_cats(
 ) {
   params = cgm.params;
   regl = cgm.regl;
-  let full_cat = cat_title + ": " + new_cat;
+  const full_cat = cat_title + ": " + new_cat;
   // manually updated categories in network
   cgm.params.network[axis + "_nodes"].map((x) => {
     inst_name = x.name;

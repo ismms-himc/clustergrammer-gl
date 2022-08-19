@@ -3,6 +3,9 @@ var hzome_functions = require("./../tooltip/hzomeFunctions");
 var make_matrix_args = require("./../matrixCells/makeMatrixArgs");
 var color_to_rgba = require("./../colors/colorToRgba");
 
+/**
+ * @type function
+ */
 module.exports = function initialize_params(external_model) {
   var cgm = this;
   var args = this.args;

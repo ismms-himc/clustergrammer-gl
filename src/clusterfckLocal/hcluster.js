@@ -1,5 +1,8 @@
 var distances = require("./distance");
 
+/**
+ * @type function
+ */
 var HierarchicalClustering = function (distance, linkage, threshold) {
   this.distance = distance || "euclidean";
   this.linkage = linkage || "average";

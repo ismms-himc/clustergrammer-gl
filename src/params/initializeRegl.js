@@ -1,3 +1,6 @@
+/**
+ * @type function
+ */
 module.exports = function initialize_regl() {
   var canvas_container = this.canvas_container;
 

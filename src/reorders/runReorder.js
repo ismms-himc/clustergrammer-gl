@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import updateTextTriangleOrder from "matrixLabels/updateTextTriangleOrder";
+import updateTextTriangleOrder from "../matrixLabels/updateTextTriangleOrder";
 import reorderCatArgs from "./reorderCatArgs";
 import reorderMatrixArgs from "./reorderMatrixArgs";
 export default (function run_reorder(regl, params, inst_axis, ini_new_order) {

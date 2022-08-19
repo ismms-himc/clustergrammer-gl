@@ -1,12 +1,12 @@
 import * as d3 from "d3";
-import iniZoomData from "zoom/iniZoomData";
-import iniZoomRestrict from "zoom/iniZoomRestrict";
 import makeCameras from "../cameras/makeCameras";
 import color_to_rgba from "../colors/colorToRgba";
 import make_matrix_args from "../matrixCells/makeMatrixArgs";
 import calcTextOffsets from "../matrixLabels/calcTextOffsets";
 import makeLabelQueue from "../matrixLabels/makeLabelQueue";
 import hzome_functions from "../tooltip/hzomeFunctions";
+import iniZoomData from "../zoom/iniZoomData";
+import iniZoomRestrict from "../zoom/iniZoomRestrict";
 import calcAlphaOrder from "./calcAlphaOrder";
 import calcMatArr from "./calcMatArr";
 import calcRowAndColCanvasPositions from "./calcRowAndColCanvasPositions";

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import build_single_dendro_slider from "./buildSingleDendroSlider.js";
-export default (function build_dendrogram_sliders() {
-  var cgm = this;
+
+export default function build_dendrogram_sliders(cgm) {
   var params = cgm.params;
   // Add sliders on top of the canvas
   /////////////////////////////////////
@@ -34,4 +34,4 @@ export default (function build_dendrogram_sliders() {
       .style("fill", "transparent");
     build_single_dendro_slider(cgm, inst_axis);
   });
-});
+}

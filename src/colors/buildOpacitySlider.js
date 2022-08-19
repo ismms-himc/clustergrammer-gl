@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import custom_round from "../utils/customRound.js";
 import draw_webgl_layers from "../draws/drawWebglLayers.js";
+import custom_round from "../utils/customRound.js";
 export default (function build_opacity_slider(cgm) {
   let params = cgm.params;
   var slider_length = 100;
@@ -171,7 +171,7 @@ export default (function build_opacity_slider(cgm) {
   function change_opacity(slider_value) {
     slider_value = custom_round(slider_value, 2);
     params.matrix.opacity_scale = slider_value;
-    cgm.make_matrix_args();
+    cgm.make_matrix_args(cgm);
     draw_webgl_layers(cgm);
     d3.select(params.root + " .opacity_level_text").text(slider_value);
   }

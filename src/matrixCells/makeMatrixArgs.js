@@ -1,7 +1,7 @@
-import make_position_arr from "./makePositionArr.js";
 import make_opacity_arr from "./makeOpacityArr.js";
-export default (function make_matrix_args() {
-  let cgm = this;
+import make_position_arr from "./makePositionArr.js";
+
+export default function make_matrix_args(cgm) {
   let regl = cgm.regl;
   let params = cgm.params;
   // make arrays
@@ -140,5 +140,4 @@ export default (function make_matrix_args() {
   matrix_args.regl_props = {};
   matrix_args.regl_props.rects = inst_properties;
   params.matrix_args = matrix_args;
-  // return matrix_args;
-});
+}

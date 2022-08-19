@@ -80,6 +80,7 @@ export default (function build_recluster_section(cgm) {
         cgm.params.matrix.linkage_type =
           params.matrix.potential_recluster.linkage_type;
         cgm.recluster(
+          cgm,
           params.matrix.potential_recluster.distance_metric,
           params.matrix.potential_recluster.linkage_type
         );
@@ -285,7 +286,7 @@ export default (function build_recluster_section(cgm) {
           params.norm.zscore_status = "non-zscored";
           d3.select(this).select("text").text("raw".toUpperCase());
         }
-        cgm.make_matrix_args();
+        cgm.make_matrix_args(cgm);
         draw_webgl_layers(cgm);
       })
       .attr("transform", function () {

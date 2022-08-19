@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
-export default function initialize_containers() {
-  var base_container = this.args.container;
+export default function initialize_containers(cgm) {
+  var base_container = cgm.args.container;
   // make control panel (needs to appear above canvas)
   d3.select(base_container)
     .append("div")
@@ -17,10 +17,11 @@ export default function initialize_containers() {
     .style("cursor", "default");
   var canvas_container = d3.select(base_container).select(".canvas-container")
     ._groups[0][0];
-  var inst_height = this.args.viz_height;
-  var inst_width = this.args.viz_width;
+  var inst_height = cgm.args.viz_height;
+  var inst_width = cgm.args.viz_width;
   d3.select(canvas_container)
     .style("height", inst_height)
     .style("width", inst_width);
-  this.canvas_container = canvas_container;
+
+  return canvas_container;
 }

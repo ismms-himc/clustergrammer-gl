@@ -6,8 +6,7 @@ import draw_mouseover from "./drawMouseover.js";
 import end_animation from "./endAnimation.js";
 import start_animation from "./startAnimation.js";
 
-export default function run_viz(external_model) {
-  var cgm = this;
+export default function run_viz(cgm, external_model) {
   var regl = cgm.regl;
   var params = cgm.params;
   params.ani.first_frame = true;
@@ -48,7 +47,7 @@ export default function run_viz(external_model) {
       params.tooltip.show_tooltip ||
       params.dendro.update_dendro
     ) {
-      cgm.draw_labels_tooltips_or_dendro(external_model);
+      cgm.draw_labels_tooltips_or_dendro(cgm, external_model);
     } else {
       // run background calculations
       draw_background_calculations(regl, params);

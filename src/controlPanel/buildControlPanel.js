@@ -1,15 +1,15 @@
 import * as d3 from "d3";
-import draw_webgl_layers from "../draws/drawWebglLayers.js";
+import d3Tip from "d3-tip";
+import buildReorderCatTitles from "../cats/buildReorderCatTitles.js";
 import build_opacity_slider from "../colors/buildOpacitySlider.js";
 import download_matrix from "../download/downloadMatrix.js";
 import download_metadata from "../download/downloadMetadata.js";
-import d3Tip from "d3-tip";
-import initializeD3Tip from "../tooltip/initializeD3Tip.js";
+import draw_webgl_layers from "../draws/drawWebglLayers.js";
 import runReorder from "../reorders/runReorder.js";
-import buildReorderCatTitles from "../cats/buildReorderCatTitles.js";
+import initializeD3Tip from "../tooltip/initializeD3Tip.js";
 import buildReclusterSection from "./buildReclusterSection.js";
-export default (function build_control_panel() {
-  var cgm = this;
+
+export default function build_control_panel(cgm) {
   var regl = cgm.regl;
   var params = cgm.params;
   params.tooltip_id = "#d3-tip_" + params.root.replace("#", "");
@@ -512,4 +512,4 @@ export default (function build_control_panel() {
       var y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-});
+}

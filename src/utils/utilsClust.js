@@ -1,4 +1,3 @@
-import * as underscore from "underscore";
 export const normal_name = function (d) {
   var inst_name = d.name.replace(/_/g, " ").split("#")[0];
   return inst_name;
@@ -21,7 +20,6 @@ export const property = function (key) {
     return obj == null ? void 0 : obj[key];
   };
 };
-export const pluck = moduleExports.pluck;
 export const is_undefined = function (obj) {
   return obj === void 0;
 };
@@ -31,25 +29,6 @@ const moduleExports = {
   is_supported_order,
   has,
   property,
-  // Convenience version of a common use case of `map`: fetching a property.
-  pluck: function (arr, key) {
-    var self = this;
-    // Double check that we have lodash or underscore available
-    if (window._) {
-      // Underscore provides a pluck function. Use that.
-      if (typeof underscore.pluck === "function") {
-        return underscore.pluck(arr, key);
-      } else if (typeof underscore.map === "function") {
-        // Lodash does not have a pluck function.
-        // Use underscore.map with the property function defined above.
-        return underscore.map(arr, self.property(key));
-      }
-    } else if (arr.map && typeof arr.map === "function") {
-      // If lodash or underscore not available, check to see if the native arr.map is available.
-      // If so, use it with the property function defined above.
-      return arr.map(self.property(key));
-    }
-  },
   is_undefined,
   /* Mixes two objects in together, overwriting a target with a source.
    */

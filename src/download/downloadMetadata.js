@@ -1,7 +1,7 @@
-import file_saver from "./fileSaver.js";
+import { saveAs } from "file-saver";
 import make_meta_string from "./makeMetaString.js";
+
 export default (function download_metadata(params) {
-  var saveAs = file_saver();
   let matrix_string = make_meta_string(params);
   var blob = new Blob([matrix_string], { type: "text/plain;charset=utf-8" });
   let file_type = "csv";

@@ -1,3 +1,4 @@
+import * as _ from "underscore";
 import checkIfValueCats from "./checkIfValueCats";
 
 export default (function generate_cat_info(params) {

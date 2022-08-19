@@ -1,10 +1,12 @@
-import interactionEvents from "../interactions/interactionEvents.js";
 import extend from "xtend/mutable";
+import double_clicking from "../interactions/doubleClicking.js";
+import interactionEvents from "../interactions/interactionEvents.js";
 import track_interaction_zoom_data from "../interactions/trackInteractionZoomData.js";
 import run_hide_tooltip from "../tooltip/runHideTooltip.js";
-import double_clicking from "../interactions/doubleClicking.js";
-export default (function zoom_rules_high_mat(regl, params, external_model) {
-  var cgm = this;
+
+export default function zoom_rules_high_mat(cgm, external_model) {
+  const regl = cgm.regl;
+  const params = cgm.params;
   var opts = opts || {};
   var options = extend(
     {
@@ -30,7 +32,7 @@ export default (function zoom_rules_high_mat(regl, params, external_model) {
       ) {
         double_clicking(regl, params);
       } else {
-        cgm.single_clicking(params, external_model);
+        cgm.single_clicking(cgm, params, external_model);
       }
     });
-});
+}

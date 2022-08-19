@@ -34,12 +34,12 @@ function clustergrammer_gl(args, external_model = null) {
     // maybe do these
     cgm.build_dendrogram_sliders = build_dendrogram_sliders;
     if (!args.showControlPanel) {
-      cgm.build_control_panel = build_control_panel;
+      cgm.build_control_panel = (cgm) => cgm;
     } else {
       cgm.build_control_panel = build_control_panel;
     }
     cgm.run_viz = run_viz;
-    cgm.destroy_viz = destroy_viz;
+    cgm.destroy_viz = () => destroy_viz(cgm);
     cgm.ini_canvas_mouseover = ini_canvas_mouseover;
     cgm.viz_from_network = viz_from_network;
     cgm.draw_labels_tooltips_or_dendro = draw_labels_tooltips_or_dendro;
@@ -53,7 +53,7 @@ function clustergrammer_gl(args, external_model = null) {
     cgm.network = network;
     // going to work on passing in filtered network in place of full network
     // as a quick crop method
-    cgm.viz_from_network(external_model);
+    cgm = cgm.viz_from_network(cgm, external_model);
     // copy the cgm object to the external widget model
     if (external_model != null) {
       external_model.cgm = cgm;
@@ -77,14 +77,13 @@ function clustergrammer_gl(args, external_model = null) {
         document.getElementById(root_id)
       );
     }
-    function adjust_opacity(opacity_scale) {
-      let cgm = this;
+    function adjust_opacity(cgm, opacity_scale) {
       let params = cgm.params;
       params.matrix.opacity_scale = opacity_scale;
-      cgm.make_matrix_args();
+      cgm.make_matrix_args(cgm);
       draw_webgl_layers(cgm);
     }
-    cgm.adjust_opacity = adjust_opacity;
+    cgm.adjust_opacity = () => adjust_opacity(cgm);
     return cgm;
   }
 }

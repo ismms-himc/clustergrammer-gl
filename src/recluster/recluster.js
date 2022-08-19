@@ -1,19 +1,21 @@
-import hcluster from "clusterfckLocal/hcluster.js";
 import * as core from "mathjs/core";
 import * as transpose from "mathjs/lib/function/matrix/transpose";
 import matrix from "mathjs/lib/type/matrix";
+import * as cf from "tayden-clusterfck";
 import change_groups from "../dendrogram/changeGroups.js";
 import runReorder from "../reorders/runReorder.js";
 import dist_fun from "./distanceFunctions.js";
 import get_order_and_groups_clusterfck_tree from "./getOrderAndGroupsClusterfckTree.js";
-var math = core.create();
+
+const math = core.create();
 math.import(transpose);
 math.import(matrix);
-export default (function recluster(
+
+export default function recluster(
+  cgm,
   distance_metric = "cosine",
   linkage_type = "average"
 ) {
-  var cgm = this;
   var new_view = {};
   new_view.N_row_sum = "null";
   new_view.N_row_var = "null";
@@ -42,7 +44,7 @@ export default (function recluster(
       name_nodes = "col_nodes";
     }
     // average, single, complete
-    var clusters = hcluster(mat, dist_fun[distance_metric], linkage_type);
+    var clusters = cf.hcluster(mat, dist_fun[distance_metric], linkage_type);
     var order_info = get_order_and_groups_clusterfck_tree(
       clusters,
       names,
@@ -66,4 +68,4 @@ export default (function recluster(
   let group_level = cgm.params.dendro.group_level;
   change_groups(cgm, "row", group_level.row);
   change_groups(cgm, "col", group_level.col);
-});
+}

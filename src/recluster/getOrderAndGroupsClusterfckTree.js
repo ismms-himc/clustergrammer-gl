@@ -1,6 +1,7 @@
-import get_max_distance_in_dm from "./getMaxDistanceInDm.js";
 import * as underscore from "underscore";
-export default (function get_order_and_groups_clusterfck_tree(
+import get_max_distance_in_dm from "./getMaxDistanceInDm.js";
+
+export default function get_order_and_groups_clusterfck_tree(
   clusters,
   names,
   cgm,
@@ -95,4 +96,4 @@ export default (function get_order_and_groups_clusterfck_tree(
   order_info.order = order_list;
   order_info.ordered_names = ordered_names;
   return order_info;
-});
+}

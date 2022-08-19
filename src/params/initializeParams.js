@@ -26,15 +26,14 @@ import genLabelPar from "./genLabelPar.js";
 import genPixToWebgl from "./genPixToWebgl.js";
 import genTextZoomPar from "./genTextZoomPar.js";
 
-export default function initialize_params(external_model) {
-  var cgm = this;
-  var args = this.args;
-  var canvas_container = this.canvas_container;
-  var regl = this.regl;
-  var network = this.network;
+export default function initialize_params(cgm, external_model) {
+  var args = cgm.args;
+  var canvas_container = cgm.canvas_container;
+  var regl = cgm.regl;
+  var network = cgm.network;
   // fix initial ordering indexing (will fix in Python on nex release)
   ["row", "col"].forEach((axis) => {
-    this.network[axis + "_nodes"].forEach((x) => (x.ini = x.ini - 1));
+    cgm.network[axis + "_nodes"].forEach((x) => (x.ini = x.ini - 1));
   });
   cgm.params = {};
   let params = cgm.params;
@@ -95,7 +94,7 @@ export default function initialize_params(external_model) {
   }
   params.max_zoom = min_dim / 4.0;
   params.zoom_restrict = iniZoomRestrict(params);
-  cgm.zoom_rules_high_mat(regl, params, external_model);
+  cgm.zoom_rules_high_mat(cgm, external_model);
   makeCameras(regl, params);
   calcMatArr(params);
   // matrix color paramters
@@ -112,7 +111,7 @@ export default function initialize_params(external_model) {
   params.viz.mat_colors = mat_colors;
   // attach to cgm so it can be run without passing arguments
   cgm.make_matrix_args = make_matrix_args;
-  cgm.make_matrix_args();
+  cgm.make_matrix_args(cgm);
   genDendroPar(cgm);
   generateSpilloverParams(regl, params);
   var allow_factor = d3.scaleLinear().domain([10, 1000]).range([2, 30]);
@@ -200,5 +199,7 @@ export default function initialize_params(external_model) {
   download.delimiter_key.tuple = "\t";
   download.meta_type = "col";
   params.download = download;
-  this.params = params;
+  cgm.params = params;
+
+  return cgm;
 }

@@ -1,4 +1,3 @@
-import utils from "../utils/utilsClust.js";
 export default (function calc_alpha_order(params) {
   var network = params.network;
   // https://stackoverflow.com/questions/9592740/how-can-you-sort-an-array-without-mutating-the-original-array
@@ -9,7 +8,6 @@ export default (function calc_alpha_order(params) {
   var tmp_names;
   _.each(["row", "col"], function (inst_axis) {
     var inst_nodes = network[inst_axis + "_nodes"];
-    // node_names = utils.pluck(inst_nodes, 'name');
     node_names = inst_nodes.map((x) => {
       let inst_name = x.name;
       if (inst_name.includes(": ")) {

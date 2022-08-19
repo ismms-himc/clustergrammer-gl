@@ -6,5 +6,5 @@ export default function initialize_regl() {
     extensions: ["angle_instanced_arrays"],
     container: canvas_container,
   });
-  this.regl = regl;
+  return regl;
 }

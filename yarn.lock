@@ -1950,6 +1950,11 @@ file-loader@^6.2.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
+file-saver@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
+
 fill-range@^7.0.1:
   version "7.0.1"
   resolved "https://registry.npmjs.org/fill-range/-/fill-range-7.0.1.tgz"
@@ -3895,6 +3900,11 @@ tapable@^2.1.1, tapable@^2.2.0:
   version "2.2.1"
   resolved "https://registry.npmjs.org/tapable/-/tapable-2.2.1.tgz"
   integrity sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==
+
+tayden-clusterfck@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/tayden-clusterfck/-/tayden-clusterfck-0.7.0.tgz#25ebb1291a96e8bc204fff785f320cd9c3a3e62e"
+  integrity sha512-1jw+Rz91yqwxqq8l2UMhTJ03JQZbWkDX20dmgAP/RQbBxN0mHLdDIH8bSm7z+Y7x+fnkgIWmB05t/EFabm2JPQ==
 
 terser-webpack-plugin@^5.1.3:
   version "5.3.5"

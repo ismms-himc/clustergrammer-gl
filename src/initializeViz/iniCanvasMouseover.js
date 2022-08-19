@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-export default (function ini_canvas_mouseover() {
-  var params = this.params;
+export default function ini_canvas_mouseover(cgm) {
+  var params = cgm.params;
   d3.select(params.root + " .canvas-container canvas")
     .on("mouseover", function () {
       params.tooltip.on_canvas = true;
@@ -8,4 +8,4 @@ export default (function ini_canvas_mouseover() {
     .on("mouseout", function () {
       params.tooltip.on_canvas = false;
     });
-});
+}

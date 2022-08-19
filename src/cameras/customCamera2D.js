@@ -1,7 +1,7 @@
-import interactionEvents from "../interactions/interactionEvents.js";
-import extend from "xtend/mutable";
-import mat4 from "gl-mat4";
 import * as EventEmitter from "event-emitter";
+import mat4 from "gl-mat4";
+import extend from "xtend/mutable";
+import interactionEvents from "../interactions/interactionEvents.js";
 import camera_interaction from "./cameraInteraction.js";
 // © 2016 Ricky Reusser. MIT License.
 ("use strict");
@@ -24,7 +24,7 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[15] = 1;
   return out;
 };
-export default (function makeCamera2D(
+export default function makeCamera2D(
   regl,
   params,
   opts,
@@ -144,4 +144,4 @@ export default (function makeCamera2D(
     },
   };
   return inst_camera;
-});
+}

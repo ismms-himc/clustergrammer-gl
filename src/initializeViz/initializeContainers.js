@@ -1,5 +1,6 @@
 import * as d3 from "d3";
-export default (function initialize_containers() {
+
+export default function initialize_containers() {
   var base_container = this.args.container;
   // make control panel (needs to appear above canvas)
   d3.select(base_container)
@@ -22,4 +23,4 @@ export default (function initialize_containers() {
     .style("height", inst_height)
     .style("width", inst_width);
   this.canvas_container = canvas_container;
-});
+}

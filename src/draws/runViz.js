@@ -1,12 +1,12 @@
 import * as d3 from "d3";
 import reset_cameras from "../cameras/resetCameras.js";
-import start_animation from "./startAnimation.js";
-import end_animation from "./endAnimation.js";
+import draw_background_calculations from "./drawBackgroundCalculations.js";
 import draw_interacting from "./drawInteracting.js";
 import draw_mouseover from "./drawMouseover.js";
-import draw_background_calculations from "./drawBackgroundCalculations.js";
-_ = require("underscore");
-export default (function run_viz(external_model) {
+import end_animation from "./endAnimation.js";
+import start_animation from "./startAnimation.js";
+
+export default function run_viz(external_model) {
   var cgm = this;
   var regl = cgm.regl;
   var params = cgm.params;
@@ -54,4 +54,4 @@ export default (function run_viz(external_model) {
       draw_background_calculations(regl, params);
     }
   });
-});
+}

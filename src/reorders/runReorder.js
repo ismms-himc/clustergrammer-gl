@@ -1,6 +1,7 @@
 import * as d3 from "d3";
-import reorderMatrixArgs from "./reorderMatrixArgs.js";
+import updateTextTriangleOrder from "matrixLabels/updateTextTriangleOrder.js";
 import reorderCatArgs from "./reorderCatArgs.js";
+import reorderMatrixArgs from "./reorderMatrixArgs.js";
 export default (function run_reorder(regl, params, inst_axis, ini_new_order) {
   var new_order = ini_new_order
     .replace("sum", "rank")
@@ -17,8 +18,10 @@ export default (function run_reorder(regl, params, inst_axis, ini_new_order) {
     params.text_triangles.draw[inst_axis] != false &&
     params.labels["num_" + inst_axis] <= params.max_num_text
   ) {
-    params.text_triangles.draw[inst_axis] =
-      require("./../matrixLabels/updateTextTriangleOrder")(params, inst_axis);
+    params.text_triangles.draw[inst_axis] = updateTextTriangleOrder(
+      params,
+      inst_axis
+    );
   } else {
     params.text_triangles.draw[inst_axis] = false;
   }

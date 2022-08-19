@@ -1,5 +1,6 @@
 import vec4 from "gl-vec4";
-export default (function camera_interaction(
+
+export default function camera_interaction(
   zoom_data,
   ev,
   viz_component,
@@ -74,4 +75,4 @@ export default (function camera_interaction(
   ev.x = xy[0];
   ev.y = xy[1];
   emitter.emit("move", ev);
-});
+}

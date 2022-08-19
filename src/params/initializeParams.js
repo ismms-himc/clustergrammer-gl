@@ -1,28 +1,32 @@
 import * as d3 from "d3";
-import hzome_functions from "../tooltip/hzomeFunctions.js";
-import make_matrix_args from "../matrixCells/makeMatrixArgs.js";
-import color_to_rgba from "../colors/colorToRgba.js";
-import genAniPar from "./genAniPar.js";
-import calcAlphaOrder from "./calcAlphaOrder.js";
-import genIntPar from "./genIntPar.js";
-import genCatPar from "./genCatPar.js";
-import generateOrderParams from "./generateOrderParams.js";
-import genLabelPar from "./genLabelPar.js";
-import generateTooltipParams from "./generateTooltipParams.js";
-import calcVizDim from "./calcVizDim.js";
-import generateCatArgsArrs from "./generateCatArgsArrs.js";
-import calcTextOffsets from "../matrixLabels/calcTextOffsets.js";
-import genPixToWebgl from "./genPixToWebgl.js";
-import generateWebglToPix from "./generateWebglToPix.js";
-import makeLabelQueue from "../matrixLabels/makeLabelQueue.js";
-import genTextZoomPar from "./genTextZoomPar.js";
-import calcVizArea from "./calcVizArea.js";
-import generateTextTriangleParams from "./generateTextTriangleParams.js";
+import iniZoomData from "zoom/iniZoomData.js";
+import iniZoomRestrict from "zoom/iniZoomRestrict.js";
 import makeCameras from "../cameras/makeCameras.js";
+import color_to_rgba from "../colors/colorToRgba.js";
+import make_matrix_args from "../matrixCells/makeMatrixArgs.js";
+import calcTextOffsets from "../matrixLabels/calcTextOffsets.js";
+import makeLabelQueue from "../matrixLabels/makeLabelQueue.js";
+import hzome_functions from "../tooltip/hzomeFunctions.js";
+import calcAlphaOrder from "./calcAlphaOrder.js";
 import calcMatArr from "./calcMatArr.js";
+import calcRowAndColCanvasPositions from "./calcRowAndColCanvasPositions.js";
+import calcVizArea from "./calcVizArea.js";
+import calcVizDim from "./calcVizDim.js";
+import genAniPar from "./genAniPar.js";
+import genCatPar from "./genCatPar.js";
 import genDendroPar from "./genDendroPar.js";
+import generateCatArgsArrs from "./generateCatArgsArrs.js";
+import generateOrderParams from "./generateOrderParams.js";
 import generateSpilloverParams from "./generateSpilloverParams.js";
-export default (function initialize_params(external_model) {
+import generateTextTriangleParams from "./generateTextTriangleParams.js";
+import generateTooltipParams from "./generateTooltipParams.js";
+import generateWebglToPix from "./generateWebglToPix.js";
+import genIntPar from "./genIntPar.js";
+import genLabelPar from "./genLabelPar.js";
+import genPixToWebgl from "./genPixToWebgl.js";
+import genTextZoomPar from "./genTextZoomPar.js";
+
+export default function initialize_params(external_model) {
   var cgm = this;
   var args = this.args;
   var canvas_container = this.canvas_container;
@@ -58,8 +62,8 @@ export default (function initialize_params(external_model) {
   generateTooltipParams(regl, params);
   calcVizDim(regl, params);
   generateCatArgsArrs(regl, params);
-  params.zoom_data = require("./../zoom/iniZoomData")();
-  params.canvas_pos = require("./calcRowAndColCanvasPositions")(params);
+  params.zoom_data = iniZoomData();
+  params.canvas_pos = calcRowAndColCanvasPositions(params);
   params.is_downsampled = false;
   params.viz_aid_tri_args = {};
   _.each(["row", "col"], function (inst_axis) {
@@ -90,7 +94,7 @@ export default (function initialize_params(external_model) {
     min_dim = labels.num_row;
   }
   params.max_zoom = min_dim / 4.0;
-  params.zoom_restrict = require("./../zoom/iniZoomRestrict")(params);
+  params.zoom_restrict = iniZoomRestrict(params);
   cgm.zoom_rules_high_mat(regl, params, external_model);
   makeCameras(regl, params);
   calcMatArr(params);
@@ -197,4 +201,4 @@ export default (function initialize_params(external_model) {
   download.meta_type = "col";
   params.download = download;
   this.params = params;
-});
+}

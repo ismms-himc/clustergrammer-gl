@@ -1,5 +1,6 @@
 import custom_camera_2d from "./customCamera2d.js";
-export default (function make_cameras(regl, params) {
+
+export default function make_cameras(regl, params) {
   var zoom_data = params.zoom_data;
   const cameras = {};
   var ini_scale = 1.0;
@@ -31,4 +32,4 @@ export default (function make_cameras(regl, params) {
     "static"
   );
   params.cameras = cameras;
-});
+}

@@ -1,8 +1,9 @@
-import p_dict from "./binomPropPvalLookup.js";
 import * as core from "mathjs/core";
 import * as factorial from "mathjs/lib/function/probability/factorial";
-var math = core.create();
+import p_dict from "./binomPropPvalLookup.js";
+const math = core.create();
 math.import(factorial);
+
 export default (function binom_test(actual_k, n, p) {
   var fact = math.factorial;
   var pval;

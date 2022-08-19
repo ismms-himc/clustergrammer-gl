@@ -1,4 +1,4 @@
-var d3 = require("d3");
+import d3 from "d3";
 module.exports = function d3_tip_custom() {
   // Copyright (c) 2013 Justin Palmer
   //

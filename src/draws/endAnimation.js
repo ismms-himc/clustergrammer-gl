@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import updateTextTriangleOrder from "matrixLabels/updateTextTriangleOrder.js";
 import calcTextOffsets from "../matrixLabels/calcTextOffsets.js";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels.js";
 export default (function end_animation(cgm) {
@@ -34,8 +35,10 @@ export default (function end_animation(cgm) {
   // transfer new order to text triangles
   // need to update text positions after animation
   _.each(["row", "col"], function (i_axis) {
-    params.text_triangles.draw[i_axis] =
-      require("./../matrixLabels/updateTextTriangleOrder")(params, i_axis);
+    params.text_triangles.draw[i_axis] = updateTextTriangleOrder(
+      params,
+      i_axis
+    );
     calcTextOffsets(params, i_axis);
   });
   // update ordered_labels

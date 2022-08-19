@@ -1,4 +1,4 @@
-var d3 = require("d3");
+import d3 from "d3";
 module.exports = function make_menu_update_button(
   cgm,
   button_info,

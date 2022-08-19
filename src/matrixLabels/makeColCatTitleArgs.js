@@ -1,5 +1,5 @@
-var m3 = require("./../draws/mat3Transform");
-var interp_fun = require("./../draws/interpFun");
+import m3 from "./../draws/mat3Transform";
+import interp_fun from "./../draws/interpFun";
 
 module.exports = function make_col_cat_title_args(regl, params, zoom_function) {
   var inst_axis = "row";

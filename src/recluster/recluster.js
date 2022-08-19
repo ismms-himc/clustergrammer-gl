@@ -1,11 +1,11 @@
-import clusterfck from "../clusterfckLocal/clusterfck.js";
+import hcluster from "clusterfckLocal/hcluster.js";
 import * as core from "mathjs/core";
-import dist_fun from "./distanceFunctions.js";
-import get_order_and_groups_clusterfck_tree from "./getOrderAndGroupsClusterfckTree.js";
-import change_groups from "../dendrogram/changeGroups.js";
 import * as transpose from "mathjs/lib/function/matrix/transpose";
 import matrix from "mathjs/lib/type/matrix";
+import change_groups from "../dendrogram/changeGroups.js";
 import runReorder from "../reorders/runReorder.js";
+import dist_fun from "./distanceFunctions.js";
+import get_order_and_groups_clusterfck_tree from "./getOrderAndGroupsClusterfckTree.js";
 var math = core.create();
 math.import(transpose);
 math.import(matrix);
@@ -42,11 +42,7 @@ export default (function recluster(
       name_nodes = "col_nodes";
     }
     // average, single, complete
-    var clusters = clusterfck.hcluster(
-      mat,
-      dist_fun[distance_metric],
-      linkage_type
-    );
+    var clusters = hcluster(mat, dist_fun[distance_metric], linkage_type);
     var order_info = get_order_and_groups_clusterfck_tree(
       clusters,
       names,

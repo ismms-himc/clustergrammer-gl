@@ -1,6 +1,9 @@
-import interpFun from "./interpFun.js";
-import calcVizArea from "../params/calcVizArea.js";
+import makeColTextArgs from "matrixLabels/makeColTextArgs.js";
+import makeRowTextArgs from "matrixLabels/makeRowTextArgs.js";
+import makeVizAidTriArgs from "matrixLabels/makeVizAidTriArgs.js";
 import gatherTextTriangles from "../matrixLabels/gatherTextTriangles.js";
+import calcVizArea from "../params/calcVizArea.js";
+import interpFun from "./interpFun.js";
 export default (function draw_axis_components(
   regl,
   params,
@@ -16,8 +19,11 @@ export default (function draw_axis_components(
   /* Axis Components */
   params.cameras[inst_axis + "-labels"].draw(() => {
     // viz aid triangles
-    params.viz_aid_tri_args[inst_axis] =
-      require("./../matrixLabels/makeVizAidTriArgs")(regl, params, inst_axis);
+    params.viz_aid_tri_args[inst_axis] = makeVizAidTriArgs(
+      regl,
+      params,
+      inst_axis
+    );
     regl(params.viz_aid_tri_args[inst_axis])();
     // drawing the label categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
@@ -37,13 +43,13 @@ export default (function draw_axis_components(
     // make the arguments for the draw command
     var text_triangle_args;
     if (inst_axis === "col") {
-      text_triangle_args = require("./../matrixLabels/makeColTextArgs")(
+      text_triangle_args = makeColTextArgs(
         regl,
         params,
         params.zoom_data.zoom_function
       );
     } else {
-      text_triangle_args = require("./../matrixLabels/makeRowTextArgs")(
+      text_triangle_args = makeRowTextArgs(
         regl,
         params,
         params.zoom_data.zoom_function

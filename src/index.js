@@ -1,3 +1,23 @@
+import manual_update_to_cats from "./cats/manualUpdateToCats";
+import update_all_cats from "./cats/updateAllCats";
+import build_control_panel from "./controlPanel/buildControlPanel";
+import build_dendrogram_sliders from "./dendrogram/buildDendrogramSliders";
+import download_matrix from "./download/downloadMatrix";
+import download_metadata from "./download/downloadMetadata";
+import draw_labels_tooltips_or_dendro from "./draws/drawLabelsTooltipsOrDendro";
+import run_viz from "./draws/runViz";
+import destroy_viz from "./initializeViz/destroyViz";
+import ini_canvas_mouseover from "./initializeViz/iniCanvasMouseover";
+import initialize_containers from "./initializeViz/initializeContainers";
+import viz_from_network from "./initializeViz/vizFromNetwork";
+import single_clicking from "./interactions/singleClicking";
+import gen_ordered_labels from "./params/genLabelPar";
+import initialize_params from "./params/initializeParams";
+import initialize_regl from "./params/initializeRegl";
+import recluster from "./recluster/recluster";
+import initialize_tooltip from "./tooltip/initializeD3Tip";
+import zoom_rules_high_mat from "./zoom/zoomRulesHighMat";
+
 /**
  * @type function
  */
@@ -7,30 +27,30 @@ function clustergrammer_gl(args, external_model = null) {
   if (args.container !== null) {
     cgm.args = args;
     // always do these
-    cgm.initialize_params = require("./params/initializeParams");
-    cgm.initialize_regl = require("./params/initializeRegl");
-    cgm.initialize_containers = require("./initializeViz/initializeContainers");
-    cgm.initialize_tooltip = require("./tooltip/initializeD3Tip");
+    cgm.initialize_params = initialize_params;
+    cgm.initialize_regl = initialize_regl;
+    cgm.initialize_containers = initialize_containers;
+    cgm.initialize_tooltip = initialize_tooltip;
     // maybe do these
-    cgm.build_dendrogram_sliders = require("./dendrogram/buildDendrogramSliders");
+    cgm.build_dendrogram_sliders = build_dendrogram_sliders;
     if (!args.showControlPanel) {
-      cgm.build_control_panel = () => {};
+      cgm.build_control_panel = build_control_panel;
     } else {
-      cgm.build_control_panel = require("./controlPanel/buildControlPanel");
+      cgm.build_control_panel = build_control_panel;
     }
-    cgm.run_viz = require("./draws/runViz");
-    cgm.destroy_viz = require("./initializeViz/destroyViz");
-    cgm.ini_canvas_mouseover = require("./initializeViz/iniCanvasMouseover");
-    cgm.viz_from_network = require("./initializeViz/vizFromNetwork");
-    cgm.draw_labels_tooltips_or_dendro = require("./draws/drawLabelsTooltipsOrDendro");
-    cgm.single_clicking = require("./interactions/singleClicking");
-    cgm.zoom_rules_high_mat = require("./zoom/zoomRulesHighMat");
-    cgm.gen_ordered_labels = require("./params/genLabelPar");
+    cgm.run_viz = run_viz;
+    cgm.destroy_viz = destroy_viz;
+    cgm.ini_canvas_mouseover = ini_canvas_mouseover;
+    cgm.viz_from_network = viz_from_network;
+    cgm.draw_labels_tooltips_or_dendro = draw_labels_tooltips_or_dendro;
+    cgm.single_clicking = single_clicking;
+    cgm.zoom_rules_high_mat = zoom_rules_high_mat;
+    cgm.gen_ordered_labels = gen_ordered_labels;
     if (typeof args.widget_callback !== "undefined") {
-      cgm.widget_callback = args.widget_callback;
+      cgm.widget_callback = widget_callback;
     }
     // initialize network
-    cgm.network = args.network;
+    cgm.network = network;
     // going to work on passing in filtered network in place of full network
     // as a quick crop method
     cgm.viz_from_network(external_model);
@@ -38,11 +58,11 @@ function clustergrammer_gl(args, external_model = null) {
     if (external_model != null) {
       external_model.cgm = cgm;
     }
-    cgm.recluster = require("./recluster/recluster");
-    cgm.manual_update_to_cats = require("./cats/manualUpdateToCats");
-    cgm.update_all_cats = require("./cats/updateAllCats");
-    cgm.download_matrix = require("./download/downloadMatrix");
-    cgm.download_metadata = require("./download/downloadMetadata");
+    cgm.recluster = recluster;
+    cgm.manual_update_to_cats = manual_update_to_cats;
+    cgm.update_all_cats = update_all_cats;
+    cgm.download_matrix = download_matrix;
+    cgm.download_metadata = download_metadata;
     // this prevents Jupyter from listening to typing on the modal and
     // misinterpreting as keyboard shortcuts
     if (cgm.params.is_widget) {

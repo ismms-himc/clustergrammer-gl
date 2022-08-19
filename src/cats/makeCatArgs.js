@@ -1,6 +1,6 @@
-var m3 = require("./../draws/mat3_transform");
-var color_to_rgba = require("./../colors/color_to_rgba");
-var get_cat_value = require("./get_cat_value");
+var m3 = require("./../draws/mat3Transform");
+var color_to_rgba = require("./../colors/colorToRgba");
+var get_cat_value = require("./getCatValue");
 
 module.exports = function make_cat_args(regl, params, inst_axis, cat_index) {
   var cat_index_name = "cat-" + String(cat_index);

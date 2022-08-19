@@ -1,6 +1,6 @@
-var m3 = require("./../draws/mat3_transform");
-var color_to_rgba = require("./../colors/color_to_rgba");
-var make_dendro_arr = require("./make_dendro_arr");
+var m3 = require("./../draws/mat3Transform");
+var color_to_rgba = require("./../colors/colorToRgba");
+var make_dendro_arr = require("./makeDendroArr");
 
 module.exports = function make_dendro_args(regl, params, inst_axis) {
   var rotation_radians;

@@ -1,4 +1,4 @@
-var custom_label_reorder = require("./../reorders/custom_label_reorder");
+var custom_label_reorder = require("./../reorders/customLabelReorder");
 
 module.exports = function double_clicking(regl, params) {
   // params.tooltip.tooltip_type

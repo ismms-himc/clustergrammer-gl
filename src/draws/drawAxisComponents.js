@@ -15,7 +15,7 @@ module.exports = function draw_axis_components(
   params.cameras[inst_axis + "-labels"].draw(() => {
     // viz aid triangles
     params.viz_aid_tri_args[inst_axis] =
-      require("./../matrix_labels/make_viz_aid_tri_args")(
+      require("./../matrixLabels/makeVizAidTriArgs")(
         regl,
         params,
         inst_axis
@@ -26,7 +26,7 @@ module.exports = function draw_axis_components(
     // matrix (no special zooming required)
     _.each(params.cat_args[inst_axis], function (inst_cat_arg) {
       regl(inst_cat_arg)({
-        interp_prop: require("./interp_fun")(params),
+        interp_prop: require("./interpFun")(params),
         run_animation: params.ani.running,
       });
     });
@@ -42,13 +42,13 @@ module.exports = function draw_axis_components(
     // make the arguments for the draw command
     var text_triangle_args;
     if (inst_axis === "col") {
-      text_triangle_args = require("./../matrix_labels/make_col_text_args")(
+      text_triangle_args = require("./../matrixLabels/makeColTextArgs")(
         regl,
         params,
         params.zoom_data.zoom_function
       );
     } else {
-      text_triangle_args = require("./../matrix_labels/make_row_text_args")(
+      text_triangle_args = require("./../matrixLabels/makeRowTextArgs")(
         regl,
         params,
         params.zoom_data.zoom_function
@@ -64,11 +64,11 @@ module.exports = function draw_axis_components(
         num_viz_labels < params.max_num_text &&
         params.labels.queue.high[inst_axis].length == 0
       ) {
-        require("./../params/calc_viz_area")(params);
+        require("./../params/calcVizArea")(params);
 
         // only regather if there are more labels than can be shown at once
         if (params.labels["num_" + inst_axis] >= params.max_num_text) {
-          require("./../matrix_labels/gather_text_triangles")(
+          require("./../matrixLabels/gatherTextTriangles")(
             params,
             inst_axis
           );

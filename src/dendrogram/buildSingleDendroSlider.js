@@ -1,6 +1,6 @@
 var d3 = require("d3");
-var change_groups = require("./change_groups");
-let custom_round = require("./../utils/custom_round");
+var change_groups = require("./changeGroups");
+let custom_round = require("./../utils/customRound");
 
 module.exports = function build_single_dendro_slider(cgm, axis) {
   let regl = cgm.regl;

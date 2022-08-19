@@ -49,7 +49,7 @@ module.exports = function find_mouseover_element(regl, params, ev) {
     params.zoom_data[inst_axis].cursor_rel_min = cursor_rel_min[inst_axis];
   });
 
-  require("./get_mouseover_type")(params);
+  require("./getMouseoverType")(params);
 
   // console.log('tooltip_type', params.tooltip.tooltip_type)
 

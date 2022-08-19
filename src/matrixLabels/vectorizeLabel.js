@@ -1,5 +1,5 @@
 const vectorize_text = require("vectorize-text");
-var drop_label_from_queue = require("./drop_label_from_queue");
+var drop_label_from_queue = require("./dropLabelFromQueue");
 
 module.exports = function vectorize_label(params, inst_axis, inst_name) {
   var vect_text_attrs = {

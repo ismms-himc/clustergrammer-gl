@@ -1,6 +1,6 @@
-var calc_dendro_triangles = require("./../dendrogram/calc_dendro_triangles");
-var make_dendro_args = require("./../dendrogram/make_dendro_args");
-var alt_slice_linkage = require("./../dendrogram/alt_slice_linkage");
+var calc_dendro_triangles = require("./../dendrogram/calcDendroTriangles");
+var make_dendro_args = require("./../dendrogram/makeDendroArgs");
+var alt_slice_linkage = require("./../dendrogram/altSliceLinkage");
 
 module.exports = function gen_dendro_par(cgm) {
   var params = cgm.params;

@@ -1,4 +1,4 @@
-var gather_text_triangles = require("./../matrix_labels/gather_text_triangles");
+var gather_text_triangles = require("./../matrixLabels/gatherTextTriangles");
 module.exports = function generate_text_triangle_params(params) {
   // save text triangles for later use
   params.text_triangles = {};

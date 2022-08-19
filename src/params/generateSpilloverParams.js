@@ -1,5 +1,5 @@
-var make_spillover_args = require("./../spillover/make_spillover_args");
-var calc_spillover_triangles = require("./../spillover/calc_spillover_triangles");
+var make_spillover_args = require("./../spillover/makeSpilloverArgs");
+var calc_spillover_triangles = require("./../spillover/calcSpilloverTriangles");
 
 module.exports = function generate_spillover_params(regl, params) {
   var spillover_args = {};

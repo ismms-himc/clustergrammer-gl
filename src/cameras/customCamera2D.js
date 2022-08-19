@@ -6,8 +6,8 @@ var interactionEvents = require("./../interactions/interaction-events");
 var extend = require("xtend/mutable");
 var mat4 = require("gl-mat4");
 var EventEmitter = require("event-emitter");
-var camera_interaction = require("./camera_interaction");
-// var track_interaction_zoom_data = require('./../interactions/track_interaction_zoom_data');
+var camera_interaction = require("./cameraInteraction");
+// var track_interaction_zoom_data = require('./../interactions/trackInteractionZoomData');
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;

@@ -1,4 +1,4 @@
-var make_full_name = require("./make_full_name");
+var make_full_name = require("./makeFullName");
 
 module.exports = function make_matrix_string(params) {
   var inst_matrix = params.matrix;

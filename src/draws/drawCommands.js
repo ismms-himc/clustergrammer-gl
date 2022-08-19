@@ -1,4 +1,4 @@
-let draw_webgl_layers = require("./draw_webgl_layers");
+let draw_webgl_layers = require("./drawWebglLayers");
 
 module.exports = function draw_commands(cgm, external_model) {
   let regl = cgm.regl;
@@ -9,7 +9,7 @@ module.exports = function draw_commands(cgm, external_model) {
   if (params.tooltip.tooltip_type) {
     if (params.tooltip.tooltip_type.includes("-cat-")) {
       // This is required to updated category opacity when mousing over
-      require("./../params/generate_cat_args_arrs")(regl, params);
+      require("./../params/generateCatArgsArrs")(regl, params);
       // console.log('generate_cat_args_arrs\n--------------------------')
 
       params.int.need_reset_cat_opacity = true;
@@ -22,7 +22,7 @@ module.exports = function draw_commands(cgm, external_model) {
     // console.log(mousing_over_cat)
     // console.log(params.tooltip.tooltip_type)
     // console.log('reset cat opacity\n==============================')
-    require("./../params/generate_cat_args_arrs")(regl, params);
+    require("./../params/generateCatArgsArrs")(regl, params);
     params.int.need_reset_cat_opacity = false;
   }
 
@@ -32,7 +32,7 @@ module.exports = function draw_commands(cgm, external_model) {
 
   // show tooltip if necessary
   if (tooltip.show_tooltip && tooltip.in_bounds_tooltip && tooltip.on_canvas) {
-    require("./../tooltip/run_show_tooltip")(cgm, external_model);
+    require("./../tooltip/runShowTooltip")(cgm, external_model);
   }
   if (params.labels.draw_labels) {
     params.labels.draw_labels = false;

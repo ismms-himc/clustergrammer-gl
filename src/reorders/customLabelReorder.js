@@ -1,5 +1,5 @@
 var d3 = require("d3");
-var run_reorder = require("./../reorders/run_reorder");
+var run_reorder = require("./../reorders/runReorder");
 
 module.exports = function custom_label_reorder(regl, params, inst_axis) {
   // update custom label order

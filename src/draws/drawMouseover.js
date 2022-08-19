@@ -1,5 +1,5 @@
 var d3 = require("d3");
-var final_mouseover_frame = require("./../interactions/final_mouseover_frame");
+var final_mouseover_frame = require("./../interactions/finalMouseoverFrame");
 var wait_time_final_mouseover = 100;
 
 module.exports = function draw_mouseover(regl, params) {

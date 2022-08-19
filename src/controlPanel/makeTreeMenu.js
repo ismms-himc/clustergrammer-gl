@@ -1,8 +1,8 @@
 // var d3 = require("d3");
-// var make_menu_button_section = require('./make_menu_button_section');
-// var make_menu_update_button = require('./make_menu_update_button');
-// var position_tree_menu = require('./position_tree_menu');
-// var toggle_menu = require('./toggle_menu');
+// var make_menu_button_section = require('./makeMenuButtonSection');
+// var make_menu_update_button = require('./makeMenuUpdateButton');
+// var position_tree_menu = require('./positionTreeMenu');
+// var toggle_menu = require('./toggleMenu');
 // // var recluster = require('../recluster/recluster');
 
 // module.exports = function make_tree_menu(cgm){

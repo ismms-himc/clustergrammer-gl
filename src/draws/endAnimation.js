@@ -36,10 +36,10 @@ module.exports = function end_animation(cgm) {
   // need to update text positions after animation
   _.each(["row", "col"], function (i_axis) {
     params.text_triangles.draw[i_axis] =
-      require("./../matrix_labels/update_text_triangle_order")(params, i_axis);
-    require("./../matrix_labels/calc_text_offsets")(params, i_axis);
+      require("./../matrixLabels/updateTextTriangleOrder")(params, i_axis);
+    require("./../matrixLabels/calcTextOffsets")(params, i_axis);
   });
 
   // update ordered_labels
-  require("./../matrix_labels/gen_ordered_labels")(cgm);
+  require("./../matrixLabels/genOrderedLabels")(cgm);
 };

@@ -1,4 +1,4 @@
-var custom_camera_2d = require("./custom_camera_2d");
+var custom_camera_2d = require("./customCamera2d");
 
 module.exports = function make_cameras(regl, params) {
   // console.log('---------------------------------------------')

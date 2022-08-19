@@ -1,5 +1,5 @@
 var average = require("./average");
-var standard_deviation = require("./standard_deviation");
+var standard_deviation = require("./standardDeviation");
 module.exports = function calc_zscore(params) {
   console.log("calc_zscore ????????????  ");
 

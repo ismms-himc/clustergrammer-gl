@@ -1,6 +1,6 @@
-var calc_dendro_triangles = require("./../dendrogram/calc_dendro_triangles");
-var make_dendro_args = require("./../dendrogram/make_dendro_args");
-var alt_slice_linkage = require("./alt_slice_linkage");
+var calc_dendro_triangles = require("./../dendrogram/calcDendroTriangles");
+var make_dendro_args = require("./../dendrogram/makeDendroArgs");
+var alt_slice_linkage = require("./altSliceLinkage");
 var d3 = require("d3");
 
 /* Changes the groupings (x- and y-axis color bars).

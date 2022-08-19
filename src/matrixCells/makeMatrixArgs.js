@@ -1,5 +1,5 @@
-var make_position_arr = require("./make_position_arr");
-var make_opacity_arr = require("./make_opacity_arr");
+var make_position_arr = require("./makePositionArr");
+var make_opacity_arr = require("./makeOpacityArr");
 
 module.exports = function make_matrix_args() {
   let cgm = this;

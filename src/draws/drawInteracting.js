@@ -6,10 +6,10 @@ module.exports = function draw_interacting(cgm, external_model) {
 
   params.int.total = params.int.total + 1;
 
-  require("./draw_commands")(cgm, external_model);
+  require("./drawCommands")(cgm, external_model);
 
   setTimeout(
-    require("./../interactions/final_interaction_frame"),
+    require("./../interactions/finalInteractionFrame"),
     wait_time_final_interact,
     regl,
     params

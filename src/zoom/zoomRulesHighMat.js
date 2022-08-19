@@ -1,9 +1,9 @@
 var interactionEvents = require("./../interactions/interaction-events");
 var extend = require("xtend/mutable");
-var track_interaction_zoom_data = require("./../interactions/track_interaction_zoom_data");
-var run_hide_tooltip = require("./../tooltip/run_hide_tooltip");
-var double_clicking = require("./../interactions/double_clicking");
-// var single_clicking = require('./../interactions/single_clicking');
+var track_interaction_zoom_data = require("./../interactions/trackInteractionZoomData");
+var run_hide_tooltip = require("./../tooltip/runHideTooltip");
+var double_clicking = require("./../interactions/doubleClicking");
+// var single_clicking = require('./../interactions/singleClicking');
 
 module.exports = function zoom_rules_high_mat(regl, params, external_model) {
   var cgm = this;

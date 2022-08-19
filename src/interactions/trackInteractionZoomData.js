@@ -1,7 +1,7 @@
-var zoom_rules_low_mat = require("./../zoom/zoom_rules_low_mat");
-var find_mouseover_element = require("./find_mouseover_element");
-var keep_track_of_interactions = require("./keep_track_of_interactions");
-var keep_track_of_mouseovers = require("./keep_track_of_mouseovers");
+var zoom_rules_low_mat = require("./../zoom/zoomRulesLowMat");
+var find_mouseover_element = require("./findMouseoverElement");
+var keep_track_of_interactions = require("./keepTrackOfInteractions");
+var keep_track_of_mouseovers = require("./keepTrackOfMouseovers");
 
 module.exports = function track_interaction_zoom_data(regl, params, ev) {
   // console.log('track interaction zoom data')

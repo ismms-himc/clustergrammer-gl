@@ -1,6 +1,6 @@
 var d3 = require("d3");
-let custom_round = require("./../utils/custom_round");
-let draw_webgl_layers = require("./../draws/draw_webgl_layers");
+let custom_round = require("./../utils/customRound");
+let draw_webgl_layers = require("./../draws/drawWebglLayers");
 
 module.exports = function build_opacity_slider(cgm) {
   console.log("build_opacity_slider!!");

@@ -1,9 +1,9 @@
 var d3 = require("d3");
-let draw_webgl_layers = require("./../draws/draw_webgl_layers");
-// var logo_url = require("file-loader!../graham_cracker_70.png");
-let build_opacity_slider = require("./../colors/build_opacity_slider");
-let download_matrix = require("./../download/download_matrix");
-let download_metadata = require("./../download/download_metadata");
+let draw_webgl_layers = require("./../draws/drawWebglLayers");
+// var logo_url = require("file-loader!../grahamCracker70.png");
+let build_opacity_slider = require("./../colors/buildOpacitySlider");
+let download_matrix = require("./../download/downloadMatrix");
+let download_metadata = require("./../download/downloadMetadata");
 
 module.exports = function build_control_panel() {
   var cgm = this;
@@ -54,7 +54,7 @@ module.exports = function build_control_panel() {
     .attr("class", "control-panel-background")
     .call(tooltip);
 
-  require("./../tooltip/initialize_d3_tip")(params);
+  require("./../tooltip/initializeD3Tip")(params);
 
   // tooltip style
   //////////////////////////
@@ -264,7 +264,7 @@ module.exports = function build_control_panel() {
           console.log(">>>>>>>>", params.order.inst[i_axis], clean_order);
 
           /* category order is already calculated */
-          require("./../reorders/run_reorder")(regl, params, i_axis, d);
+          require("./../reorders/runReorder")(regl, params, i_axis, d);
 
           d3.select(params.root + " ." + i_axis + "-reorder-buttons")
             .selectAll("rect")
@@ -313,8 +313,8 @@ module.exports = function build_control_panel() {
       );
   });
 
-  require("../cats/build_reorder_cat_titles")(regl, cgm);
-  require("./build_recluster_section")(cgm);
+  require("../cats/buildReorderCatTitles")(regl, cgm);
+  require("./buildReclusterSection")(cgm);
 
   // row search
   ///////////////////

@@ -1,12 +1,12 @@
 var d3 = require("d3");
 _ = require("underscore");
-var reset_cameras = require("./../cameras/reset_cameras");
-var start_animation = require("./start_animation");
-var end_animation = require("./end_animation");
-var draw_interacting = require("./draw_interacting");
-var draw_mouseover = require("./draw_mouseover");
+var reset_cameras = require("./../cameras/resetCameras");
+var start_animation = require("./startAnimation");
+var end_animation = require("./endAnimation");
+var draw_interacting = require("./drawInteracting");
+var draw_mouseover = require("./drawMouseover");
 
-var draw_background_calculations = require("./draw_background_calculations");
+var draw_background_calculations = require("./drawBackgroundCalculations");
 
 module.exports = function run_viz(external_model) {
   var cgm = this;

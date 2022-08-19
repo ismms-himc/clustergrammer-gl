@@ -1,5 +1,5 @@
-var file_saver = require("./file_saver");
-var make_meta_string = require("./make_meta_string");
+var file_saver = require("./fileSaver");
+var make_meta_string = require("./makeMetaString");
 
 module.exports = function download_metadata(params) {
   var saveAs = file_saver();

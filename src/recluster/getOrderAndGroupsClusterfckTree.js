@@ -1,4 +1,4 @@
-var get_max_distance_in_dm = require("./get_max_distance_in_dm");
+var get_max_distance_in_dm = require("./getMaxDistanceInDm");
 var underscore = require("underscore");
 
 module.exports = function get_order_and_groups_clusterfck_tree(

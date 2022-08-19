@@ -1,4 +1,4 @@
-var draw_commands = require("./draw_commands");
+var draw_commands = require("./drawCommands");
 
 module.exports = function draw_labels_tooltips_or_dendro(external_model) {
   var cgm = this;

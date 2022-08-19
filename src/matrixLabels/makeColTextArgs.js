@@ -1,6 +1,6 @@
 var d3 = require("d3");
-var m3 = require("./../draws/mat3_transform");
-var interp_fun = require("./../draws/interp_fun");
+var m3 = require("./../draws/mat3Transform");
+var interp_fun = require("./../draws/interpFun");
 
 module.exports = function make_col_text_args(regl, params, zoom_function) {
   var inst_axis = "col";

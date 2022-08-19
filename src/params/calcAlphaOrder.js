@@ -1,4 +1,4 @@
-var utils = require("./../utils/utils_clust");
+var utils = require("./../utils/utilsClust");
 module.exports = function calc_alpha_order(params) {
   var network = params.network;
 

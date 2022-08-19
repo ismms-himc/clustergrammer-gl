@@ -1,4 +1,4 @@
-var make_position_arr = require("./../matrix_cells/make_position_arr");
+var make_position_arr = require("./../matrixCells/makePositionArr");
 
 module.exports = function reorder_matrix_args(regl, params) {
   // calculate new ordering

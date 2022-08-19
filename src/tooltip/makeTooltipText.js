@@ -1,5 +1,5 @@
 var d3 = require("d3");
-var make_dendro_tooltip = require("./make_dendro_tooltip");
+var make_dendro_tooltip = require("./makeDendroTooltip");
 
 module.exports = function make_tooltip_text(cgm, external_model) {
   let params = cgm.params;

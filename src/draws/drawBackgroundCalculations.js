@@ -1,5 +1,5 @@
-var vectorize_label = require("./../matrix_labels/vectorize_label");
-var drop_label_from_queue = require("./../matrix_labels/drop_label_from_queue");
+var vectorize_label = require("./../matrixLabels/vectorizeLabel");
+var drop_label_from_queue = require("./../matrixLabels/dropLabelFromQueue");
 
 module.exports = function draw_background_calculations(regl, params) {
   _.each(["row", "col"], function (inst_axis) {

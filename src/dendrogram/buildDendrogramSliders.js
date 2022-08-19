@@ -1,5 +1,5 @@
 var d3 = require("d3");
-var build_single_dendro_slider = require("./build_single_dendro_slider");
+var build_single_dendro_slider = require("./buildSingleDendroSlider");
 
 module.exports = function build_dendrogram_sliders() {
   var cgm = this;

@@ -1,4 +1,4 @@
-let draw_webgl_layers = require("./../draws/draw_webgl_layers");
+let draw_webgl_layers = require("./../draws/drawWebglLayers");
 
 module.exports = function manual_update_to_cats(
   cgm,
@@ -33,8 +33,8 @@ module.exports = function manual_update_to_cats(
   // params.cat_data.manual_cat_dict[axis]
 
   // generate an ordred labels list
-  require("./../matrix_labels/gen_ordered_labels")(cgm);
-  require("./../params/generate_cat_args_arrs")(regl, params);
+  require("./../matrixLabels/genOrderedLabels")(cgm);
+  require("./../params/generateCatArgsArrs")(regl, params);
 
   if (params.is_widget === false) {
     draw_webgl_layers(cgm);

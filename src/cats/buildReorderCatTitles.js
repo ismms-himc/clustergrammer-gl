@@ -1,5 +1,5 @@
 var d3 = require("d3");
-var run_reorder = require("./../reorders/run_reorder");
+var run_reorder = require("./../reorders/runReorder");
 
 module.exports = function build_reorder_cat_titles(regl, cgm) {
   var params = cgm.params;
@@ -57,7 +57,7 @@ module.exports = function build_reorder_cat_titles(regl, cgm) {
       d.custom = order_dict[inst_name];
     });
 
-    require("./../params/generate_cat_args_arrs")(regl, params);
+    require("./../params/generateCatArgsArrs")(regl, params);
     run_reorder(regl, params, axis, "custom");
     params.order.inst.col = "custom";
   }

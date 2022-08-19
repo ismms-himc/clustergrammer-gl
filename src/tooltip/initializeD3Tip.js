@@ -1,5 +1,5 @@
 var d3 = require("d3");
-module.exports = function initialize_d3_tip(params) {
+module.exports = function initializeD3Tip(params) {
   // artifically initialize tooltip
   /////////////////////////////////////
   var inst_selector = params.root + " .control-panel-background";

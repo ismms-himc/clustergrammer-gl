@@ -1,5 +1,5 @@
-var ini_zoom_data = require("./../zoom/ini_zoom_data");
-var make_cameras = require("./make_cameras");
+var ini_zoom_data = require("./../zoom/iniZoomData");
+var make_cameras = require("./makeCameras");
 
 module.exports = function reset_cameras(regl, params) {
   // console.log('reset_cameras\n-------------------')

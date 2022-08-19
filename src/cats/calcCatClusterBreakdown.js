@@ -1,6 +1,6 @@
 /* eslint-disable guard-for-in */
 
-var binom_test = require("./binom_test");
+var binom_test = require("./binomTest");
 
 module.exports = function calc_cat_cluster_breakdown(
   params,

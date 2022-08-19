@@ -1,9 +1,9 @@
 var d3 = require("d3");
-var make_cat_breakdown_graph = require("./../cats/make_cat_breakdown_graph");
-var calc_cat_cluster_breakdown = require("./../cats/calc_cat_cluster_breakdown");
-var run_hide_tooltip = require("./run_hide_tooltip");
-// var run_dendro_crop = require('./../crop/run_dendro_crop');
-var manual_category_from_dendro = require("./manual_category_from_dendro");
+var make_cat_breakdown_graph = require("./../cats/makeCatBreakdownGraph");
+var calc_cat_cluster_breakdown = require("./../cats/calcCatClusterBreakdown");
+var run_hide_tooltip = require("./runHideTooltip");
+// var run_dendro_crop = require('./../crop/runDendroCrop');
+var manual_category_from_dendro = require("./manualCategoryFromDendro");
 
 module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis) {
   var params = cgm.params;

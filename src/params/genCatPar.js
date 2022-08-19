@@ -1,5 +1,5 @@
-var generate_cat_array = require("./../cats/generate_cat_array");
-var generate_cat_info = require("./../cats/generate_cat_info");
+var generate_cat_array = require("./../cats/generateCatArray");
+var generate_cat_info = require("./../cats/generateCatInfo");
 
 module.exports = function gen_cat_par(params) {
   var cat_data = {};

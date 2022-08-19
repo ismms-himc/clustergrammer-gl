@@ -1,4 +1,4 @@
-var vectorize_label = require("./vectorize_label");
+var vectorize_label = require("./vectorizeLabel");
 
 module.exports = function gather_text_triangles(params, inst_axis) {
   // console.log('gather_text_triangles')

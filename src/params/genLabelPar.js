@@ -34,5 +34,5 @@ module.exports = function gen_label_par(cgm) {
   });
 
   params.labels = labels;
-  require("./../matrix_labels/gen_ordered_labels")(cgm);
+  require("./../matrixLabels/genOrderedLabels")(cgm);
 };

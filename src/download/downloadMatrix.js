@@ -1,5 +1,5 @@
-var file_saver = require("./file_saver");
-var make_matrix_string = require("./make_matrix_string");
+var file_saver = require("./fileSaver");
+var make_matrix_string = require("./makeMatrixString");
 
 module.exports = function download_matrix(params) {
   var saveAs = file_saver();

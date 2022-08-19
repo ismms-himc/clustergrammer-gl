@@ -1,13 +1,13 @@
 // var clusterfck = require('cornhundred-clusterfck');
-var clusterfck = require("../clusterfck_local/clusterfck");
+var clusterfck = require("../clusterfckLocal/clusterfck");
 var core = require("mathjs/core");
 var math = core.create();
-var dist_fun = require("./distance_functions");
-var get_order_and_groups_clusterfck_tree = require("./get_order_and_groups_clusterfck_tree");
-// var update_view = require('../update/update_view');
+var dist_fun = require("./distanceFunctions");
+var get_order_and_groups_clusterfck_tree = require("./getOrderAndGroupsClusterfckTree");
+// var update_view = require('../update/updateView');
 // var underscore = require('underscore');
 
-var change_groups = require("./../dendrogram/change_groups");
+var change_groups = require("./../dendrogram/changeGroups");
 
 math.import(require("mathjs/lib/function/matrix/transpose"));
 math.import(require("mathjs/lib/type/matrix"));
@@ -90,8 +90,8 @@ module.exports = function recluster(
   // cgm.new_view = new_view
 
   // run reordering
-  require("./../reorders/run_reorder")(cgm.regl, cgm.params, "row", "clust");
-  require("./../reorders/run_reorder")(cgm.regl, cgm.params, "col", "clust");
+  require("./../reorders/runReorder")(cgm.regl, cgm.params, "row", "clust");
+  require("./../reorders/runReorder")(cgm.regl, cgm.params, "col", "clust");
 
   let group_level = cgm.params.dendro.group_level;
   change_groups(cgm, "row", group_level.row);

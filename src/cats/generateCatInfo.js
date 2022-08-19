@@ -79,7 +79,7 @@ module.exports = function generate_cat_info(params) {
       var cat_states = _.uniq(cat_instances_titles).sort();
 
       // check whether all the categories are of value type
-      i_info = require("./check_if_value_cats")(cat_states);
+      i_info = require("./checkIfValueCats")(cat_states);
 
       // add histogram to i_info
       if (i_info.type === "cat_strings") {

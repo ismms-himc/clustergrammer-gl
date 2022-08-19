@@ -1,8 +1,8 @@
 var d3 = require("d3");
-// var position_tree_icon = require('./position_tree_icon');
-var toggle_menu = require("./toggle_menu");
-// var make_tree_menu = require('./make_tree_menu');
-let draw_webgl_layers = require("./../draws/draw_webgl_layers");
+// var position_tree_icon = require('./positionTreeIcon');
+var toggle_menu = require("./toggleMenu");
+// var make_tree_menu = require('./makeTreeMenu');
+let draw_webgl_layers = require("./../draws/drawWebglLayers");
 
 module.exports = function build_recluster_section(cgm) {
   var slider_length = 40;

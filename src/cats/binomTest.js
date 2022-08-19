@@ -4,7 +4,7 @@
 // Create a new, empty math.js instance
 // It will only contain methods `import` and `config`
 // math.import(require('mathjs/lib/type/fraction'));
-var p_dict = require('./binom_prop_pval_lookup');
+var p_dict = require('./binomPropPvalLookup');
 var core = require('mathjs/core');
 var math = core.create();
 

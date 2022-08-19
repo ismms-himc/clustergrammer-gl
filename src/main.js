@@ -16,28 +16,28 @@ function clustergrammer_gl(args, external_model = null) {
     cgm.args = args;
 
     // always do these
-    cgm.initialize_params = require("./params/initialize_params");
-    cgm.initialize_regl = require("./params/initialize_regl");
-    cgm.initialize_containers = require("./initialize_viz/initialize_containers");
-    cgm.initialize_tooltip = require("./tooltip/initialize_d3_tip");
+    cgm.initialize_params = require("./params/initializeParams");
+    cgm.initialize_regl = require("./params/initializeRegl");
+    cgm.initialize_containers = require("./initializeViz/initializeContainers");
+    cgm.initialize_tooltip = require("./tooltip/initializeD3Tip");
 
     // maybe do these
-    cgm.build_dendrogram_sliders = require("./dendrogram/build_dendrogram_sliders");
+    cgm.build_dendrogram_sliders = require("./dendrogram/buildDendrogramSliders");
     if (args.showControlPanel) {
-      cgm.build_control_panel = require("./control_panel/build_control_panel");
+      cgm.build_control_panel = require("./controlPanel/buildControlPanel");
     } else {
       cgm.build_control_panel = () => {};
     }
-    cgm.run_viz = require("./draws/run_viz");
-    cgm.destroy_viz = require("./initialize_viz/destroy_viz");
-    cgm.ini_canvas_mouseover = require("./initialize_viz/ini_canvas_mouseover");
-    cgm.viz_from_network = require("./initialize_viz/viz_from_network");
-    cgm.draw_labels_tooltips_or_dendro = require("./draws/draw_labels_tooltips_or_dendro");
+    cgm.run_viz = require("./draws/runViz");
+    cgm.destroy_viz = require("./initializeViz/destroyViz");
+    cgm.ini_canvas_mouseover = require("./initializeViz/iniCanvasMouseover");
+    cgm.viz_from_network = require("./initializeViz/vizFromNetwork");
+    cgm.draw_labels_tooltips_or_dendro = require("./draws/drawLabelsTooltipsOrDendro");
 
-    cgm.single_clicking = require("./interactions/single_clicking");
-    cgm.zoom_rules_high_mat = require("./zoom/zoom_rules_high_mat");
+    cgm.single_clicking = require("./interactions/singleClicking");
+    cgm.zoom_rules_high_mat = require("./zoom/zoomRulesHighMat");
 
-    cgm.gen_ordered_labels = require("./params/gen_label_par");
+    cgm.gen_ordered_labels = require("./params/genLabelPar");
 
     if (typeof args.widget_callback !== "undefined") {
       console.log("pass widget_callback to cgm  ");
@@ -58,11 +58,11 @@ function clustergrammer_gl(args, external_model = null) {
     }
 
     cgm.recluster = require("./recluster/recluster");
-    cgm.manual_update_to_cats = require("./cats/manual_update_to_cats");
-    cgm.update_all_cats = require("./cats/update_all_cats");
+    cgm.manual_update_to_cats = require("./cats/manualUpdateToCats");
+    cgm.update_all_cats = require("./cats/updateAllCats");
 
-    cgm.download_matrix = require("./download/download_matrix");
-    cgm.download_metadata = require("./download/download_metadata");
+    cgm.download_matrix = require("./download/downloadMatrix");
+    cgm.download_metadata = require("./download/downloadMetadata");
 
     // this prevents Jupyter from listening to typing on the modal and
     // misinterpreting as keyboard shortcuts

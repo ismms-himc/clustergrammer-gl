@@ -1,4 +1,4 @@
-var run_hide_tooltip = require("./../tooltip/run_hide_tooltip");
+var run_hide_tooltip = require("./../tooltip/runHideTooltip");
 
 module.exports = function single_clicking(params, external_model) {
   params.ani.last_click = params.ani.time;
@@ -12,7 +12,7 @@ module.exports = function single_clicking(params, external_model) {
 
   if (params.tooltip.tooltip_type.includes("-dendro")) {
     if (params.tooltip.permanent_tooltip === false) {
-      require("./../tooltip/run_show_tooltip")(cgm, external_model);
+      require("./../tooltip/runShowTooltip")(cgm, external_model);
       params.tooltip.permanent_tooltip = true;
     }
   }

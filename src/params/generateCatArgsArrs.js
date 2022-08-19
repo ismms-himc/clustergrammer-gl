@@ -1,5 +1,5 @@
-var make_cat_position_array = require("./../cats/make_cat_position_array");
-var make_cat_args = require("./../cats/make_cat_args");
+var make_cat_position_array = require("./../cats/makeCatPositionArray");
+var make_cat_args = require("./../cats/makeCatArgs");
 
 /* eslint-disable no-loop-func */
 

@@ -1,10 +1,10 @@
-var sanitize_inst_zoom = require("./sanitize_inst_zoom");
-var sanitize_potential_zoom = require("./sanitize_potential_zoom");
-var pan_by_drag_rules = require("./pan_by_drag_rules");
-var calc_cursor_relative = require("./calc_cursor_relative");
-var calc_pan_by_zoom = require("./calc_pan_by_zoom");
-var calc_potential_total_pan = require("./calc_potential_total_pan");
-var run_zoom_restrictions = require("./run_zoom_restrictions");
+var sanitize_inst_zoom = require("./sanitizeInstZoom");
+var sanitize_potential_zoom = require("./sanitizePotentialZoom");
+var pan_by_drag_rules = require("./panByDragRules");
+var calc_cursor_relative = require("./calcCursorRelative");
+var calc_pan_by_zoom = require("./calcPanByZoom");
+var calc_potential_total_pan = require("./calcPotentialTotalPan");
+var run_zoom_restrictions = require("./runZoomRestrictions");
 
 module.exports = function zoom_rules_low_mat(
   params,

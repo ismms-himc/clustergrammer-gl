@@ -1,7 +1,7 @@
-var m3 = require("./../draws/mat3_transform");
-var color_to_rgba = require("./../colors/color_to_rgba");
-var make_viz_aid_tri_pos_arr = require("./make_viz_aid_tri_pos_arr");
-var interp_fun = require("./../draws/interp_fun");
+var m3 = require("./../draws/mat3Transform");
+var color_to_rgba = require("./../colors/colorToRgba");
+var make_viz_aid_tri_pos_arr = require("./makeVizAidTriPosArr");
+var interp_fun = require("./../draws/interpFun");
 
 module.exports = function make_viz_aid_tri_args(regl, params, inst_axis) {
   var num_labels = params.labels["num_" + inst_axis];

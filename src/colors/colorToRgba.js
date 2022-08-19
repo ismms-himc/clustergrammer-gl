@@ -1,5 +1,5 @@
 /* eslint-disable */
-var color_table = require('./color_table.js');
+var color_table = require('./colorTable.js');
 
 module.exports = function color_to_rgbs(hex_or_name, alpha=1.0){
 

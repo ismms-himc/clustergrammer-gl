@@ -106,7 +106,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb) {
           return "translate(0," + i_y + ")";
         });
 
-      require("./cat_breakdown_bars")(
+      require("./catBreakdownBars")(
         params,
         cat_data,
         cgg,
@@ -115,7 +115,7 @@ module.exports = function make_cat_breakdown_graph(params, dendro_info, cb) {
         cat_bar_groups
       );
 
-      require("./cat_breakdown_values")(
+      require("./catBreakdownValues")(
         params,
         cgg,
         cat_bar_groups,

@@ -1,4 +1,4 @@
-var interp_fun = require("./interp_fun");
+var interp_fun = require("./interpFun");
 
 module.exports = function draw_matrix_components(regl, params) {
   /* Matrix */

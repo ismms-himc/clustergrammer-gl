@@ -1,7 +1,8 @@
 import draw_webgl_layers from "../draws/drawWebglLayers.js";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels.js";
 import generateCatArgsArrs from "../params/generateCatArgsArrs.js";
-export default (function manual_update_to_cats(
+
+export default function manual_update_to_cats(
   cgm,
   axis,
   cat_title,
@@ -32,4 +33,4 @@ export default (function manual_update_to_cats(
   if (params.is_widget === false) {
     draw_webgl_layers(cgm);
   }
-});
+}

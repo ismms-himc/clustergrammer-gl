@@ -1,7 +1,8 @@
 import draw_webgl_layers from "../draws/drawWebglLayers.js";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels.js";
 import generateCatArgsArrs from "../params/generateCatArgsArrs.js";
-export default (function update_all_cats(cgm, axis, cat_title, new_cat_dict) {
+
+export default function update_all_cats(cgm, axis, cat_title, new_cat_dict) {
   params = cgm.params;
   regl = cgm.regl;
   // manually updated categories in network
@@ -23,4 +24,4 @@ export default (function update_all_cats(cgm, axis, cat_title, new_cat_dict) {
   genOrderedLabels(cgm);
   generateCatArgsArrs(regl, params);
   draw_webgl_layers(cgm);
-});
+}

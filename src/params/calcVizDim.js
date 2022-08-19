@@ -1,16 +1,11 @@
 import * as d3 from "d3";
 import * as _ from "underscore";
-import extend from "xtend/mutable";
 
 export default (function calc_vd(regl, params) {
   const vd = {};
-  const opts = opts || {};
-  const options = extend(
-    {
-      element: opts.element || regl._gl.canvas,
-    },
-    opts || {}
-  );
+  const options = {
+    element: regl._gl.canvas,
+  };
   const element = options.element;
   vd.canvas = {};
   _.each(["width", "height"], function (inst_dim) {

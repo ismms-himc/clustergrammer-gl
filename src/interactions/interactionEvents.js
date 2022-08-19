@@ -10,13 +10,13 @@ function Finger() {
 }
 
 // can pass in callback as second argument
-function interactionEvents(opts) {
+function interactionEvents(opts = {}) {
   const options = extend(
     {
       element: window,
       constrainZoom: false,
     },
-    opts || {}
+    opts
   );
   const emitter = eventEmitter({});
   const element = options.element;

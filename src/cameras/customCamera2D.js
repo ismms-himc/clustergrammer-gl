@@ -1,6 +1,5 @@
 import * as EventEmitter from "event-emitter";
 import mat4 from "gl-mat4";
-import extend from "xtend/mutable";
 import interactionEvents from "../interactions/interactionEvents";
 import camera_interaction from "./cameraInteraction";
 // © 2016 Ricky Reusser. MIT License.
@@ -27,17 +26,13 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
 export default function makeCamera2D(
   regl,
   params,
-  opts,
+  opts = {},
   zoom_data,
   viz_component
 ) {
-  opts = opts || {};
-  const options = extend(
-    {
-      element: opts.element || regl._gl.canvas,
-    },
-    opts || {}
-  );
+  const options = {
+    element: regl._gl.canvas,
+  };
   const element = options.element;
   let dirty = true;
   const getWidth =

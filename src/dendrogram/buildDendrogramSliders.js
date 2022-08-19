@@ -37,7 +37,7 @@ module.exports = function build_dendrogram_sliders() {
       .append("rect")
       .style("height", slider_length + "px")
       .style("width", "25px")
-      .style("fill", "white");
+      .style("fill", "transparent");
 
     build_single_dendro_slider(cgm, inst_axis);
   });

@@ -1,10 +1,9 @@
-export default (function ini_zoom_restrict(params) {
+export default (function ini_zoom_restrict(max_zoom, labels, viz_dim) {
   let inst_axis = "row";
-  const num_row = params.labels["num_" + inst_axis];
+  const num_row = labels["num_" + inst_axis];
   inst_axis = "col";
-  const num_col = params.labels["num_" + inst_axis];
+  const num_col = labels["num_" + inst_axis];
   // working on improved matrix zooming
-  const max_zoom = params.max_zoom;
   const zoom_restrict = {};
   zoom_restrict.x = {};
   zoom_restrict.x.max = max_zoom;
@@ -15,9 +14,7 @@ export default (function ini_zoom_restrict(params) {
   zoom_restrict.y.min = 1.0;
   zoom_restrict.y.ratio = 1.0;
   const col_vs_row_space =
-    num_col /
-    params.viz_dim.heat.width /
-    (num_row / params.viz_dim.heat.height);
+    num_col / viz_dim.heat.width / (num_row / viz_dim.heat.height);
   // increase max zoom in y or x direction
   if (num_row > num_col) {
     zoom_restrict.y.max = zoom_restrict.y.max * (1 / col_vs_row_space);

@@ -4,13 +4,22 @@ import remove_lost_tooltips from "./removeLostTooltips";
 
 export default (function runShowTooltip(
   regl,
-  params,
-  mouseover,
-  external_model
+  state,
+  dispatch,
+  catArgsManager,
+  tooltip_fun,
+  mouseover
 ) {
-  if (params.tooltip.permanent_tooltip === false) {
+  if (state.tooltip.permanent_tooltip === false) {
     remove_lost_tooltips();
-    makeTooltipText(regl, params, mouseover, external_model);
-    display_and_position_tooltip(params);
+    makeTooltipText(
+      regl,
+      state,
+      dispatch,
+      catArgsManager,
+      tooltip_fun,
+      mouseover
+    );
+    display_and_position_tooltip(state);
   }
 });

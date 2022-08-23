@@ -14,8 +14,8 @@ export default (function get_mouseover_type(params) {
   edim.y.dendro_start = 845;
   edim.y.dendro_end = 860;
   const inst_pix = {};
-  inst_pix.x = params.zoom_data.x.cursor_position;
-  inst_pix.y = params.zoom_data.y.cursor_position;
+  inst_pix.x = params.visualization.zoom_data.x.cursor_position;
+  inst_pix.y = params.visualization.zoom_data.y.cursor_position;
   let cat_index;
   params.tooltip.in_bounds_tooltip = false;
   params.tooltip.tooltip_type = "out-of-bounds";

@@ -3,11 +3,17 @@ import double_clicking from "../interactions/doubleClicking";
 import interactionEvents from "../interactions/interactionEvents";
 import single_clicking from "../interactions/singleClicking";
 import track_interaction_zoom_data from "../interactions/trackInteractionZoomData";
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
 import run_hide_tooltip from "../tooltip/runHideTooltip";
 
-export default function zoom_rules_high_mat(cgm, external_model) {
-  const regl = cgm.regl;
-  const params = cgm.params;
+export default function zoom_rules_high_mat(
+  regl,
+  state,
+  dispatch,
+  catArgsManager,
+  cameras,
+  tooltip_fun
+) {
   const options = {
     element: regl._gl.canvas,
   };
@@ -15,25 +21,31 @@ export default function zoom_rules_high_mat(cgm, external_model) {
   // ///////////////////////////////////////
   // Original interaction tracking
   // ///////////////////////////////////////
-  let interactionData; // TODO: could maybe do a pubsub for this?
+  let mouseover;
   interactionEvents({
     element: element,
   })
     .on("interaction", function (ev) {
-      interactionData = track_interaction_zoom_data(regl, params, ev);
-      run_hide_tooltip(params);
-      draw_interacting(cgm, interactionData.mouseover, external_model);
+      mouseover = track_interaction_zoom_data(state, dispatch, ev);
+      run_hide_tooltip(state.tooltip, tooltip_fun);
+      dispatch(mutateCategoriesState({ showing_color_picker: false }));
+      draw_interacting(regl, state, dispatch, catArgsManager, cameras);
     })
     .on("interactionend", function () {
       if (
-        params.ani.time - params.ani.last_click <
-        params.ani.dblclick_duration
+        state.animation.time - state.animation.last_click <
+        state.animation.dblclick_duration
       ) {
-        double_clicking(regl, params);
+        double_clicking(regl, state, dispatch, catArgsManager, mouseover);
       } else {
-        single_clicking(params, interactionData.mouseover, external_model);
+        single_clicking(
+          regl,
+          state,
+          dispatch,
+          catArgsManager,
+          tooltip_fun,
+          mouseover
+        );
       }
     });
-
-  return interactionData;
 }

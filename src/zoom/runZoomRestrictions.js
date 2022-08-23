@@ -1,4 +1,9 @@
-export default (function run_zoom_restrictions(zd, ptp, viz_dim_heat, zd_copy) {
+export default (function run_zoom_restrictions(
+  zd,
+  ptp,
+  viz_dim_heat,
+  prev_restrict
+) {
   /*
       Sequential if statements
     */
@@ -75,13 +80,15 @@ export default (function run_zoom_restrictions(zd, ptp, viz_dim_heat, zd_copy) {
   if (double_restrict) {
     // pin the matrix to either side
     // no need to push it to the edge since it was previously pushed to the edge
-    if (zd_copy.prev_restrict === "min") {
+    if (prev_restrict === "min") {
       zd.pan_by_zoom =
         -zd.inst_eff_zoom * (viz_dim_heat.min + zd.viz_offcenter);
-    } else if (zd_copy.prev_restrict === "max") {
+    } else if (prev_restrict === "max") {
       zd.pan_by_zoom =
         -zd.inst_eff_zoom *
         (viz_dim_heat.max + zd.heat_offset + zd.viz_offcenter);
     }
   }
+
+  return zd;
 });

@@ -27,4 +27,6 @@ export default (function pan_by_drag_rules(zoom_data, viz_dim_heat) {
     zoom_data.cursor_position =
       viz_dim_heat.max + zoom_data.heat_offset + zoom_data.viz_offcenter;
   }
+
+  return zoom_data;
 });

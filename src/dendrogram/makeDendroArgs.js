@@ -1,27 +1,25 @@
+import { zoom_function } from "../cameras/zoomFunction";
 import color_to_rgba from "../colors/colorToRgba";
 import { rotation, scaling } from "../draws/mat3Transform";
 import make_dendro_arr from "./makeDendroArr";
 
-export default (function make_dendro_args(regl, params, inst_axis) {
+export default (function make_dendro_args(regl, state, inst_axis) {
   let rotation_radians;
   let heat_size;
   let mat_size_offset;
   if (inst_axis === "row") {
     rotation_radians = 0;
-    heat_size = params.viz_dim.heat_size.y;
-    mat_size_offset = params.viz_dim.mat_size.x;
+    heat_size = state.visualization.viz_dim.heat_size.y;
+    mat_size_offset = state.visualization.viz_dim.mat_size.x;
   } else if (inst_axis === "col") {
     rotation_radians = Math.PI / 2;
-    heat_size = params.viz_dim.heat_size.x;
-    mat_size_offset = params.viz_dim.mat_size.y;
+    heat_size = state.visualization.viz_dim.heat_size.x;
+    mat_size_offset = state.visualization.viz_dim.mat_size.y;
   }
-  const num_labels = params.labels["num_" + inst_axis];
-  const dendro_width = params.dendro.tri_height;
+  const num_labels = state.labels["num_" + inst_axis];
+  const dendro_width = state.dendro.tri_height;
   const tri_width = heat_size / num_labels;
-  const dendro_arr = make_dendro_arr(params, inst_axis);
-  const zoom_function = function (context) {
-    return context.view;
-  };
+  const dendro_arr = make_dendro_arr(state.dendro, inst_axis);
   const dendro_buffer = regl.buffer({
     length: dendro_arr.length,
     type: "float",
@@ -73,9 +71,9 @@ export default (function make_dendro_args(regl, params, inst_axis) {
     `,
     attributes: {
       position: [
-        [params.dendro.trap_float, 2 * tri_width],
+        [state.dendro.trap_float, 2 * tri_width],
         [dendro_width, tri_width],
-        [params.dendro.trap_float, 0],
+        [state.dendro.trap_float, 0],
       ],
       dendro_att: {
         buffer: dendro_buffer,

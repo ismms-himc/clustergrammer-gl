@@ -1,5 +1,6 @@
 import average from "./average";
 import average_n_minus_1 from "./averageNMinus1";
+
 export default (function standard_deviation(data) {
   const avg = average(data);
   const squareDiffs = data.map(function (value) {

@@ -1,7 +1,8 @@
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 
-export default (function calc_alpha_order(params) {
-  const network = params.network;
+export default (function calc_alpha_order(initialNetwork) {
+  const network = cloneDeep(initialNetwork);
   // https://stackoverflow.com/questions/9592740/how-can-you-sort-an-array-without-mutating-the-original-array
   function sort(arr) {
     return arr.concat().sort();
@@ -28,4 +29,5 @@ export default (function calc_alpha_order(params) {
       inst_node.custom = inst_alpha;
     });
   });
+  return network;
 });

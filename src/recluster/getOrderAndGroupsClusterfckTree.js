@@ -4,7 +4,6 @@ import get_max_distance_in_dm from "./getMaxDistanceInDm";
 export default function get_order_and_groups_clusterfck_tree(
   clusters,
   names,
-  cgm,
   axis
 ) {
   const max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists);
@@ -20,8 +19,6 @@ export default function get_order_and_groups_clusterfck_tree(
   const tree = clusters.tree;
   const ini_level = 1;
   const tree_height = tree.dist;
-  cgm.params.tree[axis] = tree;
-  // var cutoff_fractions = [];
   const cutoff_vals = [];
   const cutoff_indexes = [];
   const threshold_status = [];

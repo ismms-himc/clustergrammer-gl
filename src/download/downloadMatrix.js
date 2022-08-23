@@ -1,6 +1,7 @@
 import { saveAs } from "file-saver";
 
 import make_matrix_string from "./makeMatrixString";
+
 export default (function download_matrix(params) {
   const matrix_string = make_matrix_string(params);
   const blob = new Blob([matrix_string], { type: "text/plain;charset=utf-8" });

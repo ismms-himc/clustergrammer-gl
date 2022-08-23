@@ -1,12 +1,13 @@
 import * as _ from "underscore";
 
-export default (function calc_mat_arr(params) {
-  const num_row = params.labels.num_row;
-  const num_col = params.labels.num_col;
+export default (function calc_mat_arr(state) {
+  const { labels, visualization } = state;
+  const num_row = labels.num_row;
+  const num_col = labels.num_col;
   // draw matrix cells
   // ///////////////////////////////////////
   // generate x position array
-  params.node_canvas_pos = {};
+  const node_canvas_pos = {};
   let inst_pos;
   let heat_size;
   let num_labels;
@@ -21,10 +22,11 @@ export default (function calc_mat_arr(params) {
       num_labels = num_row;
     }
     heat_shift =
-      params.viz_dim.mat_size[inst_axis] - params.viz_dim.heat_size[inst_axis];
-    heat_size = params.viz_dim.heat_size[inst_axis];
+      visualization.viz_dim.mat_size[inst_axis] -
+      visualization.viz_dim.heat_size[inst_axis];
+    heat_size = visualization.viz_dim.heat_size[inst_axis];
     tri_width = heat_size / num_labels;
-    params.node_canvas_pos[inst_axis + "_arr"] = Array(num_labels)
+    node_canvas_pos[inst_axis + "_arr"] = Array(num_labels)
       .fill()
       .map(function (_, i) {
         if (inst_axis === "x") {
@@ -40,4 +42,6 @@ export default (function calc_mat_arr(params) {
         return inst_pos * inst_direct;
       });
   });
+
+  return node_canvas_pos;
 });

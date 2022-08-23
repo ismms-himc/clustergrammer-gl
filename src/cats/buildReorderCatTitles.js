@@ -1,8 +1,8 @@
 import * as d3 from "d3";
-import generateCatArgsArrs from "../params/generateCatArgsArrs";
 import run_reorder from "../reorders/runReorder";
-export default (function build_reorder_cat_titles(regl, cgm) {
-  const params = cgm.params;
+import generateCatArgsArrs from "./manager/generateCatArgsArrs";
+
+export default (function build_reorder_cat_titles(regl, state) {
   const button_color = "#eee";
   const fieldSorter = (fields) => (a, b) =>
     fields
@@ -16,14 +16,14 @@ export default (function build_reorder_cat_titles(regl, cgm) {
       })
       .reduce((p, n) => (p ? p : n), 0);
   function stable_reorder_cats(axis, i) {
-    const inst_nodes = params.network[axis + "_nodes"].map((x) => x);
+    const inst_nodes = state.network[axis + "_nodes"].map((x) => x);
     const cat_primary = "cat-" + String(i);
     const cat_secondary_up = "cat-" + String(i - 1);
     const cat_secondary_down = "cat-" + String(i + 1);
     let cat_secondary;
-    if (cat_secondary_down in params.network[axis + "_nodes"][0]) {
+    if (cat_secondary_down in state.network[axis + "_nodes"][0]) {
       cat_secondary = cat_secondary_down;
-    } else if (cat_secondary_up in params.network[axis + "_nodes"][0]) {
+    } else if (cat_secondary_up in state.network[axis + "_nodes"][0]) {
       cat_secondary = cat_secondary_up;
     } else {
       // single category reordering
@@ -41,22 +41,23 @@ export default (function build_reorder_cat_titles(regl, cgm) {
       }
       order_dict[inst_name] = i;
     });
-    params.network[axis + "_nodes"].forEach((d) => {
+    // TODO: write to state? does this even do anything?
+    state.network[axis + "_nodes"].forEach((d) => {
       inst_name = d.name;
       if (inst_name.includes(": ")) {
         inst_name = inst_name.split(": ")[1];
       }
       d.custom = order_dict[inst_name];
     });
-    generateCatArgsArrs(regl, params);
-    run_reorder(regl, params, axis, "custom");
-    params.order.inst.col = "custom";
+    generateCatArgsArrs(regl, state);
+    run_reorder(regl, state, axis, "custom");
+    state.order.inst.col = "custom";
   }
   // Column Titles
   let pos_x = 845;
   let pos_y = 125;
   const col_cat_title_group = d3
-    .select(params.root + " .canvas-container")
+    .select(state.visualization.rootElementId + " .canvas-container")
     .append("g")
     .style("position", "absolute")
     .style("top", pos_y + "px")
@@ -67,7 +68,7 @@ export default (function build_reorder_cat_titles(regl, cgm) {
   const col_cat_title_svg = col_cat_title_group
     .append("svg")
     .style("height", function () {
-      const svg_height = dim_y * params.cat_data.col.length + 5;
+      const svg_height = dim_y * state.cat_data.col.length + 5;
       return svg_height + "px";
     })
     .style("width", dim_x + "px")
@@ -77,7 +78,7 @@ export default (function build_reorder_cat_titles(regl, cgm) {
     .classed("col-cat-reorder-group", true);
   col_cat_reorder_group
     .selectAll("rect")
-    .data(params.cat_data.col)
+    .data(state.cat_data.col)
     .enter()
     .append("text")
     .text(function (d) {
@@ -92,7 +93,7 @@ export default (function build_reorder_cat_titles(regl, cgm) {
     });
   col_cat_reorder_group
     .selectAll("rect")
-    .data(params.cat_data.col)
+    .data(state.cat_data.col)
     .enter()
     .append("rect")
     .style("width", dim_x + "px")
@@ -104,8 +105,8 @@ export default (function build_reorder_cat_titles(regl, cgm) {
     .style("opacity", 0.0)
     .on("dblclick", function (d, i) {
       stable_reorder_cats("col", i);
-      params.order.inst.col = "custom";
-      d3.select(params.root + " .col-reorder-buttons")
+      state.order.inst.col = "custom";
+      d3.select(state.visualization.rootElementId + " .col-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);
     })
@@ -117,9 +118,9 @@ export default (function build_reorder_cat_titles(regl, cgm) {
   // Row Titles
   pos_x = 125;
   // var pos_y = 98; // 60 with no cats, 72 with one cat, 85 with two cats
-  pos_y = 62 + 12 * params.cat_data.col.length;
+  pos_y = 62 + 12 * state.cat_data.col.length;
   const row_cat_title_group = d3
-    .select(params.root + " .canvas-container")
+    .select(state.visualization.rootElementId + " .canvas-container")
     .append("g")
     .style("position", "absolute")
     .style("top", pos_y + "px")
@@ -130,7 +131,7 @@ export default (function build_reorder_cat_titles(regl, cgm) {
   const row_cat_title_svg = row_cat_title_group
     .append("svg")
     .style("width", function () {
-      const svg_height = row_dim_y * params.cat_data.row.length + 5;
+      const svg_height = row_dim_y * state.cat_data.row.length + 5;
       return svg_height + "px";
     })
     .style("height", row_dim_x + "px")
@@ -145,7 +146,7 @@ export default (function build_reorder_cat_titles(regl, cgm) {
     });
   row_cat_reorder_group
     .selectAll("rect")
-    .data(params.cat_data.row)
+    .data(state.cat_data.row)
     .enter()
     .append("text")
     .text(function (d) {
@@ -160,7 +161,7 @@ export default (function build_reorder_cat_titles(regl, cgm) {
     });
   row_cat_reorder_group
     .selectAll("rect")
-    .data(params.cat_data.row)
+    .data(state.cat_data.row)
     .enter()
     .append("rect")
     .style("width", row_dim_x + "px")
@@ -172,8 +173,8 @@ export default (function build_reorder_cat_titles(regl, cgm) {
     .style("opacity", 0.0)
     .on("dblclick", function (d, i) {
       stable_reorder_cats("row", i);
-      params.order.inst.row = "custom";
-      d3.select(params.root + " .row-reorder-buttons")
+      state.order.inst.row = "custom";
+      d3.select(state.visualization.rootElementId + " .row-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);
     })

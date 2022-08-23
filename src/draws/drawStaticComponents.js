@@ -1,11 +1,15 @@
-export default (function draw_static_components(regl, params) {
-  params.cameras.static.draw(() => {
-    const args = params.spillover_args;
-    const triangles = params.spillover_triangles;
-    regl(args.mat_sides)(triangles.mat_sides);
-    regl(args.cats)(triangles.cats);
-    regl(args.mat_corners)(triangles.mat_corners);
-    regl(args.label_corners)(triangles.label_corners);
+import generateSpilloverParams from "../params/generateSpilloverParams";
+
+export default (function draw_static_components(regl, state, cameras) {
+  cameras.static.draw(() => {
+    const { spillover_triangles, spillover_args } = generateSpilloverParams(
+      regl,
+      state
+    );
+    regl(spillover_args.mat_sides)(spillover_triangles.mat_sides);
+    regl(spillover_args.cats)(spillover_triangles.cats);
+    regl(spillover_args.mat_corners)(spillover_triangles.mat_corners);
+    regl(spillover_args.label_corners)(spillover_triangles.label_corners);
     /* was drawing col text triangle args */
   });
 });

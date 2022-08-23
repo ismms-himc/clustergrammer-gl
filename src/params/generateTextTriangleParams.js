@@ -1,21 +1,33 @@
 import * as _ from "underscore";
 import gather_text_triangles from "../matrixLabels/gatherTextTriangles";
 
-export default (function generate_text_triangle_params(params) {
+export default (function generate_text_triangle_params(state) {
+  const { viz_area, labels, network } = state;
   // save text triangles for later use
-  params.text_triangles = {};
-  params.text_triangles.row = {};
-  params.text_triangles.col = {};
-  params.max_num_text = 200;
-  params.text_triangles.draw = {};
+  let text_triangles = {};
+  const precalc = {};
+  let label_queue_high;
   _.each(["row", "col"], function (inst_axis) {
-    params.labels.precalc[inst_axis] =
-      params.labels["num_" + inst_axis] < params.max_num_text;
+    precalc[inst_axis] =
+      labels["num_" + inst_axis] < state.visualization.max_num_text;
     // initial drawing of labels
-    if (params.labels.precalc[inst_axis] === false) {
-      params.text_triangles.draw[inst_axis] = false;
+    if (labels.precalc[inst_axis] === false) {
+      text_triangles.draw = {};
+      text_triangles.draw[inst_axis] = false;
     } else {
-      gather_text_triangles(params, inst_axis);
+      const { draw, lqh, text_triangles_col_and_row } = gather_text_triangles(
+        text_triangles,
+        viz_area,
+        labels,
+        network,
+        inst_axis
+      );
+      text_triangles = {
+        ...text_triangles_col_and_row,
+        draw,
+      };
+      label_queue_high = lqh;
     }
   });
+  return { text_triangles, precalc, label_queue_high };
 });

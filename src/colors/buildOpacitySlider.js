@@ -1,25 +1,39 @@
-// TODO: fix
-/* eslint-disable no-invalid-this */
+// TODO: fix invalid this usage
 
 import * as d3 from "d3";
 import draw_webgl_layers from "../draws/drawWebglLayers";
 import custom_round from "../utils/customRound";
 
-export default (function build_opacity_slider(cgm) {
-  const params = cgm.params;
+export default (function build_opacity_slider(
+  regl,
+  state,
+  catArgsManager,
+  cameras
+) {
   const slider_length = 100;
   const rect_height = slider_length + 20;
   const rect_width = 20;
   const round_level = -1;
+
+  function change_opacity(slider_value) {
+    slider_value = custom_round(slider_value, 2);
+    state.matrix.opacity_scale = slider_value;
+    draw_webgl_layers(regl, state, catArgsManager, cameras);
+    d3.select(state.visualization.rootElementId + " .opacity_level_text").text(
+      slider_value
+    );
+  }
+
   const drag = d3
     .drag()
     .on("drag", dragging)
     .on("end", function () {
-      params.is_opacity_drag = false;
-      change_opacity(params.opacity_slider_value);
+      // TODO: put in state
+      state.is_opacity_drag = false;
+      change_opacity(state.opacity_slider_value);
     });
   const slider_group = d3
-    .select(params.root + " .control_svg")
+    .select(state.visualization.rootElementId + " .control_svg")
     .append("g")
     .classed("opacity_slider_group", true)
     .attr("transform", function () {
@@ -120,7 +134,7 @@ export default (function build_opacity_slider(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", "translate(10, 140), rotate(90)");
-  params.dendro.default_opacity_scale = 1.0;
+  state.dendro.default_opacity_scale = 1.0;
   slider_group
     .append("text")
     .classed("opacity_level_text", true)
@@ -135,7 +149,7 @@ export default (function build_opacity_slider(cgm) {
     .attr("letter-spacing", "2px")
     .attr("cursor", "default");
   function dragging() {
-    params.is_opacity_drag = true;
+    state.is_opacity_drag = true;
     let slider_pos = d3.event.y;
     if (slider_pos < 0) {
       slider_pos = 0;
@@ -149,17 +163,17 @@ export default (function build_opacity_slider(cgm) {
     slider_pos = custom_round(slider_pos, round_level);
     const slider_value = get_slider_value(slider_pos);
     d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
-    params.opacity_slider_value = slider_value;
+    state.opacity_slider_value = slider_value;
   }
   function click_opacity_slider() {
     const clicked_line_position = d3.mouse(this);
     const rel_pos = custom_round(clicked_line_position[1], round_level);
-    d3.select(params.root + " ." + "opacity_group_circle").attr(
-      "transform",
-      "translate(0, " + rel_pos + ")"
-    );
+    d3.select(
+      state.visualization.rootElementId + " ." + "opacity_group_circle"
+    ).attr("transform", "translate(0, " + rel_pos + ")");
     const slider_value = get_slider_value(rel_pos);
-    params.opacity_slider_value = slider_value;
+    // TODO: put in state
+    state.opacity_slider_value = slider_value;
     change_opacity(slider_value);
   }
   // convert from position along slider to a value that will be used to set
@@ -170,12 +184,5 @@ export default (function build_opacity_slider(cgm) {
     // take inverse log2 to get opacity scale
     const inst_y = Math.pow(2, inst_x);
     return inst_y;
-  }
-  function change_opacity(slider_value) {
-    slider_value = custom_round(slider_value, 2);
-    params.matrix.opacity_scale = slider_value;
-    cgm.make_matrix_args(cgm);
-    draw_webgl_layers(cgm.regl, params);
-    d3.select(params.root + " .opacity_level_text").text(slider_value);
   }
 });

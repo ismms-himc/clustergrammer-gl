@@ -1,7 +1,9 @@
 import ease from "eases/cubic-in-out";
-export default (function interp_fun(params) {
+
+export default (function interp_fun(state) {
   const inst_ease = ease(
-    (params.ani.time - params.ani.last_switch_time) / params.ani.ani_duration
+    (state.animation.time - state.animation.last_switch_time) /
+      state.animation.ani_duration
   );
   return inst_ease;
 });

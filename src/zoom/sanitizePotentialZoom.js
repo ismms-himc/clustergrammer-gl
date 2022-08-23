@@ -30,4 +30,6 @@ export default (function sanitize_potential_zoom(zd, zoom_restrict) {
       zd.total_zoom = min_zoom;
     }
   }
+
+  return zd;
 });

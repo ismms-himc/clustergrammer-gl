@@ -3,16 +3,17 @@ import manual_update_to_cats from "../cats/manualUpdateToCats";
 
 export default function manual_category_from_dendro(
   regl,
-  params,
-  external_model,
+  state,
+  dispatch,
+  catArgsManager,
   axis
 ) {
   // Manual Category
   // //////////////////////////
-  d3.select(params.tooltip_id).append("text").text("Manual Category: ");
+  d3.select(state.tooltip.tooltip_id).append("text").text("Manual Category: ");
   // color picker section
   const color_picker_div = d3
-    .select(params.tooltip_id)
+    .select(state.tooltip.tooltip_id)
     .append("div")
     .classed("color_picker_div", true)
     .style("height", "0px")
@@ -42,11 +43,11 @@ export default function manual_category_from_dendro(
     "#444",
   ];
   const select_color_from_pallet = function (inst_color) {
-    d3.select(params.tooltip_id + " .custom-cat-color").attr(
+    d3.select(state.tooltip.tooltip_id + " .custom-cat-color").attr(
       "value",
       inst_color
     );
-    d3.select(params.tooltip_id + " .color-preview").style(
+    d3.select(state.tooltip.tooltip_id + " .color-preview").style(
       "background-color",
       inst_color
     );
@@ -83,10 +84,10 @@ export default function manual_category_from_dendro(
     });
   // custom category input secion
   const custom_cat_div = d3
-    .select(params.tooltip_id)
+    .select(state.tooltip.tooltip_id)
     .append("div")
     .classed("custom_cat_div", true);
-  const root_id = params.root.replace("#", "");
+  const root_id = state.visualization.rootElementId.replace("#", "");
   custom_cat_div
     .append("input")
     .classed("custom-cat-input", true)
@@ -99,20 +100,20 @@ export default function manual_category_from_dendro(
       // if input matches color key, set color to pre-defined cat color
       // /////////////////////////////////////////////////////////////////
       const new_cat = d3
-        .select(params.tooltip_id + " .custom-cat-input")
+        .select(state.tooltip.tooltip_id + " .custom-cat-input")
         .node()
         .value.trim();
       let new_color;
-      if (axis + "_color_dict" in params.cat_data.manual_category) {
-        if (new_cat in params.cat_data.manual_category[axis + "_color_dict"]) {
+      if (axis + "_color_dict" in state.cat_data.manual_category) {
+        if (new_cat in state.cat_data.manual_category[axis + "_color_dict"]) {
           new_color =
-            params.cat_data.manual_category[axis + "_color_dict"][new_cat];
+            state.cat_data.manual_category[axis + "_color_dict"][new_cat];
           select_color_from_pallet(new_color);
         }
       }
     });
-  if (axis + "_cats" in params.cat_data.manual_category) {
-    const preferred_cat_list = params.cat_data.manual_category[
+  if (axis + "_cats" in state.cat_data.manual_category) {
+    const preferred_cat_list = state.cat_data.manual_category[
       axis + "_cats"
     ].map((x) => x.name);
     custom_cat_div
@@ -134,7 +135,7 @@ export default function manual_category_from_dendro(
     .style("margin-left", "5px")
     .style("color", "black")
     .on("input", function () {
-      d3.select(params.tooltip_id + " .color-preview").style(
+      d3.select(state.tooltip.tooltip_id + " .color-preview").style(
         "background-color",
         // TODO: fix this usage here
         // eslint-disable-next-line no-invalid-this
@@ -153,20 +154,21 @@ export default function manual_category_from_dendro(
     .style("margin-right", "2px")
     .style("background-color", "white")
     .on("click", () => {
-      if (params.cat_data.showing_color_picker === false) {
-        d3.select(params.tooltip_id + " .color_picker_div")
+      if (state.cat_data.showing_color_picker === false) {
+        d3.select(state.tooltip.tooltip_id + " .color_picker_div")
           .style("height", color_picker_height + "px")
           .style("display", "block");
-        d3.select(params.tooltip_id).style("margin-top", function () {
+        d3.select(state.tooltip.tooltip_id).style("margin-top", function () {
           const old_top_margin = d3
-            .select(params.tooltip_id)
+            .select(state.tooltip.tooltip_id)
             .style("margin-top")
             .replace("px");
           const new_top_margin =
             String(parseInt(old_top_margin) - color_picker_height) + "px";
           return new_top_margin;
         });
-        params.cat_data.showing_color_picker = true;
+        // TODO: put in state
+        state.cat_data.showing_color_picker = true;
       }
     });
   // update category button
@@ -182,30 +184,32 @@ export default function manual_category_from_dendro(
     .style("cursor", "pointer")
     .on("click", () => {
       const new_cat = d3
-        .select(params.tooltip_id + " .custom-cat-input")
+        .select(state.tooltip.tooltip_id + " .custom-cat-input")
         .node()
         .value.trim();
       let inst_color = d3
-        .select(params.tooltip_id + " .custom-cat-color")
+        .select(state.tooltip.tooltip_id + " .custom-cat-color")
         .node()
         .value.trim();
       if (new_cat !== "") {
         // save category and color to dictionary
-        if (axis + "_color_dict" in params.cat_data.manual_category) {
-          params.cat_data.manual_category[axis + "_color_dict"][new_cat] =
+        if (axis + "_color_dict" in state.cat_data.manual_category) {
+          state.cat_data.manual_category[axis + "_color_dict"][new_cat] =
             inst_color;
         }
         if (inst_color === "") {
           inst_color = "white";
         }
-        const inst_labels = params.dendro.selected_clust_names;
+        const inst_labels = state.dendro.selected_clust_names;
         // Only allowing custom naming of first column
-        const cat_title = params.cat_data[axis][0].cat_title;
-        params.network.global_cat_colors[new_cat] = inst_color;
-        params.int.manual_update_cats = true;
+        const cat_title = state.cat_data[axis][0].cat_title;
+        state.cat_viz.global_cat_colors[new_cat] = inst_color;
+        state.interaction.manual_update_cats = true;
         manual_update_to_cats(
           regl,
-          params,
+          state,
+          dispatch,
+          catArgsManager,
           axis,
           cat_title,
           new_cat,

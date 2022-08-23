@@ -1,12 +1,12 @@
 import * as _ from "underscore";
 
-export default (function make_dendro_arr(params, inst_axis) {
+export default (function make_dendro_arr(dendro, inst_axis) {
   let inst_trap;
   let group_info;
   if (inst_axis === "row") {
-    group_info = params.dendro.group_info.row;
+    group_info = dendro.group_info.row;
   } else {
-    group_info = params.dendro.group_info.col;
+    group_info = dendro.group_info.col;
   }
   const offset_array = [];
   let num_in_group;

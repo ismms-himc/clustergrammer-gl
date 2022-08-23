@@ -21,6 +21,14 @@
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
     },
     "python.formatting.provider": "black",
+    // eslint stuff
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+    ],
     // other
     "javascript.preferences.importModuleSpecifier": "relative",
+    "typescript.preferences.importModuleSpecifier": "relative",
 }

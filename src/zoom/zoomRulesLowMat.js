@@ -8,13 +8,18 @@ import sanitize_inst_zoom from "./sanitizeInstZoom";
 import sanitize_potential_zoom from "./sanitizePotentialZoom";
 
 export default (function zoom_rules_low_mat(
-  params,
+  viz_dim,
   zoom_restrict,
   zoom_data,
   viz_dim_heat,
   viz_dim_mat,
   axis
 ) {
+  let reset_cameras;
+  // store original restriction
+  const prevRestrict = zoom_data.prev_restrict;
+  // copy zoom data so we can operate on it without fear of mutating the original (not possible I think but)
+  const zoomDataCopy = _.clone(zoom_data);
   // convert offcenter WebGl units to pixel units
   let canvas_dim;
   if (axis === "x") {
@@ -22,29 +27,45 @@ export default (function zoom_rules_low_mat(
   } else {
     canvas_dim = "height";
   }
-  zoom_data.viz_offcenter =
-    (params.viz_dim.canvas[canvas_dim] * params.viz_dim.offcenter[axis]) / 2;
-  // make a copy of zoom_data for later use (not a reference)
-  const zoom_data_copy = _.clone(zoom_data);
+  zoomDataCopy.viz_offcenter =
+    (viz_dim.canvas[canvas_dim] * viz_dim.offcenter[axis]) / 2;
   // ////////////////////////////////////////////////////////////////////////////
   // Sanitize Zoom
   // ////////////////////////////////////////////////////////////////////////////
-  sanitize_inst_zoom(params, zoom_data);
-  sanitize_potential_zoom(zoom_data, zoom_restrict);
-  zoom_data.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
+  // first sanitize zooming out if already completely zoomed out
+  const sanitizedZoomData = sanitize_inst_zoom(zoomDataCopy);
+  const saitizedPotentialZoomData = sanitize_potential_zoom(
+    sanitizedZoomData,
+    zoom_restrict
+  );
+  saitizedPotentialZoomData.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
   // ////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
   // ////////////////////////////////////////////////////////////////////////////
-  pan_by_drag_rules(zoom_data, viz_dim_heat);
-  const cursor_relative = calc_cursor_relative(zoom_data, viz_dim_heat);
+  const zoomDataWithPanByDragRules = pan_by_drag_rules(
+    saitizedPotentialZoomData,
+    viz_dim_heat
+  );
+  const cursor_relative = calc_cursor_relative(
+    zoomDataWithPanByDragRules,
+    viz_dim_heat
+  );
   // ////////////////////////////////////////////////////////////////////////////
   // Pan by Zoom Rules
   // ////////////////////////////////////////////////////////////////////////////
-  calc_pan_by_zoom(zoom_data, cursor_relative);
+  const zoomDataWithPanByZoomRules = calc_pan_by_zoom(
+    zoomDataWithPanByDragRules,
+    cursor_relative
+  );
   // ////////////////////////////////////////////////////////////////////////////
   // Potential Total Pan
   // ////////////////////////////////////////////////////////////////////////////
-  const ptp = calc_potential_total_pan(zoom_data);
-  run_zoom_restrictions(zoom_data, ptp, viz_dim_heat, zoom_data_copy);
-  return zoom_data;
+  const ptp = calc_potential_total_pan(zoomDataWithPanByZoomRules);
+  const zoomDataWithRestrictions = run_zoom_restrictions(
+    zoomDataWithPanByZoomRules,
+    ptp,
+    viz_dim_heat,
+    prevRestrict
+  );
+  return { zoom_data: zoomDataWithRestrictions, reset_cameras };
 });

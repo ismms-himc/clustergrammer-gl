@@ -1,14 +1,14 @@
-export default (function calc_row_and_col_canvas_positions(params) {
+export default (function calc_row_and_col_canvas_positions(state) {
   let inst_axis = "row";
-  const num_row = params.labels["num_" + inst_axis];
+  const num_row = state.labels["num_" + inst_axis];
   inst_axis = "col";
-  const num_col = params.labels["num_" + inst_axis];
+  const num_col = state.labels["num_" + inst_axis];
   // draw matrix cells
   // ///////////////////////////////////////
   // set up offset array for buffer
   const offset = {};
-  offset.x = params.viz_dim.center.x;
-  offset.y = params.viz_dim.center.y;
+  offset.x = state.visualization.viz_dim.center.x;
+  offset.y = state.visualization.viz_dim.center.y;
   // generate x position array
   const x_arr = Array(num_col)
     .fill()

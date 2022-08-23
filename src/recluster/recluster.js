@@ -13,7 +13,9 @@ math.import(transpose);
 math.import(matrix);
 
 export default function recluster(
-  cgm,
+  regl,
+  state,
+  catArgsManager,
   distance_metric = "cosine",
   linkage_type = "average"
 ) {
@@ -26,22 +28,21 @@ export default function recluster(
   new_view.name = view_name;
   // constructing new nodes from old view (does not work when filtering)
   new_view.nodes = {};
-  new_view.nodes.row_nodes = _.clone(cgm.params.network.row_nodes);
-  new_view.nodes.col_nodes = _.clone(cgm.params.network.col_nodes);
-  cgm.params.tree = {};
+  new_view.nodes.row_nodes = _.clone(state.network.row_nodes);
+  new_view.nodes.col_nodes = _.clone(state.network.col_nodes);
   _.each(["row", "col"], function (axis) {
     let mat;
     const transpose = math.transpose;
     let names;
     let name_nodes;
     if (axis === "row") {
-      mat = _.clone(cgm.params.network.mat);
-      names = cgm.params.network.row_nodes.map((x) => x.name.split(": ")[1]);
+      mat = _.clone(state.network.mat);
+      names = state.network.row_nodes.map((x) => x.name.split(": ")[1]);
       name_nodes = "row_nodes";
     } else if (axis === "col") {
-      mat = _.clone(cgm.params.network.mat);
+      mat = _.clone(state.network.mat);
       mat = transpose(mat);
-      names = cgm.params.network.col_nodes.map((x) => x.name.split(": ")[1]);
+      names = state.network.col_nodes.map((x) => x.name.split(": ")[1]);
       name_nodes = "col_nodes";
     }
     // average, single, complete
@@ -49,7 +50,6 @@ export default function recluster(
     const order_info = get_order_and_groups_clusterfck_tree(
       clusters,
       names,
-      cgm,
       axis
     );
     let inst_node;
@@ -64,9 +64,9 @@ export default function recluster(
     }
   });
   // run reordering
-  runReorder(cgm.regl, cgm.params, "row", "clust");
-  runReorder(cgm.regl, cgm.params, "col", "clust");
-  const group_level = cgm.params.dendro.group_level;
-  change_groups(cgm, "row", group_level.row);
-  change_groups(cgm, "col", group_level.col);
+  runReorder(regl, state, catArgsManager, "row", "clust");
+  runReorder(regl, state, catArgsManager, "col", "clust");
+  const group_level = state.dendro.group_level;
+  change_groups(state, "row", group_level.row);
+  change_groups(state, "col", group_level.col);
 }

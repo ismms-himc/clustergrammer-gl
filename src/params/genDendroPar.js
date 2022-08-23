@@ -1,11 +1,9 @@
 import * as _ from "underscore";
 import alt_slice_linkage from "../dendrogram/altSliceLinkage";
 import calc_dendro_triangles from "../dendrogram/calcDendroTriangles";
-import make_dendro_args from "../dendrogram/makeDendroArgs";
 
-export default (function gen_dendro_par(cgm) {
-  const params = cgm.params;
-  const regl = cgm.regl;
+export default (function gen_dendro_par(state) {
+  const { network, labels, visualization, order, node_canvas_pos } = state;
   const dendro = {};
   dendro.default_level = 5;
   dendro.tri_height = 0.1;
@@ -21,7 +19,7 @@ export default (function gen_dendro_par(cgm) {
   dendro.min_dist = {};
   dendro.min_dist.row = 0; // 0.75
   dendro.min_dist.col = 0; // 0.75
-  if ("linkage" in params.network) {
+  if ("linkage" in network) {
     dendro.precalc_linkage = true;
     // initial slices of linkage matrix
     // ////////////////////////////////////////////////////
@@ -30,20 +28,22 @@ export default (function gen_dendro_par(cgm) {
     let dist_thresh;
     const axes = ["col", "row"];
     axes.forEach((axis) => {
-      link_mat = params.network.linkage[axis];
+      link_mat = network.linkage[axis];
       dendro.max_linkage_dist[axis] = link_mat[link_mat.length - 1][2] + 0.01;
       dist_thresh = dendro.max_linkage_dist[axis] * dendro.default_link_level;
       // alternate linkage slicing code
-      alt_slice_linkage(params, axis, dist_thresh, dendro.min_dist[axis]);
+      alt_slice_linkage(network, axis, dist_thresh, dendro.min_dist[axis]);
     });
   } else {
     dendro.precalc_linkage = false;
   }
   dendro.increment_buttons = false;
-  params.dendro = dendro;
   _.each(["row", "col"], function (axis) {
-    params.dendro.group_level[axis] = params.dendro.default_level;
-    params.dendro.group_info[axis] = calc_dendro_triangles(params, axis);
-    params.dendro.dendro_args[axis] = make_dendro_args(regl, params, axis);
+    dendro.group_level[axis] = dendro.default_level;
+    dendro.group_info[axis] = calc_dendro_triangles(
+      { network, labels, visualization, order, node_canvas_pos, dendro },
+      axis
+    );
   });
+  return dendro;
 });

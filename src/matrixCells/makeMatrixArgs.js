@@ -1,29 +1,28 @@
+import { zoom_function } from "../cameras/zoomFunction";
 import make_opacity_arr from "./makeOpacityArr";
 import make_position_arr from "./makePositionArr";
 
-export default function make_matrix_args(cgm) {
-  const regl = cgm.regl;
-  const params = cgm.params;
+export default function make_matrix_args(regl, state) {
   // make arrays
-  params.arrs = {};
-  params.arrs.opacity_arr = make_opacity_arr(params);
-  params.arrs.position_arr = {};
-  params.arrs.position_arr.ini = make_position_arr(
-    params,
-    params.order.inst.row,
-    params.order.inst.col
+  state.arrs = {};
+  state.arrs.opacity_arr = make_opacity_arr(state);
+  state.arrs.position_arr = {};
+  state.arrs.position_arr.ini = make_position_arr(
+    state,
+    state.order.inst.row,
+    state.order.inst.col
   );
-  params.arrs.position_arr.new = make_position_arr(
-    params,
-    params.order.new.row,
-    params.order.new.col
+  state.arrs.position_arr.new = make_position_arr(
+    state,
+    state.order.new.row,
+    state.order.new.col
   );
   const opacity_buffer = regl.buffer({
     type: "float",
     usage: "dynamic",
-  })(params.arrs.opacity_arr);
-  const tile_width = params.viz_dim.tile_width;
-  const tile_height = params.viz_dim.tile_height;
+  })(state.arrs.opacity_arr);
+  const tile_width = state.visualization.viz_dim.tile_width;
+  const tile_height = state.visualization.viz_dim.tile_height;
   const triangle_verts = [
     [tile_width, 0.0],
     [tile_width, tile_height],
@@ -87,19 +86,18 @@ export default function make_matrix_args(cgm) {
       }
 
     }`;
-  const num_instances = params.arrs.position_arr.ini.length;
-  const zoom_function = params.zoom_data.zoom_function;
+  const num_instances = state.arrs.position_arr.ini.length;
   const inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
       position: triangle_verts,
       pos_att_ini: {
-        buffer: regl.buffer(params.arrs.position_arr.ini),
+        buffer: regl.buffer(state.arrs.position_arr.ini),
         divisor: 1,
       },
       pos_att_new: {
-        buffer: regl.buffer(params.arrs.position_arr.new),
+        buffer: regl.buffer(state.arrs.position_arr.new),
         divisor: 1,
       },
       opacity_att: {
@@ -126,8 +124,8 @@ export default function make_matrix_args(cgm) {
       zoom: zoom_function,
       interp_uni: (ctx, props) => Math.max(0, Math.min(1, props.interp_prop)),
       run_animation: regl.prop("run_animation"),
-      pos_rgb: params.viz.mat_colors.pos_rgb,
-      neg_rgb: params.viz.mat_colors.neg_rgb,
+      pos_rgb: state.cat_viz.mat_colors.pos_rgb,
+      neg_rgb: state.cat_viz.mat_colors.neg_rgb,
     },
     instances: num_instances,
     depth: {
@@ -136,8 +134,5 @@ export default function make_matrix_args(cgm) {
   };
   // draw top and bottom of matrix cells
   // ////////////////////////////////////
-  const matrix_args = {};
-  matrix_args.regl_props = {};
-  matrix_args.regl_props.rects = inst_properties;
-  params.matrix_args = matrix_args;
+  return inst_properties;
 }

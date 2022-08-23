@@ -6,32 +6,34 @@ import run_hide_tooltip from "./runHideTooltip";
 
 export default (function make_dendro_tooltip(
   regl,
-  params,
+  state,
+  dispatch,
+  catArgsManager,
+  tooltip_fun,
   mouseover,
-  external_model,
   inst_axis
 ) {
-  params.tooltip_fun.show("tooltip");
-  d3.select(params.tooltip_id)
+  tooltip_fun.show("tooltip");
+  d3.select(state.tooltip.tooltip_id)
     .append("div")
     .style("height", "16px")
     .style("text-align", "right")
     .style("cursor", "default")
     .on("click", function () {
-      params.tooltip.permanent_tooltip = false;
-      run_hide_tooltip(params);
+      state.tooltip.permanent_tooltip = false;
+      run_hide_tooltip(state, tooltip_fun);
     })
     .append("text")
     .text("x")
     .style("font-size", "15px");
   const cat_breakdown = calc_cat_cluster_breakdown(
-    params,
+    state,
     mouseover[inst_axis].dendro,
     inst_axis
   );
-  make_cat_breakdown_graph(params, mouseover[inst_axis].dendro, cat_breakdown);
+  make_cat_breakdown_graph(state, mouseover[inst_axis].dendro, cat_breakdown);
   // title for selected rows input box
-  d3.select(params.tooltip_id)
+  d3.select(state.tooltip.tooltip_id)
     .append("text")
     .style("display", "inline-block")
     .style("cursor", "default")
@@ -42,23 +44,23 @@ export default (function make_dendro_tooltip(
     );
   // selected output formats
   const selected_label_container = d3
-    .select(params.tooltip_id)
+    .select(state.tooltip.tooltip_id)
     .append("div")
     .style("display", "inline-block")
     .classed("selected_label_container", true);
   function make_output_string() {
     let label_string;
-    if (params.dendro.output_label_format === "list") {
+    if (state.dendro.output_label_format === "list") {
       label_string =
         "[" +
-        params.dendro.selected_clust_names.map((x) => ` '${x}'`).join(",") +
+        state.dendro.selected_clust_names.map((x) => ` '${x}'`).join(",") +
         "]";
-    } else if (params.dendro.output_label_format === "tsv") {
-      label_string = params.dendro.selected_clust_names.join("\t");
-    } else if (params.dendro.output_label_format === "csv") {
-      label_string = params.dendro.selected_clust_names.join(", ");
-    } else if (params.dendro.output_label_format === "new-line") {
-      label_string = params.dendro.selected_clust_names.join("<br/>");
+    } else if (state.dendro.output_label_format === "tsv") {
+      label_string = state.dendro.selected_clust_names.join("\t");
+    } else if (state.dendro.output_label_format === "csv") {
+      label_string = state.dendro.selected_clust_names.join(", ");
+    } else if (state.dendro.output_label_format === "new-line") {
+      label_string = state.dendro.selected_clust_names.join("<br/>");
     }
     return label_string;
   }
@@ -74,17 +76,20 @@ export default (function make_dendro_tooltip(
     .style("display", "inline-block")
     .style("cursor", "default")
     .on("click", (d) => {
-      params.dendro.output_label_format = d;
+      state.dendro.output_label_format = d;
       d3.selectAll(
-        params.tooltip_id + " .selected_label_container .output_format"
+        state.tooltip.tooltip_id + " .selected_label_container .output_format"
       ).style("color", (d) => {
         let inst_color = "white";
-        if (d === params.dendro.output_label_format) {
+        if (d === state.dendro.output_label_format) {
           inst_color = selected_color;
         }
         return inst_color;
       });
-      d3.select(params.tooltip_id + " input").attr("value", make_output_string);
+      d3.select(state.tooltip.tooltip_id + " input").attr(
+        "value",
+        make_output_string
+      );
     })
     .text((d, i) => {
       let inst_text = "";
@@ -97,18 +102,24 @@ export default (function make_dendro_tooltip(
     })
     .style("color", (d) => {
       let inst_color = "white";
-      if (d === params.dendro.output_label_format) {
+      if (d === state.dendro.output_label_format) {
         inst_color = selected_color;
       }
       return inst_color;
     });
-  d3.select(params.tooltip_id)
+  d3.select(state.tooltip.tooltip_id)
     .append("input")
     .attr("value", make_output_string)
     .style("width", "364px")
     .style("display", "block")
     .style("color", "black");
-  if (params.cat_data.manual_category[inst_axis]) {
-    manual_category_from_dendro(regl, params, external_model, inst_axis);
+  if (state.cat_data.manual_category[inst_axis]) {
+    manual_category_from_dendro(
+      regl,
+      state,
+      dispatch,
+      catArgsManager,
+      inst_axis
+    );
   }
 });

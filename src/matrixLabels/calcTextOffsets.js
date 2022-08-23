@@ -1,8 +1,11 @@
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
+import { mutateNetworkState } from "../state/reducers/networkSlice";
 
-export default (function calc_text_offsets(params, inst_axis) {
-  params.labels.offset_dict[inst_axis] = {};
-  _.each(params.network[inst_axis + "_nodes"], function (inst_label, inst_id) {
+export default (function calc_text_offsets(state, dispatch, inst_axis) {
+  const offset_dict = {};
+  const newNetworkNodes = cloneDeep(state.network[inst_axis + "_nodes"]);
+  _.each(newNetworkNodes, function (inst_label, inst_id) {
     const offsets = {};
     let order_id;
     let order_state;
@@ -12,10 +15,10 @@ export default (function calc_text_offsets(params, inst_axis) {
     } else {
       inst_dim = "y";
     }
-    const axis_arr = params.canvas_pos[inst_dim + "_arr"];
-    const inst_order = params.order.inst[inst_axis];
-    const new_order = params.order.new[inst_axis];
-    const num_labels = params.labels["num_" + inst_axis];
+    const axis_arr = state.rowAndColCanvasPositions[inst_dim + "_arr"];
+    const inst_order = state.order.inst[inst_axis];
+    const new_order = state.order.new[inst_axis];
+    const num_labels = state.labels["num_" + inst_axis];
     // calculate inst and new offsets
     _.each(["inst", "new"], function (inst_state) {
       if (inst_state === "inst") {
@@ -24,14 +27,14 @@ export default (function calc_text_offsets(params, inst_axis) {
         order_state = new_order;
       }
       if (inst_axis === "col") {
-        order_id = params.network[inst_axis + "_nodes"][inst_id][order_state];
+        order_id = state.network[inst_axis + "_nodes"][inst_id][order_state];
         offsets[inst_state] =
           axis_arr[num_labels - 1 - order_id] + 0.5 / num_labels;
       } else {
         order_id =
           num_labels -
           1 -
-          params.network[inst_axis + "_nodes"][inst_id][order_state];
+          state.network[inst_axis + "_nodes"][inst_id][order_state];
         offsets[inst_state] = axis_arr[order_id] + 0.5 / num_labels;
       }
     });
@@ -41,6 +44,12 @@ export default (function calc_text_offsets(params, inst_axis) {
     if (inst_name.indexOf(": ") >= 0) {
       inst_name = inst_label.name.split(": ")[1];
     }
-    params.labels.offset_dict[inst_axis][inst_name] = offsets;
+    offset_dict[inst_name] = offsets;
   });
+  dispatch(
+    mutateNetworkState({
+      [inst_axis + "_nodes"]: newNetworkNodes,
+    })
+  );
+  return offset_dict;
 });

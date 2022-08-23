@@ -1,31 +1,21 @@
-import * as d3 from "d3";
 import interp_fun from "../draws/interpFun";
 import { rotation, scaling } from "../draws/mat3Transform";
 
-export default function make_col_text_args(regl, params, zoom_function) {
+export default function make_col_text_args(regl, state, zoom_function) {
   const inst_axis = "col";
-  const num_col = params.labels["num_" + inst_axis];
-  const col_width = params.viz_dim.heat_size.x / num_col;
-  params.text_scale.col = d3
-    .scaleLinear()
-    .domain([1, 10])
-    .range([1, 10 / params.allow_zoom.col]);
-  // 17.5, lowering makes larger text
-  const final_increase_font_size = num_col / 5.0;
-  params.text_scale.col = d3
-    .scaleLinear()
-    .domain([1, params.max_zoom])
-    .range([1, final_increase_font_size]);
+  const num_col = state.labels["num_" + inst_axis];
+  const col_width = state.visualization.viz_dim.heat_size.x / num_col;
+
   let scale_text = num_col;
-  const webgl_fs = (1 / num_col) * params.zoom_data.x.total_zoom;
-  const max_webgl_fs = params.text_zoom.col.max_webgl_fs;
+  const webgl_fs = (1 / num_col) * state.visualization.zoom_data.x.total_zoom;
+  const max_webgl_fs = state.text_zoom.col.max_webgl_fs;
   let scale_down_fs;
   if (webgl_fs > max_webgl_fs) {
     scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
   const mat_rotate = rotation(Math.PI / 4);
-  const text_y_scale = scaling(1, params.zoom_data.x.total_zoom);
+  const text_y_scale = scaling(1, state.visualization.zoom_data.x.total_zoom);
   // need to shift col labels up to counteract the rotation by 45%
   const rh_tri_hyp = col_width;
   const rh_tri_side = rh_tri_hyp / Math.sqrt(2);
@@ -115,19 +105,21 @@ export default function make_col_text_args(regl, params, zoom_function) {
       inst_offset: regl.prop("inst_offset"),
       new_offset: regl.prop("new_offset"),
       scale_text: scale_text,
-      y_offset: params.viz_dim.mat_size.y,
-      heat_size: params.viz_dim.heat_size.x,
-      shift_heat: params.viz_dim.mat_size.x - params.viz_dim.heat_size.x,
+      y_offset: state.visualization.viz_dim.mat_size.y,
+      heat_size: state.visualization.viz_dim.heat_size.x,
+      shift_heat:
+        state.visualization.viz_dim.mat_size.x -
+        state.visualization.viz_dim.heat_size.x,
       shift_text_right: shift_text_right,
       shift_text_out: shift_text_out,
       shift_text_up: shift_text_up,
       mat_rotate: mat_rotate,
       text_y_scale: text_y_scale,
-      total_zoom: params.zoom_data.x.total_zoom,
+      total_zoom: state.visualization.zoom_data.x.total_zoom,
       col_width: col_width,
       // alternate way to define interpolate uni
-      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.ani.running,
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(state))),
+      run_animation: state.animation.running,
     },
     depth: {
       enable: true,

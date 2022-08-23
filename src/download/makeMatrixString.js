@@ -1,22 +1,21 @@
 import make_full_name from "./makeFullName";
 
-export default (function make_matrix_string(params) {
-  const delimiter =
-    params.download.delimiter_key[params.download.delimiter_name];
+export default (function make_matrix_string(state) {
+  const delimiter = state.download.delimiter_key[state.download.delimiter_name];
   // get order indexes
   const order_indexes = {};
   // write first matrix row (e.g. column names)
   // //////////////////////////////////////////////
   let matrix_string = delimiter;
-  const row_nodes = params.network.row_nodes;
-  const col_nodes = params.network.col_nodes;
+  const row_nodes = state.network.row_nodes;
+  const col_nodes = state.network.col_nodes;
   order_indexes.row = row_nodes;
   order_indexes.col = col_nodes;
   // alternate column entry
   Object.values(col_nodes).map((col, i) => {
     let col_name;
-    if (params.download.delimiter_name === "tuple") {
-      col_name = make_full_name(params, col, "col");
+    if (state.download.delimiter_name === "tuple") {
+      col_name = make_full_name(state, col, "col");
     } else {
       col_name = col.name;
       if (col_name.includes(": ")) {
@@ -34,16 +33,19 @@ export default (function make_matrix_string(params) {
   // write matrix rows
   // //////////////////////
   let inst_mat_data;
-  if (params.norm.zscore_status === "non-zscored" && "mat_data_iz" in params) {
-    inst_mat_data = params.mat_data_iz;
+  if (
+    state.network.norm.zscore_status === "non-zscored" &&
+    "mat_data_iz" in state
+  ) {
+    inst_mat_data = state.mat_data_iz;
   } else {
-    inst_mat_data = params.mat_data;
+    inst_mat_data = state.network.mat;
   }
   matrix_string = matrix_string + "\n";
   Object.values(col_nodes).map((col, i) => {
     let col_name;
-    if (params.download.delimiter_name === "tuple") {
-      col_name = make_full_name(params, col, "col");
+    if (state.download.delimiter_name === "tuple") {
+      col_name = make_full_name(state, col, "col");
     } else {
       col_name = col.name;
       if (col_name.includes(": ")) {
@@ -58,8 +60,8 @@ export default (function make_matrix_string(params) {
   });
   Object.values(row_nodes).map((row, i) => {
     row_data = inst_mat_data[i];
-    if (params.download.delimiter_name === "tuple") {
-      row_name = make_full_name(params, row, "row");
+    if (state.download.delimiter_name === "tuple") {
+      row_name = make_full_name(state, row, "row");
     } else {
       row_name = row.name;
       if (row_name.includes(": ")) {

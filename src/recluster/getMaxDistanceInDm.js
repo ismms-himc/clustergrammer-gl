@@ -1,4 +1,5 @@
 import * as underscore from "underscore";
+
 export default (function get_max_tree_distance(dm) {
   let max_distance_in_dm = 0;
   underscore.each(dm, function (row) {

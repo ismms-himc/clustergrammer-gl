@@ -1,7 +1,13 @@
 import interp_fun from "./interpFun";
-export default (function draw_matrix_components(regl, params) {
+
+export default (function draw_matrix_components(
+  regl,
+  state,
+  cameras,
+  reglProps
+) {
   /* Matrix */
-  params.cameras.mat.draw(() => {
+  cameras.mat.draw(() => {
     /*
           Disabling this, prevents the screen from flashing when working with very
           large datasets
@@ -19,9 +25,9 @@ export default (function draw_matrix_components(regl, params) {
         state, then I will replace the current position array with the final
         position array
         */
-    regl(params.matrix_args.regl_props.rects)({
-      interp_prop: interp_fun(params),
-      run_animation: params.ani.running,
+    regl(reglProps)({
+      interp_prop: interp_fun(state),
+      run_animation: state.animation.running,
     });
   });
 });

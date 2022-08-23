@@ -1,25 +1,24 @@
 import * as _ from "underscore";
 
-export default (function make_label_queue(params) {
-  params.labels.queue = {};
-  params.labels.queue.low = {};
-  params.labels.queue.high = {};
-  params.labels.max_label_queue = 2000;
-  let inst_queue;
+export default (function make_label_queue(labels) {
+  const labelsQueue = {};
+  labelsQueue.low = {};
+  labelsQueue.high = {};
   _.each(["row", "col"], function (inst_axis) {
     // the high priority queue is empty initially
-    params.labels.queue.high[inst_axis] = [];
+    labelsQueue.high[inst_axis] = [];
     // the low priority queue
-    inst_queue = [];
-    const inst_labels = params.labels.ordered_labels[inst_axis + "s"];
+    const inst_queue = [];
+    const inst_labels = labels.ordered_labels[inst_axis + "s"];
     _.each(inst_labels, function (inst_label) {
       if (inst_label.indexOf(": ") >= 0) {
         inst_label = inst_label.split(": ")[1];
       }
       inst_queue.push(inst_label);
     });
-    params.labels.queue.low[inst_axis] = inst_queue;
-    // // make high label queue non-empty
-    // params.labels.queue.high[inst_axis] = inst_queue.slice(0, 1);
+    // TODO: no assignment
+
+    labelsQueue.low[inst_axis] = inst_queue;
   });
+  return labelsQueue;
 });

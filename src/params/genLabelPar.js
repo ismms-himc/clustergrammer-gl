@@ -1,29 +1,23 @@
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 
-export default (function gen_label_par(params) {
-  const labels = {};
-  labels.num_row = params.mat_data.length;
-  labels.num_col = params.mat_data[0].length;
-  labels.offset_dict = {};
-  labels.draw_labels = false;
-  // font_detail range: min ~12 max ~200
-  // usable range: 14-30 (was using 25)
-  labels.font_detail = 40;
+export default function gen_label_par(state) {
+  const labels = cloneDeep(state.labels);
+  labels.num_row = state.network.mat.length;
+  labels.num_col = state.network.mat[0].length;
   // generate titles if necessary
   let inst_label;
-  labels.titles = {};
-  labels.precalc = {};
   _.each(["row", "col"], function (inst_axis) {
     // initialize with empty title
     labels.titles[inst_axis] = "";
-    inst_label = params.network[inst_axis + "_nodes"][0].name;
+    inst_label = state.network[inst_axis + "_nodes"][0].name;
     if (inst_label.indexOf(": ") > 0) {
       labels.titles[inst_axis] = inst_label.split(": ")[0];
     }
     // pre-calc text triangles if low enough number of labels
     labels.precalc[inst_axis] = false;
   });
-  params.labels = labels;
-  genOrderedLabels(params);
-});
+  const ordered_labels = genOrderedLabels(state);
+  return { labels, ordered_labels };
+}

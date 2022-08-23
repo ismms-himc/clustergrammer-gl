@@ -3,6 +3,9 @@ export default (function sanitize_inst_zoom(params, zd) {
   if (zd.total_zoom === 1 && zd.inst_zoom < 1) {
     zd.inst_zoom = 1;
     // reset zoom
-    params.reset_cameras = true;
+    // TODO: do this via store somehow
+    // params.reset_cameras = true;
   }
+
+  return zd;
 });

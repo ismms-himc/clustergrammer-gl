@@ -5,7 +5,7 @@ export default function make_row_text_args(regl, params, zoom_function) {
   const inst_axis = "row";
   const num_row = params.labels["num_" + inst_axis];
   let scale_text = num_row;
-  const webgl_fs = (1 / num_row) * params.zoom_data.y.total_zoom;
+  const webgl_fs = (1 / num_row) * params.visualization.zoom_data.y.total_zoom;
   const max_webgl_fs = params.text_zoom.row.max_webgl_fs;
   let scale_down_fs;
   if (webgl_fs > max_webgl_fs) {
@@ -13,7 +13,7 @@ export default function make_row_text_args(regl, params, zoom_function) {
     scale_text = scale_text * scale_down_fs;
   }
   const mat_rotate = rotation(Math.PI / 2);
-  const x_offset = params.viz_dim.mat_size.x + 0.02;
+  const x_offset = params.visualization.viz_dim.mat_size.x + 0.02;
   const vert_arg = `
       precision mediump float;
       attribute vec2 position;
@@ -86,13 +86,15 @@ export default function make_row_text_args(regl, params, zoom_function) {
       new_offset: regl.prop("new_offset"),
       scale_text: scale_text,
       x_offset: x_offset,
-      heat_size: params.viz_dim.heat_size.y,
-      shift_heat: params.viz_dim.mat_size.y - params.viz_dim.heat_size.y,
-      total_zoom: params.zoom_data.y.total_zoom,
+      heat_size: params.visualization.viz_dim.heat_size.y,
+      shift_heat:
+        params.visualization.viz_dim.mat_size.y -
+        params.visualization.viz_dim.heat_size.y,
+      total_zoom: params.visualization.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
       interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.ani.running,
+      run_animation: params.animation.running,
     },
     depth: {
       enable: true,

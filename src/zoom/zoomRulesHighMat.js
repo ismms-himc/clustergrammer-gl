@@ -1,9 +1,7 @@
-import draw_interacting from "../draws/drawInteracting";
 import doubleClicking from "../interactions/doubleClicking";
 import interactionEvents from "../interactions/interactionEvents";
 import singleClicking from "../interactions/singleClicking";
 import track_interaction_zoom_data from "../interactions/trackInteractionZoomData";
-import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
 import run_hide_tooltip from "../tooltip/runHideTooltip";
 
 export default function zoom_rules_high_mat(
@@ -30,8 +28,6 @@ export default function zoom_rules_high_mat(
     .on("interaction", function (ev) {
       mouseover = track_interaction_zoom_data(store, ev);
       run_hide_tooltip(store, tooltip_fun);
-      dispatch(mutateCategoriesState({ showing_color_picker: false }));
-      draw_interacting(regl, store, catArgsManager, camerasManager);
     })
     .on("interactionend", function () {
       if (

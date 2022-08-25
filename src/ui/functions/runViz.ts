@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { Regl } from "regl";
 import { CamerasManager } from "../../cameras/camerasManager";
 import { CatArgsManager } from "../../cats/manager/catArgsManager";
+import drawInteracting from "../../draws/drawInteracting";
 import { mutateAnimationState } from "../../state/reducers/animation/animationSlice";
 import { mutateInteractionState } from "../../state/reducers/interaction/interactionSlice";
 import { RootState } from "../../state/store/store";
@@ -64,6 +65,7 @@ export default function run_viz(
       fourthState.animation.running === true ||
       fourthState.animation.update_viz === true
     ) {
+      drawInteracting(regl, store, catArgsManager, camerasManager);
       dispatch(mutateAnimationState({ update_viz: false }));
     } else if (fourthState.interaction.still_mouseover === true) {
       // mouseover may result in draw command

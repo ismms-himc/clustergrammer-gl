@@ -1,3 +1,4 @@
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
 import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 
 export default (function run_hide_tooltip(
@@ -17,4 +18,6 @@ export default (function run_hide_tooltip(
     );
     tooltip_fun.hide();
   }
+
+  store.dispatch(mutateCategoriesState({ showing_color_picker: false }));
 });

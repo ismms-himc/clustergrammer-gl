@@ -2,12 +2,7 @@ import finalInteractionFrame from "../interactions/finalInteractionFrame";
 import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 import drawCommands from "./drawCommands";
 
-export default (function draw_interacting(
-  regl,
-  store,
-  catArgsManager,
-  cameras
-) {
+export default (function drawInteracting(regl, store, catArgsManager, cameras) {
   const state = store.getState();
   const dispatch = store.dispatch;
 

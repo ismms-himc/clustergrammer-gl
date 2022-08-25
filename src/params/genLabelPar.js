@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
 
 export default function genLabelPar(store) {
   const state = store.getState();
@@ -20,6 +21,7 @@ export default function genLabelPar(store) {
     // pre-calc text triangles if low enough number of labels
     labels.precalc[inst_axis] = false;
   });
-  const ordered_labels = genOrderedLabels(store);
-  return { labels, ordered_labels };
+  genOrderedLabels(store);
+
+  store.dispatch(mutateLabelsState(labels));
 }

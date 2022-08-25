@@ -5,6 +5,7 @@ import { NetworkData, Ordering } from "../../types/network";
 export type NormScoring = "zscored" | "non-zscored";
 
 export interface NetworkState extends NetworkData {
+  [x: string]: any;
   order: {
     row: Ordering;
     col: Ordering;
@@ -49,7 +50,10 @@ export const networkSlice = createSlice({
       state = action.payload;
       return state;
     },
-    mutateNetworkState: (state, action: PayloadAction<NetworkState>) => {
+    mutateNetworkState: (
+      state,
+      action: PayloadAction<Partial<NetworkState>>
+    ) => {
       state = merge(state, action.payload);
       return state;
     },

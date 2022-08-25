@@ -1,6 +1,6 @@
 import * as _ from "underscore";
 
-export default (function calc_dendro_triangles(store, inst_axis) {
+export default (function calc_dendro_triangles(store, dendro, inst_axis) {
   const state = store.getState();
   const triangle_info = {};
   const inst_nodes = state.network[inst_axis + "_nodes"];
@@ -26,7 +26,7 @@ export default (function calc_dendro_triangles(store, inst_axis) {
     } else {
       // original way of getting group
       // //////////////////////////////////////////
-      const inst_level = state.dendro.group_level[inst_axis];
+      const inst_level = dendro.group_level[inst_axis];
       inst_group = inst_node.group[inst_level];
     }
     let inst_top;
@@ -79,9 +79,6 @@ export default (function calc_dendro_triangles(store, inst_axis) {
         (triangle_info[inst_group].pos_top + inst_bot) / 2;
     }
   });
-  const group_info = [];
-  _.each(triangle_info, function (inst_triangle) {
-    group_info.push(inst_triangle);
-  });
+  const group_info = Object.values(triangle_info);
   return group_info;
 });

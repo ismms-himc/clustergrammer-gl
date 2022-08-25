@@ -30,5 +30,6 @@ export default (function make_opacity_arr(state) {
   opacity_arr = opacity_arr.map(function (x) {
     return opacity_scale(x);
   });
+
   return opacity_arr;
 });

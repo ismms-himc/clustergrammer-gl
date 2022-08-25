@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { merge } from "lodash";
+import { merge, set } from "lodash";
 import iniZoomData from "./helpers/iniZoomData";
 
 export type TextZoom = {
@@ -29,11 +29,23 @@ export type ZoomAxisData = {
   inst_zoom: number;
   pan_by_zoom: number;
   pan_by_drag: number;
+  total_mouseover: number;
+  cursor_position: number;
+  cursor_rel_min: number;
+  filter_zoom: number;
+  pan_room: number;
+  prev_restrict: false;
+  show_text: false;
+  still_zooming: false;
+  total_pan_max: number;
+  total_pan_min: number;
+  total_zoom: number;
+  zoom_step: number;
 };
 
 export type ZoomData = {
-  x: ZoomAxisData;
-  y: ZoomAxisData;
+  x?: ZoomAxisData;
+  y?: ZoomAxisData;
 };
 
 export type VizDimHeat = {
@@ -138,6 +150,14 @@ export const visualizationSlice = createSlice({
       state.viz_dim = action.payload;
       return state;
     },
+    setTotalMouseover: (
+      state,
+      action: PayloadAction<{ axis: "x" | "y"; num: number }>
+    ) => {
+      const { axis, num } = action.payload;
+      set(state, ["zoom_data", axis, "total_mouseover"], num);
+      return state;
+    },
   },
 });
 
@@ -146,6 +166,7 @@ export const {
   mutateVisualizationState,
   mutateZoomData,
   setVisualizationDimensions,
+  setTotalMouseover,
 } = visualizationSlice.actions;
 
 export default visualizationSlice.reducer;

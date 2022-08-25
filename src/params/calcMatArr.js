@@ -1,7 +1,7 @@
 import * as _ from "underscore";
 
-export default (function calc_mat_arr(state) {
-  const { labels, visualization } = state;
+export default (function calc_mat_arr(store) {
+  const { labels, visualization } = store.getState();
   const num_row = labels.num_row;
   const num_col = labels.num_col;
   // draw matrix cells

@@ -44,11 +44,11 @@ export default (function runReorder(
   ) {
     set(
       newVisualizationState,
-      ["text_triangle", "draw", inst_axis],
+      ["text_triangles", "draw", inst_axis],
       updateTextTriangleOrder(store, inst_axis)
     );
   } else {
-    set(newVisualizationState, ["text_triangle", "draw", inst_axis], false);
+    set(newVisualizationState, ["text_triangles", "draw", inst_axis], false);
   }
   dispatch(setVisualizationState(newVisualizationState));
 });

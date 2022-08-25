@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import { throttle } from "lodash";
 import { Regl } from "regl";
 import { CamerasManager } from "./cameras/camerasManager";
 import { CatArgsManager } from "./cats/manager/catArgsManager";
@@ -7,7 +6,6 @@ import { createCanvasContainer } from "./createCanvasContainer";
 import draw_webgl_layers from "./draws/drawWebglLayers";
 import initializeRegl from "./params/initializeRegl";
 import initializeStore from "./params/initializeStore";
-import { saveState } from "./state/localStorageHelpers";
 import { setOpacityScale } from "./state/reducers/matrixSlice";
 import { NetworkState } from "./state/reducers/networkSlice";
 import { store } from "./state/store/store";
@@ -32,8 +30,8 @@ const adjustOpacity =
     catArgsManager: CatArgsManager,
     camerasManager: CamerasManager
   ) =>
-  (opacity_scale: number) => {
-    setOpacityScale(opacity_scale);
+  (opacity: number) => {
+    setOpacityScale(opacity);
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
   };
 
@@ -63,13 +61,6 @@ function clustergrammer_gl(
     // NOTE: do this before any components, as the components access
     // the state
     initializeStore(regl, args, store);
-
-    // Save game data to localStorage periodically
-    store.subscribe(
-      throttle(() => {
-        saveState(store.getState());
-      }, 5000)
-    );
 
     // initialize components
     const camerasManager = new CamerasManager(regl, store);

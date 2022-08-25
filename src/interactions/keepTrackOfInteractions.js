@@ -1,6 +1,6 @@
 import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 
-export default (function keep_track_of_interactions(store) {
+export default (function keepTrackOfInteractions(store) {
   const state = store.getState();
   const dispatch = store.dispatch;
 

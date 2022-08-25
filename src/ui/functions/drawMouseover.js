@@ -18,5 +18,5 @@ export default (function drawMouseover(store) {
     })
   );
 
-  setTimeout(finalMouseoverFrame, WAIT_TIME_FINAL_MOUSEOVER, state);
+  setTimeout(finalMouseoverFrame, WAIT_TIME_FINAL_MOUSEOVER, store);
 });

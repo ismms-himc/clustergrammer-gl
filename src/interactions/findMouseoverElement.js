@@ -1,12 +1,10 @@
 import { set } from "lodash";
 import * as _ from "underscore";
 import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice";
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
 import getMouseoverType from "./getMouseoverType";
 
 export default function findMouseoverElement(store, ev) {
-  // const state = store.getState()
   const dispatch = store.dispatch;
 
   /*
@@ -57,8 +55,10 @@ export default function findMouseoverElement(store, ev) {
   });
   // write zoom data changes
   dispatch(mutateZoomData(updatedZoomData));
-  const { tooltip_type, in_bounds_tooltip } = getMouseoverType(store);
-  dispatch(mutateTooltipState({ tooltip_type, in_bounds_tooltip }));
+  getMouseoverType(store);
+  const {
+    tooltip: { tooltip_type, in_bounds_tooltip },
+  } = store.getState();
   const axis_indices = {};
   if (in_bounds_tooltip) {
     let axis_index;
@@ -141,8 +141,5 @@ export default function findMouseoverElement(store, ev) {
       });
     }
   }
-
-  // TODO: do one or the other but probably not both
   dispatch(setMouseoverInteraction(mouseover));
-  return mouseover;
 }

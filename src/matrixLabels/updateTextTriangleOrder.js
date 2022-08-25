@@ -1,6 +1,7 @@
+import { set } from "lodash";
 import * as _ from "underscore";
 
-export default (function update_text_triangle_order(store, inst_axis) {
+export default (function updateTextTriangleOrder(store, inst_axis) {
   const state = store.getState();
 
   // Here we are updating the positions of the existing text triangles that
@@ -41,8 +42,8 @@ export default (function update_text_triangle_order(store, inst_axis) {
         offsets[inst_state] = axis_arr[order_id] + 0.5 / num_labels;
       }
     });
-    inst_label.inst_offset = [0, offsets.inst];
-    inst_label.new_offset = [0, offsets.new];
+    set(inst_label, "inst_offset", [0, offsets.inst]);
+    set(inst_label, "new_offset", [0, offsets.new]);
   });
   return inst_text_triangles;
 });

@@ -40,6 +40,10 @@ export class CamerasManager {
     this.#reglProps = merge(this.#reglProps, newProps);
   }
 
+  remakeMatrixArgs(store: Store<RootState>) {
+    this.#reglProps = make_matrix_args(this.#regl, store);
+  }
+
   getReglProps() {
     return this.#reglProps;
   }

@@ -12,14 +12,20 @@ export default function ini_canvas_mouseover(
   tooltip_fun
 ) {
   const dispatch = store.dispatch;
-  const state = store.getState();
   d3.select(container)
     .select(`.${CANVAS_CONTAINER_CLASSNAME}`)
     .select("canvas")
     .on("mouseover", function (v) {
-      // if (state.tooltip.show_tooltip && state.tooltip.in_bounds_tooltip) {
-      runShowTooltip(regl, store, catArgsManager, camerasManager, tooltip_fun);
-      // }
+      const state = store.getState();
+      if (state.tooltip.show_tooltip && state.tooltip.in_bounds_tooltip) {
+        runShowTooltip(
+          regl,
+          store,
+          catArgsManager,
+          camerasManager,
+          tooltip_fun
+        );
+      }
       dispatch(mutateTooltipState({ on_canvas: true }));
     })
     .on("mouseout", function () {

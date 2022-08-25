@@ -60,9 +60,9 @@ export default (function drawAxisComponents(
         state.visualization.zoom_data[axis_dim].total_zoom;
       if (
         num_viz_labels < state.max_num_text &&
-        state.labels.queue.high[inst_axis].length === 0
+        state.labels.labels_queue.high[inst_axis].length === 0
       ) {
-        const viz_area = calcVizArea(state);
+        const viz_area = calcVizArea(store);
 
         // only regather if there are more labels than can be shown at once
         if (state.labels["num_" + inst_axis] >= state.max_num_text) {
@@ -75,7 +75,7 @@ export default (function drawAxisComponents(
     } else {
       if (state.visualization.text_triangles.draw[inst_axis] !== false) {
         regl(text_triangle_args)(
-          state.visualization.text_triangles.draw[inst_axis]
+          store.getState().visualization.text_triangles.draw[inst_axis]
         );
       }
     }

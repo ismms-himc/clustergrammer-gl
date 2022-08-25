@@ -1,9 +1,11 @@
 import generate_cat_array from "../cats/generateCatArray";
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
 
-export default (function gen_cat_par(params) {
+export default (function gen_cat_par(store) {
+  const state = store.getState();
   const cat_data = {};
-  cat_data.row = generate_cat_array(params, "row");
-  cat_data.col = generate_cat_array(params, "col");
+  cat_data.row = generate_cat_array(state, "row");
+  cat_data.col = generate_cat_array(state, "col");
   cat_data.cat_num = {};
   cat_data.cat_num.row = cat_data.row.length;
   cat_data.cat_num.col = cat_data.col.length;
@@ -13,5 +15,5 @@ export default (function gen_cat_par(params) {
   cat_room.y = cat_room.webgl;
   cat_data.cat_room = cat_room;
   cat_data.showing_color_picker = false;
-  return cat_data;
+  store.dispatch(mutateCategoriesState(cat_data));
 });

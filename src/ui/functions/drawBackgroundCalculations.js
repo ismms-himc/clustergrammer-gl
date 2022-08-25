@@ -1,20 +1,29 @@
+import { without } from "lodash";
 import * as _ from "underscore";
-import drop_label_from_queue from "../../matrixLabels/dropLabelFromQueue";
+import vectorize_label from "../../matrixLabels/vectorizeLabel";
 import { mutateAnimationState } from "../../state/reducers/animation/animationSlice";
 import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice";
+import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice";
 
 export default (function draw_background_calculations(store) {
   const dispatch = store.dispatch;
 
   _.each(["row", "col"], function (inst_axis) {
     const { labels: oldLabels } = store.getState();
-    if (oldLabels.queue.high[inst_axis].length > 0) {
-      const inst_name = oldLabels.queue.high[inst_axis][0];
-      // TODO: I don't think we need this but
-      // const inst_text_vect = vectorize_label(store, inst_axis, inst_name);
-      // state.visualization.text_triangles[inst_axis][inst_name] = inst_text_vect;
-      const splicedHighQueue = drop_label_from_queue(
-        oldLabels.queue.high[inst_axis],
+    if (oldLabels.labels_queue.high[inst_axis].length > 0) {
+      const inst_name = oldLabels.labels_queue.high[inst_axis][0];
+      const inst_text_vect = vectorize_label(store, inst_axis, inst_name);
+      store.dispatch(
+        mutateVisualizationState({
+          text_triangles: {
+            [inst_axis]: {
+              [inst_name]: inst_text_vect,
+            },
+          },
+        })
+      );
+      const splicedHighQueue = without(
+        oldLabels.labels_queue.high[inst_axis],
         inst_name
       );
       dispatch(
@@ -28,7 +37,7 @@ export default (function draw_background_calculations(store) {
       );
       const { labels: newLabels } = store.getState();
       if (
-        newLabels.queue.high[inst_axis].length === 0 &&
+        newLabels.labels_queue.high[inst_axis].length === 0 &&
         newLabels.precalc[inst_axis] === false
       ) {
         dispatch(mutateAnimationState({ update_viz: true }));

@@ -1,6 +1,7 @@
 // TODO: fix invalid this usage
 
 import * as d3 from "d3";
+import { clamp } from "lodash";
 import draw_webgl_layers from "../draws/drawWebglLayers";
 import { setOpacityScale } from "../state/reducers/matrixSlice";
 import custom_round from "../utils/customRound";
@@ -12,37 +13,75 @@ export default (function build_opacity_slider(
   camerasManager
 ) {
   const state = store.getState();
-  const dispatch = store.dispatch;
   const slider_length = 100;
   const rect_height = slider_length + 20;
   const rect_width = 20;
   const round_level = -1;
 
+  // convert from position along slider to a value that will be used to set
+  // the group level
+  function get_slider_value(slider_position) {
+    return 1 - clamp(clamp(slider_position, 1, 90) / slider_length, 0.25, 0.9);
+  }
+
   function change_opacity(slider_value) {
     slider_value = custom_round(slider_value, 2);
-    dispatch(setOpacityScale(slider_value));
+    store.dispatch(setOpacityScale(slider_value));
+    camerasManager.remakeMatrixArgs(store);
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
-    d3.select(state.visualization.rootElementId + " .opacity_level_text").text(
-      slider_value
+  }
+
+  const getSliderPos = (el) => {
+    if (el.nextSibling) {
+      el.parentNode.appendChild(el);
+    }
+    return custom_round(clamp(d3.event.y, 0, slider_length), round_level);
+  };
+
+  function updateOpacityAndSlider(pos) {
+    // get the value of the slider
+    const slider_value = get_slider_value(pos);
+    // move the slider dot
+    d3.select(
+      state.visualization.rootElementId + " .opacity_group_circle"
+    ).attr("transform", `translate(0, ${pos})`);
+    // update the slider text
+    d3.select(`${state.visualization.rootElementId} .opacity_level_text`).text(
+      1 - custom_round(slider_value, 1)
     );
+    // change the opacity of the matrix cells
+    change_opacity(slider_value);
+  }
+
+  function click_opacity_slider() {
+    const clicked_line_position = d3.mouse(this);
+    const rel_pos = custom_round(clicked_line_position[1], round_level);
+    updateOpacityAndSlider(rel_pos);
+  }
+
+  function dragging() {
+    const slider_pos = getSliderPos(this);
+    updateOpacityAndSlider(slider_pos);
   }
 
   const drag = d3
     .drag()
     .on("drag", dragging)
     .on("end", function () {
-      const clicked_line_position = d3.mouse(this);
-      const rel_pos = custom_round(clicked_line_position[1], round_level);
-      const slider_value = get_slider_value(rel_pos);
+      const slider_pos = getSliderPos(this);
+      const slider_value = get_slider_value(slider_pos);
+      d3.select(this).attr("transform", `translate(0, ${slider_pos})`);
       change_opacity(slider_value);
     });
+
   const slider_group = d3
     .select(state.visualization.rootElementId + " .control_svg")
     .append("g")
     .classed("opacity_slider_group", true)
     .attr("transform", function () {
-      const inst_translation =
-        "translate(" + rect_width / 2 + ", " + rect_height / 10 + ")";
+      const inst_translation = `translate(${rect_width / 2}, ${
+        rect_height / 10
+      })`;
       return inst_translation;
     })
     .attr("transform", "translate(435, 110), rotate(-90)");
@@ -66,13 +105,13 @@ export default (function build_opacity_slider(
     .attr("y1", 0)
     .attr("y2", function () {
       return slider_length - 2;
-    })
-    .on("click", click_opacity_slider);
+    });
+
   const offset_triangle = -slider_length / 40;
   slider_group
     .append("path")
     .attr("fill", "black")
-    .attr("transform", "translate(" + offset_triangle + ", 0)")
+    .attr("transform", `translate(${offset_triangle}, 0)`)
     .attr("d", function () {
       // up triangle
       const start_x = 0;
@@ -80,25 +119,13 @@ export default (function build_opacity_slider(
       const mid_x = 0;
       const mid_y = slider_length;
       const final_x = slider_length / 10;
-      const final_y = 0;
-      const output_string =
-        "M" +
-        start_x +
-        "," +
-        start_y +
-        " L" +
-        mid_x +
-        ", " +
-        mid_y +
-        " L" +
-        final_x +
-        "," +
-        final_y +
-        " Z";
+      const final_y = slider_length;
+      const output_string = `M${start_x},${start_y} L${mid_x},${mid_y} L${final_x},${final_y} Z`;
       return output_string;
     })
     .attr("opacity", 0.35)
     .on("click", click_opacity_slider);
+
   const default_opacity = 0.35;
   const high_opacity = 0.6;
   slider_group
@@ -106,7 +133,7 @@ export default (function build_opacity_slider(
     .classed("opacity_group_circle", true)
     .attr("r", slider_length * 0.08)
     .attr("transform", function () {
-      return "translate(0, " + slider_length / 2 + ")";
+      return `translate(0, ${slider_length / 2})`;
     })
     .attr("fill", "blue")
     .attr("opacity", default_opacity)
@@ -141,7 +168,7 @@ export default (function build_opacity_slider(
   slider_group
     .append("text")
     .classed("opacity_level_text", true)
-    .text("1.0")
+    .text(state.matrix.opacity_scale)
     .attr("transform", "translate(-5, 140) rotate(90)")
     .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .attr("font-weight", 400)
@@ -151,36 +178,4 @@ export default (function build_opacity_slider(
     .attr("alignment-baseline", "middle")
     .attr("letter-spacing", "2px")
     .attr("cursor", "default");
-  function dragging() {
-    let slider_pos = d3.event.y;
-    if (slider_pos < 0) {
-      slider_pos = 0;
-    }
-    if (slider_pos > slider_length) {
-      slider_pos = slider_length;
-    }
-    if (this.nextSibling) {
-      this.parentNode.appendChild(this);
-    }
-    slider_pos = custom_round(slider_pos, round_level);
-    d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
-  }
-  function click_opacity_slider() {
-    const clicked_line_position = d3.mouse(this);
-    const rel_pos = custom_round(clicked_line_position[1], round_level);
-    d3.select(
-      state.visualization.rootElementId + " .opacity_group_circle"
-    ).attr("transform", "translate(0, " + rel_pos + ")");
-    const slider_value = get_slider_value(rel_pos);
-    change_opacity(slider_value);
-  }
-  // convert from position along slider to a value that will be used to set
-  // the group level
-  function get_slider_value(slider_position) {
-    // get to -2 and 2 range
-    const inst_x = (slider_position / 50 - 1) * 2;
-    // take inverse log2 to get opacity scale
-    const inst_y = Math.pow(2, inst_x);
-    return inst_y;
-  }
 });

@@ -9,8 +9,7 @@ export default function singleClicking(
   store,
   catArgsManager,
   camerasManager,
-  tooltip_fun,
-  mouseover
+  tooltip_fun
 ) {
   const dispatch = store.dispatch;
   const state = store.getState();
@@ -18,9 +17,9 @@ export default function singleClicking(
   dispatch(mutateAnimationState({ last_click: state.animation.time }));
   dispatch(mutateInteractionState({ manual_update_cats: false }));
   run_hide_tooltip(store, tooltip_fun, true);
-  if (state.tooltip.tooltip_type.includes("-dendro")) {
+  if (state.tooltip?.tooltip_type.includes("-dendro")) {
     if (state.tooltip.permanent_tooltip === false) {
-      runShowTooltip(regl, store, catArgsManager, camerasManager, mouseover);
+      runShowTooltip(regl, store, catArgsManager, camerasManager);
       dispatch(mutateTooltipState({ permanent_tooltip: true }));
     }
   }

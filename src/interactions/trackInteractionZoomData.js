@@ -1,6 +1,5 @@
 import { set } from "lodash";
 import _ from "underscore";
-import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice";
 import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
 import zoom_rules_low_mat from "../zoom/zoomRulesLowMat";
 import findMouseoverElement from "./findMouseoverElement";
@@ -14,7 +13,6 @@ export default (function track_interaction_zoom_data(store, ev) {
   const { zoom_data, zoom_restrict, viz_dim } = state.visualization;
   const newZoomData = _.clone(zoom_data);
   const interaction_types = ["wheel", "touch", "pinch"];
-  let mouseover;
   if (ev.buttons || interaction_types.indexOf(ev.type) !== -1) {
     switch (ev.type) {
       case "wheel":
@@ -98,9 +96,6 @@ export default (function track_interaction_zoom_data(store, ev) {
   } else if (ev.type === "mousemove") {
     // trying to keep track of interactions for mouseovers
     keepTrackOfMouseovers(store);
-    mouseover = findMouseoverElement(store, ev);
-    dispatch(setMouseoverInteraction(mouseover));
+    findMouseoverElement(store, ev);
   }
-
-  return mouseover;
 });

@@ -1,4 +1,5 @@
 import finalInteractionFrame from "../interactions/finalInteractionFrame";
+import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
 import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 import drawCommands from "./drawCommands";
 
@@ -17,11 +18,13 @@ export default (function drawInteracting(regl, store, catArgsManager, cameras) {
   if (animation.time_remain > 0) {
     time_remain = animation.time_remain - 1;
   }
-  // TODO: I'm pretty sure with finalInteractionFrame also setting total, this is a race condition
-  //       sooo... yuck
   dispatch(
     mutateInteractionState({
       total: store.getState().interaction.total + 1,
+    })
+  );
+  dispatch(
+    mutateAnimationState({
       time_remain,
       ini_viz,
     })

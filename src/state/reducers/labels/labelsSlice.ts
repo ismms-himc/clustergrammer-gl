@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
 
 export interface LabelsState {
+  [x: string]: any;
   num_row: number;
   num_col: number;
   offset_dict: {

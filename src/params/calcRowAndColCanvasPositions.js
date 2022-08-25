@@ -1,4 +1,7 @@
-export default (function calc_row_and_col_canvas_positions(state) {
+import { setRowAndColCanvasPositions } from "../state/reducers/rowAndColCanvasPositionsSlice";
+
+export default (function calc_row_and_col_canvas_positions(store) {
+  const state = store.getState();
   let inst_axis = "row";
   const num_row = state.labels["num_" + inst_axis];
   inst_axis = "col";
@@ -23,5 +26,6 @@ export default (function calc_row_and_col_canvas_positions(state) {
   const canvas_pos = {};
   canvas_pos.x_arr = x_arr;
   canvas_pos.y_arr = y_arr;
-  return canvas_pos;
+
+  store.dispatch(setRowAndColCanvasPositions(canvas_pos));
 });

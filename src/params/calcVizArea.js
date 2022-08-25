@@ -1,7 +1,8 @@
 import * as _ from "underscore";
 import genPixToWebgl from "./genPixToWebgl";
 
-export default (function calcVizArea(state) {
+export default (function calcVizArea(store) {
+  const state = store.getState();
   const pix_to_webgl = genPixToWebgl(state.visualization.viz_dim);
   const zoom_data = state.visualization.zoom_data;
   const buffer_width = 0.0;
@@ -33,5 +34,6 @@ export default (function calcVizArea(state) {
         pix_to_webgl[inst_axis](total_pan[inst_axis + "_min"]) + buffer_width;
     }
   });
+
   return viz_area;
 });

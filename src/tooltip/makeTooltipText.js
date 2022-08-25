@@ -32,10 +32,10 @@ export default (function makeTooltipText(
     d3.select(state.tooltip.tooltip_id)
       .style("text-align", "left")
       .html(tooltip_text);
-  } else if (state.tooltip.tooltip_type.indexOf("-label") > 0) {
+  } else if (state.tooltip?.tooltip_type.indexOf("-label") > 0) {
     // Label Tooltip
     // ////////////////
-    inst_axis = state.tooltip.tooltip_type.split("-")[0];
+    inst_axis = state.tooltip?.tooltip_type.split("-")[0];
     tooltip_text = mouseover[inst_axis].name;
     _.each(mouseover[inst_axis].cats, function (inst_cat) {
       tooltip_text = tooltip_text + "<br>" + inst_cat;
@@ -47,7 +47,7 @@ export default (function makeTooltipText(
     if (state.tooltip.use_hzome === true) {
       getHzomeGeneInfo(store, mouseover[inst_axis].name);
     }
-  } else if (state.tooltip.tooltip_type.indexOf("-dendro") > 0) {
+  } else if (state.tooltip?.tooltip_type.indexOf("-dendro") > 0) {
     // Dendro Tooltip
     // ////////////////
     inst_axis = state.tooltip.tooltip_type.split("-")[0];
@@ -60,7 +60,7 @@ export default (function makeTooltipText(
       mouseover,
       inst_axis
     );
-  } else if (state.tooltip.tooltip_type.indexOf("-cat-") > 0) {
+  } else if (state.tooltip?.tooltip_type.indexOf("-cat-") > 0) {
     // Category Tooltip
     // ///////////////////
     inst_axis = state.tooltip.tooltip_type.split("-")[0];

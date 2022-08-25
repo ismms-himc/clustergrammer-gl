@@ -18,7 +18,7 @@ const defaults = {
 };
 const initialState: MatrixState = {
   ...defaults,
-  opacity_scale: 1.0,
+  opacity_scale: 0.5,
   potential_recluster: {
     ...defaults,
   },

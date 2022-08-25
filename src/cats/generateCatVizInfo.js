@@ -1,7 +1,9 @@
 import * as _ from "underscore";
+import { mutateCatVizState } from "../state/reducers/catVizSlice";
 import checkIfValueCats from "./helpers/checkIfValueCats";
 
-export default (function generate_cat_info(network) {
+export default (function generate_cat_info(store) {
+  const { network } = store.getState();
   const viz = {};
   const super_string = ": ";
   let tmp_super;
@@ -90,5 +92,6 @@ export default (function generate_cat_info(network) {
       });
     });
   });
-  return viz;
+
+  store.dispatch(mutateCatVizState({ viz }));
 });

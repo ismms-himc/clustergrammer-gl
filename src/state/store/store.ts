@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import matrixReducer from "../../state/reducers/matrixSlice";
-import { loadState } from "../localStorageHelpers";
 import animationReducer from "../reducers/animation/animationSlice";
 import arrsReducer from "../reducers/arrsSlice";
 import categoriesReducer from "../reducers/categoriesSlice";
@@ -38,7 +37,6 @@ export const store = configureStore({
     search: searchReducer,
     arrs: arrsReducer,
   },
-  preloadedState: loadState(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -1,9 +1,7 @@
 import { Store } from "@reduxjs/toolkit";
-import { merge } from "lodash";
 import { Regl } from "regl";
 import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
-import make_matrix_args from "../matrixCells/makeMatrixArgs";
 import { RootState } from "../state/store/store";
 import drawAxisComponents from "./drawAxisComponents";
 import drawMatrixComponents from "./drawMatrixComponents";
@@ -15,13 +13,10 @@ export default function draw_webgl_layers(
   catArgsManager: CatArgsManager,
   camerasManager: CamerasManager
 ) {
+  console.log("drawing layers");
   const cameras = camerasManager.getCameras();
   const state = store.getState();
-  const reglProps = merge(
-    camerasManager.getReglProps(),
-    make_matrix_args(regl, store)
-  );
-  // const reglProps = ;
+  const reglProps = camerasManager.getReglProps();
   drawMatrixComponents(regl, store, cameras, reglProps);
   const draw_labels = state.labels.draw_labels;
   drawAxisComponents(regl, store, catArgsManager, cameras, "row", draw_labels);

@@ -1,6 +1,8 @@
+import { set } from "lodash";
 import * as _ from "underscore";
 import alt_slice_linkage from "../dendrogram/altSliceLinkage";
 import calc_dendro_triangles from "../dendrogram/calcDendroTriangles";
+import { mutateDendrogramState } from "../state/reducers/dendrogramSlice";
 
 export default (function genDendroPar(store) {
   const { network } = store.getState();
@@ -39,8 +41,12 @@ export default (function genDendroPar(store) {
   }
   dendro.increment_buttons = false;
   _.each(["row", "col"], function (axis) {
-    dendro.group_level[axis] = dendro.default_level;
-    dendro.group_info[axis] = calc_dendro_triangles(store, axis);
+    set(dendro, ["group_level", axis], dendro.default_level);
+    set(
+      dendro,
+      ["group_info", axis],
+      calc_dendro_triangles(store, dendro, axis)
+    );
   });
-  return dendro;
+  store.dispatch(mutateDendrogramState(dendro));
 });

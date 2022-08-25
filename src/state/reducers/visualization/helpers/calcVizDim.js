@@ -1,5 +1,7 @@
 import * as d3 from "d3";
 import * as _ from "underscore";
+import { store } from "../../../store/store";
+import { setVisualizationDimensions } from "../visualizationSlice";
 
 export default (function calc_vd(regl, state) {
   const { labels, cat_data } = state;
@@ -72,5 +74,5 @@ export default (function calc_vd(regl, state) {
     }
   });
 
-  return vd;
+  store.dispatch(setVisualizationDimensions(vd));
 });

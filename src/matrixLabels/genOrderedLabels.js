@@ -1,4 +1,5 @@
 import * as _ from "underscore";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
 
 export default function genOrderedLabels(store) {
   const state = store.getState();
@@ -34,5 +35,10 @@ export default function genOrderedLabels(store) {
       }
     });
   });
-  return ordered_labels;
+
+  store.dispatch(
+    mutateLabelsState({
+      ordered_labels,
+    })
+  );
 }

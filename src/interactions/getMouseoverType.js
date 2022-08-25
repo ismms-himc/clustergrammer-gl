@@ -1,3 +1,5 @@
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
+
 export default (function getMouseoverType(store) {
   const state = store.getState();
 
@@ -85,5 +87,10 @@ export default (function getMouseoverType(store) {
       in_bounds_tooltip = true;
     }
   }
-  return { tooltip_type, in_bounds_tooltip };
+  store.dispatch(
+    mutateTooltipState({
+      in_bounds_tooltip,
+      tooltip_type,
+    })
+  );
 });

@@ -7,34 +7,16 @@ import generateCatVizInfo from "../cats/generateCatVizInfo";
 import calcTextOffsets from "../matrixLabels/calcTextOffsets";
 import makeLabelQueue from "../matrixLabels/makeLabelQueue";
 import {
-  CategoriesState,
-  mutateCategoriesState,
-} from "../state/reducers/categoriesSlice";
-import { CatVizState, mutateCatVizState } from "../state/reducers/catVizSlice";
-import {
-  DendrogramState,
-  setDendrogramState,
-} from "../state/reducers/dendrogramSlice";
-import {
   LabelsState,
-  mutateLabelsState,
   setLabelsOffsetDict,
-  setLabelsState,
 } from "../state/reducers/labels/labelsSlice";
 import { NetworkState, setNetworkState } from "../state/reducers/networkSlice";
 import {
   NodeCanvasPos,
   setNodeCanvasPos,
 } from "../state/reducers/nodeCanvasPosSlice";
-import { OrderState, setOrderState } from "../state/reducers/order/orderSlice";
-import { setRowAndColCanvasPositions } from "../state/reducers/rowAndColCanvasPositionsSlice";
 import { setTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import calcVizDim from "../state/reducers/visualization/helpers/calcVizDim";
-import {
-  mutateVisualizationState,
-  setVisualizationDimensions,
-  VisualizationDimensions,
-} from "../state/reducers/visualization/visualizationSlice";
 import { RootState } from "../state/store/store";
 import { NetworkDataNode } from "../types/network";
 import calcAlphaOrder from "./calcAlphaOrder";
@@ -55,9 +37,7 @@ export default function initialize_params(
   const rootElementId = "#" + args.container.id;
 
   // cat_data setup
-  store.dispatch(
-    mutateCategoriesState(genCatPar(store.getState()) as CategoriesState)
-  );
+  genCatPar(store);
 
   // network setup
   const initialNetwork = args.network;
@@ -90,32 +70,16 @@ export default function initialize_params(
   );
 
   // order setup
-  store.dispatch(
-    setOrderState(getInitialOrderState(store.getState().network) as OrderState)
-  );
+  getInitialOrderState(store);
 
   // labels setup
-  const labelsParams = genLabelPar(store);
-  store.dispatch(
-    mutateLabelsState({
-      ...labelsParams.labels,
-      ordered_labels: labelsParams.ordered_labels,
-    })
-  );
+  genLabelPar(store);
 
   // category viz data setup
-  store.dispatch(
-    mutateCatVizState(
-      generateCatVizInfo(store.getState().network) as CatVizState
-    )
-  );
+  generateCatVizInfo(store);
 
-  // camera state setup
-  store.dispatch(
-    setVisualizationDimensions(
-      calcVizDim(regl, store.getState()) as unknown as VisualizationDimensions
-    )
-  );
+  // visualization dimensions setup
+  calcVizDim(regl, store.getState());
 
   // tooltip setup
   store.dispatch(
@@ -127,10 +91,7 @@ export default function initialize_params(
   );
 
   // row and col canvas positions setup
-  const rowAndColCanvasPositions = calcRowAndColCanvasPositions(
-    store.getState()
-  );
-  store.dispatch(setRowAndColCanvasPositions(rowAndColCanvasPositions));
+  calcRowAndColCanvasPositions(store);
 
   // labels offset dict setup
   const offset_dict: Record<string, any> = {};
@@ -141,45 +102,18 @@ export default function initialize_params(
     setLabelsOffsetDict(offset_dict as LabelsState["offset_dict"])
   );
 
-  // visualization setup
-  const { visualizationParams, labelsParams: visualizationLabelsParams } =
-    generateVisualizationParams(store.getState());
-  store.dispatch(
-    mutateVisualizationState({
-      ...visualizationParams,
-      rootElementId,
-    })
-  );
-
   // labels setup
-  const labels_queue = makeLabelQueue(store.getState().labels);
-  const label_queue_high = visualizationLabelsParams.lqh as
-    | undefined
-    | Record<string, string[]>;
-  store.dispatch(
-    setLabelsState({
-      ...store.getState().labels,
-      labels_queue: (label_queue_high && label_queue_high.length
-        ? {
-            ...merge(labels_queue, {
-              high: label_queue_high,
-            }),
-          }
-        : labels_queue) as LabelsState["labels_queue"],
-      precalc: visualizationLabelsParams.labelsPrecalc,
-    })
-  );
+  makeLabelQueue(store);
+
+  // visualization setup
+  generateVisualizationParams(store);
 
   // node canvas pos
-  store.dispatch(
-    setNodeCanvasPos(calcMatArr(store.getState()) as NodeCanvasPos)
-  );
+  store.dispatch(setNodeCanvasPos(calcMatArr(store) as NodeCanvasPos));
 
   // matrix color parameters
   setCatVizMatrixColors(store);
 
   // dendrogram state
-  store.dispatch(
-    setDendrogramState(genDendroPar(store) as unknown as DendrogramState)
-  );
+  genDendroPar(store);
 }

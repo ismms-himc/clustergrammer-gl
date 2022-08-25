@@ -87,11 +87,10 @@ export default (function end_animation(
     })
   );
   // update ordered_labels
-  const ordered_labels = genOrderedLabels(store);
+  genOrderedLabels(store);
   dispatch(
     mutateLabelsState({
       offset_dict,
-      ordered_labels,
     })
   );
 });

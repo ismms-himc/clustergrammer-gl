@@ -5,23 +5,15 @@ import ini_zoom_data from "../../state/reducers/visualization/helpers/iniZoomDat
 import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice";
 import make_cameras from "./makeCameras";
 
-export default function reset_cameras(regl, state, dispatch) {
-  const {
-    visualization: { viz_dim },
-    interaction: { enable_viz_interact },
-  } = state;
+export default function reset_cameras(regl, store) {
+  const dispatch = store.dispatch;
   dispatch(
     mutateVisualizationState({
       reset_cameras: false,
     })
   );
   const initial_zoom_data = ini_zoom_data();
-  const cameras = make_cameras(
-    regl,
-    initial_zoom_data,
-    viz_dim,
-    enable_viz_interact
-  );
+  const cameras = make_cameras(regl, store);
 
   dispatch(mutateLabelsState({ draw_labels: false }));
   dispatch(mutateAnimationState({ ini_viz: true }));

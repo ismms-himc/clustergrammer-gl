@@ -4,21 +4,21 @@ import remove_lost_tooltips from "./removeLostTooltips";
 
 export default (function runShowTooltip(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
-  tooltip_fun,
-  mouseover
+  camerasManager,
+  tooltip_fun
 ) {
+  const state = store.getState();
   if (state.tooltip.permanent_tooltip === false) {
     remove_lost_tooltips();
     makeTooltipText(
       regl,
-      state,
-      dispatch,
+      store,
       catArgsManager,
+      camerasManager,
       tooltip_fun,
-      mouseover
+      state.interaction.mouseover
     );
     display_and_position_tooltip(state);
   }

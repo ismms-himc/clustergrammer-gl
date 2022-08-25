@@ -2,14 +2,17 @@
 
 import * as d3 from "d3";
 import draw_webgl_layers from "../draws/drawWebglLayers";
+import { setOpacityScale } from "../state/reducers/matrixSlice";
 import custom_round from "../utils/customRound";
 
 export default (function build_opacity_slider(
   regl,
-  state,
+  store,
   catArgsManager,
-  cameras
+  camerasManager
 ) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
   const slider_length = 100;
   const rect_height = slider_length + 20;
   const rect_width = 20;
@@ -17,8 +20,8 @@ export default (function build_opacity_slider(
 
   function change_opacity(slider_value) {
     slider_value = custom_round(slider_value, 2);
-    state.matrix.opacity_scale = slider_value;
-    draw_webgl_layers(regl, state, catArgsManager, cameras);
+    dispatch(setOpacityScale(slider_value));
+    draw_webgl_layers(regl, store, catArgsManager, camerasManager);
     d3.select(state.visualization.rootElementId + " .opacity_level_text").text(
       slider_value
     );
@@ -28,9 +31,10 @@ export default (function build_opacity_slider(
     .drag()
     .on("drag", dragging)
     .on("end", function () {
-      // TODO: put in state
-      state.is_opacity_drag = false;
-      change_opacity(state.opacity_slider_value);
+      const clicked_line_position = d3.mouse(this);
+      const rel_pos = custom_round(clicked_line_position[1], round_level);
+      const slider_value = get_slider_value(rel_pos);
+      change_opacity(slider_value);
     });
   const slider_group = d3
     .select(state.visualization.rootElementId + " .control_svg")
@@ -134,7 +138,6 @@ export default (function build_opacity_slider(
     .attr("letter-spacing", "2px")
     .attr("cursor", "default")
     .attr("transform", "translate(10, 140), rotate(90)");
-  state.dendro.default_opacity_scale = 1.0;
   slider_group
     .append("text")
     .classed("opacity_level_text", true)
@@ -149,7 +152,6 @@ export default (function build_opacity_slider(
     .attr("letter-spacing", "2px")
     .attr("cursor", "default");
   function dragging() {
-    state.is_opacity_drag = true;
     let slider_pos = d3.event.y;
     if (slider_pos < 0) {
       slider_pos = 0;
@@ -161,19 +163,15 @@ export default (function build_opacity_slider(
       this.parentNode.appendChild(this);
     }
     slider_pos = custom_round(slider_pos, round_level);
-    const slider_value = get_slider_value(slider_pos);
     d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
-    state.opacity_slider_value = slider_value;
   }
   function click_opacity_slider() {
     const clicked_line_position = d3.mouse(this);
     const rel_pos = custom_round(clicked_line_position[1], round_level);
     d3.select(
-      state.visualization.rootElementId + " ." + "opacity_group_circle"
+      state.visualization.rootElementId + " .opacity_group_circle"
     ).attr("transform", "translate(0, " + rel_pos + ")");
     const slider_value = get_slider_value(rel_pos);
-    // TODO: put in state
-    state.opacity_slider_value = slider_value;
     change_opacity(slider_value);
   }
   // convert from position along slider to a value that will be used to set

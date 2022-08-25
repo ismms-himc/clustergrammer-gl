@@ -2,15 +2,19 @@
 import * as d3 from "d3";
 import draw_webgl_layers from "../draws/drawWebglLayers";
 import recluster from "../recluster/recluster";
+import { mutateCatVizState } from "../state/reducers/catVizSlice";
+import { mutateMatrixState } from "../state/reducers/matrixSlice";
 import { mutateNetworkState } from "../state/reducers/networkSlice";
 
 export default (function build_recluster_section(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
-  cameras
+  camerasManager
 ) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
+
   const y_offset_buttons = 47;
   const cracker_room = 65;
   const button_dim = {};
@@ -59,7 +63,11 @@ export default (function build_recluster_section(
         d3.selectAll(
           state.visualization.rootElementId + " .link_options_container"
         ).style("display", "block");
-        state.cat_viz.current_panel = "recluster";
+        dispatch(
+          mutateCatVizState({
+            current_panel: "recluster",
+          })
+        );
       }
     })
     .attr("transform", function () {
@@ -85,20 +93,23 @@ export default (function build_recluster_section(
     .attr("transform", "translate(" + 350 + ", " + 91 + ")")
     .on("click", function () {
       if (
-        state.matrix.potential_recluster.distance_metric !=
+        state.matrix.potential_recluster.distance_metric !==
           state.matrix.distance_metric ||
-        state.matrix.potential_recluster.linkage_type !=
+        state.matrix.potential_recluster.linkage_type !==
           state.matrix.linkage_type
       ) {
-        // transfer parameters to cgm object when update is pressed
-        state.matrix.distance_metric =
-          state.matrix.potential_recluster.distance_metric;
-        state.matrix.linkage_type =
-          state.matrix.potential_recluster.linkage_type;
+        // transfer parameters to state when update is pressed
+        dispatch(
+          mutateMatrixState({
+            distance_metric: state.matrix.potential_recluster.distance_metric,
+            linkage_type: state.matrix.potential_recluster.linkage_type,
+          })
+        );
         recluster(
           regl,
-          state,
+          store,
           catArgsManager,
+          camerasManager,
           state.matrix.potential_recluster.distance_metric,
           state.matrix.potential_recluster.linkage_type
         );
@@ -171,7 +182,13 @@ export default (function build_recluster_section(
       return "translate(" + x_offset + ", " + y_offset_top + ")";
     })
     .on("click", function (d) {
-      state.matrix.potential_recluster.distance_metric = d.full;
+      dispatch(
+        mutateMatrixState({
+          potential_recluster: {
+            distance_metric: d.full,
+          },
+        })
+      );
       d3.select(state.visualization.rootElementId + " .dist_option_container")
         .selectAll("rect")
         .attr("stroke", button_color);
@@ -246,7 +263,13 @@ export default (function build_recluster_section(
       return "translate(" + x_offset + ", " + y_offset_bottom + ")";
     })
     .on("click", function (d) {
-      state.matrix.potential_recluster.linkage_type = d.full;
+      dispatch(
+        mutateMatrixState({
+          potential_recluster: {
+            linkage_type: d.full,
+          },
+        })
+      );
       d3.select(state.visualization.rootElementId + " .link_option_container")
         .selectAll("rect")
         .attr("stroke", button_color);
@@ -310,7 +333,7 @@ export default (function build_recluster_section(
             },
           })
         );
-        draw_webgl_layers(regl, state, catArgsManager, cameras);
+        draw_webgl_layers(regl, store, catArgsManager, camerasManager);
       })
       .attr("transform", function () {
         const x_offset = 290 + cracker_room;

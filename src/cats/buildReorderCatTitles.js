@@ -1,8 +1,15 @@
 import * as d3 from "d3";
-import run_reorder from "../reorders/runReorder";
-import generateCatArgsArrs from "./manager/generateCatArgsArrs";
+import runReorder from "../reorders/runReorder";
+import { mutateOrderState } from "../state/reducers/order/orderSlice";
 
-export default (function build_reorder_cat_titles(regl, state) {
+export default (function buildReorderCatTitles(
+  regl,
+  store,
+  catArgsManager,
+  camerasManager
+) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
   const button_color = "#eee";
   const fieldSorter = (fields) => (a, b) =>
     fields
@@ -49,9 +56,15 @@ export default (function build_reorder_cat_titles(regl, state) {
       }
       d.custom = order_dict[inst_name];
     });
-    generateCatArgsArrs(regl, state);
-    run_reorder(regl, state, axis, "custom");
-    state.order.inst.col = "custom";
+    catArgsManager.regenerateCatArgsArrs(regl, store);
+    runReorder(regl, store, catArgsManager, camerasManager, axis, "custom");
+    dispatch(
+      mutateOrderState({
+        inst: {
+          col: "custom",
+        },
+      })
+    );
   }
   // Column Titles
   let pos_x = 845;
@@ -105,7 +118,13 @@ export default (function build_reorder_cat_titles(regl, state) {
     .style("opacity", 0.0)
     .on("dblclick", function (d, i) {
       stable_reorder_cats("col", i);
-      state.order.inst.col = "custom";
+      dispatch(
+        mutateOrderState({
+          inst: {
+            col: "custom",
+          },
+        })
+      );
       d3.select(state.visualization.rootElementId + " .col-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);
@@ -173,7 +192,13 @@ export default (function build_reorder_cat_titles(regl, state) {
     .style("opacity", 0.0)
     .on("dblclick", function (d, i) {
       stable_reorder_cats("row", i);
-      state.order.inst.row = "custom";
+      dispatch(
+        mutateOrderState({
+          inst: {
+            row: "custom",
+          },
+        })
+      );
       d3.select(state.visualization.rootElementId + " .row-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);

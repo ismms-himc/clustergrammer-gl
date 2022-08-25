@@ -5,6 +5,7 @@ module.exports = {
     node: true,
   },
   extends: [
+    "eslint:recommended",
     "google",
     "plugin:import/recommended",
     "plugin:import/typescript",

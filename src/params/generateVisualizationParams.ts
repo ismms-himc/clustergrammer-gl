@@ -21,7 +21,7 @@ export default function generateVisualizationParams(state: RootState) {
   }
   const max_zoom = min_dim / 4.0;
   const text_zoom = genTextZoomPar(labels);
-  const { viz_area, visible_labels } = calcVizArea(state);
+  const viz_area = calcVizArea(state);
   const {
     text_triangles,
     precalc: labelsPrecalc,
@@ -47,7 +47,6 @@ export default function generateVisualizationParams(state: RootState) {
       allow_zoom,
     },
     labelsParams: {
-      visible_labels,
       labelsPrecalc,
       lqh,
     },

@@ -1,65 +1,68 @@
-export default (function get_mouseover_type(params) {
+export default (function getMouseoverType(store) {
+  const state = store.getState();
+
+  // return vars
+  let in_bounds_tooltip = false;
+  let tooltip_type = "out-of-bounds";
   // switch to using absolute cursor position to determine mouseover type
   // emperically found pixel parameters
   // cats are ~12px wide
   const cat_width = 12;
   const edim = {};
   edim.x = {};
-  edim.x.heat_min = 125 + cat_width * params.cat_data.row.length;
+  edim.x.heat_min = 125 + cat_width * state.cat_data.row.length;
   edim.x.dendro_start = 845;
   edim.x.dendro_end = 860;
   edim.y = {};
   // extra pixel prevents error *********** look into
-  edim.y.heat_min = 126 + cat_width * params.cat_data.col.length;
+  edim.y.heat_min = 126 + cat_width * state.cat_data.col.length;
   edim.y.dendro_start = 845;
   edim.y.dendro_end = 860;
   const inst_pix = {};
-  inst_pix.x = params.visualization.zoom_data.x.cursor_position;
-  inst_pix.y = params.visualization.zoom_data.y.cursor_position;
+  inst_pix.x = state.visualization.zoom_data.x.cursor_position;
+  inst_pix.y = state.visualization.zoom_data.y.cursor_position;
   let cat_index;
-  params.tooltip.in_bounds_tooltip = false;
-  params.tooltip.tooltip_type = "out-of-bounds";
   if (
     inst_pix.x > edim.x.heat_min &&
     inst_pix.x < edim.x.dendro_start &&
     inst_pix.y > edim.y.heat_min &&
     inst_pix.y < edim.y.dendro_start
   ) {
-    params.tooltip.in_bounds_tooltip = true;
-    params.tooltip.tooltip_type = "matrix-cell";
+    in_bounds_tooltip = true;
+    tooltip_type = "matrix-cell";
   } else if (
     inst_pix.x <= edim.x.heat_min &&
     inst_pix.y > edim.y.heat_min &&
     inst_pix.y < edim.y.dendro_start
   ) {
-    params.tooltip.in_bounds_tooltip = true;
-    if (params.cat_data.row.length > 0) {
+    in_bounds_tooltip = true;
+    if (state.cat_data.row.length > 0) {
       cat_index = Math.floor((edim.x.heat_min - inst_pix.x) / cat_width);
-      if (cat_index + 1 <= params.cat_data.row.length) {
-        params.tooltip.tooltip_type =
-          "row-cat-" + String(params.cat_data.row.length - cat_index - 1);
+      if (cat_index + 1 <= state.cat_data.row.length) {
+        tooltip_type =
+          "row-cat-" + String(state.cat_data.row.length - cat_index - 1);
       } else {
-        params.tooltip.tooltip_type = "row-label";
+        tooltip_type = "row-label";
       }
     } else {
-      params.tooltip.tooltip_type = "row-label";
+      tooltip_type = "row-label";
     }
   } else if (
     inst_pix.y <= edim.y.heat_min &&
     inst_pix.x > edim.x.heat_min &&
     inst_pix.x < edim.x.dendro_start
   ) {
-    params.tooltip.in_bounds_tooltip = true;
-    if (params.cat_data.col.length > 0) {
+    in_bounds_tooltip = true;
+    if (state.cat_data.col.length > 0) {
       cat_index = Math.floor((edim.y.heat_min - inst_pix.y) / cat_width);
-      if (cat_index + 1 <= params.cat_data.col.length) {
-        params.tooltip.tooltip_type =
-          "col-cat-" + String(params.cat_data.col.length - cat_index - 1);
+      if (cat_index + 1 <= state.cat_data.col.length) {
+        tooltip_type =
+          "col-cat-" + String(state.cat_data.col.length - cat_index - 1);
       } else {
-        params.tooltip.tooltip_type = "col-label";
+        tooltip_type = "col-label";
       }
     } else {
-      params.tooltip.tooltip_type = "col-label";
+      tooltip_type = "col-label";
     }
   } else if (
     inst_pix.x >= edim.x.dendro_start &&
@@ -67,9 +70,9 @@ export default (function get_mouseover_type(params) {
     inst_pix.y > edim.y.heat_min &&
     inst_pix.y < edim.y.dendro_start
   ) {
-    if (params.order.inst.row === "clust") {
-      params.tooltip.tooltip_type = "row-dendro";
-      params.tooltip.in_bounds_tooltip = true;
+    if (state.order.inst.row === "clust") {
+      tooltip_type = "row-dendro";
+      in_bounds_tooltip = true;
     }
   } else if (
     inst_pix.y >= edim.y.dendro_start &&
@@ -77,9 +80,10 @@ export default (function get_mouseover_type(params) {
     inst_pix.x > edim.x.heat_min &&
     inst_pix.x < edim.x.dendro_start
   ) {
-    if (params.order.inst.col === "clust") {
-      params.tooltip.tooltip_type = "col-dendro";
-      params.tooltip.in_bounds_tooltip = true;
+    if (state.order.inst.col === "clust") {
+      tooltip_type = "col-dendro";
+      in_bounds_tooltip = true;
     }
   }
+  return { tooltip_type, in_bounds_tooltip };
 });

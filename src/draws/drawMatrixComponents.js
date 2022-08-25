@@ -1,11 +1,8 @@
 import interp_fun from "./interpFun";
 
-export default (function draw_matrix_components(
-  regl,
-  state,
-  cameras,
-  reglProps
-) {
+export default (function drawMatrixComponents(regl, store, cameras, reglProps) {
+  const state = store.getState();
+
   /* Matrix */
   cameras.mat.draw(() => {
     /*

@@ -1,13 +1,20 @@
 import * as d3 from "d3";
 import manual_update_to_cats from "../cats/manualUpdateToCats";
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
+import { mutateCatVizState } from "../state/reducers/catVizSlice";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 
 export default function manual_category_from_dendro(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
+  camerasManager,
+  selected_clust_names,
   axis
 ) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
+
   // Manual Category
   // //////////////////////////
   d3.select(state.tooltip.tooltip_id).append("text").text("Manual Category: ");
@@ -167,8 +174,7 @@ export default function manual_category_from_dendro(
             String(parseInt(old_top_margin) - color_picker_height) + "px";
           return new_top_margin;
         });
-        // TODO: put in state
-        state.cat_data.showing_color_picker = true;
+        dispatch(mutateCategoriesState({ showing_color_picker: true }));
       }
     });
   // update category button
@@ -200,16 +206,26 @@ export default function manual_category_from_dendro(
         if (inst_color === "") {
           inst_color = "white";
         }
-        const inst_labels = state.dendro.selected_clust_names;
+        const inst_labels = selected_clust_names;
         // Only allowing custom naming of first column
         const cat_title = state.cat_data[axis][0].cat_title;
-        state.cat_viz.global_cat_colors[new_cat] = inst_color;
-        state.interaction.manual_update_cats = true;
+        dispatch(
+          mutateCatVizState({
+            global_cat_colors: {
+              [new_cat]: inst_color,
+            },
+          })
+        );
+        dispatch(
+          mutateInteractionState({
+            manual_update_cats: true,
+          })
+        );
         manual_update_to_cats(
           regl,
-          state,
-          dispatch,
+          store,
           catArgsManager,
+          camerasManager,
           axis,
           cat_title,
           new_cat,

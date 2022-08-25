@@ -182,7 +182,7 @@ export default (function make_cat_args(
         new_position = vec3(ini_position, 0);
 
         // interpolate between the two positions using the interpolate uniform
-        if (run_animation === true){
+        if (run_animation == true){
           cat_pos = mix(cat_pos_att_inst, cat_pos_att_new, interp_uni);
         } else {
           cat_pos = cat_pos_att_inst;

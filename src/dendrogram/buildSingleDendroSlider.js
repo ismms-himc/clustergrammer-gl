@@ -3,7 +3,8 @@ import * as d3 from "d3";
 import custom_round from "../utils/customRound";
 import change_groups from "./changeGroups";
 
-export default function build_single_dendro_slider(regl, state, axis) {
+export default function build_single_dendro_slider(store, axis) {
+  const state = store.getState();
   const slider_length = 100;
   const rect_height = slider_length + 20;
   const rect_width = 20;
@@ -18,8 +19,7 @@ export default function build_single_dendro_slider(regl, state, axis) {
     .drag()
     .on("drag", dragging)
     .on("end", function () {
-      change_groups(state, axis, state[axis + "_dendro_slider_value"]);
-      state.is_slider_drag = false;
+      change_groups(store, axis, state[axis + "_dendro_slider_value"]);
     });
   const slider_group = d3
     .select(
@@ -200,7 +200,6 @@ export default function build_single_dendro_slider(regl, state, axis) {
       });
   }
   function dragging() {
-    state.is_slider_drag = true;
     let slider_pos = d3.event.y;
     if (slider_pos < 0) {
       slider_pos = 0;
@@ -233,7 +232,7 @@ export default function build_single_dendro_slider(regl, state, axis) {
       state.dendro.precalc_linkage
     );
     state[axis + "_dendro_slider_value"] = slider_value;
-    change_groups(state, axis, slider_value);
+    change_groups(store, axis, slider_value);
   }
   // convert from position along slider to a value that will be used to set
   // the group level

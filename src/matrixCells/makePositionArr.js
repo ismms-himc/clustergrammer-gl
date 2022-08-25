@@ -1,13 +1,13 @@
 export default (function make_position_arr(
-  params,
+  state,
   inst_row_order,
   inst_col_order
 ) {
-  const num_row = params.labels.num_row;
-  const num_col = params.labels.num_col;
-  const canvas_pos = params.node_canvas_pos;
-  const row_nodes = params.network.row_nodes;
-  const col_nodes = params.network.col_nodes;
+  const num_row = state.labels.num_row;
+  const num_col = state.labels.num_col;
+  const canvas_pos = state.node_canvas_pos;
+  const row_nodes = state.network.row_nodes;
+  const col_nodes = state.network.col_nodes;
   let row_pos;
   let col_pos;
   function position_function(d, i) {

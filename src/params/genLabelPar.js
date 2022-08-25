@@ -2,7 +2,9 @@ import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import genOrderedLabels from "../matrixLabels/genOrderedLabels";
 
-export default function gen_label_par(state) {
+export default function genLabelPar(store) {
+  const state = store.getState();
+
   const labels = cloneDeep(state.labels);
   labels.num_row = state.network.mat.length;
   labels.num_col = state.network.mat[0].length;
@@ -18,6 +20,6 @@ export default function gen_label_par(state) {
     // pre-calc text triangles if low enough number of labels
     labels.precalc[inst_axis] = false;
   });
-  const ordered_labels = genOrderedLabels(state);
+  const ordered_labels = genOrderedLabels(store);
   return { labels, ordered_labels };
 }

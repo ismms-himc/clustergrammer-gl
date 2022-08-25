@@ -5,12 +5,14 @@ import make_dendro_tooltip from "./makeDendroTooltip";
 
 export default (function makeTooltipText(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
+  camerasManager,
   tooltip_fun,
   mouseover
 ) {
+  const state = store.getState();
+
   let inst_axis;
   let tooltip_text;
   if (state.tooltip.tooltip_type === "matrix-cell") {
@@ -43,7 +45,7 @@ export default (function makeTooltipText(
       .style("text-align", "left")
       .html(tooltip_text);
     if (state.tooltip.use_hzome === true) {
-      getHzomeGeneInfo(state, dispatch, mouseover[inst_axis].name);
+      getHzomeGeneInfo(store, mouseover[inst_axis].name);
     }
   } else if (state.tooltip.tooltip_type.indexOf("-dendro") > 0) {
     // Dendro Tooltip
@@ -51,9 +53,9 @@ export default (function makeTooltipText(
     inst_axis = state.tooltip.tooltip_type.split("-")[0];
     make_dendro_tooltip(
       regl,
-      state,
-      dispatch,
+      store,
       catArgsManager,
+      camerasManager,
       tooltip_fun,
       mouseover,
       inst_axis

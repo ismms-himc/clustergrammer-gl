@@ -3,7 +3,9 @@ import color_to_rgba from "../colors/colorToRgba";
 import { rotation, scaling } from "../draws/mat3Transform";
 import make_dendro_arr from "./makeDendroArr";
 
-export default (function make_dendro_args(regl, state, inst_axis) {
+export default (function makeDendroArgs(regl, store, inst_axis) {
+  const state = store.getState();
+
   let rotation_radians;
   let heat_size;
   let mat_size_offset;
@@ -19,7 +21,7 @@ export default (function make_dendro_args(regl, state, inst_axis) {
   const num_labels = state.labels["num_" + inst_axis];
   const dendro_width = state.dendro.tri_height;
   const tri_width = heat_size / num_labels;
-  const dendro_arr = make_dendro_arr(state.dendro, inst_axis);
+  const dendro_arr = make_dendro_arr(store, inst_axis);
   const dendro_buffer = regl.buffer({
     length: dendro_arr.length,
     type: "float",
@@ -58,6 +60,7 @@ export default (function make_dendro_args(regl, state, inst_axis) {
 
       }
     `,
+
     frag: `
 
       precision highp float;
@@ -69,6 +72,7 @@ export default (function make_dendro_args(regl, state, inst_axis) {
       }
 
     `,
+
     attributes: {
       position: [
         [state.dendro.trap_float, 2 * tri_width],
@@ -80,6 +84,7 @@ export default (function make_dendro_args(regl, state, inst_axis) {
         divisor: 1,
       },
     },
+
     uniforms: {
       zoom: zoom_function,
       mat_rotate: mat_rotate,
@@ -87,6 +92,7 @@ export default (function make_dendro_args(regl, state, inst_axis) {
       mat_size_offset: mat_size_offset,
       triangle_color: inst_rgba,
     },
+
     count: 3,
     instances: dendro_arr.length,
     depth: {

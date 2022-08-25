@@ -1,29 +1,28 @@
 import * as d3 from "d3";
-import findMouseoverElement from "../../interactions/findMouseoverElement";
+import { mutateTooltipState } from "../../state/reducers/tooltip/tooltipSlice";
 import runShowTooltip from "../../tooltip/runShowTooltip";
+import { CANVAS_CONTAINER_CLASSNAME } from "../ui.const";
 
 export default function ini_canvas_mouseover(
   regl,
-  state,
-  dispatch,
+  store,
+  container,
   catArgsManager,
+  camerasManager,
   tooltip_fun
 ) {
-  d3.select(state.visualization.rootElementId + " .canvas-container canvas")
-    .on("mouseover", function (ev) {
-      const mouseover = findMouseoverElement(state, dispatch, ev);
-      if (state.tooltip.show_tooltip && state.tooltip.in_bounds_tooltip) {
-        runShowTooltip(
-          regl,
-          state,
-          dispatch,
-          catArgsManager,
-          tooltip_fun,
-          mouseover
-        );
-      }
+  const dispatch = store.dispatch;
+  const state = store.getState();
+  d3.select(container)
+    .select(`.${CANVAS_CONTAINER_CLASSNAME}`)
+    .select("canvas")
+    .on("mouseover", function (v) {
+      // if (state.tooltip.show_tooltip && state.tooltip.in_bounds_tooltip) {
+      runShowTooltip(regl, store, catArgsManager, camerasManager, tooltip_fun);
+      // }
+      dispatch(mutateTooltipState({ on_canvas: true }));
     })
     .on("mouseout", function () {
-      state.tooltip.on_canvas = false;
+      dispatch(mutateTooltipState({ on_canvas: false }));
     });
 }

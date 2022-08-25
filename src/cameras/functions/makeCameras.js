@@ -1,11 +1,11 @@
 import makeCamera2D from "./customCamera2D";
 
-export default function make_cameras(
-  regl,
-  zoom_data,
-  viz_dim,
-  enable_viz_interact
-) {
+export default function make_cameras(regl, store) {
+  const state = store.getState();
+  const {
+    visualization: { viz_dim, zoom_data },
+    interaction: { enable_viz_interact },
+  } = state;
   const cameras = {};
   const ini_scale = 1.0;
   const zoom_range = {

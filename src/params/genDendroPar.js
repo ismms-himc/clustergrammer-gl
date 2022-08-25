@@ -2,8 +2,9 @@ import * as _ from "underscore";
 import alt_slice_linkage from "../dendrogram/altSliceLinkage";
 import calc_dendro_triangles from "../dendrogram/calcDendroTriangles";
 
-export default (function gen_dendro_par(state) {
-  const { network, labels, visualization, order, node_canvas_pos } = state;
+export default (function genDendroPar(store) {
+  const { network } = store.getState();
+
   const dendro = {};
   dendro.default_level = 5;
   dendro.tri_height = 0.1;
@@ -12,7 +13,6 @@ export default (function gen_dendro_par(state) {
   dendro.dendro_args = {};
   dendro.group_level = {};
   dendro.update_dendro = false;
-  dendro.selected_clust_names = [];
   dendro.group_info = {};
   dendro.default_link_level = 0.5;
   dendro.output_label_format = "list";
@@ -32,7 +32,7 @@ export default (function gen_dendro_par(state) {
       dendro.max_linkage_dist[axis] = link_mat[link_mat.length - 1][2] + 0.01;
       dist_thresh = dendro.max_linkage_dist[axis] * dendro.default_link_level;
       // alternate linkage slicing code
-      alt_slice_linkage(network, axis, dist_thresh, dendro.min_dist[axis]);
+      alt_slice_linkage(store, axis, dist_thresh, dendro.min_dist[axis]);
     });
   } else {
     dendro.precalc_linkage = false;
@@ -40,10 +40,7 @@ export default (function gen_dendro_par(state) {
   dendro.increment_buttons = false;
   _.each(["row", "col"], function (axis) {
     dendro.group_level[axis] = dendro.default_level;
-    dendro.group_info[axis] = calc_dendro_triangles(
-      { network, labels, visualization, order, node_canvas_pos, dendro },
-      axis
-    );
+    dendro.group_info[axis] = calc_dendro_triangles(store, axis);
   });
   return dendro;
 });

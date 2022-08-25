@@ -1,13 +1,20 @@
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
+
 export default (function run_hide_tooltip(
-  tooltip,
+  store,
   tooltip_fun,
   click_on_heatmap = false
 ) {
+  const { tooltip } = store.getState();
   if (tooltip.permanent_tooltip === false) {
     tooltip_fun.hide();
   }
   if (click_on_heatmap) {
-    tooltip.permanent_tooltip = false;
+    store.dispatch(
+      mutateTooltipState({
+        permanent_tooltip: false,
+      })
+    );
     tooltip_fun.hide();
   }
 });

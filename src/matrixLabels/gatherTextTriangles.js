@@ -1,14 +1,15 @@
 import * as _ from "underscore";
+import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
 
 import vectorize_label from "./vectorizeLabel";
 
-export default function gather_text_triangles(
-  text_triangles,
-  viz_area,
-  labels,
-  network,
-  inst_axis
-) {
+export default function gather_text_triangles(store, viz_area, inst_axis) {
+  const dispatch = store.dispatch;
+  const {
+    visualization: { text_triangles },
+    labels,
+    network,
+  } = store.getState();
   let inst_dim;
   if (inst_axis === "col") {
     inst_dim = "x";
@@ -46,15 +47,26 @@ export default function gather_text_triangles(
         label_queue_high[inst_axis] = [];
         label_queue_high[inst_axis].push(inst_name);
         /*
-                moved text triangle calculations to background, unless pre-calc
-                */
+          moved text triangle calculations to background, unless pre-calc
+        */
         if (labels.precalc[inst_axis]) {
           // calculate text vector
-          inst_text_vect = vectorize_label(labels, inst_axis, inst_name);
+          inst_text_vect = vectorize_label(store, labels, inst_axis, inst_name);
           text_triangles_col_and_row[inst_axis][inst_name] = inst_text_vect;
           inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
           inst_text_vect.new_offset = [0, inst_label.offsets.new];
-          text_triangles.draw[inst_axis].push(inst_text_vect);
+          dispatch(
+            mutateVisualizationState({
+              text_triangles: {
+                draw: {
+                  [inst_axis]: [
+                    ...text_triangles.draw[inst_axis],
+                    inst_text_vect,
+                  ],
+                },
+              },
+            })
+          );
         }
       }
     }

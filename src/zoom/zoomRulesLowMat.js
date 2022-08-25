@@ -15,7 +15,6 @@ export default (function zoom_rules_low_mat(
   viz_dim_mat,
   axis
 ) {
-  let reset_cameras;
   // store original restriction
   const prevRestrict = zoom_data.prev_restrict;
   // copy zoom data so we can operate on it without fear of mutating the original (not possible I think but)
@@ -33,7 +32,8 @@ export default (function zoom_rules_low_mat(
   // Sanitize Zoom
   // ////////////////////////////////////////////////////////////////////////////
   // first sanitize zooming out if already completely zoomed out
-  const sanitizedZoomData = sanitize_inst_zoom(zoomDataCopy);
+  const { zd: sanitizedZoomData, reset_cameras } =
+    sanitize_inst_zoom(zoomDataCopy);
   const saitizedPotentialZoomData = sanitize_potential_zoom(
     sanitizedZoomData,
     zoom_restrict

@@ -1,6 +1,7 @@
 import generateSpilloverParams from "../params/generateSpilloverParams";
 
-export default (function draw_static_components(regl, state, cameras) {
+export default (function draw_static_components(regl, store, cameras) {
+  const state = store.getState();
   cameras.static.draw(() => {
     const { spillover_triangles, spillover_args } = generateSpilloverParams(
       regl,

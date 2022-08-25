@@ -74,7 +74,6 @@ export interface VisualizationState {
     col: number;
   };
   is_downsampled: boolean;
-  viz_aid_tri_args: Record<string, any>;
   tile_pix_width: number;
   tile_pix_height: number;
   zoom_restrict?: ZoomRestrictions;
@@ -95,7 +94,6 @@ const initialState: VisualizationState = (() => {
   const zoom_data = iniZoomData();
   return {
     is_downsampled: false,
-    viz_aid_tri_args: {},
     tile_pix_width: 0,
     tile_pix_height: 0,
     max_zoom: 0,

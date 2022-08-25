@@ -6,7 +6,10 @@ import { ClustergrammerProps } from "..";
 import generateCatVizInfo from "../cats/generateCatVizInfo";
 import calcTextOffsets from "../matrixLabels/calcTextOffsets";
 import makeLabelQueue from "../matrixLabels/makeLabelQueue";
-import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
+import {
+  CategoriesState,
+  mutateCategoriesState,
+} from "../state/reducers/categoriesSlice";
 import { CatVizState, mutateCatVizState } from "../state/reducers/catVizSlice";
 import {
   DendrogramState,
@@ -52,7 +55,9 @@ export default function initialize_params(
   const rootElementId = "#" + args.container.id;
 
   // cat_data setup
-  store.dispatch(mutateCategoriesState(genCatPar(store.getState())));
+  store.dispatch(
+    mutateCategoriesState(genCatPar(store.getState()) as CategoriesState)
+  );
 
   // network setup
   const initialNetwork = args.network;
@@ -90,7 +95,7 @@ export default function initialize_params(
   );
 
   // labels setup
-  const labelsParams = genLabelPar(store.getState());
+  const labelsParams = genLabelPar(store);
   store.dispatch(
     mutateLabelsState({
       ...labelsParams.labels,
@@ -130,11 +135,7 @@ export default function initialize_params(
   // labels offset dict setup
   const offset_dict: Record<string, any> = {};
   _.each(["row", "col"], function (inst_axis) {
-    offset_dict[inst_axis] = calcTextOffsets(
-      store.getState(),
-      store.dispatch,
-      inst_axis
-    );
+    offset_dict[inst_axis] = calcTextOffsets(store, inst_axis);
   });
   store.dispatch(
     setLabelsOffsetDict(offset_dict as LabelsState["offset_dict"])
@@ -165,8 +166,6 @@ export default function initialize_params(
             }),
           }
         : labels_queue) as LabelsState["labels_queue"],
-      visible_labels:
-        visualizationLabelsParams.visible_labels as LabelsState["visible_labels"],
       precalc: visualizationLabelsParams.labelsPrecalc,
     })
   );
@@ -177,12 +176,10 @@ export default function initialize_params(
   );
 
   // matrix color parameters
-  setCatVizMatrixColors(store.getState(), store.dispatch);
+  setCatVizMatrixColors(store);
 
   // dendrogram state
   store.dispatch(
-    setDendrogramState(
-      genDendroPar(store.getState()) as unknown as DendrogramState
-    )
+    setDendrogramState(genDendroPar(store) as unknown as DendrogramState)
   );
 }

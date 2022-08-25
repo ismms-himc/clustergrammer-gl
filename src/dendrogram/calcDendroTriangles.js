@@ -1,6 +1,7 @@
 import * as _ from "underscore";
 
-export default (function calc_dendro_triangles(state, inst_axis) {
+export default (function calc_dendro_triangles(store, inst_axis) {
+  const state = store.getState();
   const triangle_info = {};
   const inst_nodes = state.network[inst_axis + "_nodes"];
   let heat_shift;

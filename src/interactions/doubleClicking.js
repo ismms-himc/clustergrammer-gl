@@ -1,29 +1,28 @@
 import custom_label_reorder from "../reorders/customLabelReorder";
 
-export default (function double_clicking(
+export default (function doubleClicking(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
+  camerasManager,
   mouseover
 ) {
-  // params.tooltip.tooltip_type
+  const state = store.getState();
   if (state.tooltip.tooltip_type === "col-label") {
     custom_label_reorder(
       regl,
-      state,
-      dispatch,
+      store,
       catArgsManager,
+      camerasManager,
       mouseover,
       "col"
     );
-  }
-  if (state.tooltip.tooltip_type === "row-label") {
+  } else if (state.tooltip.tooltip_type === "row-label") {
     custom_label_reorder(
       regl,
-      state,
-      dispatch,
+      store,
       catArgsManager,
+      camerasManager,
       mouseover,
       "row"
     );

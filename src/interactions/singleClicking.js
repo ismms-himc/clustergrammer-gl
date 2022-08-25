@@ -1,21 +1,27 @@
+import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import run_hide_tooltip from "../tooltip/runHideTooltip";
 import runShowTooltip from "../tooltip/runShowTooltip";
 
-export default function single_clicking(
+export default function singleClicking(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
+  camerasManager,
   tooltip_fun,
   mouseover
 ) {
-  state.animation.last_click = state.animation.time;
-  state.interaction.manual_update_cats = false;
-  run_hide_tooltip(state, tooltip_fun, true);
+  const dispatch = store.dispatch;
+  const state = store.getState();
+
+  dispatch(mutateAnimationState({ last_click: state.animation.time }));
+  dispatch(mutateInteractionState({ manual_update_cats: false }));
+  run_hide_tooltip(store, tooltip_fun, true);
   if (state.tooltip.tooltip_type.includes("-dendro")) {
     if (state.tooltip.permanent_tooltip === false) {
-      runShowTooltip(regl, state, dispatch, catArgsManager, mouseover);
-      state.tooltip.permanent_tooltip = true;
+      runShowTooltip(regl, store, catArgsManager, camerasManager, mouseover);
+      dispatch(mutateTooltipState({ permanent_tooltip: true }));
     }
   }
 }

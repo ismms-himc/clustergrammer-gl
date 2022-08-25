@@ -1,12 +1,12 @@
 import * as _ from "underscore";
 import make_cat_args from "./makeCatArgs";
-import make_cat_position_array from "./makeCatPositionArray";
+import makeCatPositionArray from "./makeCatPositionArray";
 
-export default function generate_cat_args_arrs(regl, state) {
+export default function generate_cat_args_arrs(regl, store) {
+  const state = store.getState();
   const {
     network,
     cat_data,
-    order,
     labels,
     visualization: { viz_dim },
     tooltip,
@@ -29,10 +29,9 @@ export default function generate_cat_args_arrs(regl, state) {
       cat_index++
     ) {
       _.each(["inst", "new"], function (inst_state) {
-        cat_arrs[inst_state][inst_axis][cat_index] = make_cat_position_array(
-          state,
-          inst_axis,
-          order[inst_state][inst_axis]
+        cat_arrs[inst_state][inst_axis][cat_index] = makeCatPositionArray(
+          store,
+          inst_axis
         );
       });
       cat_args[inst_axis][cat_index] = make_cat_args(

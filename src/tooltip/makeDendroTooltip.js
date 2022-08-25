@@ -1,18 +1,23 @@
 import * as d3 from "d3";
 import calc_cat_cluster_breakdown from "../cats/calcCatClusterBreakdown";
 import make_cat_breakdown_graph from "../cats/makeCatBreakdownGraph";
+import { mutateDendrogramState } from "../state/reducers/dendrogramSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import manual_category_from_dendro from "./manualCategoryFromDendro";
 import run_hide_tooltip from "./runHideTooltip";
 
 export default (function make_dendro_tooltip(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
+  camerasManager,
   tooltip_fun,
   mouseover,
   inst_axis
 ) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
+
   tooltip_fun.show("tooltip");
   d3.select(state.tooltip.tooltip_id)
     .append("div")
@@ -20,18 +25,20 @@ export default (function make_dendro_tooltip(
     .style("text-align", "right")
     .style("cursor", "default")
     .on("click", function () {
-      state.tooltip.permanent_tooltip = false;
-      run_hide_tooltip(state, tooltip_fun);
+      dispatch(
+        mutateTooltipState({
+          permanent_tooltip: false,
+        })
+      );
+      run_hide_tooltip(store, tooltip_fun);
     })
     .append("text")
     .text("x")
     .style("font-size", "15px");
-  const cat_breakdown = calc_cat_cluster_breakdown(
-    state,
-    mouseover[inst_axis].dendro,
-    inst_axis
-  );
-  make_cat_breakdown_graph(state, mouseover[inst_axis].dendro, cat_breakdown);
+  const { cb: cat_breakdown, selected_clust_names } =
+    calc_cat_cluster_breakdown(store, mouseover[inst_axis].dendro, inst_axis);
+  make_cat_breakdown_graph(store, mouseover[inst_axis].dendro, cat_breakdown);
+
   // title for selected rows input box
   d3.select(state.tooltip.tooltip_id)
     .append("text")
@@ -52,15 +59,13 @@ export default (function make_dendro_tooltip(
     let label_string;
     if (state.dendro.output_label_format === "list") {
       label_string =
-        "[" +
-        state.dendro.selected_clust_names.map((x) => ` '${x}'`).join(",") +
-        "]";
+        "[" + selected_clust_names.map((x) => ` '${x}'`).join(",") + "]";
     } else if (state.dendro.output_label_format === "tsv") {
-      label_string = state.dendro.selected_clust_names.join("\t");
+      label_string = selected_clust_names.join("\t");
     } else if (state.dendro.output_label_format === "csv") {
-      label_string = state.dendro.selected_clust_names.join(", ");
+      label_string = selected_clust_names.join(", ");
     } else if (state.dendro.output_label_format === "new-line") {
-      label_string = state.dendro.selected_clust_names.join("<br/>");
+      label_string = selected_clust_names.join("<br/>");
     }
     return label_string;
   }
@@ -76,7 +81,7 @@ export default (function make_dendro_tooltip(
     .style("display", "inline-block")
     .style("cursor", "default")
     .on("click", (d) => {
-      state.dendro.output_label_format = d;
+      dispatch(mutateDendrogramState({ output_label_format: d }));
       d3.selectAll(
         state.tooltip.tooltip_id + " .selected_label_container .output_format"
       ).style("color", (d) => {
@@ -116,9 +121,10 @@ export default (function make_dendro_tooltip(
   if (state.cat_data.manual_category[inst_axis]) {
     manual_category_from_dendro(
       regl,
-      state,
-      dispatch,
+      store,
       catArgsManager,
+      camerasManager,
+      selected_clust_names,
       inst_axis
     );
   }

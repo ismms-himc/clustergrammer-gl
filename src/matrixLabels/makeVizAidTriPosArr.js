@@ -1,8 +1,6 @@
-export default (function make_viz_aid_tri_pos_arr(
-  state,
-  inst_axis,
-  inst_order
-) {
+export default (function make_viz_aid_tri_pos_arr(store, inst_axis) {
+  const state = store.getState();
+  const inst_order = state.order.inst[inst_axis];
   const num_labels = state.labels["num_" + inst_axis];
   let heat_size;
   let tri_width;

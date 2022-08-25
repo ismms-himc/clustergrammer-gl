@@ -12,7 +12,7 @@ export default (function make_matrix_string(state) {
   order_indexes.row = row_nodes;
   order_indexes.col = col_nodes;
   // alternate column entry
-  Object.values(col_nodes).map((col, i) => {
+  Object.values(col_nodes).forEach((col, i) => {
     let col_name;
     if (state.download.delimiter_name === "tuple") {
       col_name = make_full_name(state, col, "col");
@@ -42,7 +42,7 @@ export default (function make_matrix_string(state) {
     inst_mat_data = state.network.mat;
   }
   matrix_string = matrix_string + "\n";
-  Object.values(col_nodes).map((col, i) => {
+  Object.values(col_nodes).forEach((col, i) => {
     let col_name;
     if (state.download.delimiter_name === "tuple") {
       col_name = make_full_name(state, col, "col");
@@ -58,7 +58,7 @@ export default (function make_matrix_string(state) {
       matrix_string = matrix_string + col_name;
     }
   });
-  Object.values(row_nodes).map((row, i) => {
+  Object.values(row_nodes).forEach((row, i) => {
     row_data = inst_mat_data[i];
     if (state.download.delimiter_name === "tuple") {
       row_name = make_full_name(state, row, "row");
@@ -69,7 +69,7 @@ export default (function make_matrix_string(state) {
       }
     }
     matrix_string = matrix_string + row_name + delimiter;
-    col_nodes.map((col, j) => {
+    col_nodes.forEach((_, j) => {
       if (j < col_nodes.length - 1) {
         matrix_string = matrix_string + String(row_data[j]) + delimiter;
       } else {

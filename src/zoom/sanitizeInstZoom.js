@@ -1,11 +1,11 @@
-export default (function sanitize_inst_zoom(params, zd) {
+export default (function sanitize_inst_zoom(zd) {
   // first sanitize zooming out if already completely zoomed out
+  let reset_cameras = false;
   if (zd.total_zoom === 1 && zd.inst_zoom < 1) {
     zd.inst_zoom = 1;
     // reset zoom
-    // TODO: do this via store somehow
-    // params.reset_cameras = true;
+    reset_cameras = true;
   }
 
-  return zd;
+  return { zd, reset_cameras };
 });

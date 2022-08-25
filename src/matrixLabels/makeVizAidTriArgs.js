@@ -4,7 +4,8 @@ import interp_fun from "../draws/interpFun";
 import { rotation, scaling } from "../draws/mat3Transform";
 import make_viz_aid_tri_pos_arr from "./makeVizAidTriPosArr";
 
-export default (function make_viz_aid_tri_args(regl, state, inst_axis) {
+export default (function make_viz_aid_tri_args(regl, store, inst_axis) {
+  const state = store.getState();
   const num_labels = state.labels["num_" + inst_axis];
   let tri_height;
   let tri_width;
@@ -27,16 +28,8 @@ export default (function make_viz_aid_tri_args(regl, state, inst_axis) {
     tri_width = mat_size / num_labels;
     top_offset = -state.visualization.viz_dim.mat_size.x - tri_height;
   }
-  const tri_offset_array_inst = make_viz_aid_tri_pos_arr(
-    state,
-    inst_axis,
-    state.order.inst[inst_axis]
-  );
-  const tri_offset_array_new = make_viz_aid_tri_pos_arr(
-    state,
-    inst_axis,
-    state.order.new[inst_axis]
-  );
+  const tri_offset_array_inst = make_viz_aid_tri_pos_arr(store, inst_axis);
+  const tri_offset_array_new = make_viz_aid_tri_pos_arr(store, inst_axis);
   // ///////////////////////////////
   // Rotation and Scaling
   // ///////////////////////////////

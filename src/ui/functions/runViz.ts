@@ -8,7 +8,7 @@ import { mutateInteractionState } from "../../state/reducers/interaction/interac
 import { RootState } from "../../state/store/store";
 import draw_background_calculations from "./drawBackgroundCalculations";
 import draw_labels_tooltips_or_dendro from "./drawLabelsTooltipsOrDendro";
-import draw_mouseover from "./drawMouseover";
+import drawMouseover from "./drawMouseover";
 import end_animation from "./endAnimation";
 import start_animation from "./startAnimation";
 
@@ -26,58 +26,63 @@ export default function run_viz(
   );
   // function to run on every frame
   regl.frame(function ({ time }) {
-    const state = store.getState();
     dispatch(
       mutateAnimationState({
         time,
       })
     );
-    if (state.interaction.total > 1) {
+    const firstState = store.getState();
+    if (firstState.interaction.total > 1) {
       d3.selectAll(
-        state.visualization.rootElementId + " .group-svg-tooltip"
+        firstState.visualization.rootElementId + " .group-svg-tooltip"
       ).remove();
     }
+
     // prevent this from being negative, can happen when resetting zoom
-    if (state.interaction.total < 0) {
+    const secondState = store.getState();
+    if (secondState.interaction.total < 0) {
       dispatch(mutateInteractionState({ total: 0 }));
     }
-    if (state.visualization.reset_cameras) {
+    if (secondState.visualization.reset_cameras) {
       camerasManager.resetCameras(store);
     }
-    if (state.animation.run_animation) {
-      start_animation(state, dispatch);
+
+    const thirdState = store.getState();
+    if (thirdState.animation.run_animation) {
+      start_animation(store);
     } else if (
-      state.animation.time > state.animation.duration_end &&
-      state.animation.running === true
+      thirdState.animation.time > thirdState.animation.duration_end &&
+      thirdState.animation.running === true
     ) {
-      end_animation(state, dispatch, catArgsManager);
+      end_animation(regl, store, catArgsManager, camerasManager);
     }
+
+    const fourthState = store.getState();
     if (
-      state.interaction.still_interacting === true ||
-      state.animation.ini_viz === true ||
-      state.animation.running === true ||
-      state.animation.update_viz === true
+      fourthState.interaction.still_interacting === true ||
+      fourthState.animation.ini_viz === true ||
+      fourthState.animation.running === true ||
+      fourthState.animation.update_viz === true
     ) {
-      state.animation.update_viz = false;
-    } else if (state.interaction.still_mouseover === true) {
+      dispatch(mutateAnimationState({ update_viz: false }));
+    } else if (fourthState.interaction.still_mouseover === true) {
       // mouseover may result in draw command
-      draw_mouseover(regl, state);
-      draw_background_calculations(regl, state);
+      drawMouseover(store);
+      draw_background_calculations(store);
     } else if (
-      state.labels.draw_labels ||
-      state.tooltip.show_tooltip ||
-      state.dendro.update_dendro
+      fourthState.labels.draw_labels ||
+      fourthState.tooltip.show_tooltip ||
+      fourthState.dendro.update_dendro
     ) {
       draw_labels_tooltips_or_dendro(
         regl,
-        state,
-        dispatch,
+        store,
         catArgsManager,
-        camerasManager.getCameras()
+        camerasManager
       );
     } else {
       // run background calculations
-      draw_background_calculations(regl, state);
+      draw_background_calculations(store);
     }
   });
 }

@@ -45,11 +45,12 @@ function get_request(dispatch, ini_gene_symbol) {
     });
 }
 
-export function getHzomeGeneInfo(state, dispatch, gene_symbol) {
+export function getHzomeGeneInfo(store, gene_symbol) {
+  const state = store.getState();
   if (_.has(state.hzome.gene_data, gene_symbol)) {
     const inst_data = state.hzome.gene_data[gene_symbol];
     setTooltip(state.tooltip.tooltip_id, inst_data, gene_symbol);
   } else {
-    get_request(dispatch, gene_symbol);
+    get_request(store.dispatch, gene_symbol);
   }
 }

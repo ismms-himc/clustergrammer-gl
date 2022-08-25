@@ -29,9 +29,8 @@ export class CatArgsManager {
   #catArrs: CatArrs;
 
   constructor(regl: Regl, store: Store<RootState>) {
-    const state = store.getState();
     this.#regl = regl;
-    const { cat_args, cat_arrs } = this.generateCatArgsArrs(state);
+    const { cat_args, cat_arrs } = this.generateCatArgsArrs(store);
     this.#catArgs = cat_args;
     this.#catArrs = cat_arrs as CatArrs;
   }
@@ -44,23 +43,23 @@ export class CatArgsManager {
     return this.#catArrs;
   }
 
-  generateCatArgsArrs(state: RootState) {
-    const { cat_args, cat_arrs } = generate_cat_args_arrs(this.#regl, state);
+  generateCatArgsArrs(store: Store<RootState>) {
+    const { cat_args, cat_arrs } = generate_cat_args_arrs(this.#regl, store);
     return { cat_args, cat_arrs };
   }
 
-  regenerateCatArgsArrs(state: RootState) {
-    const { cat_args, cat_arrs } = this.generateCatArgsArrs(state);
+  regenerateCatArgsArrs(store: Store<RootState>) {
+    const { cat_args, cat_arrs } = this.generateCatArgsArrs(store);
     this.#catArgs = cat_args;
     this.#catArrs = cat_arrs as CatArrs;
   }
 
-  updateNewCatArrs(state: RootState, inst_axis: string, cat_index: number) {
-    const newArray = makeCatPositionArray(
-      state,
-      inst_axis,
-      state.order.new[inst_axis]
-    );
+  updateNewCatArrs(
+    store: Store<RootState>,
+    inst_axis: string,
+    cat_index: number
+  ) {
+    const newArray = makeCatPositionArray(store, inst_axis);
     set(this.#catArrs, ["new", inst_axis, cat_index], newArray);
   }
 

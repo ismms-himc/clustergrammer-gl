@@ -1,11 +1,7 @@
 import * as _ from "underscore";
 import get_max_distance_in_dm from "./getMaxDistanceInDm";
 
-export default function get_order_and_groups_clusterfck_tree(
-  clusters,
-  names,
-  axis
-) {
+export default function get_order_and_groups_clusterfck_tree(clusters, names) {
   const max_distance_in_dm = get_max_distance_in_dm(clusters.hc.dists);
   // get order information from clusterfck tree
   // /////////////////////////////////////////////

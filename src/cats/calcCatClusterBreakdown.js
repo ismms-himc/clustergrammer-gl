@@ -1,11 +1,9 @@
 import * as _ from "underscore";
 import binom_test from "./helpers/binomTest";
 
-export default (function calc_cat_cluster_breakdown(
-  params,
-  inst_data,
-  inst_rc
-) {
+export default (function calc_cat_cluster_breakdown(store, inst_data, inst_rc) {
+  const state = store.getState();
+
   // in case sim_mat
   if (inst_rc === "both") {
     inst_rc = "row";
@@ -13,9 +11,9 @@ export default (function calc_cat_cluster_breakdown(
   // 1: get information for nodes in cluster
   // names of nodes in cluster
   const clust_names = inst_data.all_names;
-  params.dendro.selected_clust_names = clust_names;
+  const selected_clust_names = clust_names;
   const clust_nodes = [];
-  const all_nodes = params.network[inst_rc + "_nodes"];
+  const all_nodes = state.network[inst_rc + "_nodes"];
   let num_in_clust_index = null;
   let is_downsampled = false;
   let i_name;
@@ -30,8 +28,8 @@ export default (function calc_cat_cluster_breakdown(
   });
   // 2: find category-types that are string-type: cat_breakdown
   const c_bd = [];
-  if (params.cat_viz.cat_info[inst_rc] !== null) {
-    const i_cat_info = params.cat_viz.cat_info[inst_rc];
+  if (state.cat_viz.cat_info[inst_rc] !== null) {
+    const i_cat_info = state.cat_viz.cat_info[inst_rc];
     // tmp list of all categories
     const tmp_types_index = _.keys(i_cat_info);
     // this will hold the indexes of string-type categories
@@ -43,15 +41,13 @@ export default (function calc_cat_cluster_breakdown(
     let cat_index;
     for (let i = 0; i < tmp_types_index.length; i++) {
       cat_index = "cat-" + String(i);
-      if (params.cat_viz.cat_info[inst_rc][cat_index].type === "cat_strings") {
-        type_name = params.cat_viz.cat_names[inst_rc][cat_index];
+      if (state.cat_viz.cat_info[inst_rc][cat_index].type === "cat_strings") {
+        type_name = state.cat_viz.cat_names[inst_rc][cat_index];
         cat_types_names.push(type_name);
         cat_types_index.push(cat_index);
       } else {
         // save number in clust category index if found
-        if (
-          params.cat_viz.cat_names[inst_rc][cat_index] === "number in clust"
-        ) {
+        if (state.cat_viz.cat_names[inst_rc][cat_index] === "number in clust") {
           num_in_clust_index = cat_index;
           is_downsampled = true;
         }
@@ -131,8 +127,8 @@ export default (function calc_cat_cluster_breakdown(
         // eslint-disable-next-line guard-for-in
         for (const i_cat in i_run_count) {
           const tot_num_cat =
-            params.cat_viz.cat_info[inst_rc][tmp_cat_index].cat_hist[i_cat];
-          const total_nodes = params.network[inst_rc + "_nodes"].length;
+            state.cat_viz.cat_info[inst_rc][tmp_cat_index].cat_hist[i_cat];
+          const total_nodes = state.network[inst_rc + "_nodes"].length;
           const expect_prob = tot_num_cat / total_nodes;
           // if no cat-title given
           if (no_title_given) {
@@ -152,7 +148,7 @@ export default (function calc_cat_cluster_breakdown(
           } else {
             num_nodes_ds = null;
           }
-          bar_color = params.cat_viz.global_cat_colors[i_cat];
+          bar_color = state.cat_viz.global_cat_colors[i_cat];
           bar_data.push([
             tmp_cat_index,
             cat_title_and_name,
@@ -171,5 +167,5 @@ export default (function calc_cat_cluster_breakdown(
       });
     }
   }
-  return c_bd;
+  return { c_bd, selected_clust_names };
 });

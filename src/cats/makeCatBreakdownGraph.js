@@ -3,10 +3,12 @@ import * as _ from "underscore";
 import catBreakdownBars from "./catBreakdownBars";
 import catBreakdownValues from "./catBreakdownValues";
 
-export default (function make_cat_breakdown_graph(params, dendro_info, cb) {
+export default (function make_cat_breakdown_graph(store, dendro_info, cb) {
+  const state = store.getState();
+
   if (cb.length > 0) {
     let width = 370;
-    const bar_offset = params.cat_viz.cat_bar_height + 2;
+    const bar_offset = state.cat_viz.cat_bar_height + 2;
     // these are the indexes where the number-of-nodes and the number of downsampled
     // nodes are stored
     const num_nodes_index = 4;
@@ -44,7 +46,7 @@ export default (function make_cat_breakdown_graph(params, dendro_info, cb) {
       svg_height = svg_height + shift_down_height * (num_bars + 1);
     });
     const main_dendro_svg = d3
-      .select(params.tooltip.tooltip_id)
+      .select(state.tooltip.tooltip_id)
       .append("div")
       .style("margin-top", "5px")
       .classed("cat_graph", true)
@@ -89,16 +91,9 @@ export default (function make_cat_breakdown_graph(params, dendro_info, cb) {
           const i_y = i * bar_offset;
           return "translate(0," + i_y + ")";
         });
-      catBreakdownBars(
-        params,
-        cat_data,
-        cgg,
-        bars_index,
-        max_bars,
-        cat_bar_groups
-      );
+      catBreakdownBars(store, cat_data, cgg, bars_index, cat_bar_groups);
       catBreakdownValues(
-        params,
+        store,
         cgg,
         cat_bar_groups,
         num_nodes_index,

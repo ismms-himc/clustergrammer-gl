@@ -1,19 +1,21 @@
 import interp_fun from "../draws/interpFun";
 import { rotation } from "../draws/mat3Transform";
 
-export default function make_row_text_args(regl, params, zoom_function) {
+export default function make_row_text_args(regl, store, zoom_function) {
+  const state = store.getState();
+
   const inst_axis = "row";
-  const num_row = params.labels["num_" + inst_axis];
+  const num_row = state.labels["num_" + inst_axis];
   let scale_text = num_row;
-  const webgl_fs = (1 / num_row) * params.visualization.zoom_data.y.total_zoom;
-  const max_webgl_fs = params.text_zoom.row.max_webgl_fs;
+  const webgl_fs = (1 / num_row) * state.visualization.zoom_data.y.total_zoom;
+  const max_webgl_fs = state.visualization.text_zoom.row.max_webgl_fs;
   let scale_down_fs;
   if (webgl_fs > max_webgl_fs) {
     scale_down_fs = webgl_fs / max_webgl_fs;
     scale_text = scale_text * scale_down_fs;
   }
   const mat_rotate = rotation(Math.PI / 2);
-  const x_offset = params.visualization.viz_dim.mat_size.x + 0.02;
+  const x_offset = state.visualization.viz_dim.mat_size.x + 0.02;
   const vert_arg = `
       precision mediump float;
       attribute vec2 position;
@@ -86,15 +88,15 @@ export default function make_row_text_args(regl, params, zoom_function) {
       new_offset: regl.prop("new_offset"),
       scale_text: scale_text,
       x_offset: x_offset,
-      heat_size: params.visualization.viz_dim.heat_size.y,
+      heat_size: state.visualization.viz_dim.heat_size.y,
       shift_heat:
-        params.visualization.viz_dim.mat_size.y -
-        params.visualization.viz_dim.heat_size.y,
-      total_zoom: params.visualization.zoom_data.y.total_zoom,
+        state.visualization.viz_dim.mat_size.y -
+        state.visualization.viz_dim.heat_size.y,
+      total_zoom: state.visualization.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
-      interp_uni: () => Math.max(0, Math.min(1, interp_fun(params))),
-      run_animation: params.animation.running,
+      interp_uni: () => Math.max(0, Math.min(1, interp_fun(state))),
+      run_animation: state.animation.running,
     },
     depth: {
       enable: true,

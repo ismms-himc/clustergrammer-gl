@@ -1,33 +1,24 @@
-import { Dispatch } from "@reduxjs/toolkit";
+import { Store } from "@reduxjs/toolkit";
 import { Regl } from "regl";
-import { Cameras } from "../../cameras/cameras";
+import { CamerasManager } from "../../cameras/camerasManager";
 import { CatArgsManager } from "../../cats/manager/catArgsManager";
 import drawCommands from "../../draws/drawCommands";
 import { mutateDendrogramState } from "../../state/reducers/dendrogramSlice";
-import { mutateInteractionState } from "../../state/reducers/interaction/interactionSlice";
 import { mutateTooltipState } from "../../state/reducers/tooltip/tooltipSlice";
 import { RootState } from "../../state/store/store";
 
 export default function draw_labels_tooltips_or_dendro(
   regl: Regl,
-  state: RootState,
-  dispatch: Dispatch,
+  store: Store<RootState>,
   catArgsManager: CatArgsManager,
-  cameras: Cameras
+  camerasManager: CamerasManager
 ) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
+
   // turn back on draw_labels
   // /////////////////////////////
-  const { need_reset_cat_opacity } = drawCommands(
-    regl,
-    state,
-    catArgsManager,
-    cameras
-  );
-  dispatch(
-    mutateInteractionState({
-      need_reset_cat_opacity,
-    })
-  );
+  drawCommands(regl, store, catArgsManager, camerasManager);
   if (state.tooltip.show_tooltip) {
     dispatch(
       mutateTooltipState({

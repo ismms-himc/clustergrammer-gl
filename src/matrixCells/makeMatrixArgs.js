@@ -1,26 +1,31 @@
 import { zoom_function } from "../cameras/zoomFunction";
+import { setArrsState } from "../state/reducers/arrsSlice";
 import make_opacity_arr from "./makeOpacityArr";
 import make_position_arr from "./makePositionArr";
 
-export default function make_matrix_args(regl, state) {
+export default function make_matrix_args(regl, store) {
+  const state = store.getState();
+
   // make arrays
-  state.arrs = {};
-  state.arrs.opacity_arr = make_opacity_arr(state);
-  state.arrs.position_arr = {};
-  state.arrs.position_arr.ini = make_position_arr(
+  const arrs = {};
+  arrs.opacity_arr = make_opacity_arr(store.getState());
+  arrs.position_arr = {};
+  arrs.position_arr.ini = make_position_arr(
     state,
     state.order.inst.row,
     state.order.inst.col
   );
-  state.arrs.position_arr.new = make_position_arr(
+  arrs.position_arr.new = make_position_arr(
     state,
     state.order.new.row,
     state.order.new.col
   );
+  store.dispatch(setArrsState(arrs));
+
   const opacity_buffer = regl.buffer({
     type: "float",
     usage: "dynamic",
-  })(state.arrs.opacity_arr);
+  })(arrs.opacity_arr);
   const tile_width = state.visualization.viz_dim.tile_width;
   const tile_height = state.visualization.viz_dim.tile_height;
   const triangle_verts = [
@@ -48,7 +53,7 @@ export default function make_matrix_args(regl, state) {
     void main() {
 
       // interpolate between the two positions using the interpolate uniform
-      if (run_animation === true){
+      if (run_animation == true){
         pos = mix(pos_att_ini, pos_att_new, interp_uni);
       } else {
         pos = pos_att_ini;
@@ -86,18 +91,18 @@ export default function make_matrix_args(regl, state) {
       }
 
     }`;
-  const num_instances = state.arrs.position_arr.ini.length;
+  const num_instances = arrs.position_arr.ini.length;
   const inst_properties = {
     vert: vert_string,
     frag: frag_string,
     attributes: {
       position: triangle_verts,
       pos_att_ini: {
-        buffer: regl.buffer(state.arrs.position_arr.ini),
+        buffer: regl.buffer(arrs.position_arr.ini),
         divisor: 1,
       },
       pos_att_new: {
-        buffer: regl.buffer(state.arrs.position_arr.new),
+        buffer: regl.buffer(arrs.position_arr.new),
         divisor: 1,
       },
       opacity_att: {

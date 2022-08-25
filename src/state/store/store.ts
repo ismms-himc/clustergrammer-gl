@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import matrixReducer from "../../state/reducers/matrixSlice";
 import { loadState } from "../localStorageHelpers";
 import animationReducer from "../reducers/animation/animationSlice";
+import arrsReducer from "../reducers/arrsSlice";
 import categoriesReducer from "../reducers/categoriesSlice";
 import catVizReducer from "../reducers/catVizSlice";
 import dendrogramReducer from "../reducers/dendrogramSlice";
@@ -35,6 +36,7 @@ export const store = configureStore({
     visualization: visualizationReducer,
     node_canvas_pos: nodeCanvasPosReducer,
     search: searchReducer,
+    arrs: arrsReducer,
   },
   preloadedState: loadState(),
 });

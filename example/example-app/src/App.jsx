@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 import cgl from "./cg";
-import data from "./data/mult_view";
+import data from "./data/mult_view.json";
 
 function Clustergrammer() {
   const containerRef = useRef(null);
@@ -11,6 +11,7 @@ function Clustergrammer() {
       network: data,
       viz_width: "100%",
       viz_height: "100%",
+      showControls: true,
     };
     cgl(args);
   }, [containerRef]);

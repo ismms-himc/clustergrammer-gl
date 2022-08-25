@@ -10,12 +10,14 @@ import interpFun from "./interpFun";
 
 export default (function drawAxisComponents(
   regl,
-  state,
+  store,
   catArgsManager,
+  cameras,
   inst_axis,
   calc_text_tri = false
 ) {
-  const dendroArgs = makeDendroArgs(regl, state, inst_axis);
+  const state = store.getState();
+
   let axis_dim;
   if (inst_axis === "col") {
     axis_dim = "x";
@@ -23,16 +25,13 @@ export default (function drawAxisComponents(
     axis_dim = "y";
   }
   /* Axis Components */
-  state.cameras[inst_axis + "-labels"].draw(() => {
+  cameras[inst_axis + "-labels"].draw(() => {
     // viz aid triangles
-    state.viz_aid_tri_args[inst_axis] = makeVizAidTriArgs(
-      regl,
-      state,
-      inst_axis
-    );
-    regl(state.viz_aid_tri_args[inst_axis])();
+    const viz_aid_tri_args = makeVizAidTriArgs(regl, store, inst_axis);
+    regl(viz_aid_tri_args)();
     // drawing the label categories and dendrogram using the same camera as the
     // matrix (no special zooming required)
+
     const cat_args = catArgsManager.getCatArgs();
     _.each(cat_args[inst_axis], function (inst_cat_arg) {
       regl(inst_cat_arg)({
@@ -45,14 +44,15 @@ export default (function drawAxisComponents(
       state.order.inst[inst_axis] === "clust" &&
       state.order.new[inst_axis] === "clust"
     ) {
-      regl(dendroArgs[inst_axis])();
+      const dendroArgs = makeDendroArgs(regl, store, inst_axis);
+      regl(dendroArgs)();
     }
     // make the arguments for the draw command
     let text_triangle_args;
     if (inst_axis === "col") {
-      text_triangle_args = makeColTextArgs(regl, state, zoom_function);
+      text_triangle_args = makeColTextArgs(regl, store, zoom_function);
     } else {
-      text_triangle_args = makeRowTextArgs(regl, state, zoom_function);
+      text_triangle_args = makeRowTextArgs(regl, store, zoom_function);
     }
     if (calc_text_tri) {
       const num_viz_labels =
@@ -62,13 +62,14 @@ export default (function drawAxisComponents(
         num_viz_labels < state.max_num_text &&
         state.labels.queue.high[inst_axis].length === 0
       ) {
-        calcVizArea(state);
+        const viz_area = calcVizArea(state);
+
         // only regather if there are more labels than can be shown at once
         if (state.labels["num_" + inst_axis] >= state.max_num_text) {
-          gatherTextTriangles(state, inst_axis);
+          gatherTextTriangles(store, viz_area, inst_axis);
         }
         regl(text_triangle_args)(
-          state.visualization.text_triangles.draw[inst_axis]
+          store.getState().visualization.text_triangles.draw[inst_axis]
         );
       }
     } else {

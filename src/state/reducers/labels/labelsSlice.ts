@@ -5,8 +5,9 @@ export interface LabelsState {
   num_row: number;
   num_col: number;
   offset_dict: {
-    row: Record<string, any>;
-    col: Record<string, any>;
+    [x: string]: Record<string, any> | undefined;
+    row?: Record<string, any>;
+    col?: Record<string, any>;
   };
   draw_labels: boolean;
   font_detail: number;
@@ -30,7 +31,6 @@ export interface LabelsState {
     low?: Record<string, string[]>;
   };
   max_label_queue: number;
-  visible_labels?: Record<string, string[]>;
 }
 
 const initialState: LabelsState = {

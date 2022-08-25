@@ -1,5 +1,5 @@
 export default (function cat_breakdown_values(
-  params,
+  store,
   cat_graph_group,
   cat_bar_groups,
   num_nodes_index,
@@ -8,8 +8,10 @@ export default (function cat_breakdown_values(
   bars_index,
   cluster_total
 ) {
-  const bar_width = params.cat_viz.cat_bar_width;
-  const bar_height = params.cat_viz.cat_bar_height;
+  const state = store.getState();
+
+  const bar_width = state.cat_viz.cat_bar_width;
+  const bar_height = state.cat_viz.cat_bar_height;
   const offset_ds_count = 150;
   const binom_pval_index = 6;
   // Count Title

@@ -2,7 +2,9 @@ import * as d3 from "d3";
 import * as _ from "underscore";
 import build_single_dendro_slider from "../../dendrogram/buildSingleDendroSlider";
 
-export default function build_dendrogram_sliders(regl, state) {
+export default function build_dendrogram_sliders(store) {
+  const state = store.getState();
+
   // Add sliders on top of the canvas
   // ///////////////////////////////////
   const slider_length = 130;
@@ -32,6 +34,6 @@ export default function build_dendrogram_sliders(regl, state) {
       .style("height", slider_length + "px")
       .style("width", "25px")
       .style("fill", "transparent");
-    build_single_dendro_slider(regl, state, inst_axis);
+    build_single_dendro_slider(store, inst_axis);
   });
 }

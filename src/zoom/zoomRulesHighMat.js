@@ -1,19 +1,21 @@
 import draw_interacting from "../draws/drawInteracting";
-import double_clicking from "../interactions/doubleClicking";
+import doubleClicking from "../interactions/doubleClicking";
 import interactionEvents from "../interactions/interactionEvents";
-import single_clicking from "../interactions/singleClicking";
+import singleClicking from "../interactions/singleClicking";
 import track_interaction_zoom_data from "../interactions/trackInteractionZoomData";
 import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
 import run_hide_tooltip from "../tooltip/runHideTooltip";
 
 export default function zoom_rules_high_mat(
   regl,
-  state,
-  dispatch,
+  store,
   catArgsManager,
-  cameras,
+  camerasManager,
   tooltip_fun
 ) {
+  const state = store.getState();
+  const dispatch = store.dispatch;
+
   const options = {
     element: regl._gl.canvas,
   };
@@ -26,23 +28,23 @@ export default function zoom_rules_high_mat(
     element: element,
   })
     .on("interaction", function (ev) {
-      mouseover = track_interaction_zoom_data(state, dispatch, ev);
-      run_hide_tooltip(state.tooltip, tooltip_fun);
+      mouseover = track_interaction_zoom_data(store, ev);
+      run_hide_tooltip(store, tooltip_fun);
       dispatch(mutateCategoriesState({ showing_color_picker: false }));
-      draw_interacting(regl, state, dispatch, catArgsManager, cameras);
+      draw_interacting(regl, store, catArgsManager, camerasManager);
     })
     .on("interactionend", function () {
       if (
         state.animation.time - state.animation.last_click <
         state.animation.dblclick_duration
       ) {
-        double_clicking(regl, state, dispatch, catArgsManager, mouseover);
+        doubleClicking(regl, store, catArgsManager, camerasManager, mouseover);
       } else {
-        single_clicking(
+        singleClicking(
           regl,
-          state,
-          dispatch,
+          store,
           catArgsManager,
+          camerasManager,
           tooltip_fun,
           mouseover
         );

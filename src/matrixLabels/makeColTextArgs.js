@@ -1,14 +1,16 @@
 import interp_fun from "../draws/interpFun";
 import { rotation, scaling } from "../draws/mat3Transform";
 
-export default function make_col_text_args(regl, state, zoom_function) {
+export default function make_col_text_args(regl, store, zoom_function) {
+  const state = store.getState();
+
   const inst_axis = "col";
   const num_col = state.labels["num_" + inst_axis];
   const col_width = state.visualization.viz_dim.heat_size.x / num_col;
 
   let scale_text = num_col;
   const webgl_fs = (1 / num_col) * state.visualization.zoom_data.x.total_zoom;
-  const max_webgl_fs = state.text_zoom.col.max_webgl_fs;
+  const max_webgl_fs = state.visualization.text_zoom.col.max_webgl_fs;
   let scale_down_fs;
   if (webgl_fs > max_webgl_fs) {
     scale_down_fs = webgl_fs / max_webgl_fs;

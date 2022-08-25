@@ -9,6 +9,7 @@ export const rotation = function (angleInRadians) {
 export const scaling = function (sx, sy) {
   return [sx, 0, 0, 0, sy, 0, 0, 0, 1];
 };
+
 export default {
   translation,
   rotation,

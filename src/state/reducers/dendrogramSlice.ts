@@ -21,7 +21,6 @@ export interface DendrogramState {
   trap_height: number;
   trap_float: number;
   update_dendro: boolean;
-  selected_clust_names: string[];
   default_link_level: number;
   output_label_format: string;
   min_dist: {

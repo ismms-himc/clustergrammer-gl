@@ -22,6 +22,7 @@ export interface CategoriesState {
   row: CatData[];
   col: CatData[];
   cat_num: {
+    [x: string]: number;
     row: number;
     col: number;
   };

@@ -1,6 +1,8 @@
 import * as _ from "underscore";
 
-export default (function update_text_triangle_order(state, inst_axis) {
+export default (function update_text_triangle_order(store, inst_axis) {
+  const state = store.getState();
+
   // Here we are updating the positions of the existing text triangles that
   // we have already pre-calculated. This needs to be better harmonized with
   // the update_text_offsets function that works directly on the network_data

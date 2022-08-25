@@ -1,6 +1,7 @@
 import * as _ from "underscore";
 
-export default function genOrderedLabels(state) {
+export default function genOrderedLabels(store) {
+  const state = store.getState();
   const { network, labels, cat_data, order } = state;
   // Generate lists of ordered label and category names for mouseover
   let i_order;

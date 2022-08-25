@@ -1,9 +1,13 @@
+import { setNetworkState } from "../state/reducers/networkSlice";
+
 export default (function alt_slice_linkage(
-  network,
+  store,
   axis,
   dist_thresh,
   min_dist = 0
 ) {
+  const { network } = store.getState();
+  const dispatch = store.dispatch;
   let clust_a;
   let clust_b;
   const group_dict = {};
@@ -52,4 +56,5 @@ export default (function alt_slice_linkage(
   network[axis + "_nodes"].forEach((x, i) => {
     x.group_links = flat_group_dict[i];
   });
+  dispatch(setNetworkState(network));
 });

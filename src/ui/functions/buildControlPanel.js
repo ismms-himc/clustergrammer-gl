@@ -1,7 +1,5 @@
 // TODO: fix invalid this usage
 import * as d3 from "d3";
-// eslint-disable-next-line import/default
-import d3Tip from "d3-tip";
 import * as _ from "underscore";
 import buildReorderCatTitles from "../../cats/buildReorderCatTitles";
 import build_opacity_slider from "../../colors/buildOpacitySlider";
@@ -10,72 +8,66 @@ import download_matrix from "../../download/downloadMatrix";
 import download_metadata from "../../download/downloadMetadata";
 import draw_webgl_layers from "../../draws/drawWebglLayers";
 import runReorder from "../../reorders/runReorder";
-import initializeD3Tip from "../../tooltip/initializeD3Tip";
+import { mutateCatVizState } from "../../state/reducers/catVizSlice";
+import { setDelimiterForFileType } from "../../state/reducers/downloadSlice";
+import { setSearchedRows } from "../../state/reducers/searchSlice";
+import { mutateTooltipState } from "../../state/reducers/tooltip/tooltipSlice";
+import { CONTROL_PANEL_CLASSNAME } from "../ui.const";
 
 export default function build_control_panel(
   regl,
-  state,
-  dispatch,
+  store,
+  base_container,
   catArgsManager,
-  cameras
+  camerasManager,
+  tooltip_fun
 ) {
-  const tooltip_fun = d3Tip
-    .attr("id", state.tooltip.tooltip_id.replace("#", ""))
-    .attr("class", "cgm-tooltip")
-    .direction("sw")
-    .html(function () {
-      return "";
-    });
-  const control_container = d3.select(
-    state.visualization.rootElementId + " .control-container"
-  )._groups[0][0];
+  const state = store.getState();
+  const dispatch = store.dispatch;
   const i_height = 135;
-  const i_width = state.viz_width;
   const control_panel_color = "white";
   const text_color = "#47515b";
   const button_color = "#eee";
+
+  if (d3.select(base_container).select(`.${CONTROL_PANEL_CLASSNAME}`).empty()) {
+    // make control panel (needs to appear above canvas)
+    d3.select(base_container)
+      .insert("div", ":first-child")
+      .attr("class", CONTROL_PANEL_CLASSNAME)
+      .style("width", "100%")
+      .style("cursor", "default");
+  }
+
   const control_svg = d3
-    .select(control_container)
-    .attr("height", i_height + "px")
-    .attr("width", i_width + "px")
+    .select(base_container)
+    .select(`.${CONTROL_PANEL_CLASSNAME}`)
     .append("svg")
     .classed("control_svg", true)
-    .attr("height", i_height + "px")
-    .attr("width", i_width + "px")
+    .attr("height", i_height)
+    .attr("width", "100%")
     .on("mouseover", function () {
-      state.tooltip.in_bounds_tooltip = false;
+      dispatch(mutateTooltipState({ in_bounds_tooltip: false }));
     });
+
   control_svg
     .append("rect")
-    .attr("height", i_height + "px")
-    .attr("width", i_width + "px")
+    .attr("height", i_height)
+    .attr("width", "100%")
     .attr("position", "absolute")
     .attr("fill", control_panel_color)
-    .attr("class", "control-panel-background")
-    .call(tooltip_fun);
-  initializeD3Tip(state, tooltip_fun);
-  // tooltip style
-  // ////////////////////////
-  d3.select(state.tooltip.tooltip_id)
-    .style("line-height", 1.5)
-    .style("font-weight", "bold")
-    .style("padding-top", "3px")
-    .style("padding-bottom", "7px")
-    .style("padding-left", "10px")
-    .style("padding-right", "10px")
-    .style("background", "rgba(0, 0, 0, 0.8)")
-    .style("color", "#fff")
-    .style("border-radius", "2px")
-    .style("pointer-events", "none")
-    .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
-    .style("font-size", "12px");
+    .attr("class", "control-panel-background");
+
+  if (tooltip_fun) {
+    control_svg.call(tooltip_fun);
+  }
+
   // control panel border
   const border_height = 1;
   control_svg
     .append("rect")
     .classed("north_border", true)
     .attr("height", "1px")
-    .attr("width", i_width + "px")
+    .attr("width", "100%")
     .attr("position", "absolute")
     .attr("stroke", "#eee")
     .attr("stroke-width", 3)
@@ -92,25 +84,28 @@ export default function build_control_panel(
   const button_groups = {};
   button_groups.row = {};
   button_groups.col = {};
-  const cracker_room = 60;
-  control_svg
-    .append("svg:a")
-    .append("svg:image")
-    .classed("cgm-logo", true)
-    .attr("x", 15)
-    .attr("y", 55)
-    .attr("width", 50)
-    .attr("height", 50)
-    .attr(
-      "xlink:href",
-      "https://raw.githubusercontent.com/ismms-himc/clustergrammer-gl/master/img/graham_cracker_144.png"
-    )
-    .on("click", function () {
-      window.open(
-        "https://clustergrammer.readthedocs.io/",
-        "_blank" // <- This is what makes it open in a new window.
-      );
-    });
+
+  // Graham cracker logo
+  // const cracker_room = 60;
+  const cracker_room = 0;
+  // control_svg
+  //   .append("svg:a")
+  //   .append("svg:image")
+  //   .classed("cgm-logo", true)
+  //   .attr("x", 15)
+  //   .attr("y", 55)
+  //   .attr("width", 50)
+  //   .attr("height", 50)
+  //   .attr(
+  //     "xlink:href",
+  //     "https://raw.githubusercontent.com/ismms-himc/clustergrammer-gl/master/img/graham_cracker_144.png"
+  //   )
+  //   .on("click", function () {
+  //     window.open(
+  //       "https://clustergrammer.readthedocs.io/",
+  //       "_blank" // <- This is what makes it open in a new window.
+  //     );
+  //   });
   const shift_x_order_buttons = 65 + cracker_room;
   button_groups.row.x_trans = shift_x_order_buttons;
   button_groups.col.x_trans = shift_x_order_buttons;
@@ -128,7 +123,7 @@ export default function build_control_panel(
       ).attr("opacity", 0.5);
       d3.select(this).attr("opacity", 1.0);
       if (state.cat_viz.current_panel === "recluster") {
-        state.cat_viz.current_panel = "reorder";
+        dispatch(mutateCatVizState({ current_panel: "reorder" }));
         // modify buttons
         d3.select(
           state.visualization.rootElementId + " .panel_button_title"
@@ -233,7 +228,7 @@ export default function build_control_panel(
         const clean_order = d.replace("sum", "rank").replace("var", "rankvar");
         if (state.order.inst[i_axis] !== clean_order) {
           /* category order is already calculated */
-          runReorder(regl, state, catArgsManager, i_axis, d);
+          runReorder(regl, store, catArgsManager, camerasManager, i_axis, d);
           d3.select(
             state.visualization.rootElementId +
               " ." +
@@ -282,8 +277,8 @@ export default function build_control_panel(
         "translate(" + button_dim.width / 2 + ", " + button_dim.height / 2 + ")"
       );
   });
-  buildReorderCatTitles(regl, state);
-  buildReclusterSection(regl, state, dispatch, catArgsManager, cameras);
+  buildReorderCatTitles(regl, store, catArgsManager, camerasManager);
+  buildReclusterSection(regl, store, catArgsManager, camerasManager);
   // row search
   // /////////////////
   const search_container = d3
@@ -344,13 +339,13 @@ export default function build_control_panel(
             " .control-container .row_search_box"
         )
         .node().value;
-      // TODO: put in state
-      state.search.searched_rows = inst_value.split(", ");
-      draw_webgl_layers(regl, state, catArgsManager, cameras);
+      const searchedRows = inst_value.split(", ");
+      dispatch(setSearchedRows(searchedRows));
+      draw_webgl_layers(regl, store, catArgsManager, camerasManager);
     });
   // opacity slider
   // //////////////////////////
-  build_opacity_slider(regl, state, catArgsManager, cameras);
+  build_opacity_slider(regl, store, catArgsManager, camerasManager);
   // download buttons
   control_svg
     .append("text")
@@ -386,7 +381,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      state.download.delimiter_name = "csv";
+      dispatch(setDelimiterForFileType("csv"));
       download_matrix(state);
     })
     .append("text")
@@ -409,7 +404,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      state.download.delimiter_name = "tsv";
+      dispatch(setDelimiterForFileType("tsv"));
       download_matrix(state);
     })
     .append("text")
@@ -432,7 +427,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      state.download.delimiter_name = "tuple";
+      dispatch(setDelimiterForFileType("tuple"));
       download_matrix(state);
     })
     .append("text")
@@ -489,7 +484,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      state.download.meta_type = "col";
+      dispatch(setDelimiterForFileType("col"));
       download_metadata(state);
     })
     .append("text")
@@ -512,7 +507,7 @@ export default function build_control_panel(
   control_svg
     .append("g")
     .on("click", () => {
-      state.download.meta_type = "row";
+      dispatch(setDelimiterForFileType("row"));
       download_metadata(state);
     })
     .append("text")
@@ -532,6 +527,4 @@ export default function build_control_panel(
       const y_trans = 107;
       return "translate( " + x_offset + ", " + y_trans + ")";
     });
-
-  return tooltip_fun;
 }

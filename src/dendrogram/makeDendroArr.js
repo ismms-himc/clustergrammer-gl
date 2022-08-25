@@ -1,6 +1,8 @@
 import * as _ from "underscore";
 
-export default (function make_dendro_arr(dendro, inst_axis) {
+export default (function make_dendro_arr(store, inst_axis) {
+  const { dendro } = store.getState();
+
   let inst_trap;
   let group_info;
   if (inst_axis === "row") {

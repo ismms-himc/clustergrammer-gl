@@ -1,6 +1,4 @@
-import { set } from "lodash";
-import _ from "underscore";
-import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
+import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
 import zoom_rules_low_mat from "../zoom/zoomRulesLowMat";
 import findMouseoverElement from "./findMouseoverElement";
 import keepTrackOfInteractions from "./keepTrackOfInteractions";
@@ -10,8 +8,7 @@ export default (function track_interaction_zoom_data(store, ev) {
   const state = store.getState();
   const dispatch = store.dispatch;
 
-  const { zoom_data, zoom_restrict, viz_dim } = state.visualization;
-  const newZoomData = _.clone(zoom_data);
+  const { zoom_data, zoom_restrict } = state.visualization;
   const interaction_types = ["wheel", "touch", "pinch"];
   if (ev.buttons || interaction_types.indexOf(ev.type) !== -1) {
     switch (ev.type) {
@@ -23,75 +20,59 @@ export default (function track_interaction_zoom_data(store, ev) {
         break;
     }
     // transfer data from ev to newZoomData
-    set(newZoomData, "x", {
-      ...newZoomData.x,
-      inst_zoom: ev.dsx,
-      pan_by_drag: ev.dx,
-      cursor_position: ev.x0,
-    });
-    set(newZoomData, "y", {
-      ...newZoomData.y,
-      inst_zoom: ev.dsy,
-      pan_by_drag: ev.dy,
-      cursor_position: ev.y0,
-    });
+    const newZoomData = {
+      x: {
+        ...zoom_data.x,
+        inst_zoom: ev.dsx,
+        pan_by_drag: ev.dx,
+        cursor_position: ev.x0,
+      },
+      y: {
+        ...zoom_data.y,
+        inst_zoom: ev.dsy,
+        pan_by_drag: ev.dy,
+        cursor_position: ev.y0,
+      },
+    };
+    dispatch(mutateZoomData(newZoomData));
     let potential_zoom;
     /*
           Zoom Switch: adjust x/y zooming based on non-square matrices
         */
     // set up two-stage zooming
     if (newZoomData.y.total_zoom < zoom_restrict.y.ratio) {
-      set(newZoomData, ["x", "inst_zoom"], 1);
+      let newXInstZoom = 1;
       potential_zoom = newZoomData.y.total_zoom * newZoomData.y.inst_zoom;
       // check potential_zoom
       if (potential_zoom > zoom_restrict.y.ratio) {
         // bump x inst_zoom
-        set(
-          newZoomData,
-          ["x", "inst_zoom"],
-          potential_zoom / zoom_restrict.y.ratio
-        );
+        newXInstZoom = potential_zoom / zoom_restrict.y.ratio;
       }
+      dispatch(
+        mutateZoomData({
+          x: {
+            inst_zoom: newXInstZoom,
+          },
+        })
+      );
     } else if (newZoomData.x.total_zoom < zoom_restrict.x.ratio) {
-      set(newZoomData, ["y", "inst_zoom"], 1);
+      let newYInstZoom = 1;
       potential_zoom = newZoomData.x.total_zoom * newZoomData.x.inst_zoom;
       // check potential_zoom
       if (potential_zoom > zoom_restrict.x.ratio) {
-        // bump x inst_zoom
-        set(
-          newZoomData,
-          ["y", "inst_zoom"],
-          potential_zoom / zoom_restrict.x.ratio
-        );
+        // bump y inst_zoom
+        newYInstZoom = potential_zoom / zoom_restrict.x.ratio;
       }
+      dispatch(
+        mutateZoomData({
+          y: {
+            inst_zoom: newYInstZoom,
+          },
+        })
+      );
     }
-
-    const { zoom_data: zoomDataX, reset_cameras: reset_camerasX } =
-      zoom_rules_low_mat(
-        viz_dim,
-        zoom_restrict.x,
-        newZoomData.x,
-        viz_dim.heat.x,
-        viz_dim.mat.x,
-        "x"
-      );
-    const { zoom_data: zoomDataY, reset_cameras: reset_camerasY } =
-      zoom_rules_low_mat(
-        viz_dim,
-        zoom_restrict.y,
-        newZoomData.y,
-        viz_dim.heat.y,
-        viz_dim.mat.y,
-        "y"
-      );
-    newZoomData.x = zoomDataX;
-    newZoomData.y = zoomDataY;
-    dispatch(
-      mutateVisualizationState({
-        newZoomData,
-        reset_cameras: reset_camerasX | reset_camerasY, // logical or the booleans so if either is true it's true
-      })
-    );
+    zoom_rules_low_mat(store, "x");
+    zoom_rules_low_mat(store, "y");
     keepTrackOfInteractions(store);
   } else if (ev.type === "mousemove") {
     // trying to keep track of interactions for mouseovers

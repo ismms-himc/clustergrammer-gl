@@ -1,4 +1,5 @@
-import * as _ from "underscore";
+import { cloneDeep } from "lodash";
+import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
 import calc_cursor_relative from "./calcCursorRelative";
 import calc_pan_by_zoom from "./calcPanByZoom";
 import calc_potential_total_pan from "./calcPotentialTotalPan";
@@ -7,18 +8,18 @@ import run_zoom_restrictions from "./runZoomRestrictions";
 import sanitize_inst_zoom from "./sanitizeInstZoom";
 import sanitize_potential_zoom from "./sanitizePotentialZoom";
 
-export default (function zoom_rules_low_mat(
-  viz_dim,
-  zoom_restrict,
-  zoom_data,
-  viz_dim_heat,
-  viz_dim_mat,
-  axis
-) {
+export default (function zoom_rules_low_mat(store, axis) {
+  const {
+    visualization: { viz_dim, zoom_data: zd },
+  } = store.getState();
+  const zoom_data = zd[axis];
+  const viz_dim_heat = viz_dim.heat[axis];
+  const viz_dim_mat = viz_dim.mat[axis];
+
   // store original restriction
   const prevRestrict = zoom_data.prev_restrict;
   // copy zoom data so we can operate on it without fear of mutating the original (not possible I think but)
-  const zoomDataCopy = _.clone(zoom_data);
+  let newZoomData = cloneDeep(zoom_data);
   // convert offcenter WebGl units to pixel units
   let canvas_dim;
   if (axis === "x") {
@@ -26,26 +27,31 @@ export default (function zoom_rules_low_mat(
   } else {
     canvas_dim = "height";
   }
-  zoomDataCopy.viz_offcenter =
-    (viz_dim.canvas[canvas_dim] * viz_dim.offcenter[axis]) / 2;
+  newZoomData = {
+    ...newZoomData,
+    viz_offcenter: (viz_dim.canvas[canvas_dim] * viz_dim.offcenter[axis]) / 2,
+  };
   // ////////////////////////////////////////////////////////////////////////////
   // Sanitize Zoom
   // ////////////////////////////////////////////////////////////////////////////
   // first sanitize zooming out if already completely zoomed out
-  const { zd: sanitizedZoomData, reset_cameras } =
-    sanitize_inst_zoom(zoomDataCopy);
-  const saitizedPotentialZoomData = sanitize_potential_zoom(
-    sanitizedZoomData,
-    zoom_restrict
+  const sanitizedZoomData = sanitize_inst_zoom(store, newZoomData);
+  const sanitizedPotentialZoomData = sanitize_potential_zoom(
+    store,
+    sanitizedZoomData
   );
-  saitizedPotentialZoomData.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
+  const heatOffsetZoomData = {
+    ...sanitizedPotentialZoomData,
+    heat_offset: viz_dim_mat.max - viz_dim_heat.max,
+  };
   // ////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
   // ////////////////////////////////////////////////////////////////////////////
   const zoomDataWithPanByDragRules = pan_by_drag_rules(
-    saitizedPotentialZoomData,
+    heatOffsetZoomData,
     viz_dim_heat
   );
+  // calculate relative cursor
   const cursor_relative = calc_cursor_relative(
     zoomDataWithPanByDragRules,
     viz_dim_heat
@@ -61,11 +67,16 @@ export default (function zoom_rules_low_mat(
   // Potential Total Pan
   // ////////////////////////////////////////////////////////////////////////////
   const ptp = calc_potential_total_pan(zoomDataWithPanByZoomRules);
-  const zoomDataWithRestrictions = run_zoom_restrictions(
+  const finalZoomData = run_zoom_restrictions(
     zoomDataWithPanByZoomRules,
     ptp,
     viz_dim_heat,
     prevRestrict
   );
-  return { zoom_data: zoomDataWithRestrictions, reset_cameras };
+
+  store.dispatch(
+    mutateZoomData({
+      [axis]: finalZoomData,
+    })
+  );
 });

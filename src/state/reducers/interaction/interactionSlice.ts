@@ -8,6 +8,7 @@ export interface InteractionState {
   still_mouseover: boolean;
   need_reset_cat_opacity: boolean;
   mouseover: {
+    [x: string]: any;
     value: any;
     row: {
       name: string;

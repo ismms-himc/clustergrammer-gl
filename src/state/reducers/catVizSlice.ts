@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { Axis } from "../../types/general";
 
 export type CurrentPanel = "reorder" | "recluster";
 
@@ -11,9 +10,9 @@ export type MatColors = {
 
 export interface CatVizState {
   show_categories: Record<string, boolean>;
-  all_cats: Record<Axis, any[]>;
-  cat_names: Record<Axis, Record<string, any>>;
-  cat_info: Record<Axis, Record<string, any>>;
+  all_cats: Record<string, any[]>;
+  cat_names: Record<string, Record<string, any>>;
+  cat_info: Record<string, Record<string, any>>;
   cat_bar_width: number;
   cat_bar_height: number;
   cat_value_colors: string[];

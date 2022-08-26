@@ -1,18 +1,9 @@
 import * as _ from "underscore";
-import make_cat_args from "./makeCatArgs";
+import makeCatArgs from "./makeCatArgs";
 import makeCatPositionArray from "./makeCatPositionArray";
 
 export default function generate_cat_args_arrs(regl, store) {
-  const state = store.getState();
-  const {
-    network,
-    cat_data,
-    labels,
-    visualization: { viz_dim },
-    tooltip,
-    interaction,
-    cat_viz,
-  } = state;
+  const { cat_data } = store.getState();
   const cat_args = {};
   cat_args.row = [];
   cat_args.col = [];
@@ -34,14 +25,9 @@ export default function generate_cat_args_arrs(regl, store) {
           inst_axis
         );
       });
-      cat_args[inst_axis][cat_index] = make_cat_args(
+      cat_args[inst_axis][cat_index] = makeCatArgs(
         regl,
-        labels,
-        viz_dim,
-        tooltip,
-        interaction,
-        cat_viz,
-        network,
+        store,
         cat_arrs,
         inst_axis,
         cat_index

@@ -5,7 +5,7 @@ import { CatArgsManager } from "../cats/manager/catArgsManager";
 import { RootState } from "../state/store/store";
 import drawAxisComponents from "./drawAxisComponents";
 import drawMatrixComponents from "./drawMatrixComponents";
-import drawStaticComponents from "./drawStaticComponents";
+import drawStaticComponents from "./static/drawStaticComponents";
 
 export default function draw_webgl_layers(
   regl: Regl,

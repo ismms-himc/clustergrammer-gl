@@ -1,4 +1,4 @@
-import { set } from "lodash";
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice";
 import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
@@ -13,25 +13,29 @@ export default function findMouseoverElement(store, ev) {
       used to reorder on double click.
   
     */
-  const initialMouseover = store.getState().interaction.mouseover;
-  const mouseover = _.clone(initialMouseover);
   // reset mouseover params
-  _.each(["row", "col"], function (inst_axis) {
-    mouseover[inst_axis] = {};
-    mouseover[inst_axis].name = null;
-    mouseover[inst_axis].cats = [];
-  });
-  mouseover.value = null;
+  let mouseover = {
+    row: {
+      name: null,
+      cats: [],
+    },
+    col: {
+      name: null,
+      cats: [],
+    },
+    value: null,
+  };
   let inst_cat_name;
   const dim_dict = {};
   dim_dict.x = "width";
   dim_dict.y = "height";
   const cursor_rel_min = {};
-  const updatedZoomData = _.clone(store.getState().visualization.zoom_data);
+  // https://bobbyhadz.com/blog/javascript-cannot-assign-to-read-only-property-of-object
+  const updatedZoomData = cloneDeep(store.getState().visualization.zoom_data);
   _.each(["x", "y"], function (inst_axis) {
     const currentVizDim = store.getState().visualization.viz_dim;
     // try updating mouseover position
-    set(updatedZoomData, [inst_axis, "cursor_position"], ev[inst_axis + "0"]);
+    updatedZoomData[inst_axis].cursor_position = ev[inst_axis + "0"];
     // convert offcenter WebGl units to pixel units
     const offcenter =
       (currentVizDim.canvas[dim_dict[inst_axis]] *
@@ -47,11 +51,7 @@ export default function findMouseoverElement(store, ev) {
       cursor_rel_min[inst_axis] / updatedZoomData[inst_axis].total_zoom -
       updatedZoomData[inst_axis].total_pan_min;
     // transfer to zoom_data
-    set(
-      updatedZoomData,
-      [inst_axis, "cursor_rel_min"],
-      cursor_rel_min[inst_axis]
-    );
+    updatedZoomData[inst_axis].cursor_rel_min = cursor_rel_min[inst_axis];
   });
   // write zoom data changes
   dispatch(mutateZoomData(updatedZoomData));
@@ -104,18 +104,36 @@ export default function findMouseoverElement(store, ev) {
         axis_indices[inst_axis] =
           labels.ordered_labels[inst_axis + "_indices"][axis_index];
       }
-      mouseover[inst_axis].name =
-        labels.ordered_labels[inst_axis + "s"][axis_index];
+      mouseover = {
+        ...mouseover,
+        [inst_axis]: {
+          ...mouseover[inst_axis],
+          name: labels.ordered_labels[inst_axis + "s"][axis_index],
+        },
+      };
       if (typeof mouseover[inst_axis].name === "string") {
         if (mouseover[inst_axis].name.includes(": ")) {
-          mouseover[inst_axis].name = mouseover[inst_axis].name.split(": ")[1];
+          mouseover = {
+            ...mouseover,
+            [inst_axis]: {
+              ...mouseover[inst_axis],
+              name: mouseover[inst_axis].name.split(": ")[1],
+            },
+          };
         }
       }
       // reset cat names
-      mouseover[inst_axis].cats = [];
+      mouseover = {
+        ...mouseover,
+        [inst_axis]: {
+          ...mouseover[inst_axis],
+          cats: [],
+        },
+      };
       _.each(cat_data[inst_axis], function (d, cat_index) {
         inst_cat_name =
           labels.ordered_labels[inst_axis + "_cats-" + cat_index][axis_index];
+        // TODO: does this actually set the element?
         mouseover[inst_axis].cats[cat_index] = inst_cat_name;
       });
     });
@@ -129,14 +147,26 @@ export default function findMouseoverElement(store, ev) {
     if (tooltip_type === "row-dendro") {
       _.each(dendro.group_info.row, function (i_group) {
         if (i_group.all_names.includes(mouseover.row.name)) {
-          mouseover.row.dendro = i_group;
+          mouseover = {
+            ...mouseover,
+            row: {
+              ...mouseover.row,
+              dendro: i_group,
+            },
+          };
         }
       });
     }
     if (tooltip_type === "col-dendro") {
       _.each(dendro.group_info.col, function (i_group) {
         if (i_group.all_names.includes(mouseover.col.name)) {
-          mouseover.col.dendro = i_group;
+          mouseover = {
+            ...mouseover,
+            col: {
+              ...mouseover.col,
+              dendro: i_group,
+            },
+          };
         }
       });
     }

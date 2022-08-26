@@ -1,5 +1,5 @@
 import { Store } from "@reduxjs/toolkit";
-import { clone, set } from "lodash";
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
 import { RootState } from "../state/store/store";
@@ -7,16 +7,18 @@ import { RootState } from "../state/store/store";
 export default (function make_label_queue(store: Store<RootState>) {
   const { labels } = store.getState();
 
-  const labelsQueue = clone(labels.labels_queue) || {};
+  const labelsQueue = cloneDeep(labels.labels_queue) || {};
   if (!("high" in labelsQueue)) {
-    set(labelsQueue, "high", {});
+    labelsQueue.high = {};
   }
   if (!("low" in labelsQueue)) {
-    set(labelsQueue, "high", {});
+    labelsQueue.low = {};
   }
   _.each(["row", "col"], function (inst_axis) {
     // the high priority queue is empty initially
-    set(labelsQueue, ["high", inst_axis], []);
+    if (labelsQueue.high) {
+      labelsQueue.high[inst_axis] = [];
+    }
     // the low priority queue
     const inst_queue: string[] = [];
     const inst_labels: string[] = labels.ordered_labels[inst_axis + "s"];
@@ -26,7 +28,9 @@ export default (function make_label_queue(store: Store<RootState>) {
       }
       inst_queue.push(inst_label);
     });
-    set(labelsQueue, ["low", inst_axis], inst_queue);
+    if (labelsQueue.low) {
+      labelsQueue.low[inst_axis] = inst_queue;
+    }
   });
 
   store.dispatch(

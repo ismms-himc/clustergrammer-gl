@@ -1,4 +1,4 @@
-import { set } from "lodash";
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 
 export default (function updateTextTriangleOrder(store, inst_axis) {
@@ -7,10 +7,11 @@ export default (function updateTextTriangleOrder(store, inst_axis) {
   // Here we are updating the positions of the existing text triangles that
   // we have already pre-calculated. This needs to be better harmonized with
   // the update_text_offsets function that works directly on the network_data
-  const inst_order = state.order.inst[inst_axis];
-  const new_order = state.order.new[inst_axis];
-  const inst_text_triangles =
-    state.visualization.text_triangles.draw[inst_axis];
+  const inst_order = cloneDeep(state.order.inst[inst_axis]);
+  const new_order = cloneDeep(state.order.new[inst_axis]);
+  const inst_text_triangles = cloneDeep(
+    state.visualization.text_triangles.draw[inst_axis]
+  );
   const num_labels = state.labels["num_" + inst_axis];
   let inst_dim;
   if (inst_axis === "col") {
@@ -42,8 +43,8 @@ export default (function updateTextTriangleOrder(store, inst_axis) {
         offsets[inst_state] = axis_arr[order_id] + 0.5 / num_labels;
       }
     });
-    set(inst_label, "inst_offset", [0, offsets.inst]);
-    set(inst_label, "new_offset", [0, offsets.new]);
+    inst_label.inst_offset = [0, offsets.inst];
+    inst_label.new_offset = [0, offsets.new];
   });
   return inst_text_triangles;
 });

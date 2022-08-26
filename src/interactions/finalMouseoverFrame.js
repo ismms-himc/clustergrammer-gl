@@ -4,13 +4,14 @@ import { setTotalMouseover } from "../state/reducers/visualization/visualization
 export default (function finalMouseoverFrame(store) {
   // reduce the number of mouseovers
   store.dispatch(
-    setTotalMouseover(
-      store.getState().visualization.zoom_data.x.total_mouseover - 1
-    )
+    setTotalMouseover({
+      axis: "x",
+      num: store.getState().visualization.total_mouseover - 1,
+    })
   );
   const state = store.getState();
   if (
-    state.visualization.zoom_data.x.total_mouseover === 0 &&
+    state.visualization.total_mouseover === 0 &&
     state.interaction.still_mouseover === false
   ) {
     store.dispatch(

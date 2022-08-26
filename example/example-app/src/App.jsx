@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import cgl from "./cg";
 import data from "./data/mult_view.json";
 

@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import calc_cat_cluster_breakdown from "../cats/calcCatClusterBreakdown";
-import make_cat_breakdown_graph from "../cats/makeCatBreakdownGraph";
+import calcCatClusterBreakdown from "../cats/functions/calcCatClusterBreakdown";
+import makeCatBreakdownGraph from "../cats/functions/makeCatBreakdownGraph";
 import { mutateDendrogramState } from "../state/reducers/dendrogramSlice";
 import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import manual_category_from_dendro from "./manualCategoryFromDendro";
@@ -35,9 +35,12 @@ export default (function make_dendro_tooltip(
     .append("text")
     .text("x")
     .style("font-size", "15px");
-  const { cb: cat_breakdown, selected_clust_names } =
-    calc_cat_cluster_breakdown(store, mouseover[inst_axis].dendro, inst_axis);
-  make_cat_breakdown_graph(store, mouseover[inst_axis].dendro, cat_breakdown);
+  const { cb: cat_breakdown, selected_clust_names } = calcCatClusterBreakdown(
+    store,
+    mouseover[inst_axis].dendro,
+    inst_axis
+  );
+  makeCatBreakdownGraph(store, mouseover[inst_axis].dendro, cat_breakdown);
 
   // title for selected rows input box
   d3.select(state.tooltip.tooltip_id)

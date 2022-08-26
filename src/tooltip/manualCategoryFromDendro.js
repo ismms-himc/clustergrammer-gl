@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import manual_update_to_cats from "../cats/manualUpdateToCats";
+import manualUpdateToCats from "../cats/functions/manualUpdateToCats";
 import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
 import { mutateCatVizState } from "../state/reducers/catVizSlice";
 import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
@@ -221,7 +221,7 @@ export default function manual_category_from_dendro(
             manual_update_cats: true,
           })
         );
-        manual_update_to_cats(
+        manualUpdateToCats(
           regl,
           store,
           catArgsManager,

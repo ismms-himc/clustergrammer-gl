@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import get_max_distance_in_dm from "./getMaxDistanceInDm";
 
@@ -63,7 +64,7 @@ export default function get_order_and_groups_clusterfck_tree(clusters, names) {
       // need to make copy of group not reference
       // inst_leaf.group = group;
       // inst_leaf.group = $.extend(true, [], group);
-      inst_leaf.group = _.clone(group);
+      inst_leaf.group = cloneDeep(group);
       inst_leaf.key = inst_key;
       inst_leaf.dist = inst_dist;
       inst_leaf.name = names[inst_key];

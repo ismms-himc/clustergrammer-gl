@@ -53,8 +53,9 @@ export default (function alt_slice_linkage(
     });
   });
   // transfer to network group_links
-  network[axis + "_nodes"].forEach((x, i) => {
-    x.group_links = flat_group_dict[i];
-  });
+  network[`${axis}_nodes`] = network[axis + "_nodes"].map((x, i) => ({
+    ...x,
+    group_links: flat_group_dict[i],
+  }));
   dispatch(setNetworkState(network));
 });

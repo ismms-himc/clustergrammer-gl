@@ -9,16 +9,19 @@ import makeCatPositionArray from "./makeCatPositionArray";
 export type CatArrsAxis = Array<number[][]>;
 
 export type CatArrsType = {
+  [x: string]: CatArrsAxis;
   row: CatArrsAxis;
   col: CatArrsAxis;
 };
 
 export type CatArrs = {
+  [x: string]: CatArrsType;
   inst: CatArrsType;
   new: CatArrsType;
 };
 
 export type CatArgs = {
+  [x: string]: DrawConfig[];
   row: DrawConfig[];
   col: DrawConfig[];
 };
@@ -31,7 +34,7 @@ export class CatArgsManager {
   constructor(regl: Regl, store: Store<RootState>) {
     this.#regl = regl;
     const { cat_args, cat_arrs } = this.generateCatArgsArrs(store);
-    this.#catArgs = cat_args;
+    this.#catArgs = cat_args as CatArgs;
     this.#catArrs = cat_arrs as CatArrs;
   }
 
@@ -50,7 +53,7 @@ export class CatArgsManager {
 
   regenerateCatArgsArrs(store: Store<RootState>) {
     const { cat_args, cat_arrs } = this.generateCatArgsArrs(store);
-    this.#catArgs = cat_args;
+    this.#catArgs = cat_args as CatArgs;
     this.#catArrs = cat_arrs as CatArrs;
   }
 
@@ -60,7 +63,7 @@ export class CatArgsManager {
     cat_index: number
   ) {
     const newArray = makeCatPositionArray(store, inst_axis);
-    set(this.#catArrs, ["new", inst_axis, cat_index], newArray);
+    this.#catArrs.new[inst_axis][cat_index] = newArray;
   }
 
   updateCatArgsAttribute(inst_axis: Axis, cat_index: number) {

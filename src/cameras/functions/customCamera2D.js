@@ -25,10 +25,8 @@ mat4.viewport = function viewport(out, x, y, w, h, n, f) {
 
 export default function makeCamera2D(
   regl,
-  zoom_data,
-  viz_dim,
-  enable_viz_interact,
-  opts = {},
+  store,
+  zoom_range = {},
   viz_component
 ) {
   const options = {
@@ -52,11 +50,15 @@ export default function makeCamera2D(
       : function () {
           return element.offsetHeight;
         };
-  const xrange = opts.xrange === undefined ? [-1, 1] : opts.xrange;
-  const yrange = opts.yrange === undefined ? [-1, 1] : opts.yrange;
-  const aspectRatio = opts.aspectRatio === undefined ? 1 : opts.aspectRatio;
+  const xrange = zoom_range.xrange === undefined ? [-1, 1] : zoom_range.xrange;
+  const yrange = zoom_range.yrange === undefined ? [-1, 1] : zoom_range.yrange;
+  const aspectRatio =
+    zoom_range.aspectRatio === undefined ? 1 : zoom_range.aspectRatio;
   let width = getWidth();
   let height = getHeight();
+  const {
+    visualization: { viz_dim },
+  } = store.getState();
   const xcen = 0.5 * (xrange[1] + xrange[0]) + viz_dim.shift_camera.x;
   const ycen = 0.5 * (yrange[1] + yrange[0]) + viz_dim.shift_camera.y;
   const xrng = 0.5 * (xrange[1] - xrange[0]);
@@ -90,9 +92,9 @@ export default function makeCamera2D(
       ev.preventDefault();
     })
     .on("interaction", function (ev) {
-      if (enable_viz_interact) {
+      if (store.getState().interaction.enable_viz_interact) {
         camera_interaction(
-          zoom_data,
+          store,
           ev,
           viz_component,
           mInvViewport,

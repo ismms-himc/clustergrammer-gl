@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { merge, set } from "lodash";
+import { merge } from "lodash";
 import iniZoomData from "./helpers/iniZoomData";
 
 export type TextZoom = {
@@ -29,7 +29,6 @@ export type ZoomAxisData = {
   inst_zoom: number;
   pan_by_zoom: number;
   pan_by_drag: number;
-  total_mouseover: number;
   cursor_position: number;
   cursor_rel_min: number;
   filter_zoom: number;
@@ -48,30 +47,40 @@ export type ZoomData = {
   y?: ZoomAxisData;
 };
 
-export type VizDimHeat = {
+export type MinMaxDimension = {
   min: number;
   max: number;
 };
 
+export type Dimension = {
+  x: number;
+  y: number;
+};
+
 export type VisualizationDimensions = {
-  shift_camera: {
-    x: number;
-    y: number;
+  canvas: {
+    width: number;
+    height: number;
   };
-  heat_size: {
-    x: number;
-    y: number;
-  };
-  mat_size: {
-    x: number;
-    y: number;
-  };
+  center: Dimension;
+  shift_camera: Dimension;
+  heat_size: Dimension;
+  mat_size: Dimension;
   heat: {
     width: number;
     height: number;
-    x: VizDimHeat;
-    y: VizDimHeat;
+    x: MinMaxDimension;
+    y: MinMaxDimension;
   };
+  mat: {
+    height: number;
+    width: number;
+    x: MinMaxDimension;
+    y: MinMaxDimension;
+  };
+  offcenter: Dimension;
+  tile_height: number;
+  tile_width: number;
 };
 
 export type TextTriangles = {
@@ -100,6 +109,7 @@ export interface VisualizationState {
   viz_dim: VisualizationDimensions;
   reset_cameras: boolean;
   rootElementId: string;
+  total_mouseover: number;
 }
 
 const initialState: VisualizationState = (() => {
@@ -114,6 +124,7 @@ const initialState: VisualizationState = (() => {
     viz_dim: {} as VisualizationDimensions,
     reset_cameras: false,
     rootElementId: "",
+    total_mouseover: 0,
   };
 })();
 
@@ -150,12 +161,8 @@ export const visualizationSlice = createSlice({
       state.viz_dim = action.payload;
       return state;
     },
-    setTotalMouseover: (
-      state,
-      action: PayloadAction<{ axis: "x" | "y"; num: number }>
-    ) => {
-      const { axis, num } = action.payload;
-      set(state, ["zoom_data", axis, "total_mouseover"], num);
+    setTotalMouseover: (state, action: PayloadAction<number>) => {
+      state.total_mouseover = action.payload;
       return state;
     },
   },

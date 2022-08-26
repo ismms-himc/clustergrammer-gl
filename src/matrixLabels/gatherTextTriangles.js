@@ -1,4 +1,4 @@
-import { clone } from "lodash";
+import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
 import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
@@ -12,9 +12,9 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
     network,
   } = store.getState();
 
-  const labels = clone(oldLabels);
+  const labels = cloneDeep(oldLabels);
   let text_triangles = {
-    ...clone(oldTextTriangles),
+    ...cloneDeep(oldTextTriangles),
     draw: {
       ...oldTextTriangles.draw,
       [inst_axis]: [...(oldTextTriangles.draw[inst_axis] || [])],

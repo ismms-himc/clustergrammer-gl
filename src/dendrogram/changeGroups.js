@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { clone } from "lodash";
+import { cloneDeep } from "lodash";
 import { setDendrogramState } from "../state/reducers/dendrogramSlice";
 import alt_slice_linkage from "./altSliceLinkage";
 import calc_dendro_triangles from "./calcDendroTriangles";
@@ -7,7 +7,7 @@ import calc_dendro_triangles from "./calcDendroTriangles";
 export default (function change_groups(store, axis, slider_value) {
   const state = store.getState();
   const dispatch = store.dispatch;
-  let newDendrogramState = clone(state.dendro);
+  let newDendrogramState = cloneDeep(state.dendro);
   newDendrogramState.update_dendro = true;
   if (newDendrogramState.precalc_linkage) {
     const dist_thresh =

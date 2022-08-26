@@ -1,5 +1,6 @@
 import { Store } from "@reduxjs/toolkit";
 import * as d3 from "d3";
+import { cloneDeep } from "lodash";
 import { Regl } from "regl";
 import * as _ from "underscore";
 import { CamerasManager } from "../cameras/camerasManager";
@@ -10,7 +11,7 @@ import { RootState } from "../state/store/store";
 import { Axis } from "../types/general";
 import runReorder from "./runReorder";
 
-export default (function custom_label_reorder(
+export default (function customLabelReorder(
   regl: Regl,
   store: Store<RootState>,
   catArgsManager: CatArgsManager,
@@ -20,8 +21,9 @@ export default (function custom_label_reorder(
   const dispatch = store.dispatch;
   const {
     interaction: { mouseover },
+    labels,
+    network: oldNetwork,
   } = store.getState();
-  const { labels, network: oldNetwork } = store.getState();
   // update custom label order
   const full_name = mouseover[inst_axis].name;
   const found_label_index = _.indexOf(
@@ -65,21 +67,24 @@ export default (function custom_label_reorder(
 
   // sort array says which index contains highest lowest values
   // convert to name list
-  const { network: newNetwork } = store.getState();
+  const { network } = store.getState();
+  const newNetwork = cloneDeep(network);
   const ordered_names: any[] = [];
   _.map(tmp_sort, function (inst_index) {
     ordered_names.push(newNetwork[other_axis + "_nodes"][inst_index].name);
   });
 
+  const newAxisNodes = _.map(
+    newNetwork[other_axis + "_nodes"],
+    function (inst_node) {
+      inst_node.custom =
+        num_other_labels - ordered_names.indexOf(inst_node.name) - 1;
+    }
+  );
+
   dispatch(
     mutateNetworkState({
-      [other_axis + "_nodes"]: _.map(
-        store.getState().network[other_axis + "_nodes"],
-        function (inst_node, node_index) {
-          inst_node.custom =
-            num_other_labels - ordered_names.indexOf(inst_node.name) - 1;
-        }
-      ),
+      [other_axis + "_nodes"]: newAxisNodes,
     })
   );
 

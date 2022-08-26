@@ -37,6 +37,7 @@ export const store = configureStore({
     search: searchReducer,
     arrs: arrsReducer,
   },
+  middleware: [],
 });
 
 export type RootState = ReturnType<typeof store.getState>;

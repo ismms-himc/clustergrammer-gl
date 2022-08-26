@@ -4,10 +4,10 @@ import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
 import { RootState } from "../state/store/store";
 import initializeD3Tip from "../tooltip/initializeD3Tip";
-import build_control_panel from "./functions/buildControlPanel";
+import run_viz from "./functions/animation/runViz";
 import build_dendrogram_sliders from "./functions/buildDendrogramSliders";
-import ini_canvas_mouseover from "./functions/iniCanvasMouseover";
-import run_viz from "./functions/runViz";
+import build_control_panel from "./functions/controlPanel/buildControlPanel";
+import ini_canvas_mouseover from "./functions/mouseover/iniCanvasMouseover";
 
 export type UIProps = {
   regl: Regl;

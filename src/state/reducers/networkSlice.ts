@@ -16,7 +16,7 @@ export interface NetworkState extends NetworkData {
   };
   row_node_names: string[];
   col_node_names: string[];
-  cat_colors: any[];
+  cat_colors: Record<string, any>;
   norm?: {
     initial_status: NormScoring;
     zscore_status: NormScoring;

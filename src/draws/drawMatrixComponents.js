@@ -1,8 +1,6 @@
-import interp_fun from "./interpFun";
+import interpFun from "./interpFun";
 
 export default (function drawMatrixComponents(regl, store, cameras, reglProps) {
-  const state = store.getState();
-
   /* Matrix */
   cameras.mat.draw(() => {
     /*
@@ -23,8 +21,8 @@ export default (function drawMatrixComponents(regl, store, cameras, reglProps) {
         position array
         */
     regl(reglProps)({
-      interp_prop: interp_fun(state),
-      run_animation: state.animation.running,
+      interp_prop: interpFun(store),
+      run_animation: store.getState().animation.running,
     });
   });
 });

@@ -2,16 +2,17 @@ import * as d3 from "d3";
 import * as _ from "underscore";
 import calc_inverse_zscore from "../utils/calcInverseZscore";
 
-export default (function make_opacity_arr(state) {
-  let viz_mat_data = state.network.mat;
+export default (function make_opacity_arr(store) {
+  const { network, matrix } = store.getState();
+  let viz_mat_data = network.mat;
 
   // if initially Z-scored
   if (
-    state.network.norm.initial_status === "zscored" &&
-    state.network.norm.zscore_status === "non-zscored" &&
-    "mat_data_iz" in state === false
+    network.norm.initial_status === "zscored" &&
+    network.norm.zscore_status === "non-zscored" &&
+    "mat_iz" in network === false
   ) {
-    viz_mat_data = calc_inverse_zscore(state);
+    viz_mat_data = calc_inverse_zscore(store);
   }
 
   let opacity_arr = [].concat(...viz_mat_data);
@@ -21,7 +22,7 @@ export default (function make_opacity_arr(state) {
     })
   );
   const opacity_scale = d3.scaleLinear();
-  const opacity_domain = abs_max_val * state.matrix.opacity_scale;
+  const opacity_domain = abs_max_val * matrix.opacity_scale;
   const opacity_range = 1.0;
   opacity_scale
     .domain([-opacity_domain, opacity_domain])

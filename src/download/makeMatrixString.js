@@ -35,7 +35,7 @@ export default (function make_matrix_string(state) {
   let inst_mat_data;
   if (
     state.network.norm.zscore_status === "non-zscored" &&
-    "mat_data_iz" in state
+    "mat_iz" in state.network
   ) {
     inst_mat_data = state.mat_data_iz;
   } else {

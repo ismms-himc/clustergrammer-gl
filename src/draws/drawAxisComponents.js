@@ -35,7 +35,7 @@ export default (function drawAxisComponents(
     const cat_args = catArgsManager.getCatArgs();
     _.each(cat_args[inst_axis], function (inst_cat_arg) {
       regl(inst_cat_arg)({
-        interp_prop: interpFun(state),
+        interp_prop: interpFun(store),
         run_animation: state.animation.running,
       });
     });

@@ -1,6 +1,6 @@
 import { zoom_function } from "../cameras/zoomFunction";
 import color_to_rgba from "../colors/colorToRgba";
-import interp_fun from "../draws/interpFun";
+import interpFun from "../draws/interpFun";
 import { rotation, scaling } from "../draws/mat3Transform";
 import make_viz_aid_tri_pos_arr from "./makeVizAidTriPosArr";
 
@@ -154,7 +154,7 @@ export default (function make_viz_aid_tri_args(regl, store, inst_axis) {
       // triangle_color: inst_rgba,
       total_zoom: total_zoom,
       // alternate way to define interpolate uni
-      interp_uni: () => Math.max(0, Math.min(1, interp_fun(state))),
+      interp_uni: () => Math.max(0, Math.min(1, interpFun(store))),
       run_animation: state.animation.running,
     },
     count: 3,

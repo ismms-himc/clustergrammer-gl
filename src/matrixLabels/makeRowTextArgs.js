@@ -1,4 +1,4 @@
-import interp_fun from "../draws/interpFun";
+import interpFun from "../draws/interpFun";
 import { rotation } from "../draws/mat3Transform";
 
 export default function make_row_text_args(regl, store, zoom_function) {
@@ -95,7 +95,7 @@ export default function make_row_text_args(regl, store, zoom_function) {
       total_zoom: state.visualization.zoom_data.y.total_zoom,
       mat_rotate: mat_rotate,
       // alternate way to define interpolate uni
-      interp_uni: () => Math.max(0, Math.min(1, interp_fun(state))),
+      interp_uni: () => Math.max(0, Math.min(1, interpFun(store))),
       run_animation: state.animation.running,
     },
     depth: {

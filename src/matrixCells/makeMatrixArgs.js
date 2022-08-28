@@ -8,7 +8,7 @@ export default function make_matrix_args(regl, store) {
 
   // make arrays
   const arrs = {};
-  arrs.opacity_arr = make_opacity_arr(store.getState());
+  arrs.opacity_arr = make_opacity_arr(store);
   arrs.position_arr = {};
   arrs.position_arr.ini = make_position_arr(
     state,

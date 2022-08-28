@@ -1,4 +1,4 @@
-import interp_fun from "../draws/interpFun";
+import interpFun from "../draws/interpFun";
 import { rotation, scaling } from "../draws/mat3Transform";
 
 export default function make_col_text_args(regl, store, zoom_function) {
@@ -120,7 +120,7 @@ export default function make_col_text_args(regl, store, zoom_function) {
       total_zoom: state.visualization.zoom_data.x.total_zoom,
       col_width: col_width,
       // alternate way to define interpolate uni
-      interp_uni: () => Math.max(0, Math.min(1, interp_fun(state))),
+      interp_uni: () => Math.max(0, Math.min(1, interpFun(store))),
       run_animation: state.animation.running,
     },
     depth: {

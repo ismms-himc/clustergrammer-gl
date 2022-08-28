@@ -14,6 +14,7 @@ export interface NetworkState extends NetworkData {
     mean: number[];
     std: number[];
   };
+  mat_iz: NetworkData["mat"];
   row_node_names: string[];
   col_node_names: string[];
   cat_colors: Record<string, any>;
@@ -33,6 +34,7 @@ const initialState: NetworkState = {
     std: [],
   },
   mat: [],
+  mat_iz: [],
   row_nodes: [],
   col_nodes: [],
   views: [],

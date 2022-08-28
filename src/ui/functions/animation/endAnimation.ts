@@ -66,7 +66,7 @@ export default (function end_animation(
     dispatch(
       mutateOrderState({
         inst: {
-          [i_axis]: state.order.new[i_axis],
+          [i_axis]: orderInstance,
         },
       } as Partial<OrderState>)
     );

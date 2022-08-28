@@ -40,16 +40,17 @@ export default function run_viz(
     }
 
     // prevent this from being negative, can happen when resetting zoom
-    const secondState = store.getState();
-    if (secondState.interaction.total < 0) {
+    if (firstState.interaction.total < 0) {
       dispatch(mutateInteractionState({ total: 0 }));
     }
-    if (secondState.visualization.reset_cameras) {
+    if (firstState.visualization.reset_cameras) {
+      // reset cameras mutates zoom data
       camerasManager.resetCameras(store);
     }
 
     const thirdState = store.getState();
     if (thirdState.animation.run_animation) {
+      // modifies animation duration end
       start_animation(store);
     } else if (
       thirdState.animation.time > thirdState.animation.duration_end &&

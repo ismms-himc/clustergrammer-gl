@@ -3,12 +3,9 @@ import { mutateVisualizationState } from "../state/reducers/visualization/visual
 
 export default (function sanitize_inst_zoom(store, zoom_data) {
   // first sanitize zooming out if already completely zoomed out
-  let sanitizedZoomData = cloneDeep(zoom_data);
+  const sanitizedZoomData = cloneDeep(zoom_data);
   if (sanitizedZoomData.total_zoom === 1 && sanitizedZoomData.inst_zoom < 1) {
-    sanitizedZoomData = {
-      ...sanitizedZoomData,
-      inst_zoom: 1,
-    };
+    sanitizedZoomData.inst_zoom = 1;
     // reset zoom
     store.dispatch(
       mutateVisualizationState({

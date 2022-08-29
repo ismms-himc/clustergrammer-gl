@@ -1,4 +1,4 @@
-export default (function ini_zoom_restrict(max_zoom, labels, viz_dim) {
+export default (function iniZoomRestrict(max_zoom, labels, viz_dim) {
   let inst_axis = "row";
   const num_row = labels["num_" + inst_axis];
   inst_axis = "col";

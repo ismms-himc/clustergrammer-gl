@@ -1,5 +1,7 @@
+import { Store } from "@reduxjs/toolkit";
 import { cloneDeep } from "lodash";
 import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
+import { RootState } from "../state/store/store";
 import calc_cursor_relative from "./calcCursorRelative";
 import calc_pan_by_zoom from "./calcPanByZoom";
 import calc_potential_total_pan from "./calcPotentialTotalPan";
@@ -8,7 +10,10 @@ import run_zoom_restrictions from "./runZoomRestrictions";
 import sanitize_inst_zoom from "./sanitizeInstZoom";
 import sanitize_potential_zoom from "./sanitizePotentialZoom";
 
-export default (function zoom_rules_low_mat(store, axis) {
+export default (function zoom_rules_low_mat(
+  store: Store<RootState>,
+  axis: "x" | "y"
+) {
   const {
     visualization: { viz_dim, zoom_data: zd },
   } = store.getState();
@@ -17,9 +22,9 @@ export default (function zoom_rules_low_mat(store, axis) {
   const viz_dim_mat = viz_dim.mat[axis];
 
   // store original restriction
-  const prevRestrict = zoom_data.prev_restrict;
+  const prevRestrict = zoom_data?.prev_restrict;
   // copy zoom data so we can operate on it without fear of mutating the original (not possible I think but)
-  let newZoomData = cloneDeep(zoom_data);
+  const newZoomData = cloneDeep(zoom_data);
   // convert offcenter WebGl units to pixel units
   let canvas_dim;
   if (axis === "x") {
@@ -27,10 +32,10 @@ export default (function zoom_rules_low_mat(store, axis) {
   } else {
     canvas_dim = "height";
   }
-  newZoomData = {
-    ...newZoomData,
-    viz_offcenter: (viz_dim.canvas[canvas_dim] * viz_dim.offcenter[axis]) / 2,
-  };
+  if (newZoomData) {
+    newZoomData.viz_offcenter =
+      (viz_dim.canvas[canvas_dim] * viz_dim.offcenter[axis]) / 2;
+  }
   // ////////////////////////////////////////////////////////////////////////////
   // Sanitize Zoom
   // ////////////////////////////////////////////////////////////////////////////
@@ -38,12 +43,11 @@ export default (function zoom_rules_low_mat(store, axis) {
   const sanitizedZoomData = sanitize_inst_zoom(store, newZoomData);
   const sanitizedPotentialZoomData = sanitize_potential_zoom(
     store,
-    sanitizedZoomData
+    sanitizedZoomData,
+    axis
   );
-  const heatOffsetZoomData = {
-    ...sanitizedPotentialZoomData,
-    heat_offset: viz_dim_mat.max - viz_dim_heat.max,
-  };
+  const heatOffsetZoomData = cloneDeep(sanitizedPotentialZoomData);
+  heatOffsetZoomData.heat_offset = viz_dim_mat.max - viz_dim_heat.max;
   // ////////////////////////////////////////////////////////////////////////////
   // Pan by Drag Rules
   // ////////////////////////////////////////////////////////////////////////////

@@ -15,11 +15,9 @@ export type TextVector = {
   new_offset: number[];
 };
 
-export type ZoomRestriction = {
-  max: number;
-  min: number;
+export interface ZoomRestriction extends MinMaxDimension {
   ratio: number;
-};
+}
 export type ZoomRestrictions = {
   x: ZoomRestriction;
   y: ZoomRestriction;
@@ -33,18 +31,24 @@ export type ZoomAxisData = {
   cursor_rel_min: number;
   filter_zoom: number;
   pan_room: number;
-  prev_restrict: false;
-  show_text: false;
-  still_zooming: false;
+  prev_restrict: boolean;
+  show_text: boolean;
+  still_zooming: boolean;
   total_pan_max: number;
   total_pan_min: number;
   total_zoom: number;
   zoom_step: number;
+  viz_offcenter: number;
+  heat_offset: number;
+  inst_eff_zoom: number;
+  fully_zoomed_out: boolean;
+  pbz_relative_min: number;
+  pbz_relative_max: number;
 };
 
 export type ZoomData = {
-  x?: ZoomAxisData;
-  y?: ZoomAxisData;
+  x: ZoomAxisData;
+  y: ZoomAxisData;
 };
 
 export type MinMaxDimension = {
@@ -59,6 +63,7 @@ export type Dimension = {
 
 export type VisualizationDimensions = {
   canvas: {
+    [x: string]: number;
     width: number;
     height: number;
   };
@@ -97,7 +102,7 @@ export interface VisualizationState {
   is_downsampled: boolean;
   tile_pix_width: number;
   tile_pix_height: number;
-  zoom_restrict?: ZoomRestrictions;
+  zoom_restrict: ZoomRestrictions;
   max_zoom: number;
   text_zoom?: {
     row?: TextZoom;
@@ -125,6 +130,10 @@ const initialState: VisualizationState = (() => {
     reset_cameras: false,
     rootElementId: "",
     total_mouseover: 0,
+    zoom_restrict: {
+      x: { ratio: 1.0, min: 0, max: 0 },
+      y: { ratio: 1.0, min: 0, max: 0 },
+    },
   };
 })();
 
@@ -154,6 +163,13 @@ export const visualizationSlice = createSlice({
       state.zoom_data = merge(state.zoom_data, action.payload);
       return state;
     },
+    setZoomData: (
+      state,
+      action: PayloadAction<VisualizationState["zoom_data"]>
+    ) => {
+      state.zoom_data = action.payload;
+      return state;
+    },
     setVisualizationDimensions: (
       state,
       action: PayloadAction<VisualizationState["viz_dim"]>
@@ -172,6 +188,7 @@ export const {
   setVisualizationState,
   mutateVisualizationState,
   mutateZoomData,
+  setZoomData,
   setVisualizationDimensions,
   setTotalMouseover,
 } = visualizationSlice.actions;

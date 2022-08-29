@@ -2,10 +2,6 @@ import { Store } from "@reduxjs/toolkit";
 import { merge } from "lodash";
 import { Regl } from "regl";
 import make_matrix_args from "../matrixCells/makeMatrixArgs";
-import {
-  mutateVisualizationState,
-  ZoomData
-} from "../state/reducers/visualization/visualizationSlice";
 import { RootState } from "../state/store/store";
 import { CameraInstance, Cameras } from "./cameras";
 import make_cameras from "./functions/makeCameras";
@@ -23,12 +19,7 @@ export class CamerasManager {
   }
 
   resetCameras(store: Store<RootState>) {
-    const { cameras, zoom_data } = reset_cameras(this.#regl, store);
-    store.dispatch(
-      mutateVisualizationState({
-        zoom_data: zoom_data as ZoomData,
-      })
-    );
+    const cameras = reset_cameras(this.#regl, store);
     this.#cameras = cameras as unknown as Cameras;
   }
 

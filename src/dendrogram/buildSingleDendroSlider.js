@@ -1,7 +1,7 @@
 // TODO: fix invalid this usage
 import * as d3 from "d3";
-import custom_round from "../utils/customRound";
-import change_groups from "./changeGroups";
+import custom_round from "../utils/customRound.js";
+import change_groups from "./changeGroups.js";
 
 export default function build_single_dendro_slider(store, axis) {
   const state = store.getState();

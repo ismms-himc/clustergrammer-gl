@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import getInitialTooltipState from "./getInitialTooltipState";
+import getInitialTooltipState from "./getInitialTooltipState.js";
 
 export interface TooltipState {
   show_tooltip: boolean;

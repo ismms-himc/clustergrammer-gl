@@ -1,5 +1,5 @@
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
-import { setTotalMouseover } from "../state/reducers/visualization/visualizationSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice.js";
+import { setTotalMouseover } from "../state/reducers/visualization/visualizationSlice.js";
 
 export default (function finalMouseoverFrame(store) {
   // reduce the number of mouseovers

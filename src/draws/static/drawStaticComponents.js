@@ -1,4 +1,4 @@
-import generateSpilloverParams from "./spillover/generateSpilloverParams";
+import generateSpilloverParams from "./spillover/generateSpilloverParams.js";
 
 export default (function draw_static_components(regl, store, cameras) {
   const state = store.getState();

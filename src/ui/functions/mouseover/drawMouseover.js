@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import finalMouseoverFrame from "../../../interactions/finalMouseoverFrame";
-import { setTotalMouseover } from "../../../state/reducers/visualization/visualizationSlice";
+import finalMouseoverFrame from "../../../interactions/finalMouseoverFrame.js";
+import { setTotalMouseover } from "../../../state/reducers/visualization/visualizationSlice.js";
 
 const WAIT_TIME_FINAL_MOUSEOVER = 100;
 

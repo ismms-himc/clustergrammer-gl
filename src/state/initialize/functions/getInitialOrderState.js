@@ -1,5 +1,5 @@
 import * as _ from "underscore";
-import { mutateOrderState } from "../../reducers/order/orderSlice";
+import { mutateOrderState } from "../../reducers/order/orderSlice.js";
 
 export default function getInitialOrderState(store) {
   const { network } = store.getState();

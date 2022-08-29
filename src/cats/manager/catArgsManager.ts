@@ -1,10 +1,10 @@
 import { Store } from "@reduxjs/toolkit";
 import { set } from "lodash";
 import { DrawConfig, Regl } from "regl";
-import { RootState } from "../../state/store/store";
-import { Axis } from "../../types/general";
-import generate_cat_args_arrs from "./generateCatArgsArrs";
-import makeCatPositionArray from "./makeCatPositionArray";
+import { RootState } from "../../state/store/store.js";
+import { Axis } from "../../types/general.js";
+import generate_cat_args_arrs from "./generateCatArgsArrs.js";
+import makeCatPositionArray from "./makeCatPositionArray.js";
 
 export type CatArrsAxis = Array<number[][]>;
 

@@ -1,6 +1,6 @@
-import display_and_position_tooltip from "./displayAndPositionTooltip";
-import makeTooltipText from "./makeTooltipText";
-import remove_lost_tooltips from "./removeLostTooltips";
+import display_and_position_tooltip from "./displayAndPositionTooltip.js";
+import makeTooltipText from "./makeTooltipText.js";
+import remove_lost_tooltips from "./removeLostTooltips.js";
 
 export default (function runShowTooltip(
   regl,

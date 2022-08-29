@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import runReorder from "../../reorders/runReorder";
-import { mutateOrderState } from "../../state/reducers/order/orderSlice";
+import runReorder from "../../reorders/runReorder.js";
+import { mutateOrderState } from "../../state/reducers/order/orderSlice.js";
 
 export default (function buildReorderCatTitles(
   regl,

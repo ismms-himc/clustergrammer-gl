@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { Ordering } from "../../../types/network";
+import { Ordering } from "../../../types/network.js";
 
 type AxisOrdering = {
   [x: string]: Ordering;

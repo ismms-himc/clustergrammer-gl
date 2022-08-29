@@ -1,6 +1,6 @@
 import { saveAs } from "file-saver";
 
-import make_matrix_string from "./makeMatrixString";
+import make_matrix_string from "./makeMatrixString.js";
 
 export default (function download_matrix(params) {
   const matrix_string = make_matrix_string(params);

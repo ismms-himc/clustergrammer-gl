@@ -2,8 +2,8 @@ import * as core from "mathjs/core";
 import * as transpose from "mathjs/lib/function/matrix/transpose";
 import matrix from "mathjs/lib/type/matrix";
 import * as _ from "underscore";
-import change_groups from "../dendrogram/changeGroups";
-import runReorder from "../reorders/runReorder";
+import change_groups from "../dendrogram/changeGroups.js";
+import runReorder from "../reorders/runReorder.js";
 
 const math = core.create();
 math.import(transpose);

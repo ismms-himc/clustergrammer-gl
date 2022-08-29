@@ -1,4 +1,4 @@
-import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice";
+import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice.js";
 
 export default (function start_animation(store) {
   const state = store.getState();

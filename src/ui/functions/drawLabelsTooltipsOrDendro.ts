@@ -1,11 +1,11 @@
 import { Store } from "@reduxjs/toolkit";
 import { Regl } from "regl";
-import { CamerasManager } from "../../cameras/camerasManager";
-import { CatArgsManager } from "../../cats/manager/catArgsManager";
-import drawCommands from "../../draws/drawCommands";
-import { mutateDendrogramState } from "../../state/reducers/dendrogramSlice";
-import { mutateTooltipState } from "../../state/reducers/tooltip/tooltipSlice";
-import { RootState } from "../../state/store/store";
+import { CamerasManager } from "../../cameras/camerasManager.js";
+import { CatArgsManager } from "../../cats/manager/catArgsManager.js";
+import drawCommands from "../../draws/drawCommands.js";
+import { mutateDendrogramState } from "../../state/reducers/dendrogramSlice.js";
+import { mutateTooltipState } from "../../state/reducers/tooltip/tooltipSlice.js";
+import { RootState } from "../../state/store/store.js";
 
 export default function draw_labels_tooltips_or_dendro(
   regl: Regl,

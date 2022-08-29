@@ -2,26 +2,26 @@ import { Store } from "@reduxjs/toolkit";
 import * as d3 from "d3";
 import { Regl } from "regl";
 import * as _ from "underscore";
-import { CamerasManager } from "../../../cameras/camerasManager";
-import { CatArgsManager } from "../../../cats/manager/catArgsManager";
-import calcTextOffsets from "../../../matrixLabels/calcTextOffsets";
-import genOrderedLabels from "../../../matrixLabels/genOrderedLabels";
-import updateTextTriangleOrder from "../../../matrixLabels/updateTextTriangleOrder";
-import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice";
+import { CamerasManager } from "../../../cameras/camerasManager.js";
+import { CatArgsManager } from "../../../cats/manager/catArgsManager.js";
+import calcTextOffsets from "../../../matrixLabels/calcTextOffsets.js";
+import genOrderedLabels from "../../../matrixLabels/genOrderedLabels.js";
+import updateTextTriangleOrder from "../../../matrixLabels/updateTextTriangleOrder.js";
+import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice.js";
 import {
-  LabelsState,
-  mutateLabelsState,
-} from "../../../state/reducers/labels/labelsSlice";
+    LabelsState,
+    mutateLabelsState
+} from "../../../state/reducers/labels/labelsSlice.js";
 import {
-  mutateOrderState,
-  OrderState,
-} from "../../../state/reducers/order/orderSlice";
+    mutateOrderState,
+    OrderState
+} from "../../../state/reducers/order/orderSlice.js";
 import {
-  mutateVisualizationState,
-  VisualizationState,
-} from "../../../state/reducers/visualization/visualizationSlice";
-import { RootState } from "../../../state/store/store";
-import { Axis } from "../../../types/general";
+    mutateVisualizationState,
+    VisualizationState
+} from "../../../state/reducers/visualization/visualizationSlice.js";
+import { RootState } from "../../../state/store/store.js";
+import { Axis } from "../../../types/general.js";
 
 export default (function end_animation(
   regl: Regl,

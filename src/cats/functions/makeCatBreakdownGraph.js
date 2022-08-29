@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import * as _ from "underscore";
-import catBreakdownBars from "./catBreakdownBars";
-import catBreakdownValues from "./catBreakdownValues";
+import catBreakdownBars from "./catBreakdownBars.js";
+import catBreakdownValues from "./catBreakdownValues.js";
 
 export default (function makeCatBreakdownGraph(store, dendro_info, cb) {
   const state = store.getState();

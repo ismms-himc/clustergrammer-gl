@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import getInitialInteractionState from "./getInitialInteractionState";
+import getInitialInteractionState from "./getInitialInteractionState.js";
 
 export interface InteractionState {
   total: number;

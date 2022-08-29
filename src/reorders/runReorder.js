@@ -1,11 +1,11 @@
 import * as d3 from "d3";
 import { cloneDeep, merge } from "lodash";
-import updateTextTriangleOrder from "../matrixLabels/updateTextTriangleOrder";
-import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
-import { setOrderState } from "../state/reducers/order/orderSlice";
-import { setVisualizationState } from "../state/reducers/visualization/visualizationSlice";
-import reorderCatArgs from "./reorderCatArgs";
-import reorderMatrixArgs from "./reorderMatrixArgs";
+import updateTextTriangleOrder from "../matrixLabels/updateTextTriangleOrder.js";
+import { mutateAnimationState } from "../state/reducers/animation/animationSlice.js";
+import { setOrderState } from "../state/reducers/order/orderSlice.js";
+import { setVisualizationState } from "../state/reducers/visualization/visualizationSlice.js";
+import reorderCatArgs from "./reorderCatArgs.js";
+import reorderMatrixArgs from "./reorderMatrixArgs.js";
 
 export default (function runReorder(
   regl,

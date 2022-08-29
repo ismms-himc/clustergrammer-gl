@@ -1,17 +1,17 @@
 import * as d3 from "d3";
 import { Regl } from "regl";
-import { CamerasManager } from "./cameras/camerasManager";
-import { CatArgsManager } from "./cats/manager/catArgsManager";
-import draw_webgl_layers from "./draws/drawWebglLayers";
-import initializeRegl from "./state/initialize/functions/initializeRegl";
-import initializeStore from "./state/initialize/initializeStore";
-import { setOpacityScale } from "./state/reducers/matrixSlice";
-import { NetworkState } from "./state/reducers/networkSlice";
-import { store } from "./state/store/store";
-import { createCanvasContainer } from "./ui/functions/createCanvasContainer";
-import { UI } from "./ui/ui";
-import { CANVAS_CONTAINER_CLASSNAME } from "./ui/ui.const";
-import zoom_rules_high_mat from "./zoom/zoomRulesHighMat";
+import { CamerasManager } from "./cameras/camerasManager.js";
+import { CatArgsManager } from "./cats/manager/catArgsManager.js";
+import draw_webgl_layers from "./draws/drawWebglLayers.js";
+import initializeRegl from "./state/initialize/functions/initializeRegl.js";
+import initializeStore from "./state/initialize/initializeStore.js";
+import { setOpacityScale } from "./state/reducers/matrixSlice.js";
+import { NetworkState } from "./state/reducers/networkSlice.js";
+import { store } from "./state/store/store.js";
+import { createCanvasContainer } from "./ui/functions/createCanvasContainer.js";
+import { CANVAS_CONTAINER_CLASSNAME } from "./ui/ui.const.js";
+import { UI } from "./ui/ui.js";
+import zoom_rules_high_mat from "./zoom/zoomRulesHighMat.js";
 
 export type ClustergrammerInstance = {};
 

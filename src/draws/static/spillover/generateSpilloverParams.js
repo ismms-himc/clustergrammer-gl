@@ -1,6 +1,6 @@
 import * as _ from "underscore";
-import calc_spillover_triangles from "./calcSpilloverTriangles";
-import make_spillover_args from "./makeSpilloverArgs";
+import calc_spillover_triangles from "./calcSpilloverTriangles.js";
+import make_spillover_args from "./makeSpilloverArgs.js";
 
 export default (function generate_spillover_params(regl, state) {
   const spillover_args = {};

@@ -1,7 +1,7 @@
-import finalInteractionFrame from "../interactions/finalInteractionFrame";
-import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
-import drawCommands from "./drawCommands";
+import finalInteractionFrame from "../interactions/finalInteractionFrame.js";
+import { mutateAnimationState } from "../state/reducers/animation/animationSlice.js";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
+import drawCommands from "./drawCommands.js";
 
 export default (function drawInteracting(regl, store, catArgsManager, cameras) {
   const state = store.getState();

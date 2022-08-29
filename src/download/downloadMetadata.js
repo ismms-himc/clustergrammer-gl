@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import make_meta_string from "./makeMetaString";
+import make_meta_string from "./makeMetaString.js";
 
 export default (function download_metadata(params) {
   const matrix_string = make_meta_string(params);

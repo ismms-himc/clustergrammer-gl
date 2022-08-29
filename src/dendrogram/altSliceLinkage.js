@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { setNetworkState } from "../state/reducers/networkSlice";
+import { setNetworkState } from "../state/reducers/networkSlice.js";
 
 export default (function alt_slice_linkage(
   store,

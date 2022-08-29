@@ -1,5 +1,5 @@
 import * as _ from "underscore";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
 
 export default function genOrderedLabels(store) {
   const state = store.getState();

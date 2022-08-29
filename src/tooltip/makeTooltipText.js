@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import * as _ from "underscore";
-import { getHzomeGeneInfo } from "./getHzomeGeneInfo";
-import make_dendro_tooltip from "./makeDendroTooltip";
+import { getHzomeGeneInfo } from "./getHzomeGeneInfo.js";
+import make_dendro_tooltip from "./makeDendroTooltip.js";
 
 export default (function makeTooltipText(
   regl,

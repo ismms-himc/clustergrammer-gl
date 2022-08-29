@@ -1,8 +1,8 @@
 import * as d3 from "d3";
-import manualUpdateToCats from "../cats/functions/manualUpdateToCats";
-import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
-import { mutateCatVizState } from "../state/reducers/catVizSlice";
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
+import manualUpdateToCats from "../cats/functions/manualUpdateToCats.js";
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice.js";
+import { mutateCatVizState } from "../state/reducers/catVizSlice.js";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
 
 export default function manual_category_from_dendro(
   regl,

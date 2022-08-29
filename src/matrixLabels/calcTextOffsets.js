@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { mutateNetworkState } from "../state/reducers/networkSlice";
+import { mutateNetworkState } from "../state/reducers/networkSlice.js";
 
 export default (function calcTextOffsets(store, inst_axis) {
   const state = store.getState();

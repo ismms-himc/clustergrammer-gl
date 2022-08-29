@@ -3,13 +3,13 @@ import * as d3 from "d3";
 import { cloneDeep } from "lodash";
 import { Regl } from "regl";
 import * as _ from "underscore";
-import { CamerasManager } from "../cameras/camerasManager";
-import { CatArgsManager } from "../cats/manager/catArgsManager";
-import { mutateNetworkState } from "../state/reducers/networkSlice";
-import { setSearchedRows } from "../state/reducers/searchSlice";
-import { RootState } from "../state/store/store";
-import { Axis } from "../types/general";
-import runReorder from "./runReorder";
+import { CamerasManager } from "../cameras/camerasManager.js";
+import { CatArgsManager } from "../cats/manager/catArgsManager.js";
+import { mutateNetworkState } from "../state/reducers/networkSlice.js";
+import { setSearchedRows } from "../state/reducers/searchSlice.js";
+import { RootState } from "../state/store/store.js";
+import { Axis } from "../types/general.js";
+import runReorder from "./runReorder.js";
 
 export default (function customLabelReorder(
   regl: Regl,

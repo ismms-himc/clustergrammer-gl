@@ -1,6 +1,6 @@
-import draw_webgl_layers from "../../draws/drawWebglLayers";
-import genOrderedLabels from "../../matrixLabels/genOrderedLabels";
-import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice";
+import draw_webgl_layers from "../../draws/drawWebglLayers.js";
+import genOrderedLabels from "../../matrixLabels/genOrderedLabels.js";
+import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice.js";
 
 export default function manualUpdateToCats(
   regl,

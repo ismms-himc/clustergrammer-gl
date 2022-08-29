@@ -1,9 +1,9 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
-import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
+import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice.js";
 
-import vectorize_label from "./vectorizeLabel";
+import vectorize_label from "./vectorizeLabel.js";
 
 export default function gather_text_triangles(store, viz_area, inst_axis) {
   const {

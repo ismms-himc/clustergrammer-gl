@@ -1,8 +1,8 @@
 import { Store } from "@reduxjs/toolkit";
 import { Regl } from "regl";
-import { CamerasManager } from "../cameras/camerasManager";
-import makePositionArr from "../matrixCells/makePositionArr";
-import { RootState } from "../state/store/store";
+import { CamerasManager } from "../cameras/camerasManager.js";
+import makePositionArr from "../matrixCells/makePositionArr.js";
+import { RootState } from "../state/store/store.js";
 
 export default (function reorderMatrixArgs(
   regl: Regl,

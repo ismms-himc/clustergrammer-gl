@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import * as _ from "underscore";
-import calc_inverse_zscore from "../utils/calcInverseZscore";
+import calc_inverse_zscore from "../utils/calcInverseZscore.js";
 
 export default (function make_opacity_arr(store) {
   const { network, matrix } = store.getState();

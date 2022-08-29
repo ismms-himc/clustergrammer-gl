@@ -1,10 +1,10 @@
 // TODO: fix invalid this usage
 import * as d3 from "d3";
-import draw_webgl_layers from "../../../draws/drawWebglLayers";
-import recluster from "../../../recluster/recluster";
-import { mutateCatVizState } from "../../../state/reducers/catVizSlice";
-import { mutateMatrixState } from "../../../state/reducers/matrixSlice";
-import { mutateNetworkState } from "../../../state/reducers/networkSlice";
+import draw_webgl_layers from "../../../draws/drawWebglLayers.js";
+import recluster from "../../../recluster/recluster.js";
+import { mutateCatVizState } from "../../../state/reducers/catVizSlice.js";
+import { mutateMatrixState } from "../../../state/reducers/matrixSlice.js";
+import { mutateNetworkState } from "../../../state/reducers/networkSlice.js";
 
 export default (function build_recluster_section(
   regl,

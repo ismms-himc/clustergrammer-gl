@@ -1,21 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
-import matrixReducer from "../../state/reducers/matrixSlice";
-import animationReducer from "../reducers/animation/animationSlice";
-import arrsReducer from "../reducers/arrsSlice";
-import categoriesReducer from "../reducers/categoriesSlice";
-import catVizReducer from "../reducers/catVizSlice";
-import dendrogramReducer from "../reducers/dendrogramSlice";
-import downloadReducer from "../reducers/downloadSlice";
-import interactionReducer from "../reducers/interaction/interactionSlice";
-import labelsReducer from "../reducers/labels/labelsSlice";
-import networkReducer from "../reducers/networkSlice";
-import nodeCanvasPosReducer from "../reducers/nodeCanvasPosSlice";
-import orderReducer from "../reducers/order/orderSlice";
-import rowAndColCanvasPositionsReducer from "../reducers/rowAndColCanvasPositionsSlice";
-import searchReducer from "../reducers/searchSlice";
-import tooltipReducer from "../reducers/tooltip/tooltipSlice";
-import uiReducer from "../reducers/uiSlice";
-import visualizationReducer from "../reducers/visualization/visualizationSlice";
+import matrixReducer from "../../state/reducers/matrixSlice.js";
+import animationReducer from "../reducers/animation/animationSlice.js";
+import arrsReducer from "../reducers/arrsSlice.js";
+import categoriesReducer from "../reducers/categoriesSlice.js";
+import catVizReducer from "../reducers/catVizSlice.js";
+import dendrogramReducer from "../reducers/dendrogramSlice.js";
+import downloadReducer from "../reducers/downloadSlice.js";
+import interactionReducer from "../reducers/interaction/interactionSlice.js";
+import labelsReducer from "../reducers/labels/labelsSlice.js";
+import networkReducer from "../reducers/networkSlice.js";
+import nodeCanvasPosReducer from "../reducers/nodeCanvasPosSlice.js";
+import orderReducer from "../reducers/order/orderSlice.js";
+import rowAndColCanvasPositionsReducer from "../reducers/rowAndColCanvasPositionsSlice.js";
+import searchReducer from "../reducers/searchSlice.js";
+import tooltipReducer from "../reducers/tooltip/tooltipSlice.js";
+import uiReducer from "../reducers/uiSlice.js";
+import visualizationReducer from "../reducers/visualization/visualizationSlice.js";
 
 export const store = configureStore({
   reducer: {

@@ -1,6 +1,6 @@
 import * as _ from "underscore";
-import makeCatArgs from "./makeCatArgs";
-import makeCatPositionArray from "./makeCatPositionArray";
+import makeCatArgs from "./makeCatArgs.js";
+import makeCatPositionArray from "./makeCatPositionArray.js";
 
 export default function generate_cat_args_arrs(regl, store) {
   const { cat_data } = store.getState();

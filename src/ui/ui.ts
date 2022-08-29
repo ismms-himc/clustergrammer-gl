@@ -1,13 +1,13 @@
 import { Store } from "@reduxjs/toolkit";
 import { Regl } from "regl";
-import { CamerasManager } from "../cameras/camerasManager";
-import { CatArgsManager } from "../cats/manager/catArgsManager";
-import { RootState } from "../state/store/store";
-import initializeD3Tip from "../tooltip/initializeD3Tip";
-import run_viz from "./functions/animation/runViz";
-import build_dendrogram_sliders from "./functions/buildDendrogramSliders";
-import build_control_panel from "./functions/controlPanel/buildControlPanel";
-import ini_canvas_mouseover from "./functions/mouseover/iniCanvasMouseover";
+import { CamerasManager } from "../cameras/camerasManager.js";
+import { CatArgsManager } from "../cats/manager/catArgsManager.js";
+import { RootState } from "../state/store/store.js";
+import initializeD3Tip from "../tooltip/initializeD3Tip.js";
+import run_viz from "./functions/animation/runViz.js";
+import build_dendrogram_sliders from "./functions/buildDendrogramSliders.js";
+import build_control_panel from "./functions/controlPanel/buildControlPanel.js";
+import ini_canvas_mouseover from "./functions/mouseover/iniCanvasMouseover.js";
 
 export type UIProps = {
   regl: Regl;

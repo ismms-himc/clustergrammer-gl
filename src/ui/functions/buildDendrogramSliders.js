@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import * as _ from "underscore";
-import build_single_dendro_slider from "../../dendrogram/buildSingleDendroSlider";
+import build_single_dendro_slider from "../../dendrogram/buildSingleDendroSlider.js";
 
 export default function build_dendrogram_sliders(store) {
   const state = store.getState();

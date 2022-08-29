@@ -1,11 +1,11 @@
 import { Store } from "@reduxjs/toolkit";
 import * as d3 from "d3";
-import calcVizArea from "../../../params/calcVizArea";
-import iniZoomRestrict from "../../../zoom/iniZoomRestrict";
-import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice";
-import { RootState } from "../../store/store";
-import generateTextTriangleParams from "./generateTextTriangleParams";
-import initializeTextZoom from "./initializeTextZoom";
+import calcVizArea from "../../../params/calcVizArea.js";
+import iniZoomRestrict from "../../../zoom/iniZoomRestrict.js";
+import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice.js";
+import { RootState } from "../../store/store.js";
+import generateTextTriangleParams from "./generateTextTriangleParams.js";
+import initializeTextZoom from "./initializeTextZoom.js";
 
 export default function generateVisualizationParams(store: Store<RootState>) {
   const {

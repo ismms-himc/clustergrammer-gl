@@ -1,5 +1,5 @@
-import average from "./average";
-import average_n_minus_1 from "./averageNMinus1";
+import average from "./average.js";
+import average_n_minus_1 from "./averageNMinus1.js";
 
 export default (function standard_deviation(data) {
   const avg = average(data);

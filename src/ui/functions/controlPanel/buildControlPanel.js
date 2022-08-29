@@ -1,18 +1,18 @@
 // TODO: fix invalid this usage
 import * as d3 from "d3";
 import * as _ from "underscore";
-import buildReorderCatTitles from "../../../cats/functions/buildReorderCatTitles";
-import build_opacity_slider from "../../../colors/buildOpacitySlider";
-import download_matrix from "../../../download/downloadMatrix";
-import download_metadata from "../../../download/downloadMetadata";
-import draw_webgl_layers from "../../../draws/drawWebglLayers";
-import runReorder from "../../../reorders/runReorder";
-import { mutateCatVizState } from "../../../state/reducers/catVizSlice";
-import { setDelimiterForFileType } from "../../../state/reducers/downloadSlice";
-import { setSearchedRows } from "../../../state/reducers/searchSlice";
-import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice";
-import { CONTROL_PANEL_CLASSNAME } from "../../ui.const";
-import buildReclusterSection from "./buildReclusterSection";
+import buildReorderCatTitles from "../../../cats/functions/buildReorderCatTitles.js";
+import build_opacity_slider from "../../../colors/buildOpacitySlider.js";
+import download_matrix from "../../../download/downloadMatrix.js";
+import download_metadata from "../../../download/downloadMetadata.js";
+import draw_webgl_layers from "../../../draws/drawWebglLayers.js";
+import runReorder from "../../../reorders/runReorder.js";
+import { mutateCatVizState } from "../../../state/reducers/catVizSlice.js";
+import { setDelimiterForFileType } from "../../../state/reducers/downloadSlice.js";
+import { setSearchedRows } from "../../../state/reducers/searchSlice.js";
+import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice.js";
+import { CONTROL_PANEL_CLASSNAME } from "../../ui.const.js";
+import buildReclusterSection from "./buildReclusterSection.js";
 
 export default function build_control_panel(
   regl,

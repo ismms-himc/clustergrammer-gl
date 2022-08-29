@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
+import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice.js";
 
 export default (function sanitize_inst_zoom(store, zoom_data) {
   // first sanitize zooming out if already completely zoomed out

@@ -1,11 +1,11 @@
 import { Store } from "@reduxjs/toolkit";
 import { Regl } from "regl";
-import { zoom_function } from "../../cameras/zoomFunction";
-import color_to_rgba from "../../colors/colorToRgba";
-import { rotation, scaling } from "../../draws/mat3Transform";
-import { RootState } from "../../state/store/store";
-import { CatArrs } from "./catArgsManager";
-import get_cat_value from "./helpers/getCatValue";
+import { zoom_function } from "../../cameras/zoomFunction.js";
+import color_to_rgba from "../../colors/colorToRgba.js";
+import { rotation, scaling } from "../../draws/mat3Transform.js";
+import { RootState } from "../../state/store/store.js";
+import { CatArrs } from "./catArgsManager.js";
+import get_cat_value from "./helpers/getCatValue.js";
 
 type ReglProps = { run_animation: boolean };
 

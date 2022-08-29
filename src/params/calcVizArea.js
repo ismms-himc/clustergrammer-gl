@@ -1,5 +1,5 @@
 import * as _ from "underscore";
-import genPixToWebgl from "./genPixToWebgl";
+import genPixToWebgl from "./genPixToWebgl.js";
 
 export default (function calcVizArea(store) {
   const state = store.getState();

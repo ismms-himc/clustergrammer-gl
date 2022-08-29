@@ -1,4 +1,4 @@
-import make_full_name from "./makeFullName";
+import make_full_name from "./makeFullName.js";
 
 export default (function make_matrix_string(state) {
   const delimiter = state.download.delimiter_key[state.download.delimiter_name];

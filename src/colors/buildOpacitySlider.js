@@ -2,9 +2,9 @@
 
 import * as d3 from "d3";
 import { clamp } from "lodash";
-import draw_webgl_layers from "../draws/drawWebglLayers";
-import { setOpacityScale } from "../state/reducers/matrixSlice";
-import custom_round from "../utils/customRound";
+import draw_webgl_layers from "../draws/drawWebglLayers.js";
+import { setOpacityScale } from "../state/reducers/matrixSlice.js";
+import custom_round from "../utils/customRound.js";
 
 export default (function build_opacity_slider(
   regl,

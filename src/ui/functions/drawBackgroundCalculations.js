@@ -1,9 +1,9 @@
 import { without } from "lodash";
 import * as _ from "underscore";
-import vectorize_label from "../../matrixLabels/vectorizeLabel";
-import { mutateAnimationState } from "../../state/reducers/animation/animationSlice";
-import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice";
-import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice";
+import vectorize_label from "../../matrixLabels/vectorizeLabel.js";
+import { mutateAnimationState } from "../../state/reducers/animation/animationSlice.js";
+import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice.js";
+import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice.js";
 
 export default (function draw_background_calculations(store) {
   const dispatch = store.dispatch;

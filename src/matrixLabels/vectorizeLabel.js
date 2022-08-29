@@ -1,6 +1,6 @@
 import { without } from "lodash";
 import vectorize_text from "vectorize-text";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
 
 export default function vectorize_label(store, inst_axis, inst_name) {
   const dispatch = store.dispatch;

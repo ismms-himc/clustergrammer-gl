@@ -1,17 +1,17 @@
 import { Store } from "@reduxjs/toolkit";
 import * as d3 from "d3";
 import { Regl } from "regl";
-import { CamerasManager } from "../../../cameras/camerasManager";
-import { CatArgsManager } from "../../../cats/manager/catArgsManager";
-import drawInteracting from "../../../draws/drawInteracting";
-import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice";
-import { mutateInteractionState } from "../../../state/reducers/interaction/interactionSlice";
-import { RootState } from "../../../state/store/store";
-import draw_background_calculations from "../drawBackgroundCalculations";
-import draw_labels_tooltips_or_dendro from "../drawLabelsTooltipsOrDendro";
-import drawMouseover from "../mouseover/drawMouseover";
-import end_animation from "./endAnimation";
-import start_animation from "./startAnimation";
+import { CamerasManager } from "../../../cameras/camerasManager.js";
+import { CatArgsManager } from "../../../cats/manager/catArgsManager.js";
+import drawInteracting from "../../../draws/drawInteracting.js";
+import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice.js";
+import { mutateInteractionState } from "../../../state/reducers/interaction/interactionSlice.js";
+import { RootState } from "../../../state/store/store.js";
+import draw_background_calculations from "../drawBackgroundCalculations.js";
+import draw_labels_tooltips_or_dendro from "../drawLabelsTooltipsOrDendro.js";
+import drawMouseover from "../mouseover/drawMouseover.js";
+import end_animation from "./endAnimation.js";
+import start_animation from "./startAnimation.js";
 
 export default function run_viz(
   regl: Regl,

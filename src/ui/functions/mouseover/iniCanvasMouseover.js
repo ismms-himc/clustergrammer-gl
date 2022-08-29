@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice";
-import runShowTooltip from "../../../tooltip/runShowTooltip";
-import { CANVAS_CONTAINER_CLASSNAME } from "../../ui.const";
+import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice.js";
+import runShowTooltip from "../../../tooltip/runShowTooltip.js";
+import { CANVAS_CONTAINER_CLASSNAME } from "../../ui.const.js";
 
 export default function ini_canvas_mouseover(
   regl,

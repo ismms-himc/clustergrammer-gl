@@ -1,12 +1,12 @@
 import * as _ from "underscore";
-import { zoom_function } from "../cameras/zoomFunction";
-import makeDendroArgs from "../dendrogram/makeDendroArgs";
-import gatherTextTriangles from "../matrixLabels/gatherTextTriangles";
-import makeColTextArgs from "../matrixLabels/makeColTextArgs";
-import makeRowTextArgs from "../matrixLabels/makeRowTextArgs";
-import makeVizAidTriArgs from "../matrixLabels/makeVizAidTriArgs";
-import calcVizArea from "../params/calcVizArea";
-import interpFun from "./interpFun";
+import { zoom_function } from "../cameras/zoomFunction.js";
+import makeDendroArgs from "../dendrogram/makeDendroArgs.js";
+import gatherTextTriangles from "../matrixLabels/gatherTextTriangles.js";
+import makeColTextArgs from "../matrixLabels/makeColTextArgs.js";
+import makeRowTextArgs from "../matrixLabels/makeRowTextArgs.js";
+import makeVizAidTriArgs from "../matrixLabels/makeVizAidTriArgs.js";
+import calcVizArea from "../params/calcVizArea.js";
+import interpFun from "./interpFun.js";
 
 export default (function drawAxisComponents(
   regl,

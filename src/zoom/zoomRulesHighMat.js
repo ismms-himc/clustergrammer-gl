@@ -1,8 +1,8 @@
-import doubleClicking from "../interactions/doubleClicking";
-import interactionEvents from "../interactions/interactionEvents";
-import singleClicking from "../interactions/singleClicking";
-import track_interaction_zoom_data from "../interactions/trackInteractionZoomData";
-import run_hide_tooltip from "../tooltip/runHideTooltip";
+import doubleClicking from "../interactions/doubleClicking.js";
+import interactionEvents from "../interactions/interactionEvents.js";
+import singleClicking from "../interactions/singleClicking.js";
+import track_interaction_zoom_data from "../interactions/trackInteractionZoomData.js";
+import run_hide_tooltip from "../tooltip/runHideTooltip.js";
 
 export default function zoom_rules_high_mat(
   regl,

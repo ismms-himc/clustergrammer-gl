@@ -1,7 +1,7 @@
 import { Store } from "@reduxjs/toolkit";
-import colorToRgba from "../../../colors/colorToRgba";
-import { MatColors, mutateCatVizState } from "../../reducers/catVizSlice";
-import { RootState } from "../../store/store";
+import colorToRgba from "../../../colors/colorToRgba.js";
+import { MatColors, mutateCatVizState } from "../../reducers/catVizSlice.js";
+import { RootState } from "../../store/store.js";
 
 const MAT_COLORS: MatColors = {
   pos_rgb: [1, 0, 0],

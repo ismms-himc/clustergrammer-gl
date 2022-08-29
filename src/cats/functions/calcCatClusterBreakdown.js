@@ -1,5 +1,5 @@
 import * as _ from "underscore";
-import binomTest from "../helpers/binomTest";
+import binomTest from "../helpers/binomTest.js";
 
 export default (function calcCatClusterBreakdown(store, inst_data, inst_rc) {
   const state = store.getState();

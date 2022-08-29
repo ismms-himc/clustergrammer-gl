@@ -1,4 +1,4 @@
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice.js";
 
 export default (function getMouseoverType(store) {
   const state = store.getState();

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import * as _ from "underscore";
-import { setVisualizationDimensions } from "../../reducers/visualization/visualizationSlice";
-import { store } from "../../store/store";
+import { setVisualizationDimensions } from "../../reducers/visualization/visualizationSlice.js";
+import { store } from "../../store/store.js";
 
 export default (function calcVizDim(regl, state) {
   const { labels, cat_data } = state;

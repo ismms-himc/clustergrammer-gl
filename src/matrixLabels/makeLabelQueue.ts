@@ -1,8 +1,8 @@
 import { Store } from "@reduxjs/toolkit";
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
-import { RootState } from "../state/store/store";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
+import { RootState } from "../state/store/store.js";
 
 export default (function make_label_queue(store: Store<RootState>) {
   const { labels } = store.getState();

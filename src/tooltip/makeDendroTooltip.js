@@ -1,10 +1,10 @@
 import * as d3 from "d3";
-import calcCatClusterBreakdown from "../cats/functions/calcCatClusterBreakdown";
-import makeCatBreakdownGraph from "../cats/functions/makeCatBreakdownGraph";
-import { mutateDendrogramState } from "../state/reducers/dendrogramSlice";
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
-import manual_category_from_dendro from "./manualCategoryFromDendro";
-import run_hide_tooltip from "./runHideTooltip";
+import calcCatClusterBreakdown from "../cats/functions/calcCatClusterBreakdown.js";
+import makeCatBreakdownGraph from "../cats/functions/makeCatBreakdownGraph.js";
+import { mutateDendrogramState } from "../state/reducers/dendrogramSlice.js";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice.js";
+import manual_category_from_dendro from "./manualCategoryFromDendro.js";
+import run_hide_tooltip from "./runHideTooltip.js";
 
 export default (function make_dendro_tooltip(
   regl,

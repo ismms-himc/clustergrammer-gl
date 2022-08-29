@@ -235,7 +235,7 @@ export default function build_single_dendro_slider(regl, store, axis) {
       clickState.dendro.precalc_linkage
     );
     dendroSliderValue = slider_value;
-    changeGroups(store, axis, slider_value);
+    changeGroups(regl, store, axis, slider_value);
   }
   // convert from position along slider to a value that will be used to set
   // the group level

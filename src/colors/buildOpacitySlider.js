@@ -47,7 +47,7 @@ export default (function build_opacity_slider(
     ).attr("transform", `translate(0, ${pos})`);
     // update the slider text
     d3.select(`${state.visualization.rootElementId} .opacity_level_text`).text(
-      1 - custom_round(slider_value, 1)
+      custom_round(1 - slider_value, 1)
     );
     // change the opacity of the matrix cells
     change_opacity(slider_value);

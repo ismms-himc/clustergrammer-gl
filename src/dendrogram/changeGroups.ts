@@ -1,11 +1,18 @@
+import { Store } from "@reduxjs/toolkit";
 import * as d3 from "d3";
 import { cloneDeep } from "lodash";
+import { Regl } from "regl";
 import { setDendrogramState } from "../state/reducers/dendrogramSlice";
+import { RootState } from "../state/store/store";
 import alt_slice_linkage from "./altSliceLinkage";
 import calcDendroTriangles from "./calcDendroTriangles";
-import makeDendroArgs from "./makeDendroArgs";
 
-export default (function changeGroups(regl, store, axis, slider_value) {
+export default (function changeGroups(
+  regl: Regl,
+  store: Store<RootState>,
+  axis: "row" | "col",
+  slider_value: number
+) {
   const { dendro, visualization } = store.getState();
   const dispatch = store.dispatch;
   const newDendrogramState = cloneDeep(dendro);
@@ -30,11 +37,10 @@ export default (function changeGroups(regl, store, axis, slider_value) {
   } else {
     newDendrogramState.group_level[axis] = slider_value;
   }
-  newDendrogramState.dendro.group_info[axis] = calcDendroTriangles(
+  newDendrogramState.group_info[axis] = calcDendroTriangles(
     store,
     newDendrogramState,
     axis
   );
-  newDendrogramState.dendro_args[axis] = makeDendroArgs(regl, store, axis);
   dispatch(setDendrogramState(newDendrogramState));
 });

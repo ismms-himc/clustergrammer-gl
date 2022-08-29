@@ -5,7 +5,7 @@
         "target": "esnext",
         "allowJs": true,
         "allowSyntheticDefaultImports": true,
-        "baseUrl": "src",
+        "baseUrl": ".",
         "declaration": true,
         "esModuleInterop": true,
         "inlineSourceMap": false,

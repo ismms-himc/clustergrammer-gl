@@ -1,8 +1,8 @@
-import doubleClicking from "../interactions/doubleClicking.js";
-import interactionEvents from "../interactions/interactionEvents.js";
-import singleClicking from "../interactions/singleClicking.js";
-import track_interaction_zoom_data from "../interactions/trackInteractionZoomData.js";
-import run_hide_tooltip from "../tooltip/runHideTooltip.js";
+import doubleClicking from "../interactions/doubleClicking";
+import interactionEvents from "../interactions/interactionEvents";
+import singleClicking from "../interactions/singleClicking";
+import track_interaction_zoom_data from "../interactions/trackInteractionZoomData";
+import run_hide_tooltip from "../tooltip/runHideTooltip";
 
 export default function zoom_rules_high_mat(
   regl,
@@ -11,8 +11,6 @@ export default function zoom_rules_high_mat(
   camerasManager,
   tooltip_fun
 ) {
-  const state = store.getState();
-
   const options = {
     element: regl._gl.canvas,
   };
@@ -28,9 +26,11 @@ export default function zoom_rules_high_mat(
       run_hide_tooltip(store, tooltip_fun);
     })
     .on("interactionend", function () {
+      const interactionState = store.getState();
       if (
-        state.animation.time - state.animation.last_click <
-        state.animation.dblclick_duration
+        interactionState.animation.time -
+          interactionState.animation.last_click <
+        interactionState.animation.dblclick_duration
       ) {
         doubleClicking(regl, store, catArgsManager, camerasManager);
       } else {

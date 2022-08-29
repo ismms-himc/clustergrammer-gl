@@ -1,8 +1,8 @@
-import { mutateAnimationState } from "../state/reducers/animation/animationSlice.js";
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice.js";
-import run_hide_tooltip from "../tooltip/runHideTooltip.js";
-import runShowTooltip from "../tooltip/runShowTooltip.js";
+import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
+import run_hide_tooltip from "../tooltip/runHideTooltip";
+import runShowTooltip from "../tooltip/runShowTooltip";
 
 export default function singleClicking(
   regl,

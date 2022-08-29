@@ -1,5 +1,5 @@
 import * as _ from "underscore";
-import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice.js";
+import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice";
 
 export default (function genTextZoomPar(store) {
   const text_zoom = {};

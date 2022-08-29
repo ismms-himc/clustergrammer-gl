@@ -1,10 +1,10 @@
 // TODO: fix invalid this usage
 import * as d3 from "d3";
-import draw_webgl_layers from "../../../draws/drawWebglLayers.js";
-import recluster from "../../../recluster/recluster.js";
-import { mutateCatVizState } from "../../../state/reducers/catVizSlice.js";
-import { mutateMatrixState } from "../../../state/reducers/matrixSlice.js";
-import { mutateNetworkState } from "../../../state/reducers/networkSlice.js";
+import draw_webgl_layers from "../../../draws/drawWebglLayers";
+import recluster from "../../../recluster/recluster";
+import { mutateCatVizState } from "../../../state/reducers/catVizSlice";
+import { mutateMatrixState } from "../../../state/reducers/matrixSlice";
+import { mutateNetworkState } from "../../../state/reducers/networkSlice";
 
 export default (function build_recluster_section(
   regl,
@@ -87,33 +87,30 @@ export default (function build_recluster_section(
     .attr("alignment-baseline", "middle")
     .attr("letter-spacing", "2px")
     .attr("cursor", "default");
+
+  // button that actually runs reclustering
   const run_cluster_container = d3
     .select(state.visualization.rootElementId + " .control_svg")
     .append("g")
     .classed("run_cluster_container", true)
     .attr("transform", "translate(" + 350 + ", " + 91 + ")")
     .on("click", function () {
+      const clickState = store.getState();
       if (
-        state.matrix.potential_recluster.distance_metric !==
-          state.matrix.distance_metric ||
-        state.matrix.potential_recluster.linkage_type !==
-          state.matrix.linkage_type
+        clickState.matrix.potential_recluster.distance_metric !==
+          clickState.matrix.distance_metric ||
+        clickState.matrix.potential_recluster.linkage_type !==
+          clickState.matrix.linkage_type
       ) {
         // transfer parameters to state when update is pressed
         dispatch(
           mutateMatrixState({
-            distance_metric: state.matrix.potential_recluster.distance_metric,
-            linkage_type: state.matrix.potential_recluster.linkage_type,
+            distance_metric:
+              clickState.matrix.potential_recluster.distance_metric,
+            linkage_type: clickState.matrix.potential_recluster.linkage_type,
           })
         );
-        recluster(
-          regl,
-          store,
-          catArgsManager,
-          camerasManager,
-          state.matrix.potential_recluster.distance_metric,
-          state.matrix.potential_recluster.linkage_type
-        );
+        recluster(regl, store, catArgsManager, camerasManager);
       }
     })
     .style("display", "none");
@@ -192,7 +189,9 @@ export default (function build_recluster_section(
           },
         })
       );
-      d3.select(state.visualization.rootElementId + " .dist_option_container")
+      d3.select(
+        store.getState().visualization.rootElementId + " .dist_option_container"
+      )
         .selectAll("rect")
         .attr("stroke", button_color);
       d3.select(this).select("rect").attr("stroke", active_button_color);
@@ -322,7 +321,7 @@ export default (function build_recluster_section(
       .classed("normalize_button_title", true)
       .on("click", function () {
         let norm_zscore_status;
-        if (state.network.norm.zscore_status === "non-zscored") {
+        if (store.getState().network.norm.zscore_status === "non-zscored") {
           norm_zscore_status = "zscored";
           d3.select(this).select("text").text("z-scored".toUpperCase());
         } else {

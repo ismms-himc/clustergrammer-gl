@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import genIntPar from "../animation/getInitialAnimationState.js";
+import genIntPar from "../animation/getInitialAnimationState";
 
 export interface AnimationState {
   time_remain: number;

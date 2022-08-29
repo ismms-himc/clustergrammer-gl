@@ -1,4 +1,4 @@
-import makeCamera2D from "./customCamera2D.js";
+import makeCamera2D from "./customCamera2D";
 
 export default function make_cameras(regl, store) {
   const cameras = {};

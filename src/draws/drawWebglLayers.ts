@@ -1,11 +1,11 @@
 import { Store } from "@reduxjs/toolkit";
 import { Regl } from "regl";
-import { CamerasManager } from "../cameras/camerasManager.js";
-import { CatArgsManager } from "../cats/manager/catArgsManager.js";
-import { RootState } from "../state/store/store.js";
-import drawAxisComponents from "./drawAxisComponents.js";
-import drawMatrixComponents from "./drawMatrixComponents.js";
-import drawStaticComponents from "./static/drawStaticComponents.js";
+import { CamerasManager } from "../cameras/camerasManager";
+import { CatArgsManager } from "../cats/manager/catArgsManager";
+import { RootState } from "../state/store/store";
+import drawAxisComponents from "./drawAxisComponents";
+import drawMatrixComponents from "./drawMatrixComponents";
+import drawStaticComponents from "./static/drawStaticComponents";
 
 export default function draw_webgl_layers(
   regl: Regl,

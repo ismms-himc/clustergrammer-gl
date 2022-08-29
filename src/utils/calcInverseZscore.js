@@ -1,4 +1,4 @@
-import { mutateNetworkState } from "../state/reducers/networkSlice.js";
+import { mutateNetworkState } from "../state/reducers/networkSlice";
 
 export default (function calc_inverse_zscore(store) {
   const state = store.getState();

@@ -1,15 +1,15 @@
 import { Store } from "@reduxjs/toolkit";
 import { merge } from "lodash";
 import { Regl } from "regl";
-import make_matrix_args from "../matrixCells/makeMatrixArgs.js";
+import make_matrix_args from "../matrixCells/makeMatrixArgs";
 import {
-    mutateVisualizationState,
-    ZoomData
-} from "../state/reducers/visualization/visualizationSlice.js";
-import { RootState } from "../state/store/store.js";
-import { CameraInstance, Cameras } from "./cameras.js";
-import make_cameras from "./functions/makeCameras.js";
-import reset_cameras from "./functions/resetCameras.js";
+  mutateVisualizationState,
+  ZoomData
+} from "../state/reducers/visualization/visualizationSlice";
+import { RootState } from "../state/store/store";
+import { CameraInstance, Cameras } from "./cameras";
+import make_cameras from "./functions/makeCameras";
+import reset_cameras from "./functions/resetCameras";
 
 export class CamerasManager {
   readonly #regl: Regl;

@@ -1,16 +1,17 @@
 // TODO: fix invalid this usage
 import * as d3 from "d3";
-import custom_round from "../utils/customRound.js";
-import change_groups from "./changeGroups.js";
+import custom_round from "../utils/customRound";
+import changeGroups from "./changeGroups";
 
-export default function build_single_dendro_slider(store, axis) {
-  const state = store.getState();
+export default function build_single_dendro_slider(regl, store, axis) {
+  const { dendro } = store.getState();
+  let dendroSliderValue;
   const slider_length = 100;
   const rect_height = slider_length + 20;
   const rect_width = 20;
   const text_color = "#47515b";
   let round_level;
-  if (state.dendro.precalc_linkage) {
+  if (dendro.precalc_linkage) {
     round_level = 3;
   } else {
     round_level = -1;
@@ -19,11 +20,14 @@ export default function build_single_dendro_slider(store, axis) {
     .drag()
     .on("drag", dragging)
     .on("end", function () {
-      change_groups(store, axis, state[axis + "_dendro_slider_value"]);
+      changeGroups(regl, store, axis, dendroSliderValue);
     });
   const slider_group = d3
     .select(
-      state.visualization.rootElementId + " ." + axis + "_dendro_slider_svg"
+      store.getState().visualization.rootElementId +
+        " ." +
+        axis +
+        "_dendro_slider_svg"
     )
     .append("g")
     .classed(axis + "_slider_group", true)
@@ -105,11 +109,11 @@ export default function build_single_dendro_slider(store, axis) {
     .call(drag);
   // add dendrogram level text
   // /////////////////////////////
-  if (state.dendro.precalc_linkage) {
+  if (dendro.precalc_linkage) {
     slider_group
       .append("text")
       .classed("dendro_level_text", true)
-      .text(state.dendro.default_link_level)
+      .text(dendro.default_link_level)
       .attr("transform", "translate(0, 90) rotate(90)")
       .attr("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
       .attr("font-weight", 400)
@@ -121,7 +125,7 @@ export default function build_single_dendro_slider(store, axis) {
       .attr("cursor", "default");
   }
   // Add Increment Buttons
-  if (state.dendro.increment_buttons) {
+  if (dendro.increment_buttons) {
     // increment up button
     slider_group
       .append("path")
@@ -200,6 +204,7 @@ export default function build_single_dendro_slider(store, axis) {
       });
   }
   function dragging() {
+    const draggingState = store.getState();
     let slider_pos = d3.event.y;
     if (slider_pos < 0) {
       slider_pos = 0;
@@ -211,28 +216,26 @@ export default function build_single_dendro_slider(store, axis) {
       this.parentNode.appendChild(this);
     }
     slider_pos = custom_round(slider_pos, round_level);
-    // var slider_value = 10 - slider_pos/10;
     const slider_value = get_slider_value(
       slider_pos,
-      state.dendro.precalc_linkage
+      draggingState.dendro.precalc_linkage
     );
     d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
-    // changing too quickly for large datasets
-    // change_groups(cgm, axis, slider_value);
-    state[axis + "_dendro_slider_value"] = slider_value;
+    dendroSliderValue = slider_value;
   }
   function click_dendro_slider() {
+    const clickState = store.getState();
     const clicked_line_position = d3.mouse(this);
     const rel_pos = custom_round(clicked_line_position[1], round_level);
     d3.select(
-      state.visualization.rootElementId + " ." + axis + "_group_circle"
+      clickState.visualization.rootElementId + " ." + axis + "_group_circle"
     ).attr("transform", "translate(0, " + rel_pos + ")");
     const slider_value = get_slider_value(
       rel_pos,
-      state.dendro.precalc_linkage
+      clickState.dendro.precalc_linkage
     );
-    state[axis + "_dendro_slider_value"] = slider_value;
-    change_groups(store, axis, slider_value);
+    dendroSliderValue = slider_value;
+    changeGroups(store, axis, slider_value);
   }
   // convert from position along slider to a value that will be used to set
   // the group level

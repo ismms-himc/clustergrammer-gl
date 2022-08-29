@@ -2,32 +2,32 @@ import { Store } from "@reduxjs/toolkit";
 import { merge } from "lodash";
 import { Regl } from "regl";
 import * as _ from "underscore";
-import { ClustergrammerProps } from "../../index.js";
-import calcTextOffsets from "../../matrixLabels/calcTextOffsets.js";
-import makeLabelQueue from "../../matrixLabels/makeLabelQueue.js";
-import { NetworkDataNode } from "../../types/network.js";
+import { ClustergrammerProps } from "../../index";
+import calcTextOffsets from "../../matrixLabels/calcTextOffsets";
+import makeLabelQueue from "../../matrixLabels/makeLabelQueue";
+import { NetworkDataNode } from "../../types/network";
 import {
   LabelsState,
   setLabelsOffsetDict
-} from "../reducers/labels/labelsSlice.js";
-import { NetworkState, setNetworkState } from "../reducers/networkSlice.js";
+} from "../reducers/labels/labelsSlice";
+import { NetworkState, setNetworkState } from "../reducers/networkSlice";
 import {
   NodeCanvasPos,
   setNodeCanvasPos
-} from "../reducers/nodeCanvasPosSlice.js";
-import { setTooltipState } from "../reducers/tooltip/tooltipSlice.js";
-import { RootState } from "../store/store.js";
-import calcAlphaOrder from "./functions/calcAlphaOrder.js";
-import calcMatArr from "./functions/calcMatArr.js";
-import calcRowAndColCanvasPositions from "./functions/calcRowAndColCanvasPositions.js";
-import calcVizDim from "./functions/calcVizDim.js";
-import genCatPar from "./functions/genCatPar.js";
-import generateCatVizInfo from "./functions/generateCatVizInfo.js";
-import generateVisualizationParams from "./functions/generateVisualizationParams.js";
-import getInitialOrderState from "./functions/getInitialOrderState.js";
-import initializeDendrogramState from "./functions/initializeDendrogramState.js";
-import initializeLabels from "./functions/initializeLabels.js";
-import setCatVizMatrixColors from "./functions/setCatVizMatrixColors.js";
+} from "../reducers/nodeCanvasPosSlice";
+import { setTooltipState } from "../reducers/tooltip/tooltipSlice";
+import { RootState } from "../store/store";
+import calcAlphaOrder from "./functions/calcAlphaOrder";
+import calcMatArr from "./functions/calcMatArr";
+import calcRowAndColCanvasPositions from "./functions/calcRowAndColCanvasPositions";
+import calcVizDim from "./functions/calcVizDim";
+import genCatPar from "./functions/genCatPar";
+import generateCatVizInfo from "./functions/generateCatVizInfo";
+import generateVisualizationParams from "./functions/generateVisualizationParams";
+import getInitialOrderState from "./functions/getInitialOrderState";
+import initializeDendrogramState from "./functions/initializeDendrogramState";
+import initializeLabels from "./functions/initializeLabels";
+import setCatVizMatrixColors from "./functions/setCatVizMatrixColors";
 
 export default function initialize_params(
   regl: Regl,

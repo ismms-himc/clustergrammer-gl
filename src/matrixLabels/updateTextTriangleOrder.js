@@ -7,8 +7,8 @@ export default (function updateTextTriangleOrder(store, inst_axis) {
   // Here we are updating the positions of the existing text triangles that
   // we have already pre-calculated. This needs to be better harmonized with
   // the update_text_offsets function that works directly on the network_data
-  const inst_order = cloneDeep(state.order.inst[inst_axis]);
-  const new_order = cloneDeep(state.order.new[inst_axis]);
+  const inst_order = state.order.inst[inst_axis];
+  const new_order = state.order.new[inst_axis];
   const inst_text_triangles = cloneDeep(
     state.visualization.text_triangles.draw[inst_axis]
   );

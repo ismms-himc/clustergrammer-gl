@@ -1,9 +1,9 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
-import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice.js";
+import { pushHighQueueLabel } from "../state/reducers/labels/labelsSlice";
+import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
 
-import vectorize_label from "./vectorizeLabel.js";
+import vectorize_label from "./vectorizeLabel";
 
 export default function gather_text_triangles(store, viz_area, inst_axis) {
   const {
@@ -13,13 +13,8 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
   } = store.getState();
 
   const labels = cloneDeep(oldLabels);
-  let text_triangles = {
-    ...cloneDeep(oldTextTriangles),
-    draw: {
-      ...oldTextTriangles.draw,
-      [inst_axis]: [...(oldTextTriangles.draw[inst_axis] || [])],
-    },
-  };
+  const text_triangles = cloneDeep(oldTextTriangles);
+  text_triangles.draw[inst_axis] = [];
 
   let inst_dim;
   if (inst_axis === "col") {
@@ -50,16 +45,7 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         text_triangles.draw[inst_axis].push(inst_text_vect);
       } else {
         store.dispatch(
-          mutateLabelsState({
-            labels_queue: {
-              high: {
-                [inst_axis]: [
-                  ...(labels.labels_queue.high[inst_axis] || []),
-                  inst_name,
-                ],
-              },
-            },
-          })
+          pushHighQueueLabel({ axis: inst_axis, label: inst_name })
         );
 
         /*
@@ -67,21 +53,10 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         */
         if (labels.precalc[inst_axis]) {
           // calculate text vector
-          inst_text_vect = {
-            ...vectorize_label(store, inst_axis, inst_name),
-          };
-          text_triangles = {
-            ...text_triangles,
-            [inst_axis]: {
-              ...text_triangles[inst_axis],
-              [inst_name]: inst_text_vect,
-            },
-          };
-          inst_text_vect = {
-            ...inst_text_vect,
-            inst_offset: [0, inst_label.offsets.inst],
-            new_offset: [0, inst_label.offsets.new],
-          };
+          inst_text_vect = vectorize_label(store, inst_axis, inst_name);
+          text_triangles[inst_axis][inst_name] = inst_text_vect;
+          inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
+          inst_text_vect.new_offset = [0, inst_label.offsets.new];
           text_triangles.draw[inst_axis].push(inst_text_vect);
         }
       }
@@ -95,13 +70,13 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
   );
 
   // labels updates
-  store.dispatch(
-    mutateLabelsState({
-      labels_queue: {
-        high: {
-          [inst_axis]: labels.labels_queue.high[inst_axis],
-        },
-      },
-    })
-  );
+  // store.dispatch(
+  //   mutateLabelsState({
+  //     labels_queue: {
+  //       high: {
+  //         [inst_axis]: store.getState().labels_queue.high[inst_axis],
+  //       },
+  //     },
+  //   })
+  // );
 }

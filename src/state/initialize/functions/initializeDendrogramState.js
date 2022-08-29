@@ -1,7 +1,7 @@
 import * as _ from "underscore";
-import alt_slice_linkage from "../../../dendrogram/altSliceLinkage.js";
-import calc_dendro_triangles from "../../../dendrogram/calcDendroTriangles.js";
-import { mutateDendrogramState } from "../../reducers/dendrogramSlice.js";
+import alt_slice_linkage from "../../../dendrogram/altSliceLinkage";
+import calc_dendro_triangles from "../../../dendrogram/calcDendroTriangles";
+import { mutateDendrogramState } from "../../reducers/dendrogramSlice";
 
 export default (function initializeDendrogramState(store) {
   const { network } = store.getState();

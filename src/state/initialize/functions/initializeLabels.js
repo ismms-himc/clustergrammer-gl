@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import genOrderedLabels from "../../../matrixLabels/genOrderedLabels.js";
-import { mutateLabelsState } from "../../reducers/labels/labelsSlice.js";
+import genOrderedLabels from "../../../matrixLabels/genOrderedLabels";
+import { mutateLabelsState } from "../../reducers/labels/labelsSlice";
 
 export default function initializeLabels(store) {
   const state = store.getState();

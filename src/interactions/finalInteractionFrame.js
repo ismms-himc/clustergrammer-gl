@@ -1,6 +1,6 @@
-import { mutateAnimationState } from "../state/reducers/animation/animationSlice.js";
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
+import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
 
 export default (function final_interaction_frame(store) {
   const state = store.getState();

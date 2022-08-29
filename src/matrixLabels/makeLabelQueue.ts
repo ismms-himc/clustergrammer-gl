@@ -1,18 +1,18 @@
 import { Store } from "@reduxjs/toolkit";
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
-import { RootState } from "../state/store/store.js";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
+import { RootState } from "../state/store/store";
 
 export default (function make_label_queue(store: Store<RootState>) {
   const { labels } = store.getState();
 
   const labelsQueue = cloneDeep(labels.labels_queue) || {};
   if (!("high" in labelsQueue)) {
-    labelsQueue.high = {};
+    labelsQueue.high = { row: [], col: [] };
   }
   if (!("low" in labelsQueue)) {
-    labelsQueue.low = {};
+    labelsQueue.low = { row: [], col: [] };
   }
   _.each(["row", "col"], function (inst_axis) {
     // the high priority queue is empty initially

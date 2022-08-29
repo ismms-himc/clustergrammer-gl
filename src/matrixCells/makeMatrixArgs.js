@@ -1,7 +1,7 @@
-import { zoom_function } from "../cameras/zoomFunction.js";
-import { setArrsState } from "../state/reducers/arrsSlice.js";
-import make_opacity_arr from "./makeOpacityArr.js";
-import make_position_arr from "./makePositionArr.js";
+import { zoom_function } from "../cameras/zoomFunction";
+import { setArrsState } from "../state/reducers/arrsSlice";
+import make_opacity_arr from "./makeOpacityArr";
+import make_position_arr from "./makePositionArr";
 
 export default function make_matrix_args(regl, store) {
   const state = store.getState();

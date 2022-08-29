@@ -1,13 +1,14 @@
 {
   "name": "clustergrammer-gl.js",
-  "version": "0.0.3-beta.9.4",
+  "version": "0.0.3-beta.10.0",
   "description": "Clustergrammer-GL with WebGL and regl for Javascript",
-  "type": "module",
   "exports": "./dist/index.js",
   "files": [
     "dist/**/*"
   ],
-  "engines": { "node": "^14.13.1 || >=16.0.0" },
+  "engines": {
+    "node": "^14.13.1 || >=16.0.0"
+  },
   "scripts": {
     "watch": "webpack --watch",
     "lint": "eslint src/",
@@ -42,6 +43,7 @@
   "devDependencies": {
     "@types/d3": "^7.4.0",
     "@types/lodash": "^4.14.184",
+    "@types/mathjs": "^9.4.2",
     "@types/underscore": "^1.11.4",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
@@ -79,12 +81,11 @@
     "gl-vec4": "^1.0.1",
     "ify-loader": "^1.1.0",
     "lodash": "^4.17.21",
-    "mathjs": "3.17.0",
+    "mathjs": "^11.1.0",
     "mouse-change": "^1.4.0",
     "mouse-event-offset": "3.0.2",
     "normalized-interaction-events": "2.0.1",
     "regl": "^1.3.7",
-    "tayden-clusterfck": "^0.7.0",
     "underscore": "1.8.3",
     "util-extend": "1.0.3",
     "vectorize-text": "^3.2.1",

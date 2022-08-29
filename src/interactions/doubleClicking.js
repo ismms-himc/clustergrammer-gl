@@ -1,4 +1,4 @@
-import custom_label_reorder from "../reorders/customLabelReorder.js";
+import custom_label_reorder from "../reorders/customLabelReorder";
 
 export default (function doubleClicking(
   regl,

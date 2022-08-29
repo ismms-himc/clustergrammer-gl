@@ -3,13 +3,13 @@ import * as d3 from "d3";
 import { cloneDeep } from "lodash";
 import { Regl } from "regl";
 import * as _ from "underscore";
-import { CamerasManager } from "../cameras/camerasManager.js";
-import { CatArgsManager } from "../cats/manager/catArgsManager.js";
-import { mutateNetworkState } from "../state/reducers/networkSlice.js";
-import { setSearchedRows } from "../state/reducers/searchSlice.js";
-import { RootState } from "../state/store/store.js";
-import { Axis } from "../types/general.js";
-import runReorder from "./runReorder.js";
+import { CamerasManager } from "../cameras/camerasManager";
+import { CatArgsManager } from "../cats/manager/catArgsManager";
+import { mutateNetworkState } from "../state/reducers/networkSlice";
+import { setSearchedRows } from "../state/reducers/searchSlice";
+import { RootState } from "../state/store/store";
+import { Axis } from "../types/general";
+import runReorder from "./runReorder";
 
 export default (function customLabelReorder(
   regl: Regl,
@@ -53,22 +53,22 @@ export default (function customLabelReorder(
   });
   const num_other_labels = labels["num_" + other_axis];
 
-  // TODO: remove? since this wasn't assigned to anything and was a map, I think it was actually useless code
-  // dispatch(
-  //   mutateNetworkState({
-  //     [other_axis + "_nodes"]: _.map(
-  //       store.getState().network[other_axis + "_nodes"],
-  //       function (inst_node, node_index) {
-  //         inst_node.custom = num_other_labels - tmp_sort[node_index];
-  //       }
-  //     ),
-  //   })
-  // );
+  const { network } = store.getState();
+  const newNetwork = cloneDeep(network);
+  dispatch(
+    mutateNetworkState({
+      [other_axis + "_nodes"]: _.map(
+        newNetwork[other_axis + "_nodes"],
+        function (inst_node, node_index) {
+          inst_node.custom = num_other_labels - tmp_sort[node_index];
+          return inst_node;
+        }
+      ),
+    })
+  );
 
   // sort array says which index contains highest lowest values
   // convert to name list
-  const { network } = store.getState();
-  const newNetwork = cloneDeep(network);
   const ordered_names: any[] = [];
   _.map(tmp_sort, function (inst_index) {
     ordered_names.push(newNetwork[other_axis + "_nodes"][inst_index].name);

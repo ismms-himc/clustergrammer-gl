@@ -1,8 +1,8 @@
-import { zoom_function } from "../cameras/zoomFunction.js";
-import color_to_rgba from "../colors/colorToRgba.js";
-import interpFun from "../draws/interpFun.js";
-import { rotation, scaling } from "../draws/mat3Transform.js";
-import make_viz_aid_tri_pos_arr from "./makeVizAidTriPosArr.js";
+import { zoom_function } from "../cameras/zoomFunction";
+import color_to_rgba from "../colors/colorToRgba";
+import interpFun from "../draws/interpFun";
+import { rotation, scaling } from "../draws/mat3Transform";
+import make_viz_aid_tri_pos_arr from "./makeVizAidTriPosArr";
 
 export default (function make_viz_aid_tri_args(regl, store, inst_axis) {
   const state = store.getState();

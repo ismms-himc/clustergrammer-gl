@@ -1,9 +1,8 @@
-import { without } from "lodash";
 import * as _ from "underscore";
-import vectorize_label from "../../matrixLabels/vectorizeLabel.js";
-import { mutateAnimationState } from "../../state/reducers/animation/animationSlice.js";
-import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice.js";
-import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice.js";
+import vectorize_label from "../../matrixLabels/vectorizeLabel";
+import { mutateAnimationState } from "../../state/reducers/animation/animationSlice";
+import { dropFromLabelQueue } from "../../state/reducers/labels/labelsSlice";
+import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice";
 
 export default (function draw_background_calculations(store) {
   const dispatch = store.dispatch;
@@ -22,20 +21,13 @@ export default (function draw_background_calculations(store) {
           },
         })
       );
-      const splicedHighQueue = without(
-        oldLabels.labels_queue.high[inst_axis],
-        inst_name
-      );
       dispatch(
-        mutateLabelsState({
-          queue: {
-            high: {
-              [inst_axis]: splicedHighQueue,
-            },
-          },
-        })
+        dropFromLabelQueue({ queue: "high", axis: inst_axis, label: inst_name })
       );
       const { labels: newLabels } = store.getState();
+
+      // once all the high priority labels have been processed in the background,
+      // run the visualization
       if (
         newLabels.labels_queue.high[inst_axis].length === 0 &&
         newLabels.precalc[inst_axis] === false

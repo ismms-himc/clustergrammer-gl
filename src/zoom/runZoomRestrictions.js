@@ -60,7 +60,7 @@ export default (function run_zoom_restrictions(
       newZoomData.total_pan_max + new_pbz_relative_max / newZoomData.total_zoom;
 
     // prevent push if fully zoomed out (&& newZoomData.inst_eff_zoom <=0)
-    if (newZoomData.fully_zoomed_out == true) {
+    if (newZoomData.fully_zoomed_out === true) {
       newZoomData.pan_by_zoom = 0;
       newZoomData.total_pan_max = 0;
     }
@@ -96,7 +96,7 @@ export default (function run_zoom_restrictions(
       newZoomData.total_pan_min + new_pbz_relative_min / newZoomData.total_zoom;
 
     // prevent push if fully zoomed out
-    if (newZoomData.fully_zoomed_out == true) {
+    if (newZoomData.fully_zoomed_out === true) {
       newZoomData.pan_by_zoom = 0;
       newZoomData.total_pan_min = 0;
     }

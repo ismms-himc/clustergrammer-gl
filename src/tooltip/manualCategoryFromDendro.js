@@ -1,8 +1,8 @@
 import * as d3 from "d3";
-import manualUpdateToCats from "../cats/functions/manualUpdateToCats.js";
-import { mutateCategoriesState } from "../state/reducers/categoriesSlice.js";
-import { mutateCatVizState } from "../state/reducers/catVizSlice.js";
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
+import manualUpdateToCats from "../cats/functions/manualUpdateToCats";
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
+import { mutateCatVizState } from "../state/reducers/catVizSlice";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 
 export default function manual_category_from_dendro(
   regl,
@@ -12,15 +12,15 @@ export default function manual_category_from_dendro(
   selected_clust_names,
   axis
 ) {
-  const state = store.getState();
+  const { tooltip, visualization, cat_data } = store.getState();
   const dispatch = store.dispatch;
 
   // Manual Category
   // //////////////////////////
-  d3.select(state.tooltip.tooltip_id).append("text").text("Manual Category: ");
+  d3.select(tooltip.tooltip_id).append("text").text("Manual Category: ");
   // color picker section
   const color_picker_div = d3
-    .select(state.tooltip.tooltip_id)
+    .select(tooltip.tooltip_id)
     .append("div")
     .classed("color_picker_div", true)
     .style("height", "0px")
@@ -50,11 +50,11 @@ export default function manual_category_from_dendro(
     "#444",
   ];
   const select_color_from_pallet = function (inst_color) {
-    d3.select(state.tooltip.tooltip_id + " .custom-cat-color").attr(
+    d3.select(tooltip.tooltip_id + " .custom-cat-color").attr(
       "value",
       inst_color
     );
-    d3.select(state.tooltip.tooltip_id + " .color-preview").style(
+    d3.select(tooltip.tooltip_id + " .color-preview").style(
       "background-color",
       inst_color
     );
@@ -91,10 +91,10 @@ export default function manual_category_from_dendro(
     });
   // custom category input secion
   const custom_cat_div = d3
-    .select(state.tooltip.tooltip_id)
+    .select(tooltip.tooltip_id)
     .append("div")
     .classed("custom_cat_div", true);
-  const root_id = state.visualization.rootElementId.replace("#", "");
+  const root_id = visualization.rootElementId.replace("#", "");
   custom_cat_div
     .append("input")
     .classed("custom-cat-input", true)
@@ -104,25 +104,28 @@ export default function manual_category_from_dendro(
     .style("display", "inline-block")
     .style("color", "black")
     .on("change", () => {
+      const changeState = store.getState();
       // if input matches color key, set color to pre-defined cat color
       // /////////////////////////////////////////////////////////////////
       const new_cat = d3
-        .select(state.tooltip.tooltip_id + " .custom-cat-input")
+        .select(changeState.tooltip.tooltip_id + " .custom-cat-input")
         .node()
         .value.trim();
       let new_color;
-      if (axis + "_color_dict" in state.cat_data.manual_category) {
-        if (new_cat in state.cat_data.manual_category[axis + "_color_dict"]) {
+      if (axis + "_color_dict" in changeState.cat_data.manual_category) {
+        if (
+          new_cat in changeState.cat_data.manual_category[axis + "_color_dict"]
+        ) {
           new_color =
-            state.cat_data.manual_category[axis + "_color_dict"][new_cat];
+            changeState.cat_data.manual_category[axis + "_color_dict"][new_cat];
           select_color_from_pallet(new_color);
         }
       }
     });
-  if (axis + "_cats" in state.cat_data.manual_category) {
-    const preferred_cat_list = state.cat_data.manual_category[
-      axis + "_cats"
-    ].map((x) => x.name);
+  if (axis + "_cats" in cat_data.manual_category) {
+    const preferred_cat_list = cat_data.manual_category[axis + "_cats"].map(
+      (x) => x.name
+    );
     custom_cat_div
       .append("datalist")
       .attr("id", "preferred_categories_" + root_id)
@@ -142,7 +145,7 @@ export default function manual_category_from_dendro(
     .style("margin-left", "5px")
     .style("color", "black")
     .on("input", function () {
-      d3.select(state.tooltip.tooltip_id + " .color-preview").style(
+      d3.select(store.getState().tooltip.tooltip_id + " .color-preview").style(
         "background-color",
         // TODO: fix this usage here
         // eslint-disable-next-line no-invalid-this
@@ -161,6 +164,7 @@ export default function manual_category_from_dendro(
     .style("margin-right", "2px")
     .style("background-color", "white")
     .on("click", () => {
+      const state = store.getState();
       if (state.cat_data.showing_color_picker === false) {
         d3.select(state.tooltip.tooltip_id + " .color_picker_div")
           .style("height", color_picker_height + "px")
@@ -189,6 +193,7 @@ export default function manual_category_from_dendro(
     .style("color", "white")
     .style("cursor", "pointer")
     .on("click", () => {
+      const state = store.getState();
       const new_cat = d3
         .select(state.tooltip.tooltip_id + " .custom-cat-input")
         .node()

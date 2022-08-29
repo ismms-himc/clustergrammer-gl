@@ -1,9 +1,9 @@
-import { mutateAnimationState } from "../../state/reducers/animation/animationSlice.js";
-import { mutateInteractionState } from "../../state/reducers/interaction/interactionSlice.js";
-import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice.js";
-import ini_zoom_data from "../../state/reducers/visualization/helpers/iniZoomData.js";
-import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice.js";
-import make_cameras from "./makeCameras.js";
+import { mutateAnimationState } from "../../state/reducers/animation/animationSlice";
+import { mutateInteractionState } from "../../state/reducers/interaction/interactionSlice";
+import { mutateLabelsState } from "../../state/reducers/labels/labelsSlice";
+import ini_zoom_data from "../../state/reducers/visualization/helpers/iniZoomData";
+import { mutateVisualizationState } from "../../state/reducers/visualization/visualizationSlice";
+import make_cameras from "./makeCameras";
 
 export default function reset_cameras(regl, store) {
   const dispatch = store.dispatch;

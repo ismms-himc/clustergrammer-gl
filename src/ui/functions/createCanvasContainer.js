@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { CANVAS_CONTAINER_CLASSNAME } from "../ui.const.js";
+import { CANVAS_CONTAINER_CLASSNAME } from "../ui.const";
 
 export const createCanvasContainer = (
   base_container,

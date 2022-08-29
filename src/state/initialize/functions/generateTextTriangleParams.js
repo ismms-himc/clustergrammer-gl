@@ -1,7 +1,7 @@
 import * as _ from "underscore";
-import gather_text_triangles from "../../../matrixLabels/gatherTextTriangles.js";
-import { mutateLabelsState } from "../../reducers/labels/labelsSlice.js";
-import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice.js";
+import gather_text_triangles from "../../../matrixLabels/gatherTextTriangles";
+import { mutateLabelsState } from "../../reducers/labels/labelsSlice";
+import { mutateVisualizationState } from "../../reducers/visualization/visualizationSlice";
 
 export default (function generateTextTriangleParams(store, viz_area) {
   const { labels, visualization } = store.getState();

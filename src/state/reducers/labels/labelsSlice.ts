@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { merge } from "lodash";
+import { merge, without } from "lodash";
+
+export interface LabelQueue {
+  [x: string]: string[];
+  row: string[];
+  col: string[];
+}
 
 export interface LabelsState {
   [x: string]: any;
@@ -27,9 +33,9 @@ export interface LabelsState {
     row_indices?: number[];
     col_indices?: number[];
   };
-  labels_queue?: {
-    high?: Record<string, string[]>;
-    low?: Record<string, string[]>;
+  labels_queue: {
+    high: LabelQueue;
+    low: LabelQueue;
   };
   max_label_queue: number;
 }
@@ -45,7 +51,10 @@ const initialState: LabelsState = {
   titles: {},
   precalc: {},
   ordered_labels: {},
-  labels_queue: {},
+  labels_queue: {
+    high: { row: [], col: [] },
+    low: { row: [], col: [] },
+  },
   max_label_queue: 2000,
 };
 
@@ -76,6 +85,28 @@ export const labelsSlice = createSlice({
       state.labels_queue = action.payload;
       return state;
     },
+    pushHighQueueLabel: (
+      state,
+      action: PayloadAction<{ axis: string; label: string }>
+    ) => {
+      const { axis, label } = action.payload;
+      state?.labels_queue?.high?.[axis].push(label);
+      return state;
+    },
+    dropFromLabelQueue: (
+      state,
+      action: PayloadAction<{
+        queue: "high" | "low";
+        axis: "col" | "row";
+        label: string;
+      }>
+    ) => {
+      const { queue, label, axis } = action.payload;
+      state.labels_queue[queue][axis] = without(
+        state?.labels_queue?.[queue][axis],
+        label
+      );
+    },
   },
 });
 
@@ -84,6 +115,8 @@ export const {
   mutateLabelsState,
   setLabelsOffsetDict,
   setLabelsQueue,
+  pushHighQueueLabel,
+  dropFromLabelQueue,
 } = labelsSlice.actions;
 
 export default labelsSlice.reducer;

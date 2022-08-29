@@ -1,8 +1,8 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
-import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice.js";
-import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice.js";
-import getMouseoverType from "./getMouseoverType.js";
+import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice";
+import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
+import getMouseoverType from "./getMouseoverType";
 
 export default function findMouseoverElement(store, ev) {
   const dispatch = store.dispatch;

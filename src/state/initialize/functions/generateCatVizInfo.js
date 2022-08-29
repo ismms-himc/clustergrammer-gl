@@ -1,6 +1,6 @@
 import * as _ from "underscore";
-import { mutateCatVizState } from "../../reducers/catVizSlice.js";
-import checkIfValueCats from "./checkIfValueCats.js";
+import { mutateCatVizState } from "../../reducers/catVizSlice";
+import checkIfValueCats from "./checkIfValueCats";
 
 export default (function generate_cat_info(store) {
   const { network } = store.getState();

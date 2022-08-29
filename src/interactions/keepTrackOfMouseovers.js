@@ -1,4 +1,4 @@
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 
 export default function keep_track_of_mouseovers(store) {
   const state = store.getState();

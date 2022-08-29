@@ -1,5 +1,5 @@
-import { mutateCategoriesState } from "../state/reducers/categoriesSlice.js";
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice.js";
+import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 
 export default (function run_hide_tooltip(
   store,

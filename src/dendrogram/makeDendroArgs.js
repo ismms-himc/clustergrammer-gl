@@ -1,7 +1,7 @@
-import { zoom_function } from "../cameras/zoomFunction.js";
-import color_to_rgba from "../colors/colorToRgba.js";
-import { rotation, scaling } from "../draws/mat3Transform.js";
-import make_dendro_arr from "./makeDendroArr.js";
+import { zoom_function } from "../cameras/zoomFunction";
+import color_to_rgba from "../colors/colorToRgba";
+import { rotation, scaling } from "../draws/mat3Transform";
+import make_dendro_arr from "./makeDendroArr";
 
 export default (function makeDendroArgs(regl, store, inst_axis) {
   const state = store.getState();

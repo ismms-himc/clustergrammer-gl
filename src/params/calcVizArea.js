@@ -1,10 +1,10 @@
 import * as _ from "underscore";
-import genPixToWebgl from "./genPixToWebgl.js";
+import genPixToWebgl from "./genPixToWebgl";
 
 export default (function calcVizArea(store) {
-  const state = store.getState();
-  const pix_to_webgl = genPixToWebgl(state.visualization.viz_dim);
-  const zoom_data = state.visualization.zoom_data;
+  const { visualization } = store.getState();
+  const pix_to_webgl = genPixToWebgl(visualization.viz_dim);
+  const zoom_data = visualization.zoom_data;
   const buffer_width = 0.0;
   const total_pan = {};
   const viz_area = {};
@@ -19,8 +19,7 @@ export default (function calcVizArea(store) {
     inst_dim = dim[inst_axis];
     total_pan[inst_axis + "_min"] = -zoom_data[inst_axis].total_pan_min;
     total_pan[inst_axis + "_max"] =
-      state.visualization.viz_dim.heat[inst_dim] +
-      zoom_data[inst_axis].total_pan_max;
+      visualization.viz_dim.heat[inst_dim] + zoom_data[inst_axis].total_pan_max;
     // x and y axis viz area is defined differently
     if (inst_axis === "x") {
       viz_area[inst_axis + "_min"] =

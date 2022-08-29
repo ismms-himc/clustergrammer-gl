@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { NetworkData, Ordering } from "../../types/network.js";
+import { NetworkData, Ordering } from "../../types/network";
 
 export type NormScoring = "zscored" | "non-zscored";
 

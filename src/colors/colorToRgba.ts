@@ -1,4 +1,4 @@
-import color_table from "../constants/colorTable.js";
+import color_table from "../constants/colorTable";
 
 export default (function color_to_rgbs(
   hex_or_name: string | undefined,

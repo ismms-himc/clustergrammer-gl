@@ -1,13 +1,14 @@
 import * as d3 from "d3";
 import { cloneDeep } from "lodash";
-import { setDendrogramState } from "../state/reducers/dendrogramSlice.js";
-import alt_slice_linkage from "./altSliceLinkage.js";
-import calc_dendro_triangles from "./calcDendroTriangles.js";
+import { setDendrogramState } from "../state/reducers/dendrogramSlice";
+import alt_slice_linkage from "./altSliceLinkage";
+import calcDendroTriangles from "./calcDendroTriangles";
+import makeDendroArgs from "./makeDendroArgs";
 
-export default (function change_groups(store, axis, slider_value) {
-  const state = store.getState();
+export default (function changeGroups(regl, store, axis, slider_value) {
+  const { dendro, visualization } = store.getState();
   const dispatch = store.dispatch;
-  let newDendrogramState = cloneDeep(state.dendro);
+  const newDendrogramState = cloneDeep(dendro);
   newDendrogramState.update_dendro = true;
   if (newDendrogramState.precalc_linkage) {
     const dist_thresh =
@@ -21,26 +22,19 @@ export default (function change_groups(store, axis, slider_value) {
     const rounded_slider_value = Math.round(slider_value * 100) / 100;
     // update slider
     d3.select(
-      state.visualization.rootElementId +
+      visualization.rootElementId +
         " ." +
         axis +
         "_dendro_slider_svg .dendro_level_text"
     ).text(rounded_slider_value);
   } else {
-    newDendrogramState = {
-      ...newDendrogramState,
-      group_level: {
-        ...newDendrogramState.group_level,
-        [axis]: slider_value,
-      },
-    };
+    newDendrogramState.group_level[axis] = slider_value;
   }
-  newDendrogramState = {
-    ...newDendrogramState,
-    group_info: {
-      ...newDendrogramState.group_info,
-      [axis]: calc_dendro_triangles(store, newDendrogramState, axis),
-    },
-  };
+  newDendrogramState.dendro.group_info[axis] = calcDendroTriangles(
+    store,
+    newDendrogramState,
+    axis
+  );
+  newDendrogramState.dendro_args[axis] = makeDendroArgs(regl, store, axis);
   dispatch(setDendrogramState(newDendrogramState));
 });

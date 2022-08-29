@@ -1,5 +1,5 @@
-import interpFun from "../draws/interpFun.js";
-import { rotation, scaling } from "../draws/mat3Transform.js";
+import interpFun from "../draws/interpFun";
+import { rotation, scaling } from "../draws/mat3Transform";
 
 export default function make_col_text_args(regl, store, zoom_function) {
   const state = store.getState();

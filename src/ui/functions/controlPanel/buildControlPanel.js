@@ -1,18 +1,18 @@
 // TODO: fix invalid this usage
 import * as d3 from "d3";
 import * as _ from "underscore";
-import buildReorderCatTitles from "../../../cats/functions/buildReorderCatTitles.js";
-import build_opacity_slider from "../../../colors/buildOpacitySlider.js";
-import download_matrix from "../../../download/downloadMatrix.js";
-import download_metadata from "../../../download/downloadMetadata.js";
-import draw_webgl_layers from "../../../draws/drawWebglLayers.js";
-import runReorder from "../../../reorders/runReorder.js";
-import { mutateCatVizState } from "../../../state/reducers/catVizSlice.js";
-import { setDelimiterForFileType } from "../../../state/reducers/downloadSlice.js";
-import { setSearchedRows } from "../../../state/reducers/searchSlice.js";
-import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice.js";
-import { CONTROL_PANEL_CLASSNAME } from "../../ui.const.js";
-import buildReclusterSection from "./buildReclusterSection.js";
+import buildReorderCatTitles from "../../../cats/functions/buildReorderCatTitles";
+import build_opacity_slider from "../../../colors/buildOpacitySlider";
+import download_matrix from "../../../download/downloadMatrix";
+import download_metadata from "../../../download/downloadMetadata";
+import draw_webgl_layers from "../../../draws/drawWebglLayers";
+import runReorder from "../../../reorders/runReorder";
+import { mutateCatVizState } from "../../../state/reducers/catVizSlice";
+import { setDelimiterForFileType } from "../../../state/reducers/downloadSlice";
+import { setSearchedRows } from "../../../state/reducers/searchSlice";
+import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice";
+import { CONTROL_PANEL_CLASSNAME } from "../../ui.const";
+import buildReclusterSection from "./buildReclusterSection";
 
 export default function build_control_panel(
   regl,
@@ -226,11 +226,11 @@ export default function build_control_panel(
       })
       .on("click", function (d) {
         const clean_order = d.replace("sum", "rank").replace("var", "rankvar");
-        if (state.order.inst[i_axis] !== clean_order) {
+        if (store.getState().order.inst[i_axis] !== clean_order) {
           /* category order is already calculated */
           runReorder(regl, store, catArgsManager, camerasManager, i_axis, d);
           d3.select(
-            state.visualization.rootElementId +
+            store.getState().visualization.rootElementId +
               " ." +
               i_axis +
               "-reorder-buttons"
@@ -335,7 +335,7 @@ export default function build_control_panel(
     .on("click", () => {
       const inst_value = d3
         .select(
-          state.visualization.rootElementId +
+          store.getState().visualization.rootElementId +
             " .control-container .row_search_box"
         )
         .node().value;
@@ -382,7 +382,7 @@ export default function build_control_panel(
     .append("g")
     .on("click", () => {
       dispatch(setDelimiterForFileType("csv"));
-      download_matrix(state);
+      download_matrix(store);
     })
     .append("text")
     .classed("download_section_type", true)
@@ -405,7 +405,7 @@ export default function build_control_panel(
     .append("g")
     .on("click", () => {
       dispatch(setDelimiterForFileType("tsv"));
-      download_matrix(state);
+      download_matrix(store);
     })
     .append("text")
     .classed("download_section_type", true)
@@ -428,7 +428,7 @@ export default function build_control_panel(
     .append("g")
     .on("click", () => {
       dispatch(setDelimiterForFileType("tuple"));
-      download_matrix(state);
+      download_matrix(store);
     })
     .append("text")
     .classed("download_section_type", true)
@@ -485,7 +485,7 @@ export default function build_control_panel(
     .append("g")
     .on("click", () => {
       dispatch(setDelimiterForFileType("col"));
-      download_metadata(state);
+      download_metadata(store);
     })
     .append("text")
     .classed("download_section_type", true)
@@ -508,7 +508,7 @@ export default function build_control_panel(
     .append("g")
     .on("click", () => {
       dispatch(setDelimiterForFileType("row"));
-      download_metadata(state);
+      download_metadata(store);
     })
     .append("text")
     .classed("download_section_type", true)

@@ -1,6 +1,7 @@
 import * as d3 from "d3";
-import runReorder from "../../reorders/runReorder.js";
-import { mutateOrderState } from "../../state/reducers/order/orderSlice.js";
+import runReorder from "../../reorders/runReorder";
+import { mutateNetworkState } from "../../state/reducers/networkSlice";
+import { mutateOrderState } from "../../state/reducers/order/orderSlice";
 
 export default (function buildReorderCatTitles(
   regl,
@@ -23,14 +24,15 @@ export default (function buildReorderCatTitles(
       })
       .reduce((p, n) => (p ? p : n), 0);
   function stable_reorder_cats(axis, i) {
-    const inst_nodes = state.network[axis + "_nodes"].map((x) => x);
+    const reorderState = store.getState();
+    const inst_nodes = reorderState.network[axis + "_nodes"].map((x) => x);
     const cat_primary = "cat-" + String(i);
     const cat_secondary_up = "cat-" + String(i - 1);
     const cat_secondary_down = "cat-" + String(i + 1);
     let cat_secondary;
-    if (cat_secondary_down in state.network[axis + "_nodes"][0]) {
+    if (cat_secondary_down in reorderState.network[axis + "_nodes"][0]) {
       cat_secondary = cat_secondary_down;
-    } else if (cat_secondary_up in state.network[axis + "_nodes"][0]) {
+    } else if (cat_secondary_up in reorderState.network[axis + "_nodes"][0]) {
       cat_secondary = cat_secondary_up;
     } else {
       // single category reordering
@@ -48,14 +50,18 @@ export default (function buildReorderCatTitles(
       }
       order_dict[inst_name] = i;
     });
-    // TODO: write to state? does this even do anything?
-    state.network[axis + "_nodes"].forEach((d) => {
-      inst_name = d.name;
-      if (inst_name.includes(": ")) {
-        inst_name = inst_name.split(": ")[1];
-      }
-      d.custom = order_dict[inst_name];
-    });
+    dispatch(
+      mutateNetworkState({
+        [`${axis}_nodes`]: inst_nodes.map((d) => {
+          inst_name = d.name;
+          if (inst_name.includes(": ")) {
+            inst_name = inst_name.split(": ")[1];
+          }
+          d.custom = order_dict[inst_name];
+          return d;
+        }),
+      })
+    );
     catArgsManager.regenerateCatArgsArrs(regl, store);
     runReorder(regl, store, catArgsManager, camerasManager, axis, "custom");
     dispatch(

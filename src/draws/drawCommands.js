@@ -1,6 +1,6 @@
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
-import draw_webgl_layers from "./drawWebglLayers.js";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
+import { mutateLabelsState } from "../state/reducers/labels/labelsSlice";
+import draw_webgl_layers from "./drawWebglLayers";
 
 export default (function drawCommands(
   regl,

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import cgl from "./cg.js";
-import data from "./data/mult_view.json.js";
+import cgl from "./cg";
+import data from "./data/mult_view.json";
 
 function Clustergrammer() {
   const containerRef = useRef(null);

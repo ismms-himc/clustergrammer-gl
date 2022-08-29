@@ -1,12 +1,12 @@
 import { cloneDeep } from "lodash";
-import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice.js";
-import calc_cursor_relative from "./calcCursorRelative.js";
-import calc_pan_by_zoom from "./calcPanByZoom.js";
-import calc_potential_total_pan from "./calcPotentialTotalPan.js";
-import pan_by_drag_rules from "./panByDragRules.js";
-import run_zoom_restrictions from "./runZoomRestrictions.js";
-import sanitize_inst_zoom from "./sanitizeInstZoom.js";
-import sanitize_potential_zoom from "./sanitizePotentialZoom.js";
+import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
+import calc_cursor_relative from "./calcCursorRelative";
+import calc_pan_by_zoom from "./calcPanByZoom";
+import calc_potential_total_pan from "./calcPotentialTotalPan";
+import pan_by_drag_rules from "./panByDragRules";
+import run_zoom_restrictions from "./runZoomRestrictions";
+import sanitize_inst_zoom from "./sanitizeInstZoom";
+import sanitize_potential_zoom from "./sanitizePotentialZoom";
 
 export default (function zoom_rules_low_mat(store, axis) {
   const {

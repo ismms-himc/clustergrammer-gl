@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { setNetworkState } from "../state/reducers/networkSlice.js";
+import { setNetworkState } from "../state/reducers/networkSlice";
 
 export default (function alt_slice_linkage(
   store,
@@ -14,16 +14,15 @@ export default (function alt_slice_linkage(
   const group_dict = {};
   const newNetwork = cloneDeep(network);
 
-  // TODO: maybe just go through and look for/fix foreach calls? assignment matters in foreach.
-  // initialize group_links and dictionary
   newNetwork[axis + "_nodes"].forEach((_, i) => {
     group_dict[i] = [i];
   });
   newNetwork[axis + "_nodes"] = newNetwork[axis + "_nodes"].map((node, i) => {
     node.group_links = i;
+    return node;
   });
   // the max individual cluster id
-  const max_clust_id = network[axis + "_nodes"].length;
+  const max_clust_id = newNetwork[axis + "_nodes"].length;
   newNetwork.linkage[axis].forEach((x, i) => {
     if (x[2] > min_dist && x[2] < dist_thresh) {
       // get cluster that are being combined together

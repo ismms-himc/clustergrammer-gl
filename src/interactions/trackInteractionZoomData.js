@@ -1,8 +1,8 @@
-import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice.js";
-import zoom_rules_low_mat from "../zoom/zoomRulesLowMat.js";
-import findMouseoverElement from "./findMouseoverElement.js";
-import keepTrackOfInteractions from "./keepTrackOfInteractions.js";
-import keepTrackOfMouseovers from "./keepTrackOfMouseovers.js";
+import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
+import zoom_rules_low_mat from "../zoom/zoomRulesLowMat";
+import findMouseoverElement from "./findMouseoverElement";
+import keepTrackOfInteractions from "./keepTrackOfInteractions";
+import keepTrackOfMouseovers from "./keepTrackOfMouseovers";
 
 export default (function track_interaction_zoom_data(store, ev) {
   const state = store.getState();

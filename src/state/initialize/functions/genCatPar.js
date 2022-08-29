@@ -1,5 +1,5 @@
-import { mutateCategoriesState } from "../../reducers/categoriesSlice.js";
-import generateCatArray from "./generateCatArray.js";
+import { mutateCategoriesState } from "../../reducers/categoriesSlice";
+import generateCatArray from "./generateCatArray";
 
 export default (function genCatPar(store) {
   const cat_data = {};

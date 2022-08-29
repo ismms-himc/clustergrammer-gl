@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { RootState } from "../store/store.js";
+import { RootState } from "../store/store";
 
 type TriangleInfo = {
   [x: string]: {

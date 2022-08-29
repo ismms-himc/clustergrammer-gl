@@ -1,6 +1,5 @@
-import { without } from "lodash";
 import vectorize_text from "vectorize-text";
-import { mutateLabelsState } from "../state/reducers/labels/labelsSlice.js";
+import { dropFromLabelQueue } from "../state/reducers/labels/labelsSlice";
 
 export default function vectorize_label(store, inst_axis, inst_name) {
   const dispatch = store.dispatch;
@@ -19,18 +18,8 @@ export default function vectorize_label(store, inst_axis, inst_name) {
     vect_text_attrs.textAlign = "right";
     vect_text_attrs.textBaseline = "middle";
   }
-  const splicedLowQueue = without(
-    labels.labels_queue.low[inst_axis],
-    inst_name
-  );
   dispatch(
-    mutateLabelsState({
-      labels_queue: {
-        low: {
-          [inst_axis]: splicedLowQueue,
-        },
-      },
-    })
+    dropFromLabelQueue({ queue: "low", axis: inst_axis, label: inst_name })
   );
   return vectorize_text(inst_name, vect_text_attrs);
 }

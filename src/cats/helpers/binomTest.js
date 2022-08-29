@@ -1,14 +1,9 @@
-import * as core from "mathjs/core";
-import * as factorial from "mathjs/lib/function/probability/factorial";
-
-const math = core.create();
-math.import(factorial);
+import { factorial } from "mathjs";
 
 export default (function binom_test(actual_k, n, p) {
-  const fact = math.factorial;
   let pval;
   function binom_dist(k, n, p) {
-    const bin_coeff = fact(n) / (fact(k) * fact(n - k));
+    const bin_coeff = factorial(n) / (factorial(k) * factorial(n - k));
     p = bin_coeff * (Math.pow(p, k) * Math.pow(1 - p, n - k));
     return p;
   }

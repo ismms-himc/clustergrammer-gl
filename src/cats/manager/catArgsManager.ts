@@ -1,10 +1,9 @@
 import { Store } from "@reduxjs/toolkit";
 import { set } from "lodash";
 import { DrawConfig, Regl } from "regl";
-import { RootState } from "../../state/store/store.js";
-import { Axis } from "../../types/general.js";
-import generate_cat_args_arrs from "./generateCatArgsArrs.js";
-import makeCatPositionArray from "./makeCatPositionArray.js";
+import { RootState } from "../../state/store/store";
+import generate_cat_args_arrs from "./generateCatArgsArrs";
+import makeCatPositionArray from "./makeCatPositionArray";
 
 export type CatArrsAxis = Array<number[][]>;
 
@@ -57,16 +56,16 @@ export class CatArgsManager {
     this.#catArrs = cat_arrs as CatArrs;
   }
 
-  updateNewCatArrs(
+  makeNewCatArrs(
     store: Store<RootState>,
     inst_axis: string,
     cat_index: number
   ) {
     const newArray = makeCatPositionArray(store, inst_axis);
-    this.#catArrs.new[inst_axis][cat_index] = newArray;
+    set(this.#catArrs, ["new", inst_axis, cat_index], newArray);
   }
 
-  updateCatArgsAttribute(inst_axis: Axis, cat_index: number) {
+  updateCatArgsAttribute(inst_axis: string, cat_index: number) {
     const newValue = {
       buffer: this.#regl.buffer(this.#catArrs.new[inst_axis][cat_index]),
       divisor: 1,

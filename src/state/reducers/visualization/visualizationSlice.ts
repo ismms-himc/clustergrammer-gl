@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import iniZoomData from "./helpers/iniZoomData.js";
+import iniZoomData from "./helpers/iniZoomData";
 
 export type TextZoom = {
   scaled_num: string;

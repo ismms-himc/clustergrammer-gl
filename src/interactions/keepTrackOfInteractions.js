@@ -1,4 +1,4 @@
-import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice.js";
+import { mutateInteractionState } from "../state/reducers/interaction/interactionSlice";
 
 export default (function keepTrackOfInteractions(store) {
   const state = store.getState();

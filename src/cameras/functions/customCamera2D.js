@@ -1,7 +1,7 @@
 import * as EventEmitter from "event-emitter";
 import mat4 from "gl-mat4";
-import interactionEvents from "../../interactions/interactionEvents.js";
-import camera_interaction from "./cameraInteraction.js";
+import interactionEvents from "../../interactions/interactionEvents";
+import camera_interaction from "./cameraInteraction";
 
 mat4.viewport = function viewport(out, x, y, w, h, n, f) {
   out[0] = w * 0.5;

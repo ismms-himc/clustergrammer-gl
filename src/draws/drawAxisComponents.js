@@ -1,12 +1,12 @@
 import * as _ from "underscore";
-import { zoom_function } from "../cameras/zoomFunction.js";
-import makeDendroArgs from "../dendrogram/makeDendroArgs.js";
-import gatherTextTriangles from "../matrixLabels/gatherTextTriangles.js";
-import makeColTextArgs from "../matrixLabels/makeColTextArgs.js";
-import makeRowTextArgs from "../matrixLabels/makeRowTextArgs.js";
-import makeVizAidTriArgs from "../matrixLabels/makeVizAidTriArgs.js";
-import calcVizArea from "../params/calcVizArea.js";
-import interpFun from "./interpFun.js";
+import { zoom_function } from "../cameras/zoomFunction";
+import makeDendroArgs from "../dendrogram/makeDendroArgs";
+import gatherTextTriangles from "../matrixLabels/gatherTextTriangles";
+import makeColTextArgs from "../matrixLabels/makeColTextArgs";
+import makeRowTextArgs from "../matrixLabels/makeRowTextArgs";
+import makeVizAidTriArgs from "../matrixLabels/makeVizAidTriArgs";
+import calcVizArea from "../params/calcVizArea";
+import interpFun from "./interpFun";
 
 export default (function drawAxisComponents(
   regl,
@@ -59,13 +59,15 @@ export default (function drawAxisComponents(
         state.labels["num_" + inst_axis] /
         state.visualization.zoom_data[axis_dim].total_zoom;
       if (
-        num_viz_labels < state.max_num_text &&
+        num_viz_labels < state.visualization.max_num_text &&
         state.labels.labels_queue.high[inst_axis].length === 0
       ) {
         const viz_area = calcVizArea(store);
 
         // only regather if there are more labels than can be shown at once
-        if (state.labels["num_" + inst_axis] >= state.max_num_text) {
+        if (
+          state.labels["num_" + inst_axis] >= state.visualization.max_num_text
+        ) {
           gatherTextTriangles(store, viz_area, inst_axis);
         }
         regl(text_triangle_args)(
@@ -77,6 +79,8 @@ export default (function drawAxisComponents(
         regl(text_triangle_args)(
           store.getState().visualization.text_triangles.draw[inst_axis]
         );
+      } else {
+        console.error(`didn't draw ${inst_axis} axis labels!`);
       }
     }
   });

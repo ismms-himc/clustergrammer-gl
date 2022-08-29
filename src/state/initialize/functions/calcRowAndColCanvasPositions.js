@@ -1,4 +1,4 @@
-import { setRowAndColCanvasPositions } from "../../reducers/rowAndColCanvasPositionsSlice.js";
+import { setRowAndColCanvasPositions } from "../../reducers/rowAndColCanvasPositionsSlice";
 
 export default (function calc_row_and_col_canvas_positions(store) {
   const state = store.getState();

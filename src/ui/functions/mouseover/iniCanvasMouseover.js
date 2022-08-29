@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice.js";
-import runShowTooltip from "../../../tooltip/runShowTooltip.js";
-import { CANVAS_CONTAINER_CLASSNAME } from "../../ui.const.js";
+import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice";
+import runShowTooltip from "../../../tooltip/runShowTooltip";
+import { CANVAS_CONTAINER_CLASSNAME } from "../../ui.const";
 
 export default function ini_canvas_mouseover(
   regl,
@@ -16,8 +16,11 @@ export default function ini_canvas_mouseover(
     .select(`.${CANVAS_CONTAINER_CLASSNAME}`)
     .select("canvas")
     .on("mouseover", function (v) {
-      const state = store.getState();
-      if (state.tooltip.show_tooltip && state.tooltip.in_bounds_tooltip) {
+      const mouseoverState = store.getState();
+      if (
+        mouseoverState.tooltip.show_tooltip &&
+        mouseoverState.tooltip.in_bounds_tooltip
+      ) {
         runShowTooltip(
           regl,
           store,

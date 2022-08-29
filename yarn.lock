@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@babel/runtime@^7.9.2":
+"@babel/runtime@^7.18.9", "@babel/runtime@^7.9.2":
   version "7.18.9"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.18.9.tgz"
   integrity sha512-lkqXDcvlFT5rvEjiu6+QYO+1GXrEHRo2LOtS7E4GtX5ESIZOgepqsZBVIj6Pv+a6zqsya9VCgiK1KAK4BvJDAw==
@@ -406,6 +406,13 @@
   version "4.14.184"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.184.tgz#23f96cd2a21a28e106dc24d825d4aa966de7a9fe"
   integrity sha512-RoZphVtHbxPZizt4IcILciSWiC6dcn+eZ8oX9IWEYfDMcocdd42f7NPI6fQj+6zI8y4E0L7gu2pcZKLGTRaV9Q==
+
+"@types/mathjs@^9.4.2":
+  version "9.4.2"
+  resolved "https://registry.yarnpkg.com/@types/mathjs/-/mathjs-9.4.2.tgz#beec20340d768171fed8331b08fb321d218ec6e1"
+  integrity sha512-GF5g1vJmvKdWIWsE53XX7EDAyCaZ9p6gaYm1xhlXn5JjrY/NJrOfJN3fBxS3wyZpVh3QqKoMkS2WjFwxWMHOTw==
+  dependencies:
+    mathjs "*"
 
 "@types/node@*", "@types/node@>=10.0.0":
   version "18.7.6"
@@ -1531,10 +1538,10 @@ compare-angle@^1.0.0:
     signum "^0.0.0"
     two-sum "^1.0.0"
 
-complex.js@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.npmjs.org/complex.js/-/complex.js-2.0.4.tgz"
-  integrity sha512-Syl95HpxUTS0QjwNxencZsKukgh1zdS9uXeXX2Us0pHaqBR6kiZZi0AkZ9VpZFwHJyVIUVzI4EumjWdXP3fy6w==
+complex.js@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/complex.js/-/complex.js-2.1.1.tgz#0675dac8e464ec431fb2ab7d30f41d889fb25c31"
+  integrity sha512-8njCHOTtFFLtegk6zQo0kkVX1rngygb/KQI6z1qZxlFI3scluC+LVTCFbrkWjBv4vvLlbQ9t88IPMC6k95VTTg==
 
 component-emitter@^1.2.1, component-emitter@~1.3.0:
   version "1.3.0"
@@ -1972,10 +1979,10 @@ decamelize@^1.1.1, decamelize@^1.1.2:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==
 
-decimal.js@7.2.3:
-  version "7.2.3"
-  resolved "https://registry.npmjs.org/decimal.js/-/decimal.js-7.2.3.tgz"
-  integrity sha512-AoFI37QS0S87Ft0r3Bdz4q9xSpm1Paa9lSeKLXgMPk/u/+QPIM5Gy4DHcZQS1seqPJH4gHLauPGn347z0HbsrA==
+decimal.js@^10.4.0:
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.4.0.tgz#97a7448873b01e92e5ff9117d89a7bca8e63e0fe"
+  integrity sha512-Nv6ENEzyPQ6AItkGwLE2PGKinZZ9g59vSh2BeH6NqPu0OTKZ5ruJsVqh/orbAnqXc9pBbgXAIrc2EyaCj8NpGg==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
@@ -2341,6 +2348,11 @@ escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/escape-html/-/escape-html-1.0.3.tgz"
   integrity sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==
+
+escape-latex@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/escape-latex/-/escape-latex-1.2.0.tgz#07c03818cf7dac250cce517f4fda1b001ef2bca1"
+  integrity sha512-nV5aVWW1K0wEiUIEdZ4erkGGH8mDxGyxSeqPzRNtWP7ataw+/olFObw7hujFWlVjNsaDFw5VZ5NzVSIqRgfTiw==
 
 escape-string-regexp@^1.0.2:
   version "1.0.5"
@@ -2900,10 +2912,10 @@ forwarded@0.2.0:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
-fraction.js@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.0.2.tgz"
-  integrity sha512-OswcigOSil3vYXgrPSx4NCaSyPikXqVNYN/4CyhS0ucVOJ4GVYr6KQQLLcAudvS/4bBOzxqJ3XIsFaaMjl98ZQ==
+fraction.js@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.2.0.tgz#448e5109a313a3527f5a3ab2119ec4cf0e0e2950"
+  integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
 
 fragment-cache@^0.2.1:
   version "0.2.1"
@@ -3774,7 +3786,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
-javascript-natural-sort@0.7.1:
+javascript-natural-sort@^0.7.1:
   version "0.7.1"
   resolved "https://registry.npmjs.org/javascript-natural-sort/-/javascript-natural-sort-0.7.1.tgz"
   integrity sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==
@@ -4050,18 +4062,20 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mathjs@3.17.0:
-  version "3.17.0"
-  resolved "https://registry.npmjs.org/mathjs/-/mathjs-3.17.0.tgz"
-  integrity sha512-bFDSjjLV3+csekog1L6z3FjZ0uSkRPFcMlbLef8KXxq68jtQQ48W2f+JKJugM9y6KxJEtt1zWFIGQnYKWR0nxg==
+mathjs@*, mathjs@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-11.1.0.tgz#501fc1b8d66155442ce7762bf04469168d38587c"
+  integrity sha512-cbsEruLNoIlj5h5vOF+DUQVe4EsA/WNomSQDMnX2WafX9TLneBSCRMx2okgGnSLzLoMGWQ211KVzY55bEnQa8Q==
   dependencies:
-    complex.js "2.0.4"
-    decimal.js "7.2.3"
-    fraction.js "4.0.2"
-    javascript-natural-sort "0.7.1"
-    seed-random "2.2.0"
-    tiny-emitter "2.0.0"
-    typed-function "0.10.6"
+    "@babel/runtime" "^7.18.9"
+    complex.js "^2.1.1"
+    decimal.js "^10.4.0"
+    escape-latex "^1.2.0"
+    fraction.js "^4.2.0"
+    javascript-natural-sort "^0.7.1"
+    seedrandom "^3.0.5"
+    tiny-emitter "^2.1.0"
+    typed-function "^4.1.0"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -5280,10 +5294,10 @@ schema-utils@^3.0.0, schema-utils@^3.1.0, schema-utils@^3.1.1:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
-seed-random@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/seed-random/-/seed-random-2.2.0.tgz"
-  integrity sha512-34EQV6AAHQGhoc0tn/96a9Fsi6v2xdqe/dMUwljGRaFOzR3EgRmECvD0O8vi8X+/uQ50LGHfkNu/Eue5TPKZkQ==
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
 
 select-hose@^2.0.0:
   version "2.0.0"
@@ -5873,11 +5887,6 @@ tapable@^2.1.1, tapable@^2.2.0:
   resolved "https://registry.npmjs.org/tapable/-/tapable-2.2.1.tgz"
   integrity sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==
 
-tayden-clusterfck@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.npmjs.org/tayden-clusterfck/-/tayden-clusterfck-0.7.0.tgz"
-  integrity sha512-1jw+Rz91yqwxqq8l2UMhTJ03JQZbWkDX20dmgAP/RQbBxN0mHLdDIH8bSm7z+Y7x+fnkgIWmB05t/EFabm2JPQ==
-
 terser-webpack-plugin@^5.1.3:
   version "5.3.5"
   resolved "https://registry.npmjs.org/terser-webpack-plugin/-/terser-webpack-plugin-5.3.5.tgz"
@@ -5922,10 +5931,10 @@ time-stamp@^2.0.0:
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-2.2.0.tgz#917e0a66905688790ec7bbbde04046259af83f57"
   integrity sha512-zxke8goJQpBeEgD82CXABeMh0LSJcj7CXEd0OHOg45HgcofF7pxNwZm9+RknpxpDhwN4gFpySkApKfFYfRQnUA==
 
-tiny-emitter@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/tiny-emitter/-/tiny-emitter-2.0.0.tgz"
-  integrity sha512-Hh5QVuntdnilFEyhc7/Sah99H9Hez02lKdpW8eMooAheOhdbcplTmbbfBTyTIlNjROqJwo2C/XT0o1PZINdPAw==
+tiny-emitter@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
 
 tiny-glob@^0.2.9:
   version "0.2.9"
@@ -6077,10 +6086,10 @@ type@^2.5.0:
   resolved "https://registry.npmjs.org/type/-/type-2.7.2.tgz"
   integrity sha512-dzlvlNlt6AXU7EBSfpAscydQ7gXB+pPGsPnfJnZpiNJBDj7IaJzQlBZYGdEi4R9HmPdBv2XmWJ6YUtoTa7lmCw==
 
-typed-function@0.10.6:
-  version "0.10.6"
-  resolved "https://registry.npmjs.org/typed-function/-/typed-function-0.10.6.tgz"
-  integrity sha512-PYtsDjxyW3vq7Itn2RMz0cn6CrbybIY6XC2i9c1q1o/H94QW8B1Pf3wSsbBDOCMpN1i5jDRrlDsLXFaqXBpfHQ==
+typed-function@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/typed-function/-/typed-function-4.1.0.tgz#da4bdd8a6d19a89e22732f75e4a410860aaf9712"
+  integrity sha512-DGwUl6cioBW5gw2L+6SMupGwH/kZOqivy17E4nsh1JI9fKF87orMmlQx3KISQPmg3sfnOUGlwVkroosvgddrlg==
 
 typedarray-pool@^1.0.0, typedarray-pool@^1.1.0:
   version "1.2.0"

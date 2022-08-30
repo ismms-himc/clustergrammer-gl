@@ -12,5 +12,6 @@ export default function getInitialTooltipState() {
   tooltip.permanent_tooltip = false;
   tooltip.use_hzome = false;
   tooltip.text = "";
+  tooltip.enabledTooltips = ["dendro", "cat", "cell", "label"]; // enable all by default
   return tooltip;
 }

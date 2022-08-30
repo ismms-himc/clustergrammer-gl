@@ -21,6 +21,7 @@ export interface TooltipState {
   use_hzome: boolean;
   tooltip_id?: string;
   text: string;
+  enabledTooltips: Array<"dendro" | "cat" | "cell" | "label" | string>;
 }
 
 const initialState: TooltipState = getInitialTooltipState();

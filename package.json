@@ -1,6 +1,6 @@
 {
   "name": "clustergrammer-gl.js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Clustergrammer-GL with WebGL and regl for Javascript",
   "exports": "./dist/index.js",
   "files": [

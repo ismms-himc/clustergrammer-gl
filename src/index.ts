@@ -23,8 +23,9 @@ export type ClustergrammerProps = {
   width: number | string;
   height: number | string;
   showControls?: boolean;
-  onClick: (row: string | null, col: string | null) => void;
+  onClick?: (row: string | null, col: string | null) => void;
   disableTooltip?: boolean;
+  enabledTooltips?: Array<"dendro" | "cat" | "cell" | "label" | string>;
 };
 
 const adjustOpacity =

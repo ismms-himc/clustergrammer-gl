@@ -87,7 +87,13 @@ export default function ini_canvas_mouseover(
       state.tooltip.show_tooltip &&
       !state.tooltip.disable_tooltip
     ) {
-      if (state.tooltip.tooltip_type !== "out-of-bounds") {
+      if (
+        state.tooltip.tooltip_type &&
+        state.tooltip.tooltip_type !== "out-of-bounds" &&
+        state.tooltip.enabledTooltips.some((x) =>
+          state.tooltip.tooltip_type?.includes(x)
+        )
+      ) {
         if (tooltip.textContent != state.tooltip.text) {
           tooltip.textContent = state.tooltip.text;
         }

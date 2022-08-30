@@ -85,6 +85,9 @@ export default function initialize_params(
   store.dispatch(
     setTooltipState({
       ...store.getState().tooltip,
+      ...(args.enabledTooltips?.length
+        ? { enabledTooltips: args.enabledTooltips }
+        : {}),
       disable_tooltip: args.disableTooltip || false,
       use_hzome: args.use_hzome || false,
       tooltip_id: "#d3-tip_" + rootElementId.replace("#", ""),

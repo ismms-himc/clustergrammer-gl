@@ -1,5 +1,5 @@
 // TODO: fix invalid this usage
-import * as d3 from "d3";
+import { select, selectAll } from "d3-selection";
 import draw_webgl_layers from "../../../draws/drawWebglLayers";
 import recluster from "../../../recluster/recluster";
 import { mutateCatVizState } from "../../../state/reducers/catVizSlice";
@@ -28,7 +28,7 @@ export default (function build_recluster_section(
   const button_color = "#eee";
   const active_run_color = "#00FF75";
   const active_button_color = "#008000";
-  const control_svg = d3.select(
+  const control_svg = select(
     state.visualization.rootElementId + " .control-container svg"
   );
   control_svg
@@ -37,31 +37,31 @@ export default (function build_recluster_section(
     .classed("recluster_button_title", true)
     .on("click", function () {
       const clickState = store.getState();
-      d3.selectAll(
+      selectAll(
         clickState.visualization.rootElementId + " .panel_button_titles"
       ).attr("opacity", 0.5);
-      d3.select(this).attr("opacity", 1.0);
+      select(this).attr("opacity", 1.0);
       if (clickState.cat_viz.current_panel === "reorder") {
         // modify buttons
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .panel_button_title"
         ).text("recluster".toUpperCase());
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .top_button_title"
         ).text("DIST");
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .bottom_button_title"
         ).text("LINK");
-        d3.selectAll(
+        selectAll(
           clickState.visualization.rootElementId + " .reorder_buttons"
         ).style("display", "none");
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .run_cluster_container"
         ).style("display", "block");
-        d3.selectAll(
+        selectAll(
           clickState.visualization.rootElementId + " .dist_options"
         ).style("display", "block");
-        d3.selectAll(
+        selectAll(
           clickState.visualization.rootElementId + " .link_options_container"
         ).style("display", "block");
         dispatch(
@@ -89,8 +89,9 @@ export default (function build_recluster_section(
     .attr("cursor", "default");
 
   // button that actually runs reclustering
-  const run_cluster_container = d3
-    .select(state.visualization.rootElementId + " .control_svg")
+  const run_cluster_container = select(
+    state.visualization.rootElementId + " .control_svg"
+  )
     .append("g")
     .classed("run_cluster_container", true)
     .attr("transform", "translate(" + 350 + ", " + 91 + ")")
@@ -168,8 +169,7 @@ export default (function build_recluster_section(
   const y_offset_bottom = 91;
   // Distance Options Container
   // //////////////////////////////
-  dist_options = d3
-    .select(state.visualization.rootElementId + " .control_svg")
+  dist_options = select(state.visualization.rootElementId + " .control_svg")
     .append("g")
     .classed("dist_option_container", true)
     .selectAll("g")
@@ -189,12 +189,12 @@ export default (function build_recluster_section(
           },
         })
       );
-      d3.select(
+      select(
         store.getState().visualization.rootElementId + " .dist_option_container"
       )
         .selectAll("rect")
         .attr("stroke", button_color);
-      d3.select(this).select("rect").attr("stroke", active_button_color);
+      select(this).select("rect").attr("stroke", active_button_color);
     })
     .style("display", "none");
   dist_options
@@ -251,8 +251,9 @@ export default (function build_recluster_section(
   link_dict["average"] = "avg";
   link_dict["single"] = "single";
   link_dict["complete"] = "cmplt";
-  const link_options_container = d3
-    .select(state.visualization.rootElementId + " .control_svg")
+  const link_options_container = select(
+    state.visualization.rootElementId + " .control_svg"
+  )
     .append("g")
     .classed("link_option_container", true)
     .selectAll("g")
@@ -272,10 +273,10 @@ export default (function build_recluster_section(
           },
         })
       );
-      d3.select(state.visualization.rootElementId + " .link_option_container")
+      select(state.visualization.rootElementId + " .link_option_container")
         .selectAll("rect")
         .attr("stroke", button_color);
-      d3.select(this).select("rect").attr("stroke", active_button_color);
+      select(this).select("rect").attr("stroke", active_button_color);
     })
     .style("display", "none");
   link_options_container
@@ -323,10 +324,10 @@ export default (function build_recluster_section(
         let norm_zscore_status;
         if (store.getState().network.norm.zscore_status === "non-zscored") {
           norm_zscore_status = "zscored";
-          d3.select(this).select("text").text("z-scored".toUpperCase());
+          select(this).select("text").text("z-scored".toUpperCase());
         } else {
           norm_zscore_status = "non-zscored";
-          d3.select(this).select("text").text("raw".toUpperCase());
+          select(this).select("text").text("raw".toUpperCase());
         }
         dispatch(
           mutateNetworkState({

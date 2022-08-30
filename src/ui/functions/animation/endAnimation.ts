@@ -1,5 +1,5 @@
 import { Store } from "@reduxjs/toolkit";
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { Regl } from "regl";
 import * as _ from "underscore";
 import { CamerasManager } from "../../../cameras/camerasManager";
@@ -10,15 +10,15 @@ import updateTextTriangleOrder from "../../../matrixLabels/updateTextTriangleOrd
 import { mutateAnimationState } from "../../../state/reducers/animation/animationSlice";
 import {
   LabelsState,
-  mutateLabelsState
+  mutateLabelsState,
 } from "../../../state/reducers/labels/labelsSlice";
 import {
   mutateOrderState,
-  OrderState
+  OrderState,
 } from "../../../state/reducers/order/orderSlice";
 import {
   mutateVisualizationState,
-  VisualizationState
+  VisualizationState,
 } from "../../../state/reducers/visualization/visualizationSlice";
 import { RootState } from "../../../state/store/store";
 import { Axis } from "../../../types/general";
@@ -61,7 +61,7 @@ export default (function end_animation(
     const orderInstance = state.order.new[i_axis];
     // turn dendrogram slider back on if necessary
     if (orderInstance === "clust") {
-      d3.select("." + i_axis + "_dendro_slider_svg").style("display", "block");
+      select("." + i_axis + "_dendro_slider_svg").style("display", "block");
     }
     dispatch(
       mutateOrderState({

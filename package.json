@@ -1,6 +1,6 @@
 {
   "name": "clustergrammer-gl.js",
-  "version": "0.0.3-beta.10.2",
+  "version": "0.0.3-beta.10.3",
   "description": "Clustergrammer-GL with WebGL and regl for Javascript",
   "exports": "./dist/index.js",
   "files": [
@@ -41,7 +41,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@types/d3": "^7.4.0",
+    "@types/d3-drag": "^3.0.1",
+    "@types/d3-scale": "^4.0.2",
+    "@types/d3-selection": "^3.0.3",
     "@types/lodash": "^4.14.184",
     "@types/mathjs": "^9.4.2",
     "@types/underscore": "^1.11.4",
@@ -70,11 +72,14 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.0.1",
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "0.19.0",
-    "cornhundred-clusterfck": "^0.7.5",
-    "d3": "5.15.0",
+    "d3-drag": "^3.0.0",
+    "d3-scale": "^4.0.2",
+    "d3-selection": "^3.0.0",
     "d3-tip": "v0.9.1",
+    "d3-v6-tip": "^1.0.9",
     "eases": "^1.0.8",
     "file-saver": "^2.0.5",
     "gl-mat4": "^1.1.4",

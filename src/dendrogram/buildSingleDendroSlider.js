@@ -1,5 +1,6 @@
 // TODO: fix invalid this usage
-import * as d3 from "d3";
+import { drag } from "d3-drag";
+import { pointer, select } from "d3-selection";
 import custom_round from "../utils/customRound";
 import changeGroups from "./changeGroups";
 
@@ -16,19 +17,17 @@ export default function build_single_dendro_slider(regl, store, axis) {
   } else {
     round_level = -1;
   }
-  const drag = d3
-    .drag()
+  const onDrag = drag()
     .on("drag", dragging)
     .on("end", function () {
       changeGroups(regl, store, axis, dendroSliderValue);
     });
-  const slider_group = d3
-    .select(
-      store.getState().visualization.rootElementId +
-        " ." +
-        axis +
-        "_dendro_slider_svg"
-    )
+  const slider_group = select(
+    store.getState().visualization.rootElementId +
+      " ." +
+      axis +
+      "_dendro_slider_svg"
+  )
     .append("g")
     .classed(axis + "_slider_group", true)
     .attr("transform", function () {
@@ -101,12 +100,12 @@ export default function build_single_dendro_slider(regl, store, axis) {
     .attr("fill", "blue")
     .attr("opacity", default_opacity)
     .on("mouseover", function () {
-      d3.select(this).attr("opacity", high_opacity);
+      select(this).attr("opacity", high_opacity);
     })
     .on("mouseout", function () {
-      d3.select(this).attr("opacity", default_opacity);
+      select(this).attr("opacity", default_opacity);
     })
-    .call(drag);
+    .call(onDrag);
   // add dendrogram level text
   // /////////////////////////////
   if (dendro.precalc_linkage) {
@@ -159,10 +158,10 @@ export default function build_single_dendro_slider(regl, store, axis) {
       .attr("fill", "blue")
       .attr("opacity", default_opacity)
       .on("mouseover", function () {
-        d3.select(this).attr("opacity", high_opacity);
+        select(this).attr("opacity", high_opacity);
       })
       .on("mouseout", function () {
-        d3.select(this).attr("opacity", default_opacity);
+        select(this).attr("opacity", default_opacity);
       });
     // increment down button
     slider_group
@@ -197,15 +196,15 @@ export default function build_single_dendro_slider(regl, store, axis) {
       .attr("fill", "blue")
       .attr("opacity", default_opacity)
       .on("mouseover", function () {
-        d3.select(this).attr("opacity", high_opacity);
+        select(this).attr("opacity", high_opacity);
       })
       .on("mouseout", function () {
-        d3.select(this).attr("opacity", default_opacity);
+        select(this).attr("opacity", default_opacity);
       });
   }
-  function dragging() {
+  function dragging(event) {
     const draggingState = store.getState();
-    let slider_pos = d3.event.y;
+    let slider_pos = event.y;
     if (slider_pos < 0) {
       slider_pos = 0;
     }
@@ -220,14 +219,14 @@ export default function build_single_dendro_slider(regl, store, axis) {
       slider_pos,
       draggingState.dendro.precalc_linkage
     );
-    d3.select(this).attr("transform", "translate(0, " + slider_pos + ")");
+    select(this).attr("transform", "translate(0, " + slider_pos + ")");
     dendroSliderValue = slider_value;
   }
   function click_dendro_slider() {
     const clickState = store.getState();
-    const clicked_line_position = d3.mouse(this);
+    const clicked_line_position = pointer(this);
     const rel_pos = custom_round(clicked_line_position[1], round_level);
-    d3.select(
+    select(
       clickState.visualization.rootElementId + " ." + axis + "_group_circle"
     ).attr("transform", "translate(0, " + rel_pos + ")");
     const slider_value = get_slider_value(

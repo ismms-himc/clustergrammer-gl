@@ -3,7 +3,6 @@ import { Regl } from "regl";
 import { CamerasManager } from "../cameras/camerasManager";
 import { CatArgsManager } from "../cats/manager/catArgsManager";
 import { RootState } from "../state/store/store";
-import initializeD3Tip from "../tooltip/initializeD3Tip";
 import run_viz from "./functions/animation/runViz";
 import build_dendrogram_sliders from "./functions/buildDendrogramSliders";
 import build_control_panel from "./functions/controlPanel/buildControlPanel";
@@ -21,8 +20,6 @@ export type UIProps = {
 };
 
 export class UI {
-  #tooltip_fun: any;
-
   constructor(props: UIProps) {
     const {
       regl,
@@ -32,31 +29,17 @@ export class UI {
       container,
       showControls,
     } = props;
-    const state = store.getState();
-    this.#tooltip_fun = initializeD3Tip(state);
     if (showControls) {
       build_control_panel(
         regl,
         store,
         container,
         catArgsManager,
-        camerasManager,
-        this.#tooltip_fun
+        camerasManager
       );
     }
     build_dendrogram_sliders(regl, store);
-    ini_canvas_mouseover(
-      regl,
-      store,
-      container,
-      catArgsManager,
-      camerasManager,
-      this.#tooltip_fun
-    );
+    ini_canvas_mouseover(store, container);
     run_viz(regl, store, catArgsManager, camerasManager);
-  }
-
-  getTooltipFunction() {
-    return this.#tooltip_fun;
   }
 }

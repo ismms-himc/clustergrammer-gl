@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import * as _ from "underscore";
 import { setVisualizationDimensions } from "../../reducers/visualization/visualizationSlice";
 import { store } from "../../store/store";
@@ -13,7 +13,7 @@ export default (function calcVizDim(regl, state) {
   viz_dim.canvas = {};
   _.each(["width", "height"], function (inst_dim) {
     viz_dim.canvas[inst_dim] = Number.parseFloat(
-      d3.select(element).style(inst_dim).replace("px", "")
+      select(element).style(inst_dim).replace("px", "")
     );
   });
   const label = {};

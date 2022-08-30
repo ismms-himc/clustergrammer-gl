@@ -1,5 +1,5 @@
 import { Store } from "@reduxjs/toolkit";
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { cloneDeep } from "lodash";
 import { Regl } from "regl";
 import { setDendrogramState } from "../state/reducers/dendrogramSlice";
@@ -28,7 +28,7 @@ export default (function changeGroups(
     );
     const rounded_slider_value = Math.round(slider_value * 100) / 100;
     // update slider
-    d3.select(
+    select(
       visualization.rootElementId +
         " ." +
         axis +

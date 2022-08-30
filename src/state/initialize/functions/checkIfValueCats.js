@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { scaleLinear } from "d3-scale";
 import * as _ from "underscore";
 
 export default (function checkIfValueCats(cat_states) {
@@ -42,7 +42,7 @@ export default (function checkIfValueCats(cat_states) {
       return Math.abs(d);
     });
     max_abs_val = Math.abs(max_value);
-    cat_scale = d3.scaleLinear().domain([0, max_abs_val]).range([0, 1]);
+    cat_scale = scaleLinear().domain([0, max_abs_val]).range([0, 1]);
   }
   const inst_info = {};
   inst_info.type = cat_types;

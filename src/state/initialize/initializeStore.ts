@@ -8,12 +8,12 @@ import makeLabelQueue from "../../matrixLabels/makeLabelQueue";
 import { NetworkDataNode } from "../../types/network";
 import {
   LabelsState,
-  setLabelsOffsetDict
+  setLabelsOffsetDict,
 } from "../reducers/labels/labelsSlice";
 import { NetworkState, setNetworkState } from "../reducers/networkSlice";
 import {
   NodeCanvasPos,
-  setNodeCanvasPos
+  setNodeCanvasPos,
 } from "../reducers/nodeCanvasPosSlice";
 import { setTooltipState } from "../reducers/tooltip/tooltipSlice";
 import { RootState } from "../store/store";
@@ -106,7 +106,7 @@ export default function initialize_params(
   makeLabelQueue(store);
 
   // visualization setup
-  generateVisualizationParams(store);
+  generateVisualizationParams(store, rootElementId);
 
   // node canvas pos
   store.dispatch(setNodeCanvasPos(calcMatArr(store) as NodeCanvasPos));

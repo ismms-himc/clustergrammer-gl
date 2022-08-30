@@ -1,6 +1,6 @@
 // TODO: fix invalid this usage
-
-import * as d3 from "d3";
+import { drag } from "d3-drag";
+import { pointer, select } from "d3-selection";
 import { clamp } from "lodash";
 import draw_webgl_layers from "../draws/drawWebglLayers";
 import { setOpacityScale } from "../state/reducers/matrixSlice";
@@ -31,22 +31,23 @@ export default (function build_opacity_slider(
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
   }
 
-  const getSliderPos = (el) => {
+  const getSliderPos = (el, event) => {
     if (el.nextSibling) {
       el.parentNode.appendChild(el);
     }
-    return custom_round(clamp(d3.event.y, 0, slider_length), round_level);
+    return custom_round(clamp(event.y, 0, slider_length), round_level);
   };
 
   function updateOpacityAndSlider(pos) {
     // get the value of the slider
     const slider_value = get_slider_value(pos);
     // move the slider dot
-    d3.select(
-      state.visualization.rootElementId + " .opacity_group_circle"
-    ).attr("transform", `translate(0, ${pos})`);
+    select(state.visualization.rootElementId + " .opacity_group_circle").attr(
+      "transform",
+      `translate(0, ${pos})`
+    );
     // update the slider text
-    d3.select(`${state.visualization.rootElementId} .opacity_level_text`).text(
+    select(`${state.visualization.rootElementId} .opacity_level_text`).text(
       custom_round(1 - slider_value, 1)
     );
     // change the opacity of the matrix cells
@@ -54,28 +55,28 @@ export default (function build_opacity_slider(
   }
 
   function click_opacity_slider() {
-    const clicked_line_position = d3.mouse(this);
+    const clicked_line_position = pointer(this);
     const rel_pos = custom_round(clicked_line_position[1], round_level);
     updateOpacityAndSlider(rel_pos);
   }
 
-  function dragging() {
-    const slider_pos = getSliderPos(this);
+  function dragging(ev) {
+    const slider_pos = getSliderPos(this, ev);
     updateOpacityAndSlider(slider_pos);
   }
 
-  const drag = d3
-    .drag()
+  const onDrag = drag()
     .on("drag", dragging)
     .on("end", function () {
       const slider_pos = getSliderPos(this);
       const slider_value = get_slider_value(slider_pos);
-      d3.select(this).attr("transform", `translate(0, ${slider_pos})`);
+      select(this).attr("transform", `translate(0, ${slider_pos})`);
       change_opacity(slider_value);
     });
 
-  const slider_group = d3
-    .select(state.visualization.rootElementId + " .control_svg")
+  const slider_group = select(
+    state.visualization.rootElementId + " .control_svg"
+  )
     .append("g")
     .classed("opacity_slider_group", true)
     .attr("transform", function () {
@@ -138,12 +139,12 @@ export default (function build_opacity_slider(
     .attr("fill", "blue")
     .attr("opacity", default_opacity)
     .on("mouseover", function () {
-      d3.select(this).attr("opacity", high_opacity);
+      select(this).attr("opacity", high_opacity);
     })
     .on("mouseout", function () {
-      d3.select(this).attr("opacity", default_opacity);
+      select(this).attr("opacity", default_opacity);
     })
-    .call(drag);
+    .call(onDrag);
   const text_color = "#47515b";
   const button_dim = {};
   button_dim.height = 32;

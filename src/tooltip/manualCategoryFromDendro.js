@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import manualUpdateToCats from "../cats/functions/manualUpdateToCats";
 import { mutateCategoriesState } from "../state/reducers/categoriesSlice";
 import { mutateCatVizState } from "../state/reducers/catVizSlice";
@@ -17,10 +17,9 @@ export default function manual_category_from_dendro(
 
   // Manual Category
   // //////////////////////////
-  d3.select(tooltip.tooltip_id).append("text").text("Manual Category: ");
+  select(tooltip.tooltip_id).append("text").text("Manual Category: ");
   // color picker section
-  const color_picker_div = d3
-    .select(tooltip.tooltip_id)
+  const color_picker_div = select(tooltip.tooltip_id)
     .append("div")
     .classed("color_picker_div", true)
     .style("height", "0px")
@@ -50,11 +49,8 @@ export default function manual_category_from_dendro(
     "#444",
   ];
   const select_color_from_pallet = function (inst_color) {
-    d3.select(tooltip.tooltip_id + " .custom-cat-color").attr(
-      "value",
-      inst_color
-    );
-    d3.select(tooltip.tooltip_id + " .color-preview").style(
+    select(tooltip.tooltip_id + " .custom-cat-color").attr("value", inst_color);
+    select(tooltip.tooltip_id + " .color-preview").style(
       "background-color",
       inst_color
     );
@@ -90,8 +86,7 @@ export default function manual_category_from_dendro(
       select_color_from_pallet(d);
     });
   // custom category input secion
-  const custom_cat_div = d3
-    .select(tooltip.tooltip_id)
+  const custom_cat_div = select(tooltip.tooltip_id)
     .append("div")
     .classed("custom_cat_div", true);
   const root_id = visualization.rootElementId.replace("#", "");
@@ -107,8 +102,9 @@ export default function manual_category_from_dendro(
       const changeState = store.getState();
       // if input matches color key, set color to pre-defined cat color
       // /////////////////////////////////////////////////////////////////
-      const new_cat = d3
-        .select(changeState.tooltip.tooltip_id + " .custom-cat-input")
+      const new_cat = select(
+        changeState.tooltip.tooltip_id + " .custom-cat-input"
+      )
         .node()
         .value.trim();
       let new_color;
@@ -145,7 +141,7 @@ export default function manual_category_from_dendro(
     .style("margin-left", "5px")
     .style("color", "black")
     .on("input", function () {
-      d3.select(store.getState().tooltip.tooltip_id + " .color-preview").style(
+      select(store.getState().tooltip.tooltip_id + " .color-preview").style(
         "background-color",
         // TODO: fix this usage here
         // eslint-disable-next-line no-invalid-this
@@ -166,12 +162,11 @@ export default function manual_category_from_dendro(
     .on("click", () => {
       const state = store.getState();
       if (state.cat_data.showing_color_picker === false) {
-        d3.select(state.tooltip.tooltip_id + " .color_picker_div")
+        select(state.tooltip.tooltip_id + " .color_picker_div")
           .style("height", color_picker_height + "px")
           .style("display", "block");
-        d3.select(state.tooltip.tooltip_id).style("margin-top", function () {
-          const old_top_margin = d3
-            .select(state.tooltip.tooltip_id)
+        select(state.tooltip.tooltip_id).style("margin-top", function () {
+          const old_top_margin = select(state.tooltip.tooltip_id)
             .style("margin-top")
             .replace("px");
           const new_top_margin =
@@ -194,12 +189,10 @@ export default function manual_category_from_dendro(
     .style("cursor", "pointer")
     .on("click", () => {
       const state = store.getState();
-      const new_cat = d3
-        .select(state.tooltip.tooltip_id + " .custom-cat-input")
+      const new_cat = select(state.tooltip.tooltip_id + " .custom-cat-input")
         .node()
         .value.trim();
-      let inst_color = d3
-        .select(state.tooltip.tooltip_id + " .custom-cat-color")
+      let inst_color = select(state.tooltip.tooltip_id + " .custom-cat-color")
         .node()
         .value.trim();
       if (new_cat !== "") {

@@ -4,10 +4,7 @@ import { setTotalMouseover } from "../state/reducers/visualization/visualization
 export default (function finalMouseoverFrame(store) {
   // reduce the number of mouseovers
   store.dispatch(
-    setTotalMouseover({
-      axis: "x",
-      num: store.getState().visualization.total_mouseover - 1,
-    })
+    setTotalMouseover(store.getState().visualization.total_mouseover - 1)
   );
   const state = store.getState();
   if (

@@ -1,10 +1,8 @@
-import * as d3 from "d3";
+import { select, selectAll } from "d3-selection";
 import calcCatClusterBreakdown from "../cats/functions/calcCatClusterBreakdown";
 import makeCatBreakdownGraph from "../cats/functions/makeCatBreakdownGraph";
 import { mutateDendrogramState } from "../state/reducers/dendrogramSlice";
-import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import manual_category_from_dendro from "./manualCategoryFromDendro";
-import run_hide_tooltip from "./runHideTooltip";
 
 export default (function make_dendro_tooltip(
   regl,
@@ -19,18 +17,19 @@ export default (function make_dendro_tooltip(
   const dispatch = store.dispatch;
 
   tooltip_fun.show("tooltip");
-  d3.select(tooltip.tooltip_id)
+  select(tooltip.tooltip_id)
     .append("div")
     .style("height", "16px")
     .style("text-align", "right")
     .style("cursor", "default")
     .on("click", function () {
-      dispatch(
-        mutateTooltipState({
-          permanent_tooltip: false,
-        })
-      );
-      run_hide_tooltip(store, tooltip_fun);
+      // TODO: permanent tooltip when hovering dendrogram?
+      // dispatch(
+      //   mutateTooltipState({
+      //     permanent_tooltip: false,
+      //   })
+      // );
+      // run_hide_tooltip(store, tooltip_fun);
     })
     .append("text")
     .text("x")
@@ -43,7 +42,7 @@ export default (function make_dendro_tooltip(
   makeCatBreakdownGraph(store, mouseover[inst_axis].dendro, cat_breakdown);
 
   // title for selected rows input box
-  d3.select(tooltip.tooltip_id)
+  select(tooltip.tooltip_id)
     .append("text")
     .style("display", "inline-block")
     .style("cursor", "default")
@@ -53,8 +52,7 @@ export default (function make_dendro_tooltip(
         ": "
     );
   // selected output formats
-  const selected_label_container = d3
-    .select(tooltip.tooltip_id)
+  const selected_label_container = select(tooltip.tooltip_id)
     .append("div")
     .style("display", "inline-block")
     .classed("selected_label_container", true);
@@ -86,7 +84,7 @@ export default (function make_dendro_tooltip(
     .on("click", (d) => {
       const state = store.getState();
       dispatch(mutateDendrogramState({ output_label_format: d }));
-      d3.selectAll(
+      selectAll(
         state.tooltip.tooltip_id + " .selected_label_container .output_format"
       ).style("color", (d) => {
         let inst_color = "white";
@@ -95,7 +93,7 @@ export default (function make_dendro_tooltip(
         }
         return inst_color;
       });
-      d3.select(state.tooltip.tooltip_id + " input").attr(
+      select(state.tooltip.tooltip_id + " input").attr(
         "value",
         make_output_string
       );
@@ -116,7 +114,7 @@ export default (function make_dendro_tooltip(
       }
       return inst_color;
     });
-  d3.select(tooltip.tooltip_id)
+  select(tooltip.tooltip_id)
     .append("input")
     .attr("value", make_output_string)
     .style("width", "364px")

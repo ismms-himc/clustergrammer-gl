@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import * as _ from "underscore";
 import build_single_dendro_slider from "../../dendrogram/buildSingleDendroSlider";
 
@@ -12,8 +12,9 @@ export default function build_dendrogram_sliders(regl, store) {
   let axis_slider_container;
   // hardwiring dendro slider position
   _.each(["row", "col"], function (inst_axis) {
-    axis_slider_container = d3
-      .select(state.visualization.rootElementId + " .canvas-container")
+    axis_slider_container = select(
+      state.visualization.rootElementId + " .canvas-container"
+    )
       .append("svg")
       .style("height", slider_length + "px")
       .style("width", "20px")

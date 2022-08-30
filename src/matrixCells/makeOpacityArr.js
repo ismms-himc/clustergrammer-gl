@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { scaleLinear } from "d3-scale";
 import * as _ from "underscore";
 import calc_inverse_zscore from "../utils/calcInverseZscore";
 
@@ -21,7 +21,7 @@ export default (function make_opacity_arr(store) {
       return Math.abs(d);
     })
   );
-  const opacity_scale = d3.scaleLinear();
+  const opacity_scale = scaleLinear();
   const opacity_domain = abs_max_val * matrix.opacity_scale;
   const opacity_range = 1.0;
   opacity_scale

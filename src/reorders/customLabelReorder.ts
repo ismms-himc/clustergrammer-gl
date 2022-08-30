@@ -1,6 +1,6 @@
 import { Store } from "@reduxjs/toolkit";
-import * as d3 from "d3";
-import { cloneDeep } from "lodash";
+import { select } from "d3-selection";
+import { cloneDeep, range } from "lodash";
 import { Regl } from "regl";
 import * as _ from "underscore";
 import { CamerasManager } from "../cameras/camerasManager";
@@ -48,7 +48,7 @@ export default (function customLabelReorder(
       });
     }
   }
-  const tmp_sort = d3.range(tmp_arr.length).sort(function (a, b) {
+  const tmp_sort = range(tmp_arr.length).sort(function (a, b) {
     return tmp_arr?.[b] - tmp_arr?.[a];
   });
   const num_other_labels = labels["num_" + other_axis];
@@ -92,9 +92,7 @@ export default (function customLabelReorder(
   // unselect reorder buttons
   const button_color = "#eee";
   const { visualization } = store.getState();
-  d3.select(
-    visualization.rootElementId + " ." + other_axis + "-reorder-buttons"
-  )
+  select(visualization.rootElementId + " ." + other_axis + "-reorder-buttons")
     .selectAll("rect")
     .style("stroke", button_color);
 });

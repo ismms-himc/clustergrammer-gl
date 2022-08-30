@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import runReorder from "../../reorders/runReorder";
 import { mutateNetworkState } from "../../state/reducers/networkSlice";
 import { mutateOrderState } from "../../state/reducers/order/orderSlice";
@@ -75,8 +75,9 @@ export default (function buildReorderCatTitles(
   // Column Titles
   let pos_x = 845;
   let pos_y = 125;
-  const col_cat_title_group = d3
-    .select(state.visualization.rootElementId + " .canvas-container")
+  const col_cat_title_group = select(
+    state.visualization.rootElementId + " .canvas-container"
+  )
     .append("g")
     .style("position", "absolute")
     .style("top", pos_y + "px")
@@ -131,7 +132,7 @@ export default (function buildReorderCatTitles(
           },
         })
       );
-      d3.select(state.visualization.rootElementId + " .col-reorder-buttons")
+      select(state.visualization.rootElementId + " .col-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);
     })
@@ -144,8 +145,9 @@ export default (function buildReorderCatTitles(
   pos_x = 125;
   // var pos_y = 98; // 60 with no cats, 72 with one cat, 85 with two cats
   pos_y = 62 + 12 * state.cat_data.col.length;
-  const row_cat_title_group = d3
-    .select(state.visualization.rootElementId + " .canvas-container")
+  const row_cat_title_group = select(
+    state.visualization.rootElementId + " .canvas-container"
+  )
     .append("g")
     .style("position", "absolute")
     .style("top", pos_y + "px")
@@ -205,7 +207,7 @@ export default (function buildReorderCatTitles(
           },
         })
       );
-      d3.select(state.visualization.rootElementId + " .row-reorder-buttons")
+      select(state.visualization.rootElementId + " .row-reorder-buttons")
         .selectAll("rect")
         .attr("stroke", button_color);
     })

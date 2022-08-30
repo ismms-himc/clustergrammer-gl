@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice";
+import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
 import getMouseoverType from "./getMouseoverType";
 
@@ -104,32 +105,15 @@ export default function findMouseoverElement(store, ev) {
         axis_indices[inst_axis] =
           labels.ordered_labels[inst_axis + "_indices"][axis_index];
       }
-      mouseover = {
-        ...mouseover,
-        [inst_axis]: {
-          ...mouseover[inst_axis],
-          name: labels.ordered_labels[inst_axis + "s"][axis_index],
-        },
-      };
+      mouseover[inst_axis].name =
+        labels.ordered_labels[inst_axis + "s"][axis_index];
       if (typeof mouseover[inst_axis].name === "string") {
         if (mouseover[inst_axis].name.includes(": ")) {
-          mouseover = {
-            ...mouseover,
-            [inst_axis]: {
-              ...mouseover[inst_axis],
-              name: mouseover[inst_axis].name.split(": ")[1],
-            },
-          };
+          mouseover[inst_axis].name = mouseover[inst_axis].name.split(": ")[1];
         }
       }
       // reset cat names
-      mouseover = {
-        ...mouseover,
-        [inst_axis]: {
-          ...mouseover[inst_axis],
-          cats: [],
-        },
-      };
+      mouseover[inst_axis].cats = [];
       _.each(cat_data[inst_axis], function (d, cat_index) {
         inst_cat_name =
           labels.ordered_labels[inst_axis + "_cats-" + cat_index][axis_index];
@@ -139,7 +123,8 @@ export default function findMouseoverElement(store, ev) {
     });
     if (tooltip_type === "matrix-cell") {
       mouseover.value =
-        store.getState().network.mat[axis_indices.row][axis_indices.col];
+        store.getState().network.mat?.[axis_indices.row]?.[axis_indices.col] ||
+        NaN;
     }
   }
   const { dendro } = store.getState();
@@ -160,16 +145,20 @@ export default function findMouseoverElement(store, ev) {
     if (tooltip_type === "col-dendro") {
       _.each(dendro.group_info.col, function (i_group) {
         if (i_group.all_names.includes(mouseover.col.name)) {
-          mouseover = {
-            ...mouseover,
-            col: {
-              ...mouseover.col,
-              dendro: i_group,
-            },
-          };
+          mouseover.col.dendro = i_group;
         }
       });
     }
   }
+
+  // tooltip text for matrix cell only
+  // TODO: clean this up into a method, figure out other types of tooltips
+  const tooltip_text = `Row: ${mouseover.row.name}\nCol: ${
+    mouseover.col.name
+  }\nValue: ${mouseover.value?.toFixed(3) || "NaN"}${
+    mouseover.value_iz ? `Original value: ${mouseover.value_iz.toFixed(3)}` : ""
+  }`;
+  dispatch(mutateTooltipState({ text: tooltip_text }));
+
   dispatch(setMouseoverInteraction(mouseover));
 }

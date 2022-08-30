@@ -10,7 +10,8 @@
         "esModuleInterop": true,
         "inlineSourceMap": false,
         "lib": [
-            "esnext"
+            "esnext",
+            "dom"
         ],
         "listEmittedFiles": false,
         "listFiles": false,

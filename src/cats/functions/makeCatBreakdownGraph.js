@@ -1,4 +1,5 @@
-import * as d3 from "d3";
+import { scaleLinear } from "d3-scale";
+import { select } from "d3-selection";
 import * as _ from "underscore";
 import catBreakdownBars from "./catBreakdownBars";
 import catBreakdownValues from "./catBreakdownValues";
@@ -45,8 +46,7 @@ export default (function makeCatBreakdownGraph(store, dendro_info, cb) {
       }
       svg_height = svg_height + shift_down_height * (num_bars + 1);
     });
-    const main_dendro_svg = d3
-      .select(state.tooltip.tooltip_id)
+    const main_dendro_svg = select(state.tooltip.tooltip_id)
       .append("div")
       .style("margin-top", "5px")
       .classed("cat_graph", true)
@@ -65,7 +65,7 @@ export default (function makeCatBreakdownGraph(store, dendro_info, cb) {
     cb = cb.slice(0, max_cats);
     // shift the position of the numbers based on the size of the number
     // offset the count column based on how large the counts are
-    const digit_offset = d3.scaleLinear().domain([0, 100000]).range([20, 30]);
+    const digit_offset = scaleLinear().domain([0, 100000]).range([20, 30]);
     // the total amout to shift down the next category
     let shift_down = 15;
     _.each(cb, function (cat_data) {

@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { cloneDeep } from "lodash";
 import updateTextTriangleOrder from "../matrixLabels/updateTextTriangleOrder";
 import { mutateAnimationState } from "../state/reducers/animation/animationSlice";
@@ -20,7 +20,7 @@ export default (function runReorder(
     .replace("sum", "rank")
     .replace("var", "rankvar");
   if (new_order !== "clust") {
-    d3.select("." + inst_axis + "_dendro_slider_svg").style("display", "none");
+    select("." + inst_axis + "_dendro_slider_svg").style("display", "none");
   }
 
   dispatch(mutateAnimationState({ run_animation: true }));

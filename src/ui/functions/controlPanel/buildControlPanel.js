@@ -1,5 +1,5 @@
 // TODO: fix invalid this usage
-import * as d3 from "d3";
+import { select, selectAll } from "d3-selection";
 import * as _ from "underscore";
 import buildReorderCatTitles from "../../../cats/functions/buildReorderCatTitles";
 import build_opacity_slider from "../../../colors/buildOpacitySlider";
@@ -19,8 +19,7 @@ export default function build_control_panel(
   store,
   base_container,
   catArgsManager,
-  camerasManager,
-  tooltip_fun
+  camerasManager
 ) {
   const state = store.getState();
   const dispatch = store.dispatch;
@@ -29,17 +28,16 @@ export default function build_control_panel(
   const text_color = "#47515b";
   const button_color = "#eee";
 
-  if (d3.select(base_container).select(`.${CONTROL_PANEL_CLASSNAME}`).empty()) {
+  if (select(base_container).select(`.${CONTROL_PANEL_CLASSNAME}`).empty()) {
     // make control panel (needs to appear above canvas)
-    d3.select(base_container)
+    select(base_container)
       .insert("div", ":first-child")
       .attr("class", CONTROL_PANEL_CLASSNAME)
       .style("width", "100%")
       .style("cursor", "default");
   }
 
-  const control_svg = d3
-    .select(base_container)
+  const control_svg = select(base_container)
     .select(`.${CONTROL_PANEL_CLASSNAME}`)
     .append("svg")
     .classed("control_svg", true)
@@ -56,10 +54,6 @@ export default function build_control_panel(
     .attr("position", "absolute")
     .attr("fill", control_panel_color)
     .attr("class", "control-panel-background");
-
-  if (tooltip_fun) {
-    control_svg.call(tooltip_fun);
-  }
 
   // control panel border
   const border_height = 1;
@@ -119,32 +113,32 @@ export default function build_control_panel(
     .classed("reorder_button_title", true)
     .on("click", function () {
       const clickState = store.getState();
-      d3.selectAll(
+      selectAll(
         clickState.visualization.rootElementId + " .panel_button_titles"
       ).attr("opacity", 0.5);
-      d3.select(this).attr("opacity", 1.0);
+      select(this).attr("opacity", 1.0);
       if (clickState.cat_viz.current_panel === "recluster") {
         dispatch(mutateCatVizState({ current_panel: "reorder" }));
         // modify buttons
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .panel_button_title"
         ).text("reorder".toUpperCase());
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .top_button_title"
         ).text("COL");
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .bottom_button_title"
         ).text("ROW");
-        d3.selectAll(
+        selectAll(
           clickState.visualization.rootElementId + " .reorder_buttons"
         ).style("display", "block");
-        d3.select(
+        select(
           clickState.visualization.rootElementId + " .run_cluster_container"
         ).style("display", "none");
-        d3.selectAll(
+        selectAll(
           clickState.visualization.rootElementId + " .dist_options"
         ).style("display", "none");
-        d3.selectAll(
+        selectAll(
           clickState.visualization.rootElementId + " .link_options_container"
         ).style("display", "none");
       }
@@ -229,7 +223,7 @@ export default function build_control_panel(
         if (store.getState().order.inst[i_axis] !== clean_order) {
           /* category order is already calculated */
           runReorder(regl, store, catArgsManager, camerasManager, i_axis, d);
-          d3.select(
+          select(
             store.getState().visualization.rootElementId +
               " ." +
               i_axis +
@@ -237,7 +231,7 @@ export default function build_control_panel(
           )
             .selectAll("rect")
             .attr("stroke", button_color);
-          d3.select(this).select("rect").attr("stroke", active_button_color);
+          select(this).select("rect").attr("stroke", active_button_color);
         }
       });
     button_group
@@ -281,8 +275,9 @@ export default function build_control_panel(
   buildReclusterSection(regl, store, catArgsManager, camerasManager);
   // row search
   // /////////////////
-  const search_container = d3
-    .select(state.visualization.rootElementId + " .control-container")
+  const search_container = select(
+    state.visualization.rootElementId + " .control-container"
+  )
     .append("div")
     .classed("row_search_container", true)
     .style("position", "absolute")
@@ -333,12 +328,10 @@ export default function build_control_panel(
     .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
     .style("font-weight", 400)
     .on("click", () => {
-      const inst_value = d3
-        .select(
-          store.getState().visualization.rootElementId +
-            " .control-container .row_search_box"
-        )
-        .node().value;
+      const inst_value = select(
+        store.getState().visualization.rootElementId +
+          " .control-container .row_search_box"
+      ).node().value;
       const searchedRows = inst_value.split(", ");
       dispatch(setSearchedRows(searchedRows));
       draw_webgl_layers(regl, store, catArgsManager, camerasManager);

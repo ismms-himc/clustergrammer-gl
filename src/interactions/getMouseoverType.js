@@ -13,8 +13,8 @@ export default (function getMouseoverType(store) {
   const edim = {};
   edim.x = {};
   edim.x.heat_min = 125 + cat_width * state.cat_data.row.length;
-  edim.x.dendro_start = 845;
-  edim.x.dendro_end = 860;
+  edim.x.dendro_start = 750;
+  edim.x.dendro_end = 800;
   edim.y = {};
   // extra pixel prevents error *********** look into
   edim.y.heat_min = 126 + cat_width * state.cat_data.col.length;

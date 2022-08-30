@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { Regl } from "regl";
 import { CamerasManager } from "./cameras/camerasManager";
 import { CatArgsManager } from "./cats/manager/catArgsManager";
@@ -48,7 +48,7 @@ function clustergrammer_gl(
   // check if container is defined
   if (
     container !== null &&
-    d3.select(container).select(`.${CANVAS_CONTAINER_CLASSNAME}`).empty()
+    select(container).select(`.${CANVAS_CONTAINER_CLASSNAME}`).empty()
   ) {
     const canvas_container = createCanvasContainer(container, width, height);
 
@@ -79,13 +79,7 @@ function clustergrammer_gl(
     });
 
     // zoom rules
-    zoom_rules_high_mat(
-      regl,
-      store,
-      catArgsManager,
-      camerasManager,
-      ui.getTooltipFunction()
-    );
+    zoom_rules_high_mat(regl, store, catArgsManager, camerasManager);
 
     return {
       cameras: camerasManager,

@@ -1,5 +1,5 @@
 import { Store } from "@reduxjs/toolkit";
-import * as d3 from "d3";
+import { selectAll } from "d3-selection";
 import { Regl } from "regl";
 import { CamerasManager } from "../../../cameras/camerasManager";
 import { CatArgsManager } from "../../../cats/manager/catArgsManager";
@@ -8,7 +8,7 @@ import { mutateAnimationState } from "../../../state/reducers/animation/animatio
 import { mutateInteractionState } from "../../../state/reducers/interaction/interactionSlice";
 import { RootState } from "../../../state/store/store";
 import draw_background_calculations from "../drawBackgroundCalculations";
-import draw_labels_tooltips_or_dendro from "../drawLabelsTooltipsOrDendro";
+import drawLabelsTooltipsOrDendro from "../drawLabelsTooltipsOrDendro";
 import drawMouseover from "../mouseover/drawMouseover";
 import end_animation from "./endAnimation";
 import start_animation from "./startAnimation";
@@ -34,7 +34,7 @@ export default function run_viz(
     );
     const firstState = store.getState();
     if (firstState.interaction.total > 1) {
-      d3.selectAll(
+      selectAll(
         firstState.visualization.rootElementId + " .group-svg-tooltip"
       ).remove();
     }
@@ -77,12 +77,7 @@ export default function run_viz(
       fourthState.tooltip.show_tooltip ||
       fourthState.dendro.update_dendro
     ) {
-      draw_labels_tooltips_or_dendro(
-        regl,
-        store,
-        catArgsManager,
-        camerasManager
-      );
+      drawLabelsTooltipsOrDendro(regl, store, catArgsManager, camerasManager);
     } else {
       // run background calculations
       draw_background_calculations(store);

@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import * as _ from "underscore";
 import { getHzomeGeneInfo } from "./getHzomeGeneInfo";
 import make_dendro_tooltip from "./makeDendroTooltip";
@@ -29,7 +29,7 @@ export default (function makeTooltipText(
         tooltip_text + " <br>Original value: " + mouseover.value_iz.toFixed(3);
     }
     tooltip_fun.show("tooltip");
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("text-align", "left")
       .html(tooltip_text);
   } else if (state.tooltip?.tooltip_type.indexOf("-label") > 0) {
@@ -41,7 +41,7 @@ export default (function makeTooltipText(
       tooltip_text = tooltip_text + "<br>" + inst_cat;
     });
     tooltip_fun.show("tooltip");
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("text-align", "left")
       .html(tooltip_text);
     if (state.tooltip.use_hzome === true) {
@@ -67,7 +67,7 @@ export default (function makeTooltipText(
     const inst_index = state.tooltip.tooltip_type.split("-")[2];
     tooltip_text = mouseover[inst_axis].cats[inst_index];
     tooltip_fun.show("tooltip");
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("text-align", "left")
       .html(tooltip_text);
   }

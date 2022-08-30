@@ -10,5 +10,6 @@ export default function getInitialTooltipState() {
   // enable user to mouseover and interact with the tooltip
   tooltip.permanent_tooltip = false;
   tooltip.use_hzome = false;
+  tooltip.text = "";
   return tooltip;
 }

@@ -1,19 +1,19 @@
 import axios from "axios";
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import * as _ from "underscore";
 import { mutateHzomeGeneData } from "../state/reducers/hzomeSlice";
 
 function setTooltip(tooltip_id, data, gene_symbol) {
   if (data.name !== undefined) {
     // assign html
-    d3.select(tooltip_id).html(function () {
+    select(tooltip_id).html(function () {
       const sym_name = gene_symbol + ": " + data.name;
       const full_html =
         "<p>" + sym_name + "</p> <p>" + data.description + "</p>";
       return full_html;
     });
     // set width
-    d3.select(tooltip_id).selectAll("p").style("width", "500px");
+    select(tooltip_id).selectAll("p").style("width", "500px");
   }
 }
 

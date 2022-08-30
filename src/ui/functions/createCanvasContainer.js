@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { CANVAS_CONTAINER_CLASSNAME } from "../ui.const";
 
 export const createCanvasContainer = (
@@ -6,12 +6,12 @@ export const createCanvasContainer = (
   viz_height,
   viz_width
 ) => {
-  let canvas_container = d3
-    .select(base_container)
-    .select(`.${CANVAS_CONTAINER_CLASSNAME}`);
+  let canvas_container = select(base_container).select(
+    `.${CANVAS_CONTAINER_CLASSNAME}`
+  );
   if (canvas_container.empty()) {
     // make canvas container
-    d3.select(base_container)
+    select(base_container)
       .append("div")
       .attr("class", CANVAS_CONTAINER_CLASSNAME)
       .style("position", "relative")
@@ -20,11 +20,11 @@ export const createCanvasContainer = (
       .style("cursor", "default");
   }
 
-  canvas_container = d3
-    .select(base_container)
-    .select(`.${CANVAS_CONTAINER_CLASSNAME}`)._groups[0][0];
+  canvas_container = select(base_container).select(
+    `.${CANVAS_CONTAINER_CLASSNAME}`
+  )._groups[0][0];
 
-  d3.select(canvas_container)
+  select(canvas_container)
     .style("height", viz_height)
     .style("width", viz_width);
 

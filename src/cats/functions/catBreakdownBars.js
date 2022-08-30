@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { scaleLinear } from "d3-scale";
 
 export default (function cat_breakdown_bars(
   store,
@@ -38,8 +38,7 @@ export default (function cat_breakdown_bars(
     .attr("opacity", 1.0);
   // bar length is max when all nodes in cluster are of
   // a single cat
-  const bar_scale = d3
-    .scaleLinear()
+  const bar_scale = scaleLinear()
     .domain([0, max_bar_value])
     .range([0, bar_width]);
   // make bars

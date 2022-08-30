@@ -6,12 +6,20 @@ export interface TooltipState {
   show_tooltip: boolean;
   in_bounds_tooltip: boolean;
   background_opacity: number;
-  tooltip_type: string;
+  tooltip_type:
+    | "out-of-bounds"
+    | "matrix-cell"
+    | "row-label"
+    | "col-label"
+    | "row-dendro"
+    | "col-dendro"
+    | string;
   border_width: number;
   on_canvas: boolean;
   permanent_tooltip: boolean;
   use_hzome: boolean;
   tooltip_id?: string;
+  text: string;
 }
 
 const initialState: TooltipState = getInitialTooltipState();

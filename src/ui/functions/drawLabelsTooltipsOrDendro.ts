@@ -7,7 +7,7 @@ import { mutateDendrogramState } from "../../state/reducers/dendrogramSlice";
 import { mutateTooltipState } from "../../state/reducers/tooltip/tooltipSlice";
 import { RootState } from "../../state/store/store";
 
-export default function draw_labels_tooltips_or_dendro(
+export default function drawLabelsTooltipsOrDendro(
   regl: Regl,
   store: Store<RootState>,
   catArgsManager: CatArgsManager,
@@ -19,6 +19,7 @@ export default function draw_labels_tooltips_or_dendro(
   // turn back on draw_labels
   // /////////////////////////////
   drawCommands(regl, store, catArgsManager, camerasManager);
+
   if (state.tooltip.show_tooltip) {
     dispatch(
       mutateTooltipState({

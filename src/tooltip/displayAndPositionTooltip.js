@@ -1,11 +1,11 @@
-import * as d3 from "d3";
+import { select, selectAll } from "d3-selection";
 
 export default (function display_and_position_tooltip(state) {
   // Display Tooltip
   // //////////////////////////////
-  d3.selectAll(".cgm-tooltip").style("display", "none");
+  selectAll(".cgm-tooltip").style("display", "none");
   // display tooltip
-  d3.select(state.tooltip.tooltip_id)
+  select(state.tooltip.tooltip_id)
     .style("opacity", 1)
     .style("display", "block")
     .style("z-index", 99);
@@ -16,17 +16,17 @@ export default (function display_and_position_tooltip(state) {
   // TODO: ???
   const magic_x_offset = 22;
   const d3_tip_width = parseFloat(
-    d3.select(state.tooltip.tooltip_id).style("width").replace("px", "")
+    select(state.tooltip.tooltip_id).style("width").replace("px", "")
   );
   const d3_tip_height = parseFloat(
-    d3.select(state.tooltip.tooltip_id).style("height").replace("px", "")
+    select(state.tooltip.tooltip_id).style("height").replace("px", "")
   );
   // need to set up custom positioning of the tooltip based on the mouseover type
   // upper left if on matrix-cell, upper right if on row label, lower left if on
   // column mouseover. Should be able to check state.tooltip.tooltip_type to
   // find out how to position the tooltip
   if (state.tooltip.tooltip_type === "matrix-cell") {
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
         const total_x_offset =
           state.visualization.zoom_data.x.cursor_position -
@@ -40,7 +40,7 @@ export default (function display_and_position_tooltip(state) {
         return total_y_offset + "px";
       });
   } else if (state.tooltip.tooltip_type === "row-label") {
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
         const total_x_offset = 150 + state.cat_data.row.length * 12;
         return total_x_offset + "px";
@@ -51,7 +51,7 @@ export default (function display_and_position_tooltip(state) {
         return total_y_offset + "px";
       });
   } else if (state.tooltip.tooltip_type === "col-label") {
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
         const total_x_offset =
           state.visualization.zoom_data.x.cursor_position -
@@ -64,7 +64,7 @@ export default (function display_and_position_tooltip(state) {
         return total_y_offset + "px";
       });
   } else if (state.tooltip.tooltip_type === "col-dendro") {
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
         const total_x_offset =
           state.visualization.zoom_data.x.cursor_position -
@@ -77,7 +77,7 @@ export default (function display_and_position_tooltip(state) {
         return total_y_offset + "px";
       });
   } else if (state.tooltip.tooltip_type === "row-dendro") {
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
         // var total_x_offset = params.visualization.zoom_data.x.cursor_position - d3_tip_width +
         //                      magic_x_offset;
@@ -90,7 +90,7 @@ export default (function display_and_position_tooltip(state) {
         return total_y_offset + "px";
       });
   } else if (state.tooltip.tooltip_type.includes("col-cat-")) {
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
         const total_x_offset =
           state.visualization.zoom_data.x.cursor_position -
@@ -103,7 +103,7 @@ export default (function display_and_position_tooltip(state) {
         return total_y_offset + "px";
       });
   } else if (state.tooltip.tooltip_type.includes("row-cat-")) {
-    d3.select(state.tooltip.tooltip_id)
+    select(state.tooltip.tooltip_id)
       .style("margin-left", function () {
         const total_x_offset = 150 + state.cat_data.row.length * 12;
         return total_x_offset + "px";

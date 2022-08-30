@@ -15,7 +15,7 @@ export default function findMouseoverElement(store, ev) {
   
     */
   // reset mouseover params
-  let mouseover = {
+  const mouseover = {
     row: {
       name: null,
       cats: [],
@@ -117,7 +117,6 @@ export default function findMouseoverElement(store, ev) {
       _.each(cat_data[inst_axis], function (d, cat_index) {
         inst_cat_name =
           labels.ordered_labels[inst_axis + "_cats-" + cat_index][axis_index];
-        // TODO: does this actually set the element?
         mouseover[inst_axis].cats[cat_index] = inst_cat_name;
       });
     });
@@ -132,13 +131,7 @@ export default function findMouseoverElement(store, ev) {
     if (tooltip_type === "row-dendro") {
       _.each(dendro.group_info.row, function (i_group) {
         if (i_group.all_names.includes(mouseover.row.name)) {
-          mouseover = {
-            ...mouseover,
-            row: {
-              ...mouseover.row,
-              dendro: i_group,
-            },
-          };
+          mouseover.row.dendro = i_group;
         }
       });
     }

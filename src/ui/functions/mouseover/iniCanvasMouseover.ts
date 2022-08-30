@@ -75,7 +75,9 @@ export default function ini_canvas_mouseover(
     });
   }
 
-  document.addEventListener("mousemove", (e) => {
+  const canvas = document.getElementsByTagName("canvas")?.[0];
+
+  canvas.addEventListener("mousemove", (e) => {
     const state = store.getState();
 
     // show a tooltip if we're on a matrix cell
@@ -91,18 +93,12 @@ export default function ini_canvas_mouseover(
       }
     }
   });
-
-  document
-    .getElementsByTagName("canvas")?.[0]
-    .addEventListener("mouseleave", () => {
-      store.dispatch(mutateTooltipState({ show_tooltip: false }));
-      hideTooltip();
-    });
-
-  document
-    .getElementsByTagName("canvas")?.[0]
-    .addEventListener("mouseenter", () => {
-      store.dispatch(mutateTooltipState({ show_tooltip: true }));
-      hideTooltip();
-    });
+  canvas.addEventListener("mouseleave", () => {
+    store.dispatch(mutateTooltipState({ show_tooltip: false }));
+    hideTooltip();
+  });
+  canvas.addEventListener("mouseenter", () => {
+    store.dispatch(mutateTooltipState({ show_tooltip: true }));
+    hideTooltip();
+  });
 }

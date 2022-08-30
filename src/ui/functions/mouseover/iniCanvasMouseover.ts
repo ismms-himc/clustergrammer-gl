@@ -1,6 +1,7 @@
 import { computePosition, flip, offset, shift } from "@floating-ui/dom";
 import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
+import { mutateTooltipState } from "../../../state/reducers/tooltip/tooltipSlice";
 import { RootState } from "../../../state/store/store";
 import { CANVAS_CONTAINER_CLASSNAME } from "../../ui.const";
 
@@ -79,7 +80,7 @@ export default function ini_canvas_mouseover(
 
     // show a tooltip if we're on a matrix cell
     const tooltip = document.getElementById(TOOLTIP_ID);
-    if (tooltip) {
+    if (tooltip && state.tooltip.show_tooltip) {
       if (state.tooltip.tooltip_type !== "out-of-bounds") {
         if (tooltip.textContent != state.tooltip.text) {
           tooltip.textContent = state.tooltip.text;
@@ -90,4 +91,18 @@ export default function ini_canvas_mouseover(
       }
     }
   });
+
+  document
+    .getElementsByTagName("canvas")?.[0]
+    .addEventListener("mouseleave", () => {
+      store.dispatch(mutateTooltipState({ show_tooltip: false }));
+      hideTooltip();
+    });
+
+  document
+    .getElementsByTagName("canvas")?.[0]
+    .addEventListener("mouseenter", () => {
+      store.dispatch(mutateTooltipState({ show_tooltip: true }));
+      hideTooltip();
+    });
 }

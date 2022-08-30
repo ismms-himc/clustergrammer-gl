@@ -285,7 +285,7 @@ export default function build_control_panel(
     .style("padding-right", "10px")
     .style("margin-top", "10px")
     .style("top", "37px")
-    .style("left", "440px");
+    .style("left", "375px");
   const root_id = state.visualization.rootElementId.replace("#", "");
   search_container
     .append("input")

@@ -85,7 +85,7 @@ export default (function build_opacity_slider(
       })`;
       return inst_translation;
     })
-    .attr("transform", "translate(435, 110), rotate(-90)");
+    .attr("transform", "translate(375, 110), rotate(-90)");
   slider_group
     .append("rect")
     .classed("opacity_slider_background", true)

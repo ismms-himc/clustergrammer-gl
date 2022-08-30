@@ -2,6 +2,7 @@ import { cloneDeep } from "lodash";
 import * as _ from "underscore";
 import { pushHighQueueLabel } from "../state/reducers/labels/labelsSlice";
 import { mutateVisualizationState } from "../state/reducers/visualization/visualizationSlice";
+import { MAX_LABEL_LENGTH } from "./labels.const";
 
 import vectorize_label from "./vectorizeLabel";
 
@@ -34,6 +35,10 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
       if (inst_name.indexOf(": ") >= 0) {
         inst_name = inst_label.name.split(": ")[1];
       }
+      // truncate label if needed
+      if (inst_name.length > MAX_LABEL_LENGTH) {
+        inst_name = `${inst_name.substring(0, MAX_LABEL_LENGTH)}...`;
+      }
       let inst_text_vect;
       if (inst_name in text_triangles[inst_axis]) {
         // add to text_triangles.draw if pre-calculated
@@ -53,8 +58,10 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
         */
         if (labels.precalc[inst_axis]) {
           // calculate text vector
+          // vectorize the label so we can draw it at any scale
           inst_text_vect = vectorize_label(store, inst_axis, inst_name);
           text_triangles[inst_axis][inst_name] = inst_text_vect;
+          // current and new offsets, based on reordering
           inst_text_vect.inst_offset = [0, inst_label.offsets.inst];
           inst_text_vect.new_offset = [0, inst_label.offsets.new];
           text_triangles.draw[inst_axis].push(inst_text_vect);
@@ -68,15 +75,4 @@ export default function gather_text_triangles(store, viz_area, inst_axis) {
       text_triangles,
     })
   );
-
-  // labels updates
-  // store.dispatch(
-  //   mutateLabelsState({
-  //     labels_queue: {
-  //       high: {
-  //         [inst_axis]: store.getState().labels_queue.high[inst_axis],
-  //       },
-  //     },
-  //   })
-  // );
 }

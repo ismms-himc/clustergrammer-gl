@@ -1,3 +1,4 @@
+import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
 import { Regl } from "regl";
 import { CamerasManager } from "./cameras/camerasManager";
@@ -7,7 +8,7 @@ import initializeRegl from "./state/initialize/functions/initializeRegl";
 import initializeStore from "./state/initialize/initializeStore";
 import { setOpacityScale } from "./state/reducers/matrixSlice";
 import { NetworkState } from "./state/reducers/networkSlice";
-import { store } from "./state/store/store";
+import { RootState, store } from "./state/store/store";
 import { createCanvasContainer } from "./ui/functions/createCanvasContainer";
 import { UI } from "./ui/ui";
 import { CANVAS_CONTAINER_CLASSNAME } from "./ui/ui.const";
@@ -19,31 +20,28 @@ export type ClustergrammerProps = {
   use_hzome?: boolean;
   container: any; // no HTMLElement type? should be coming from the `typescript` package I think -- investigate
   network: NetworkState;
-  viz_width: number | string;
-  viz_height: number | string;
+  width: number | string;
+  height: number | string;
   showControls?: boolean;
+  onClick: (row: string, col: string) => void;
 };
 
 const adjustOpacity =
   (
     regl: Regl,
+    store: Store<RootState>,
     catArgsManager: CatArgsManager,
     camerasManager: CamerasManager
   ) =>
   (opacity: number) => {
-    setOpacityScale(opacity);
+    store.dispatch(setOpacityScale(opacity));
     draw_webgl_layers(regl, store, catArgsManager, camerasManager);
   };
 
 function clustergrammer_gl(
   args: ClustergrammerProps
 ): ClustergrammerInstance | null {
-  const {
-    container,
-    showControls = true,
-    viz_width: width,
-    viz_height: height,
-  } = args;
+  const { container, showControls = true, width, height } = args;
 
   // check if container is defined
   if (
@@ -84,7 +82,7 @@ function clustergrammer_gl(
     return {
       cameras: camerasManager,
       ui, // should we actually return this? (should it even be a class or just a function?)
-      adjustOpacity: adjustOpacity(regl, catArgsManager, camerasManager),
+      adjustOpacity: adjustOpacity(regl, store, catArgsManager, camerasManager),
     };
   }
   return null;

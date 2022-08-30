@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash";
 import * as _ from "underscore";
+import calcCatClusterBreakdown from "../cats/functions/calcCatClusterBreakdown";
 import { setMouseoverInteraction } from "../state/reducers/interaction/interactionSlice";
 import { mutateTooltipState } from "../state/reducers/tooltip/tooltipSlice";
 import { mutateZoomData } from "../state/reducers/visualization/visualizationSlice";
@@ -145,13 +146,45 @@ export default function findMouseoverElement(store, ev) {
   }
 
   // tooltip text for matrix cell only
-  // TODO: clean this up into a method, figure out other types of tooltips
-  const tooltip_text = `Row: ${mouseover.row.name}\nCol: ${
-    mouseover.col.name
-  }\nValue: ${mouseover.value?.toFixed(3) || "NaN"}${
-    mouseover.value_iz ? `Original value: ${mouseover.value_iz.toFixed(3)}` : ""
-  }`;
-  dispatch(mutateTooltipState({ text: tooltip_text }));
+  setTooltipText(store, mouseover);
 
   dispatch(setMouseoverInteraction(mouseover));
+}
+
+function setTooltipText(store, mouseover) {
+  const {
+    tooltip: { tooltip_type },
+  } = store.getState();
+  let tooltip_text = "";
+  if (tooltip_type === "matrix-cell") {
+    tooltip_text = `Row: ${mouseover.row.name}\nCol: ${
+      mouseover.col.name
+    }\nValue: ${mouseover.value?.toFixed(3) || "NaN"}${
+      mouseover.value_iz
+        ? `Original value: ${mouseover.value_iz.toFixed(3)}`
+        : ""
+    }`;
+  } else if (tooltip_type === "row-label") {
+    tooltip_text = mouseover.row.name;
+  } else if (tooltip_type === "col-label") {
+    tooltip_text = mouseover.col.name;
+    // TODO: fix dendro tooltips
+  } else if (tooltip_type === "col-dendro") {
+    // tooltip_text = JSON.stringify(mouseover.col.dendro);
+    const { selected_clust_names } = calcCatClusterBreakdown(
+      store,
+      mouseover.col.dendro,
+      "col"
+    );
+    tooltip_text = selected_clust_names;
+  } else if (tooltip_type === "row-dendro") {
+    tooltip_text = JSON.stringify(mouseover.row.dendro);
+  } else if (tooltip_type.indexOf("-cat-") > 0) {
+    // Category Tooltip
+    // ///////////////////
+    const inst_axis = tooltip_type.split("-")[0];
+    const inst_index = tooltip_type.split("-")[2];
+    tooltip_text = mouseover[inst_axis].cats[inst_index];
+  }
+  store.dispatch(mutateTooltipState({ text: tooltip_text }));
 }

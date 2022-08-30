@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import cgl from "./cg";
+// import data from "./data/cytof.json";
 import data from "./data/mult_view.json";
 
 function Clustergrammer() {
@@ -9,8 +10,8 @@ function Clustergrammer() {
     const args = {
       container: containerRef.current,
       network: data,
-      viz_width: "100%",
-      viz_height: "100%",
+      width: "100%",
+      height: "100%",
       showControls: true,
     };
     cgl(args);

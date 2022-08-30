@@ -4,7 +4,7 @@ import { mutateVisualizationState } from "../../reducers/visualization/visualiza
 export default (function genTextZoomPar(store) {
   const text_zoom = {};
   const max_webgl_fs = {};
-  max_webgl_fs.row = 0.05;
+  max_webgl_fs.row = 0.03;
   max_webgl_fs.col = 0.06;
   _.each(["row", "col"], function (inst_axis) {
     text_zoom[inst_axis] = {};

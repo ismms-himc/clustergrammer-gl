@@ -13,7 +13,6 @@ export default function draw_webgl_layers(
   catArgsManager: CatArgsManager,
   camerasManager: CamerasManager
 ) {
-  console.log("drawing layers");
   const cameras = camerasManager.getCameras();
   const state = store.getState();
   const reglProps = camerasManager.getReglProps();

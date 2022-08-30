@@ -79,13 +79,15 @@ export default function ini_canvas_mouseover(
 
     // show a tooltip if we're on a matrix cell
     const tooltip = document.getElementById(TOOLTIP_ID);
-    if (state.tooltip.tooltip_type === "matrix-cell" && tooltip) {
-      if (tooltip.textContent != state.tooltip.text) {
-        tooltip.textContent = state.tooltip.text;
+    if (tooltip) {
+      if (state.tooltip.tooltip_type !== "out-of-bounds") {
+        if (tooltip.textContent != state.tooltip.text) {
+          tooltip.textContent = state.tooltip.text;
+        }
+        showTooltip(e);
+      } else {
+        hideTooltip();
       }
-      showTooltip(e);
-    } else {
-      hideTooltip();
     }
   });
 }

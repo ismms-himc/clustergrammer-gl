@@ -4,6 +4,7 @@ import getInitialTooltipState from "./getInitialTooltipState";
 
 export interface TooltipState {
   show_tooltip: boolean;
+  disable_tooltip: boolean;
   in_bounds_tooltip: boolean;
   background_opacity: number;
   tooltip_type:

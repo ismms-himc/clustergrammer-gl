@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import cgl from "./cg";
+import cgl, { ClustergrammerProps } from "./cg";
 // import data from "./data/cytof.json";
 import data from "./data/mult_view.json";
 
@@ -7,12 +7,14 @@ function Clustergrammer() {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const args = {
+    const args: ClustergrammerProps = {
       container: containerRef.current,
-      network: data,
+      network: data as unknown as ClustergrammerProps["network"],
       width: "100%",
       height: "100%",
       showControls: true,
+      onClick: (row, col) => console.log(row, col),
+      disableTooltip: true
     };
     cgl(args);
   }, [containerRef]);

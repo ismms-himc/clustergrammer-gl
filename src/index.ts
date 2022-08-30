@@ -23,7 +23,8 @@ export type ClustergrammerProps = {
   width: number | string;
   height: number | string;
   showControls?: boolean;
-  onClick: (row: string, col: string) => void;
+  onClick: (row: string | null, col: string | null) => void;
+  disableTooltip?: boolean;
 };
 
 const adjustOpacity =
@@ -41,13 +42,14 @@ const adjustOpacity =
 function clustergrammer_gl(
   args: ClustergrammerProps
 ): ClustergrammerInstance | null {
-  const { container, showControls = true, width, height } = args;
+  const { container, showControls = true, width, height, onClick } = args;
 
   // check if container is defined
   if (
     container !== null &&
     select(container).select(`.${CANVAS_CONTAINER_CLASSNAME}`).empty()
   ) {
+    // create a container for the webGL canvas
     const canvas_container = createCanvasContainer(container, width, height);
 
     // initialize REGL manager
@@ -77,7 +79,7 @@ function clustergrammer_gl(
     });
 
     // zoom rules
-    zoom_rules_high_mat(regl, store, catArgsManager, camerasManager);
+    zoom_rules_high_mat(regl, store, catArgsManager, camerasManager, onClick);
 
     return {
       cameras: camerasManager,

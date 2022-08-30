@@ -7,7 +7,8 @@ export default function zoom_rules_high_mat(
   regl,
   store,
   catArgsManager,
-  camerasManager
+  camerasManager,
+  onClick
 ) {
   const options = {
     element: regl._gl.canvas,
@@ -32,7 +33,7 @@ export default function zoom_rules_high_mat(
       ) {
         doubleClicking(regl, store, catArgsManager, camerasManager);
       } else {
-        singleClicking(store);
+        singleClicking(store, onClick);
       }
     });
 }

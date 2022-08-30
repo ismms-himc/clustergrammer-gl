@@ -1,6 +1,7 @@
 export default function getInitialTooltipState() {
   const tooltip = {};
   tooltip.show_tooltip = false;
+  tooltip.disable_tooltip = false;
   tooltip.in_bounds_tooltip = false;
   tooltip.background_opacity = 0.75;
   tooltip.tooltip_type = null;

@@ -218,7 +218,7 @@ export default function build_control_panel(
           "translate(" + x_offset + ", " + button_groups[i_axis].y_trans + ")"
         );
       })
-      .on("click", function (d) {
+      .on("click", function (_, d) {
         const clean_order = d.replace("sum", "rank").replace("var", "rankvar");
         if (store.getState().order.inst[i_axis] !== clean_order) {
           /* category order is already calculated */

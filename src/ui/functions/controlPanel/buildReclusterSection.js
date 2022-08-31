@@ -16,7 +16,6 @@ export default (function build_recluster_section(
   const dispatch = store.dispatch;
 
   const y_offset_buttons = 47;
-  const cracker_room = 65;
   const button_dim = {};
   button_dim.height = 32;
   button_dim.width = 63;
@@ -72,7 +71,7 @@ export default (function build_recluster_section(
       }
     })
     .attr("transform", function () {
-      const x_offset = 200 + cracker_room;
+      const x_offset = 200;
       const y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
       return "translate( " + x_offset + ", " + y_trans + ")";
     })
@@ -94,7 +93,7 @@ export default (function build_recluster_section(
   )
     .append("g")
     .classed("run_cluster_container", true)
-    .attr("transform", "translate(" + 350 + ", " + 91 + ")")
+    .attr("transform", "translate(" + 290 + ", " + 91 + ")")
     .on("click", function () {
       const clickState = store.getState();
       if (
@@ -164,7 +163,7 @@ export default (function build_recluster_section(
   dist_dict["cosine"] = "cos";
   dist_dict["correlation"] = "corr";
   dist_dict["euclidean"] = "eucl";
-  const shift_x_order_buttons = 65 + cracker_room;
+  const shift_x_order_buttons = 65;
   const y_offset_top = 47;
   const y_offset_bottom = 91;
   // Distance Options Container
@@ -339,7 +338,7 @@ export default (function build_recluster_section(
         draw_webgl_layers(regl, store, catArgsManager, camerasManager);
       })
       .attr("transform", function () {
-        const x_offset = 290 + cracker_room;
+        const x_offset = 290;
         const y_trans = y_offset_buttons - 2 * button_dim.buffer + 2;
         return "translate( " + x_offset + ", " + y_trans + ")";
       })

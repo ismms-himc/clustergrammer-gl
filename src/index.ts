@@ -1,12 +1,18 @@
 import { Store } from "@reduxjs/toolkit";
 import { select } from "d3-selection";
+import { noop } from "lodash";
 import { Regl } from "regl";
 import { CamerasManager } from "./cameras/camerasManager";
 import { CatArgsManager } from "./cats/manager/catArgsManager";
 import draw_webgl_layers from "./draws/drawWebglLayers";
+import recluster from "./recluster/recluster";
+import runReorder from "./reorders/runReorder";
 import initializeRegl from "./state/initialize/functions/initializeRegl";
 import initializeStore from "./state/initialize/initializeStore";
-import { setOpacityScale } from "./state/reducers/matrixSlice";
+import {
+  mutateMatrixState,
+  setOpacityScale,
+} from "./state/reducers/matrixSlice";
 import { NetworkState } from "./state/reducers/networkSlice";
 import { RootState, store } from "./state/store/store";
 import { createCanvasContainer } from "./ui/functions/createCanvasContainer";
@@ -82,10 +88,65 @@ function clustergrammer_gl(
     // zoom rules
     zoom_rules_high_mat(regl, store, catArgsManager, camerasManager, onClick);
 
+    // get snapshot of state to return
+    const state = store.getState();
     return {
       cameras: camerasManager,
       ui, // should we actually return this? (should it even be a class or just a function?)
-      adjustOpacity: adjustOpacity(regl, store, catArgsManager, camerasManager),
+      adjust_opacity: adjustOpacity(
+        regl,
+        store,
+        catArgsManager,
+        camerasManager
+      ),
+      params: {
+        network: {
+          row_node_names: state.network.row_node_names,
+        },
+      },
+      utils: {
+        highlight: noop, // TODO: implement
+      },
+      functions: {
+        recluster: (distance_metric: string, linkage_type: string) => {
+          const reclusterState = store.getState();
+          if (
+            distance_metric !== reclusterState.matrix.distance_metric ||
+            linkage_type !== reclusterState.matrix.linkage_type
+          ) {
+            store.dispatch(
+              mutateMatrixState({
+                potential_recluster: {
+                  distance_metric,
+                  linkage_type,
+                },
+                distance_metric,
+                linkage_type,
+              })
+            );
+            recluster(regl, store, catArgsManager, camerasManager);
+          }
+        },
+        reorder: (
+          axis: "row" | "col" | string,
+          order: "clust" | "sum" | "var" | "ini" | string
+        ) => {
+          const reorderState = store.getState();
+          const clean_order = order
+            .replace("sum", "rank")
+            .replace("var", "rankvar");
+          if (reorderState.order.inst[axis] !== clean_order) {
+            runReorder(
+              regl,
+              store,
+              catArgsManager,
+              camerasManager,
+              axis,
+              order
+            );
+          }
+        },
+      },
     };
   }
   return null;

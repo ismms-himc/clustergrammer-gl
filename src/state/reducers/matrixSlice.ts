@@ -33,7 +33,7 @@ export const matrixSlice = createSlice({
       state = action.payload;
       return state;
     },
-    mutateMatrixState: (state, action: PayloadAction<MatrixState>) => {
+    mutateMatrixState: (state, action: PayloadAction<Partial<MatrixState>>) => {
       state = merge(state, action.payload);
       return state;
     },

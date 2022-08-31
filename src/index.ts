@@ -24,7 +24,7 @@ export type ClustergrammerInstance = {};
 
 export type ClustergrammerProps = {
   use_hzome?: boolean;
-  container: any; // no HTMLElement type? should be coming from the `typescript` package I think -- investigate
+  container: HTMLElement;
   network: NetworkState;
   width: number | string;
   height: number | string;

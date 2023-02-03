@@ -77322,8 +77322,8 @@ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 module.exports = function hzome_functions(params){
 
+
   function get_request(ini_gene_symbol){
-    // console.log('get_request');
 
     var gene_symbol;
     if (ini_gene_symbol.indexOf(' ') > 0){
@@ -77335,48 +77335,70 @@ module.exports = function hzome_functions(params){
       gene_symbol = ini_gene_symbol;
     }
 
-    var base_url = 'https://amp.pharm.mssm.edu/Harmonizome/api/1.0/gene/';
-    var url = base_url + gene_symbol;
+    // Uniprot fetch
+    ///////////////////////////////////////////////
 
-    // // get request using Jquery
-    // $.get(url, function(data) {
-    //   data = JSON.parse(data);
-    //   set_tooltip(data, ini_gene_symbol);
-    //   return data;
-    // });
+    // get Uniprot Accession Number
+    ///////////////////////////////////
+    organism = 'human'
+    num_matches = 100
+    let url_accession = 'https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=' + num_matches + '&exact_gene=' + gene_symbol + '&organism=' + organism ;
 
-    axios.get(url)
+    axios.get(url_accession)
       .then(function (response) {
-        // handle success
-        set_tooltip(response.data, ini_gene_symbol);
 
-        // save data for repeated use
-        params.hzome.gene_data[gene_symbol] = {}
-        params.hzome.gene_data[gene_symbol].name = response.data.name;
-        params.hzome.gene_data[gene_symbol].description = response.data.description;
+        var real_protein = response.data
+        // has evidence at protein level
+        .filter(d => d.proteinExistence === 'Evidence at protein level')
+        // has a comments section
+        .filter(d => 'comments' in d)
+        // // has a FUNCTION section in the comments
+        // .filter(d => d.comments.map(c => c.type).includes('FUNCTION'))
+        // has gene
+        .filter(d => 'gene' in d)
+        // matches gene name in first entry (lowercase string)
+        .filter(d => d.gene[0].name.value.toLowerCase() === gene_symbol.toLowerCase())
+
+      var inst_accession = real_protein[0].accession
+
+      let base_url_info = 'https://rest.uniprot.org/uniprotkb/' + inst_accession + '.json' ;
+
+      axios.get(base_url_info)
+        .then(function (response) {
+
+          var full_name = response.data.proteinDescription.recommendedName.fullName.value
+          var description = response.data.comments[0].texts[0].value
+
+          // handle success
+          set_tooltip(ini_gene_symbol, full_name, description);
+
+          // save data for repeated use
+          params.hzome.gene_data[gene_symbol] = {}
+          params.hzome.gene_data[gene_symbol].name = full_name;
+          params.hzome.gene_data[gene_symbol].description = description;
+
+        })
+        .finally(function () {
+          // always executed
+        });
 
       })
-      // .catch(function (error) {
-      //   // handle error
-      //   console.log(error);
-      // })
       .finally(function () {
         // always executed
       });
 
   }
 
-  function set_tooltip(data, gene_symbol){
-    // console.log('set_tooltip');
+  function set_tooltip(gene_symbol, full_name, description){
 
-    if (data.name != undefined){
+    if (full_name != undefined){
 
       // assign html
       d3.select(params.tooltip_id)
         .html(function(){
-            var sym_name = gene_symbol + ': ' + data.name;
+            var sym_name = gene_symbol + ': ' + full_name;
             var full_html = '<p>' + sym_name + '</p> <p>' +
-              data.description + '</p>';
+              description + '</p>';
             return full_html;
         });
 
@@ -77389,18 +77411,14 @@ module.exports = function hzome_functions(params){
 
 
   function gene_info(gene_symbol){
-    // console.log('gene_info');
-
-    // var gene_symbol = gene_info.name;
 
     if (_.has(params.hzome.gene_data, gene_symbol)){
 
-      // console.log('found in params.hzome.gene_data')
       var inst_data = params.hzome.gene_data[gene_symbol];
-      set_tooltip(inst_data, gene_symbol);
+
+      set_tooltip(gene_symbol, inst_data.name, inst_data.description);
     } else{
       // setTimeout(get_request, 250, gene_symbol);
-      // console.log('make get request for data')
       get_request(gene_symbol);
     }
 

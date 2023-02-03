@@ -73880,7 +73880,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.23.0');
+  console.log('clustergrammer-gl version 0.24.0');
   console.log('#################################');
 
   var cgm = {};

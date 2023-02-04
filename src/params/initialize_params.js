@@ -24,6 +24,11 @@ module.exports = function initialize_params(external_model){
 
   if ('use_hzome' in cgm.args){
     params.use_hzome = cgm.args.use_hzome
+    if ('gene_data' in cgm.args){
+      params.gene_data = cgm.args.gene_data
+    } else {
+      params.gene_data = {}
+    }
   }
   params.norm = {}
 

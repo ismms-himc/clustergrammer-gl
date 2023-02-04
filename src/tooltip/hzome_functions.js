@@ -21,9 +21,8 @@ module.exports = function hzome_functions(params){
     // get Uniprot Accession Number
     ///////////////////////////////////
     organism = 'human'
-    num_matches = 100
+    num_matches = 25
     let url_accession = 'https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=' + num_matches + '&exact_gene=' + gene_symbol + '&organism=' + organism ;
-
     axios.get(url_accession)
       .then(function (response) {
 
@@ -40,7 +39,6 @@ module.exports = function hzome_functions(params){
         .filter(d => d.gene[0].name.value.toLowerCase() === gene_symbol.toLowerCase())
 
       var inst_accession = real_protein[0].accession
-
       let base_url_info = 'https://rest.uniprot.org/uniprotkb/' + inst_accession + '.json' ;
 
       axios.get(base_url_info)
@@ -85,7 +83,7 @@ module.exports = function hzome_functions(params){
       //set width
       d3.select(params.tooltip_id)
         .selectAll('p')
-        .style('width', '500px');
+        .style('width', '800px');
     }
   }
 
@@ -93,12 +91,9 @@ module.exports = function hzome_functions(params){
   function gene_info(gene_symbol){
 
     if (_.has(params.hzome.gene_data, gene_symbol)){
-
       var inst_data = params.hzome.gene_data[gene_symbol];
-
       set_tooltip(gene_symbol, inst_data.name, inst_data.description);
     } else{
-      // setTimeout(get_request, 250, gene_symbol);
       get_request(gene_symbol);
     }
 
@@ -107,7 +102,8 @@ module.exports = function hzome_functions(params){
   var hzome = {}
 
   hzome.gene_info = gene_info;
-  hzome.gene_data = {};
+  // hzome.gene_data = {};
+  hzome.gene_data = params.gene_data;
   hzome.get_request = get_request;
 
   return hzome;

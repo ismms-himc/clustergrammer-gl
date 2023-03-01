@@ -66834,6 +66834,7 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
   var params = cgm.params;
   var button_color = '#eee';
 
+  // reference https://stackoverflow.com/a/30446887/3957721
   let fieldSorter = (fields) => (a, b) => fields.map(o => {
           let dir = 1;
           if (o[0] === '-') { dir = -1; o=o.substring(1); }
@@ -66841,23 +66842,31 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
       }).reduce((p, n) => p ? p : n, 0);
 
   function stable_reorder_cats(axis, i){
+
     let inst_nodes = params.network[axis + '_nodes'].map(x => x)
     let cat_primary = 'cat-' + String(i)
     let cat_secondary_up = 'cat-' + String(i - 1)
     let cat_secondary_down = 'cat-' + String(i + 1)
     if (cat_secondary_down in params.network[axis + '_nodes'][0]){
-      console.log('found down')
+      // console.log('found down')
       cat_secondary = cat_secondary_down
     } else if (cat_secondary_up in params.network[axis + '_nodes'][0]){
-      console.log('found up')
+      // console.log('found up')
       cat_secondary = cat_secondary_up
     } else {
       // single category reordering
-      console.log('did not find cat_secondary')
+      // console.log('did not find cat_secondary')
       cat_secondary = cat_primary
     }
 
-    let sorted_nodes = inst_nodes.sort(fieldSorter([cat_primary, cat_secondary]));
+    var sorted_nodes
+    if (params.viz.cat_info[axis][cat_primary].type === 'cat_strings'){
+      sorted_nodes = inst_nodes.sort(fieldSorter([cat_primary, cat_secondary]));
+    } else {
+      sorted_nodes = inst_nodes
+        .sort((a,b) => parseFloat(a[cat_primary].split(': ')[1]) - parseFloat(b[cat_primary].split(': ')[1]))
+    }
+
     let order_dict = {}
     let inst_name
     let inst_order

@@ -7,7 +7,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.24.1');
+  console.log('clustergrammer-gl version 0.24.2');
   console.log('#################################');
 
   var cgm = {};

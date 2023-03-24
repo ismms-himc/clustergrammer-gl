@@ -69,6 +69,10 @@ module.exports = function initialize_params(external_model){
   require('./gen_pix_to_webgl')(params);
   require('./generate_webgl_to_pix')(params);
   require('./../matrix_labels/make_label_queue')(params);
+
+  params.scale_row_font_size = cgm.args.scale_row_font_size
+  params.scale_col_font_size = cgm.args.scale_col_font_size
+
   require('./gen_text_zoom_par')(params);
   require('./calc_viz_area')(params);
   require('./generate_text_triangle_params')(params);
@@ -255,8 +259,6 @@ module.exports = function initialize_params(external_model){
   download.meta_type = 'col'
 
   params.download = download
-
-
 
   this.params = params;
 

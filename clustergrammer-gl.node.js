@@ -73889,7 +73889,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.24.2');
+  console.log('clustergrammer-gl version 0.25.0');
   console.log('#################################');
 
   var cgm = {};
@@ -73898,6 +73898,8 @@ function clustergrammer_gl(args, external_model=null){
   if (args.container !=null){
 
     cgm.args = args;
+
+    console.log(cgm.args)
 
     cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
     // cgm.decompress_network = require('./params/decompress_network');
@@ -75822,8 +75824,8 @@ module.exports = function gen_text_zoom_par(params){
 
   var text_zoom = {};
   var max_webgl_fs = {}
-  max_webgl_fs.row = 0.05;
-  max_webgl_fs.col = 0.06;
+  max_webgl_fs.row = 0.05 * params.scale_row_font_size;
+  max_webgl_fs.col = 0.06 * params.scale_col_font_size;
 
   _.each(['row', 'col'], function(inst_axis){
 
@@ -76129,6 +76131,10 @@ module.exports = function initialize_params(external_model){
   __webpack_require__(/*! ./gen_pix_to_webgl */ "./src/params/gen_pix_to_webgl.js")(params);
   __webpack_require__(/*! ./generate_webgl_to_pix */ "./src/params/generate_webgl_to_pix.js")(params);
   __webpack_require__(/*! ./../matrix_labels/make_label_queue */ "./src/matrix_labels/make_label_queue.js")(params);
+
+  params.scale_row_font_size = cgm.args.scale_row_font_size
+  params.scale_col_font_size = cgm.args.scale_col_font_size
+
   __webpack_require__(/*! ./gen_text_zoom_par */ "./src/params/gen_text_zoom_par.js")(params);
   __webpack_require__(/*! ./calc_viz_area */ "./src/params/calc_viz_area.js")(params);
   __webpack_require__(/*! ./generate_text_triangle_params */ "./src/params/generate_text_triangle_params.js")(params);
@@ -76315,8 +76321,6 @@ module.exports = function initialize_params(external_model){
   download.meta_type = 'col'
 
   params.download = download
-
-
 
   this.params = params;
 

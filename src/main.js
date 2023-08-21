@@ -7,7 +7,7 @@ function clustergrammer_gl(args, external_model=null){
   var d3 = require("d3");
 
   console.log('#################################');
-  console.log('clustergrammer-gl version 0.24.2');
+  console.log('clustergrammer-gl version 0.25.0');
   console.log('#################################');
 
   var cgm = {};
@@ -16,6 +16,8 @@ function clustergrammer_gl(args, external_model=null){
   if (args.container !=null){
 
     cgm.args = args;
+
+    console.log(cgm.args)
 
     cgm.initialize_params = require('./params/initialize_params');
     // cgm.decompress_network = require('./params/decompress_network');
